@@ -1,0 +1,10 @@
+{
+  "title": "Echoes of the Vale",
+  "settings": {"volume": 80, "language": "en"},
+  "dialogue": [
+    {"speaker": "Aria", "text": "The vale calls to us, wanderer.", "choices": ["Follow the light", "Leave"]},
+    {"speaker": "Orin", "text": "We must not linger here."}
+  ],
+  "hint": "{0} more steps remaining",
+  "quest": 3
+}

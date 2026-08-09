@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "version": "5.4.23.5",
+  "source_release": "https://github.com/BepInEx/BepInEx/releases/tag/v5.4.23.5",
+  "license_file": "LICENSE-BepInEx.txt",
+  "required_members": [
+    "winhttp.dll",
+    "doorstop_config.ini",
+    "BepInEx/core/BepInEx.dll"
+  ],
+  "payloads": [
+    {
+      "architecture": "x86",
+      "filename": "BepInEx_win_x86_5.4.23.5.zip",
+      "download_url": "https://github.com/BepInEx/BepInEx/releases/download/v5.4.23.5/BepInEx_win_x86_5.4.23.5.zip",
+      "size": 638544,
+      "sha256": "37651c79e40d6f909572a4f461ac25350bb3ef8fe7fbd29f1aa8791a33b84c82"
+    },
+    {
+      "architecture": "x64",
+      "filename": "BepInEx_win_x64_5.4.23.5.zip",
+      "download_url": "https://github.com/BepInEx/BepInEx/releases/download/v5.4.23.5/BepInEx_win_x64_5.4.23.5.zip",
+      "size": 639118,
+      "sha256": "82f9878551030f54657792c0740d9d51a09500eeae1fba21106b0c441e6732c4"
+    }
+  ]
+}

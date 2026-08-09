@@ -1,0 +1,43 @@
+{
+  "description": "ARIALUNI SDF TMP_FontAsset 字体包（按 Unity 版本选择），用于静态字体替换路径，彻底避免游戏内缺字/豆腐块。",
+  "source_date": "2025-12-08",
+  "integrity": {
+    "arialuni_sdf-u55to2017": {
+      "sha256": "d476efbff5a91098eb9b3320a8ab2ab200291197878637d04faa953132d7d577",
+      "unity": "5.5 ~ 2017",
+      "tmp_layout": "tmp1",
+      "glyphs": 33932
+    },
+    "arialuni_sdf_u2018": {
+      "sha256": "f9ffcfa4819499c50a2acd15d0cc0d398f79b1cfdaba14b5e6b0d6345a22648c",
+      "unity": "2018",
+      "tmp_layout": "tmp1",
+      "glyphs": 33231
+    },
+    "arialuni_sdf_u2019": {
+      "sha256": "11b47cae3262648dd9c8b8a29dc25d04309a18790e4130e94fd230791e55c037",
+      "unity": "2019 ~ 2020",
+      "tmp_layout": "tmp2",
+      "glyphs": 33932
+    },
+    "arialuni_sdf_u2021": {
+      "sha256": "63a5cbf2b9c7351c6ff8f7f592be03d2cc79668fad48f3cfe8e0e547af43aa3c",
+      "unity": "2021",
+      "tmp_layout": "tmp2",
+      "glyphs": 38917
+    },
+    "arialuni_sdf_u2022": {
+      "sha256": "de18a759d475e01f90cffee16bdc861bf3aa09bc501f3c622e5822622b5e1606",
+      "unity": "2022",
+      "tmp_layout": "tmp2",
+      "glyphs": 38917
+    },
+    "arialuni_sdf_u6000": {
+      "sha256": "e08dd49c9ad9030ab847813c115ee7490017b99690302c97119de745c7c05625",
+      "unity": "6000.0+",
+      "tmp_layout": "tmp2",
+      "glyphs": 6448,
+      "note": "Unity 6 使用 TMP 2.x 布局；字体为 ZCOOLKuaiLe（覆盖率低于 ARIALUNI，仍覆盖常用汉字）"
+    }
+  }
+}

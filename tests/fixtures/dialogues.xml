@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <dialogue id="1">
+    <speaker>Aria</speaker>
+    <text>The night is long.</text>
+    <choice name="accept">Accept the quest</choice>
+  </dialogue>
+  <dialogue id="2">
+    <speaker>Orin</speaker>
+    <text>We must not linger here.</text>
+  </dialogue>
+  <item name="Health Potion">
+    <description>Restores 50 HP</description>
+  </item>
+</root>

@@ -1,0 +1,39 @@
+__pycache__/
+*.py[cod]
+.pytest_cache/
+*.db
+.worktrees/
+
+# Local-only model/runtime payloads are large and reproducible.
+models/*.gguf
+runtime/
+
+# llama.cpp is a separately cloned repository; install only its runtime output.
+llama.cpp/
+
+# Il2CppDumper writes game-specific analysis beside its executable when run directly.
+tools/Il2CppDumper/DummyDll/
+tools/Il2CppDumper/dump.cs
+tools/Il2CppDumper/il2cpp.h
+tools/Il2CppDumper/script.json
+tools/Il2CppDumper/stringliteral.json
+
+# Keep the issue ledger, ignore generated logs and temporary artifacts.
+logs/
+.scratch/*
+!.scratch/running-issues/
+!.scratch/running-issues/*.md
+
+# 思源黑体字重仅提交 Regular（白名单唯一引用），其余字重留磁盘供后续字重支持
+fonts/SimplifiedChinese/*
+!fonts/SimplifiedChinese/SourceHanSansSC-Regular.otf
+
+# 每次汉化自动导出的失败记录（生成产物，不入库）
+docs/fail record/
+
+# 识别/覆盖率调查脚本输出（可随时重跑 scripts/*survey*.py 再生成，核心代码 0 引用）
+survey_out/
+
+# 阶段 4 外测数据：下载的 zip 与解压的游戏副本（体积大、可重新下载）
+ext_downloads/
+ext_games/

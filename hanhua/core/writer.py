@@ -1,0 +1,101 @@
+from __future__ import annotations
+import json
+from pathlib import Path
+
+from hanhua.core.formats import apply_format_text, read_text, zip_format
+from hanhua.core.memory import ProjectStore
+from hanhua.core.models import TextEntry
+from hanhua.core.paths import resolve_relative_under
+from hanhua.core.placeholders import is_key_style_identifier, looks_like_key_field
+from hanhua.core.quality import is_write_ready
+
+
+def write_back(store: ProjectStore, game_dir: Path, out_dir: Path,
+               target_lang: str = "zh-CN") -> int:
+    """把项目库中的译文写回 out_dir（保留相对路径/编码/EOL）。返回写回文件数。"""
+    files = store.get_files()
+    out_dir.mkdir(parents=True, exist_ok=True)
+    count = 0
+    for f in files:
+        if f["format"].startswith("v2_"):
+            continue      # v2 二进制资源由 write_back_v2 处理
+        src = resolve_relative_under(game_dir, f["rel_path"])
+        if not src.exists():
+            continue
+        entries = [e for e in store.get_entries() if e["file_id"] == f["id"]]
+        out = resolve_relative_under(out_dir, f["rel_path"])
+        out.parent.mkdir(parents=True, exist_ok=True)
+        out = resolve_relative_under(out_dir, f["rel_path"])
+        if f["format"] == "sqlite":
+            from hanhua.core.formats import sqlite_format
+            out.write_bytes(sqlite_format.apply_sqlite(src, _entries_to_model(entries)))
+        elif f["format"] == "zip":
+            out.write_bytes(zip_format.apply_zip(src, _entries_to_model(entries)))
+        else:
+            body = _render(src, f, entries, target_lang)
+            out.write_bytes(_encode(body, src, f))
+        count += 1
+    return count
+
+
+def _entries_to_model(entries: list[dict]) -> list[TextEntry]:
+    return [_dict_to_entry(d) for d in entries]
+
+
+def _encode(body: str, src: Path, f: dict) -> bytes:
+    raw = src.read_bytes()
+    enc = (f.get("encoding") or "utf-8").lower()
+    has_bom = raw.startswith(b"\xef\xbb\xbf")
+    data = body.replace("\r\n", "\n")
+    if (f.get("eol") or "\n") == "\r\n":
+        data = data.replace("\n", "\r\n")
+    if has_bom or enc == "utf-8-sig":
+        return data.encode("utf-8-sig")
+    if enc.startswith("utf"):
+        return data.encode("utf-8")
+    try:
+        return data.encode(enc)
+    except UnicodeEncodeError:
+        # 文档1 §5.1：无法编码的中文必须阻断写回，不能静默替换成
+        # UTF-8——文件编码被改变后游戏按原编码读取会乱码，且重开验证
+        # 按新编码读取仍会通过，掩盖问题
+        raise RuntimeError(
+            f"文件无法以 {enc} 编码写回（译文含编码表外字符），"
+            f"已阻断发布避免静默改变文件编码：{src}") from None
+    except LookupError:
+        raise RuntimeError(
+            f"文件编码名无法识别（{enc}），已阻断发布避免静默改变"
+            f"文件编码：{src}") from None
+
+
+def _render(src: Path, f: dict, entries: list[dict], target_lang: str) -> str:
+    fmt = f["format"]
+    model_entries = [_dict_to_entry(d) for d in entries]
+    # 写回保护：键名/键字段条目即使曾被（误）翻译也不写回。
+    # 只丢弃译文（txt 按条目重建，条目必须保留才能保住原行）。
+    from hanhua.core.models import STATUS_SKIPPED
+    for e in model_entries:
+        if not is_write_ready(e.status, e.translation, e.meta):
+            e.translation = ""
+        if is_key_style_identifier(e.original) or (
+                fmt == "json" and looks_like_key_field(e.key_path.rsplit("/", 1)[-1])):
+            e.translation = ""
+            e.status = STATUS_SKIPPED
+    meta = json.loads(f.get("meta") or "{}")
+    text = read_text(src)
+    body = apply_format_text(fmt, model_entries, text, {
+        **meta,
+        "source_suffix": src.suffix.lower(),
+        "target_col": meta.get("target_col"),
+    })
+    # 行重建格式需还原原文件末尾换行
+    if fmt in ("txt", "yaml", "ink_yarn", "subtitle", "po") and text.endswith(("\n", "\r")):
+        body += "\n"
+    return body
+
+
+def _dict_to_entry(d: dict) -> TextEntry:
+    return TextEntry(
+        file_id=d["file_id"], key_path=d["key_path"], original=d["original"],
+        translation=d.get("translation") or "", status=d.get("status", "pending"),
+        locked=bool(d.get("locked")), meta=json.loads(d.get("meta") or "{}"))

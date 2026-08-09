@@ -1,0 +1,6 @@
+PySide6>=6.6
+httpx>=0.27
+chardet>=5.2
+UnityPy>=1.25
+dnfile>=0.16
+pytest>=8.0

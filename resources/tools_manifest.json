@@ -1,0 +1,31 @@
+{
+  "schema_version": 1,
+  "tools": [
+    {
+      "id": "il2cpp_dumper",
+      "version": "6.7.46",
+      "adapter_version": "3",
+      "entry": "tools/Il2CppDumper/Il2CppDumper.exe",
+      "size": 13374349,
+      "sha256": "071E36D396AE93CB2CFEC032513B46A6BFD67E9B93157830711AB6D79DB55045",
+      "capabilities": ["il2cpp_cross_check"],
+      "required_files": []
+    },
+    {
+      "id": "bmfont",
+      "version": "1.14a",
+      "adapter_version": "2",
+      "entry": "tools/bmfont/bmfont64.com",
+      "size": 3584,
+      "sha256": "4AEA5F359B4737253C521E29F87FC62D472FBEB9F9BA3A872353AB356A20E548",
+      "capabilities": ["bitmap_font_generation"],
+      "required_files": [
+        {
+          "path": "tools/bmfont/bmfont64.exe",
+          "size": 1710080,
+          "sha256": "628C898D666E3F9FD787315C6E3A6FDF11AAE429E401219E70EF32585FC81C4B"
+        }
+      ]
+    }
+  ]
+}

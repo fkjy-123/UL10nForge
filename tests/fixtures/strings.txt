@@ -1,0 +1,6 @@
+# Main menu
+title=Valley of Echoes
+subtitle: A tale of two worlds
+controls	Move
+Press {key} to jump
+[warning]
