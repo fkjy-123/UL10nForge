@@ -224,6 +224,25 @@ def _fit_bytes(translation: str, capacity: int, encoding: str,
 _FORMAT_PLACEHOLDER = re.compile(r"\{[0-9][^}]*\}")
 
 
+def _restore_placeholders(original: str, translation: str) -> str:
+    """占位符机械恢复：译文缺失原文的 {n} 时补到译文末尾。
+
+    string.Format 按索引取参，占位符位置/顺序变化不崩溃（与
+    _placeholders_intact 注释同源），补末尾是最安全的恢复位——译文
+    主体不动只追加。模型漏写 {n} 是稳定行为（翻译时丢占位符），
+    机械补回后好译文可正常写回，不再被 reject 丢弃。原文无占位符
+    或译文已完整时原样返回。
+    """
+    found = _FORMAT_PLACEHOLDER.findall(original)
+    if not found:
+        return translation
+    missing = [placeholder for placeholder in found
+               if placeholder not in translation]
+    if not missing:
+        return translation
+    return translation + "".join(missing)
+
+
 def _placeholders_intact(original: str, translation: str) -> bool:
     """F2：截断/省略号不得破坏原文的 {n} 占位符（string.Format 崩溃防护）。
 
@@ -1178,9 +1197,15 @@ def _patch_dll(path: Path, entries: list[dict], result: WriteResult):
             e["translation"], capacity, "utf-16-le", pad=False)
         if truncated:
             result.note_truncated(e["original"], e["translation"])
-        # F2：占位符完整性全量校验——不只截断路径，所有写回译文必须保留
-        # 原文全部 {n} 占位符（string.Format 崩溃防护；译文语义错误/漏
-        # 删占位符在写回侧一并拦截，不依赖翻译阶段质量门）
+        # F2：占位符完整性全量校验——缺失时机械恢复（补末尾，string.Format
+        # 按索引取参位置无关），恢复后按容量重新收尾（UTF-16 从头截，
+        # 补在末尾的 {n} 必然保留）。模型漏写 {n} 是稳定行为，机械补回
+        # 后好译文正常写回，不再 reject 丢弃。
+        restored = _restore_placeholders(
+            e["original"], payload.decode("utf-16-le", errors="replace"))
+        if restored != payload.decode("utf-16-le", errors="replace"):
+            payload, _ = _fit_bytes(
+                restored, capacity, "utf-16-le", pad=False)
         if not _placeholders_intact(
                 e["original"], payload.decode("utf-16-le", errors="replace")):
             result.note_rejected(e, "译文缺失 {n} 占位符")
@@ -1286,8 +1311,14 @@ def _patch_metadata(path: Path, entries: list[dict], result: WriteResult):
             e["translation"], capacity, "utf-8", pad=False)
         if truncated:
             result.note_truncated(e["original"], e["translation"])
-        # F2：占位符完整性全量校验——不只截断路径，所有写回译文必须保留
-        # 原文全部 {n} 占位符（string.Format 崩溃防护）
+        # F2：占位符完整性全量校验——缺失时机械恢复（补末尾，string.Format
+        # 按索引取参位置无关）。容量充足时（常见场景）恢复后不截断，{n}
+        # 完整保留；容量也不足的双问题场景 UTF-8 从尾截会再次削掉 {n}，
+        # 由下方校验兜底 reject（不写坏译文）。
+        restored = _restore_placeholders(
+            e["original"], payload.decode("utf-8", errors="replace"))
+        if restored != payload.decode("utf-8", errors="replace"):
+            payload, _ = _fit_bytes(restored, capacity, "utf-8", pad=False)
         if not _placeholders_intact(e["original"], payload.decode("utf-8")):
             result.note_rejected(e, "译文缺失 {n} 占位符")
             continue

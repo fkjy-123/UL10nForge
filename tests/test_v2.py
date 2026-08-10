@@ -803,6 +803,39 @@ def test_textasset_data_rows_kept_when_wordy():
     assert entries[0].original == "missions=Missioni"
 
 
+def test_textasset_script_source_file_produces_no_entries():
+    # 源码文件整文件跳过（0.25.0 地毯式排查实证锚点：a-catfiends-impending-
+    # relapse resources.assets#69 是 inspect.lua 脚本库，被按行拆成 264 条
+    # 进池、翻译代码被质量门拦截成 264 条失败——代码文本翻译即破坏功能，
+    # 属于硬结构规则：整文件不产生条目）
+    inspect_lua = (
+        "local inspect ={\n"
+        "local rawlen = _G.rawlen or function(t) return #t end\n"
+        "local function smartQuote(str)\n"
+        "local controlCharsTranslation = {\n"
+        '["\\a"] = "\\\\a",  ["\\b"] = "\\\\b", ["\\f"] = "\\\\f",\n'
+        "local result = str:gsub(\"\\\\\", \"\\\\\\\\\"):gsub(\"(%c)\", controlCharsTranslation)\n"
+        "local function isIdentifier(str)\n"
+        "local function isSequenceKey(k, length)\n"
+        "if ta == tb and (ta == 'string' or ta == 'number') then return a < b end\n"
+        "return type(k) == 'number'\n"
+        "table.sort(keys, sortKeys)\n"
+        "inspect.KEY = setmetatable({}, {__tostring = function() return 'inspect.KEY' end})\n"
+        "local inspector = setmetatable({},\n"
+        "inspector:putValue(root)\n"
+    ).encode()
+    assert _textasset_entries("f1", 100, inspect_lua) == []
+
+
+def test_textasset_short_code_chunk_kept_for_manual_review():
+    # 短代码片段（<8 行）不做整文件判定，但行级代码兜底仍过滤确定性
+    # 代码行（local 声明），真实文本行保留（0.25.0 修复 3 语义）
+    raw = b"local x = 1\nlocal y = 2\nHello there\n"
+    entries = _textasset_entries("f1", 100, raw)
+    assert len(entries) == 1
+    assert entries[0].original == "Hello there"
+
+
 def test_extract_asset_file_deduplicates_wrapper_aliases_by_stable_identity(
         tmp_path, monkeypatch):
     import UnityPy
@@ -1338,6 +1371,28 @@ def test_raw_string_entries_word_identifiers_skipped_in_code_objects():
     assert by_orig["WASD"].meta.get("obj_is_key_list") is True
 
 
+def test_raw_string_entries_display_word_in_component_object_kept():
+    # 0.25.0 地毯式实证锚点：a-catfiends-impending-relapse resources.assets
+    # #1319 'Save' 按钮——MonoBehaviour 组件实例（含类型引用）里的白名单词
+    # 是真实按钮文本，曾被通用标识符规则误杀
+    raw = (b"\x00" * 8) + _with_len("Save") + _with_len("UnityEngine.Object, UnityEngine")
+    entries = _raw_string_entries("f1", 1319, raw, {})
+    by_orig = {e.original: e for e in entries}
+    assert by_orig["Save"].status == "pending"
+    assert by_orig["Save"].meta["reason"] == "display_phrase"
+    assert by_orig["Save"].meta["role"] == "display"
+
+
+def test_raw_string_entries_display_word_in_plain_string_object_skipped():
+    # 无组件信号的纯字符串对象：白名单词仍是键（down/left/right 绑定名）
+    raw = (b"\x00" * 8) + _with_len("Player") + _with_len("Move") + _with_len("down") \
+        + _with_len("left") + _with_len("right") + _with_len("Dpad")
+    entries = _raw_string_entries("f1", 5, raw, {})
+    by_orig = {e.original: e for e in entries}
+    assert all(by_orig[k].status == "skipped"
+               for k in ("Player", "Move", "down", "left", "right", "Dpad"))
+
+
 def test_raw_string_entries_display_words_skipped_in_code_objects():
     # InputActionAsset 场景：白名单词 down/left/right 作为绑定名也是键
     raw = (b"\x00" * 8) + _with_len("Player") + _with_len("Move") + _with_len("down") \
@@ -1639,10 +1694,10 @@ def test_mono_strong_interaction_promotes_without_setter(
     for text in debug_rows:
         entry = by_original[text]
         if text == "[FLIP] - constrained edge done":
-            # 全大写日志标签被 UI 启发式放行：翻译无害（仅日志），
-            # 且能救回真实 UI 拼接文本（driftapocalypse）
-            assert entry.status == "pending"
-            assert entry.meta["reason"] == "user_string_uppercase_ui"
+            # a-catfiends Poly2Tri.dll 实证：方括号调试前缀是算法内部日志
+            # （[FLIP]/[BUG:FIXME] 等），翻译无意义且模型会改坏代码符号
+            assert entry.status == "skipped"
+            assert entry.meta["reason"] == "mono_diagnostic"
         else:
             assert entry.status == "skipped"
             assert entry.meta["role"] == "structural"
@@ -2275,3 +2330,282 @@ def test_il2cpp_extract_filters_engine_noise_and_classifies():
         "pending", "medium", "display")
     sentence = by_orig["A buffer must be provided"]
     assert (sentence.status, sentence.meta["confidence"]) == ("pending", "low")
+
+
+# ── 0.25.0 修复 3：单行代码判定 / BOM / 纯符号串 / FungusLua 整文件 ──
+def test_script_code_line_strong_features_detected():
+    from hanhua.core.unity.extractor import _is_script_code_line
+    code = [
+        'function M.start()',
+        'runblock(flowchart, "Intro") -- Runs the Intro Block',
+        'setcharacter(sherlockcharacter, "annoyed") -- comment',
+        'local choice = choose { "Agreed", "No" }',
+        'elseif choice == 2 then',
+        '"System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089"',
+        'InvertVector2(invertX=false),ScaleVector2(x=0.05,y=0.05)',
+        'wait(1)',
+        'M = {}',
+        '-- a full-line comment',
+    ]
+    for line in code:
+        assert _is_script_code_line(line), f"应判代码：{line}"
+
+
+def test_script_code_line_does_not_误伤_display_text():
+    from hanhua.core.unity.extractor import _is_script_code_line
+    keep = [
+        '{punch=3,2}* Y A W N *{w=3}{x}',
+        '— WRECCA CAVERN —{w=3}{x}',
+        'I am {punch=3,2}NOT who I used to be.{w=3}{x}',
+        'HH:mm dd MMMM, yyyy',
+        'Continue', 'Save', 'Load',
+        'I -- I can\'t believe this',   # 口语破折号不是 Lua 注释
+        'Hello, world!',
+    ]
+    for line in keep:
+        assert not _is_script_code_line(line), f"不应判代码：{line}"
+
+
+def test_double_bom_json_textasset_goes_to_json_branch():
+    # 双重 BOM（UnityPy str + utf-8-sig encode）不得卡住 JSON 分支
+    raw = b'\xef\xbb\xbf\xef\xbb\xbf{"registerTypes": ["Fungus.Block", "Fungus.Character"]}'
+    entries = _textasset_entries("f1", 70, raw)
+    assert entries, "双重 BOM 后应走 JSON 分支产生条目"
+    assert all("/json/" in e.key_path for e in entries)
+    # 类型名是标识符 → 全部 skipped
+    assert all(e.status == "skipped" for e in entries)
+
+
+def test_symbols_only_rawstr_skipped():
+    from hanhua.core.unity.extractor import _raw_string_entries
+    import struct
+
+    def unistr(s):
+        b = s.encode("utf-8")
+        head = struct.pack("<i", len(b)) + b
+        return head + b"\x00" * ((-len(head)) % 4)
+
+    # 纯占位符串（{0} : {1}）在 rawstr 对象里不得以 pending 进池
+    raw = unistr("{0} : {1}") + unistr("A perfectly normal sentence.")
+    entries = _raw_string_entries("f1", 5, raw, {})
+    placeholder = [e for e in entries if e.original == "{0} : {1}"]
+    assert not placeholder, "纯符号串不得进池"
+
+
+def test_escaped_braces_format_template_hard_structural():
+    # a-catfiends Unity.ProBuilder.dll us#32180 实证：C# format 转义大括号
+    # 的多行代码模板（含全大写词绕过了单行纯符号检测）
+    from hanhua.core.placeholders import is_hard_structural
+    s = '{0} : {1}\nCPAPI:{{"cmd":"Watch" "name":"{0}"}}'
+    assert is_hard_structural(s), "含 {{/}} 的 format 模板应判硬结构"
+    assert is_hard_structural('{{variable}}'), "独立转义大括号模板应判硬结构"
+
+
+def test_color_table_entries_hard_structural():
+    # ProBuilder 颜色表条目（HTML/CSS 标注）是数据表，无翻译价值
+    from hanhua.core.placeholders import is_hard_structural
+    for s in ('Gray (HTML/CSS Gray)', 'Green (HTML/CSS Color)',
+              'Air Force Blue (USAF)', 'Purple (HTML)',
+              'Jawad/Chicken Color (HTML/CSS) (Khaki)'):
+        assert is_hard_structural(s), f"颜色表条目应判硬结构：{s}"
+    # 普通 UI 文本不得误伤
+    assert not is_hard_structural('The color of the sky is blue')
+    assert not is_hard_structural('Choose your color')
+
+
+def test_fungus_lua_module_skipped_whole_file():
+    # a-catfiends obj72 实证：FungusLua 对话模块（49 行）整文件跳过
+    raw = b"""-- This Lua script defines a module
+-- local junglestory = require('junglestory')
+M = {}
+
+function M.start()
+\trunblock(flowchart, "Intro") -- Runs the Intro Block
+\tsay "Hello John."
+\tlocal choice = choose { "Agreed", "No" }
+\tif choice == 1 then
+\t\trunblock(flowchart, "PlayPourSound")
+\tend
+end
+"""
+    entries = _textasset_entries("f1", 72, raw)
+    assert entries == []
+
+
+def test_mono_diagnostic_strings_skipped():
+    # a-catfiends ProBuilder/Poly2Tri/Fungus 实证：开发诊断文本不得进池
+    from hanhua.core.unity.mono_dll import _is_mono_diagnostic_string
+    diagnostics = (
+        " FAILED: ", "_____ PASSED: ", "EXTEND: ",
+        "(TailCallRequest -- INTERNAL!)", "(YieldRequest -- INTERNAL!)",
+        "CNOT had non-bool arg", "Error parsing JSON file ",
+        "String table JSON format is not correct ",
+        "Improper (strict) JSON formatting.  First character must be [ or {",
+        "[BUG:FIXME] FLIP failed due to missing triangle",
+        "[FLIP] - constrained edge done", "[FLIP:SCAN] - scan next point",
+    )
+    for s in diagnostics:
+        assert _is_mono_diagnostic_string(s), f"应判诊断：{s}"
+    keep = (
+        "**ANY CAMERA**", "SOLO ", "BEST SCORE: ",
+        "Hold LEFT or RIGHT to turn\n(",
+        "Failed to press the Enter key in simulation",   # 驼峰错误消息可能是 UI
+        "Internal format {0}", "Internal diagnostic message",
+    )
+    for s in keep:
+        assert not _is_mono_diagnostic_string(s), f"不应判诊断：{s}"
+
+
+def test_pure_tag_sequence_hard_structural():
+    # Fungus 样式模板标签行（resources.assets obj1292 实证）不得进池
+    from hanhua.core.placeholders import is_hard_structural
+    for s in ("{customName}", "{/customName}", "{color=blue}", "{/color}",
+              "{audio=AudioTag}", "{/audio}", "{w=3}{x}"):
+        assert is_hard_structural(s), f"纯标签序列应判硬结构：{s}"
+    # 含真实文本的对话不误伤
+    assert not is_hard_structural("{punch=3,2}* Y A W N *{w=3}{x}")
+    assert not is_hard_structural("I am {punch=3,2}NOT who I used to be.{w=3}{x}")
+
+
+def test_collect_known_names():
+    """全大写词典外词注入专名表；常见词全大写/间隔大写不误收。"""
+    from hanhua.core.prompts import collect_known_names
+    texts = [
+        "GLISLYA SPECIALIST FROM THE ACADEMY OF CORRADAILE.{w=3}{x}",
+        "YOU ARE A RECOVERING GLISLYA ADDICT.{w=3}{x}",
+        "GLISLYA CAVERNS OF WRECCA.{w=3}{x}",
+        "* Y A W N *{w=3}{x}",
+        "CAUTION: DEATH AWAITS.",          # 常见词全大写
+        "LABOLIS-7 ORBITAL STATION",       # 带数字的造词
+        "THE VACUUM CAVERNS ARE DEEP",     # 常见词组合
+    ]
+    names = collect_known_names(texts)
+    # 专名（词典外全大写）必须收
+    assert "GLISLYA" in names
+    assert "CORRADAILE" in names           # 长词单次出现也收
+    assert "WRECCA" in names
+    assert "LABOLIS-7" in names
+    # 常见词全大写 / 间隔大写 / 单字母不得收
+    for bad in ("YOU", "THE", "CAUTION", "DEATH", "VACUUM", "CAVERNS"):
+        assert bad not in names, f"常见词不应入专名表：{bad}"
+    # 间隔大写拆成单字母，无 Y/A/W/N
+    assert not any(w in ("Y", "A", "W", "N") for w in names)
+    # 排序：出现次数多的在前
+    assert names[0] == "GLISLYA"
+    # 空输入安全
+    assert collect_known_names([]) == []
+
+
+def test_known_names_injected_into_system_prompt():
+    """known_names 必须实际注入 system prompt（曾长期未生效）。"""
+    from hanhua.core.prompts import build_system_prompt
+    from hanhua.core.models import GameProfile
+    profile = GameProfile(game_name="Test Game")
+    sys = build_system_prompt(profile, "", known_names=["GLISLYA", "WRECCA"])
+    assert "【已确认专名·全游戏保持一致】" in sys
+    assert "GLISLYA" in sys and "WRECCA" in sys
+    # 未传 known_names 时不应注入该段
+    sys2 = build_system_prompt(profile, "")
+    assert "【已确认专名" not in sys2
+
+
+def test_learn_proper_names_keeps_and_skips():
+    """保留型专名写入全局库；音译/无证据型跳过；重复学习不重复。"""
+    from hanhua.core.glossary import GlossaryStore
+    from hanhua.core.models import TextEntry
+    import tempfile, os
+    with tempfile.TemporaryDirectory() as td:
+        g = GlossaryStore(os.path.join(td, "gl.db"))
+        g.init_schema()
+        def ent(orig, trans, status="translated", passed=True):
+            return TextEntry(
+                file_id="f", key_path="k", original=orig,
+                translation=trans, status=status,
+                meta={"quality_passed": passed})
+        entries = [
+            ent("GLISLYA SPECIALIST FROM CORRADAILE.",
+                "格莉斯莉亚专家来自科拉达莱。"),      # 音译型：GLISLYA 不在译文
+            ent("YOU ARE A RECOVERING GLISLYA ADDICT.",
+                "你是一个正在康复中的 GLISLYA 瘾君子。"),  # 保留型
+            ent("GLISLYA CAVERNS OF WRECCA.",
+                "GLISLYA 的 WRECCA 洞穴。"),            # 保留型 2
+            ent("YOU TOUCHED GLISLYA SLIME.",
+                "你碰到了 Glislya 史莱姆。"),           # 大小写变体保留
+            ent("GLISLYA BAD TRANSLATION.",
+                "GLISLYA 坏的翻译。", status="failed"),  # 非 translated 不采信
+            ent("GLISLYA LOW QUALITY.",
+                "GLISLYA 低质量译文。", passed=False),   # 质量门未过不采信
+        ]
+        names = ["GLISLYA", "WRECCA", "CORRADAILE", "HYPESPACE"]
+        learned = g.learn_proper_names(entries, names, "test-game")
+        rows = {r["term"]: r for r in g.list_all()}
+        assert "GLISLYA" in rows           # 2/2 保留证据 → 学习
+        assert rows["GLISLYA"]["translation"] == "GLISLYA"
+        assert rows["GLISLYA"]["category"] == "专名"
+        assert "WRECCA" in rows            # 1/1 保留
+        assert "CORRADAILE" not in rows    # 音译型无保留证据 → 跳过
+        assert "HYPESPACE" not in rows     # 无出现 → 跳过
+        # 动作动词不学成专名：TOSS 是动作指令词，学成专名会与知识库
+        # 译例冲突（TOSS→TOSS 保留 vs TOSS TRASH→丢垃圾），模型采纳
+        # 专名保留 → 半翻译（taxes 实证）
+        entries.append(ent("TOSS TRASH", "TOSS 垃圾"))
+        names.append("TOSS")
+        learned3 = g.learn_proper_names(entries, names, "test-game")
+        rows = {r["term"]: r for r in g.list_all()}
+        assert "TOSS" not in rows
+        # 幂等：重复学习不重复插入
+        learned2 = g.learn_proper_names(entries, names, "test-game")
+        assert learned2 == 0
+        assert len(g.list_all()) == 2
+        # 旧条目已有译文时不覆盖
+        g.add("WRECCA", "某个音译", category="专名")
+        g.learn_proper_names(entries, names, "test-game")
+        rows = {r["term"]: r for r in g.list_all()}
+        assert rows["WRECCA"]["translation"] == "某个音译"
+        g.close()
+
+
+def test_known_names_for_merge_and_cap():
+    """当前游戏专名优先 + 全局库兜底 + 50 上限。"""
+    from hanhua.core.glossary import GlossaryStore
+    import tempfile, os
+    with tempfile.TemporaryDirectory() as td:
+        g = GlossaryStore(os.path.join(td, "gl.db"))
+        g.init_schema()
+        for i in range(60):
+            g.add(f"OLD{i}", f"OLD{i}", category="专名")
+        names = g.known_names_for(["FRESH", "OLD5"])
+        assert names[0] == "FRESH"                 # 当前游戏收集优先
+        assert names[1] == "OLD5"                  # 库内已有不重复
+        assert len(names) <= 50                    # 上限
+        assert len(g.known_names_for([])) == 50    # 无收集时全库兜底
+        assert "OLD0" in g.known_names_for([])
+        g.close()
+
+
+def test_assembly_reference_generic_assembly():
+    """`Namespace.Type, Assembly` 形态一律判类型引用（Fungus 实证）。"""
+    from hanhua.core.unity.extractor import _structural_reason
+    for s in ("Fungus.Flowchart, Fungus",
+              "UnityEngine.Object, UnityEngine",
+              "System.String, mscorlib",
+              "My.Game.System, GameAssembly",
+              "Some.Type, Assembly-CSharp, Version=1.0.0.0, "
+              "Culture=neutral, PublicKeyToken=null",
+              "Fungus.Flowchart"):
+        assert _structural_reason(s) == "type_reference", f"应判类型引用：{s}"
+    # 不误伤：点后空格（Mr. Smith）、无逗号点链后的句子、对话
+    for s in ("Mr. Smith, John", "Dr. Who, Tardis", "I.R.S. building",
+              "GLISLYA SPECIALIST, she said", "KALKAM'S ACOLYTES, go"):
+        assert _structural_reason(s) != "type_reference", f"不应判类型引用：{s}"
+
+
+def test_us_meta_carries_max_chars_budget():
+    """#US 提取条目必须携带精确字数预算（UTF-16 码元数 = 字符容量）。"""
+    from hanhua.core.unity import mono_dll
+    # 走真实提取：构造最小 ildump 场景较复杂，直接验证提取出的 meta 契约
+    # 已被 writer 消费：写回侧 capacity=meta["utf16_len"]（既有测试覆盖），
+    # 此处验证提取侧写入 max_chars=码元数 的常量契约存在。
+    src = open("hanhua/core/unity/mono_dll.py", encoding="utf-8").read()
+    assert '"max_chars": len(raw)' in src
+    assert '"utf16_len": len(raw)' in src

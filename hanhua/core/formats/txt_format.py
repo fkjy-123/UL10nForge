@@ -23,6 +23,13 @@ def extract_txt(path: str | Path, file_id: str | None = None) -> list[TextEntry]
         elif stripped.startswith("#") or stripped.startswith(";"):
             entries.append(TextEntry(file_id=fid, key_path=f"line/{i}", original=line,
                                      status=STATUS_SKIPPED, meta={**meta, "kind": "comment"}))
+        elif (stripped.startswith("//")
+              and (len(stripped) == 2 or stripped[2].isspace())):
+            # C# 风格注释行（// 后跟空白；//host/path 协议相对 URL 无空白，
+            # 已在 is_hard_structural 单独处理）。注释不是游戏文本——
+            # 翻译必被质量门拦（baldis TextAsset 脚本注释行实证）。
+            entries.append(TextEntry(file_id=fid, key_path=f"line/{i}", original=line,
+                                     status=STATUS_SKIPPED, meta={**meta, "kind": "comment"}))
         elif stripped.startswith("[") and stripped.endswith("]"):
             entries.append(TextEntry(file_id=fid, key_path=f"line/{i}", original=line,
                                      status=STATUS_SKIPPED, meta={**meta, "kind": "section"}))

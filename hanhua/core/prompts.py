@@ -1,6 +1,187 @@
 from __future__ import annotations
 import json
+import re
+from collections import Counter
 from hanhua.core.models import GameProfile
+
+
+# 游戏叙事/UI 常见词（全大写形态下仍是普通词而非专名）。
+# wordfreq top5000 之外、但游戏文本高频的词：UI 控件词、警示词、叙事场景词。
+_GAME_COMMON_WORDS = frozenset("""
+cavern vacuum caution addict await orbital dungeon portal quest boss enemy monster
+labyrinth thrive blight bloom blossom renown fame legend myth saga epic
+drown colony haunt ambient anomaly godsend nautical tributary lightyear sober
+adrift detect bacteria phenomenon phenomena bacterial bacteriology prolonged
+rapturous maelstrom hyperlife hyperspace dumbfuck lifeless crawling
+weapon armour armor shield potion spell magic sword dagger bow arrow ammo health
+stamina mana inventory equipment treasure chest loot coin goldsilver iron steel
+copper bronze crystal gem stone wood leather cloth silk wool cotton rope chain
+gate door window wall floor stair room hall chamber corridor tunnel mine shaft
+cliff peak ridge valley plain field meadow swamp marsh bog jungle desert oasis
+glacier volcano canyon ravine gorge waterfall stream pond beach shore tide wave
+vessel craft hull deck stern bow anchor compass lantern torch candle flame smoke
+ashes ember spark frost blizzard thunder lightning tempest gale breeze draft
+chasm abyss void realm dimension plane nexus portal rift warp gate bridge
+merchant vendor trader blacksmith alchemist apothecary priest paladin cleric
+warrior mage wizard warlock rogue ranger druid shaman barbarian knight squire
+captain admiral general soldier scout sentinel guard warden jailer executioner
+king queen prince princess duke duchess lord lady baron baroness count countess
+emperor empress regent heir throne crown scepter banner crest sigil emblem seal
+prophecy omen vision dream nightmare horror terror dread fear dreadnought siege
+invasion assault ambush raid skirmish battle warfare conquest dominion empire
+kingdom realm faction guild clan tribe settlement outpost fort fortress citadel
+castle keep tower spire cathedral abbey monastery chapel temple sanctuary altar
+shrine relic artifact treasure fortune riches wealth poverty famine plague
+disease sickness illness wound injury scar bruise poison venom toxin antidote
+cure remedy potion elixir tonic salve balm ointment herb root leaf petal thorn
+moss fungus spore mold mildew rot decay blight wither wilt bloom blossom sprout
+seedling harvest sow reap thresh mill forge smelt cast temper quench harden
+sharp dull blunt keen brittle fragile sturdy stout tough sturdy rigid stiff
+bend twist warp stretch shrink swell bulge dent scratch crack shatter splinter
+fragment shard piece chunk slab block brick stonework masonry plaster mortar
+ceiling rooftop chimney hearth fireplace furnace kiln oven stove cauldron kettle
+vessel jug flask vial phial bottle jar urn cask keg barrel crate box chest coffer
+satchel pouch sack bag wallet purse coinage currency payment ransom bounty reward
+prize trophy medal emblem badge ribbon medal award honour glory fame legend myth
+fable tale yarn story lore history chronicle record journal diary memoir letter
+scroll parchment papyrus tablet inscription carving engraving etching rune sigil
+talisman charm amulet pendant locket ring bracelet necklace brooch earring crown
+diadem circlet coronet tiara sceptre orb regalia vestment robe cloak cape mantle
+hood cowl helm helmet visor gauntlet pauldron greave sabaton cuirass breastplate
+hauberk gambeson tunic jerkin doublet surcoat tabard mantle cape scarf shawl
+girdle belt sash cummerbund wallet scabbard sheath holster quiver bandolier
+trip wire trap snare net cage pen stable barn coop corral paddock pasture meadow
+common guild plaza market bazaar souk fair carnival festival feast banquet
+gala ball masquerade parade procession ceremony ritual rite custom tradition
+superstition folklore legend myth tale story ballad song hymn chant psalm
+incantation invocation prayer blessing curse hex jinx charm enchantment
+divination scrying augury omen portent presage harbinger herald forerunner
+precursor pioneer vanguard front runner leader chief chieftain elder sage
+mentor tutor instructor professor lecturer scholar savant genius prodigy
+apprentice novice initiate neophyte rookie tyro beginner amateur dilettante
+hack charlatan fraud impostor charlatan quack pretender phoney fraud swindler
+scammer trickster conman cheat cheater liar deceiver betrayer traitor turncoat
+defector renegade rebel insurgent revolutionary agitator instigator provocateur
+troublemaker mischief rascal rogue scoundrel villain knave rake cad bounder
+gadabout vagrant wanderer drifter nomad gypsy tramp hobo vagabond rover explorer
+adventurer pioneer settler colonist frontiersman prospector miner hunter trapper
+fisherman fisher angler sailor seaman mariner navigator pilot coxswain helmsman
+lookout watchman sentinel sentry picket patrol scout spy agent operative courier
+messenger herald crier announcer presenter host emcee mc mastermistress
+overseer supervisor manager director chief head boss leader captain general
+admiral marshal commander officer sergeant corporal private recruit cadet
+lieutenant captain colonel major general admiral commodore fleet armada flotilla
+squadron battalion regiment brigade division corps army navy airforce marine
+infantry cavalry artillery engineer medic doctor nurse surgeon physician apothecary
+alchemist chemist pharmacist druggist herbalist healer shaman witch wizard
+sorcerer warlock necromancer conjurer summoner enchanter illusionist mage
+spellcaster thaumaturge theurgist pyromancer cryomancer geomancer aeromancer
+hydromancer technomancer biomancer chronomancer spatial temporal gravitic
+kinetic electrostatic thermal cryogenic combustion detonation implosion
+explosion blast bang boom pop fizz hiss sizzle crackle snap pop fizzle
+sparkle shimmer glimmer gleam glow shimmer glitter shine radiance brilliance
+luminosity phosphorescence bioluminescence incandescence luminescence
+fluorescence iridescence opalescence pearlescence prismatic kaleidoscopic
+chromatic monochrome polychrome rainbow spectrum gradient hue shade tint
+tonality saturation brightness contrast luminance intensity vividness
+muted pastel neon fluorescent electric primary secondary tertiary analogue
+digital virtual simulated simulated synthetic artificial organic inorganic
+mineral metallic crystalline glassy vitreous ceramic porcelain pottery earthenware
+stoneware terracotta clay adobe brickwork masonry concrete cement plaster
+stucco render lime mortar grout filler putty sealant adhesive glue paste gum
+resin pitch tar asphalt bitumen wax paraffin tallow lard grease oil lubricant
+solvent thinner diluent reducer catalyst reagent solvent acid alkali base
+salt compound mixture solution suspension emulsion colloid foam gel paste
+ointment balm salve liniment lotion cream powder granule pellet tablet
+capsule pill lozenge troche pastille drop dose dosage regimen schedule cycle
+course session period phase stage step tier level rank grade class tier bracket
+division league conference association federation union alliance coalition
+partnership consortium syndicate cartel monopoly trust merger acquisition
+takeover buyout leverage capital investment finance funding subsidy grant
+stipend scholarship bursary allowance wage salary income revenue profit
+dividend interest principal collateral security guarantee warranty deposit
+installment annuity pension retirement savings nest egg rainy day fund
+emergency reserve contingency plan fallback backup alternative option choice
+possibility probability likelihood chance odds risk hazard danger peril
+threat menace jeopardy vulnerability weakness frailty fragility brittleness
+delicacy fragility vulnerability exposure susceptibility sensitivity
+resistance immunity tolerance adaptation acclimation habituation conditioning
+training practice drill exercise routine regimen discipline habit custom
+tradition convention norm standard benchmark baseline reference point
+milestone landmark benchmark yardstick criterion gauge measure metric
+indicator barometer litmus bellwether harbinger omen portent augury
+omen premonition forewarning foreshadowing hint clue inkling intimation
+suspicion doubt uncertainty ambiguity vagueness obscurity opacity
+clarity precision accuracy fidelity authenticity genuineness validity
+reliability consistency uniformity constancy stability equilibrium balance
+harmony symmetry proportion scale ratio rate frequency interval distance
+displacement velocity acceleration momentum impulse force energy power
+work effort labor toil exertion strain stress tension pressure load
+weight mass density volume capacity size dimension extent magnitude
+""".split())
+
+
+def _build_common_words() -> frozenset[str]:
+    """英语基础词表（wordfreq top5000 ∪ 游戏叙事补充词）。
+
+    wordfreq 缺失时降级为内置精简词表（仅覆盖最常用词），
+    专名收集偏保守（多收几个词、少丢专名），不阻断流程。
+    """
+    try:
+        from wordfreq import top_n_list
+        return frozenset(top_n_list("en", 5000)) | _GAME_COMMON_WORDS
+    except Exception:  # noqa: BLE001  wordfreq 未安装时降级
+        return _GAME_COMMON_WORDS
+
+
+_COMMON_WORDS = _build_common_words()
+
+
+# 全大写词形：游戏文本常全大写强调（大写叙事/警示牌），只有词典外的
+# 全大写词（外星地名/人名/造词）才可能是专名；常见词全大写仍是普通词。
+_UPPER_WORD = re.compile(r"\b[A-Z][A-Z0-9]{2,}(?:-[0-9]+)?\b")
+
+
+def _is_common_word(w: str) -> bool:
+    """词表命中（含常见词形变化：复数 s/es、过去式 ed、进行时 ing）。"""
+    wl = w.lower()
+    if wl in _COMMON_WORDS:
+        return True
+    if len(wl) > 5:
+        if wl.endswith("ing") and (wl[:-3] in _COMMON_WORDS
+                                   or wl[:-3] + "e" in _COMMON_WORDS):
+            return True
+        if wl.endswith("es") and wl[:-2] in _COMMON_WORDS:
+            return True
+        if wl.endswith("ed") and (wl[:-2] in _COMMON_WORDS
+                                  or wl[:-2] + "e" in _COMMON_WORDS):
+            return True
+    if wl.endswith("s") and wl[:-1] in _COMMON_WORDS:
+        return True
+    return False
+
+
+def collect_known_names(texts: list[str], min_occur: int = 2,
+                        min_len: int = 5) -> list[str]:
+    """从全部提取文本中收集疑似专名（全大写 + 词典外）注入翻译 prompt。
+
+    启发式：全大写且不在英语基础词表的词，按出现频率排序；
+    高频（≥min_occur）或长词（≥min_len，一次性出现也收）判定为专名。
+    间隔大写（Y A W N）、普通词全大写（YOU/THE/CAUTION）不会被误收。
+    返回最多 50 个（与 build_system_prompt 的注入上限一致）。
+    """
+    counter: Counter[str] = Counter()
+    for t in texts:
+        for m in _UPPER_WORD.findall(t or ""):
+            if _is_common_word(m):
+                continue
+            counter[m] += 1
+    names = [
+        w for w, c in counter.items()
+        if c >= min_occur or len(w) >= min_len
+    ]
+    names.sort(key=lambda w: (-counter[w], len(w)))
+    return names[:50]
 
 
 # 按提取器 reason / role 注入的专项翻译策略（指南 §4.2 角色策略）。
@@ -62,7 +243,8 @@ ROLE_RULES: dict[str, str] = {
 
 
 def build_system_prompt(profile: GameProfile, glossary_lines: list[str] | str,
-                        known_names: list[str] | None = None) -> str:
+                        known_names: list[str] | None = None,
+                        knowledge_lines: list[str] | str | None = None) -> str:
     src = profile.source_lang
     if src == "auto":
         src = "游戏原文语言（自动判断，可能是英语/日语/韩语等）"
@@ -84,6 +266,11 @@ def build_system_prompt(profile: GameProfile, glossary_lines: list[str] | str,
         parts.append("【术语表·必须严格遵守】\n" + "\n".join(glossary_lines))
     if known_names:
         parts.append("【已确认专名·全游戏保持一致】\n" + "、".join(known_names[:50]))
+    if isinstance(knowledge_lines, str):
+        knowledge_lines = [knowledge_lines] if knowledge_lines else []
+    if knowledge_lines:
+        # 知识库特殊情况规则：跨游戏沉淀的「该翻未翻」模式与处置策略
+        parts.append("【特殊情况规则·优先遵守】\n" + "\n".join(knowledge_lines))
     parts.append(
         "【翻译规则】\n"
         "1. 必须原样保留所有占位符与格式标签（如 {0}、{name}、%s、<b>、<color=...>、[b]、\\n），不得增删改序。\n"
@@ -100,7 +287,11 @@ def build_system_prompt(profile: GameProfile, glossary_lines: list[str] | str,
         "hello、back、press any key 这类短文本）都必须译为中文，禁止原样回显。\n"
         "9. 严格对照原文翻译：不得添加原文没有的句子或段落（不得续写、不得自行补全），"
         "不得改变行数，换行符保持原文形式（\\r\\n 与 \\n 不得相互转换）。\n"
-        "10. 只输出 JSON，不要输出任何其他文字或代码块标记。"
+        "10. 只输出 JSON，不要输出任何其他文字或代码块标记。\n"
+        "11. 全大写且字母间有空格的词（如 * Y A W N *、G A S P、S C O F F）是"
+        "文字化动作/音效表现（角色打哈欠/惊呼/叹息）：翻译为对应的中文动作词或"
+        "拟声词（* 哈欠 *、* 倒吸一口气 *），保留原文的星号与格式标签；"
+        "仅当该词是人名/地名等专名时保留原文。"
     )
     return "\n".join(parts)
 

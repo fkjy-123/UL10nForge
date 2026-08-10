@@ -34,6 +34,24 @@ def test_quality_returns_stable_reasons_for_format_and_control_failures():
     }
 
 
+def test_uppercase_action_residue_rejected():
+    """知识库规则：全大写动作指令译文残留原动作动词（TOSS 垃圾）判失败。"""
+    entry = _entry("TOSS TRASH")
+    residue = validate_translation_quality(entry, "TOSS 垃圾")
+    clean = validate_translation_quality(entry, "丢垃圾")
+
+    assert "action_word_residue" in residue.reasons
+    assert clean.passed is True
+
+
+def test_uppercase_action_non_verb_retention_allowed():
+    """动作动词之外的原词保留不判残留（专名仍可保留）。"""
+    entry = _entry("CUT WOOD")
+    result = validate_translation_quality(entry, "砍木头")
+
+    assert result.passed is True
+
+
 def test_quality_rejects_untranslated_english_and_glossary_drift():
     entry = _entry("Use Moon Key to open the basement")
 
@@ -89,13 +107,18 @@ def test_quality_rejects_renamed_english_and_format_sequence_drift():
     assert "newline_mismatch" in newlines.reasons
 
 
-def test_quality_enforces_explicit_ui_length_limit_only_when_present():
+def test_quality_marks_over_budget_without_failing():
+    """超长不判失败：译文质量合格只是物理容量放不下——写回端截断兜底
+    （部分翻译 + 省略号），判失败会把好译文整体丢弃、游戏只剩原文
+    （taxes 'I did ' 实证）。超出量记入 meta 供报告与人工校对。"""
     entry = _entry("New Game", role="ui", max_chars=4)
 
     assert validate_translation_quality(entry, "开始游戏").passed
     result = validate_translation_quality(entry, "开启一段全新的游戏旅程")
 
-    assert result.reasons == ("length_risk",)
+    assert result.passed is True
+    assert result.reasons == ()
+    assert entry.meta["length_over_budget"] == 7  # 11 字 - 4 容量
 
 
 def test_interaction_prompt_requires_the_same_input_token():

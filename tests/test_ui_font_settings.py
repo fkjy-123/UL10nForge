@@ -292,7 +292,10 @@ def test_local_translation_cleanup_uses_run_snapshot_when_settings_change(
     state.api.mode = "local"
     state.api.local_keep_alive = False
     page = TranslatePage(state, _Window())
-    state.project = SimpleNamespace(profile=None, store=SimpleNamespace())
+    state.project = SimpleNamespace(
+        profile=None,
+        store=SimpleNamespace(get_entries=lambda **_: []),
+    )
     queued = []
     page._pool = SimpleNamespace(start=lambda worker: queued.append(worker))
     stopped = []
@@ -313,6 +316,12 @@ def test_local_translation_cleanup_uses_run_snapshot_when_settings_change(
 
         def format_for_prompt(self):
             return ""
+
+        def known_names_for(self, _collected=None):
+            return []
+
+        def learn_proper_names(self, *_args, **_kwargs):
+            return 0
 
         def close(self):
             pass

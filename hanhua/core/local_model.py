@@ -3,6 +3,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass, replace
 from pathlib import Path
+import json
 import os
 import re
 import secrets
@@ -225,7 +226,16 @@ def _http_probe(base_url: str, api_key: str, expected_model: str) -> bool:
 
 
 class LocalModelManager:
-    """Own exactly one loopback llama-server process for the application."""
+    """Own exactly one loopback llama-server process for the application.
+
+    跨实例复用：启动成功后把 (port, api_key, model, signature) 写入
+    state_dir/model_runtime.json；后续实例 ensure_running 先探测该端口，
+    同模型同签名则直接复用（不重复启动服务）。仅当本实例真正启动的
+    进程被 stop() 终止时才清理状态文件——CLI 批量跑完不调 stop，服务
+    保留给下一次跑复用（「需要哪个留哪个」，避免一次开多个服务）。
+    """
+
+    _RUNTIME_STATE_FILENAME = "model_runtime.json"
 
     def __init__(
             self, app_dir: str | Path, *, process_factory=None, probe=None,
@@ -247,6 +257,44 @@ class LocalModelManager:
         self._lock = threading.RLock()
         self._start_lock = threading.Lock()
         self._cancel_start = threading.Event()
+
+    # ── 跨实例运行时状态（端口复用） ──────────────────────────────
+    @property
+    def _state_file(self) -> Path:
+        return self.state_dir / self._RUNTIME_STATE_FILENAME
+
+    def _save_state(self, port: int, api_key: str, model: str,
+                    signature: tuple) -> None:
+        try:
+            self._state_file.write_text(
+                json.dumps({
+                    "port": int(port), "api_key": api_key,
+                    "model": str(model),
+                    "signature": [str(item) for item in signature],
+                }, ensure_ascii=False),
+                encoding="utf-8")
+        except OSError:
+            pass  # 状态文件只是加速复用，失败不影响启动
+
+    def _load_state(self) -> dict | None:
+        try:
+            if not self._state_file.is_file():
+                return None
+            data = json.loads(self._state_file.read_text(encoding="utf-8"))
+            if not isinstance(data, dict) or not isinstance(data.get("port"), int):
+                return None
+            return data
+        except (OSError, ValueError):
+            return None
+
+    def _clear_state(self, port: int | None = None) -> None:
+        try:
+            state = self._load_state()
+            if state is not None and (port is None
+                                      or int(state.get("port")) == port):
+                self._state_file.unlink()
+        except OSError:
+            pass
 
     @property
     def runtime(self) -> LocalRuntimeInfo | None:
@@ -282,6 +330,28 @@ class LocalModelManager:
                         and self._signature == signature):
                     return self._runtime
                 self._stop_locked()
+            # 跨实例复用：探测其他实例启动的同一模型服务（状态文件记录）。
+            # 命中则不新开进程——批量跑每场都启动新服务会堆积进程耗尽显存
+            # （taxes 实证：9 个 llama-server 残留 11.5GB → 并发请求 502）。
+            state = self._load_state()
+            if state is not None and tuple(state.get("signature", ())) == tuple(
+                    str(item) for item in signature):
+                base = f"http://127.0.0.1:{int(state['port'])}"
+                if self._probe(base, str(state.get("api_key", "")),
+                               model.stem):
+                    requested_layers = int(config.local_gpu_layers)
+                    parallel = resolve_local_parallel(
+                        config, "cpu" if requested_layers == 0 else "gpu")
+                    with self._lock:
+                        self._runtime = LocalRuntimeInfo(
+                            endpoint=base + "/v1", api_key=str(state["api_key"]),
+                            model=model.stem, model_path=model,
+                            server_path=server, port=int(state["port"]),
+                            backend="external",
+                            pid=None, parallel=parallel)
+                        self._process = None
+                        self._signature = signature
+                    return self._runtime
             requested_layers = int(config.local_gpu_layers)
             cuda_missing = validate_runtime_manifest(server.parent, cuda=True)
             layers_to_try = [
@@ -319,6 +389,9 @@ class LocalModelManager:
                             "startup_cancelled", "本地模型启动已取消")
                     self._runtime = runtime
                     self._signature = signature
+                # 启动成功 → 写状态文件，供后续 CLI/其他实例复用
+                self._save_state(runtime.port, runtime.api_key,
+                                 runtime.model, signature)
                 return runtime
             detail = "；".join(errors) or "未知启动错误"
             raise LocalModelError("startup_failed", f"本地模型启动失败：{detail}")
@@ -438,12 +511,15 @@ class LocalModelManager:
     def _stop_locked(self) -> None:
         process = self._process
         if process is not None and process.poll() is None:
+            port = self._runtime.port if self._runtime is not None else None
             process.terminate()
             try:
                 process.wait(timeout=5)
             except (subprocess.TimeoutExpired, TimeoutError):
                 process.kill()
                 process.wait(timeout=5)
+            # 仅清理自己启动的服务对应的状态文件（复用的外部服务不动）
+            self._clear_state(port)
         self._clear_stopped()
 
     def _clear_stopped(self) -> None:

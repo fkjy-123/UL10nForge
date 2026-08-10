@@ -1,0 +1,4354 @@
+游戏：alisa-demo
+导出时间：2026-08-10 23:44:45
+翻译模型：Hy-MT2-1.8B-Q6_K
+跳过文本：290 条
+
+────────────────────────────────────────────────────────────────
+[1] 跳过文本
+来源：app.info
+键位：plain/0
+对象：纯文本文件行
+原文：CasperCroes
+译文：（无）
+置信度：medium
+原因：—
+角色：—
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[2] 跳过文本
+来源：level12
+键位：asset#level12#736/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level12、obj=736）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[3] 跳过文本
+来源：level12
+键位：asset#level12#744/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level12、obj=744）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[4] 跳过文本
+来源：level12
+键位：asset#level12#747/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level12、obj=747）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[5] 跳过文本
+来源：level12
+键位：asset#level12#748/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level12、obj=748）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[6] 跳过文本
+来源：level12
+键位：asset#level12#757/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level12、obj=757）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[7] 跳过文本
+来源：level12
+键位：asset#level12#766/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level12、obj=766）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[8] 跳过文本
+来源：level12
+键位：asset#level12#776/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level12、obj=776）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[9] 跳过文本
+来源：level12
+键位：asset#level12#778/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level12、obj=778）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[10] 跳过文本
+来源：level12
+键位：asset#level12#793/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level12、obj=793）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[11] 跳过文本
+来源：level12
+键位：asset#level12#807/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level12、obj=807）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[12] 跳过文本
+来源：level12
+键位：asset#level12#810/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level12、obj=810）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[13] 跳过文本
+来源：level12
+键位：asset#level12#812/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level12、obj=812）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[14] 跳过文本
+来源：level12
+键位：asset#level12#816/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level12、obj=816）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[15] 跳过文本
+来源：level12
+键位：asset#level12#817/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level12、obj=817）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[16] 跳过文本
+来源：level12
+键位：asset#level12#821/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level12、obj=821）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[17] 跳过文本
+来源：level12
+键位：asset#level12#837/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level12、obj=837）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[18] 跳过文本
+来源：level13
+键位：asset#level13#299/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level13、obj=299）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[19] 跳过文本
+来源：level13
+键位：asset#level13#300/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level13、obj=300）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[20] 跳过文本
+来源：level13
+键位：asset#level13#303/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level13、obj=303）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[21] 跳过文本
+来源：level13
+键位：asset#level13#305/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level13、obj=305）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[22] 跳过文本
+来源：level13
+键位：asset#level13#321/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level13、obj=321）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[23] 跳过文本
+来源：level13
+键位：asset#level13#329/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level13、obj=329）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[24] 跳过文本
+来源：level13
+键位：asset#level13#333/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level13、obj=333）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[25] 跳过文本
+来源：level13
+键位：asset#level13#342/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level13、obj=342）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[26] 跳过文本
+来源：level13
+键位：asset#level13#345/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level13、obj=345）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[27] 跳过文本
+来源：level16
+键位：asset#level16#449/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level16、obj=449）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[28] 跳过文本
+来源：level16
+键位：asset#level16#451/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level16、obj=451）
+原文：Exit
+译文：（无）
+置信度：low
+原因：identifier_without_display_evidence
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[29] 跳过文本
+来源：level16
+键位：asset#level16#451/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level16、obj=451）
+原文：Sortir
+译文：（无）
+置信度：low
+原因：identifier_without_display_evidence
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[30] 跳过文本
+来源：level16
+键位：asset#level16#451/str/2
+对象：MonoBehaviour rawstr 数组（asset_file=level16、obj=451）
+原文：Uscire
+译文：（无）
+置信度：low
+原因：identifier_without_display_evidence
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[31] 跳过文本
+来源：level16
+键位：asset#level16#454/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level16、obj=454）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[32] 跳过文本
+来源：level16
+键位：asset#level16#465/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level16、obj=465）
+原文：Normal
+译文：（无）
+置信度：low
+原因：code_heavy_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[33] 跳过文本
+来源：level16
+键位：asset#level16#465/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level16、obj=465）
+原文：Highlighted
+译文：（无）
+置信度：low
+原因：code_heavy_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[34] 跳过文本
+来源：level16
+键位：asset#level16#465/str/2
+对象：MonoBehaviour rawstr 数组（asset_file=level16、obj=465）
+原文：Pressed
+译文：（无）
+置信度：low
+原因：code_heavy_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[35] 跳过文本
+来源：level16
+键位：asset#level16#465/str/3
+对象：MonoBehaviour rawstr 数组（asset_file=level16、obj=465）
+原文：Disabled
+译文：（无）
+置信度：low
+原因：code_heavy_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[36] 跳过文本
+来源：level16
+键位：asset#level16#465/str/5
+对象：MonoBehaviour rawstr 数组（asset_file=level16、obj=465）
+原文：UnityEngine.Object, UnityEngine
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[37] 跳过文本
+来源：level16
+键位：asset#level16#465/str/6
+对象：MonoBehaviour rawstr 数组（asset_file=level16、obj=465）
+原文：UnityEngine.UI.Button+ButtonClickedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[38] 跳过文本
+来源：level16
+键位：asset#level16#466/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level16、obj=466）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[39] 跳过文本
+来源：level16
+键位：asset#level16#478/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level16、obj=478）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[40] 跳过文本
+来源：level16
+键位：asset#level16#490/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level16、obj=490）
+原文：Normal
+译文：（无）
+置信度：low
+原因：code_heavy_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[41] 跳过文本
+来源：level16
+键位：asset#level16#490/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level16、obj=490）
+原文：Highlighted
+译文：（无）
+置信度：low
+原因：code_heavy_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[42] 跳过文本
+来源：level16
+键位：asset#level16#490/str/2
+对象：MonoBehaviour rawstr 数组（asset_file=level16、obj=490）
+原文：Pressed
+译文：（无）
+置信度：low
+原因：code_heavy_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[43] 跳过文本
+来源：level16
+键位：asset#level16#490/str/3
+对象：MonoBehaviour rawstr 数组（asset_file=level16、obj=490）
+原文：Disabled
+译文：（无）
+置信度：low
+原因：code_heavy_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[44] 跳过文本
+来源：level16
+键位：asset#level16#490/str/5
+对象：MonoBehaviour rawstr 数组（asset_file=level16、obj=490）
+原文：UnityEngine.Object, UnityEngine
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[45] 跳过文本
+来源：level16
+键位：asset#level16#490/str/6
+对象：MonoBehaviour rawstr 数组（asset_file=level16、obj=490）
+原文：UnityEngine.UI.Button+ButtonClickedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[46] 跳过文本
+来源：level16
+键位：asset#level16#491/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level16、obj=491）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[47] 跳过文本
+来源：level16
+键位：asset#level16#495/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level16、obj=495）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[48] 跳过文本
+来源：level16
+键位：asset#level16#500/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level16、obj=500）
+原文：Normal
+译文：（无）
+置信度：low
+原因：code_heavy_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[49] 跳过文本
+来源：level16
+键位：asset#level16#500/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level16、obj=500）
+原文：Highlighted
+译文：（无）
+置信度：low
+原因：code_heavy_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[50] 跳过文本
+来源：level16
+键位：asset#level16#500/str/2
+对象：MonoBehaviour rawstr 数组（asset_file=level16、obj=500）
+原文：Pressed
+译文：（无）
+置信度：low
+原因：code_heavy_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[51] 跳过文本
+来源：level16
+键位：asset#level16#500/str/3
+对象：MonoBehaviour rawstr 数组（asset_file=level16、obj=500）
+原文：Disabled
+译文：（无）
+置信度：low
+原因：code_heavy_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[52] 跳过文本
+来源：level16
+键位：asset#level16#500/str/5
+对象：MonoBehaviour rawstr 数组（asset_file=level16、obj=500）
+原文：UnityEngine.Object, UnityEngine
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[53] 跳过文本
+来源：level16
+键位：asset#level16#500/str/6
+对象：MonoBehaviour rawstr 数组（asset_file=level16、obj=500）
+原文：UnityEngine.UI.Button+ButtonClickedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[54] 跳过文本
+来源：level16
+键位：asset#level16#501/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level16、obj=501）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[55] 跳过文本
+来源：level16
+键位：asset#level16#503/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level16、obj=503）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[56] 跳过文本
+来源：level16
+键位：asset#level16#508/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level16、obj=508）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[57] 跳过文本
+来源：level16
+键位：asset#level16#516/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level16、obj=516）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[58] 跳过文本
+来源：level16
+键位：asset#level16#517/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level16、obj=517）
+原文：Horizontal
+译文：（无）
+置信度：low
+原因：identifier_without_display_evidence
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[59] 跳过文本
+来源：level16
+键位：asset#level16#517/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level16、obj=517）
+原文：Vertical
+译文：（无）
+置信度：low
+原因：identifier_without_display_evidence
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[60] 跳过文本
+来源：level16
+键位：asset#level16#517/str/2
+对象：MonoBehaviour rawstr 数组（asset_file=level16、obj=517）
+原文：Submit
+译文：（无）
+置信度：low
+原因：identifier_without_display_evidence
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[61] 跳过文本
+来源：level16
+键位：asset#level16#517/str/3
+对象：MonoBehaviour rawstr 数组（asset_file=level16、obj=517）
+原文：Cancel
+译文：（无）
+置信度：low
+原因：identifier_without_display_evidence
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[62] 跳过文本
+来源：level18
+键位：asset#level18#5072/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level18、obj=5072）
+原文：Cherub
+译文：（无）
+置信度：low
+原因：identifier_without_display_evidence
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[63] 跳过文本
+来源：level18
+键位：asset#level18#5072/str/2
+对象：MonoBehaviour rawstr 数组（asset_file=level18、obj=5072）
+原文：Cherubino
+译文：（无）
+置信度：low
+原因：identifier_without_display_evidence
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[64] 跳过文本
+来源：level18
+键位：asset#level18#5134/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level18、obj=5134）
+原文：Button
+译文：（无）
+置信度：low
+原因：identifier_without_display_evidence
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[65] 跳过文本
+来源：level18
+键位：asset#level18#5165/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level18、obj=5165）
+原文：Button
+译文：（无）
+置信度：low
+原因：identifier_without_display_evidence
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[66] 跳过文本
+来源：level18
+键位：asset#level18#5270/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level18、obj=5270）
+原文：Return
+译文：（无）
+置信度：low
+原因：identifier_without_display_evidence
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[67] 跳过文本
+来源：level18
+键位：asset#level18#5270/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level18、obj=5270）
+原文：Quitter
+译文：（无）
+置信度：low
+原因：identifier_without_display_evidence
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[68] 跳过文本
+来源：level18
+键位：asset#level18#5270/str/2
+对象：MonoBehaviour rawstr 数组（asset_file=level18、obj=5270）
+原文：Uscire
+译文：（无）
+置信度：low
+原因：identifier_without_display_evidence
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[69] 跳过文本
+来源：level18
+键位：asset#level18#5376/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level18、obj=5376）
+原文：Button
+译文：（无）
+置信度：low
+原因：identifier_without_display_evidence
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[70] 跳过文本
+来源：level18
+键位：asset#level18#5398/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level18、obj=5398）
+原文：Button
+译文：（无）
+置信度：low
+原因：identifier_without_display_evidence
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[71] 跳过文本
+来源：level18
+键位：asset#level18#5412/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level18、obj=5412）
+原文：Horizontal
+译文：（无）
+置信度：low
+原因：identifier_without_display_evidence
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[72] 跳过文本
+来源：level18
+键位：asset#level18#5412/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level18、obj=5412）
+原文：Vertical
+译文：（无）
+置信度：low
+原因：identifier_without_display_evidence
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[73] 跳过文本
+来源：level18
+键位：asset#level18#5412/str/2
+对象：MonoBehaviour rawstr 数组（asset_file=level18、obj=5412）
+原文：Submit
+译文：（无）
+置信度：low
+原因：identifier_without_display_evidence
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[74] 跳过文本
+来源：level18
+键位：asset#level18#5412/str/3
+对象：MonoBehaviour rawstr 数组（asset_file=level18、obj=5412）
+原文：Cancel
+译文：（无）
+置信度：low
+原因：identifier_without_display_evidence
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[75] 跳过文本
+来源：level18
+键位：asset#level18#5470/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level18、obj=5470）
+原文：Button
+译文：（无）
+置信度：low
+原因：identifier_without_display_evidence
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[76] 跳过文本
+来源：level18
+键位：asset#level18#5598/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level18、obj=5598）
+原文：Button
+译文：（无）
+置信度：low
+原因：identifier_without_display_evidence
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[77] 跳过文本
+来源：level18
+键位：asset#level18#5649/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level18、obj=5649）
+原文：Button
+译文：（无）
+置信度：low
+原因：identifier_without_display_evidence
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[78] 跳过文本
+来源：level18
+键位：asset#level18#5823/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level18、obj=5823）
+原文：Button
+译文：（无）
+置信度：low
+原因：identifier_without_display_evidence
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[79] 跳过文本
+来源：level18
+键位：asset#level18#5876/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level18、obj=5876）
+原文：Photo
+译文：（无）
+置信度：low
+原因：identifier_without_display_evidence
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[80] 跳过文本
+来源：level18
+键位：asset#level18#5876/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level18、obj=5876）
+原文：Photo
+译文：（无）
+置信度：low
+原因：identifier_without_display_evidence
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[81] 跳过文本
+来源：level18
+键位：asset#level18#5876/str/2
+对象：MonoBehaviour rawstr 数组（asset_file=level18、obj=5876）
+原文：Foto
+译文：（无）
+置信度：low
+原因：identifier_without_display_evidence
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[82] 跳过文本
+来源：level18
+键位：asset#level18#5923/str/33
+对象：MonoBehaviour rawstr 数组（asset_file=level18、obj=5923）
+原文：		-- Oldman and Jean talks to eachother					(lines starting with "--" doesn't need a translation)
+译文：（无）
+置信度：low
+原因：code_line
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[83] 跳过文本
+来源：level18
+键位：asset#level18#5923/str/53
+对象：MonoBehaviour rawstr 数组（asset_file=level18、obj=5923）
+原文：		-- End of conversation
+译文：（无）
+置信度：low
+原因：code_line
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[84] 跳过文本
+来源：level18
+键位：asset#level18#5975/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level18、obj=5975）
+原文：Button
+译文：（无）
+置信度：low
+原因：identifier_without_display_evidence
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[85] 跳过文本
+来源：level18
+键位：asset#level18#6278/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level18、obj=6278）
+原文：Button
+译文：（无）
+置信度：low
+原因：identifier_without_display_evidence
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[86] 跳过文本
+来源：level18
+键位：asset#level18#6490/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level18、obj=6490）
+原文：Rope
+译文：（无）
+置信度：low
+原因：identifier_without_display_evidence
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[87] 跳过文本
+来源：level18
+键位：asset#level18#6490/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level18、obj=6490）
+原文：Corde
+译文：（无）
+置信度：low
+原因：identifier_without_display_evidence
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[88] 跳过文本
+来源：level18
+键位：asset#level18#6490/str/2
+对象：MonoBehaviour rawstr 数组（asset_file=level18、obj=6490）
+原文：Corda
+译文：（无）
+置信度：low
+原因：identifier_without_display_evidence
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[89] 跳过文本
+来源：level18
+键位：asset#level18#6615/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level18、obj=6615）
+原文：Button
+译文：（无）
+置信度：low
+原因：identifier_without_display_evidence
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[90] 跳过文本
+来源：level18
+键位：asset#level18#6657/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level18、obj=6657）
+原文：Button
+译文：（无）
+置信度：low
+原因：identifier_without_display_evidence
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[91] 跳过文本
+来源：level18
+键位：asset#level18#6674/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level18、obj=6674）
+原文：Button
+译文：（无）
+置信度：low
+原因：identifier_without_display_evidence
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[92] 跳过文本
+来源：level18
+键位：asset#level18#6739/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level18、obj=6739）
+原文：Empty
+译文：（无）
+置信度：low
+原因：identifier_without_display_evidence
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[93] 跳过文本
+来源：level18
+键位：asset#level18#6739/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level18、obj=6739）
+原文：Rien
+译文：（无）
+置信度：low
+原因：identifier_without_display_evidence
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[94] 跳过文本
+来源：level18
+键位：asset#level18#6739/str/2
+对象：MonoBehaviour rawstr 数组（asset_file=level18、obj=6739）
+原文：Niente
+译文：（无）
+置信度：low
+原因：identifier_without_display_evidence
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[95] 跳过文本
+来源：level18
+键位：asset#level18#6739/str/3
+对象：MonoBehaviour rawstr 数组（asset_file=level18、obj=6739）
+原文：Empty
+译文：（无）
+置信度：low
+原因：identifier_without_display_evidence
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[96] 跳过文本
+来源：level18
+键位：asset#level18#6744/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level18、obj=6744）
+原文：Bomb
+译文：（无）
+置信度：low
+原因：identifier_without_display_evidence
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[97] 跳过文本
+来源：level18
+键位：asset#level18#6744/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level18、obj=6744）
+原文：Bombe
+译文：（无）
+置信度：low
+原因：identifier_without_display_evidence
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[98] 跳过文本
+来源：level18
+键位：asset#level18#6744/str/2
+对象：MonoBehaviour rawstr 数组（asset_file=level18、obj=6744）
+原文：Bomba
+译文：（无）
+置信度：low
+原因：identifier_without_display_evidence
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[99] 跳过文本
+来源：level4
+键位：asset#level4#41/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level4、obj=41）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[100] 跳过文本
+来源：level4
+键位：asset#level4#44/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level4、obj=44）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[101] 跳过文本
+来源：level4
+键位：asset#level4#48/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level4、obj=48）
+原文：Non
+译文：（无）
+置信度：low
+原因：identifier_without_display_evidence
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[102] 跳过文本
+来源：level4
+键位：asset#level4#51/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level4、obj=51）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[103] 跳过文本
+来源：level4
+键位：asset#level4#53/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level4、obj=53）
+原文：Normal
+译文：（无）
+置信度：low
+原因：code_heavy_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[104] 跳过文本
+来源：level4
+键位：asset#level4#53/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level4、obj=53）
+原文：Highlighted
+译文：（无）
+置信度：low
+原因：code_heavy_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[105] 跳过文本
+来源：level4
+键位：asset#level4#53/str/2
+对象：MonoBehaviour rawstr 数组（asset_file=level4、obj=53）
+原文：Pressed
+译文：（无）
+置信度：low
+原因：code_heavy_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[106] 跳过文本
+来源：level4
+键位：asset#level4#53/str/3
+对象：MonoBehaviour rawstr 数组（asset_file=level4、obj=53）
+原文：Disabled
+译文：（无）
+置信度：low
+原因：code_heavy_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[107] 跳过文本
+来源：level4
+键位：asset#level4#53/str/5
+对象：MonoBehaviour rawstr 数组（asset_file=level4、obj=53）
+原文：UnityEngine.Object, UnityEngine
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[108] 跳过文本
+来源：level4
+键位：asset#level4#53/str/6
+对象：MonoBehaviour rawstr 数组（asset_file=level4、obj=53）
+原文：UnityEngine.UI.Button+ButtonClickedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[109] 跳过文本
+来源：level4
+键位：asset#level4#54/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level4、obj=54）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[110] 跳过文本
+来源：level4
+键位：asset#level4#56/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level4、obj=56）
+原文：Normal
+译文：（无）
+置信度：low
+原因：code_heavy_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[111] 跳过文本
+来源：level4
+键位：asset#level4#56/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level4、obj=56）
+原文：Highlighted
+译文：（无）
+置信度：low
+原因：code_heavy_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[112] 跳过文本
+来源：level4
+键位：asset#level4#56/str/2
+对象：MonoBehaviour rawstr 数组（asset_file=level4、obj=56）
+原文：Pressed
+译文：（无）
+置信度：low
+原因：code_heavy_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[113] 跳过文本
+来源：level4
+键位：asset#level4#56/str/3
+对象：MonoBehaviour rawstr 数组（asset_file=level4、obj=56）
+原文：Disabled
+译文：（无）
+置信度：low
+原因：code_heavy_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[114] 跳过文本
+来源：level4
+键位：asset#level4#56/str/5
+对象：MonoBehaviour rawstr 数组（asset_file=level4、obj=56）
+原文：UnityEngine.Object, UnityEngine
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[115] 跳过文本
+来源：level4
+键位：asset#level4#56/str/6
+对象：MonoBehaviour rawstr 数组（asset_file=level4、obj=56）
+原文：UnityEngine.UI.Button+ButtonClickedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[116] 跳过文本
+来源：level4
+键位：asset#level4#57/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level4、obj=57）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[117] 跳过文本
+来源：level4
+键位：asset#level4#58/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level4、obj=58）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[118] 跳过文本
+来源：level4
+键位：asset#level4#59/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level4、obj=59）
+原文：Yes
+译文：（无）
+置信度：low
+原因：identifier_without_display_evidence
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[119] 跳过文本
+来源：level4
+键位：asset#level4#59/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level4、obj=59）
+原文：Oui
+译文：（无）
+置信度：low
+原因：identifier_without_display_evidence
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[120] 跳过文本
+来源：level4
+键位：asset#level4#65/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level4、obj=65）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[121] 跳过文本
+来源：level5
+键位：asset#level5#225/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level5、obj=225）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[122] 跳过文本
+来源：level5
+键位：asset#level5#229/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level5、obj=229）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[123] 跳过文本
+来源：level5
+键位：asset#level5#231/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level5、obj=231）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[124] 跳过文本
+来源：level5
+键位：asset#level5#236/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level5、obj=236）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[125] 跳过文本
+来源：level5
+键位：asset#level5#238/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level5、obj=238）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[126] 跳过文本
+来源：level5
+键位：asset#level5#246/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level5、obj=246）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[127] 跳过文本
+来源：level5
+键位：asset#level5#250/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level5、obj=250）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[128] 跳过文本
+来源：level5
+键位：asset#level5#253/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level5、obj=253）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[129] 跳过文本
+来源：level5
+键位：asset#level5#256/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level5、obj=256）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[130] 跳过文本
+来源：level5
+键位：asset#level5#259/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level5、obj=259）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[131] 跳过文本
+来源：level5
+键位：asset#level5#267/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level5、obj=267）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[132] 跳过文本
+来源：level8
+键位：asset#level8#553/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level8、obj=553）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[133] 跳过文本
+来源：level8
+键位：asset#level8#564/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level8、obj=564）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[134] 跳过文本
+来源：level8
+键位：asset#level8#572/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level8、obj=572）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[135] 跳过文本
+来源：level8
+键位：asset#level8#576/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level8、obj=576）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[136] 跳过文本
+来源：level8
+键位：asset#level8#579/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level8、obj=579）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[137] 跳过文本
+来源：level8
+键位：asset#level8#582/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level8、obj=582）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[138] 跳过文本
+来源：level8
+键位：asset#level8#585/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level8、obj=585）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[139] 跳过文本
+来源：level8
+键位：asset#level8#586/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level8、obj=586）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[140] 跳过文本
+来源：level8
+键位：asset#level8#587/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level8、obj=587）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[141] 跳过文本
+来源：level8
+键位：asset#level8#604/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level8、obj=604）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[142] 跳过文本
+来源：level8
+键位：asset#level8#607/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level8、obj=607）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[143] 跳过文本
+来源：level8
+键位：asset#level8#608/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level8、obj=608）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[144] 跳过文本
+来源：level8
+键位：asset#level8#618/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level8、obj=618）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[145] 跳过文本
+来源：level8
+键位：asset#level8#620/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level8、obj=620）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[146] 跳过文本
+来源：level8
+键位：asset#level8#621/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level8、obj=621）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[147] 跳过文本
+来源：level8
+键位：asset#level8#631/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level8、obj=631）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[148] 跳过文本
+来源：level8
+键位：asset#level8#644/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level8、obj=644）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[149] 跳过文本
+来源：Managed/Assembly-CSharp.dll
+键位：us#1294
+对象：DLL #US 字符串（record_offset=1621489）
+原文：Video has ended.
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[150] 跳过文本
+来源：Managed/Assembly-CSharp.dll
+键位：us#1384
+对象：DLL #US 字符串（record_offset=1621579）
+原文：Scene Loaded
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[151] 跳过文本
+来源：Managed/Assembly-CSharp.dll
+键位：us#1490
+对象：DLL #US 字符串（record_offset=1621685）
+原文：cam 1 on
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[152] 跳过文本
+来源：Managed/Assembly-CSharp.dll
+键位：us#1650
+对象：DLL #US 字符串（record_offset=1621845）
+原文：I stopped the magic...
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[153] 跳过文本
+来源：Managed/Assembly-CSharp.dll
+键位：us#2328
+对象：DLL #US 字符串（record_offset=1622523）
+原文：Ramming Ended
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[154] 跳过文本
+来源：Managed/Assembly-CSharp.dll
+键位：us#2356
+对象：DLL #US 字符串（record_offset=1622551）
+原文：Play Magic
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[155] 跳过文本
+来源：Managed/Assembly-CSharp.dll
+键位：us#9972
+对象：DLL #US 字符串（record_offset=1630167）
+原文：Played iron armor hit sound
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[156] 跳过文本
+来源：Managed/Assembly-CSharp.dll
+键位：us#10212
+对象：DLL #US 字符串（record_offset=1630407）
+原文：AlisaController/TextManager
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[157] 跳过文本
+来源：Managed/Assembly-CSharp.dll
+键位：us#10486
+对象：DLL #US 字符串（record_offset=1630681）
+原文：Stage 8 starts
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[158] 跳过文本
+来源：Managed/Assembly-CSharp.dll
+键位：us#10538
+对象：DLL #US 字符串（record_offset=1630733）
+原文：Start Investigating Door
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[159] 跳过文本
+来源：Managed/Assembly-CSharp.dll
+键位：us#10588
+对象：DLL #US 字符串（record_offset=1630783）
+原文：Start Investigating Window
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[160] 跳过文本
+来源：Managed/Assembly-CSharp.dll
+键位：us#10682
+对象：DLL #US 字符串（record_offset=1630877）
+原文：stage 9
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[161] 跳过文本
+来源：Managed/Assembly-CSharp.dll
+键位：us#10698
+对象：DLL #US 字符串（record_offset=1630893）
+原文：mid dialogue 00
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[162] 跳过文本
+来源：Managed/Assembly-CSharp.dll
+键位：us#10734
+对象：DLL #US 字符串（record_offset=1630929）
+原文：mid dialogue 01
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[163] 跳过文本
+来源：Managed/Assembly-CSharp.dll
+键位：us#10766
+对象：DLL #US 字符串（record_offset=1630961）
+原文：mid dialogue 02
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[164] 跳过文本
+来源：Managed/Assembly-CSharp.dll
+键位：us#10938
+对象：DLL #US 字符串（record_offset=1631133）
+原文：did the key thing with stockroomdoor
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[165] 跳过文本
+来源：Managed/Assembly-CSharp.dll
+键位：us#11012
+对象：DLL #US 字符串（record_offset=1631207）
+原文：did the key thing with bedroomdoor
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[166] 跳过文本
+来源：Managed/Assembly-CSharp.dll
+键位：us#11082
+对象：DLL #US 字符串（record_offset=1631277）
+原文：I did it correctly
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[167] 跳过文本
+来源：Managed/Assembly-CSharp.dll
+键位：us#11120
+对象：DLL #US 字符串（record_offset=1631315）
+原文：I didn't do it
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[168] 跳过文本
+来源：Managed/Assembly-CSharp.dll
+键位：us#11332
+对象：DLL #US 字符串（record_offset=1631527）
+原文：AlisaController/Alisa
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[169] 跳过文本
+来源：Managed/Assembly-CSharp.dll
+键位：us#11556
+对象：DLL #US 字符串（record_offset=1631751）
+原文：auto aim at: 
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[170] 跳过文本
+来源：Managed/Assembly-CSharp.dll
+键位：us#11926
+对象：DLL #US 字符串（record_offset=1632121）
+原文：Cutscene End
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[171] 跳过文本
+来源：Managed/Assembly-CSharp.dll
+键位：us#12078
+对象：DLL #US 字符串（record_offset=1632273）
+原文：skip intro
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[172] 跳过文本
+来源：Managed/Assembly-CSharp.dll
+键位：us#12100
+对象：DLL #US 字符串（record_offset=1632295）
+原文：skip outro
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[173] 跳过文本
+来源：Managed/Assembly-CSharp.dll
+键位：us#12306
+对象：DLL #US 字符串（record_offset=1632501）
+原文：voice start
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[174] 跳过文本
+来源：Managed/Assembly-CSharp.dll
+键位：us#12330
+对象：DLL #US 字符串（record_offset=1632525）
+原文：all good
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[175] 跳过文本
+来源：Managed/Assembly-CSharp.dll
+键位：us#12378
+对象：DLL #US 字符串（record_offset=1632573）
+原文：Components are active again
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[176] 跳过文本
+来源：Managed/Assembly-CSharp.dll
+键位：us#12506
+对象：DLL #US 字符串（record_offset=1632701）
+原文：Not WarmRoom
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[177] 跳过文本
+来源：Managed/Assembly-CSharp.dll
+键位：us#12532
+对象：DLL #US 字符串（record_offset=1632727）
+原文：enemy != null
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[178] 跳过文本
+来源：Managed/Assembly-CSharp.dll
+键位：us#12560
+对象：DLL #US 字符串（record_offset=1632755）
+原文：Enemy is dead
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[179] 跳过文本
+来源：Managed/Assembly-CSharp.dll
+键位：us#12588
+对象：DLL #US 字符串（record_offset=1632783）
+原文：collider off
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[180] 跳过文本
+来源：Managed/Assembly-CSharp.dll
+键位：us#12628
+对象：DLL #US 字符串（record_offset=1632823）
+原文：I can turn on
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[181] 跳过文本
+来源：Managed/Assembly-CSharp.dll
+键位：us#13246
+对象：DLL #US 字符串（record_offset=1633441）
+原文：Dead Talk
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[182] 跳过文本
+来源：Managed/Assembly-CSharp.dll
+键位：us#13266
+对象：DLL #US 字符串（record_offset=1633461）
+原文：Dead Talk 2
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[183] 跳过文本
+来源：Managed/Assembly-CSharp.dll
+键位：us#13594
+对象：DLL #US 字符串（record_offset=1633789）
+原文：started subtitles
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[184] 跳过文本
+来源：Managed/Assembly-CSharp.dll
+键位：us#13662
+对象：DLL #US 字符串（record_offset=1633857）
+原文：Cutscene Ending version 3 Started
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[185] 跳过文本
+来源：Managed/Assembly-CSharp.dll
+键位：us#13806
+对象：DLL #US 字符串（record_offset=1634001）
+原文：started subtitles2
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[186] 跳过文本
+来源：Managed/Assembly-CSharp.dll
+键位：us#13844
+对象：DLL #US 字符串（record_offset=1634039）
+原文：started subtitles3
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[187] 跳过文本
+来源：Managed/Assembly-CSharp.dll
+键位：us#13882
+对象：DLL #US 字符串（record_offset=1634077）
+原文：AlisaController/Blobshadow
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[188] 跳过文本
+来源：Managed/Assembly-CSharp.dll
+键位：us#13966
+对象：DLL #US 字符串（record_offset=1634161）
+原文：Ray hit: 
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[189] 跳过文本
+来源：Managed/Assembly-CSharp.dll
+键位：us#14413
+对象：DLL #US 字符串（record_offset=1634608）
+原文：subs started
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[190] 跳过文本
+来源：Managed/Assembly-CSharp.dll
+键位：us#14533
+对象：DLL #US 字符串（record_offset=1634728）
+原文：Jump In
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[191] 跳过文本
+来源：Managed/Assembly-CSharp.dll
+键位：us#14924
+对象：DLL #US 字符串（record_offset=1635119）
+原文：Look At Door
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[192] 跳过文本
+来源：Managed/Assembly-CSharp.dll
+键位：us#14950
+对象：DLL #US 字符串（record_offset=1635145）
+原文：Door Idle 01
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[193] 跳过文本
+来源：Managed/Assembly-CSharp.dll
+键位：us#14994
+对象：DLL #US 字符串（record_offset=1635189）
+原文：Look Back
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[194] 跳过文本
+来源：Managed/Assembly-CSharp.dll
+键位：us#15014
+对象：DLL #US 字符串（record_offset=1635209）
+原文：LibraryCutscene End
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[195] 跳过文本
+来源：Managed/Assembly-CSharp.dll
+键位：us#15487
+对象：DLL #US 字符串（record_offset=1635682）
+原文：Run Away
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[196] 跳过文本
+来源：Managed/Assembly-CSharp.dll
+键位：us#16381
+对象：DLL #US 字符串（record_offset=1636576）
+原文：Jean starts to search
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[197] 跳过文本
+来源：Managed/Assembly-CSharp.dll
+键位：us#16571
+对象：DLL #US 字符串（record_offset=1636766）
+原文：Bath Enter
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[198] 跳过文本
+来源：Managed/Assembly-CSharp.dll
+键位：us#16593
+对象：DLL #US 字符串（record_offset=1636788）
+原文：Bath Exit
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[199] 跳过文本
+来源：Managed/Assembly-CSharp.dll
+键位：us#16669
+对象：DLL #US 字符串（record_offset=1636864）
+原文：elevator ended
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[200] 跳过文本
+来源：Managed/Assembly-CSharp.dll
+键位：us#16795
+对象：DLL #US 字符串（record_offset=1636990）
+原文：Mirror interaction Started
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[201] 跳过文本
+来源：Managed/Assembly-CSharp.dll
+键位：us#17163
+对象：DLL #US 字符串（record_offset=1637358）
+原文：Timer is done
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[202] 跳过文本
+来源：Managed/Assembly-CSharp.dll
+键位：us#17475
+对象：DLL #US 字符串（record_offset=1637670）
+原文：attack!
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[203] 跳过文本
+来源：Managed/Assembly-CSharp.dll
+键位：us#17865
+对象：DLL #US 字符串（record_offset=1638060）
+原文：I hit 
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[204] 跳过文本
+来源：Managed/Assembly-CSharp.dll
+键位：us#17915
+对象：DLL #US 字符串（record_offset=1638110）
+原文：Grab Fail
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[205] 跳过文本
+来源：Managed/Assembly-CSharp.dll
+键位：us#17969
+对象：DLL #US 字符串（record_offset=1638164）
+原文：dollmaster is in
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[206] 跳过文本
+来源：Managed/Assembly-CSharp.dll
+键位：us#18109
+对象：DLL #US 字符串（record_offset=1638304）
+原文：Block Contact
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[207] 跳过文本
+来源：Managed/Assembly-CSharp.dll
+键位：us#18449
+对象：DLL #US 字符串（record_offset=1638644）
+原文：end of stagger
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[208] 跳过文本
+来源：Managed/Assembly-CSharp.dll
+键位：us#18521
+对象：DLL #US 字符串（record_offset=1638716）
+原文：Flora Attack
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[209] 跳过文本
+来源：Managed/Assembly-CSharp.dll
+键位：us#18547
+对象：DLL #US 字符串（record_offset=1638742）
+原文：Aggression Attack
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[210] 跳过文本
+来源：Managed/Assembly-CSharp.dll
+键位：us#18703
+对象：DLL #US 字符串（record_offset=1638898）
+原文：Poke Attack
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[211] 跳过文本
+来源：Managed/Assembly-CSharp.dll
+键位：us#18727
+对象：DLL #US 字符串（record_offset=1638922）
+原文：Swing Attack
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[212] 跳过文本
+来源：Managed/Assembly-CSharp.dll
+键位：us#18753
+对象：DLL #US 字符串（record_offset=1638948）
+原文：Spikes Attack
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[213] 跳过文本
+来源：Managed/Assembly-CSharp.dll
+键位：us#18781
+对象：DLL #US 字符串（record_offset=1638976）
+原文：Throw Spear Attack
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[214] 跳过文本
+来源：Managed/Assembly-CSharp.dll
+键位：us#18829
+对象：DLL #US 字符串（record_offset=1639024）
+原文：Dash End
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[215] 跳过文本
+来源：Managed/Assembly-CSharp.dll
+键位：us#18877
+对象：DLL #US 字符串（record_offset=1639072）
+原文：Attack Ended
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[216] 跳过文本
+来源：Managed/Assembly-CSharp.dll
+键位：us#19003
+对象：DLL #US 字符串（record_offset=1639198）
+原文：fly left
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[217] 跳过文本
+来源：Managed/Assembly-CSharp.dll
+键位：us#19021
+对象：DLL #US 字符串（record_offset=1639216）
+原文：fly right
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[218] 跳过文本
+来源：Managed/Assembly-CSharp.dll
+键位：us#19053
+对象：DLL #US 字符串（record_offset=1639248）
+原文：Shoot Start
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[219] 跳过文本
+来源：Managed/Assembly-CSharp.dll
+键位：us#19097
+对象：DLL #US 字符串（record_offset=1639292）
+原文：Reload Started
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[220] 跳过文本
+来源：Managed/Assembly-CSharp.dll
+键位：us#19127
+对象：DLL #US 字符串（record_offset=1639322）
+原文：activated particles at 
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[221] 跳过文本
+来源：Managed/Assembly-CSharp.dll
+键位：us#19361
+对象：DLL #US 字符串（record_offset=1639556）
+原文：__MirrorReflection
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[222] 跳过文本
+来源：Managed/Assembly-CSharp.dll
+键位：us#19399
+对象：DLL #US 字符串（record_offset=1639594）
+原文：Mirror Refl Camera id
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[223] 跳过文本
+来源：Managed/Assembly-CSharp.dll
+键位：us#19485
+对象：DLL #US 字符串（record_offset=1639680）
+原文：Refreshing list
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[224] 跳过文本
+来源：Managed/Assembly-CSharp.dll
+键位：us#19517
+对象：DLL #US 字符串（record_offset=1639712）
+原文：Sort slot 1 Complete
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[225] 跳过文本
+来源：Managed/Assembly-CSharp.dll
+键位：us#19559
+对象：DLL #US 字符串（record_offset=1639754）
+原文：Sort slot 2 Complete
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[226] 跳过文本
+来源：Managed/Assembly-CSharp.dll
+键位：us#19601
+对象：DLL #US 字符串（record_offset=1639796）
+原文：Sort all buttons correct
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[227] 跳过文本
+来源：Managed/Assembly-CSharp.dll
+键位：us#19651
+对象：DLL #US 字符串（record_offset=1639846）
+原文：Page parents set
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[228] 跳过文本
+来源：Managed/Assembly-CSharp.dll
+键位：us#19685
+对象：DLL #US 字符串（record_offset=1639880）
+原文：Set Navigation
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[229] 跳过文本
+来源：Managed/Assembly-CSharp.dll
+键位：us#19715
+对象：DLL #US 字符串（record_offset=1639910）
+原文：slot 1 page 1 complete
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[230] 跳过文本
+来源：Managed/Assembly-CSharp.dll
+键位：us#19761
+对象：DLL #US 字符串（record_offset=1639956）
+原文：slot 1 page 2 complete
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[231] 跳过文本
+来源：Managed/Assembly-CSharp.dll
+键位：us#19807
+对象：DLL #US 字符串（record_offset=1640002）
+原文：slot 1 page 3 complete
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[232] 跳过文本
+来源：Managed/Assembly-CSharp.dll
+键位：us#19853
+对象：DLL #US 字符串（record_offset=1640048）
+原文：slot 2 page 1 complete
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[233] 跳过文本
+来源：Managed/Assembly-CSharp.dll
+键位：us#19899
+对象：DLL #US 字符串（record_offset=1640094）
+原文：slot 2 page 2 complete
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[234] 跳过文本
+来源：Managed/Assembly-CSharp.dll
+键位：us#19945
+对象：DLL #US 字符串（record_offset=1640140）
+原文：slot 2 page 3 complete
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[235] 跳过文本
+来源：Managed/Assembly-CSharp.dll
+键位：us#19991
+对象：DLL #US 字符串（record_offset=1640186）
+原文：slot 3 page 1 complete
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[236] 跳过文本
+来源：Managed/Assembly-CSharp.dll
+键位：us#20037
+对象：DLL #US 字符串（record_offset=1640232）
+原文：slot 3 page 2 complete
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[237] 跳过文本
+来源：Managed/Assembly-CSharp.dll
+键位：us#20083
+对象：DLL #US 字符串（record_offset=1640278）
+原文：Sorting complete
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[238] 跳过文本
+来源：Managed/Assembly-CSharp.dll
+键位：us#20317
+对象：DLL #US 字符串（record_offset=1640512）
+原文：Medkit x
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[239] 跳过文本
+来源：Managed/Assembly-CSharp.dll
+键位：us#20497
+对象：DLL #US 字符串（record_offset=1640692）
+原文：played submit sound
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[240] 跳过文本
+来源：Managed/Assembly-CSharp.dll
+键位：us#20537
+对象：DLL #US 字符串（record_offset=1640732）
+原文：Set to default xbox
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[241] 跳过文本
+来源：Managed/Assembly-CSharp.dll
+键位：us#20577
+对象：DLL #US 字符串（record_offset=1640772）
+原文：Up
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[242] 跳过文本
+来源：Managed/Assembly-CSharp.dll
+键位：us#22625
+对象：DLL #US 字符串（record_offset=1642820）
+原文：activated!
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[243] 跳过文本
+来源：Managed/Assembly-CSharp.dll
+键位：us#22747
+对象：DLL #US 字符串（record_offset=1642942）
+原文：set default keyboard
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[244] 跳过文本
+来源：Managed/Assembly-CSharp.dll
+键位：us#22789
+对象：DLL #US 字符串（record_offset=1642984）
+原文：set default xbox
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[245] 跳过文本
+来源：Managed/Assembly-CSharp.dll
+键位：us#22841
+对象：DLL #US 字符串（record_offset=1643036）
+原文：found xbox controller
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[246] 跳过文本
+来源：Managed/Assembly-CSharp.dll
+键位：us#22885
+对象：DLL #US 字符串（record_offset=1643080）
+原文：moved on
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[247] 跳过文本
+来源：Managed/Assembly-CSharp.dll
+键位：us#22903
+对象：DLL #US 字符串（record_offset=1643098）
+原文：found NewSettings
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[248] 跳过文本
+来源：Managed/Assembly-CSharp.dll
+键位：us#23247
+对象：DLL #US 字符串（record_offset=1643442）
+原文：turned of the damn menu
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[249] 跳过文本
+来源：Managed/Assembly-CSharp.dll
+键位：us#23726
+对象：DLL #US 字符串（record_offset=1643921）
+原文：Delete save
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[250] 跳过文本
+来源：Managed/Assembly-CSharp.dll
+键位：us#23750
+对象：DLL #US 字符串（record_offset=1643945）
+原文：changed sprite state
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[251] 跳过文本
+来源：Managed/Assembly-CSharp.dll
+键位：us#25098
+对象：DLL #US 字符串（record_offset=1645293）
+原文：CrossbowItem/Quiver
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[252] 跳过文本
+来源：Managed/Assembly-CSharp.dll
+键位：us#25138
+对象：DLL #US 字符串（record_offset=1645333）
+原文：CrossbowItem/Crossbow
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[253] 跳过文本
+来源：Managed/Assembly-CSharp.dll
+键位：us#25204
+对象：DLL #US 字符串（record_offset=1645399）
+原文：Enemy Spawned
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[254] 跳过文本
+来源：Managed/Assembly-CSharp.dll
+键位：us#25232
+对象：DLL #US 字符串（record_offset=1645427）
+原文：Coroutine Started
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[255] 跳过文本
+来源：Managed/Assembly-CSharp.dll
+键位：us#26004
+对象：DLL #US 字符串（record_offset=1646199）
+原文：Dropped the lure
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[256] 跳过文本
+来源：Managed/Assembly-CSharp.dll
+键位：us#26038
+对象：DLL #US 字符串（record_offset=1646233）
+原文：I failed...
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[257] 跳过文本
+来源：Managed/Assembly-CSharp.dll
+键位：us#26062
+对象：DLL #US 字符串（record_offset=1646257）
+原文：I caught it!
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[258] 跳过文本
+来源：Managed/Assembly-CSharp.dll
+键位：us#26140
+对象：DLL #US 字符串（record_offset=1646335）
+原文：Finished the puzzle
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[259] 跳过文本
+来源：Managed/Assembly-CSharp.dll
+键位：us#26190
+对象：DLL #US 字符串（record_offset=1646385）
+原文：Discs Locked
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[260] 跳过文本
+来源：Managed/Assembly-CSharp.dll
+键位：us#26216
+对象：DLL #US 字符串（record_offset=1646411）
+原文：Doing Action
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[261] 跳过文本
+来源：Managed/Assembly-CSharp.dll
+键位：us#26344
+对象：DLL #US 字符串（record_offset=1646539）
+原文：Removed the clock pointers because I interacted with the clock?
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[262] 跳过文本
+来源：Managed/Assembly-CSharp.dll
+键位：us#26472
+对象：DLL #US 字符串（record_offset=1646667）
+原文：Finished puzzle
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[263] 跳过文本
+来源：Managed/Assembly-CSharp.dll
+键位：us#26664
+对象：DLL #US 字符串（record_offset=1646859）
+原文：Puzzle Finished!
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[264] 跳过文本
+来源：Managed/Assembly-CSharp.dll
+键位：us#26740
+对象：DLL #US 字符串（record_offset=1646935）
+原文：I showed the buttons
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[265] 跳过文本
+来源：Managed/Assembly-CSharp.dll
+键位：us#26990
+对象：DLL #US 字符串（record_offset=1647185）
+原文：Nearest SpawnPoint is: 
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[266] 跳过文本
+来源：Managed/Assembly-CSharp.dll
+键位：us#27258
+对象：DLL #US 字符串（record_offset=1647453）
+原文：End Climb
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[267] 跳过文本
+来源：Managed/Assembly-CSharp.dll
+键位：us#27278
+对象：DLL #US 字符串（record_offset=1647473）
+原文：Start Climb Down
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[268] 跳过文本
+来源：Managed/Assembly-CSharp.dll
+键位：us#27468
+对象：DLL #US 字符串（record_offset=1647663）
+原文：pause off
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[269] 跳过文本
+来源：Managed/Assembly-CSharp.dll
+键位：us#27488
+对象：DLL #US 字符串（record_offset=1647683）
+原文：hardpause off
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[270] 跳过文本
+来源：Managed/Assembly-CSharp.dll
+键位：us#27548
+对象：DLL #US 字符串（record_offset=1647743）
+原文：Saved a NG+ slot
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[271] 跳过文本
+来源：Managed/Assembly-CSharp.dll
+键位：us#27826
+对象：DLL #US 字符串（record_offset=1648021）
+原文：Ignore Raycast
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[272] 跳过文本
+来源：Managed/Assembly-CSharp.dll
+键位：us#27892
+对象：DLL #US 字符串（record_offset=1648087）
+原文：weapon unholster
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[273] 跳过文本
+来源：Managed/Assembly-CSharp.dll
+键位：us#27960
+对象：DLL #US 字符串（record_offset=1648155）
+原文：blunderbuss hit: 
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[274] 跳过文本
+来源：Managed/Assembly-CSharp.dll
+键位：us#27996
+对象：DLL #US 字符串（record_offset=1648191）
+原文：blunderbuss hit amount: 
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[275] 跳过文本
+来源：Managed/Assembly-CSharp.dll
+键位：us#28078
+对象：DLL #US 字符串（record_offset=1648273）
+原文：Armature contains: 
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[276] 跳过文本
+来源：Managed/Assembly-CSharp.dll
+键位：us#28142
+对象：DLL #US 字符串（record_offset=1648337）
+原文：bolt ready for pickup
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[277] 跳过文本
+来源：Managed/Assembly-CSharp.dll
+键位：us#28186
+对象：DLL #US 字符串（record_offset=1648381）
+原文：Position Set
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[278] 跳过文本
+来源：Managed/Assembly-CSharp.dll
+键位：us#28268
+对象：DLL #US 字符串（record_offset=1648463）
+原文：I punched: 
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[279] 跳过文本
+来源：Managed/Assembly-CSharp.dll
+键位：us#28326
+对象：DLL #US 字符串（record_offset=1648521）
+原文：Fireball hit: 
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[280] 跳过文本
+来源：Managed/Assembly-CSharp.dll
+键位：us#28356
+对象：DLL #US 字符串（record_offset=1648551）
+原文：Javelin hit: 
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[281] 跳过文本
+来源：Managed/Assembly-CSharp.dll
+键位：us#28552
+对象：DLL #US 字符串（record_offset=1648747）
+原文：Rifle hit: 
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[282] 跳过文本
+来源：Managed/Assembly-CSharp.dll
+键位：us#28576
+对象：DLL #US 字符串（record_offset=1648771）
+原文：Rifle hit amount: 
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[283] 跳过文本
+来源：Managed/Assembly-CSharp.dll
+键位：us#28708
+对象：DLL #US 字符串（record_offset=1648903）
+原文：Can't reload because it's not possible
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[284] 跳过文本
+来源：Managed/Assembly-CSharp.dll
+键位：us#28952
+对象：DLL #US 字符串（record_offset=1649147）
+原文：Trap closed
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[285] 跳过文本
+来源：Managed/Assembly-CSharp.dll
+键位：us#29116
+对象：DLL #US 字符串（record_offset=1649311）
+原文：Done!!!
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[286] 跳过文本
+来源：Managed/Assembly-CSharp.dll
+键位：us#29210
+对象：DLL #US 字符串（record_offset=1649405）
+原文：SimpleMeshCombine : 
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[287] 跳过文本
+来源：Managed/Assembly-CSharp.dll
+键位：us#29253
+对象：DLL #US 字符串（record_offset=1649447）
+原文： [Mesh Filter] has no [Mesh], mesh will not be included in combine..
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[288] 跳过文本
+来源：Managed/Assembly-CSharp.dll
+键位：us#29392
+对象：DLL #US 字符串（record_offset=1649586）
+原文：has a [Mesh Filter] but no [Mesh Renderer], mesh will not be included in combine.
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[289] 跳过文本
+来源：Managed/Assembly-CSharp.dll
+键位：us#29556
+对象：DLL #US 字符串（record_offset=1649751）
+原文：Vertex Count: 
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[290] 跳过文本
+来源：Managed/Assembly-CSharp.dll
+键位：us#29587
+对象：DLL #US 字符串（record_offset=1649781）
+原文：- Vertex Count too high, please divide mesh combine into more groups. Max 65536 for each mesh
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—

@@ -1,0 +1,69 @@
+游戏：alisa-demo
+写回时间：2026-08-10 23:44:45
+输出目录：D:\游戏\alisa-demo_汉化
+
+文件清单：10 个
+
+- app.info（2 条）
+- level12（20 条）
+- level13（12 条）
+- level16（44 条）
+- level18（260 条）
+- level4（24 条）
+- level5（15 条）
+- level8（20 条）
+- sharedassets5.assets（506 条）
+- Managed/Assembly-CSharp.dll（205 条）
+
+────────────────────────────────────────────────────────────────
+写回结果
+文本文件：1
+输入保护：True
+重开验证：True
+变更文件：13
+写入译文：787
+总体闸门：PASS
+字体层级：runtime_verified
+清单：.hanhua-manifest.json
+备份：None
+
+四态闸门明细
+  file=PASS
+  container=PASS
+  object=PASS
+  runtime=PASS
+
+回显跳过（译文==原文，未写入）：31 条
+
+- level18:asset#level18#5101/str/2：Chiave Mela
+- level18:asset#level18#5347/str/10：Alisa C64
+- level18:asset#level18#5642/str/2：Chiave Occhio
+- level18:asset#level18#5792/str/2：Chiave Gabbia
+- level18:asset#level18#6033/str/2：Pietra Dentata
+- level18:asset#level18#6251/str/1：Kit Medical
+- level18:asset#level18#6251/str/2：Kit Medicale
+- level18:asset#level18#6306/str/2：Chiave Pesce
+- Managed/Assembly-CSharp.dll:us#20583：JS_Button0
+- Managed/Assembly-CSharp.dll:us#20605：JS_Button1
+- Managed/Assembly-CSharp.dll:us#20627：JS_Button2
+- Managed/Assembly-CSharp.dll:us#20649：JS_Button3
+- Managed/Assembly-CSharp.dll:us#20671：JS_Button5
+- Managed/Assembly-CSharp.dll:us#20693：JS_Button7
+- Managed/Assembly-CSharp.dll:us#20715：JS_Button6
+- Managed/Assembly-CSharp.dll:us#20791：1stAxis+
+- Managed/Assembly-CSharp.dll:us#21603：LeftShift
+- Managed/Assembly-CSharp.dll:us#21669：JS_Button4
+- Managed/Assembly-CSharp.dll:us#21691：JS_Button8
+- Managed/Assembly-CSharp.dll:us#21713：JS_Button9
+- Managed/Assembly-CSharp.dll:us#21735：JS_Button10
+- Managed/Assembly-CSharp.dll:us#21759：JS_Button11
+- Managed/Assembly-CSharp.dll:us#21783：JS_Button12
+- Managed/Assembly-CSharp.dll:us#21807：JS_Button13
+- Managed/Assembly-CSharp.dll:us#21831：JS_Button14
+- Managed/Assembly-CSharp.dll:us#21855：JS_Button15
+- Managed/Assembly-CSharp.dll:us#21879：JS_Button16
+- Managed/Assembly-CSharp.dll:us#21903：JS_Button17
+- Managed/Assembly-CSharp.dll:us#21927：JS_Button18
+- Managed/Assembly-CSharp.dll:us#21951：JS_Button19
+- Managed/Assembly-CSharp.dll:us#22691：Tab
+

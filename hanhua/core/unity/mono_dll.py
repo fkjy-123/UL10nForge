@@ -18,6 +18,28 @@ from hanhua.core.tooling.player_layout import (
 
 # 代码拼接 UI 文本证据：4+ 字符全大写词（BEST/LEFT/DRIFT），诊断日志通常无
 _UI_UPPERCASE_WORD = re.compile(r"(?<![A-Za-z0-9_])[A-Z]{4,}(?![A-Za-z0-9_])")
+# 内部诊断/日志/错误消息（a-catfiends 实证：ProBuilder/Poly2Tri 等编辑器
+# 工具的测试日志/断言/错误消息被 uppercase_ui 放行进池——' FAILED: '、
+# '[FLIP] - subedge done'、'CNOT had non-bool arg' 是代码诊断文本，玩家
+# 不可见，翻译无意义且会改动符号（'--' 被模型改成 '–'）。形态特征：
+# 开发状态词（PASSED/FAILED/EXTEND/INTERNAL/DEBUG/TEST/SCAN）、内部类型
+# 名（TailCallRequest/YieldRequest/CNOT）、方括号调试前缀（[BUG:/[FLIP]/
+# [FIXME）、错误消息句式（Error parsing/not correct/Improper ... JSON）。
+# 日志专用词（全大写日志格式 ' FAILED: '，驼峰 'Failed to X' 可能是
+# 错误对话框 UI 文本，不拦截）：PASSED/FAILED/EXTEND
+_DEV_STATUS_WORD = re.compile(
+    r"^[\s_=—-]*(?:PASSED|FAILED|EXTEND)\b")
+# 通用词（INTERNAL/DEBUG 等在普通句子中可能驼峰出现，如 'Internal format {0}'，
+# 要求全大写形态才判诊断）：INTERNAL/DEBUG/TEST/SCAN/ERROR
+_DEV_STATUS_WORD_UPPER = re.compile(
+    r"^[\s_=—-]*(?:INTERNAL|DEBUG|TEST|SCAN|ERROR)\b")
+_DEBUG_BRACKET_PREFIX = re.compile(
+    r"(?i)^\[(?:BUG[:\]]|FIXME[:\]]|FLIP[:\]]|SCAN[:\]])")
+_INTERNAL_TYPE_NAME = re.compile(
+    r"(?i)\b(?:TailCallRequest|YieldRequest|CNOT)\b")
+_ERROR_MSG_PATTERN = re.compile(
+    r"(?i)(?:Error parsing|is not correct|Improper .*JSON|JSON format is not)")
+_DEBUG_SENTINEL = re.compile(r"INTERNAL!")
 
 
 def _safe_resolve_discovery_path(game_root: Path, candidate: Path) -> Path | None:
@@ -489,6 +511,23 @@ def _verified_ui_user_string_tokens(pe) -> set[int]:
     return verified
 
 
+def _is_mono_diagnostic_string(s: str) -> bool:
+    """DLL 内部诊断/日志/错误消息（代码文本，非 UI）。
+
+    uppercase_ui 的放行语义是「代码拼接的 UI 文本」（BEST SCORE: 等），
+    但编辑器/算法 DLL 的测试日志与错误消息也含全大写词，需在此剔除。
+    保守判定：命中任一开发特征即判诊断文本（避免翻译改坏符号/产生无意义
+    译文）。真实 UI 文本（ANY CAMERA/SOLO）不含这些开发标记，不受影响。
+    """
+    return bool(
+        _DEV_STATUS_WORD.match(s)
+        or _DEV_STATUS_WORD_UPPER.match(s)
+        or _DEBUG_BRACKET_PREFIX.match(s)
+        or _INTERNAL_TYPE_NAME.search(s)
+        or _ERROR_MSG_PATTERN.search(s)
+        or _DEBUG_SENTINEL.search(s))
+
+
 def extract_dll_user_strings(path: str | Path, file_id: str | None = None,
                              progress_cb: Callable | None = None) -> ParsedFile:
     """提取 DLL #US 字符串 → ParsedFile。"""
@@ -534,6 +573,12 @@ def extract_dll_user_strings(path: str | Path, file_id: str | None = None,
             if (not is_ui_text and not interaction_prompt and not uppercase_ui
                     and (is_code_identifier(s) or _is_engine_string(s))):
                 continue
+            # 内部诊断/日志/错误消息：即使命中 uppercase_ui 也判代码文本
+            # （ProBuilder/Poly2Tri 实证：FAILED:/[FLIP]/CNOT 是开发诊断，
+            # 翻译无意义且模型会改坏代码符号）。判 skipped 而非 continue：
+            # 记录保留在 skipped 列表供审计（防过度拦截）。
+            mono_diagnostic = (
+                not is_ui_text and _is_mono_diagnostic_string(s))
             # UnityScript 程序集：未被上方剔除的字符串全部按显示文本升级。
             # 含空格的是对话/UI/服装/结局文本；无空格语气词（'What?' 'Hahaha!'
             # 'Lily-chan!' 等对话反应词，lilys-day-off 实证 29 条）也是真实
@@ -543,7 +588,7 @@ def extract_dll_user_strings(path: str | Path, file_id: str | None = None,
                 and not is_ui_text and not interaction_prompt and not uppercase_ui)
             display_text = (
                 is_ui_text or interaction_prompt or uppercase_ui
-                or unityscript_display)
+                or unityscript_display) and not mono_diagnostic
             entries.append(TextEntry(
                 file_id=fid, key_path=f"us#{offset}",
                 original=s, status="pending" if display_text else STATUS_SKIPPED,
@@ -555,6 +600,13 @@ def extract_dll_user_strings(path: str | Path, file_id: str | None = None,
                     "heap_offset": heap_file_offset + offset,
                     "flag_offset": heap_file_offset + offset + len(raw),
                     "utf16_len": len(raw),
+                    # 精确字数预算：#US 记录容量 = UTF-16 码元数 = 字符数
+                    # （1 字符 = 1 码元 = 2 字节），所以「译文最多字符数」
+                    # = len(raw) // 2。直接写 len(raw) 会把预算翻倍：模型按
+                    # 2 倍字符输出 → 写回按码元容量截断（taxes 'I did ' 实证
+                    # max_chars=12 实为 6 码元容量）。默认兜底（原文 UTF-8
+                    # 字节 // 3）对 ASCII 原文同样低估，此处显式给出精确预算。
+                    "max_chars": len(raw) // 2,
                     "confidence": (
                         "high" if is_ui_text or interaction_prompt
                         else "medium" if (uppercase_ui or unityscript_display)
@@ -563,6 +615,7 @@ def extract_dll_user_strings(path: str | Path, file_id: str | None = None,
                     "disposition": "translate" if display_text else "structural",
                     "reason": (
                         "mono_ui_setter" if is_ui_text
+                        else "mono_diagnostic" if mono_diagnostic
                         else "interaction_prompt" if interaction_prompt
                         else "user_string_uppercase_ui" if uppercase_ui
                         else "unityscript_user_string" if unityscript_display

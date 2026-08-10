@@ -1,0 +1,32 @@
+游戏：bird-builder
+写回时间：2026-08-11 01:58:21
+输出目录：D:\游戏\bird-builder_汉化
+
+文件清单：2 个
+
+- Bird Builder_Data/app.info（2 条）
+- Bird Builder_Data/level0（30 条）
+
+────────────────────────────────────────────────────────────────
+写回结果
+文本文件：1
+输入保护：True
+重开验证：True
+变更文件：29
+写入译文：26
+总体闸门：PASS
+字体层级：runtime_verified
+清单：.hanhua-manifest.json
+备份：None
+
+四态闸门明细
+  file=PASS
+  container=PASS
+  object=PASS
+  runtime=PASS
+
+回显跳过（译文==原文，未写入）：2 条
+
+- Bird Builder_Data/app.info:plain/0：Shelf Games
+- Bird Builder_Data/level0:asset#level0#1574/str/0：R R R R REMIX
+

@@ -1,0 +1,45 @@
+游戏：a-game-about-literally-doing-your-taxes
+写回时间：2026-08-10 21:54:38
+输出目录：D:\游戏\a-game-about-literally-doing-your-taxes_汉化
+
+文件清单：13 个
+
+- A Game About Literally Doing Your Taxes_Data/app.info（2 条）
+- A Game About Literally Doing Your Taxes_Data/level0（36 条）
+- A Game About Literally Doing Your Taxes_Data/level1（35 条）
+- A Game About Literally Doing Your Taxes_Data/level10（9 条）
+- A Game About Literally Doing Your Taxes_Data/level2（38 条）
+- A Game About Literally Doing Your Taxes_Data/level3（38 条）
+- A Game About Literally Doing Your Taxes_Data/level4（38 条）
+- A Game About Literally Doing Your Taxes_Data/level5（37 条）
+- A Game About Literally Doing Your Taxes_Data/level6（38 条）
+- A Game About Literally Doing Your Taxes_Data/level7（64 条）
+- A Game About Literally Doing Your Taxes_Data/level8（9 条）
+- A Game About Literally Doing Your Taxes_Data/level9（36 条）
+- A Game About Literally Doing Your Taxes_Data/Managed/Assembly-CSharp.dll（10 条）
+
+────────────────────────────────────────────────────────────────
+写回结果
+文本文件：1
+输入保护：True
+重开验证：True
+变更文件：41
+写入译文：96
+总体闸门：WARN
+字体层级：runtime_verified
+清单：.hanhua-manifest.json
+备份：None
+
+四态闸门明细
+  file=PASS
+  container=PASS
+  object=WARN
+  runtime=PASS
+
+截断条目：1 条（容量内部分翻译已写入）
+
+- 「I did 」→「我确实这么做了。」
+
+警告：1 条
+
+- 截断 1 条（容量内部分翻译已写入）：「I did 」→「我确实这么做了。」

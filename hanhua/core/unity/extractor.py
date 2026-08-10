@@ -36,11 +36,19 @@ _INPUT_ACTION_PATH = _re.compile(
     r"[A-Za-z][A-Za-z0-9_]*(?: [A-Za-z0-9]+)?$")
 _QUALIFIED_TYPE = _re.compile(
     r"^(?:[A-Za-z_][A-Za-z0-9_+`]*\.)+[A-Z_][A-Za-z0-9_+`]*$")
+# 类型引用：`Namespace.Type, Assembly`（如 Fungus.Flowchart, Fungus）。
+# 程序集部分不设白名单——`A.B, C` 形态（点连标识符 + 逗号分隔）本身
+# 就是 .NET 类型引用信号，显示文本几乎不出现（真实语料：
+# level1 str 数组 Fungus.Flowchart, Fungus 曾被误判 natural_language，
+# 译成「真菌.流程图」写回，破坏类型引用）。版本/公钥段可选。
 _ASSEMBLY_REFERENCE = _re.compile(
-    r"^[A-Za-z_][A-Za-z0-9_+`]*(?:\.[A-Za-z_][A-Za-z0-9_+`]*)*,\s*"
-    r"(?:Assembly-[A-Za-z0-9_.-]+|Unity\.[A-Za-z0-9_.-]+|"
-    r"UnityEngine(?:\.[A-Za-z0-9_.-]+)*|System(?:\.[A-Za-z0-9_.-]+)*|mscorlib)"
-    r"(?:,\s*Version=[^,\s]+,\s*Culture=[^,\s]+,\s*PublicKeyToken=[^,\s]+)?$",
+    r"^(?:"
+    r"[A-Za-z_][A-Za-z0-9_+`]*(?:\.[A-Za-z_][A-Za-z0-9_+`]*)+,\s*"
+    r"[A-Za-z_][A-Za-z0-9_.-]*"
+    r"|[A-Za-z_][A-Za-z0-9_+`]*,\s*Assembly-[A-Za-z0-9_.-]+"
+    r")"
+    r"(?:,\s*Version=[^,\s]+(?:,\s*Culture=[^,\s]+,\s*"
+    r"PublicKeyToken=[^,\s]+)?)?$",
     _re.I,
 )
 _LIFECYCLE_METHODS = frozenset({
@@ -803,6 +811,22 @@ def _raw_string_entries(file_id: str, obj_path_id: int, raw: bytes,
             if reason == "input_binding":
                 entry.meta["obj_is_key_list"] = True
             confidence, role = "low", "structural"
+        elif _is_script_code_line(stripped):
+            # 单行代码（Lua 命令块/类型全名/函数签名链）：翻译即破坏功能。
+            # 0.25.0 地毯式实证：a-catfiends 的 runblock/setcharacter/local
+            # choice/elseif 行与 "System.Boolean, mscorlib, ..." 类型全名、
+            # InvertVector2(...) 签名链被句子形状规则误放行进池、模型回显
+            # 或乱译、质量门拦截成失败——代码文本不进池（硬结构规则）。
+            entry.status = STATUS_SKIPPED
+            entry.meta["obj_is_key_list"] = True
+            reason = "code_line"
+            confidence, role = "low", "structural"
+        elif not any(ch.isalpha() for ch in stripped):
+            # 纯符号串（{0} : {1} 等格式占位/分隔符/图标字符）：无字母 =
+            # 无语言内容可翻，模型常回显或乱改（实证 {0} : {1} 失败）。
+            entry.status = STATUS_SKIPPED
+            reason = "symbols_only"
+            confidence, role = "low", "structural"
         elif entry.status == STATUS_SKIPPED:
             reason = "duplicate_key_position"
             confidence, role = "low", "structural"
@@ -833,9 +857,19 @@ def _raw_string_entries(file_id: str, obj_path_id: int, raw: bytes,
         elif (is_single_visible
               and Path(asset_file_name).name.casefold() == "resources.assets"
               and _IDENTIFIER.match(stripped)):
-            entry.status = STATUS_SKIPPED
-            reason = "resource_identifier_without_display_evidence"
-            confidence, role = "low", "structural"
+            if stripped.casefold() in DISPLAY_WORDS:
+                # 显示词白名单优先于资源猜测：a-catfiends-impending-relapse
+                # 实证（0.25.0 地毯式）：Fungus 对话按钮 Continue/Save/Load/
+                # Restart/Submit/Cancel 在 resources.assets 单串对象里被
+                # 资源标识符规则整组跳过——白名单是显式显示词证据（形态性），
+                # 不得被「单串即资源键」的猜测性规则推翻（证据分层）。
+                entry.status = "pending"
+                reason = "single_visible_string"
+                confidence, role = "high", "display"
+            else:
+                entry.status = STATUS_SKIPPED
+                reason = "resource_identifier_without_display_evidence"
+                confidence, role = "low", "structural"
         elif is_single_visible:
             entry.status = "pending"
             reason = "single_visible_string"
@@ -886,10 +920,22 @@ def _raw_string_entries(file_id: str, obj_path_id: int, raw: bytes,
             reason = "object_has_display_evidence"
             confidence, role = "medium", "display"
         elif _IDENTIFIER.match(stripped):
-            entry.status = STATUS_SKIPPED
-            entry.meta["obj_is_key_list"] = True
-            reason = "identifier_without_display_evidence"
-            confidence, role = "low", "structural"
+            if (stripped.casefold() in DISPLAY_WORDS
+                    and stripped.casefold() not in control_states
+                    and direct_code_signal_count >= 1):
+                # 显示词白名单仅在「真实组件对象」中优先于通用标识符规则
+                # （0.25.0 地毯式实证：a-catfiends 的 Save/Load/Rewind 按钮
+                # 在「单显示词+类型引用」对象（MonoBehaviour 组件实例）里被
+                # 通用标识符规则误杀——组件含 type_reference 信号 = 组件实例
+                # 证据，其白名单词是按钮文本；无组件信号的纯字符串对象
+                # （绑定名 down/left/right）中白名单词仍是键，维持跳过）。
+                reason = "display_phrase"
+                confidence, role = "medium", "display"
+            else:
+                entry.status = STATUS_SKIPPED
+                entry.meta["obj_is_key_list"] = True
+                reason = "identifier_without_display_evidence"
+                confidence, role = "low", "structural"
         else:
             reason = "display_phrase"
             confidence, role = "medium", "display"
@@ -911,7 +957,14 @@ def _textasset_entries(file_id: str, obj_path_id: int, raw: bytes,
 
     结构化条目 meta 带 "textasset_format"（写回用 apply_format_text 整体重建，
     m_Script 是可变长 byte[]，不受容量限制）与 "inner_path"（裸格式路径）。
+
+    文件级源码检测（a-catfiends-impending-relapse 实证：resources.assets#69
+    整文件是 inspect.lua 脚本库，被按行拆成 264 条进池、模型翻译代码被
+    质量门拦截成 264 条失败）：代码特征行占比 ≥30% 且 ≥8 行 → 整文件
+    按代码处理不产生条目（代码文本翻译即破坏功能，属于硬结构规则）。
     """
+    if _looks_like_script_source(raw):
+        return []
     prefix = (f"asset#{asset_file_name}#{obj_path_id}"
               if asset_file_name else f"asset#{obj_path_id}")
     base_meta = {
@@ -938,9 +991,20 @@ def _textasset_entries(file_id: str, obj_path_id: int, raw: bytes,
         # 必然损坏原始字节——整文件不产生条目（过滤不是删除，写回侧
         # 同样 strict 拒绝，闭环安全）。
         return []
+    # 双重 BOM 处理（a-catfiends obj70 实证）：UnityPy 读出的 str 已含
+    # U+FEFF，调用方 encode("utf-8-sig") 又加一个 → decode 只移除一个，
+    # 残留 BOM 卡住 JSON 分支（startswith("{") False），类型注册表 JSON
+    # 被按行拆分、代码标识符进池。lstrip 前先彻底剥掉 BOM。
+    if text.startswith("﻿"):
+        text = text[len("﻿"):]
     stripped = text.lstrip()
 
     def _stamp(out: list, fmt: str) -> list:
+        # 结构化格式（JSON/XML/YAML/CSV）提取的条目统一过单行代码判定：
+        # .NET 类型注册表（registerTypes 数组）里的类型全名经 JSON 提取后
+        # 无引号、会被句子形状规则放行（a-catfiends obj71 实证 8 条失败）。
+        # 真实对话 JSON（字典/字幕）不受影响（模式为确定性代码特征）。
+        out = [e for e in out if not _is_script_code_line(e.original)]
         for e in out:
             inner = e.key_path
             e.key_path = f"{prefix}/{fmt}/{inner}"
@@ -986,11 +1050,120 @@ def _textasset_entries(file_id: str, obj_path_id: int, raw: bytes,
     for i, line in enumerate(all_lines):
         content = line.strip()
         if content and not _is_engine_string(content) and not should_skip(content):
+            # 整文件未达代码阈值（<8 行或占比不足）时的行级代码兜底：
+            # 短 Lua 块/单行调用仍按代码跳过（_is_script_code_line 强特征）
+            if _is_script_code_line(content):
+                continue
             lines.append(TextEntry(
                 file_id=file_id, key_path=f"{prefix}/line/{i}",
                 original=content,
                 meta={**base_meta, "kind": "textasset", "line": i}))
     return lines
+
+
+# ── TextAsset 源码检测（整文件代码判定，0.25.0 地毯式排查实证） ──
+# 源码特征行模式（Lua/JS/C# 等）：命中任一即算代码特征行。
+_SCRIPT_LINE_PATTERNS = (
+    # Lua：local/function/end/return 与控制流
+    _re.compile(r"^\s*local\s+\w+\s*="),
+    _re.compile(r"^\s*function\b"),
+    _re.compile(r"^\s*end\s*$"),
+    _re.compile(r"^\s*return\s+\w"),
+    _re.compile(r"\b(setmetatable|rawset|rawget|pairs|ipairs|gsub|"
+                r"coroutine|table\.)\s*\("),
+    _re.compile(r"\b\w+\.\w+\s*=\s*function"),
+    _re.compile(r"^\s*if\s+.+then\s*$"),
+    _re.compile(r"^\s*for\s+.+do\s*$"),
+    # Lua 注释（整行注释在 a-catfiends obj72 实证中占 11/49 行，
+    # 缺此模式会导致 FungusLua 模块命中率跌破阈值漏判）
+    _re.compile(r"^\s*--"),
+    # FungusLua 命令（say/choose/wait/runblock/setcharacter 行首命令：
+    # 对话混在 Lua 命令中，整文件判定，不逐行提取）
+    _re.compile(r"^\s*(?:say|choose|wait|runblock|setcharacter)\b"),
+    # JS/C#/Python：声明/作用域/导入
+    _re.compile(r"^\s*(?:const|let|var|static|public|private|protected|"
+                r"internal)\s+\w+"),
+    _re.compile(r"^\s*(?:def|class|struct|interface|namespace|using|"
+                r"import|from|require)\b"),
+    _re.compile(r"^\s*(?:if|elif|else|for|while|switch|case|catch|"
+                r"finally)\b"),
+    _re.compile(r"\b=>\s*\{?\s*$"),
+    _re.compile(r"^\s*[{}\[\]]\s*$"),          # 裸括号行
+    _re.compile(r"[;\s]{1}--\s"),              # Lua 注释
+    _re.compile(r"^\s*(?:function|async)\s+[\w.]+\s*\("),
+)
+_SCRIPT_MIN_CODE_LINES = 8       # 少于 8 行不做代码判定（防误伤短文本）
+_SCRIPT_MIN_CODE_RATIO = 0.30    # 特征行占比阈值（inspect.lua 实证 45%）
+
+# 单行级代码特征（整文件级检测的补充，0.25.0 地毯式实证）：
+# Fungus 游戏的 Lua 命令块/变量行以单行形式散落在 assets 对象里
+# （runblock/setcharacter/local choice/elseif/function M.start()），
+# 整文件检测不覆盖（不在 TextAsset 或占比不足）；.NET 类型全名
+# （"System.Boolean, mscorlib, Version=2.0.0.0, ..."）与函数签名链
+# （InvertVector2(invertX=false),ScaleVector2(...)）也被句子形状规则
+# 误放行。这些模式是确定性代码特征，单行命中即判代码（硬结构规则）。
+_CODE_LINE_PATTERNS = (
+    # Lua 语句：声明/控制流
+    _re.compile(r"^\s*local\s+\w+\s*="),
+    _re.compile(r"^\s*elseif\b"),
+    _re.compile(r"^\s*function\s+[\w.]+\s*\("),
+    _re.compile(r"^\s*if\s+.+then\s*$"),
+    _re.compile(r"^\s*for\s+.+do\s*$"),
+    _re.compile(r"^\s*return\s+\w"),
+    _re.compile(r"^\s*--"),                      # Lua 整行注释
+    _re.compile(r"\)\s*--\s"),                   # 语句后的行尾注释（不用裸 --\s
+                                                 # 防口语破折号 'I -- I can't'）
+    # .NET 类型全名（可选前导引号 + 程序集 + Version=；JSON 提取剥离引号
+    # 后为无引号形态——a-catfiends obj71 registerTypes 实证）
+    _re.compile(r'^\s*"?\s*(?:System|Unity|Mono)\.[\w.]+\s*,\s*[\w.]+\s*,\s*Version=\d'),
+    # 赋值表达式（M = {} 空表声明等 Lua 模块形态）
+    _re.compile(r"^\s*\w+\s*=\s*\{"),
+    # 命名参数函数调用（InvertVector2(invertX=false)）
+    _re.compile(r"\b\w+\(\s*[A-Za-z_]\w*=[^(),)]*\)"),
+    # Lua 命令式调用（runblock(flowchart, "Intro") 含字符串参数）
+    _re.compile(r"^\s*\w+\([^)]*\"[^)]*\"[^)]*\)\s*$"),
+    # FungusLua 行首命令（wait(1)/say "..."/choose {...} 等：翻译整行
+    # 破坏命令名，与整文件级模式同源；对话行首为 say 前缀在真实对话
+    # 中不存在，0 误伤实证）
+    _re.compile(r"^\s*(?:say|choose|wait|runblock|setcharacter)\b"),
+)
+
+
+def _is_script_code_line(text: str) -> bool:
+    """单行是否确定性代码行（单行即判，不聚合行数/占比）。
+
+    与整文件级 _looks_like_script_source 互补：整文件检测只覆盖 TextAsset
+    聚合形态；rawstr 对象内的散落代码行（Fungus Lua 命令块）与引擎内部
+    类型/调用签名需要行级判定。正常显示文本（含 Fungus 富文本标签
+    {punch=3,2}* Y A W N *{w=3}{x}）不命中任何模式（实证 0 误伤）。
+    """
+    if not text:
+        return False
+    stripped = text.strip()
+    if len(stripped) < 6:
+        return False
+    return any(p.search(stripped) for p in _CODE_LINE_PATTERNS)
+
+
+def _looks_like_script_source(raw: bytes) -> bool:
+    """TextAsset 整文件是否源码脚本（整文件跳过，不产生条目）。
+
+    判定：非空行中命中脚本特征行的占比 ≥30% 且非空行 ≥8。
+    实证锚点：a-catfiends-impending-relapse resources.assets#69
+    （inspect.lua 库 264 行）命中 45%；真实对话文本 0%。
+    """
+    if not raw:
+        return False
+    try:
+        text = raw.decode("utf-8-sig")
+    except UnicodeDecodeError:
+        return False
+    lines = [ln.strip() for ln in text.splitlines() if ln.strip()]
+    if len(lines) < _SCRIPT_MIN_CODE_LINES:
+        return False
+    hits = sum(1 for ln in lines
+               if any(p.search(ln) for p in _SCRIPT_LINE_PATTERNS))
+    return hits / len(lines) >= _SCRIPT_MIN_CODE_RATIO
 
 
 # 原生（非 MonoBehaviour）文本承载类型：场景里的 Text/TextMesh 等组件。

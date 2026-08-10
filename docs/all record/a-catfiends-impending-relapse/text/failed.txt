@@ -1,0 +1,126 @@
+游戏：a-catfiends-impending-relapse
+导出时间：2026-08-10 20:31:06
+翻译模型：Hy-MT2-1.8B-Q6_K
+失败文本：8 条
+
+────────────────────────────────────────────────────────────────
+[1] 失败文本
+来源：a catfiend's impending relapse_Data/level1
+键位：asset#level1#2869/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=2869）
+原文：This, {w=0.5}err,{w=0.5} might actually be 
+difficult without certain substances.{w=3}{x}
+译文：这，{w=0.5}err,{w=0.5}，实际上可能就是
+难以在没有某些物质的情况下进行。
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：placeholder_mismatch（passed=False）
+翻译评价：placeholder_mismatch
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[2] 失败文本
+来源：a catfiend's impending relapse_Data/level1
+键位：asset#level1#2907/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=2907）
+原文：{punch=3,2}* Y A W N *{w=3}{x}
+译文：{punch=3,2}* Y A W N *{w=3}{x}
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：untranslated_text（passed=False）
+翻译评价：untranslated_text
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[3] 失败文本
+来源：a catfiend's impending relapse_Data/level1
+键位：asset#level1#2910/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=2910）
+原文：— WRECCA CAVERN —{w=3}{x}
+译文：— WRECCA CAVERN —{w=3}{x}
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：untranslated_text（passed=False）
+翻译评价：untranslated_text
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[4] 失败文本
+来源：a catfiend's impending relapse_Data/level1
+键位：asset#level1#2992/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=2992）
+原文：{punch=8, 1}* G A S P *{w=3}{x}
+译文：{punch=8, 1}* G A S P *{w=3}{x}
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：untranslated_text（passed=False）
+翻译评价：untranslated_text
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[5] 失败文本
+来源：a catfiend's impending relapse_Data/level1
+键位：asset#level1#3007/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=3007）
+原文：{punch=3,2}* S C O F F *{w=3}{x}
+译文：{punch=3,2}* S C O F F *{w=3}{x}
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：untranslated_text（passed=False）
+翻译评价：untranslated_text
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[6] 失败文本
+来源：a catfiend's impending relapse_Data/level1
+键位：asset#level1#3075/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=3075）
+原文：* S I G H *{w=3}{x}
+译文：*S I G H* * {w=3}{x}
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：placeholder_mismatch（passed=False）
+翻译评价：placeholder_mismatch
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[7] 失败文本
+来源：a catfiend's impending relapse_Data/level1
+键位：asset#level1#3108/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=3108）
+原文：{punch=10,1}* V O M I T S *{w=3}{x}
+译文：{punch=10,1}* V O M I T S *{w=3}{x}
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：untranslated_text（passed=False）
+翻译评价：untranslated_text
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[8] 失败文本
+来源：a catfiend's impending relapse_Data/Managed/Unity.ProBuilder.dll
+键位：us#28985
+对象：DLL #US 字符串（record_offset=341616）
+原文：UCLA Gold
+译文：UCLA Gold
+置信度：medium
+原因：user_string_uppercase_ui
+角色：display
+质量评分：untranslated_text（passed=False）
+翻译评价：untranslated_text
+需要优化：否
+写回：—

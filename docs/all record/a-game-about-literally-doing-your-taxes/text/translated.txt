@@ -1,0 +1,1464 @@
+游戏：a-game-about-literally-doing-your-taxes
+导出时间：2026-08-10 21:54:38
+翻译模型：Hy-MT2-1.8B-Q6_K
+成功文本：96 条
+
+────────────────────────────────────────────────────────────────
+[1] 成功文本
+来源：A Game About Literally Doing Your Taxes_Data/app.info
+键位：plain/0
+对象：纯文本文件行
+原文：Not a Sailor Studios
+译文：不是 Sailor Studios 的作品
+置信度：medium
+原因：—
+角色：—
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[2] 成功文本
+来源：A Game About Literally Doing Your Taxes_Data/app.info
+键位：plain/1
+对象：纯文本文件行
+原文：A Game About Literally Doing Your Taxes
+译文：一款关于如何准确报税的游戏
+置信度：medium
+原因：—
+角色：—
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[3] 成功文本
+来源：A Game About Literally Doing Your Taxes_Data/level0
+键位：asset#level0#40/field/k:m_Text
+对象：Typetree 字段（asset_file=level0、obj=40）
+原文：TAXES DONE
+译文：已缴纳的税款
+置信度：high
+原因：typetree_display_field
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[4] 成功文本
+来源：A Game About Literally Doing Your Taxes_Data/level0
+键位：asset#level0#76/str/4
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=76）
+原文：credits
+译文：致谢
+置信度：medium
+原因：code_heavy_display_word
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[5] 成功文本
+来源：A Game About Literally Doing Your Taxes_Data/level0
+键位：asset#level0#78/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=78）
+原文：WEAR HEADPHONES
+FOR BEST EXPERIENCE
+译文：佩戴耳机
+以获得最佳体验
+置信度：medium
+原因：natural_language
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[6] 成功文本
+来源：A Game About Literally Doing Your Taxes_Data/level0
+键位：asset#level0#88/str/4
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=88）
+原文：exit
+译文：退出
+置信度：medium
+原因：code_heavy_display_word
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[7] 成功文本
+来源：A Game About Literally Doing Your Taxes_Data/level1
+键位：asset#level1#94/field/k:m_Text
+对象：Typetree 字段（asset_file=level1、obj=94）
+原文：GOOD JOB
+译文：干得好
+置信度：high
+原因：typetree_display_field
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[8] 成功文本
+来源：A Game About Literally Doing Your Taxes_Data/level1
+键位：asset#level1#97/field/k:m_Text
+对象：Typetree 字段（asset_file=level1、obj=97）
+原文：TAXES DONE
+译文：已缴纳的税款
+置信度：high
+原因：typetree_display_field
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[9] 成功文本
+来源：A Game About Literally Doing Your Taxes_Data/level1
+键位：asset#level1#138/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=138）
+原文：RESUME
+译文：摘要
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[10] 成功文本
+来源：A Game About Literally Doing Your Taxes_Data/level1
+键位：asset#level1#142/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=142）
+原文：KEEP TAXES
+译文：保持税收
+置信度：medium
+原因：natural_language
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[11] 成功文本
+来源：A Game About Literally Doing Your Taxes_Data/level1
+键位：asset#level1#145/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=145）
+原文：TOSS TRASH
+译文：丢垃圾
+置信度：medium
+原因：natural_language
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[12] 成功文本
+来源：A Game About Literally Doing Your Taxes_Data/level1
+键位：asset#level1#146/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=146）
+原文：Main Menu
+
+译文：主菜单
+
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[13] 成功文本
+来源：A Game About Literally Doing Your Taxes_Data/level1
+键位：asset#level1#155/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=155）
+原文：GOOD JOB
+译文：干得好
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[14] 成功文本
+来源：A Game About Literally Doing Your Taxes_Data/level1
+键位：asset#level1#157/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=157）
+原文：PAUSED
+译文：停止
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[15] 成功文本
+来源：A Game About Literally Doing Your Taxes_Data/level10
+键位：asset#level10#80/field/k:m_Text
+对象：Typetree 字段（asset_file=level10、obj=80）
+原文：GOOD JOB
+译文：干得好
+置信度：high
+原因：typetree_display_field
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[16] 成功文本
+来源：A Game About Literally Doing Your Taxes_Data/level10
+键位：asset#level10#83/field/k:m_Text
+对象：Typetree 字段（asset_file=level10、obj=83）
+原文：TAXES DONE
+译文：已缴纳的税款
+置信度：high
+原因：typetree_display_field
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[17] 成功文本
+来源：A Game About Literally Doing Your Taxes_Data/level10
+键位：asset#level10#109/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level10、obj=109）
+原文：GOOD JOB
+译文：干得好
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[18] 成功文本
+来源：A Game About Literally Doing Your Taxes_Data/level2
+键位：asset#level2#168/field/k:m_Text
+对象：Typetree 字段（asset_file=level2、obj=168）
+原文：TAXES DONE
+译文：已缴纳的税款
+置信度：high
+原因：typetree_display_field
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[19] 成功文本
+来源：A Game About Literally Doing Your Taxes_Data/level2
+键位：asset#level2#169/field/k:m_Text
+对象：Typetree 字段（asset_file=level2、obj=169）
+原文：GOOD JOB
+译文：干得好
+置信度：high
+原因：typetree_display_field
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[20] 成功文本
+来源：A Game About Literally Doing Your Taxes_Data/level2
+键位：asset#level2#171/field/k:m_Text
+对象：Typetree 字段（asset_file=level2、obj=171）
+原文：GOOD JOB
+译文：干得好
+置信度：high
+原因：typetree_display_field
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[21] 成功文本
+来源：A Game About Literally Doing Your Taxes_Data/level2
+键位：asset#level2#175/field/k:m_Text
+对象：Typetree 字段（asset_file=level2、obj=175）
+原文：TAXES DONE
+译文：已缴纳的税款
+置信度：high
+原因：typetree_display_field
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[22] 成功文本
+来源：A Game About Literally Doing Your Taxes_Data/level2
+键位：asset#level2#232/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=232）
+原文：PAUSED
+译文：停止
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[23] 成功文本
+来源：A Game About Literally Doing Your Taxes_Data/level2
+键位：asset#level2#236/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=236）
+原文：YAY TAX
+译文：太棒了！税务问题解决了。
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[24] 成功文本
+来源：A Game About Literally Doing Your Taxes_Data/level2
+键位：asset#level2#236/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=236）
+原文：BAD JOB
+译文：糟糕的活儿
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[25] 成功文本
+来源：A Game About Literally Doing Your Taxes_Data/level2
+键位：asset#level2#244/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=244）
+原文：GOOD JOB
+译文：干得好
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[26] 成功文本
+来源：A Game About Literally Doing Your Taxes_Data/level2
+键位：asset#level2#245/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=245）
+原文：RESUME
+译文：摘要
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[27] 成功文本
+来源：A Game About Literally Doing Your Taxes_Data/level2
+键位：asset#level2#247/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=247）
+原文：Main Menu
+
+译文：主菜单
+
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[28] 成功文本
+来源：A Game About Literally Doing Your Taxes_Data/level3
+键位：asset#level3#168/field/k:m_Text
+对象：Typetree 字段（asset_file=level3、obj=168）
+原文：GOOD JOB
+译文：干得好
+置信度：high
+原因：typetree_display_field
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[29] 成功文本
+来源：A Game About Literally Doing Your Taxes_Data/level3
+键位：asset#level3#170/field/k:m_Text
+对象：Typetree 字段（asset_file=level3、obj=170）
+原文：TAXES DONE
+译文：已缴纳的税款
+置信度：high
+原因：typetree_display_field
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[30] 成功文本
+来源：A Game About Literally Doing Your Taxes_Data/level3
+键位：asset#level3#172/field/k:m_Text
+对象：Typetree 字段（asset_file=level3、obj=172）
+原文：GOOD JOB
+译文：干得好
+置信度：high
+原因：typetree_display_field
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[31] 成功文本
+来源：A Game About Literally Doing Your Taxes_Data/level3
+键位：asset#level3#174/field/k:m_Text
+对象：Typetree 字段（asset_file=level3、obj=174）
+原文：TAXES DONE
+译文：已缴纳的税款
+置信度：high
+原因：typetree_display_field
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[32] 成功文本
+来源：A Game About Literally Doing Your Taxes_Data/level3
+键位：asset#level3#232/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level3、obj=232）
+原文：DOING IT
+译文：正在执行中
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[33] 成功文本
+来源：A Game About Literally Doing Your Taxes_Data/level3
+键位：asset#level3#243/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level3、obj=243）
+原文：Main Menu
+
+译文：主菜单
+
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[34] 成功文本
+来源：A Game About Literally Doing Your Taxes_Data/level3
+键位：asset#level3#244/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level3、obj=244）
+原文：PAUSED
+译文：停止
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[35] 成功文本
+来源：A Game About Literally Doing Your Taxes_Data/level3
+键位：asset#level3#246/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level3、obj=246）
+原文：GOOD JOB
+译文：干得好
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[36] 成功文本
+来源：A Game About Literally Doing Your Taxes_Data/level3
+键位：asset#level3#251/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level3、obj=251）
+原文：RESUME
+译文：摘要
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[37] 成功文本
+来源：A Game About Literally Doing Your Taxes_Data/level4
+键位：asset#level4#168/field/k:m_Text
+对象：Typetree 字段（asset_file=level4、obj=168）
+原文：GOOD JOB
+译文：干得好
+置信度：high
+原因：typetree_display_field
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[38] 成功文本
+来源：A Game About Literally Doing Your Taxes_Data/level4
+键位：asset#level4#170/field/k:m_Text
+对象：Typetree 字段（asset_file=level4、obj=170）
+原文：TAXES DONE
+译文：已缴纳的税款
+置信度：high
+原因：typetree_display_field
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[39] 成功文本
+来源：A Game About Literally Doing Your Taxes_Data/level4
+键位：asset#level4#173/field/k:m_Text
+对象：Typetree 字段（asset_file=level4、obj=173）
+原文：GOOD JOB
+译文：干得好
+置信度：high
+原因：typetree_display_field
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[40] 成功文本
+来源：A Game About Literally Doing Your Taxes_Data/level4
+键位：asset#level4#175/field/k:m_Text
+对象：Typetree 字段（asset_file=level4、obj=175）
+原文：TAXES DONE
+译文：已缴纳的税款
+置信度：high
+原因：typetree_display_field
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[41] 成功文本
+来源：A Game About Literally Doing Your Taxes_Data/level4
+键位：asset#level4#226/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level4、obj=226）
+原文：SUPERB!
+译文：太棒了！
+置信度：medium
+原因：natural_language
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[42] 成功文本
+来源：A Game About Literally Doing Your Taxes_Data/level4
+键位：asset#level4#226/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level4、obj=226）
+原文：BANKRUPT
+译文：破产
+置信度：medium
+原因：object_has_display_evidence
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[43] 成功文本
+来源：A Game About Literally Doing Your Taxes_Data/level4
+键位：asset#level4#231/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level4、obj=231）
+原文：Main Menu
+
+译文：主菜单
+
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[44] 成功文本
+来源：A Game About Literally Doing Your Taxes_Data/level4
+键位：asset#level4#232/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level4、obj=232）
+原文：RESUME
+译文：摘要
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[45] 成功文本
+来源：A Game About Literally Doing Your Taxes_Data/level4
+键位：asset#level4#250/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level4、obj=250）
+原文：GOOD JOB
+译文：干得好
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[46] 成功文本
+来源：A Game About Literally Doing Your Taxes_Data/level4
+键位：asset#level4#254/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level4、obj=254）
+原文：PAUSED
+译文：停止
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[47] 成功文本
+来源：A Game About Literally Doing Your Taxes_Data/level5
+键位：asset#level5#165/field/k:m_Text
+对象：Typetree 字段（asset_file=level5、obj=165）
+原文：GOOD JOB
+译文：干得好
+置信度：high
+原因：typetree_display_field
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[48] 成功文本
+来源：A Game About Literally Doing Your Taxes_Data/level5
+键位：asset#level5#169/field/k:m_Text
+对象：Typetree 字段（asset_file=level5、obj=169）
+原文：TAXES DONE
+译文：已缴纳的税款
+置信度：high
+原因：typetree_display_field
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[49] 成功文本
+来源：A Game About Literally Doing Your Taxes_Data/level5
+键位：asset#level5#170/field/k:m_Text
+对象：Typetree 字段（asset_file=level5、obj=170）
+原文：GOOD JOB
+译文：干得好
+置信度：high
+原因：typetree_display_field
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[50] 成功文本
+来源：A Game About Literally Doing Your Taxes_Data/level5
+键位：asset#level5#174/field/k:m_Text
+对象：Typetree 字段（asset_file=level5、obj=174）
+原文：TAXES DONE
+译文：已缴纳的税款
+置信度：high
+原因：typetree_display_field
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[51] 成功文本
+来源：A Game About Literally Doing Your Taxes_Data/level5
+键位：asset#level5#222/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level5、obj=222）
+原文：RESUME
+译文：摘要
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[52] 成功文本
+来源：A Game About Literally Doing Your Taxes_Data/level5
+键位：asset#level5#228/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level5、obj=228）
+原文：Main Menu
+
+译文：主菜单
+
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[53] 成功文本
+来源：A Game About Literally Doing Your Taxes_Data/level5
+键位：asset#level5#232/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level5、obj=232）
+原文：GOOD JOB
+译文：干得好
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[54] 成功文本
+来源：A Game About Literally Doing Your Taxes_Data/level5
+键位：asset#level5#240/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level5、obj=240）
+原文：PAUSED
+译文：停止
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[55] 成功文本
+来源：A Game About Literally Doing Your Taxes_Data/level5
+键位：asset#level5#244/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level5、obj=244）
+原文：YES!
+译文：是的！
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[56] 成功文本
+来源：A Game About Literally Doing Your Taxes_Data/level6
+键位：asset#level6#163/field/k:m_Text
+对象：Typetree 字段（asset_file=level6、obj=163）
+原文：GOOD JOB
+译文：干得好
+置信度：high
+原因：typetree_display_field
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[57] 成功文本
+来源：A Game About Literally Doing Your Taxes_Data/level6
+键位：asset#level6#168/field/k:m_Text
+对象：Typetree 字段（asset_file=level6、obj=168）
+原文：GOOD JOB
+译文：干得好
+置信度：high
+原因：typetree_display_field
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[58] 成功文本
+来源：A Game About Literally Doing Your Taxes_Data/level6
+键位：asset#level6#169/field/k:m_Text
+对象：Typetree 字段（asset_file=level6、obj=169）
+原文：ERROR
+译文：错误
+置信度：high
+原因：typetree_display_field
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[59] 成功文本
+来源：A Game About Literally Doing Your Taxes_Data/level6
+键位：asset#level6#172/field/k:m_Text
+对象：Typetree 字段（asset_file=level6、obj=172）
+原文：TAXES DONE
+译文：已缴纳的税款
+置信度：high
+原因：typetree_display_field
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[60] 成功文本
+来源：A Game About Literally Doing Your Taxes_Data/level6
+键位：asset#level6#218/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level6、obj=218）
+原文：Main Menu
+
+译文：主菜单
+
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[61] 成功文本
+来源：A Game About Literally Doing Your Taxes_Data/level6
+键位：asset#level6#224/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level6、obj=224）
+原文：PAUSED
+译文：停止
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[62] 成功文本
+来源：A Game About Literally Doing Your Taxes_Data/level6
+键位：asset#level6#228/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level6、obj=228）
+原文：SUPERB!
+译文：太棒了！
+置信度：medium
+原因：natural_language
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[63] 成功文本
+来源：A Game About Literally Doing Your Taxes_Data/level6
+键位：asset#level6#228/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level6、obj=228）
+原文：BANKRUPT
+译文：破产
+置信度：medium
+原因：object_has_display_evidence
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[64] 成功文本
+来源：A Game About Literally Doing Your Taxes_Data/level6
+键位：asset#level6#246/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level6、obj=246）
+原文：GOOD JOB
+译文：干得好
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[65] 成功文本
+来源：A Game About Literally Doing Your Taxes_Data/level6
+键位：asset#level6#249/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level6、obj=249）
+原文：RESUME
+译文：摘要
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[66] 成功文本
+来源：A Game About Literally Doing Your Taxes_Data/level7
+键位：asset#level7#230/field/k:m_Text
+对象：Typetree 字段（asset_file=level7、obj=230）
+原文：TAXES DONE
+译文：已缴纳的税款
+置信度：high
+原因：typetree_display_field
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[67] 成功文本
+来源：A Game About Literally Doing Your Taxes_Data/level7
+键位：asset#level7#231/field/k:m_Text
+对象：Typetree 字段（asset_file=level7、obj=231）
+原文：GOOD JOB
+译文：干得好
+置信度：high
+原因：typetree_display_field
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[68] 成功文本
+来源：A Game About Literally Doing Your Taxes_Data/level7
+键位：asset#level7#232/field/k:m_Text
+对象：Typetree 字段（asset_file=level7、obj=232）
+原文：TAXES DONE
+译文：已缴纳的税款
+置信度：high
+原因：typetree_display_field
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[69] 成功文本
+来源：A Game About Literally Doing Your Taxes_Data/level7
+键位：asset#level7#330/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level7、obj=330）
+原文：RESUME
+译文：摘要
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[70] 成功文本
+来源：A Game About Literally Doing Your Taxes_Data/level7
+键位：asset#level7#340/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level7、obj=340）
+原文：Main Menu
+
+译文：主菜单
+
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[71] 成功文本
+来源：A Game About Literally Doing Your Taxes_Data/level7
+键位：asset#level7#345/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level7、obj=345）
+原文：SUPERB!
+译文：太棒了！
+置信度：medium
+原因：natural_language
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[72] 成功文本
+来源：A Game About Literally Doing Your Taxes_Data/level7
+键位：asset#level7#345/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level7、obj=345）
+原文：BANKRUPT
+译文：破产
+置信度：medium
+原因：object_has_display_evidence
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[73] 成功文本
+来源：A Game About Literally Doing Your Taxes_Data/level7
+键位：asset#level7#352/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level7、obj=352）
+原文：RESUME
+译文：摘要
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[74] 成功文本
+来源：A Game About Literally Doing Your Taxes_Data/level7
+键位：asset#level7#358/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level7、obj=358）
+原文：GOOD JOB
+译文：干得好
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[75] 成功文本
+来源：A Game About Literally Doing Your Taxes_Data/level7
+键位：asset#level7#362/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level7、obj=362）
+原文：PAUSED
+译文：停止
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[76] 成功文本
+来源：A Game About Literally Doing Your Taxes_Data/level7
+键位：asset#level7#369/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level7、obj=369）
+原文：YES
+译文：是的
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[77] 成功文本
+来源：A Game About Literally Doing Your Taxes_Data/level7
+键位：asset#level7#373/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level7、obj=373）
+原文：Main Menu
+
+译文：主菜单
+
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[78] 成功文本
+来源：A Game About Literally Doing Your Taxes_Data/level7
+键位：asset#level7#374/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level7、obj=374）
+原文：PAUSED
+译文：停止
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[79] 成功文本
+来源：A Game About Literally Doing Your Taxes_Data/level8
+键位：asset#level8#80/field/k:m_Text
+对象：Typetree 字段（asset_file=level8、obj=80）
+原文：GOOD JOB
+译文：干得好
+置信度：high
+原因：typetree_display_field
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[80] 成功文本
+来源：A Game About Literally Doing Your Taxes_Data/level8
+键位：asset#level8#83/field/k:m_Text
+对象：Typetree 字段（asset_file=level8、obj=83）
+原文：TAXES DONE
+译文：已缴纳的税款
+置信度：high
+原因：typetree_display_field
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[81] 成功文本
+来源：A Game About Literally Doing Your Taxes_Data/level8
+键位：asset#level8#111/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level8、obj=111）
+原文：GOOD JOB
+译文：干得好
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[82] 成功文本
+来源：A Game About Literally Doing Your Taxes_Data/level9
+键位：asset#level9#98/field/k:m_Text
+对象：Typetree 字段（asset_file=level9、obj=98）
+原文：GOOD JOB
+译文：干得好
+置信度：high
+原因：typetree_display_field
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[83] 成功文本
+来源：A Game About Literally Doing Your Taxes_Data/level9
+键位：asset#level9#101/field/k:m_Text
+对象：Typetree 字段（asset_file=level9、obj=101）
+原文：TAXES DONE
+译文：已缴纳的税款
+置信度：high
+原因：typetree_display_field
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[84] 成功文本
+来源：A Game About Literally Doing Your Taxes_Data/level9
+键位：asset#level9#145/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level9、obj=145）
+原文：KEEP TAXES
+译文：保持税收
+置信度：medium
+原因：natural_language
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[85] 成功文本
+来源：A Game About Literally Doing Your Taxes_Data/level9
+键位：asset#level9#148/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level9、obj=148）
+原文：PAUSED
+译文：停止
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[86] 成功文本
+来源：A Game About Literally Doing Your Taxes_Data/level9
+键位：asset#level9#151/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level9、obj=151）
+原文：TOSS TRASH
+译文：丢垃圾
+置信度：medium
+原因：natural_language
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[87] 成功文本
+来源：A Game About Literally Doing Your Taxes_Data/level9
+键位：asset#level9#157/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level9、obj=157）
+原文：RESUME
+译文：摘要
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[88] 成功文本
+来源：A Game About Literally Doing Your Taxes_Data/level9
+键位：asset#level9#159/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level9、obj=159）
+原文：GOOD JOB
+译文：干得好
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[89] 成功文本
+来源：A Game About Literally Doing Your Taxes_Data/level9
+键位：asset#level9#163/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level9、obj=163）
+原文：Main Menu
+
+译文：主菜单
+
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[90] 成功文本
+来源：A Game About Literally Doing Your Taxes_Data/Managed/Assembly-CSharp.dll
+键位：us#92
+对象：DLL #US 字符串（record_offset=23687）
+原文：I did 
+译文：我确实这么做了。
+置信度：high
+原因：mono_ui_setter
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[91] 成功文本
+来源：A Game About Literally Doing Your Taxes_Data/Managed/Assembly-CSharp.dll
+键位：us#128
+对象：DLL #US 字符串（record_offset=23723）
+原文：I threw away 
+译文：我扔掉了它。
+置信度：high
+原因：mono_ui_setter
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[92] 成功文本
+来源：A Game About Literally Doing Your Taxes_Data/Managed/Assembly-CSharp.dll
+键位：us#174
+对象：DLL #US 字符串（record_offset=23769）
+原文：Tax Returns: 
+译文：税务申报表：
+置信度：high
+原因：mono_ui_setter
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[93] 成功文本
+来源：A Game About Literally Doing Your Taxes_Data/Managed/Assembly-CSharp.dll
+键位：us#270
+对象：DLL #US 字符串（record_offset=23865）
+原文：Does it even matter?
+译文：这真的重要吗？
+置信度：high
+原因：mono_ui_setter
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[94] 成功文本
+来源：A Game About Literally Doing Your Taxes_Data/Managed/Assembly-CSharp.dll
+键位：us#312
+对象：DLL #US 字符串（record_offset=23907）
+原文：We've been through this.
+译文：我们已经经历过这种情况了。
+置信度：high
+原因：mono_ui_setter
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[95] 成功文本
+来源：A Game About Literally Doing Your Taxes_Data/Managed/Assembly-CSharp.dll
+键位：us#494
+对象：DLL #US 字符串（record_offset=24089）
+原文：TAXES DONE
+译文：已缴纳的税款
+置信度：high
+原因：mono_ui_setter
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[96] 成功文本
+来源：A Game About Literally Doing Your Taxes_Data/Managed/Assembly-CSharp.dll
+键位：us#516
+对象：DLL #US 字符串（record_offset=24111）
+原文：ERROR
+译文：错误
+置信度：high
+原因：mono_ui_setter
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入

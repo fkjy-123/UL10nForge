@@ -258,7 +258,6 @@ def test_protected_target_script_spans(source, translation):
     ("AI", "AI"),
     ("AR", "AR"),
     ("3DI70R 2024", "3DI70R 2024"),
-    ("TOSS TRASH", "TOSS TRASH"),
 ])
 def test_proper_name_echo_not_target_script_mismatch(source, translation):
     translator = BatchTranslator(
@@ -270,6 +269,23 @@ def test_proper_name_echo_not_target_script_mismatch(source, translation):
 
     assert translator._apply_quality(entry, translation) is True
     assert entry.meta["quality_passed"] is True
+
+
+def test_uppercase_action_echo_fails_by_knowledge_rule():
+    """知识库规则：全大写动作指令（TOSS TRASH）回显一律判失败。
+
+    taxes 实证：TOSS TRASH 曾因 proper_name_echo 豁免而漏翻回显。
+    大写动作指令是可翻译语义文本，回显 = untranslated_text，不得豁免。
+    """
+    translator = BatchTranslator(
+        FakeClient(), batch_size=1, concurrency=1, lang="en→zh-CN")
+    entry = TextEntry(
+        "ui", "reported", "TOSS TRASH",
+        meta={"role": "display", "disposition": "translate"},
+    )
+
+    assert translator._apply_quality(entry, "TOSS TRASH") is False
+    assert "untranslated_text" in entry.meta["quality_reasons"]
 
 
 @pytest.mark.parametrize(("source", "translation"), [
@@ -296,6 +312,46 @@ def test_safe_keeper_spans_are_not_target_script_mismatch(source, translation):
 
     assert translator._apply_quality(entry, translation) is True
     assert entry.meta["quality_passed"] is True
+
+
+@pytest.mark.parametrize(("source", "translation"), [
+    # 带重音拉丁字母的专名（alisa-demo [6] 法语设备名 Pulsomètre）：
+    # _ENGLISH_WORD 纯 ASCII 会把 "Pulsomètre" 拆成 "Pulsom"+"tre" 碎片，
+    # "tre" 是小写普通词 → 归一化后成完整词走 TitleCase 专名豁免
+    # （译文已含中文翻译）
+    ("J'ai emprunté le Pulsomètre pour un moment.",
+     "我暂时借用了Pulsomètre这个设备使用。"),
+    ("Dr. Edminston", "埃德明斯顿博士。"),
+    # 原文重音词完整进 source_terms（防碎片漏检）
+    ("Chiave di Ferro", "铁钥匙"),
+])
+def test_accented_proper_name_not_target_script_mismatch(source, translation):
+    translator = BatchTranslator(
+        FakeClient(), batch_size=1, concurrency=1, lang="en→zh-CN")
+    entry = TextEntry(
+        "ui", "reported", source,
+        meta={"role": "display", "disposition": "translate"},
+    )
+
+    assert translator._apply_quality(entry, translation) is True
+    assert entry.meta["quality_passed"] is True
+
+
+def test_accented_word_fragments_still_target_script_mismatch():
+    """重音碎片修复不放松真残留：独立小写词残留仍判失败。
+
+    归一化只把「重音词」合成完整词；真正的英文残留（小写普通词）
+    不受影响（alisa-demo 意语段 'Ve ne preghiamo' 的英语回显仍拦截）。
+    """
+    translator = BatchTranslator(
+        FakeClient(), batch_size=1, concurrency=1, lang="en→zh-CN")
+    entry = TextEntry(
+        "ui", "reported", "Ve ne preghiamo, qualcuno, faccia qualcosa!",
+        meta={"role": "display", "disposition": "translate"},
+    )
+
+    assert translator._apply_quality(
+        entry, "我们恳求某人做点什么！ please 帮忙") is False
 
 
 @pytest.mark.parametrize(("source", "translation"), [
@@ -1071,6 +1127,86 @@ def test_native_multiline_repair_fails_when_a_meaningful_segment_stays_empty():
     assert entry.quality_reasons == ("line_content_mismatch",)
     assert client.calls == ["First\nSecond\nThird", "First", "Second"]
     assert stats.requests == 3
+
+
+def test_native_line_merge_fallback_releases_after_repair_echoes_first_line():
+    """baldis [6] 实证：'Error please contact game owner\\nand check log.'
+    首译合并为一行中文（newline_mismatch + line_content_mismatch）→
+    multiline repair 逐行重译时首行被模型回显英文（target_script_mismatch）
+    → 修复失败后必须恢复首译失败状态，换行合并兜底才能基于首译判定
+    放行（此前 repair 的复查覆盖 quality_reasons，兜底 ≤ 集合条件失准
+    → 语义完整首译被卡死恒败）。"""
+    class EchoFirstLineClient:
+        config = SimpleNamespace(timeout=120.0)
+
+        def __init__(self):
+            self.calls = []
+
+        def translate_text(self, source, _target_lang, _glossary):
+            self.calls.append(source)
+            translations = {
+                "Error please contact game owner\nand check log.":
+                    "出现错误，请联系游戏所有者，并查看日志信息。",
+                "Error please contact game owner":
+                    "Error, please contact the game owner.",
+                "and check log.": "并查看日志信息。",
+            }
+            return translations[source], Usage(5, 2)
+
+    entry = _to_model([{
+        "file_id": "dialogue", "key_path": "line/error",
+        "original": "Error please contact game owner\nand check log.",
+        "meta": {"role": "display"},
+    }])[0]
+    client = EchoFirstLineClient()
+
+    stats = BatchTranslator(client, batch_size=1, concurrency=1).run([entry])
+
+    assert stats.done == 1 and stats.failed == 0
+    assert entry.translation == "出现错误，请联系游戏所有者，并查看日志信息。"
+    assert entry.meta["line_merged"] is True
+    assert client.calls == [
+        "Error please contact game owner\nand check log.",
+        "Error please contact game owner", "and check log.",
+    ]
+
+
+def test_word_residue_reference_retry_translates_echoed_lowercase_phrase():
+    """baldis 'outstanding citizen' 实证：模型对纯小写普通词整句回显
+    （untranslated_text）→ 词级补译裸翻译仍回显 → 逐词引用两跳
+    （outstanding→outstanding, citizen→citizen）→ 模型引用后直译
+    '杰出公民'（实测：裸→回显 / 引用→杰出公民）。"""
+    class EchoingClient:
+        config = SimpleNamespace(timeout=120.0)
+
+        def __init__(self):
+            self.calls = []
+
+        def translate_text(self, text, _target_lang, glossary):
+            self.calls.append((text, tuple(glossary)))
+            if text == "outstanding citizen":
+                if any(pair == ("outstanding", "outstanding")
+                       for pair in glossary):
+                    return "杰出公民", Usage(5, 2)
+                return "outstanding citizen", Usage(5, 2)
+            return "译文", Usage(5, 2)
+
+    entry = _to_model([{
+        "file_id": "dialogue", "key_path": "line/outstanding",
+        "original": "outstanding citizen",
+        "meta": {"role": "display", "disposition": "translate"},
+    }])[0]
+    client = EchoingClient()
+
+    stats = BatchTranslator(
+        client, batch_size=1, concurrency=1, lang="en→zh-CN").run([entry])
+
+    assert stats.done == 1 and stats.failed == 0
+    assert entry.translation == "杰出公民"
+    assert len(client.calls) == 3
+    # 第三次调用注入 (outstanding, outstanding) 词对引用
+    assert any(pair == ("outstanding", "outstanding")
+               for pair in client.calls[-1][1])
 
 
 def test_native_actionable_ui_uses_builtin_references_and_retries_only_once():
@@ -2010,3 +2146,583 @@ def test_stats_rate_zero_without_elapsed():
     from hanhua.core.models import TranslateStats
     assert TranslateStats(done=5, elapsed=0.0).rate_per_minute == 0.0
     assert TranslateStats(done=0, elapsed=1.0).rate_per_minute == 0.0
+
+
+# ── 多语言源文本双跳 + 同对象译例 + 引文豁免（alisa-demo 0.25.0） ──
+
+def test_multilingual_source_double_hop():
+    """多语言源双跳：模型对日语原文输出英语译文（准确但目标语错误，
+    质量门拒绝）→ 以英语译文为中间源再译一次中文。
+
+    alisa-demo 实证：右手の鍵 → "Right-hand key" → 右手钥匙。
+    """
+    class DoubleHop:
+        config = SimpleNamespace(timeout=120.0)
+        calls = 0
+
+        def translate_text(self, *_args):
+            self.calls += 1
+            return ("Right-hand key" if self.calls == 1
+                    else "右手钥匙"), Usage(1, 1)
+
+    client = DoubleHop()
+    entry = _to_model([{
+        "file_id": "level18", "key_path": "asset#level18#5656/str/3",
+        "original": "右手の鍵",
+        "meta": {"role": "display", "disposition": "translate",
+                 "asset_file": "level18", "obj": 5656},
+    }])[0]
+
+    stats = BatchTranslator(client, batch_size=1, concurrency=1,
+                            lang="en→zh-CN").run([entry])
+
+    assert client.calls == 2
+    assert stats.done == 1
+    assert entry.translation == "右手钥匙"
+
+
+def test_same_object_reference_retry():
+    """同对象译例：同 obj 兄弟条目已成功 → 失败条目重试注入「同一物品的
+    参考译文」→ 模型复用译文。
+
+    alisa-demo 实证：Clé en Fer（法语，模型完全不认识）回显 → 同 obj
+    "Iron Key" 已译「铁钥匙」→ 注入后模型输出铁钥匙。
+    """
+    class ObjRef:
+        config = SimpleNamespace(timeout=120.0)
+        calls = 0
+
+        def translate_text(self, source, *_args):
+            self.calls += 1
+            if source == "Iron Key":
+                return "铁钥匙", Usage(1, 1)
+            return "Clé en Fer", Usage(1, 1)   # 法语回显
+
+        def chat(self, system, messages):
+            content = messages[0]["content"]
+            assert "Reference translations from the same item" in content
+            assert "Iron Key translates to 铁钥匙" in content
+            return "铁钥匙", Usage(1, 1)
+
+    client = ObjRef()
+    entries = _to_model([
+        {"file_id": "level18", "key_path": "asset#level18#5227/str/0",
+         "original": "Iron Key",
+         "meta": {"role": "display", "disposition": "translate",
+                  "asset_file": "level18", "obj": 5227}},
+        {"file_id": "level18", "key_path": "asset#level18#5227/str/1",
+         "original": "Clé en Fer",
+         "meta": {"role": "display", "disposition": "translate",
+                  "asset_file": "level18", "obj": 5227}},
+    ])
+
+    stats = BatchTranslator(client, batch_size=4, concurrency=1,
+                            lang="en→zh-CN").run(entries)
+
+    assert stats.done == 2
+    assert entries[0].translation == "铁钥匙"
+    assert entries[1].translation == "铁钥匙"
+
+
+def test_quote_inscription_retained_allowed():
+    """原文引号内引文（铭文/题词）保留原文 → 不算英文残留。
+
+    alisa-demo 实证：三语言版同一引文 "To the house of ..." 译文保留
+    引文被误判 target_script_mismatch → 豁免（译文已含中文翻译）。
+    """
+    translator = BatchTranslator(
+        FakeClient(), batch_size=1, concurrency=1, lang="en→zh-CN")
+    entry = _to_model([{
+        "file_id": "s", "key_path": "asset#sharedassets5.assets#36/line/37",
+        "original": 'The note reads: "To the house of ..." '
+                    'the last word is missing.',
+        "meta": {"role": "display", "disposition": "translate"},
+    }])[0]
+
+    assert translator._apply_quality(
+        entry, '笔记上写着："To the house of ..." 最后一个词缺失了。'
+    ) is True
+    assert entry.meta["quality_passed"] is True
+
+
+def test_quote_echo_without_chinese_still_fails():
+    """引文豁免要求译文已含中文翻译——纯回显引文仍判失败。"""
+    translator = BatchTranslator(
+        FakeClient(), batch_size=1, concurrency=1, lang="en→zh-CN")
+    entry = _to_model([{
+        "file_id": "s", "key_path": "asset#sharedassets5.assets#36/line/37",
+        "original": 'The note reads: "To the house of ..."',
+        "meta": {"role": "display", "disposition": "translate"},
+    }])[0]
+
+    assert translator._apply_quality(entry, 'The note reads: "To the house of ..."') is False
+    assert "untranslated_text" in entry.meta["quality_reasons"]
+
+
+def test_french_item_echo_not_proper_name_exempt():
+    """法语 TitleCase 物品名回显不得被 proper_name_echo 豁免（漏网之鱼）。
+
+    alisa-demo 实证：Clé Pomme / Chapeau Cône Vert 回显被当专名豁免
+    通过（TitleCase 形态 + 无独立小写词）——多语言打包数组中（同 obj 已
+    有成功译文）的多语言源文本必须翻译。
+    """
+    translator = BatchTranslator(
+        FakeClient(), batch_size=1, concurrency=1, lang="en→zh-CN")
+    # 同 obj 已有成功译文（多语言数组特征：Iron Key 已译铁钥匙）
+    translator._record_obj_result(_to_model([{
+        "file_id": "level18", "key_path": "asset#level18#5227/str/0",
+        "original": "Iron Key",
+        "meta": {"asset_file": "level18", "obj": 5227},
+    }])[0], "铁钥匙")
+    entry = _to_model([{
+        "file_id": "level18", "key_path": "asset#level18#5227/str/1",
+        "original": "Clé Pomme",
+        "meta": {"role": "display", "disposition": "translate",
+                 "asset_file": "level18", "obj": 5227},
+    }])[0]
+
+    assert translator._apply_quality(entry, "Clé Pomme") is False
+    assert {"untranslated_text", "target_script_mismatch"} & set(
+        entry.meta["quality_reasons"])
+
+
+def test_french_proper_name_echo_still_allowed():
+    """proper_name 角色的法语专名回显仍豁免（多语言源限制不误伤专名）。"""
+    translator = BatchTranslator(
+        FakeClient(), batch_size=1, concurrency=1, lang="en→zh-CN")
+    entry = _to_model([{
+        "file_id": "f", "key_path": "k",
+        "original": "Béatrice",
+        "meta": {"role": "proper_name", "disposition": "proper_name"},
+    }])[0]
+
+    assert translator._apply_quality(entry, "Béatrice") is True
+
+
+# ── backrooms 修复：数字邻接词豁免 / 词级补译 / 专名 references 重译 ──
+
+
+@pytest.mark.parametrize(
+    ("source", "translation"),
+    ((  # 4chan：数字邻接词（chan 紧邻数字 4）→ 专名/网站混合形态保留，
+        # 不算英文残留（backrooms 实证：译文保留 4chan 被拆出 chan 误判）
+        "Thanks to the anonymous user on 4chan for inspiration",
+        "感谢 4chan 上的匿名用户提供的灵感。"),
+     (  # 版本号混合形态（beta 紧邻数字）→ 同样豁免
+        "Version 1.2beta released",
+        "已发布 1.2beta 版本。"),
+     ))
+def test_digit_adjacent_word_not_target_script_mismatch(source, translation):
+    translator = BatchTranslator(
+        FakeClient(), batch_size=1, concurrency=1, lang="en→zh-CN")
+    entry = TextEntry(
+        "ui", "reported", source,
+        meta={"role": "display", "disposition": "translate"},
+    )
+
+    assert translator._apply_quality(entry, translation) is True
+    assert entry.meta["quality_passed"] is True
+
+
+def test_digit_adjacent_exemption_not_loosened_for_real_residue():
+    """数字邻接豁免不放松真残留：空格隔开的 '24 hours'（数字不紧邻）仍判失败。"""
+    translator = BatchTranslator(
+        FakeClient(), batch_size=1, concurrency=1, lang="en→zh-CN")
+    entry = TextEntry(
+        "ui", "reported", "The shop opens 24 hours",
+        meta={"role": "display", "disposition": "translate"},
+    )
+
+    assert translator._apply_quality(entry, "营业时间为 24 hours。") is False
+
+
+def test_word_residue_exempt_requires_meta_marker():
+    """词级补译的保留词豁免仅在本条 meta 标记时生效（无标记 → 仍失败）。
+
+    'itch 页面' 的 itch 是 itch.io 专名，补译后模型仍保留 → 标记豁免；
+    无补译语义的同形态译文（'please 帮忙' 类）无标记 → 正常拦截。
+    """
+    translator = BatchTranslator(
+        FakeClient(), batch_size=1, concurrency=1, lang="en→zh-CN")
+    marked = TextEntry(
+        "ui", "reported", "available at itch page",
+        meta={"role": "display", "disposition": "translate",
+              "word_residue_exempt": ["itch"]},
+    )
+    assert translator._apply_quality(marked, "可在 itch 页面 找到。") is True
+
+    plain = TextEntry(
+        "ui", "reported", "available at itch page",
+        meta={"role": "display", "disposition": "translate"},
+    )
+    assert translator._apply_quality(plain, "可在 itch 页面 找到。") is False
+
+
+class _WordResidueClient(BaseClient):
+    """translate_text 模拟词级补译两跳：裸翻译直译误译（痒页面），
+    逐词保留引用后模型确认专名保留（itch 页面）。"""
+
+    def __init__(self):
+        self.calls = []
+
+    def chat(self, system, messages):
+        return "[]", Usage(0, 0)
+
+    def translate_text(self, source, _target_lang, glossary):
+        self.calls.append((source.strip(), list(glossary)))
+        text = source.strip()
+        if text == "itch page":
+            if list(glossary) == [("itch", "itch"), ("page", "page")]:
+                # 逐词保留引用（第二跳）：模型确认专名保留
+                return "itch 页面", Usage(10, 5)
+            # 裸翻译：模型把专名 itch 当普通词直译
+            return "痒页面", Usage(10, 5)
+        return {"was here": "曾来过这里"}.get(text, "译文"), Usage(10, 5)
+
+
+def test_repair_word_residue_replaces_phrase_and_exempts_kept_name():
+    """词级补译：残留短语单独翻译替换回译文；模型保留的词（itch 专名）
+    记入本条 meta 豁免 → 质量门放行（backrooms 'itch page' 实证）。"""
+    translator = BatchTranslator(
+        _WordResidueClient(), batch_size=1, concurrency=1, lang="en→zh-CN")
+    entry = _to_model([{
+        "file_id": "level0", "key_path": "asset#level0#1298/str/0",
+        "original": ("Click here to learn about this game mode in a short "
+                     "animation. If you still have problem playing, ask a "
+                     "question on Backrooms' community page available at "
+                     "itch page or comment on Gamejolt page!"),
+        "meta": {"role": "display", "disposition": "translate"},
+    }])[0]
+
+    result = translator._repair_word_residue(
+        entry, translator.client.translate_text, "zh-CN",
+        "点击这里，通过简短的动画了解这种游戏模式。如果您在游玩过程中"
+        "仍遇到任何问题，请在 Backrooms 的社区页面上提问，该页面可在 "
+        "itch page 上找到，或直接在 Gamejolt 页面上发表评论！")
+
+    assert result is not None and result[2] is True
+    assert "itch 页面" in result[1]
+    assert "itch" in entry.meta["word_residue_exempt"]
+    # 两跳：裸翻译直译（痒页面）→ 逐词引用确认（itch 页面）
+    phrases = [c[0] for c in translator.client.calls]
+    assert phrases == ["itch page", "itch page"]
+    assert ("itch", "itch") in translator.client.calls[1][1]
+
+
+class _ProperNameClient(BaseClient):
+    """translate_text 记录 glossary 并按预设输出返回。"""
+
+    def __init__(self, out):
+        self.out = out
+        self.glossaries = []
+
+    def chat(self, system, messages):
+        return "[]", Usage(0, 0)
+
+    def translate_text(self, source, _target_lang, glossary):
+        self.glossaries.append(list(glossary))
+        return self.out, Usage(10, 5)
+
+
+def test_retry_with_proper_name_reference_injects_proper_name():
+    """专名 references 重译：'Markiplier was here' 回显 → 注入
+    (Markiplier, Markiplier) 引用重译 → 模型译出整句（backrooms 实证）。"""
+    client = _ProperNameClient("Markiplier 曾来过这里")
+    translator = BatchTranslator(
+        client, batch_size=1, concurrency=1, lang="en→zh-CN")
+    entry = _to_model([{
+        "file_id": "level1", "key_path": "asset#level1#1928/str/0",
+        "original": "Markiplier was here",
+        "meta": {"role": "display", "disposition": "translate"},
+    }])[0]
+
+    result = translator._retry_with_proper_name_reference(
+        entry, translator.client.translate_text, "zh-CN",
+        "Markiplier is here.")
+
+    assert result is not None and result[2] is True
+    assert ("Markiplier", "Markiplier") in client.glossaries[0]
+    assert result[1] == "Markiplier 曾来过这里"
+
+
+def test_retry_with_proper_name_reference_echo_returns_pass():
+    """纯专名重译（Crash Bandicoot 注入引用 → 模型回显原文）→ 回显经
+    proper_name_echo 放行（物品/游戏名保留合理，baldis 'Shirt Decal'
+    被模型补成 'T-shirt Decal' 场景：重译让模型按引用保留专名）。"""
+    translator = BatchTranslator(
+        _ProperNameClient("Crash Bandicoot"), batch_size=1, concurrency=1,
+        lang="en→zh-CN")
+    entry = _to_model([{
+        "file_id": "f", "key_path": "k",
+        "original": "Crash Bandicoot",
+        "meta": {"role": "display", "disposition": "translate"},
+    }])[0]
+
+    result = translator._retry_with_proper_name_reference(
+        entry, translator.client.translate_text, "zh-CN", "Crash Bandicoot")
+
+    assert result is not None and result[2] is True
+    assert result[1] == "Crash Bandicoot"
+
+
+def test_retention_term_translated_is_not_glossary_mismatch():
+    """保留型术语（term→term 自动沉淀）被翻译成中文 → 不判 mismatch。
+
+    backrooms 实证：自动学习沉淀 'FPS→FPS' 后，质量门拒绝更忠实的
+    '输入自定义帧率...'（不含 FPS）。保留型术语是「倾向保留」而非
+    「必须保留」——模型翻译了该词是合理行为。
+    """
+    translator = BatchTranslator(
+        FakeClient(), batch_size=1, concurrency=1, lang="en→zh-CN",
+        glossary=[("FPS", "FPS")])
+    entry = TextEntry(
+        "ui", "reported", "Enter custom FPS...",
+        meta={"role": "display", "disposition": "translate"},
+    )
+
+    assert translator._apply_quality(entry, "输入自定义帧率...") is True
+    assert "glossary_mismatch" not in entry.meta["quality_reasons"]
+
+
+def test_retention_term_echo_without_chinese_still_fails():
+    """保留型术语译文纯回显（无中文）→ 仍判失败（untranslated_text）。"""
+    translator = BatchTranslator(
+        FakeClient(), batch_size=1, concurrency=1, lang="en→zh-CN",
+        glossary=[("FPS", "FPS")])
+    entry = TextEntry(
+        "ui", "reported", "Enter custom FPS...",
+        meta={"role": "display", "disposition": "translate"},
+    )
+
+    assert translator._apply_quality(entry, "Enter custom FPS...") is False
+
+
+def test_translation_term_missing_target_still_fails():
+    """非保留型术语（真译名 term→译文）译文缺译名 → 仍判 glossary_mismatch。"""
+    translator = BatchTranslator(
+        FakeClient(), batch_size=1, concurrency=1, lang="en→zh-CN",
+        glossary=[("Settings", "设置")])
+    entry = TextEntry(
+        "ui", "reported", "Open Settings menu",
+        meta={"role": "display", "disposition": "translate"},
+    )
+
+    assert translator._apply_quality(entry, "打开菜单") is False
+    assert "glossary_mismatch" in entry.meta["quality_reasons"]
+
+
+# ── baldis 修复：rich text 标签参数 / UI 词版本后缀 / 译文引号内专名 ──
+
+
+def test_rich_text_label_param_not_independent_lower_word():
+    """rich text 标签参数（<color=red> 的 red、<size=50> 的 size）不是
+    语义词：'<color=red>NULL NULL…' 的 NULL 是游戏内实体名，回显保留
+    合理（baldis 实证：修复前 color=red 的 red 被当小写词 → 专名回显
+    豁免失败）。"""
+    translator = BatchTranslator(
+        FakeClient(), batch_size=1, concurrency=1, lang="en→zh-CN")
+    entry = TextEntry(
+        "us#28056", "reported",
+        "<color=red>NULL NULL NULL NULL NULL NULL NULL NULL NULL</color>",
+        meta={"role": "display", "disposition": "translate"},
+    )
+
+    assert translator._apply_quality(entry, entry.original) is True
+    assert entry.meta["quality_passed"] is True
+
+
+def test_ui_word_check_skips_last_version_word():
+    """多词短语末位是版本后缀（'UCLA Gold' 的 Gold 是版本彩蛋名）→
+    UI 词检查跳过末位词，回显放行（baldis 实证：Gold 在 UI 词典曾使
+    专名回显豁免失败）。"""
+    translator = BatchTranslator(
+        FakeClient(), batch_size=1, concurrency=1, lang="en→zh-CN")
+    entry = TextEntry(
+        "us#28985", "reported", "UCLA Gold",
+        meta={"role": "display", "disposition": "translate"},
+    )
+
+    assert translator._apply_quality(entry, "UCLA Gold") is True
+
+    # 单词仍全查：'Save Game' 首词 Save 在 UI 词典 → 回显仍判失败
+    save = TextEntry(
+        "us#1", "reported", "Save Game",
+        meta={"role": "display", "disposition": "translate"},
+    )
+    assert translator._apply_quality(save, "Save Game") is False
+
+
+def test_translated_quote_proper_name_exempt():
+    """译文引号内全 TitleCase 专名短语（按钮 "Jump During Playtime" 的
+    模型强调标记）→ 整短语豁免（baldis 实证 [6]：Button 类条目模型用
+    引号包裹专名保留原文被当英文短语误判）。"""
+    translator = BatchTranslator(
+        FakeClient(), batch_size=1, concurrency=1, lang="en→zh-CN")
+    entry = TextEntry(
+        "us#18434", "reported",
+        "Square Button: Jump During Playtime's Jumprope Minigame",
+        meta={"role": "display", "disposition": "translate"},
+    )
+
+    assert translator._apply_quality(
+        entry, "方形按钮：在游戏期间进行“Jump During Playtime”小游戏时使用。"
+    ) is True
+
+
+def test_translated_quote_proper_name_requires_source_word():
+    """引号豁免要求每个词都在原文出现：'Jump Along' 的 Along 不在原文，
+    是模型直译误译的专名 → 不豁免，仍判失败（baldis 实证 [7][8]：
+    模型把 Jump During Playtime 误译成 Jump Along，不得放行）。"""
+    translator = BatchTranslator(
+        FakeClient(), batch_size=1, concurrency=1, lang="en→zh-CN")
+    entry = TextEntry(
+        "us#19596", "reported",
+        "X Button: Jump During Playtime's Jumprope Minigame",
+        meta={"role": "display", "disposition": "translate"},
+    )
+
+    assert translator._apply_quality(
+        entry, "X按钮：在游戏过程中进行“Jump Along”小游戏"
+    ) is False
+
+
+# ── baldis 次轮修复：换行合并兜底 / 专名重译放宽 / 小写化专名 / 标签对 ──
+
+
+def test_lowercased_proper_name_not_target_script_mismatch():
+    """模型把原文 TitleCase 专名小写保留（Bossfight → bossfight）→
+    专名保留不是漏翻（baldis [5] 实证：译文 '…在 bossfight 游戏模式
+    中退出' 残留小写 bossfight）。UI 词典词除外（Save → save 真漏翻）。"""
+    translator = BatchTranslator(
+        FakeClient(), batch_size=1, concurrency=1, lang="en→zh-CN")
+    entry = TextEntry(
+        "us#18122", "reported",
+        "Triangle Button: Pause (Quit In The Bossfight Gamemode)",
+        meta={"role": "display", "disposition": "translate"},
+    )
+
+    assert translator._apply_quality(
+        entry, "三角形按钮：暂停（在 bossfight 游戏模式中退出）") is True
+
+
+def test_lowercased_ui_word_still_fails():
+    """小写化专名豁免不放行 UI 词典词：'Save Game' 的 Save 被模型小写
+    残留（save 游戏）→ 仍判失败。"""
+    translator = BatchTranslator(
+        FakeClient(), batch_size=1, concurrency=1, lang="en→zh-CN")
+    entry = TextEntry(
+        "us#2", "reported", "Save Game Settings",
+        meta={"role": "display", "disposition": "translate"},
+    )
+
+    assert translator._apply_quality(entry, "保存 save 游戏设置") is False
+
+
+def test_complete_tag_pair_missing_is_not_mismatch():
+    """完整标签对整体丢失（<color=green>Paused</color> → "暂停"，模型用
+    引号替代彩色强调）→ 样式整对损失无崩溃风险、译文含中文 → 放行
+    （baldis [2] 实证：1.8B 对彩色强调词的稳定行为）。"""
+    translator = BatchTranslator(
+        FakeClient(), batch_size=1, concurrency=1, lang="en→zh-CN")
+    entry = TextEntry(
+        "asset#level16#140/str/0", "reported",
+        "Farming Is Currently <color=green>Paused</color>.\n"
+        "Do You Want To <color=red>Quit</color>?",
+        meta={"role": "display", "disposition": "translate"},
+    )
+
+    assert translator._apply_quality(
+        entry, "农业目前处于“暂停”状态。\n您想<color=red>退出</color>吗？"
+    ) is True
+
+
+def test_partial_tag_missing_still_fails():
+    """单个标签缺失（留开标签丢闭合标签）会破坏显示 → 仍判失败。"""
+    translator = BatchTranslator(
+        FakeClient(), batch_size=1, concurrency=1, lang="en→zh-CN")
+    entry = TextEntry(
+        "k", "reported", "Press <color=red>E</color> to continue",
+        meta={"role": "display", "disposition": "translate"},
+    )
+
+    assert translator._apply_quality(
+        entry, "按 <color=red>E 继续") is False
+
+
+def test_brace_placeholder_missing_still_fails():
+    """数据占位符 {0} 缺失会破坏运行时展开 → 标签对豁免不放行。"""
+    translator = BatchTranslator(
+        FakeClient(), batch_size=1, concurrency=1, lang="en→zh-CN")
+    entry = TextEntry(
+        "k", "reported", "Lv.{0} <b>exp</b> needed",
+        meta={"role": "display", "disposition": "translate"},
+    )
+
+    assert translator._apply_quality(entry, "所需等级经验") is False
+
+
+def test_proper_name_reference_retry_without_lowercase_tail():
+    """纯 TitleCase 专名（'Shirt Decal' 被模型补成 'T-shirt Decal'）→
+    专名引用重译仍触发（baldis [1] 实证：模型把 Shirt 联想成 T-shirt）。"""
+    translator = BatchTranslator(
+        _ProperNameClient("Shirt Decal"), batch_size=1, concurrency=1,
+        lang="en→zh-CN")
+    entry = _to_model([{
+        "file_id": "f", "key_path": "k",
+        "original": "Shirt Decal",
+        "meta": {"role": "display", "disposition": "translate"},
+    }])[0]
+
+    retried = translator._retry_with_proper_name_reference(
+        entry, translator.client.translate_text, "zh-CN", "T-shirt Decal")
+    assert retried is not None
+    # 注入的引用含 (Shirt, Shirt) 专名对（此前 has_translatable_tail
+    # 拦截导致不触发重译，模型就把 Shirt 补成 T-shirt）
+    assert ("Shirt", "Shirt") in translator.client.glossaries[-1]
+    # 按引用保留专名的回显经 proper_name_echo 放行
+    assert retried[2] is True
+    assert retried[1] == "Shirt Decal"
+
+
+# ── butterflies 修复：VSync 回显 / 引号黑话词 ──
+
+
+def test_vsync_echo_passes_proper_name_echo():
+    """VSync 是驼峰技术缩写 + UI 词典词：回显保留原文合理（butterflies
+    实证：'VSync' 回显被判 target_script_mismatch——camel 豁免过了
+    quality 门，proper_name_echo 的 UI 词检查却拦截）。驼峰缩写即使进
+    UI 词典也允许 proper_name_echo 放行。"""
+    translator = BatchTranslator(
+        FakeClient(), batch_size=1, concurrency=1, lang="en→zh-CN")
+    entry = TextEntry(
+        "us#2", "reported", "VSync",
+        meta={"role": "display", "disposition": "translate"},
+    )
+    assert translator._apply_quality(entry, "VSync") is True
+    # 对照：全大写缩写（SFX）不是驼峰缩写 → 回显仍失败
+    entry2 = TextEntry(
+        "us#3", "reported", "SFX",
+        meta={"role": "display", "disposition": "translate"},
+    )
+    assert translator._apply_quality(entry2, "SFX") is False
+
+
+def test_quoted_blackword_in_chinese_translation_passes():
+    """译文引号内保留原文俚语/黑话词 + 中文解释 → 本地化惯例，放行
+    （butterflies 实证：'（……她刚才说的"funk"是什么意思？）' 的 funk
+    是原文词且非 UI 词典词，模型保留+解释是合理行为）。引号内 UI 词典
+    词（"play"）是真半翻 → 仍判失败。"""
+    translator = BatchTranslator(
+        FakeClient(), batch_size=1, concurrency=1, lang="en→zh-CN")
+    entry = TextEntry(
+        "us#2", "reported", "(...the funk she just call me?)",
+        meta={"role": "display", "disposition": "translate"},
+    )
+    assert translator._apply_quality(
+        entry, "（……她刚才说的“funk”是什么意思？）") is True
+    # 对照：引号内 UI 词典词（"play"）是真半翻 → 仍失败
+    entry2 = TextEntry(
+        "us#3", "reported", "Press play to start",
+        meta={"role": "display", "disposition": "translate"},
+    )
+    assert translator._apply_quality(entry2, "按“play”键开始") is False

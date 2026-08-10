@@ -383,6 +383,124 @@ def test_local_manager_falls_back_without_cache_reuse_when_server_rejects_flag(
     assert manager.runtime is None
 
 
+class _ReusableFakeProcess:
+    """跨实例测试用：进程保持存活直到被 terminate，记录终止状态。"""
+
+    def __init__(self, _command, **_kwargs):
+        self.terminated = False
+
+    def poll(self):
+        return None
+
+    def terminate(self):
+        self.terminated = True
+
+    def wait(self, timeout=None):
+        return None
+
+    def kill(self):
+        self.terminated = True
+
+
+def test_cross_instance_reuse_shared_state_and_stop_ownership(tmp_path):
+    """跨实例复用：A 启动服务写状态文件，B（同 state_dir）探测命中直接复用；
+    B.stop() 不杀 A 的进程；A.stop() 杀自己的进程并清理状态文件。"""
+    server = _write_fake_runtime(tmp_path / "runtime")
+    model = _write_fake_gguf(tmp_path / "model.gguf")
+    state_dir = tmp_path / "state"
+    live: list[_ReusableFakeProcess] = []
+
+    def factory(command, **_kwargs):
+        proc = _ReusableFakeProcess(command, **_kwargs)
+        live.append(proc)
+        return proc
+
+    config = ApiConfig(
+        mode="local", local_server_path=str(server),
+        local_model_path=str(model), local_port=18084,
+    )
+    manager_a = LocalModelManager(
+        tmp_path, state_dir=state_dir, process_factory=factory,
+        probe=lambda _url, _token, _model: True, sleep=lambda _s: None,
+        token_factory=lambda: "token-a",
+    )
+    runtime_a = manager_a.ensure_running(config)
+
+    assert runtime_a.backend == "gpu"
+    assert len(live) == 1 and live[0].terminated is False
+    assert (state_dir / "model_runtime.json").is_file()
+
+    # 实例 B：不同 app_dir、相同 state_dir → 探测命中直接复用，不新开进程
+    manager_b = LocalModelManager(
+        tmp_path / "other", state_dir=state_dir, process_factory=factory,
+        probe=lambda _url, _token, _model: True, sleep=lambda _s: None,
+        token_factory=lambda: "token-b",
+    )
+    runtime_b = manager_b.ensure_running(config)
+
+    assert runtime_b is not runtime_a
+    assert runtime_b.endpoint == runtime_a.endpoint
+    assert runtime_b.backend == "external"   # 复用标记：非本实例启动
+    assert runtime_b.pid is None
+    assert runtime_b.api_key == "token-a"    # 复用 A 的 token
+    assert len(live) == 1                    # 未新开进程
+
+    # B.stop() 只清自己的引用，不动 A 的服务（外部服务不归 B 管）
+    manager_b.stop()
+    assert live[0].terminated is False
+    assert manager_b.runtime is None
+
+    # A.stop() 杀自己启动的进程并清理状态文件（B 复用后将不可再命中）
+    manager_a.stop()
+    assert live[0].terminated is True
+    assert not (state_dir / "model_runtime.json").exists()
+
+
+def test_cross_instance_skips_reuse_on_signature_mismatch(tmp_path):
+    """签名不匹配（不同模型）→ 不复用，各自启动自己的服务。"""
+    server = _write_fake_runtime(tmp_path / "runtime")
+    model = _write_fake_gguf(tmp_path / "model.gguf")
+    other = _write_fake_gguf(tmp_path / "other.gguf")
+    state_dir = tmp_path / "state"
+    live: list[_ReusableFakeProcess] = []
+
+    def factory(command, **_kwargs):
+        proc = _ReusableFakeProcess(command, **_kwargs)
+        live.append(proc)
+        return proc
+
+    config_a = ApiConfig(
+        mode="local", local_server_path=str(server),
+        local_model_path=str(model), local_port=18085,
+    )
+    config_b = ApiConfig(
+        mode="local", local_server_path=str(server),
+        local_model_path=str(other), local_port=18085,
+    )
+    manager_a = LocalModelManager(
+        tmp_path, state_dir=state_dir, process_factory=factory,
+        probe=lambda _url, _token, _model: True, sleep=lambda _s: None,
+        token_factory=lambda: "token-a",
+    )
+    runtime_a = manager_a.ensure_running(config_a)
+
+    manager_b = LocalModelManager(
+        tmp_path / "other", state_dir=state_dir, process_factory=factory,
+        probe=lambda _url, _token, _model: True, sleep=lambda _s: None,
+        token_factory=lambda: "token-b",
+    )
+    runtime_b = manager_b.ensure_running(config_b)
+
+    assert runtime_b.backend == "gpu"      # 模型不同 → 全新启动
+    assert runtime_b.api_key == "token-b"
+    assert len(live) == 2
+
+    manager_b.stop()
+    manager_a.stop()
+    assert all(proc.terminated for proc in live)
+    assert not (state_dir / "model_runtime.json").exists()
+
+
 def test_runtime_manifest_requires_server_cpu_and_cuda_dependencies(tmp_path):
     required = [
         "llama-server.exe", "llama-server-impl.dll", "llama-common.dll",

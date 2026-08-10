@@ -1,0 +1,4414 @@
+游戏：a-game-about-literally-doing-your-taxes
+导出时间：2026-08-10 21:54:38
+翻译模型：Hy-MT2-1.8B-Q6_K
+跳过文本：294 条
+
+────────────────────────────────────────────────────────────────
+[1] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level0
+键位：asset#level0#73/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=73）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[2] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level0
+键位：asset#level0#74/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=74）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[3] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level0
+键位：asset#level0#75/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=75）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[4] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level0
+键位：asset#level0#76/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=76）
+原文：Normal
+译文：（无）
+置信度：low
+原因：code_heavy_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[5] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level0
+键位：asset#level0#76/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=76）
+原文：Highlighted
+译文：（无）
+置信度：low
+原因：code_heavy_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[6] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level0
+键位：asset#level0#76/str/2
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=76）
+原文：Pressed
+译文：（无）
+置信度：low
+原因：code_heavy_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[7] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level0
+键位：asset#level0#76/str/3
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=76）
+原文：Disabled
+译文：（无）
+置信度：low
+原因：code_heavy_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[8] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level0
+键位：asset#level0#76/str/5
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=76）
+原文：UnityEngine.Object, UnityEngine
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[9] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level0
+键位：asset#level0#76/str/6
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=76）
+原文：UnityEngine.UI.Button+ButtonClickedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[10] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level0
+键位：asset#level0#77/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=77）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[11] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level0
+键位：asset#level0#78/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=78）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[12] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level0
+键位：asset#level0#79/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=79）
+原文：Horizontal
+译文：（无）
+置信度：low
+原因：identifier_without_display_evidence
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[13] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level0
+键位：asset#level0#79/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=79）
+原文：Vertical
+译文：（无）
+置信度：low
+原因：identifier_without_display_evidence
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[14] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level0
+键位：asset#level0#79/str/2
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=79）
+原文：Submit
+译文：（无）
+置信度：low
+原因：identifier_without_display_evidence
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[15] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level0
+键位：asset#level0#79/str/3
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=79）
+原文：Cancel
+译文：（无）
+置信度：low
+原因：identifier_without_display_evidence
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[16] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level0
+键位：asset#level0#80/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=80）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[17] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level0
+键位：asset#level0#82/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=82）
+原文：Normal
+译文：（无）
+置信度：low
+原因：code_heavy_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[18] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level0
+键位：asset#level0#82/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=82）
+原文：Highlighted
+译文：（无）
+置信度：low
+原因：code_heavy_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[19] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level0
+键位：asset#level0#82/str/2
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=82）
+原文：Pressed
+译文：（无）
+置信度：low
+原因：code_heavy_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[20] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level0
+键位：asset#level0#82/str/3
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=82）
+原文：Disabled
+译文：（无）
+置信度：low
+原因：code_heavy_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[21] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level0
+键位：asset#level0#82/str/5
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=82）
+原文：UnityEngine.Object, UnityEngine
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[22] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level0
+键位：asset#level0#82/str/6
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=82）
+原文：UnityEngine.UI.Button+ButtonClickedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[23] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level0
+键位：asset#level0#83/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=83）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[24] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level0
+键位：asset#level0#84/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=84）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[25] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level0
+键位：asset#level0#85/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=85）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[26] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level0
+键位：asset#level0#88/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=88）
+原文：Normal
+译文：（无）
+置信度：low
+原因：code_heavy_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[27] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level0
+键位：asset#level0#88/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=88）
+原文：Highlighted
+译文：（无）
+置信度：low
+原因：code_heavy_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[28] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level0
+键位：asset#level0#88/str/2
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=88）
+原文：Pressed
+译文：（无）
+置信度：low
+原因：code_heavy_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[29] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level0
+键位：asset#level0#88/str/3
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=88）
+原文：Disabled
+译文：（无）
+置信度：low
+原因：code_heavy_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[30] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level0
+键位：asset#level0#88/str/5
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=88）
+原文：UnityEngine.Object, UnityEngine
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[31] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level0
+键位：asset#level0#88/str/6
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=88）
+原文：UnityEngine.UI.Button+ButtonClickedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[32] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level0
+键位：asset#level0#89/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=89）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[33] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level1
+键位：asset#level1#138/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=138）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[34] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level1
+键位：asset#level1#142/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=142）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[35] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level1
+键位：asset#level1#143/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=143）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[36] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level1
+键位：asset#level1#145/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=145）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[37] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level1
+键位：asset#level1#146/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=146）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[38] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level1
+键位：asset#level1#147/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=147）
+原文：Horizontal
+译文：（无）
+置信度：low
+原因：identifier_without_display_evidence
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[39] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level1
+键位：asset#level1#147/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=147）
+原文：Vertical
+译文：（无）
+置信度：low
+原因：identifier_without_display_evidence
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[40] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level1
+键位：asset#level1#147/str/2
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=147）
+原文：Submit
+译文：（无）
+置信度：low
+原因：identifier_without_display_evidence
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[41] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level1
+键位：asset#level1#147/str/3
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=147）
+原文：Cancel
+译文：（无）
+置信度：low
+原因：identifier_without_display_evidence
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[42] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level1
+键位：asset#level1#149/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=149）
+原文：Normal
+译文：（无）
+置信度：low
+原因：code_heavy_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[43] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level1
+键位：asset#level1#149/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=149）
+原文：Highlighted
+译文：（无）
+置信度：low
+原因：code_heavy_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[44] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level1
+键位：asset#level1#149/str/2
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=149）
+原文：Pressed
+译文：（无）
+置信度：low
+原因：code_heavy_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[45] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level1
+键位：asset#level1#149/str/3
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=149）
+原文：Disabled
+译文：（无）
+置信度：low
+原因：code_heavy_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[46] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level1
+键位：asset#level1#149/str/5
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=149）
+原文：UnityEngine.Object, UnityEngine
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[47] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level1
+键位：asset#level1#149/str/6
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=149）
+原文：UnityEngine.UI.Button+ButtonClickedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[48] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level1
+键位：asset#level1#150/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=150）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[49] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level1
+键位：asset#level1#152/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=152）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[50] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level1
+键位：asset#level1#155/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=155）
+原文：YIKES
+译文：（无）
+置信度：low
+原因：identifier_without_display_evidence
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[51] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level1
+键位：asset#level1#157/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=157）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[52] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level1
+键位：asset#level1#158/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=158）
+原文：Normal
+译文：（无）
+置信度：low
+原因：code_heavy_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[53] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level1
+键位：asset#level1#158/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=158）
+原文：Highlighted
+译文：（无）
+置信度：low
+原因：code_heavy_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[54] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level1
+键位：asset#level1#158/str/2
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=158）
+原文：Pressed
+译文：（无）
+置信度：low
+原因：code_heavy_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[55] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level1
+键位：asset#level1#158/str/3
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=158）
+原文：Disabled
+译文：（无）
+置信度：low
+原因：code_heavy_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[56] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level1
+键位：asset#level1#158/str/5
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=158）
+原文：UnityEngine.Object, UnityEngine
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[57] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level1
+键位：asset#level1#158/str/6
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=158）
+原文：UnityEngine.UI.Button+ButtonClickedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[58] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level1
+键位：asset#level1#159/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=159）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[59] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level1
+键位：asset#level1#162/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=162）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[60] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level10
+键位：asset#level10#103/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level10、obj=103）
+原文：Horizontal
+译文：（无）
+置信度：low
+原因：identifier_without_display_evidence
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[61] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level10
+键位：asset#level10#103/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level10、obj=103）
+原文：Vertical
+译文：（无）
+置信度：low
+原因：identifier_without_display_evidence
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[62] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level10
+键位：asset#level10#103/str/2
+对象：MonoBehaviour rawstr 数组（asset_file=level10、obj=103）
+原文：Submit
+译文：（无）
+置信度：low
+原因：identifier_without_display_evidence
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[63] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level10
+键位：asset#level10#103/str/3
+对象：MonoBehaviour rawstr 数组（asset_file=level10、obj=103）
+原文：Cancel
+译文：（无）
+置信度：low
+原因：identifier_without_display_evidence
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[64] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level10
+键位：asset#level10#106/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level10、obj=106）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[65] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level10
+键位：asset#level10#109/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level10、obj=109）
+原文：YIKES
+译文：（无）
+置信度：low
+原因：identifier_without_display_evidence
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[66] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level2
+键位：asset#level2#221/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=221）
+原文：Normal
+译文：（无）
+置信度：low
+原因：code_heavy_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[67] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level2
+键位：asset#level2#221/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=221）
+原文：Highlighted
+译文：（无）
+置信度：low
+原因：code_heavy_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[68] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level2
+键位：asset#level2#221/str/2
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=221）
+原文：Pressed
+译文：（无）
+置信度：low
+原因：code_heavy_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[69] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level2
+键位：asset#level2#221/str/3
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=221）
+原文：Disabled
+译文：（无）
+置信度：low
+原因：code_heavy_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[70] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level2
+键位：asset#level2#221/str/5
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=221）
+原文：UnityEngine.Object, UnityEngine
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[71] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level2
+键位：asset#level2#221/str/6
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=221）
+原文：UnityEngine.UI.Button+ButtonClickedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[72] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level2
+键位：asset#level2#222/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=222）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[73] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level2
+键位：asset#level2#228/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=228）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[74] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level2
+键位：asset#level2#229/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=229）
+原文：Horizontal
+译文：（无）
+置信度：low
+原因：identifier_without_display_evidence
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[75] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level2
+键位：asset#level2#229/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=229）
+原文：Vertical
+译文：（无）
+置信度：low
+原因：identifier_without_display_evidence
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[76] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level2
+键位：asset#level2#229/str/2
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=229）
+原文：Submit
+译文：（无）
+置信度：low
+原因：identifier_without_display_evidence
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[77] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level2
+键位：asset#level2#229/str/3
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=229）
+原文：Cancel
+译文：（无）
+置信度：low
+原因：identifier_without_display_evidence
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[78] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level2
+键位：asset#level2#230/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=230）
+原文：Normal
+译文：（无）
+置信度：low
+原因：code_heavy_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[79] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level2
+键位：asset#level2#230/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=230）
+原文：Highlighted
+译文：（无）
+置信度：low
+原因：code_heavy_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[80] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level2
+键位：asset#level2#230/str/2
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=230）
+原文：Pressed
+译文：（无）
+置信度：low
+原因：code_heavy_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[81] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level2
+键位：asset#level2#230/str/3
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=230）
+原文：Disabled
+译文：（无）
+置信度：low
+原因：code_heavy_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[82] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level2
+键位：asset#level2#230/str/5
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=230）
+原文：UnityEngine.Object, UnityEngine
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[83] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level2
+键位：asset#level2#230/str/6
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=230）
+原文：UnityEngine.UI.Button+ButtonClickedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[84] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level2
+键位：asset#level2#231/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=231）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[85] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level2
+键位：asset#level2#232/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=232）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[86] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level2
+键位：asset#level2#234/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=234）
+原文：Horizontal
+译文：（无）
+置信度：low
+原因：identifier_without_display_evidence
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[87] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level2
+键位：asset#level2#234/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=234）
+原文：Vertical
+译文：（无）
+置信度：low
+原因：identifier_without_display_evidence
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[88] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level2
+键位：asset#level2#234/str/2
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=234）
+原文：Submit
+译文：（无）
+置信度：low
+原因：identifier_without_display_evidence
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[89] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level2
+键位：asset#level2#234/str/3
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=234）
+原文：Cancel
+译文：（无）
+置信度：low
+原因：identifier_without_display_evidence
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[90] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level2
+键位：asset#level2#238/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=238）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[91] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level2
+键位：asset#level2#244/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=244）
+原文：YIKES
+译文：（无）
+置信度：low
+原因：identifier_without_display_evidence
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[92] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level2
+键位：asset#level2#245/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=245）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[93] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level2
+键位：asset#level2#247/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=247）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[94] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level3
+键位：asset#level3#221/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level3、obj=221）
+原文：Normal
+译文：（无）
+置信度：low
+原因：code_heavy_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[95] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level3
+键位：asset#level3#221/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level3、obj=221）
+原文：Highlighted
+译文：（无）
+置信度：low
+原因：code_heavy_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[96] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level3
+键位：asset#level3#221/str/2
+对象：MonoBehaviour rawstr 数组（asset_file=level3、obj=221）
+原文：Pressed
+译文：（无）
+置信度：low
+原因：code_heavy_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[97] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level3
+键位：asset#level3#221/str/3
+对象：MonoBehaviour rawstr 数组（asset_file=level3、obj=221）
+原文：Disabled
+译文：（无）
+置信度：low
+原因：code_heavy_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[98] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level3
+键位：asset#level3#221/str/5
+对象：MonoBehaviour rawstr 数组（asset_file=level3、obj=221）
+原文：UnityEngine.Object, UnityEngine
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[99] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level3
+键位：asset#level3#221/str/6
+对象：MonoBehaviour rawstr 数组（asset_file=level3、obj=221）
+原文：UnityEngine.UI.Button+ButtonClickedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[100] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level3
+键位：asset#level3#222/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level3、obj=222）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[101] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level3
+键位：asset#level3#224/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level3、obj=224）
+原文：Normal
+译文：（无）
+置信度：low
+原因：code_heavy_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[102] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level3
+键位：asset#level3#224/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level3、obj=224）
+原文：Highlighted
+译文：（无）
+置信度：low
+原因：code_heavy_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[103] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level3
+键位：asset#level3#224/str/2
+对象：MonoBehaviour rawstr 数组（asset_file=level3、obj=224）
+原文：Pressed
+译文：（无）
+置信度：low
+原因：code_heavy_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[104] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level3
+键位：asset#level3#224/str/3
+对象：MonoBehaviour rawstr 数组（asset_file=level3、obj=224）
+原文：Disabled
+译文：（无）
+置信度：low
+原因：code_heavy_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[105] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level3
+键位：asset#level3#224/str/5
+对象：MonoBehaviour rawstr 数组（asset_file=level3、obj=224）
+原文：UnityEngine.Object, UnityEngine
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[106] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level3
+键位：asset#level3#224/str/6
+对象：MonoBehaviour rawstr 数组（asset_file=level3、obj=224）
+原文：UnityEngine.UI.Button+ButtonClickedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[107] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level3
+键位：asset#level3#225/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level3、obj=225）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[108] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level3
+键位：asset#level3#229/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level3、obj=229）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[109] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level3
+键位：asset#level3#230/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level3、obj=230）
+原文：Horizontal
+译文：（无）
+置信度：low
+原因：identifier_without_display_evidence
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[110] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level3
+键位：asset#level3#230/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level3、obj=230）
+原文：Vertical
+译文：（无）
+置信度：low
+原因：identifier_without_display_evidence
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[111] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level3
+键位：asset#level3#230/str/2
+对象：MonoBehaviour rawstr 数组（asset_file=level3、obj=230）
+原文：Submit
+译文：（无）
+置信度：low
+原因：identifier_without_display_evidence
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[112] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level3
+键位：asset#level3#230/str/3
+对象：MonoBehaviour rawstr 数组（asset_file=level3、obj=230）
+原文：Cancel
+译文：（无）
+置信度：low
+原因：identifier_without_display_evidence
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[113] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level3
+键位：asset#level3#232/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level3、obj=232）
+原文：SLOPPY
+译文：（无）
+置信度：low
+原因：identifier_without_display_evidence
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[114] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level3
+键位：asset#level3#236/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level3、obj=236）
+原文：Horizontal
+译文：（无）
+置信度：low
+原因：identifier_without_display_evidence
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[115] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level3
+键位：asset#level3#236/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level3、obj=236）
+原文：Vertical
+译文：（无）
+置信度：low
+原因：identifier_without_display_evidence
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[116] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level3
+键位：asset#level3#236/str/2
+对象：MonoBehaviour rawstr 数组（asset_file=level3、obj=236）
+原文：Submit
+译文：（无）
+置信度：low
+原因：identifier_without_display_evidence
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[117] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level3
+键位：asset#level3#236/str/3
+对象：MonoBehaviour rawstr 数组（asset_file=level3、obj=236）
+原文：Cancel
+译文：（无）
+置信度：low
+原因：identifier_without_display_evidence
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[118] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level3
+键位：asset#level3#239/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level3、obj=239）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[119] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level3
+键位：asset#level3#243/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level3、obj=243）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[120] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level3
+键位：asset#level3#244/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level3、obj=244）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[121] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level3
+键位：asset#level3#246/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level3、obj=246）
+原文：YIKES
+译文：（无）
+置信度：low
+原因：identifier_without_display_evidence
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[122] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level3
+键位：asset#level3#251/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level3、obj=251）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[123] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level4
+键位：asset#level4#228/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level4、obj=228）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[124] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level4
+键位：asset#level4#230/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level4、obj=230）
+原文：Horizontal
+译文：（无）
+置信度：low
+原因：identifier_without_display_evidence
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[125] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level4
+键位：asset#level4#230/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level4、obj=230）
+原文：Vertical
+译文：（无）
+置信度：low
+原因：identifier_without_display_evidence
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[126] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level4
+键位：asset#level4#230/str/2
+对象：MonoBehaviour rawstr 数组（asset_file=level4、obj=230）
+原文：Submit
+译文：（无）
+置信度：low
+原因：identifier_without_display_evidence
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[127] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level4
+键位：asset#level4#230/str/3
+对象：MonoBehaviour rawstr 数组（asset_file=level4、obj=230）
+原文：Cancel
+译文：（无）
+置信度：low
+原因：identifier_without_display_evidence
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[128] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level4
+键位：asset#level4#231/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level4、obj=231）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[129] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level4
+键位：asset#level4#232/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level4、obj=232）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[130] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level4
+键位：asset#level4#234/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level4、obj=234）
+原文：Normal
+译文：（无）
+置信度：low
+原因：code_heavy_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[131] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level4
+键位：asset#level4#234/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level4、obj=234）
+原文：Highlighted
+译文：（无）
+置信度：low
+原因：code_heavy_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[132] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level4
+键位：asset#level4#234/str/2
+对象：MonoBehaviour rawstr 数组（asset_file=level4、obj=234）
+原文：Pressed
+译文：（无）
+置信度：low
+原因：code_heavy_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[133] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level4
+键位：asset#level4#234/str/3
+对象：MonoBehaviour rawstr 数组（asset_file=level4、obj=234）
+原文：Disabled
+译文：（无）
+置信度：low
+原因：code_heavy_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[134] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level4
+键位：asset#level4#234/str/5
+对象：MonoBehaviour rawstr 数组（asset_file=level4、obj=234）
+原文：UnityEngine.Object, UnityEngine
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[135] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level4
+键位：asset#level4#234/str/6
+对象：MonoBehaviour rawstr 数组（asset_file=level4、obj=234）
+原文：UnityEngine.UI.Button+ButtonClickedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[136] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level4
+键位：asset#level4#235/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level4、obj=235）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[137] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level4
+键位：asset#level4#236/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level4、obj=236）
+原文：Horizontal
+译文：（无）
+置信度：low
+原因：identifier_without_display_evidence
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[138] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level4
+键位：asset#level4#236/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level4、obj=236）
+原文：Vertical
+译文：（无）
+置信度：low
+原因：identifier_without_display_evidence
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[139] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level4
+键位：asset#level4#236/str/2
+对象：MonoBehaviour rawstr 数组（asset_file=level4、obj=236）
+原文：Submit
+译文：（无）
+置信度：low
+原因：identifier_without_display_evidence
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[140] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level4
+键位：asset#level4#236/str/3
+对象：MonoBehaviour rawstr 数组（asset_file=level4、obj=236）
+原文：Cancel
+译文：（无）
+置信度：low
+原因：identifier_without_display_evidence
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[141] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level4
+键位：asset#level4#240/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level4、obj=240）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[142] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level4
+键位：asset#level4#243/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level4、obj=243）
+原文：Normal
+译文：（无）
+置信度：low
+原因：code_heavy_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[143] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level4
+键位：asset#level4#243/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level4、obj=243）
+原文：Highlighted
+译文：（无）
+置信度：low
+原因：code_heavy_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[144] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level4
+键位：asset#level4#243/str/2
+对象：MonoBehaviour rawstr 数组（asset_file=level4、obj=243）
+原文：Pressed
+译文：（无）
+置信度：low
+原因：code_heavy_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[145] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level4
+键位：asset#level4#243/str/3
+对象：MonoBehaviour rawstr 数组（asset_file=level4、obj=243）
+原文：Disabled
+译文：（无）
+置信度：low
+原因：code_heavy_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[146] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level4
+键位：asset#level4#243/str/5
+对象：MonoBehaviour rawstr 数组（asset_file=level4、obj=243）
+原文：UnityEngine.Object, UnityEngine
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[147] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level4
+键位：asset#level4#243/str/6
+对象：MonoBehaviour rawstr 数组（asset_file=level4、obj=243）
+原文：UnityEngine.UI.Button+ButtonClickedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[148] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level4
+键位：asset#level4#244/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level4、obj=244）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[149] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level4
+键位：asset#level4#250/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level4、obj=250）
+原文：YIKES
+译文：（无）
+置信度：low
+原因：identifier_without_display_evidence
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[150] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level4
+键位：asset#level4#254/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level4、obj=254）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[151] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level5
+键位：asset#level5#222/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level5、obj=222）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[152] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level5
+键位：asset#level5#225/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level5、obj=225）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[153] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level5
+键位：asset#level5#226/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level5、obj=226）
+原文：Normal
+译文：（无）
+置信度：low
+原因：code_heavy_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[154] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level5
+键位：asset#level5#226/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level5、obj=226）
+原文：Highlighted
+译文：（无）
+置信度：low
+原因：code_heavy_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[155] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level5
+键位：asset#level5#226/str/2
+对象：MonoBehaviour rawstr 数组（asset_file=level5、obj=226）
+原文：Pressed
+译文：（无）
+置信度：low
+原因：code_heavy_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[156] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level5
+键位：asset#level5#226/str/3
+对象：MonoBehaviour rawstr 数组（asset_file=level5、obj=226）
+原文：Disabled
+译文：（无）
+置信度：low
+原因：code_heavy_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[157] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level5
+键位：asset#level5#226/str/5
+对象：MonoBehaviour rawstr 数组（asset_file=level5、obj=226）
+原文：UnityEngine.Object, UnityEngine
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[158] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level5
+键位：asset#level5#226/str/6
+对象：MonoBehaviour rawstr 数组（asset_file=level5、obj=226）
+原文：UnityEngine.UI.Button+ButtonClickedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[159] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level5
+键位：asset#level5#227/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level5、obj=227）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[160] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level5
+键位：asset#level5#228/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level5、obj=228）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[161] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level5
+键位：asset#level5#229/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level5、obj=229）
+原文：Horizontal
+译文：（无）
+置信度：low
+原因：identifier_without_display_evidence
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[162] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level5
+键位：asset#level5#229/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level5、obj=229）
+原文：Vertical
+译文：（无）
+置信度：low
+原因：identifier_without_display_evidence
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[163] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level5
+键位：asset#level5#229/str/2
+对象：MonoBehaviour rawstr 数组（asset_file=level5、obj=229）
+原文：Submit
+译文：（无）
+置信度：low
+原因：identifier_without_display_evidence
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[164] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level5
+键位：asset#level5#229/str/3
+对象：MonoBehaviour rawstr 数组（asset_file=level5、obj=229）
+原文：Cancel
+译文：（无）
+置信度：low
+原因：identifier_without_display_evidence
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[165] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level5
+键位：asset#level5#232/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level5、obj=232）
+原文：YIKES
+译文：（无）
+置信度：low
+原因：identifier_without_display_evidence
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[166] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level5
+键位：asset#level5#234/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level5、obj=234）
+原文：Horizontal
+译文：（无）
+置信度：low
+原因：identifier_without_display_evidence
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[167] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level5
+键位：asset#level5#234/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level5、obj=234）
+原文：Vertical
+译文：（无）
+置信度：low
+原因：identifier_without_display_evidence
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[168] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level5
+键位：asset#level5#234/str/2
+对象：MonoBehaviour rawstr 数组（asset_file=level5、obj=234）
+原文：Submit
+译文：（无）
+置信度：low
+原因：identifier_without_display_evidence
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[169] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level5
+键位：asset#level5#234/str/3
+对象：MonoBehaviour rawstr 数组（asset_file=level5、obj=234）
+原文：Cancel
+译文：（无）
+置信度：low
+原因：identifier_without_display_evidence
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[170] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level5
+键位：asset#level5#235/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level5、obj=235）
+原文：Normal
+译文：（无）
+置信度：low
+原因：code_heavy_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[171] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level5
+键位：asset#level5#235/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level5、obj=235）
+原文：Highlighted
+译文：（无）
+置信度：low
+原因：code_heavy_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[172] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level5
+键位：asset#level5#235/str/2
+对象：MonoBehaviour rawstr 数组（asset_file=level5、obj=235）
+原文：Pressed
+译文：（无）
+置信度：low
+原因：code_heavy_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[173] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level5
+键位：asset#level5#235/str/3
+对象：MonoBehaviour rawstr 数组（asset_file=level5、obj=235）
+原文：Disabled
+译文：（无）
+置信度：low
+原因：code_heavy_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[174] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level5
+键位：asset#level5#235/str/5
+对象：MonoBehaviour rawstr 数组（asset_file=level5、obj=235）
+原文：UnityEngine.Object, UnityEngine
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[175] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level5
+键位：asset#level5#235/str/6
+对象：MonoBehaviour rawstr 数组（asset_file=level5、obj=235）
+原文：UnityEngine.UI.Button+ButtonClickedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[176] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level5
+键位：asset#level5#236/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level5、obj=236）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[177] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level5
+键位：asset#level5#238/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level5、obj=238）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[178] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level5
+键位：asset#level5#240/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level5、obj=240）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[179] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level6
+键位：asset#level6#215/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level6、obj=215）
+原文：Normal
+译文：（无）
+置信度：low
+原因：code_heavy_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[180] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level6
+键位：asset#level6#215/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level6、obj=215）
+原文：Highlighted
+译文：（无）
+置信度：low
+原因：code_heavy_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[181] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level6
+键位：asset#level6#215/str/2
+对象：MonoBehaviour rawstr 数组（asset_file=level6、obj=215）
+原文：Pressed
+译文：（无）
+置信度：low
+原因：code_heavy_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[182] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level6
+键位：asset#level6#215/str/3
+对象：MonoBehaviour rawstr 数组（asset_file=level6、obj=215）
+原文：Disabled
+译文：（无）
+置信度：low
+原因：code_heavy_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[183] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level6
+键位：asset#level6#215/str/5
+对象：MonoBehaviour rawstr 数组（asset_file=level6、obj=215）
+原文：UnityEngine.Object, UnityEngine
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[184] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level6
+键位：asset#level6#215/str/6
+对象：MonoBehaviour rawstr 数组（asset_file=level6、obj=215）
+原文：UnityEngine.UI.Button+ButtonClickedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[185] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level6
+键位：asset#level6#216/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level6、obj=216）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[186] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level6
+键位：asset#level6#218/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level6、obj=218）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[187] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level6
+键位：asset#level6#221/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level6、obj=221）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[188] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level6
+键位：asset#level6#224/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level6、obj=224）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[189] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level6
+键位：asset#level6#226/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level6、obj=226）
+原文：Horizontal
+译文：（无）
+置信度：low
+原因：identifier_without_display_evidence
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[190] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level6
+键位：asset#level6#226/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level6、obj=226）
+原文：Vertical
+译文：（无）
+置信度：low
+原因：identifier_without_display_evidence
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[191] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level6
+键位：asset#level6#226/str/2
+对象：MonoBehaviour rawstr 数组（asset_file=level6、obj=226）
+原文：Submit
+译文：（无）
+置信度：low
+原因：identifier_without_display_evidence
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[192] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level6
+键位：asset#level6#226/str/3
+对象：MonoBehaviour rawstr 数组（asset_file=level6、obj=226）
+原文：Cancel
+译文：（无）
+置信度：low
+原因：identifier_without_display_evidence
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[193] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level6
+键位：asset#level6#232/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level6、obj=232）
+原文：Horizontal
+译文：（无）
+置信度：low
+原因：identifier_without_display_evidence
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[194] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level6
+键位：asset#level6#232/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level6、obj=232）
+原文：Vertical
+译文：（无）
+置信度：low
+原因：identifier_without_display_evidence
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[195] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level6
+键位：asset#level6#232/str/2
+对象：MonoBehaviour rawstr 数组（asset_file=level6、obj=232）
+原文：Submit
+译文：（无）
+置信度：low
+原因：identifier_without_display_evidence
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[196] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level6
+键位：asset#level6#232/str/3
+对象：MonoBehaviour rawstr 数组（asset_file=level6、obj=232）
+原文：Cancel
+译文：（无）
+置信度：low
+原因：identifier_without_display_evidence
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[197] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level6
+键位：asset#level6#235/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level6、obj=235）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[198] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level6
+键位：asset#level6#237/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level6、obj=237）
+原文：Normal
+译文：（无）
+置信度：low
+原因：code_heavy_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[199] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level6
+键位：asset#level6#237/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level6、obj=237）
+原文：Highlighted
+译文：（无）
+置信度：low
+原因：code_heavy_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[200] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level6
+键位：asset#level6#237/str/2
+对象：MonoBehaviour rawstr 数组（asset_file=level6、obj=237）
+原文：Pressed
+译文：（无）
+置信度：low
+原因：code_heavy_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[201] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level6
+键位：asset#level6#237/str/3
+对象：MonoBehaviour rawstr 数组（asset_file=level6、obj=237）
+原文：Disabled
+译文：（无）
+置信度：low
+原因：code_heavy_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[202] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level6
+键位：asset#level6#237/str/5
+对象：MonoBehaviour rawstr 数组（asset_file=level6、obj=237）
+原文：UnityEngine.Object, UnityEngine
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[203] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level6
+键位：asset#level6#237/str/6
+对象：MonoBehaviour rawstr 数组（asset_file=level6、obj=237）
+原文：UnityEngine.UI.Button+ButtonClickedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[204] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level6
+键位：asset#level6#238/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level6、obj=238）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[205] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level6
+键位：asset#level6#246/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level6、obj=246）
+原文：YIKES
+译文：（无）
+置信度：low
+原因：identifier_without_display_evidence
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[206] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level6
+键位：asset#level6#249/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level6、obj=249）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[207] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level7
+键位：asset#level7#315/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level7、obj=315）
+原文：Normal
+译文：（无）
+置信度：low
+原因：code_heavy_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[208] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level7
+键位：asset#level7#315/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level7、obj=315）
+原文：Highlighted
+译文：（无）
+置信度：low
+原因：code_heavy_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[209] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level7
+键位：asset#level7#315/str/2
+对象：MonoBehaviour rawstr 数组（asset_file=level7、obj=315）
+原文：Pressed
+译文：（无）
+置信度：low
+原因：code_heavy_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[210] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level7
+键位：asset#level7#315/str/3
+对象：MonoBehaviour rawstr 数组（asset_file=level7、obj=315）
+原文：Disabled
+译文：（无）
+置信度：low
+原因：code_heavy_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[211] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level7
+键位：asset#level7#315/str/5
+对象：MonoBehaviour rawstr 数组（asset_file=level7、obj=315）
+原文：UnityEngine.Object, UnityEngine
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[212] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level7
+键位：asset#level7#315/str/6
+对象：MonoBehaviour rawstr 数组（asset_file=level7、obj=315）
+原文：UnityEngine.UI.Button+ButtonClickedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[213] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level7
+键位：asset#level7#316/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level7、obj=316）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[214] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level7
+键位：asset#level7#317/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level7、obj=317）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[215] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level7
+键位：asset#level7#321/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level7、obj=321）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[216] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level7
+键位：asset#level7#329/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level7、obj=329）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[217] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level7
+键位：asset#level7#330/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level7、obj=330）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[218] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level7
+键位：asset#level7#334/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level7、obj=334）
+原文：Horizontal
+译文：（无）
+置信度：low
+原因：identifier_without_display_evidence
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[219] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level7
+键位：asset#level7#334/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level7、obj=334）
+原文：Vertical
+译文：（无）
+置信度：low
+原因：identifier_without_display_evidence
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[220] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level7
+键位：asset#level7#334/str/2
+对象：MonoBehaviour rawstr 数组（asset_file=level7、obj=334）
+原文：Submit
+译文：（无）
+置信度：low
+原因：identifier_without_display_evidence
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[221] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level7
+键位：asset#level7#334/str/3
+对象：MonoBehaviour rawstr 数组（asset_file=level7、obj=334）
+原文：Cancel
+译文：（无）
+置信度：low
+原因：identifier_without_display_evidence
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[222] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level7
+键位：asset#level7#336/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level7、obj=336）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[223] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level7
+键位：asset#level7#338/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level7、obj=338）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[224] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level7
+键位：asset#level7#340/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level7、obj=340）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[225] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level7
+键位：asset#level7#351/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level7、obj=351）
+原文：Horizontal
+译文：（无）
+置信度：low
+原因：identifier_without_display_evidence
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[226] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level7
+键位：asset#level7#351/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level7、obj=351）
+原文：Vertical
+译文：（无）
+置信度：low
+原因：identifier_without_display_evidence
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[227] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level7
+键位：asset#level7#351/str/2
+对象：MonoBehaviour rawstr 数组（asset_file=level7、obj=351）
+原文：Submit
+译文：（无）
+置信度：low
+原因：identifier_without_display_evidence
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[228] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level7
+键位：asset#level7#351/str/3
+对象：MonoBehaviour rawstr 数组（asset_file=level7、obj=351）
+原文：Cancel
+译文：（无）
+置信度：low
+原因：identifier_without_display_evidence
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[229] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level7
+键位：asset#level7#352/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level7、obj=352）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[230] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level7
+键位：asset#level7#354/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level7、obj=354）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[231] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level7
+键位：asset#level7#358/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level7、obj=358）
+原文：YIKES
+译文：（无）
+置信度：low
+原因：identifier_without_display_evidence
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[232] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level7
+键位：asset#level7#360/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level7、obj=360）
+原文：Normal
+译文：（无）
+置信度：low
+原因：code_heavy_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[233] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level7
+键位：asset#level7#360/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level7、obj=360）
+原文：Highlighted
+译文：（无）
+置信度：low
+原因：code_heavy_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[234] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level7
+键位：asset#level7#360/str/2
+对象：MonoBehaviour rawstr 数组（asset_file=level7、obj=360）
+原文：Pressed
+译文：（无）
+置信度：low
+原因：code_heavy_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[235] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level7
+键位：asset#level7#360/str/3
+对象：MonoBehaviour rawstr 数组（asset_file=level7、obj=360）
+原文：Disabled
+译文：（无）
+置信度：low
+原因：code_heavy_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[236] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level7
+键位：asset#level7#360/str/5
+对象：MonoBehaviour rawstr 数组（asset_file=level7、obj=360）
+原文：UnityEngine.Object, UnityEngine
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[237] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level7
+键位：asset#level7#360/str/6
+对象：MonoBehaviour rawstr 数组（asset_file=level7、obj=360）
+原文：UnityEngine.UI.Button+ButtonClickedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[238] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level7
+键位：asset#level7#361/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level7、obj=361）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[239] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level7
+键位：asset#level7#362/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level7、obj=362）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[240] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level7
+键位：asset#level7#363/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level7、obj=363）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[241] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level7
+键位：asset#level7#364/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level7、obj=364）
+原文：Normal
+译文：（无）
+置信度：low
+原因：code_heavy_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[242] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level7
+键位：asset#level7#364/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level7、obj=364）
+原文：Highlighted
+译文：（无）
+置信度：low
+原因：code_heavy_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[243] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level7
+键位：asset#level7#364/str/2
+对象：MonoBehaviour rawstr 数组（asset_file=level7、obj=364）
+原文：Pressed
+译文：（无）
+置信度：low
+原因：code_heavy_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[244] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level7
+键位：asset#level7#364/str/3
+对象：MonoBehaviour rawstr 数组（asset_file=level7、obj=364）
+原文：Disabled
+译文：（无）
+置信度：low
+原因：code_heavy_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[245] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level7
+键位：asset#level7#364/str/5
+对象：MonoBehaviour rawstr 数组（asset_file=level7、obj=364）
+原文：UnityEngine.Object, UnityEngine
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[246] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level7
+键位：asset#level7#364/str/6
+对象：MonoBehaviour rawstr 数组（asset_file=level7、obj=364）
+原文：UnityEngine.UI.Button+ButtonClickedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[247] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level7
+键位：asset#level7#365/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level7、obj=365）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[248] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level7
+键位：asset#level7#367/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level7、obj=367）
+原文：Normal
+译文：（无）
+置信度：low
+原因：code_heavy_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[249] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level7
+键位：asset#level7#367/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level7、obj=367）
+原文：Highlighted
+译文：（无）
+置信度：low
+原因：code_heavy_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[250] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level7
+键位：asset#level7#367/str/2
+对象：MonoBehaviour rawstr 数组（asset_file=level7、obj=367）
+原文：Pressed
+译文：（无）
+置信度：low
+原因：code_heavy_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[251] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level7
+键位：asset#level7#367/str/3
+对象：MonoBehaviour rawstr 数组（asset_file=level7、obj=367）
+原文：Disabled
+译文：（无）
+置信度：low
+原因：code_heavy_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[252] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level7
+键位：asset#level7#367/str/5
+对象：MonoBehaviour rawstr 数组（asset_file=level7、obj=367）
+原文：UnityEngine.Object, UnityEngine
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[253] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level7
+键位：asset#level7#367/str/6
+对象：MonoBehaviour rawstr 数组（asset_file=level7、obj=367）
+原文：UnityEngine.UI.Button+ButtonClickedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[254] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level7
+键位：asset#level7#368/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level7、obj=368）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[255] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level7
+键位：asset#level7#369/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level7、obj=369）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[256] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level7
+键位：asset#level7#373/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level7、obj=373）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[257] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level7
+键位：asset#level7#374/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level7、obj=374）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[258] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level8
+键位：asset#level8#105/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level8、obj=105）
+原文：Horizontal
+译文：（无）
+置信度：low
+原因：identifier_without_display_evidence
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[259] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level8
+键位：asset#level8#105/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level8、obj=105）
+原文：Vertical
+译文：（无）
+置信度：low
+原因：identifier_without_display_evidence
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[260] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level8
+键位：asset#level8#105/str/2
+对象：MonoBehaviour rawstr 数组（asset_file=level8、obj=105）
+原文：Submit
+译文：（无）
+置信度：low
+原因：identifier_without_display_evidence
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[261] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level8
+键位：asset#level8#105/str/3
+对象：MonoBehaviour rawstr 数组（asset_file=level8、obj=105）
+原文：Cancel
+译文：（无）
+置信度：low
+原因：identifier_without_display_evidence
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[262] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level8
+键位：asset#level8#108/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level8、obj=108）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[263] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level8
+键位：asset#level8#111/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level8、obj=111）
+原文：YIKES
+译文：（无）
+置信度：low
+原因：identifier_without_display_evidence
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[264] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level9
+键位：asset#level9#145/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level9、obj=145）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[265] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level9
+键位：asset#level9#147/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level9、obj=147）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[266] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level9
+键位：asset#level9#148/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level9、obj=148）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[267] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level9
+键位：asset#level9#149/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level9、obj=149）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[268] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level9
+键位：asset#level9#151/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level9、obj=151）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[269] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level9
+键位：asset#level9#152/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level9、obj=152）
+原文：Horizontal
+译文：（无）
+置信度：low
+原因：identifier_without_display_evidence
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[270] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level9
+键位：asset#level9#152/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level9、obj=152）
+原文：Vertical
+译文：（无）
+置信度：low
+原因：identifier_without_display_evidence
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[271] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level9
+键位：asset#level9#152/str/2
+对象：MonoBehaviour rawstr 数组（asset_file=level9、obj=152）
+原文：Submit
+译文：（无）
+置信度：low
+原因：identifier_without_display_evidence
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[272] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level9
+键位：asset#level9#152/str/3
+对象：MonoBehaviour rawstr 数组（asset_file=level9、obj=152）
+原文：Cancel
+译文：（无）
+置信度：low
+原因：identifier_without_display_evidence
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[273] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level9
+键位：asset#level9#155/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level9、obj=155）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[274] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level9
+键位：asset#level9#157/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level9、obj=157）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[275] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level9
+键位：asset#level9#159/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level9、obj=159）
+原文：YIKES
+译文：（无）
+置信度：low
+原因：identifier_without_display_evidence
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[276] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level9
+键位：asset#level9#161/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level9、obj=161）
+原文：Normal
+译文：（无）
+置信度：low
+原因：code_heavy_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[277] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level9
+键位：asset#level9#161/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level9、obj=161）
+原文：Highlighted
+译文：（无）
+置信度：low
+原因：code_heavy_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[278] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level9
+键位：asset#level9#161/str/2
+对象：MonoBehaviour rawstr 数组（asset_file=level9、obj=161）
+原文：Pressed
+译文：（无）
+置信度：low
+原因：code_heavy_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[279] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level9
+键位：asset#level9#161/str/3
+对象：MonoBehaviour rawstr 数组（asset_file=level9、obj=161）
+原文：Disabled
+译文：（无）
+置信度：low
+原因：code_heavy_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[280] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level9
+键位：asset#level9#161/str/5
+对象：MonoBehaviour rawstr 数组（asset_file=level9、obj=161）
+原文：UnityEngine.Object, UnityEngine
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[281] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level9
+键位：asset#level9#161/str/6
+对象：MonoBehaviour rawstr 数组（asset_file=level9、obj=161）
+原文：UnityEngine.UI.Button+ButtonClickedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[282] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level9
+键位：asset#level9#162/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level9、obj=162）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[283] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level9
+键位：asset#level9#163/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level9、obj=163）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[284] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level9
+键位：asset#level9#164/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level9、obj=164）
+原文：Normal
+译文：（无）
+置信度：low
+原因：code_heavy_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[285] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level9
+键位：asset#level9#164/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level9、obj=164）
+原文：Highlighted
+译文：（无）
+置信度：low
+原因：code_heavy_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[286] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level9
+键位：asset#level9#164/str/2
+对象：MonoBehaviour rawstr 数组（asset_file=level9、obj=164）
+原文：Pressed
+译文：（无）
+置信度：low
+原因：code_heavy_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[287] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level9
+键位：asset#level9#164/str/3
+对象：MonoBehaviour rawstr 数组（asset_file=level9、obj=164）
+原文：Disabled
+译文：（无）
+置信度：low
+原因：code_heavy_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[288] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level9
+键位：asset#level9#164/str/5
+对象：MonoBehaviour rawstr 数组（asset_file=level9、obj=164）
+原文：UnityEngine.Object, UnityEngine
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[289] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level9
+键位：asset#level9#164/str/6
+对象：MonoBehaviour rawstr 数组（asset_file=level9、obj=164）
+原文：UnityEngine.UI.Button+ButtonClickedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[290] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level9
+键位：asset#level9#165/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level9、obj=165）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[291] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/level9
+键位：asset#level9#169/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level9、obj=169）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[292] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/Managed/Assembly-CSharp.dll
+键位：us#112
+对象：DLL #US 字符串（record_offset=23707）
+原文： taxes!
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[293] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/Managed/Assembly-CSharp.dll
+键位：us#156
+对象：DLL #US 字符串（record_offset=23751）
+原文： things!
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[294] 跳过文本
+来源：A Game About Literally Doing Your Taxes_Data/Managed/Assembly-CSharp.dll
+键位：us#208
+对象：DLL #US 字符串（record_offset=23803）
+原文：Tax Returns: $
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—

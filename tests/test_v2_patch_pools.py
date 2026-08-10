@@ -296,8 +296,9 @@ def test_patch_metadata_integration_truncation_records_and_verifies(tmp_path):
     assert reopened[data_pos:data_pos + length].decode("utf-8") == "你好世…"
 
 
-def test_patch_metadata_rejects_truncated_placeholder(tmp_path):
-    """F2：截断破坏 {n} 占位符 → 拒绝写回该条，文件零改动。"""
+def test_patch_metadata_restores_placeholder_within_capacity(tmp_path):
+    """F2：译文缺 {0} → 机械恢复补末尾；恢复后恰好等于容量 → 不截断，
+    占位符完整保留，写回成功（好译文不被 reject 丢弃）。"""
     raw = _build(31, ["Press {0} to continue"])    # 21 字节
     path = tmp_path / "global-metadata.dat"
     path.write_bytes(raw)
@@ -305,10 +306,13 @@ def test_patch_metadata_rejects_truncated_placeholder(tmp_path):
     _patch_metadata(path, [
         _meta_entry(0x200, 21, "Press {0} to continue", "点击开始游戏"),
     ], result)
-    assert result.written == 0
-    assert len(result.rejected) == 1
-    assert "占位符" in result.rejected[0].reason
-    assert path.read_bytes() == raw                # 拒绝 = 零改动
+    assert result.written == 1
+    assert result.rejected == []
+    reopened = path.read_bytes()
+    patched = il2cpp.parse_string_literals(reopened)
+    assert patched[0][1] == 21                     # 「点击开始游戏{0}」21 字节
+    data_off = patched[0][2]
+    assert reopened[data_off:data_off + 21].decode("utf-8") == "点击开始游戏{0}"
 
 
 def test_patch_metadata_placeholder_order_free_passes(tmp_path):
@@ -587,27 +591,36 @@ def test_diff_whitelist_implicit_rejects_header_change():
 # 占位符全量校验：未截断但缺 {n} 也拒绝（不依赖截断路径）
 # --------------------------------------------------------------------------
 
-def test_patch_dll_rejects_missing_placeholder_without_truncation(tmp_path):
-    """译文未截断但删除 {0} → 拒绝（string.Format 崩溃防护全量覆盖）。"""
+def test_patch_dll_restores_missing_placeholder_without_truncation(tmp_path):
+    """译文未截断但删掉 {0} → 机械恢复补到末尾并写入成功（string.Format
+    按索引取参位置无关；模型漏写 {n} 是稳定行为，补回比 reject 丢弃
+    好译文更优）。"""
     original = "Press {0} to continue"
     heap = _us_heap([(original.encode("utf-16-le"), 0)])
     path = tmp_path / "Assembly-CSharp.dll"
     path.write_bytes(heap)
     result = WriteResult()
     _patch_dll(path, [_us_entry(1, 42, original, "继续")], result)
-    assert result.written == 0
-    assert len(result.rejected) == 1
-    assert "占位符" in result.rejected[0].reason
-    assert path.read_bytes() == heap
+    assert result.written == 1
+    assert result.rejected == []
+    blob = path.read_bytes()
+    # 恢复后译文 = 「继续{0}」10 字节（5 码元）+ flag → 前缀 0x0B
+    assert blob[1] == 0x0B
+    assert blob[2:12].decode("utf-16-le") == "继续{0}"
 
 
-def test_patch_metadata_rejects_missing_placeholder_without_truncation(tmp_path):
+def test_patch_metadata_restores_missing_placeholder_without_truncation(tmp_path):
     raw = _build(31, ["Press {0} to continue"])
     path = tmp_path / "global-metadata.dat"
     path.write_bytes(raw)
     result = WriteResult()
     _patch_metadata(
         path, [_meta_entry(0x200, 21, "Press {0} to continue", "继续")], result)
-    assert result.written == 0
-    assert len(result.rejected) == 1
-    assert "占位符" in result.rejected[0].reason
+    assert result.written == 1
+    assert result.rejected == []
+    reopened = path.read_bytes()
+    patched = il2cpp.parse_string_literals(reopened)
+    assert patched[0][1] == 9          # 「继续{0}」9 字节
+    assert patched[0][2] is not None
+    data_off = patched[0][2]
+    assert reopened[data_off:data_off + 9].decode("utf-8") == "继续{0}"

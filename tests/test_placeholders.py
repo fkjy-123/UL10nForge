@@ -435,3 +435,88 @@ def test_regular_text_bullet_lines_keep_leading_star():
 
     ok, _, _ = validate_translation("* Item one", "项目一")
     assert ok is False
+
+
+# ── baldis 修复：// 注释行 / 混合符号 token ──
+
+
+def test_slash_slash_comment_line_is_structural():
+    """C# 风格注释行（// 后跟空白）不是游戏文本（baldis 实证：TextAsset
+    脚本里 '//        word:replacement:notCaseSensitive' 注释行被模型当
+    文本翻译成乱语）。"""
+    assert is_hard_structural("//        word:replacement:notCaseSensitive")
+    assert is_hard_structural("//")
+    assert is_hard_structural("// 跳过一个关卡\n")
+    # 协议相对 URL / UNC 路径（// 后直接字母数字，无空白）不被注释分支
+    # 拦截，但本身仍由 _PROTOCOL_RELATIVE_URL 分支跳过
+    assert is_hard_structural("//hostname/path/to/file")
+    assert is_hard_structural("//server/share/config.txt")
+
+
+def test_mixed_symbol_token_is_structural():
+    """无空格 + 强代码符号 + 字母的串多为随机会话 token/编码数据
+    （baldis 实证：'xChDC-Gs%OmaMl+g' 模型回显恒败）。"""
+    assert is_hard_structural("xChDC-Gs%OmaMl+g")
+    assert is_hard_structural("a1b2%c3&d4#e5^f6")
+    # 不误伤：'100% sure' 有空格、'save+load' 的 + 不是强符号、
+    # 'a50%' 长度不足、'a b % c' 有空格（'50%' 本身是格式后缀分支跳过）
+    assert not is_hard_structural("100% sure")
+    assert not is_hard_structural("save+load")
+    assert not is_hard_structural("a50%")
+    assert not is_hard_structural("a b % c")
+
+
+# ── butterflies 修复：§ 键码 / 语言代码 / 键位映射 / 占位名 / credit 名单 ──
+
+
+def test_section_key_code_is_structural():
+    """语言文件键码（§m_quit ###：§ 前缀键 + ### 空值分隔符）→ 结构跳过
+    （butterflies 实证 97 条：localization 键值模板的键且值缺失，模型
+    回显恒败）。"""
+    assert is_hard_structural("§m_quit ###")
+    assert is_hard_structural("§nobg ###")
+    assert is_hard_structural("§e1_dialogue_jae_m3_win_2_nat ###")
+    assert is_hard_structural("§m_language_en ###")
+    # 防误伤：§ 在句首的正常文本（带空格 + 语义）不跳过
+    assert not is_hard_structural("§ 你好世界")
+
+
+def test_lang_code_with_slash_is_structural():
+    """语言代码目录标记（EN/ / DE/）→ 双语 TextAsset 语种分隔行，
+    结构跳过（butterflies 实证：'EN/' 回显被判失败）。"""
+    assert is_hard_structural("EN/")
+    assert is_hard_structural("de/")
+
+
+def test_single_char_keymap_lines_is_structural():
+    """多行键位映射（k\nm\n/\nh：键盘快捷键组合提示，每行恰好 1 个
+    字符）→ 无译义内容，结构跳过（butterflies 实证 4 条）。"""
+    assert is_hard_structural("k\nm\n/\nh")
+    assert is_hard_structural("A\nB")
+    # 防误伤：任一行是多字符的普通文本不跳过
+    assert not is_hard_structural("k\nm\n/\nhello world")
+
+
+def test_xxxx_placeholder_name_is_structural():
+    """XXXX 占位名（XXXX t'a：未命名角色/玩家的占位名，XXXX 是标准名字
+    占位符）→ 保留原文合理（butterflies 实证：模型回显被判失败）。"""
+    assert is_hard_structural("XXXX t'a")
+    assert is_hard_structural("XXXX")
+
+
+def test_credit_aligned_two_column_skip():
+    """credit 名单对齐行（kangaroovindaloo    qubodup / pcaeldries
+    RICHERlandTV：制作人名单两列对齐）→ 无译义署名，跳过
+    （butterflies 实证 8 条）。"""
+    assert is_credit_like("kangaroovindaloo    qubodup")
+    assert is_credit_like("pcaeldries          RICHERlandTV")
+    # 防误伤：含句子虚词的双空格行是正常句子
+    assert not is_credit_like("the level  list is here")
+
+
+def test_ft_music_credit_skip():
+    """音乐合作名单（Highraiser ft. inkoutlines, MC Cruel Addict：ft. =
+    featuring 合作标签）→ 署名行，跳过（butterflies 实证）。"""
+    assert is_credit_like("Highraiser ft. inkoutlines, MC Cruel Addict")
+    # 防误伤：含句子虚词的 ft. 行是正常句子
+    assert not is_credit_like("the ft. files are in the folder")

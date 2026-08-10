@@ -174,6 +174,12 @@ def test_translation_start_log_uses_same_zero_actionable_scope(
         def format_for_prompt(self):
             return ""
 
+        def known_names_for(self, _collected=None):
+            return []
+
+        def learn_proper_names(self, *_args, **_kwargs):
+            return 0
+
         def close(self):
             pass
 

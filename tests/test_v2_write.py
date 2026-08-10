@@ -75,14 +75,19 @@ def test_write_all_keeps_latest_backup_and_cleans_older(
     worker = threading.Thread(target=write)
     worker.start()
     assert cleanup_entered.wait(timeout=5)
-    worker.join(timeout=1)
+    # 发布同步等待清理完成（join 60s）——CLI 写回后立即退出，不等会
+    # 成片备份残留（0.25.0 实证：taxes 12 + catfiends 5 个 backup）
+    cleanup_release.set()
+    worker.join(timeout=30)
 
     assert not worker.is_alive()
     assert errors == []
     assert outcome[0]["verification"]["reopen_verified"] is True
-    assert [event.phase for event in stages][-2:] == ["published", "cleanup_pending"]
+    assert [event.phase for event in stages][-2:] == [
+        "cleanup_pending", "cleanup_complete"]
+    assert cleanup_done.is_set()
     assert project.out_dir.is_dir()
-    # 发布返回时：本次备份已落盘且写入 manifest（回滚凭据）
+    # 发布返回时：本次备份已落盘且写入 manifest（回滚凭据），清理完成
     verification = outcome[0]["verification"]
     assert verification["backup"] is not None
     current = project.out_dir.parent / verification["backup"]
@@ -91,9 +96,6 @@ def test_write_all_keeps_latest_backup_and_cleans_older(
     manifest_path = project.out_dir / ".hanhua-manifest.json"
     assert json.loads(manifest_path.read_text(encoding="utf-8"))["backup"]["path"] \
         == verification["backup"]
-
-    cleanup_release.set()
-    assert cleanup_done.wait(timeout=5)
     # 清理完成：更早备份已删，本次备份保留供回滚
     names = {p.name for p in
              project.out_dir.parent.glob(f".{project.out_dir.name}.backup-*")}

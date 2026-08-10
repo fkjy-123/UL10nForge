@@ -91,11 +91,16 @@ def _is_owned_backup(backup: Path, out_dir: Path) -> bool:
 def _schedule_backup_cleanup(
         keep: Path,
         out_dir: Path,
-        stage_cb: Callable[[WritebackStage], None] | None) -> None:
+        stage_cb: Callable[[WritebackStage], None] | None,
+) -> threading.Thread | None:
     """发布成功后后台清理「更早」的旧版本备份，保留本次备份供回滚。
 
     文档1 §3.3/§17：发布成功后必须可一键回滚到发布前版本——本次
     备份保留在磁盘（manifest 记录其路径），只删除更早的发布遗留。
+
+    返回清理线程，调用方在写回返回前 join 等待完成——CLI（地毯式
+    runner）写回后立即退出，daemon 线程会被进程终止打断，旧备份成片
+    残留（0.25.0 实证：taxes 12 个 + catfiends 5 个 backup，各 353MB）。
     """
     if not _is_owned_backup(keep, out_dir):
         _emit_writeback_stage(
@@ -124,14 +129,17 @@ def _schedule_backup_cleanup(
                 "更早的旧版本后台清理完成（本次备份保留）")
 
     try:
-        threading.Thread(
+        thread = threading.Thread(
             target=cleanup,
             name=f"hanhua-cleanup-{out_dir.name}",
             daemon=True,
-        ).start()
+        )
+        thread.start()
+        return thread
     except RuntimeError:
         _emit_writeback_stage(
             stage_cb, "cleanup_warning", f"无法启动旧版本清理线程，已保留：{keep}")
+        return None
 
 
 def _slug(
@@ -1082,9 +1090,14 @@ class Project:
         else:
             container_gate = gate("N/A", "无二进制容器补丁")
 
-        # 对象级：rejected/truncated 条目必须进入报告并阻断默认发布（P0-2）
-        if rejected or truncated:
-            detail_parts = [f"拒绝 {len(rejected)}", f"截断 {truncated}"]
+        # 对象级：rejected 阻断默认发布（P0-2）；truncated 是容量内的
+        # 部分翻译（译文主体 + 省略号已写入，容量限制下最优解），只进
+        # 报告 WARN 不阻断——阻断会让 1 条超长译文拖垮整场写回
+        # （taxes 'I did ' 实证：短串中文译文必然超 ASCII 容量）。
+        if rejected:
+            detail_parts = [f"拒绝 {len(rejected)}"]
+            if truncated:
+                detail_parts.append(f"截断 {truncated}")
             if allow_partial:
                 object_gate = gate(
                     "WARN",
@@ -1095,6 +1108,10 @@ class Project:
                     "BLOCKED",
                     f"存在未完全写入条目（{'、'.join(detail_parts)}），"
                     "默认阻断发布，需用户明确确认")
+        elif truncated:
+            object_gate = gate(
+                "WARN",
+                f"截断 {truncated} 条（容量内部分翻译已写入，含省略号提示）")
         else:
             object_gate = gate("PASS", "全部条目完整写入")
 
@@ -1367,24 +1384,24 @@ class Project:
                 else "unavailable" if active_font_config.enabled
                 else "disabled"
             )
-            # P0-2：rejected/truncated/blocked 条目全量进入报告，
-            # 默认（allow_partial=False）阻断发布，用户明确确认才放行
+            # P0-2：rejected 阻断默认发布（用户明确确认才放行）；
+            # truncated 是容量内部分翻译（主体+省略号已写入），进报告
+            # WARN 不阻断——1 条超长译文不应拖垮整场写回（taxes 实证）
             rejected_entries = [
                 {"locator": item.locator, "reason": item.reason}
                 for item in writer_outcome.rejected
             ]
             truncated_items = list(getattr(v2, "truncated_items", ()) or ())
-            if (rejected_entries or truncated_items) and not allow_partial:
-                detail_parts = []
-                if rejected_entries:
-                    detail_parts.append(f"拒绝 {len(rejected_entries)} 条")
-                if truncated_items:
-                    detail_parts.append(f"截断 {len(truncated_items)} 条")
+            if truncated_items:
+                warnings.append(
+                    f"截断 {len(truncated_items)} 条（容量内部分翻译已写入）："
+                    + "；".join(str(item) for item in truncated_items[:5]))
+            if rejected_entries and not allow_partial:
                 examples = "；".join(
                     f"{item['locator']}: {item['reason']}"
                     for item in rejected_entries[:5])
                 raise RuntimeError(
-                    f"写回存在未完全写入条目（{'、'.join(detail_parts)}），"
+                    f"写回存在被拒绝条目（拒绝 {len(rejected_entries)} 条），"
                     f"已阻断默认发布。{examples}"
                     "如需强制发布请在界面勾选“允许部分写入并发布”")
             verification = {
@@ -1496,8 +1513,11 @@ class Project:
             if backup is not None:
                 cleanup_target = backup
                 backup = None
-                _schedule_backup_cleanup(
+                cleanup_thread = _schedule_backup_cleanup(
                     cleanup_target, self.out_dir, stage_cb)
+                # 等待清理完成再返回：CLI 写回后立即退出，不等会成片残留
+                if cleanup_thread is not None:
+                    cleanup_thread.join(timeout=60)
             return result
         except Exception:
             if backup is not None and not self.out_dir.exists() and backup.exists():

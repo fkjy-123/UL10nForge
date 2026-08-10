@@ -14,10 +14,11 @@ from PySide6.QtWidgets import (QCheckBox, QFrame, QHBoxLayout, QLabel,
 
 from hanhua.core.batch_translator import BatchTranslator
 from hanhua.core.glossary import GlossaryStore
+from hanhua.core.knowledge import KnowledgeBase
 from hanhua.core.local_model import LocalModelError, sanitize_exception
 from hanhua.core.models import (GameProfile, TextEntry,
                                 is_actionable_translation)
-from hanhua.core.prompts import build_system_prompt
+from hanhua.core.prompts import build_system_prompt, collect_known_names
 from hanhua.core.quality import is_write_ready
 from hanhua.core.translator import create_client
 from hanhua.ui.app_state import AppState
@@ -354,6 +355,18 @@ class TranslatePage(QWidget):
             glossary.init_schema()
             glossary_rows = glossary.list_all()
             glossary_prompt = glossary.format_for_prompt()
+            # 知识库：跨游戏沉淀的特殊情况规则（「该翻未翻」模式 + 处置策略）。
+            # 译例并入 glossary——native 降级重试（Hy-MT2 无 system prompt）
+            # 靠 references 的 terms 机制带出译例
+            knowledge = KnowledgeBase(self.state.app_dir / "knowledge.db")
+            knowledge_prompt = knowledge.format_for_prompt()
+            knowledge_pairs = knowledge.format_reference_pairs()
+            knowledge.close()
+            # 专名注入：当前项目收集的专名 + 全局术语库积累的专名（跨游戏复用）
+            entries0 = [self._entry_from_row(r) for r in store.get_entries()]
+            collected_names = collect_known_names(
+                [str(e.original or "") for e in entries0])
+            known_names = glossary.known_names_for(collected_names)
             glossary.close()
             if api.mode == "local":
                 on_log("正在启动本地 Hy-MT2 模型服务…")
@@ -371,7 +384,9 @@ class TranslatePage(QWidget):
                 run.secrets.append(runtime.api_key)
                 on_log(
                     f"本地服务已就绪：{runtime.backend.upper()} · 端口 {runtime.port}")
-            system = build_system_prompt(profile, glossary_prompt)
+            system = build_system_prompt(
+                profile, glossary_prompt, known_names=known_names,
+                knowledge_lines=knowledge_prompt)
             if cancel.is_set():
                 raise RuntimeError("translation cancelled")
             if not self.state.is_current_project(project, generation):
@@ -394,7 +409,7 @@ class TranslatePage(QWidget):
                     memory=store, model=api.model, lang=lang,
                     system_prompt=system,
                     glossary=[(row["term"], row["translation"])
-                              for row in glossary_rows],
+                              for row in glossary_rows] + knowledge_pairs,
                     cancellation_event=cancel)
                 run.attach_translator(translator)
                 entries = [self._entry_from_row(r) for r in store.get_entries()]
@@ -441,6 +456,25 @@ class TranslatePage(QWidget):
             on_log(f"翻译完成：{stats.done} 条已翻译"
                    f"（记忆命中 {stats.from_memory}），失败 {stats.failed} 条，"
                    f"请求 {stats.requests} 次")
+            if entries:
+                learn_g = GlossaryStore(self.state.app_dir / "glossary.db")
+                learn_g.init_schema()
+                learned = learn_g.learn_proper_names(
+                    entries, collected_names, str(profile.game_name or ""))
+                learn_g.close()
+                if learned:
+                    on_log(f"术语库学习：新增 {learned} 条专名"
+                           f"（跨游戏复用）")
+                # 知识库学习：从「该翻未翻」回显条目沉淀特殊情况模式
+                learn_kb = KnowledgeBase(self.state.app_dir / "knowledge.db")
+                learned_kb, hits_kb = learn_kb.learn(
+                    entries, str(profile.game_name or ""),
+                    names=set(collected_names))
+                learn_kb.close()
+                if learned_kb or hits_kb:
+                    on_log(f"知识库学习：新增 {learned_kb} 条规则"
+                           f" · 累计命中 {hits_kb} 条"
+                           f"（特殊情况模式沉淀，后续游戏自动复用）")
             if stats.elapsed > 0:
                 on_log(
                     f"耗时 {stats.elapsed:.1f} 秒"

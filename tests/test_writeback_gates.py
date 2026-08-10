@@ -74,11 +74,13 @@ def test_gates_object_warn_with_allow_partial(tmp_path):
     assert gates["overall"]["status"] == "WARN"
 
 
-def test_gates_truncated_blocks_default_publish(tmp_path):
+def test_gates_truncated_warns_but_does_not_block_default_publish(tmp_path):
+    """截断 = 容量内部分翻译（主体+省略号已写入），进报告 WARN 不阻断——
+    1 条超长译文不应拖垮整场写回（taxes 'I did ' 实证）。"""
     proj = Project.open_game_dir(_make_tree(), tmp_path / "app")
     gates = _gates(proj, truncated=3)
-    assert gates["object"]["status"] == "BLOCKED"
-    assert gates["overall"]["status"] == "BLOCKED"
+    assert gates["object"]["status"] == "WARN"
+    assert gates["overall"]["status"] == "WARN"
 
 
 def test_gates_runtime_warn_when_unverified_payload(tmp_path):
@@ -184,7 +186,9 @@ def test_write_all_blocks_default_publish_on_rejected(
     assert not proj.out_dir.exists(), "被阻断时不得发布副本"
 
 
-def test_write_all_blocks_on_truncated_entries(tmp_path, monkeypatch):
+def test_write_all_publishes_with_warn_on_truncated_entries(tmp_path, monkeypatch):
+    """截断不再阻断发布：部分翻译已写入（容量内收尾+省略号），
+    发布成功并带 WARN 闸门与截断报告。"""
     _install_fake_raw_asset_environment(monkeypatch)
     proj = _make_write_ready_project(tmp_path, monkeypatch)
     fake_outcome = WriteResult(
@@ -196,8 +200,14 @@ def test_write_all_blocks_on_truncated_entries(tmp_path, monkeypatch):
 
     monkeypatch.setattr("hanhua.core.project.write_back_v2", capture_v2)
 
-    with pytest.raises(RuntimeError, match="截断"):
-        proj.write_all()
+    result = proj.write_all()
+
+    assert result["verification"]["overall"] == "WARN"
+    assert result["verification"]["gates"]["object"]["status"] == "WARN"
+    assert proj.out_dir.is_dir()
+    assert len(result["verification"]["truncated_entries"]) == 1
+    assert result["verification"]["writer_outcome"]["truncated"] == 2
+    assert any("截断" in line for line in result["verification"]["warnings"])
 
 
 def test_write_all_publishes_with_warn_when_allow_partial(

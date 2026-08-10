@@ -1,0 +1,27 @@
+游戏：beware-the-shadowcatcher
+写回时间：2026-08-11 01:56:48
+输出目录：D:\游戏\beware-the-shadowcatcher_汉化
+
+文件清单：3 个
+
+- BewareTheShadowcatcher_Data/level1（228 条）
+- BewareTheShadowcatcher_Data/sharedassets1.assets（1 条）
+- BewareTheShadowcatcher_Data/Managed/Assembly-CSharp.dll（459 条）
+
+────────────────────────────────────────────────────────────────
+写回结果
+文本文件：0
+输入保护：True
+重开验证：True
+变更文件：30
+写入译文：74
+总体闸门：PASS
+字体层级：runtime_verified
+清单：.hanhua-manifest.json
+备份：None
+
+四态闸门明细
+  file=N/A
+  container=PASS
+  object=PASS
+  runtime=PASS

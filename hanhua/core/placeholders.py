@@ -45,6 +45,18 @@ _URL = re.compile(
     r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
 )
 _ONLY_SYMBOL = re.compile(r"^[\W_]+$")
+# 星号前缀单词（*shit / *beaner）：TextAsset 脚本里的词表/列表条目
+# （baldis resources.assets#71 实证）。模型对 * 前缀短词稳定回显
+# （* 被当强调标记），翻译无意义 → 词表条目跳过。星号+空格
+# （"* (text)" 对话格式）不匹配。
+_STAR_PREFIXED_WORD = re.compile(r"^\*[a-z]{3,}$")
+# 混合符号 token：无空格、含至少一个强代码符号（%#&^$@|\）、含字母。
+# 匹配随机 token/编码串（'xChDC-Gs%OmaMl+g'）；正常英文句子的强符号
+# 都是 '100% sure' 式带空格或有 '=' 成对出现（a=b），不匹配。
+# 不含 ! ~（'Kyahaaaaa~!' 日式语气词、'WOW!!!' 是正常文本，误伤
+# 实证：unityscript 粒子文本测试）。
+_MIXED_SYMBOL_TOKEN = re.compile(
+    r"^(?=.*[%#&^$@|\\])(?=.*[A-Za-z])[^\s]+$")
 _HAS_LETTER = re.compile(r"[^\W_0-9]")
 _STRIP_RICH_TEXT = re.compile(r"<[^>]+>")
 # Unity 实例化对象名：frameVertical(Clone) / Player(Clone)(Clone)
@@ -145,6 +157,29 @@ _ASSET_FOLDER = re.compile(
 )
 _DANGLING_FORMAT_SUFFIX = re.compile(
     r"^[^\w\s]+(?:</[A-Za-z][^>\r\n]{0,49}>)+$")
+# .NET 日期/时间格式串（HH:mm dd MMMM, yyyy 等）：翻译破坏格式语义
+# （a-catfiends Fungus.dll us#49189 实证：模型回显恒败）。token 段间由
+# 分隔符连接（: 空格 , / - .），不匹配则为普通文本（'May the 4th' 等）。
+_DATETIME_FORMAT = re.compile(
+    r"^(?:HH|hh|mm|MM|MMMM|MMM|dd|yyyy|yy|ss|tt|zzz)"
+    r"(?:[: ,./\-]+(?:HH|hh|mm|MM|MMMM|MMM|dd|yyyy|yy|ss|tt|zzz))+$")
+# C# format 字符串转义大括号：{{ / }} 是 string.Format 的转义写法，
+# 常与 {0} 占位符共存于代码常量模板（a-catfiends Unity.ProBuilder.dll
+# us#32180 实证：'{0} : {1}\nCPAPI:{{"cmd":"Watch" "name":"{0}"}}'——多行
+# 含字母绕过了单行纯符号/纯占位符检测，模型翻译恒败）。显示文本几乎
+# 不会含 {{，命中即代码/数据模板。
+_ESCAPED_BRACES = re.compile(r"\{\{|\}\}")
+# 颜色表条目：HTML/CSS 色名列表（ProBuilder 材质/顶点着色 UI 的数据表，
+# 无翻译价值，模型对专有名词回显恒败）。固定标注格式：
+# 'Gray (HTML/CSS Gray)'、'Green (HTML/CSS Color)'、'Air Force Blue (USAF)'
+_COLOR_TABLE_ENTRY = re.compile(
+    r"\(HTML(?:/CSS)?(?: [A-Z][A-Za-z]+)?\)|\(USAF\)")
+# 纯富文本标签串：整串都是 {tag} 序列（Fungus/UGUI 样式模板拆分出的
+# 标签行，a-catfiends resources.assets obj1292 实证：'{customName}'、
+# '{/customName}'、'{color=blue}'、'{audio=AudioTag}'——模型回显合理，
+# 但翻译无意义，且写回因无变化被静默过滤造成统计虚高）。对话文本
+# 含真实内容（'{punch=3,2}* Y A W N *{w=3}{x}'）不命中锚定模式。
+_PURE_TAG_SEQUENCE = re.compile(r"^(?:\{[^}\r\n]*\})+$")
 _QUALIFIED = re.compile(r"^[a-zA-Z0-9_]+([.\-][a-zA-Z0-9_]+)+$")
 # .NET 程序集全名：Namespace.Type, Version=x.y.z, Culture=neutral, PublicKeyToken=null
 # （Addressables catalog m_AssemblyName 真实值，project-arrhythmia 失败样本）
@@ -171,6 +206,24 @@ _CREDIT_ATTRIBUTION = re.compile(
 # TMP SDF 字体资产名（Signed Distance Field 字体）：X SDF Y / X SDF 形状
 # （真实失败样本：ComicsCarToon SDF Zesty、roquetteplain SDF Bonus）
 _SDF_FONT = re.compile(r"(?i:\bSDF\b)")
+# 语言文件键码（§m_quit ### / §e1_credits_1 ###：§ 前缀菜单/对话键 +
+# ' ###' 空值分隔符，butterflies 真实样本 97 条——localization 键值模板
+# 的键且值缺失 → 无译义内容，模型回显恒败）
+_SECTION_KEY = re.compile(r"^§[a-zA-Z0-9_]+ ###$")
+# 语言代码目录标记（EN/ / DE/：双语 TextAsset 的语种分隔行，butterflies 样本）
+_LANG_CODE_WITH_SLASH = re.compile(r"^[a-zA-Z]{2}/$")
+# 多行键位映射（"k\nm\n/\nh"：键盘快捷键组合提示，每行恰好 1 个字符，
+# butterflies 真实样本 4 条）——无译义内容，模型回显恒败
+_SINGLE_CHAR_KEYMAP_LINES = re.compile(r"^(?:[^\r\n])(?:\n[^\r\n])+$")
+# XXXX 占位名（XXXX t'a：游戏内未命名角色/玩家的占位名，XXXX 是标准
+# 名字占位符）→ 保留原文合理
+_XXXX_PLACEHOLDER_NAME = re.compile(r"^XXXX(?: [A-Za-z]+(?:'[a-z]+)?)?$")
+# credit 名单对齐行：双无空格 token 多空格分隔（kangaroovindaloo    qubodup /
+# pcaeldries          RICHERlandTV：制作人名单两列对齐，无译义）
+_CREDIT_ALIGNED = re.compile(r"^[A-Za-z0-9]+ {2,}[A-Za-z0-9]+$")
+# 音乐合作名单（Highraiser ft. inkoutlines, MC Cruel Addict：ft. =
+# featuring 合作标签，游戏音乐/音效署名行）
+_FT_CREDIT = re.compile(r"(?i:\bft\.)")
 # 普通句子标记：credit 形状的行若含这些虚词仍是可翻译句子。
 # 注意不含单字母 a——标题/选项（Option A、A* star）中的 A 不是虚词
 _SENTENCE_MARKERS = re.compile(
@@ -423,7 +476,8 @@ def is_credit_like(text: str) -> bool:
         return False
     if re.match(r"(?i:^created\s+by\s+[A-Z0-9])", s):
         return True              # created by X（短行，对话不会以此开头）
-    if _CREDIT_ATTRIBUTION.search(s) and not _SENTENCE_MARKERS.search(s):
+    if (_CREDIT_ATTRIBUTION.search(s) or _CREDIT_ALIGNED.match(s)
+            or _FT_CREDIT.search(s)) and not _SENTENCE_MARKERS.search(s):
         return True              # credit/署名/版权行（无句子虚词）
     if _CREDIT_YEAR_LINE.match(s) and not _SENTENCE_MARKERS.search(s):
         return True              # 人名 + 年份署名行（Darien Gore (Fleebs) 2019）
@@ -453,12 +507,36 @@ def is_hard_structural(text: str) -> bool:
         return True
     if _DANGLING_FORMAT_SUFFIX.fullmatch(s):
         return True
+    if _DATETIME_FORMAT.match(s):
+        return True                  # .NET 日期/时间格式串（HH:mm dd MMMM, yyyy）
+    if _ESCAPED_BRACES.search(s):
+        return True                  # C# format 转义 {{/}} → 代码/数据模板
+    if _COLOR_TABLE_ENTRY.search(s):
+        return True                  # 颜色表条目（Gray (HTML/CSS Gray) 等）
+    if _PURE_TAG_SEQUENCE.fullmatch(s):
+        return True                  # 纯 {tag} 序列（Fungus 样式模板标签行）
     if (_INPUT_ACTION_IDENTIFIER.fullmatch(s)
             or _ASSET_FOLDER.fullmatch(s)
             or _ASSEMBLY_REF.fullmatch(s)
             or _PROTOCOL_RELATIVE_URL.fullmatch(s)
             or _BRACKETED_PATH.fullmatch(s)
             or _CLI_ARG.fullmatch(s)):
+        return True
+    # 代码注释行（// 前缀）：C#/JS 风格注释不是游戏文本（baldis 实证：
+    # resources.assets TextAsset 脚本里 '//        word:replacement:
+    # notCaseSensitive' 注释行被模型当文本翻译成乱语）。要求 // 后跟
+    # 空白（//host/path 协议相对 URL、//server/share UNC 路径无空白，
+    # 已由 _PROTOCOL_RELATIVE_URL/URL 分支处理，不重复拦截）。
+    if s.startswith("//") and (len(s) == 2 or s[2].isspace()):
+        return True
+    # 混合符号 token：无空格、含强代码符号（%#&^$@!|\~）与字母、长度 ≥8
+    # 的串多为随机会话 token/加密串/编码数据（baldis 实证：
+    # 'xChDC-Gs%OmaMl+g' 模型回显恒败）。'%' 等强符号在正常英文句中
+    # 极少独立成串（'100% sure' 有空格不匹配），base64 已单列判定。
+    # 先剥 rich text 标签：<color=#fff> 的 # 颜色码不是 token 符号
+    if (len(s) >= 8 and _MIXED_SYMBOL_TOKEN.match(
+            _STRIP_RICH_TEXT.sub("", s))
+            and not _URL.match(s)):
         return True
     # 剥掉富文本标签（<color=...>）后只有数字与符号 → 纯装饰/字符画（▓ 颜色条）
     if not _HAS_LETTER.search(_STRIP_RICH_TEXT.sub("", s)):
@@ -490,6 +568,16 @@ def is_hard_structural(text: str) -> bool:
         return True                  # Shell 命令（find/tar/rm…不是游戏文本）
     if _KEYBOARD_NOISE.match(s):
         return True                  # 键盘噪音测试文本（asdasdasd / fdji ijsdijn…）
+    if _STAR_PREFIXED_WORD.match(s):
+        return True                  # 星号前缀词表条目（*shit：脚本示例词）
+    if _SECTION_KEY.match(s):
+        return True                  # § 键码（§m_quit ###：语言文件键值模板键）
+    if _LANG_CODE_WITH_SLASH.match(s):
+        return True                  # 语言代码目录标记（EN/ / DE/）
+    if _SINGLE_CHAR_KEYMAP_LINES.match(s):
+        return True                  # 多行键位映射（k\nm\n/\nh 快捷键提示）
+    if _XXXX_PLACEHOLDER_NAME.match(s):
+        return True                  # XXXX 占位名（XXXX t'a：未命名角色名）
     if _BASE64.fullmatch(s) and any(char.isdigit() for char in s):
         return True                  # base64 序列化数据（catalog m_BucketDataString）
     if s.startswith("UEsDB") and _BASE64.fullmatch(s):

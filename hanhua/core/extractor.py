@@ -199,25 +199,39 @@ def _extract_txt_text(text: str, fid: str) -> list[TextEntry]:
         elif stripped.startswith("#") or stripped.startswith(";"):
             entries.append(TextEntry(file_id=fid, key_path=f"line/{i}", original=line,
                                      status=STATUS_SKIPPED, meta={**meta, "kind": "comment"}))
+        elif (stripped.startswith("//")
+              and (len(stripped) == 2 or stripped[2].isspace())):
+            # C# 风格注释行（与 txt_format 对齐；// 后跟空白才是注释，
+            # 协议相对 URL //host 无空白已在 is_hard_structural 处理）
+            entries.append(TextEntry(file_id=fid, key_path=f"line/{i}", original=line,
+                                     status=STATUS_SKIPPED, meta={**meta, "kind": "comment"}))
         elif stripped.startswith("[") and stripped.endswith("]"):
             entries.append(TextEntry(file_id=fid, key_path=f"line/{i}", original=line,
                                      status=STATUS_SKIPPED, meta={**meta, "kind": "section"}))
         else:
             from hanhua.core.formats import txt_format as _txt
             m = _txt._TAB.match(line) or _txt._KV.match(line)
-            if m and m.group("value").strip():
+            if m:
                 value = m.group("value").strip()
-                if should_skip(value):
+                delim = "\t" if m.re is _txt._TAB else m.group("delim")
+                if not value:
+                    # 空值 kv 行（nolog= / key= 空参数）：配置项置空，不是文本。
+                    # 与 txt_format.extract_txt 对齐（否则 nolog= 落 plain 被模型
+                    # 回显 → untranslated_text 恒败，backrooms boot.config 实证）。
+                    entries.append(TextEntry(
+                        file_id=fid, key_path=f"kv/{m.group('key').strip()}/{i}",
+                        original=value, status=STATUS_SKIPPED,
+                        meta={**meta, "kind": "kv_empty",
+                              "key": m.group("key"), "delim": delim}))
+                elif should_skip(value):
                     # _TAB 正则无 delim 组，不能无条件 group("delim")
                     # （Daggerfall Unity 的 TAB 分隔 kv 行实测 IndexError）
-                    delim = "\t" if m.re is _txt._TAB else m.group("delim")
                     entries.append(TextEntry(
                         file_id=fid, key_path=f"kv/{m.group('key').strip()}/{i}",
                         original=value, status=STATUS_SKIPPED,
                         meta={**meta, "kind": "kv_structural",
                               "key": m.group("key"), "delim": delim}))
                 else:
-                    delim = "\t" if m.re is _txt._TAB else m.group("delim")
                     entries.append(TextEntry(
                         file_id=fid, key_path=f"kv/{m.group('key').strip()}/{i}",
                         original=value,

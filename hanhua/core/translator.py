@@ -38,6 +38,11 @@ BUILTIN_UI_REFERENCES = (
     ("Hello", "你好"),
     ("Press any key", "按任意键"),
     ("Default", "默认"),
+    # 独立游戏平台名 itch.io（backrooms 实证：'available at itch page'
+    # 模型把 itch 当普通词直译「痒页面」；保留型引用引导模型保留平台名
+    # → 'itch 页面'。上下文均为 "on/at itch (page/store/…)" 平台语境，
+    # 普通词「痒」在游戏文本中几乎不出现，保留引用误伤风险可忽略）
+    ("itch", "itch"),
 )
 BUILTIN_UI_SOURCE_TERMS = CORE_MENU_SOURCE_TERMS
 
