@@ -482,6 +482,17 @@ def _detect_pe_architecture(executable: Path) -> str:
             f"无法解析 Windows PE 游戏可执行文件: {executable.name}") from exc
 
 
+def _mono_managed_core(managed_dir: Path) -> bool:
+    """Unity Mono 托管核心 DLL：Unity 5+ 拆分为 UnityEngine.CoreModule.dll，
+    Unity 4.x 老结构仍为整体 UnityEngine.dll（222am 实证，无 CoreModule、
+    UnityScript/Boo.Lang 特征）。UnityEngine.dll 只存在于 Unity Mono 构建，
+    不会误判非 Unity 游戏。"""
+    return (
+        (managed_dir / "UnityEngine.CoreModule.dll").is_file()
+        or (managed_dir / "UnityEngine.dll").is_file()
+    )
+
+
 def _detect_mono_architecture(game_dir: Path) -> str:
     if game_dir.is_dir() and any(
         child.is_file() and child.name.casefold() == "gameassembly.dll"
@@ -503,12 +514,8 @@ def _detect_mono_architecture(game_dir: Path) -> str:
     unity_executables = [
         executable
         for executable in executables
-        if (
-            game_dir
-            / f"{executable.stem}_Data"
-            / "Managed"
-            / "UnityEngine.CoreModule.dll"
-        ).is_file()
+        if _mono_managed_core(
+            game_dir / f"{executable.stem}_Data" / "Managed")
     ]
     if not unity_executables:
         raise FontInstallError(

@@ -1,0 +1,1591 @@
+游戏：crusty-proto
+导出时间：2026-08-11 14:52:38
+翻译模型：Hy-MT2-1.8B-Q6_K
+成功文本：102 条
+
+────────────────────────────────────────────────────────────────
+[1] 成功文本
+来源：CrustyProto_Data/level0
+键位：asset#level0#156/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=156）
+原文：Player
+译文：玩家
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[2] 成功文本
+来源：CrustyProto_Data/level0
+键位：asset#level0#168/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=168）
+原文：FATAL ESCAPE
+译文：致命的逃亡
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[3] 成功文本
+来源：CrustyProto_Data/level0
+键位：asset#level0#170/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=170）
+原文：CRUSTY PROTO
+译文：CRUSTY PROTO
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：回显保留原文（未实际翻译）
+需要优化：是（回显未翻译）
+写回：未执行（回显——译文与原文相同，无需写回）
+
+────────────────────────────────────────────────────────────────
+[4] 成功文本
+来源：CrustyProto_Data/level0
+键位：asset#level0#172/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=172）
+原文：(working title)
+version 0.1049
+译文：（暂定名称）
+版本 0.1049
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[5] 成功文本
+来源：CrustyProto_Data/level0
+键位：asset#level0#175/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=175）
+原文：<b>3DI70R</b> - Coding, Modelling, Animation
+译文：<b>3DI70R</b> – 编程、建模、动画制作
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[6] 成功文本
+来源：CrustyProto_Data/level0
+键位：asset#level0#178/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=178）
+原文：Thank you for playing
+译文：感谢您的参与。
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[7] 成功文本
+来源：CrustyProto_Data/level0
+键位：asset#level0#181/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=181）
+原文：In 1 week
+译文：一周后
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[8] 成功文本
+来源：CrustyProto_Data/level0
+键位：asset#level0#187/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=187）
+原文：<b>Tihan</b> - Music, Ideas, QA
+译文：<b>Tihan</b> – 音乐、创意、问答
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[9] 成功文本
+来源：CrustyProto_Data/level0
+键位：asset#level0#190/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=190）
+原文：press start button
+译文：按下开始按钮
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[10] 成功文本
+来源：CrustyProto_Data/level0
+键位：asset#level0#193/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=193）
+原文：Made for ShroomJam
+译文：为 ShroomJam 制作
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[11] 成功文本
+来源：CrustyProto_Data/level0
+键位：asset#level0#199/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=199）
+原文：Item description
+译文：物品描述
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[12] 成功文本
+来源：CrustyProto_Data/level0
+键位：asset#level0#200/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=200）
+原文：John Horror
+译文：约翰·霍勒斯
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[13] 成功文本
+来源：CrustyProto_Data/level0
+键位：asset#level0#217/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=217）
+原文：Test
+译文：测试
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[14] 成功文本
+来源：CrustyProto_Data/level0
+键位：asset#level0#225/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=225）
+原文：John Horror
+译文：约翰·霍勒斯
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[15] 成功文本
+来源：CrustyProto_Data/level0
+键位：asset#level0#234/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=234）
+原文：Test
+译文：测试
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[16] 成功文本
+来源：CrustyProto_Data/level1
+键位：asset#level1#422/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=422）
+原文：John
+译文：约翰
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[17] 成功文本
+来源：CrustyProto_Data/level1
+键位：asset#level1#427/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=427）
+原文：John
+译文：约翰
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[18] 成功文本
+来源：CrustyProto_Data/level10
+键位：asset#level10#578/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level10、obj=578）
+原文：Evil Scientist
+译文：邪恶科学家
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[19] 成功文本
+来源：CrustyProto_Data/level10
+键位：asset#level10#579/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level10、obj=579）
+原文：John
+译文：约翰
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[20] 成功文本
+来源：CrustyProto_Data/level11
+键位：asset#level11#2275/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level11、obj=2275）
+原文：John
+译文：约翰
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[21] 成功文本
+来源：CrustyProto_Data/level12
+键位：asset#level12#197/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level12、obj=197）
+原文：entered room with id=0
+译文：进入房间，ID为0
+置信度：medium
+原因：natural_language
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[22] 成功文本
+来源：CrustyProto_Data/level12
+键位：asset#level12#197/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level12、obj=197）
+原文：Matt... are you kidding me?
+译文：马特……你是在开玩笑吧？
+置信度：medium
+原因：natural_language
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[23] 成功文本
+来源：CrustyProto_Data/level12
+键位：asset#level12#207/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level12、obj=207）
+原文：Newspaper headlines:
+#newspaper_fact_4
+译文：报纸标题：
+#newspaper_fact_4
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[24] 成功文本
+来源：CrustyProto_Data/level12
+键位：asset#level12#208/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level12、obj=208）
+原文：John
+译文：约翰
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[25] 成功文本
+来源：CrustyProto_Data/level13
+键位：asset#level13#300/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level13、obj=300）
+原文：entity "zmb01" is misplaced
+译文：实体“zmb01”的位置不正确。
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[26] 成功文本
+来源：CrustyProto_Data/level13
+键位：asset#level13#312/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level13、obj=312）
+原文：John
+译文：约翰
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[27] 成功文本
+来源：CrustyProto_Data/level14
+键位：asset#level14#605/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level14、obj=605）
+原文：invalid room id, unable to store enemy state
+译文：无效的房间ID，无法存储敌方的状态信息。
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[28] 成功文本
+来源：CrustyProto_Data/level14
+键位：asset#level14#625/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level14、obj=625）
+原文：Newspaper headlines:
+Adverse side effects of new medicine
+译文：报纸标题：
+新药物的不良副作用
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[29] 成功文本
+来源：CrustyProto_Data/level14
+键位：asset#level14#626/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level14、obj=626）
+原文：John
+译文：约翰
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[30] 成功文本
+来源：CrustyProto_Data/level14
+键位：asset#level14#640/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level14、obj=640）
+原文：It is dangerous outside
+译文：外面很危险。
+置信度：medium
+原因：natural_language
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[31] 成功文本
+来源：CrustyProto_Data/level15
+键位：asset#level15#405/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level15、obj=405）
+原文：entity "zmb01" animation corrupted
+译文：实体“zmb01”的动画效果已损坏。
+置信度：medium
+原因：natural_language
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[32] 成功文本
+来源：CrustyProto_Data/level15
+键位：asset#level15#405/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level15、obj=405）
+原文：entity "zmb02" animation corrupted
+译文：实体“zmb02”的动画效果已损坏。
+置信度：medium
+原因：natural_language
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[33] 成功文本
+来源：CrustyProto_Data/level15
+键位：asset#level15#421/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level15、obj=421）
+原文：John
+译文：约翰
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[34] 成功文本
+来源：CrustyProto_Data/level15
+键位：asset#level15#423/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level15、obj=423）
+原文：Newspaper headlines:
+Zombies among us?
+译文：报纸标题：
+我们中间有僵尸吗？
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[35] 成功文本
+来源：CrustyProto_Data/level2
+键位：asset#level2#710/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=710）
+原文：unable to load navigation again... Matt, fix this...
+译文：无法再次加载导航功能了……Matt，请修复这个问题。
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[36] 成功文本
+来源：CrustyProto_Data/level2
+键位：asset#level2#730/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=730）
+原文：John
+译文：约翰
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[37] 成功文本
+来源：CrustyProto_Data/level3
+键位：asset#level3#1984/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level3、obj=1984）
+原文：John
+译文：约翰
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[38] 成功文本
+来源：CrustyProto_Data/level3
+键位：asset#level3#2023/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level3、obj=2023）
+原文：I can't go back now
+译文：我现在不能回去了
+置信度：medium
+原因：natural_language
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[39] 成功文本
+来源：CrustyProto_Data/level4
+键位：asset#level4#220/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level4、obj=220）
+原文：John
+译文：约翰
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[40] 成功文本
+来源：CrustyProto_Data/level5
+键位：asset#level5#452/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level5、obj=452）
+原文：Newspaper headlines:
+Neuralife launches revolutionary medicine
+译文：报纸标题：
+Neuralife 推出了一种革命性的药物
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[41] 成功文本
+来源：CrustyProto_Data/level5
+键位：asset#level5#453/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level5、obj=453）
+原文：John
+译文：约翰
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[42] 成功文本
+来源：CrustyProto_Data/level5
+键位：asset#level5#454/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level5、obj=454）
+原文：Jay
+译文：杰伊
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[43] 成功文本
+来源：CrustyProto_Data/level5
+键位：asset#level5#455/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level5、obj=455）
+原文：Mike
+译文：迈克
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[44] 成功文本
+来源：CrustyProto_Data/level6
+键位：asset#level6#661/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level6、obj=661）
+原文：They are dead...
+译文：他们已经死了……
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[45] 成功文本
+来源：CrustyProto_Data/level6
+键位：asset#level6#679/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level6、obj=679）
+原文：John
+译文：约翰
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[46] 成功文本
+来源：CrustyProto_Data/level7
+键位：asset#level7#354/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level7、obj=354）
+原文：John
+译文：约翰
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[47] 成功文本
+来源：CrustyProto_Data/level7
+键位：asset#level7#357/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level7、obj=357）
+原文：There is no point to return...
+译文：返回也没有任何意义了……
+置信度：medium
+原因：natural_language
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[48] 成功文本
+来源：CrustyProto_Data/level8
+键位：asset#level8#8030/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level8、obj=8030）
+原文：Gas tank is half empty.
+There should be gas can somewhere.
+译文：油箱已经快没气了。
+某个地方应该有个煤气罐吧。
+置信度：medium
+原因：natural_language
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[49] 成功文本
+来源：CrustyProto_Data/level8
+键位：asset#level8#8030/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level8、obj=8030）
+原文：Gas tank should be full now.
+译文：气体罐现在应该已经满了。
+置信度：medium
+原因：natural_language
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[50] 成功文本
+来源：CrustyProto_Data/level8
+键位：asset#level8#8044/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level8、obj=8044）
+原文：Matt, are you corrupting static object transforms again?
+译文：Matt，你又在破坏静态对象的变换属性了吗？
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[51] 成功文本
+来源：CrustyProto_Data/level8
+键位：asset#level8#8050/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level8、obj=8050）
+原文：assert failed: building transform.x != 0
+译文：断言失败：建筑 转换.x != 0
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[52] 成功文本
+来源：CrustyProto_Data/level8
+键位：asset#level8#8166/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level8、obj=8166）
+原文：Newspaper headlines:
+Cipmezo is melting people's brains.
+译文：报纸标题：
+Cipmezo正在破坏人们的智力。
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[53] 成功文本
+来源：CrustyProto_Data/level8
+键位：asset#level8#8168/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level8、obj=8168）
+原文：John
+译文：约翰
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[54] 成功文本
+来源：CrustyProto_Data/level9
+键位：asset#level9#347/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level9、obj=347）
+原文：unable to load navigation
+译文：无法加载导航功能
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[55] 成功文本
+来源：CrustyProto_Data/level9
+键位：asset#level9#354/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level9、obj=354）
+原文：John
+译文：约翰
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[56] 成功文本
+来源：CrustyProto_Data/resources.assets
+键位：asset#resources.assets#12/json/Player/AndroidBuildSystem
+对象：—（asset_file=resources.assets、obj=12）
+原文：Gradle
+译文：Gradle
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：—（passed=True）
+翻译评价：回显保留原文（未实际翻译）
+需要优化：是（回显未翻译）
+写回：未执行（回显——译文与原文相同，无需写回）
+
+────────────────────────────────────────────────────────────────
+[57] 成功文本
+来源：CrustyProto_Data/resources.assets
+键位：asset#resources.assets#12/json/Editor/Branch
+对象：—（asset_file=resources.assets、obj=12）
+原文：6000.0/release
+译文：6000.0/次发布
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[58] 成功文本
+来源：CrustyProto_Data/sharedassets1.assets
+键位：asset#sharedassets1.assets#143/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets1.assets、obj=143）
+原文：Survivor Action Timeline Track
+译文：幸存者行动时间线追踪
+置信度：medium
+原因：natural_language
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[59] 成功文本
+来源：CrustyProto_Data/sharedassets10.assets
+键位：asset#sharedassets10.assets#34/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets10.assets、obj=34）
+原文：Survivor Action Timeline Track
+译文：幸存者行动时间线追踪
+置信度：medium
+原因：natural_language
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[60] 成功文本
+来源：CrustyProto_Data/sharedassets10.assets
+键位：asset#sharedassets10.assets#37/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets10.assets、obj=37）
+原文：But of course! And very soon, my 
+master plan will come to fruition!
+译文：但当然可以！而且很快就会了，我的
+总体规划将会实现！
+置信度：medium
+原因：natural_language
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[61] 成功文本
+来源：CrustyProto_Data/sharedassets10.assets
+键位：asset#sharedassets10.assets#44/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets10.assets、obj=44）
+原文：So it was you who was 
+behind all of this madness?
+译文：所以，就是你啊。
+这一切疯狂行为的背后究竟隐藏着什么？
+置信度：medium
+原因：natural_language
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[62] 成功文本
+来源：CrustyProto_Data/sharedassets10.assets
+键位：asset#sharedassets10.assets#66/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets10.assets、obj=66）
+原文：Ha-ha-ha... And how will you do this?
+译文：哈哈哈……那你打算怎么做到呢？
+置信度：medium
+原因：natural_language
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[63] 成功文本
+来源：CrustyProto_Data/sharedassets10.assets
+键位：asset#sharedassets10.assets#69/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets10.assets、obj=69）
+原文：My friends died because of you! 
+And now, you will face my vengeance!
+译文：我的朋友们因为你而死了！
+现在，你将面临我的报复！
+置信度：medium
+原因：natural_language
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[64] 成功文本
+来源：CrustyProto_Data/sharedassets10.assets
+键位：asset#sharedassets10.assets#73/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets10.assets、obj=73）
+原文：Roll Credits Marker
+译文：旋转信用标记
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[65] 成功文本
+来源：CrustyProto_Data/sharedassets10.assets
+键位：asset#sharedassets10.assets#74/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets10.assets、obj=74）
+原文：Fake Debug Message Marker
+译文：虚假的调试消息标记
+置信度：medium
+原因：natural_language
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[66] 成功文本
+来源：CrustyProto_Data/sharedassets10.assets
+键位：asset#sharedassets10.assets#74/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets10.assets、obj=74）
+原文：Matt, i'm telling the manager...
+译文：马特，我正在告诉经理……
+置信度：medium
+原因：natural_language
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[67] 成功文本
+来源：CrustyProto_Data/sharedassets10.assets
+键位：asset#sharedassets10.assets#80/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets10.assets、obj=80）
+原文：Fake Debug Message Marker
+译文：虚假的调试消息标记
+置信度：medium
+原因：natural_language
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[68] 成功文本
+来源：CrustyProto_Data/sharedassets10.assets
+键位：asset#sharedassets10.assets#80/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets10.assets、obj=80）
+原文：successfully parented "car01" to "john_survivor" after 19239 attempts
+译文：经过 19239 次尝试后，成功将 “car01” 培养成 “john_survivor”。
+置信度：medium
+原因：natural_language
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[69] 成功文本
+来源：CrustyProto_Data/sharedassets12.assets
+键位：asset#sharedassets12.assets#8/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets12.assets、obj=8）
+原文：How did I get here?
+译文：我怎么会变成这样呢？
+置信度：medium
+原因：natural_language
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[70] 成功文本
+来源：CrustyProto_Data/sharedassets12.assets
+键位：asset#sharedassets12.assets#13/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets12.assets、obj=13）
+原文：Survivor Action Timeline Track
+译文：幸存者行动时间线追踪
+置信度：medium
+原因：natural_language
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[71] 成功文本
+来源：CrustyProto_Data/sharedassets14.assets
+键位：asset#sharedassets14.assets#11/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets14.assets、obj=11）
+原文：Garage room key
+译文：车库房间钥匙
+置信度：medium
+原因：natural_language
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[72] 成功文本
+来源：CrustyProto_Data/sharedassets14.assets
+键位：asset#sharedassets14.assets#12/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets14.assets、obj=12）
+原文：Security room key
+译文：安全室钥匙
+置信度：medium
+原因：natural_language
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[73] 成功文本
+来源：CrustyProto_Data/sharedassets4.assets
+键位：asset#sharedassets4.assets#38/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets4.assets、obj=38）
+原文：Rear Exit Key
+译文：后门退出键
+置信度：medium
+原因：natural_language
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[74] 成功文本
+来源：CrustyProto_Data/sharedassets5.assets
+键位：asset#sharedassets5.assets#35/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets5.assets、obj=35）
+原文：Barely escaped...
+This city is not safe...
+译文：勉强逃出来了……
+这座城市并不安全……
+置信度：medium
+原因：natural_language
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[75] 成功文本
+来源：CrustyProto_Data/sharedassets5.assets
+键位：asset#sharedassets5.assets#46/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets5.assets、obj=46）
+原文：I think we should leave it
+as soon as possible.
+译文：我认为我们应该放弃这个想法吧。
+尽快。
+置信度：medium
+原因：natural_language
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[76] 成功文本
+来源：CrustyProto_Data/sharedassets5.assets
+键位：asset#sharedassets5.assets#55/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets5.assets、obj=55）
+原文：They have escaped into the small shop.
+译文：他们逃进了那家小商店里。
+置信度：medium
+原因：natural_language
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[77] 成功文本
+来源：CrustyProto_Data/sharedassets5.assets
+键位：asset#sharedassets5.assets#57/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets5.assets、obj=57）
+原文：Where they thought it was safe...
+译文：他们认为那里是安全的地方……
+置信度：medium
+原因：natural_language
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[78] 成功文本
+来源：CrustyProto_Data/sharedassets5.assets
+键位：asset#sharedassets5.assets#60/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets5.assets、obj=60）
+原文：What we are going to do now?...
+译文：我们现在要做什么呢？……
+置信度：medium
+原因：natural_language
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[79] 成功文本
+来源：CrustyProto_Data/sharedassets5.assets
+键位：asset#sharedassets5.assets#65/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets5.assets、obj=65）
+原文：Survivor Action Timeline Track
+译文：幸存者行动时间线追踪
+置信度：medium
+原因：natural_language
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[80] 成功文本
+来源：CrustyProto_Data/sharedassets6.assets
+键位：asset#sharedassets6.assets#8/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets6.assets、obj=8）
+原文：Oh nooo!
+Jay! Mike!
+译文：哦不！
+杰伊！迈克！
+置信度：medium
+原因：natural_language
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[81] 成功文本
+来源：CrustyProto_Data/sharedassets6.assets
+键位：asset#sharedassets6.assets#12/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets6.assets、obj=12）
+原文：Survivor Action Timeline Track
+译文：幸存者行动时间线追踪
+置信度：medium
+原因：natural_language
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[82] 成功文本
+来源：CrustyProto_Data/sharedassets7.assets
+键位：asset#sharedassets7.assets#27/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets7.assets、obj=27）
+原文：Survivor Action Timeline Track
+译文：幸存者行动时间线追踪
+置信度：medium
+原因：natural_language
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[83] 成功文本
+来源：CrustyProto_Data/sharedassets7.assets
+键位：asset#sharedassets7.assets#28/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets7.assets、obj=28）
+原文：This isn't happening...
+My friends, i will avenge you...
+译文：这不可能发生……
+我的朋友们，我会为你们报仇的……
+置信度：medium
+原因：natural_language
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[84] 成功文本
+来源：CrustyProto_Data/sharedassets8.assets
+键位：asset#sharedassets8.assets#70/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets8.assets、obj=70）
+原文：Zombie Destroy Marker
+译文：僵尸消灭标记
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[85] 成功文本
+来源：CrustyProto_Data/sharedassets8.assets
+键位：asset#sharedassets8.assets#80/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets8.assets、obj=80）
+原文：Fake Debug Message Marker
+译文：虚假的调试消息标记
+置信度：medium
+原因：natural_language
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[86] 成功文本
+来源：CrustyProto_Data/sharedassets8.assets
+键位：asset#sharedassets8.assets#80/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets8.assets、obj=80）
+原文：Matt, i swear, fix your goddamn logic
+译文：Matt，我发誓，你得修正你那愚蠢的逻辑。
+置信度：medium
+原因：natural_language
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[87] 成功文本
+来源：CrustyProto_Data/sharedassets8.assets
+键位：asset#sharedassets8.assets#107/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets8.assets、obj=107）
+原文：Fake Debug Message Marker
+译文：虚假的调试消息标记
+置信度：medium
+原因：natural_language
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[88] 成功文本
+来源：CrustyProto_Data/sharedassets8.assets
+键位：asset#sharedassets8.assets#107/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets8.assets、obj=107）
+原文：unable to parent object "car01" to "john_survivor"
+译文：无法将对象“car01”关联到“john_survivor”。
+置信度：medium
+原因：natural_language
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[89] 成功文本
+来源：CrustyProto_Data/Managed/Assembly-CSharp.dll
+键位：us#845
+对象：DLL #US 字符串（record_offset=111791）
+原文：You can't pass a NULL string to DOText: an empty string will be used instead to avoid errors
+译文：你不能将 NULL 字符串传递给 DOText：系统会使用空字符串代替，以避免错误。
+置信度：medium
+原因：user_string_uppercase_ui
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[90] 成功文本
+来源：CrustyProto_Data/Managed/Assembly-CSharp.dll
+键位：us#2884
+对象：DLL #US 字符串（record_offset=113831）
+原文：TODO: add jumping animation to zombie
+译文：TODO: Add 跳跃动画 用于僵尸.
+置信度：medium
+原因：user_string_uppercase_ui
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[91] 成功文本
+来源：CrustyProto_Data/Managed/Eflatun.SceneReference.dll
+键位：us#104
+对象：DLL #US 字符串（record_offset=12695）
+原文：Scene GUID to path map not found!
+译文：找不到场景 GUID 对应的路径映射！
+置信度：medium
+原因：user_string_uppercase_ui
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[92] 成功文本
+来源：CrustyProto_Data/Managed/Eflatun.SceneReference.dll
+键位：us#238
+对象：DLL #US 字符串（record_offset=12829）
+原文：Given GUID is null or whitespace. GUID: '
+译文：如果 GUID 为 null 或空格，则结果为 NULL。GUID：'
+置信度：medium
+原因：user_string_uppercase_ui
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[93] 成功文本
+来源：CrustyProto_Data/Managed/Eflatun.SceneReference.dll
+键位：us#323
+对象：DLL #US 字符串（record_offset=12913）
+原文：'.
+To fix this, make sure you provide the GUID of a valid scene.
+译文：’.
+为了解决这个问题，请确保提供有效的场景的 GUID。
+置信度：medium
+原因：user_string_uppercase_ui
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[94] 成功文本
+来源：CrustyProto_Data/Managed/Eflatun.SceneReference.dll
+键位：us#453
+对象：DLL #US 字符串（record_offset=13044）
+原文：Given GUID is not found in the scene GUID to path map. GUID: '
+译文：由于无法在场景 GUID 到路径映射中找到 GUID，因此 GUID 为 ‘。
+置信度：medium
+原因：user_string_uppercase_ui
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[95] 成功文本
+来源：CrustyProto_Data/Managed/Eflatun.SceneReference.dll
+键位：us#580
+对象：DLL #US 字符串（record_offset=13170）
+原文：'
+This can happen for these reasons:
+1. The asset with the given GUID either doesn't exist or is not a scene. To fix this, make sure you provide the GUID of a valid scene.
+2. The scene GUID to path map is outdated. To fix this, you can either manually run the generator, or enable generation triggers. It is highly recommended to keep all the generation triggers enabled.
+译文：这种情况可能由以下原因引起：  
+1. 具有给定 GUID 的资源要么不存在，要么不是场景。要解决此问题，请确保提供有效的场景 GUID。  
+2. 场景 GUID 到路径映射已过时。要解决此问题，您可以手动运行生成器，或启用生成触发器。建议始终保持所有生成触发器的启用状态。
+置信度：medium
+原因：user_string_uppercase_ui
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[96] 成功文本
+来源：CrustyProto_Data/Managed/Eflatun.SceneReference.dll
+键位：us#1572
+对象：DLL #US 字符串（record_offset=14163）
+原文：Given path is not found in the scene GUID to path map. Path: '
+译文：给定路径未在场景 GUID 到路径映射中找到。路径：'
+置信度：medium
+原因：user_string_uppercase_ui
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[97] 成功文本
+来源：CrustyProto_Data/Managed/Eflatun.SceneReference.dll
+键位：us#1699
+对象：DLL #US 字符串（record_offset=14289）
+原文：'
+This can happen for these reasons:
+1. The asset at the given path either doesn't exist or is not a scene. To fix this, make sure you provide the path of a valid scene.
+2. The scene GUID to path map is outdated. To fix this, you can either manually run the generator, or enable generation triggers. It is highly recommended to keep all the generation triggers enabled.
+译文：‘
+这种情况可能由以下原因引起：
+1. 给定路径上的资源要么不存在，要么不是某个场景。要解决这个问题，请确保提供有效的场景路径。
+2. 场景 GUID 到路径映射已过时。要修复此问题，您可以手动运行生成器，或者启用生成触发器。强烈建议保持所有生成触发器的启用状态。
+置信度：medium
+原因：user_string_uppercase_ui
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[98] 成功文本
+来源：CrustyProto_Data/Managed/Eflatun.SceneReference.dll
+键位：us#2950
+对象：DLL #US 字符串（record_offset=15540）
+原文：.
+This can happen for these reasons:
+1. The asset with the given address either doesn't exist or is not a scene. To fix this, make sure you provide the address of a valid addressable scene.
+2. The Scene GUID to Address Map is outdated. To fix this, you can either manually run the generator, or enable generation triggers. It is highly recommended to keep all the generation triggers enabled.
+译文：.
+这种情况可能由以下原因引起：
+1. 给定地址所对应的资源要么不存在，要么不是某个场景。要解决这个问题，请确保您提供的地址是有效的、可访问的场景地址。
+2. 用于定位地图的场景 GUID 已过时。要解决这一问题，您可以手动运行生成器，或者启用生成触发器。强烈建议保持所有生成触发器的启用状态。
+置信度：medium
+原因：user_string_uppercase_ui
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[99] 成功文本
+来源：CrustyProto_Data/Managed/Eflatun.SceneReference.dll
+键位：us#3898
+对象：DLL #US 字符串（record_offset=16488）
+原文：.
+Thrown if a given address matches multiple entries in the Scene GUID to Address Map. This can happen for these reasons:
+1. There are multiple addressable scenes with the same given address. To fix this, make sure there is only one addressable scene with the given address.
+2. The Scene GUID to Address Map is outdated. To fix this, you can either manually run the generator, or enable generation triggers. It is highly recommended to keep all the generation triggers enabled.
+译文：.
+当某个地址与场景 GUID 到地址映射表中的多个条目匹配时，就会触发此错误。这种情况可能由以下原因引起：
+1. 存在多个具有相同地址的可寻址场景。为了解决这个问题，请确保只有一个可寻址场景具有该地址。
+2. 用于定位地图的场景 GUID 已过时。要解决这一问题，您可以手动运行生成器，或者启用生成触发器。强烈建议保持所有生成触发器的启用状态。
+置信度：medium
+原因：user_string_uppercase_ui
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[100] 成功文本
+来源：CrustyProto_Data/Managed/Eflatun.SceneReference.dll
+键位：us#5116
+对象：DLL #US 字符串（record_offset=17706）
+原文：The SceneReference is invalid. This can happen for these reasons:
+1. The SceneReference is assigned an invalid scene, or the assigned asset is not a scene. To fix this, make sure the 'SceneReference' is assigned a valid scene asset.
+2. The scene GUID to path map is outdated. To fix this, you can either manually run the map generator, or enable all generation triggers. It is highly recommended to keep all the generation triggers enabled.
+译文：SceneReference 无效。这种情况可能由以下原因引起：
+1. SceneReference 被分配给了一个无效的场景，或者所分配的资源并非场景。要解决这个问题，请确保 SceneReference 被分配了有效的场景资源。
+2. 场景 GUID 到路径映射已过时。要解决这个问题，您可以手动运行映射生成器，或者启用所有生成触发器。强烈建议保持所有生成触发器的启用状态。
+置信度：medium
+原因：user_string_uppercase_ui
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[101] 成功文本
+来源：CrustyProto_Data/Managed/Eflatun.SceneReference.dll
+键位：us#6503
+对象：DLL #US 字符串（record_offset=19094）
+原文：GUID is invalid. GUID: "
+译文：GUID 无效。GUID：
+置信度：medium
+原因：user_string_uppercase_ui
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[102] 成功文本
+来源：CrustyProto_Data/Managed/Unity.Cinemachine.dll
+键位：us#466
+对象：DLL #US 字符串（record_offset=355641）
+原文：**ANY CAMERA**
+译文：任何相机
+置信度：medium
+原因：user_string_uppercase_ui
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入

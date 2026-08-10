@@ -10,8 +10,9 @@ from typing import Callable
 from hanhua.core.engine_strings import (PHYSICAL_KEY_NAMES_CASEFOLD,
                                         interaction_input_events,
                                         interaction_input_tokens)
-from hanhua.core.knowledge import (_is_multilingual_source, _is_spaced_action,
-                                   _is_uppercase_action)
+from hanhua.core.knowledge import (_ACTION_VERB_ZH, _JAPANESE_KANA_RE,
+                                   _is_language_name, _is_multilingual_source,
+                                   _is_spaced_action, _is_uppercase_action)
 from hanhua.core.placeholders import (DISPLAY_WORDS, SAFE_KEEPERS,
                                       self_heal_format_tags)
 from hanhua.core.local_model import sanitize_exception
@@ -20,9 +21,12 @@ from hanhua.core.models import (TextEntry, TranslateStats, STATUS_FAILED,
 from hanhua.core.protected_spans import (protected_slot_parts,
                                          semantic_target_text)
 from hanhua.core.prompts import build_batch_user_prompt
-from hanhua.core.quality import (_CJK, _ui_check_words,
+from hanhua.core.quality import (_CJK, _EXPLANATORY_PATTERN,
+                                 _EXPLANATORY_PREFIX, _glossary_keep_echo,
+                                 _is_lyric_like, _ui_check_words,
                                  has_independent_lower_word,
                                  is_camel_tech_abbreviation,
+                                 is_chinese_source,
                                  is_lorem_ipsum_placeholder,
                                  quoted_proper_terms,
                                  source_term_applies,
@@ -46,6 +50,13 @@ _ENGLISH_PHRASE = re.compile(
 _QUOTE_CONTENT = re.compile(
     r"[\"“”«»「」『』]([^\"“”«»「」『』]{1,80})[\"“”«»「」『』]")
 _ENGLISH_WORD = re.compile(r"[A-Za-z]{3,}")
+# 标签-值格式串（'slash: 999' / 'encore 1'——deadbeat 实证：HUD 计数
+# 显示模板「标签: 值」或「标签 值」，模型仅做大小写规范化回显
+# （'Slash: 999'）→ 词级补译的 TitleCase 检查把它当专名跳过 → 按原文
+# 形态恢复标签整词补译；空格分隔格式（encore 1）同属 HUD 标签；艺术
+# 大小写（'eNCORE 1'）是标签原样（deadbeat 实证）——标签首字符大小写
+# 不设限，提取后补译/译例替换大小写不敏感）
+_LABEL_VALUE_FORMAT = re.compile(r"^([A-Za-z]{2,16})(?:: ?| )(\d+)$")
 # 重音拉丁字母 → ASCII 一对一词符映射（长度不变，索引对齐保持）：
 # _ENGLISH_WORD 是纯 ASCII 正则，带重音专名会被拆成碎片（"Pulsomètre" →
 # "Pulsom"+"tre"），碎片 "tre" 是小写普通词 → 误判英文残留（alisa-demo
@@ -86,6 +97,36 @@ _ENGLISH_FUNCTION_WORDS = frozenset({
 # 译文空段（\n\n 空行）：多行文本的段整体漏译证据——换行合并兜底只放行
 # 「合并」不放行「段丢失」（测试实证：Second → 空行必须失败）
 _EMPTY_SEGMENT = re.compile(r"\n[ \t]*\n")
+# 键盘噪音重复 3-gram（sdfsdfsdfsdfsdfsdf = 'sdf'×6：开发者乱打测试串）
+_KEYBOARD_NOISE_3GRAM = re.compile(r"([a-z]{3}).*\1")
+# 文件引用词（readme/changelog/license/credits：文件名/章节名，游戏中
+# 出现时保留原文是合理行为——'Fixed name in readme' 的 readme 引用
+# README 文件，与普通名词漏翻（ram）性质不同）
+_FILE_REFERENCE_WORDS = frozenset(
+    {"readme", "changelog", "license", "credits"})
+
+
+def _kept_word_plausible(original: str, word: str) -> bool:
+    """模型保留的原文词是否「非普通英语词漏翻」→ 放行合理。
+
+    三条形态特征（满足任一）：
+    - 键盘噪音：≥8 字符 + 重复 3-gram（sdfsdfsdfsdfsdfsdf 开发者乱串）
+    - 命令/参数语法：原文中词紧跟 [（playsub [character] 的命令名）或
+      词在方括号内（[identifier] 的参数占位符）
+    - 文件引用词（readme/changelog/license/credits）
+
+    普通英语词（ram/ragdoll/name）不具备上述特征 → 仍判漏翻失败
+    （test_common_word_leftovers_still_target_script_mismatch 固化）。
+    """
+    w = word.casefold()
+    if len(w) >= 8 and _KEYBOARD_NOISE_3GRAM.search(w):
+        return True
+    if w in _FILE_REFERENCE_WORDS:
+        return True
+    if re.search(r"\b" + re.escape(word) + r"\s*\[", original, re.I):
+        return True                              # 命令名后跟参数（playsub [x]）
+    return re.search(
+        r"\[[^\]]*" + re.escape(word) + r"[^\]]*\]", original, re.I) is not None
 # 聊天/控制台命令（"/kick" 引号包裹 或 /give 独立词）：游戏命令保留原文是
 # 正确行为（Slendergus 真实样本）→ 从英文残留判定中移除
 _SLASH_COMMAND = re.compile(
@@ -95,6 +136,29 @@ _SLASH_COMMAND = re.compile(
 
 def _entry_id(e: TextEntry) -> str:
     return f"{e.key_path}@{e.file_id}"
+
+
+def _replace_word_first(text: str, word: str, replacement: str) -> str:
+    """整词边界替换第一次出现（词级补译单词替换用——裸 replace 会把
+    'the' 替换进 other/these 的子串）。"""
+    return re.sub(rf"\b{re.escape(word)}\b", replacement, text, count=1)
+
+
+def _is_lyric_source(text: str) -> bool:
+    """歌词/韵律文本特征：超长 + 歌词形态。1.8B 模型对歌词稳定续写/
+    截断而非完整翻译——纯英文歌词续写英文（'Tonight...' 2677 字符
+    实证）、含假名歌词只译首句（'(Three, two, one) わたし...' 实证，
+    常规路径多语言双跳也救不回）→ 歌词专用路径（中文引导+限长+高
+    重复惩罚）逐句翻译。判定双分支：
+    - ≥1000 纯西文无换行（Tonight 类，无标记纯歌词）
+    - ≥500 含歌词形态（假名/汉字或括号音乐标记，Guh/Three 类）"""
+    if len(text) < 500:
+        return False
+    if _is_lyric_like(text):
+        return True
+    return (len(text) >= 1000
+            and "\n" not in text
+            and not re.search(r"[一-鿿぀-ヿ가-힯]", text))
 
 
 def _split_translation_segments(text: str) -> tuple[str, list[str], list[str]]:
@@ -560,6 +624,24 @@ class BatchTranslator:
                 (e.translation, e.status, e.quality_reasons, e.meta) = original_state
             if self._is_cancelled():
                 return e, "", False
+            # 中文原文直接放行：游戏自带中文语言包（Language/CH/*.subs、
+            # *.jsonc 等）条目原文即中文，模型按目标语 zh-CN 处理反而
+            # 回译成英文/乱码判 target_script_mismatch（containment 实证：
+            # '警卫' → guard、'折纸' → origami）→ 原样保留 + meta 标记
+            # language_source_kept 供人工校对筛选。判定收紧：CJK ≥ 2 且
+            # 占字母 ≥ 50%（deadbeat 实证：歌词含单日文汉字『戦争』被误判
+            # 中文源 → 1719 字符英文原样放行）——日文原文（含假名）由
+            # _is_multilingual_source 兜底。
+            if (is_chinese_source(e.original)
+                    and not _JAPANESE_KANA_RE.search(e.original)):
+                e.translation = e.original
+                e.status = "translated"
+                e.quality_reasons = ()
+                e.meta = dict(e.meta)
+                e.meta["quality_passed"] = True
+                e.meta["quality_reasons"] = []
+                e.meta["language_source_kept"] = True
+                return e, e.original, True
             try:
                 native_translate = getattr(self.client, "translate_text", None)
                 if callable(native_translate):
@@ -675,6 +757,20 @@ class BatchTranslator:
                     return e, "", False
                 if repaired is not None and repaired[2]:
                     return repaired
+            # glossary 术语确定性修复：glossary_mismatch（模型译漏/双关
+            # 误译术语，'Slash key'→'删除键' deadbeat 实证）→ 术语段
+            # 替换为译例 + 非术语语义段翻译拼接（_repair_glossary_terms）。
+            if (callable(getattr(self.client, "translate_text", None))
+                    and not sub[0][2]
+                    and self._allows_fallback_retry(e)
+                    and "glossary_mismatch" in set(e.quality_reasons)):
+                repaired = self._repair_glossary_terms(
+                    e, native_translate, target_lang)
+                if self._is_cancelled():
+                    restore_original_state()
+                    return e, "", False
+                if repaired is not None and repaired[2]:
+                    return repaired
             # 专名 references 重译：译文无中文（回显/半翻）+ 原文含 TitleCase
             # 专名 → 注入 (专名, 专名) 引用重译——模型把专名当术语保留、
             # 只译其余部分（backrooms 实证：'Markiplier was here' 回显 →
@@ -765,6 +861,26 @@ class BatchTranslator:
                 if isinstance(retry_content, str) and retry_content.strip():
                     retry_good = self._apply_quality(e, retry_content)
                     return e, retry_content, retry_good
+            # 多语言源兜底放行：西语/俄语等原文是 1.8B 模型能力边界
+            # （双跳/词级补译/同对象译例全部失败：'Obtuviste la "Aleación
+            # Anti-Telequinetica".' → 日文假名乱入、'Mierda' → 解释性
+            # 垃圾、'клипборд' → Klipboard 音译）→ 保留原文放行。这类
+            # 多语言文件通常是游戏自带非玩家主语言（玩家用 CH 语言包），
+            # 含中文时语义已在中，放行无害；language_source_kept 供
+            # 人工校对筛选。日文源（假名）虽同属 multilingual，但
+            # 假名-汉字同源可译（alisa-demo 实证双跳成功），此处兜底
+            # 仅限无 CJK 的拉丁/西里尔语源。
+            if (not sub[0][2]
+                    and self._allows_fallback_retry(e)
+                    and _is_multilingual_source(e.original)
+                    and not _CJK.search(e.original)):
+                e.translation = e.original
+                e.quality_reasons = ()
+                e.meta = dict(e.meta)
+                e.meta["quality_passed"] = True
+                e.meta["quality_reasons"] = []
+                e.meta["language_source_kept"] = True
+                return e, e.original, True
             if (callable(getattr(self.client, "translate_text", None))
                     and not sub[0][2]
                     and self._is_actionable_ui_retry(e)):
@@ -1022,58 +1138,135 @@ class BatchTranslator:
                        for word in words):
                 continue
             residue_phrases.append(phrase)
-        if not residue_phrases:
-            return None
         source_terms_cf = {
             word.casefold()
             for word in _ENGLISH_WORD.findall(
                 SAFE_KEEPERS.sub(" ", entry.original)
                 .translate(_ACCENT_TO_ASCII))}
+        # 单个残留词（非短语）：'…warp 房间…'——模型对游戏内专名/术语
+        # 半保留（warp room 传送房间）。补译该词：模型输出翻译 → 整词
+        # 替换；回显 → 模型确认保留 → word_residue_exempt 豁免放行
+        # （crash-back-in-time Uka-Uka 审判邀请 实证：首译高质量仅 warp
+        # 残留，旧判定重试耗尽恒败）。条件：词在原文（防幻觉）、非功能词/
+        # UI 词典/物理键、译文已含中文；短语覆盖的词不重复处理。
+        residue_words: list[str] = []
+        if _CJK.search(translation):
+            phrase_ranges = [
+                (m.start(), m.end())
+                for m in _ENGLISH_PHRASE.finditer(translation)]
+            for m in _ENGLISH_WORD.finditer(translation):
+                if any(ps <= m.start() and m.end() <= pe
+                       for ps, pe in phrase_ranges):
+                    continue
+                w = m.group(0)
+                if (3 <= len(w) <= 16 and w[0].islower() and not w.isupper()
+                        and w.casefold() in source_terms_cf
+                        and w.casefold() not in _ENGLISH_FUNCTION_WORDS
+                        and w.casefold() not in _DISPLAY_WORDS_CASEFOLD
+                        and w.casefold() not in _BUILTIN_UI_TERMS_CASEFOLD
+                        and w.casefold() not in PHYSICAL_KEY_NAMES_CASEFOLD
+                        and w not in residue_words):
+                    residue_words.append(w)
+        # 标签-值格式串（'slash: 999' → 模型 'Slash: 999' 大小写规范化
+        # 回显，TitleCase 检查跳过）：按原文形态提取标签词补译（译文无
+        # 中文 → 无残留词可提取），替换时大小写不敏感（译文标签已被
+        # 模型改首字母大写）
+        label_values: list[str] = []
+        if not residue_phrases and not residue_words:
+            m = _LABEL_VALUE_FORMAT.match(entry.original)
+            if m:
+                label_values.append(m.group(1))
+        if not residue_phrases and not residue_words and not label_values:
+            return None
         repaired = translation
         confirmed: list[str] = []
-        for phrase in residue_phrases:
+        # 短语与单词统一补译（单词限 2 个防请求爆炸）
+        for residue in (*residue_phrases, *residue_words[:2], *label_values):
             if self._is_cancelled():
                 return entry, "", False
-            try:
-                out, usage = native_translate(
-                    phrase, target_lang, self.references)
-            except Exception as exc:  # noqa: BLE001
-                self._record_usage(None)
-                self._mark_request_failed(entry, exc)
-                return None
-            self._record_usage(usage)
-            if not isinstance(out, str) or not out.strip():
-                continue
-            phrase_words = _ENGLISH_WORD.findall(phrase)
-            if phrase_words and (
-                    not _ENGLISH_WORD.search(out)
-                    or not _CJK.search(out)):
-                # 裸翻译输出非纯中文（可能直译误译：'itch page'→'痒页面'，
-                # backrooms 实证；或纯英文回显：'outstanding citizen'→
-                # 回显，baldis 实证）→ 逐词保留引用重试：模型确认的专名会
-                # 保留原文（'itch 页面'），普通词引用后直译（'杰出公民'）。
-                # 两种输出不一致 → 引用版可信（模型在裸 prompt 下把专名
-                # 当普通词直译，引用后识别为专名保留）；一致（仍纯中文/
-                # 仍回显）→ 词确可全译/保留，用第二意见
+            # 词级补译优先查知识库译例（references）：模型对借词/术语裸
+            # 翻译输出解释垃圾（'slash 翻译为 "斜线"'，deadbeat 实证），
+            # 而译例（slash→斩击）是验证过的确定性映射 → 直接替换，
+            # 零请求且不触发解释垃圾路径。keep 型（target==source，hiss
+            # pop collection 类保留映射）跳过——保留是合理行为。
+            term_target = next(
+                (t for s, t in self.references
+                 if s.strip().casefold() == residue.casefold()
+                 and t.strip().casefold() != residue.casefold()
+                 and source_term_applies(s, entry.original)),
+                None)
+            if term_target is not None:
+                out, usage = term_target, None
+                self._record_usage(usage)
+            else:
                 try:
-                    ref_out, ref_usage = native_translate(
-                        phrase, target_lang,
-                        tuple((w, w) for w in phrase_words))
+                    out, usage = native_translate(
+                        residue, target_lang, self.references)
                 except Exception as exc:  # noqa: BLE001
                     self._record_usage(None)
                     self._mark_request_failed(entry, exc)
                     return None
-                self._record_usage(ref_usage)
-                if isinstance(ref_out, str) and ref_out.strip():
-                    out = ref_out.strip()
+                self._record_usage(usage)
+                if not isinstance(out, str) or not out.strip():
+                    continue
+                residue_words_ = _ENGLISH_WORD.findall(residue)
+                # 解释式输出（'slash 翻译为 "斜线": 999'——deadbeat slash
+                # 实证：裸 prompt 下模型对借词输出解释而非译文）即使含中文
+                # 也是垃圾，强制走引用重试（含英文/回显的非纯中文输出同样
+                # 走重试）
+                explanatory = bool(_EXPLANATORY_PATTERN.search(out)
+                                   or _EXPLANATORY_PREFIX.search(out))
+                if residue_words_ and (
+                        explanatory
+                        or not _ENGLISH_WORD.search(out)
+                        or not _CJK.search(out)):
+                    # 裸翻译输出非纯中文（可能直译误译：'itch page'→
+                    # '痒页面'，backrooms 实证；或纯英文回显：'outstanding
+                    # citizen'→回显，baldis 实证；或解释式垃圾）→ 逐词保留
+                    # 引用重试：模型确认的专名会保留原文（'itch 页面'），
+                    # 普通词引用后直译（'杰出公民'）。两种输出不一致 →
+                    # 引用版可信（模型在裸 prompt 下把专名当普通词直译，
+                    # 引用后识别为专名保留）；一致（仍纯中文/仍回显）→
+                    # 词确可全译/保留，用第二意见
+                    try:
+                        ref_out, ref_usage = native_translate(
+                            residue, target_lang,
+                            tuple((w, w) for w in residue_words_))
+                    except Exception as exc:  # noqa: BLE001
+                        self._record_usage(None)
+                        self._mark_request_failed(entry, exc)
+                        return None
+                    self._record_usage(ref_usage)
+                    if isinstance(ref_out, str) and ref_out.strip():
+                        ref_stripped = ref_out.strip()
+                        if (_EXPLANATORY_PATTERN.search(ref_stripped)
+                                or _EXPLANATORY_PREFIX.search(ref_stripped)):
+                            # 引用后仍解释式：模型不稳定/无法翻译该词 →
+                            # 放弃本条（解释垃圾替换进译文会被质量门误判
+                            # passed，slash 实证：垃圾被判 passed）
+                            return None
+                        out = ref_stripped
             # 模型补译输出保留的英文词 = 模型确认的专名（itch）→ 豁免，
             # 但要求原文也含该词（防模型幻觉新词）；输出无英文 → 完全替换
             confirmed.extend(
                 word.casefold() for word in _ENGLISH_WORD.findall(out)
                 if word.casefold() in source_terms_cf)
-            repaired = repaired.replace(phrase, out)
+            if residue in residue_words:
+                repaired = _replace_word_first(repaired, residue, out)
+            elif residue in label_values:
+                # 标签替换大小写不敏感（模型把 'slash: 999' 规范化为
+                # 'Slash: 999'，小写标签无法精确匹配译文）
+                repaired = re.sub(
+                    rf"\b{re.escape(residue)}\b", out, repaired,
+                    count=1, flags=re.I)
+            else:
+                repaired = repaired.replace(residue, out)
         if repaired == translation:
-            return None
+            # 补译输出无变化：短语回显 = 模型未确认（维持失败，防漏翻）；
+            # 单词回显 + 已确认保留（confirmed 非空）= 模型确认该词是
+            # 术语 → 走豁免复查放行（Uka-Uka warp 实证）
+            if not (confirmed and residue_words):
+                return None
         entry.meta = dict(entry.meta)
         entry.meta["word_residue_exempt"] = confirmed
         good = self._apply_quality(entry, repaired)
@@ -1101,7 +1294,13 @@ class BatchTranslator:
             word for word in _ENGLISH_WORD.findall(original)
             if word[0].isupper() and word[1:].islower()
             and word.casefold() not in _DISPLAY_WORDS_CASEFOLD
-            and word.casefold() not in _BUILTIN_UI_TERMS_CASEFOLD]
+            and word.casefold() not in _BUILTIN_UI_TERMS_CASEFOLD
+            # TitleCase 动作词（Interact/Press/Use…）不是专名：注入
+            # (词, 词) 保留引用会让模型把整条短语当术语回显（containment
+            # 实证：'Interact hold' → (Interact, Interact) → 完整回显判
+            # glossary_mismatch）；裸翻译模型反而能直译（'互动保持'）。
+            # _ACTION_VERB_ZH 即动作词身份表（知识库词表，跨游戏通用）。
+            and word.casefold() not in _ACTION_VERB_ZH]
         if not proper_words:
             return None
         references = self.references + tuple(
@@ -1120,6 +1319,92 @@ class BatchTranslator:
         good = self._apply_quality(entry, out)
         return entry, out, good
 
+    def _repair_glossary_terms(
+            self, entry: TextEntry, native_translate, target_lang: str,
+            ) -> tuple[TextEntry, str, bool] | None:
+        """glossary_mismatch 确定性修复：原文含非 keep 术语（'Slash key'
+        的 slash→斩击）但模型未按译例译（slash 双关译'删除键'，deadbeat
+        实证）→ 术语段直接替换为译例（防模型对借词裸翻译输出解释垃圾）+
+        非术语语义段 native 翻译 → 拼接。仅处理无换行短串（多行走
+        multiline repair；超长走词级补译）。失败返回 None 不截断降级链。"""
+        if "\n" in entry.original or len(entry.original) > 300:
+            return None
+        # 标签-值格式串（'slash: 999'/'eNCORE 1'）：标签译例 + 值原样
+        # 保留即完整译文——值是 HUD 数字不翻译，语义段翻译必回显（无
+        # 中文）导致拼接恒败（deadbeat run4 实证：12 条标签串全败于此）
+        label_m = _LABEL_VALUE_FORMAT.match(entry.original)
+        if label_m:
+            label = label_m.group(1)
+            value = label_m.group(2)
+            delim = entry.original[len(label):entry.original.index(value)]
+            for source, target in self.references:
+                s, t = str(source).strip(), str(target).strip()
+                if (s.casefold() == label.casefold()
+                        and t.casefold() != s.casefold()):
+                    candidate = f"{t}{delim}{value}"
+                    return entry, candidate, self._apply_quality(
+                        entry, candidate)
+            return None
+        matches: list[tuple[int, int, str, str]] = []
+        for source, target in self.references:
+            s, t = str(source).strip(), str(target).strip()
+            if not s or not t or t.casefold() == s.casefold():
+                continue
+            if not source_term_applies(s, entry.original):
+                continue
+            matches.extend(
+                (m.start(), m.end(), s, t)
+                for m in re.finditer(
+                    rf"(?<![A-Za-z0-9_]){re.escape(s)}(?![A-Za-z0-9_])",
+                    entry.original, re.I))
+        if not matches:
+            return None
+        matches.sort()
+        merged: list[tuple[int, int, str, str]] = []
+        for m in matches:
+            if merged and m[0] < merged[-1][1]:
+                continue  # 与已取术语重叠 → 跳过（排序稳定，先取先得）
+            merged.append(m)
+        pieces: list[tuple[str, bool]] = []
+        pos = 0
+        for start, end, s, t in merged:
+            if start > pos:
+                pieces.append((entry.original[pos:start], False))
+            pieces.append((t, True))
+            pos = end
+        if pos < len(entry.original):
+            pieces.append((entry.original[pos:], False))
+        # 原文全由术语组成 → 译例拼接即完整译文，无需语义段翻译
+        if not any(not is_term for _, is_term in pieces):
+            candidate = "".join(t for t, _ in pieces)
+            return entry, candidate, self._apply_quality(entry, candidate)
+        out_parts: list[str] = []
+        for text, is_term in pieces:
+            text = text.strip()
+            if not text:
+                continue
+            if is_term:
+                out_parts.append(text)
+                continue
+            try:
+                out, usage = native_translate(
+                    text, target_lang, self.references)
+            except Exception as exc:  # noqa: BLE001
+                self._record_usage(None)
+                self._mark_request_failed(entry, exc)
+                return None
+            self._record_usage(usage)
+            if (not isinstance(out, str) or not out.strip()
+                    or not _CJK.search(out)):
+                # 语义段翻译失败/回显 → 放弃确定性拼接（保持失败状态走
+                # 后续降级链，不截断）
+                return None
+            out_parts.append(out.strip())
+        candidate = "".join(out_parts)
+        if not _CJK.search(candidate):
+            return None
+        return entry, candidate, self._apply_quality(entry, candidate)
+
     def _repair_multiline_translation(
             self, entry: TextEntry, native_translate, target_lang: str,
             ) -> tuple[TextEntry, str, bool] | None:
@@ -1131,22 +1416,49 @@ class BatchTranslator:
         if len(segments) < 2:
             return None
         rebuilt: list[str] = [prefix]
+        echo_exempt: list[str] = []
+        # 歌词源整条走歌词专用翻译路径：1.8B 模型对纯英文歌词句稳定续写
+        # 英文而非翻译（deadbeat 'Tonight...' 2677 字符实证），中文引导 +
+        # 限长 + 高 repeat_penalty 才能译出中文；逐句调用（已拆句）
+        lyric_source = (
+            _is_lyric_source(entry.original)
+            and callable(getattr(self.client, "translate_lyrics", None)))
         for index, part in enumerate(segments):
             if self._is_cancelled():
                 return entry, "", False
-            try:
-                translated, usage = native_translate(
-                    part, target_lang, self.references)
-            except Exception as exc:  # noqa: BLE001
-                self._record_usage(None)
-                self._mark_request_failed(entry, exc)
-                return entry, "", False
+            if lyric_source:
+                try:
+                    translated, usage = self.client.translate_lyrics(
+                        part, target_lang, self.references)
+                except Exception as exc:  # noqa: BLE001
+                    self._record_usage(None)
+                    self._mark_request_failed(entry, exc)
+                    return entry, "", False
+            else:
+                try:
+                    translated, usage = native_translate(
+                        part, target_lang, self.references)
+                except Exception as exc:  # noqa: BLE001
+                    self._record_usage(None)
+                    self._mark_request_failed(entry, exc)
+                    return entry, "", False
             self._record_usage(usage)
             if self._is_cancelled():
                 return entry, "", False
             if not isinstance(translated, str) or not translated.strip():
                 self._mark_failed(entry, "line_content_mismatch")
                 return entry, "", False
+            # 行级回显豁免：该行译文与原文整行相同（大小写变体）→ 模型
+            # 确认该行不可翻译（音效/外语/俚语行），拼接用原文行并记入
+            # echo_line_exempt（歌词分块尾部回显实证：'现代杀手' 3183
+            # 字符最后一块含日文/俚语行模型回显英文 → 拼接后
+            # target_script_mismatch 恒败）
+            if translated.strip().casefold() == part.strip().casefold():
+                echo_exempt.append(part.strip())
+                rebuilt.append(part.strip())
+                if index < len(separators):
+                    rebuilt.append(separators[index])
+                continue
             # 多语言源段双跳：模型对含假名/重音/罗曼功能词的段（意语
             # "Ve ne preghiamo" 等）倾向输出英语译文 → 以英语译文为中间源
             # 再译中文（alisa-demo 实证：长句逐段修复时短段被模型译成英语）
@@ -1161,6 +1473,9 @@ class BatchTranslator:
             rebuilt.append(translated.strip())
             if index < len(separators):
                 rebuilt.append(separators[index])
+        if echo_exempt:
+            entry.meta = dict(entry.meta)
+            entry.meta["echo_line_exempt"] = echo_exempt
         candidate = "".join(rebuilt)
         return entry, candidate, self._apply_quality(entry, candidate)
 
@@ -1262,6 +1577,61 @@ class BatchTranslator:
         # 稳定行为）→ 确定性补全/重排后再判定（a-catfiends/the-keeper/
         # interdream 真实样本）。模型新增占位符/顺序破坏 → 原样，仍判失败
         translation = self_heal_format_tags(entry.original, translation)
+        # 外语混入自愈：Hy-MT2 多语言模型在中英翻译偶发输出韩文
+        # （'该基金会의官方口号' 的 의、'最致命的 상황；同时' 的 상황，
+        # containment EN 语言包/字幕实证）→ target_script_mismatch 且
+        # 重试稳定复发。清洗条件严苛，防误伤：
+        # ① 原文纯 ASCII（回显外语专名/原文含外语的场景不动）；
+        # ② 混入块（连续的非中文非 ASCII 字母段）字符不在原文且 ≤4 个；
+        # ③ 块前 8 字符与块后 8 字符内都有汉字（句中夹带——删除无损；
+        #    句尾独立词 '爱丽丝 설정' 是译文主体内容，不清洗仍判失败；
+        #    '設定です' 的です 场景由条件 ① 原文含韩文拦截）
+        original_foreign = any(
+            c.isalpha() and not c.isascii() for c in entry.original)
+        if not original_foreign:
+            spans: list[tuple[int, int]] = []
+            i = 0
+            n = len(translation)
+            while i < n:
+                ch = translation[i]
+                if (ch.isalpha() and not ch.isascii()
+                        and not self._is_chinese_ideograph(ch)
+                        and ch not in entry.original):
+                    j = i + 1
+                    while j < n:
+                        cj = translation[j]
+                        if (cj.isalpha() and not cj.isascii()
+                                and not self._is_chinese_ideograph(cj)
+                                and cj not in entry.original):
+                            j += 1
+                        else:
+                            break
+                    spans.append((i, j))
+                    i = j
+                else:
+                    i += 1
+            remove_spans: list[tuple[int, int]] = []
+            for start, end in spans:
+                if end - start > 4:
+                    continue
+                left = translation[max(0, start - 8):start]
+                right = translation[end:end + 8]
+                if (any(self._is_chinese_ideograph(c) for c in left)
+                        and any(self._is_chinese_ideograph(c)
+                                for c in right)):
+                    # 吞掉块前紧邻空白（'最致命的 상황' → 删 ' 상황'，
+                    # 不留悬空空格 '最致命的 ；'）
+                    while start > 0 and translation[start - 1] in " \t":
+                        start -= 1
+                    remove_spans.append((start, end))
+            if remove_spans:
+                parts = []
+                prev = 0
+                for start, end in remove_spans:
+                    parts.append(translation[prev:start])
+                    prev = end
+                parts.append(translation[prev:])
+                translation = "".join(parts)
         result = validate_translation_quality(
             entry, translation, self.glossary,
             check_placeholders=self.placeholder_check,
@@ -1311,32 +1681,51 @@ class BatchTranslator:
         proper_name_echo = (
             letters_source
             and letters_source == letters_target
-            and not has_independent_lower_word(entry.original)
+            # 语言名回显豁免（Español/Deutsch/Русский…）：语言选择器的
+            # 显示文本保留原名是业界惯例（游戏语言列表从不翻译语言名）。
+            # Español 含独立小写词会进 has_independent_lower_word 失败
+            # 分支 → 语言名身份豁免（containment level*.assets 实证 6 条）
+            and (not has_independent_lower_word(entry.original)
+                 or _is_language_name(entry.original))
             and not special_action
             # 多语言源（含假名/重音/罗曼功能词）回显默认仍可豁免（法语人名
             # Stefánsson、日文频道名 Korone Ch. 是专名）——仅当同 obj 已有
             # 成功译文（多语言打包数组/对话流对象，如 alisa-demo 的四语言
             # 物品名）时禁止豁免：Clé Pomme 与 Iron Key 同 obj，须翻译。
-            and (not _is_multilingual_source(entry.original)
+            # 语言名（Español）恒豁免：语言选择器/多语言数组中的语言标签
+            # 保留原名是业界惯例，不受同 obj 译例影响（containment
+            # level1-6 assets 实证：English 先译后 Español 同 obj 被拒）
+            and ((_is_language_name(entry.original)
+                  or not _is_multilingual_source(entry.original))
                  or proper_name
                  or not self._obj_reference_pairs(entry))
             # UI 词检查跳过末位版本词（"UCLA Gold" 的 Gold 是版本后缀，
             # 回显保留合理——见 quality._ui_check_words，baldis 实证）
             # 驼峰技术缩写（VSync）即使进 UI 词典也允许回显：界面标准术语
             # （butterflies 实证：'VSync' 回显被判 target_script_mismatch）
+            # 全大写 ≤3 字母缩写（SFX/BGM/UI）同样豁免：缩写是界面标准
+            # 术语，1.8B 模型对单 token 缩写稳定回显（count-my-coins
+            # 'SFX' 实证：重试耗尽仍回显 → target_script_mismatch 恒败）；
+            # 词典内其余词（Quit/Volume/Settings）不豁免照常要求翻译
             and not any(
                 (word.casefold() in _DISPLAY_WORDS_CASEFOLD
                  or word.casefold() in _BUILTIN_UI_TERMS_CASEFOLD)
                 and not is_camel_tech_abbreviation(word)
+                and not (len(word) <= 3 and word.isupper())
                 for word in _ui_check_words(proper_name_words)))
         # lorem ipsum 占位文本回显（无中文）是合理行为 → 豁免
         lorem_placeholder = is_lorem_ipsum_placeholder(entry.original)
+        # glossary keep 术语组成的原文（hiss pop collection）TitleCase 化
+        # 回显是模型保留术语 → 豁免 untranslated_text（222am 实证）
+        glossary_keep_echo = _glossary_keep_echo(
+            entry.original, translation, self.glossary)
         if (result.passed and is_simplified_chinese
                 and ((contains_wrong_script and not proper_name_echo
                       and not lorem_placeholder)
                      or (source_has_semantic_text and not proper_name
                          and not contains_chinese and not proper_name_echo
-                         and not lorem_placeholder))):
+                         and not lorem_placeholder
+                         and not glossary_keep_echo))):
             entry.translation = result.normalized_translation
             entry.quality_reasons = ("target_script_mismatch",)
             entry.meta = dict(entry.meta)
@@ -1382,12 +1771,15 @@ class BatchTranslator:
         if is_lorem_ipsum_placeholder(entry.original):
             return False
         # 原文英文词集（casefold）：驼峰技术缩写豁免需原文也含该词
-        # （防模型幻觉新词）
+        # （防模型幻觉新词）。用原文全量计算（不剥 SAFE_KEEPERS）：
+        # 版本号/域名/路径里的词（0.4.0beta 的 beta、contact@邮箱的
+        # contact）在译文残留是「模型保留原文词」的证据，词集须含它们
+        # 才可豁免（containment 实证：beta 在 SAFE_KEEPERS 剥后词集
+        # 缺失 → digit_adjacent 豁免失效）
         source_terms_cf = {
             word.casefold()
             for word in _ENGLISH_WORD.findall(
-                SAFE_KEEPERS.sub(" ", entry.original)
-                .translate(_ACCENT_TO_ASCII))}
+                entry.original.translate(_ACCENT_TO_ASCII))}
         semantic = semantic_target_text(
             entry.original, translation, allowed_terms)
         # 原文交互按键词（Escape/P/X）在译文保留是正确行为 → 移除后判定
@@ -1404,6 +1796,11 @@ class BatchTranslator:
         # 3+ 段路径（User/Blah/Hey/HotelParadiseScreenshot）、域名（itch.io /
         # OpenGameArt.com）、@用户名（@zkfie / @SoftdevWu）、版本号（0.4.0beta）
         semantic = SAFE_KEEPERS.sub(" ", semantic)
+        # multiline 行级回显豁免：repair 确认不可翻译的行（音效/外语/
+        # 俚语行，模型整行回显）拼接用原文行 → 从语义词中移除这些行
+        # （歌词分块尾部回显实证：回显行被当英文残留恒判失败）
+        for line in entry.meta.get("echo_line_exempt", []):
+            semantic = semantic.replace(str(line), " ")
         # 聊天/控制台命令（"/kick"、/give）→ 游戏命令保留原文是正确行为
         semantic = _SLASH_COMMAND.sub(" ", semantic)
         # 非 ASCII 字母（俄/日/韩/阿拉伯文…）→ 目标脚本错误，判失败
@@ -1478,14 +1875,18 @@ class BatchTranslator:
         # 人名并列、Escape 按键名）不算英文残留
         # 数字邻接词（"4chan" 的 chan、"23andMe" 的 and）：数字+字母混合形态
         # 多为网站/用户名/版本号（backrooms 实证：译文保留 "4chan" 被拆出
-        # 小写碎片 "chan" → 误判英文残留）；要求原文也含该词（防模型幻觉）
+        # 小写碎片 "chan" → 误判英文残留）；要求原文也含该词（防模型幻觉）。
+        # 用原文计算：SAFE_KEEPERS 会把版本号（0.4.0beta）整段剥掉，semantic
+        # 中已无邻接数字（containment 实证：'0.4.0beta' 的 beta 在译文残留
+        # 时因此漏判 → 版本后缀词恒败）
+        original_ascii = entry.original.translate(_ACCENT_TO_ASCII)
         digit_adjacent_words = {
             match.group(0).casefold()
-            for match in _ENGLISH_WORD.finditer(semantic_ascii)
+            for match in _ENGLISH_WORD.finditer(original_ascii)
             if (match.start() > 0
-                and semantic_ascii[match.start() - 1].isdigit())
-            or (match.end() < len(semantic_ascii)
-                and semantic_ascii[match.end()].isdigit())}
+                and original_ascii[match.start() - 1].isdigit())
+            or (match.end() < len(original_ascii)
+                and original_ascii[match.end()].isdigit())}
         # 词级补译确认的保留词（'itch page' 补译 → 模型输出保留 itch 专名）
         # → 仅本条生效的豁免（补译时已校验词在原文出现，防幻觉）
         word_residue_exempt = {
@@ -1504,7 +1905,8 @@ class BatchTranslator:
             word.casefold() for word in title_in_source
             if word.casefold() not in _DISPLAY_WORDS_CASEFOLD
             and word.casefold() not in _BUILTIN_UI_TERMS_CASEFOLD
-            and word.casefold() not in _ENGLISH_FUNCTION_WORDS}
+            and word.casefold() not in _ENGLISH_FUNCTION_WORDS
+            and word.casefold() not in _ACTION_VERB_ZH}
         # 译文引号内的 TitleCase 短语：模型用引号包裹专名（游戏内按钮名/
         # 关卡名/成就名，如 按钮 "Jump During Playtime"）是稳定行为——
         # 引号是模型对专名的强调标记，保留原文合理（baldis 实证：Button
@@ -1516,6 +1918,18 @@ class BatchTranslator:
             translation.translate(_ACCENT_TO_ASCII),
             SAFE_KEEPERS.sub(" ", entry.original)
             .translate(_ACCENT_TO_ASCII)) if has_chinese else set()
+        # 连字符拼写变体（hi-hat/hi-hat）：原文连写词（hihat）在译文按
+        # 标准写法拆分（Hi-hat 是踩镲标准名）→ 译文连字符词去连字符后
+        # 等于原文词 → 合法拼写变体，其分词残留豁免（crash-back-in-time
+        # 'hihat cymbal'→'Hi-hat 钹' 实证：hat 被当普通词残留误判恒败）
+        dehyphenated_variants: set[str] = set()
+        if has_chinese:
+            for vm in re.finditer(
+                    r"[A-Za-z]{2,}(?:-[A-Za-z]{2,})+", semantic_ascii):
+                if vm.group(0).replace("-", "").casefold() in source_terms_cf:
+                    dehyphenated_variants.update(
+                        w.casefold()
+                        for w in _ENGLISH_WORD.findall(vm.group(0)))
         phrase = _ENGLISH_PHRASE.search(semantic_ascii)
         if phrase:
             semantic_words = _ENGLISH_WORD.findall(semantic_ascii)
@@ -1526,6 +1940,8 @@ class BatchTranslator:
                 if phrase.start() <= m.start() and m.end() <= phrase.end()]
             for i in p_indices:
                 word = semantic_words[i]
+                if word.casefold() in dehyphenated_variants:
+                    continue
                 if word.casefold() in PHYSICAL_KEY_NAMES_CASEFOLD:
                     continue
                 if word.casefold() in display_names:
@@ -1568,6 +1984,21 @@ class BatchTranslator:
                                    and semantic_words[i + 1][0].isupper()
                                    and semantic_words[i + 1][1:].islower())
                     if not (left_title and right_title):
+                        # 原文非词典小写词保留豁免（sdfsdfsdfsdfsdfsdf 开发者
+                        # 乱串、playsub 命令、readme 文件名）：原文即含该
+                        # 小写词、译文已含中文、词非功能词/UI 词典（the/
+                        # button 残留仍是漏译证据）且有非普通词形态特征
+                        # （噪音/命令参数/文件引用）→ 模型保留原文词是
+                        # 合理行为（containment 实证；普通词 ram 等仍失败）
+                        if (has_chinese
+                                and word.islower()
+                                and word.casefold() in source_terms_cf
+                                and word.casefold() not in _ENGLISH_FUNCTION_WORDS
+                                and word.casefold() not in _DISPLAY_WORDS_CASEFOLD
+                                and word.casefold() not in _BUILTIN_UI_TERMS_CASEFOLD
+                                and _kept_word_plausible(
+                                    entry.original, word)):
+                            continue
                         return True
         # 单个残留词：小写普通词或 UI 词典词 → 半翻失败；
         # 物理按键名（Escape/Enter/F1…）、大写/TitleCase 专名（Windows/CBS/Orbit）、
@@ -1575,6 +2006,8 @@ class BatchTranslator:
         # rich-text 包裹词（lucd）→ 豁免
         semantic_words = _ENGLISH_WORD.findall(semantic_ascii)
         for i, word in enumerate(semantic_words):
+            if word.casefold() in dehyphenated_variants:
+                continue
             if word.casefold() in PHYSICAL_KEY_NAMES_CASEFOLD:
                 continue
             if word.casefold() in display_names:
@@ -1616,6 +2049,18 @@ class BatchTranslator:
                                and semantic_words[i + 1][0].isupper()
                                and semantic_words[i + 1][1:].islower())
                 if not (left_title and right_title):
+                    # 原文非词典小写词保留豁免（同短语分支：sdfsdf 乱串/
+                    # readme/playsub 类——原文含该词+译文含中文+非功能词/
+                    # UI 词典+非普通词形态 → 保留合理）
+                    if (has_chinese
+                            and word.islower()
+                            and word.casefold() in source_terms_cf
+                            and word.casefold() not in _ENGLISH_FUNCTION_WORDS
+                            and word.casefold() not in _DISPLAY_WORDS_CASEFOLD
+                            and word.casefold() not in _BUILTIN_UI_TERMS_CASEFOLD
+                            and _kept_word_plausible(
+                                entry.original, word)):
+                        continue
                     return True
         return False
 

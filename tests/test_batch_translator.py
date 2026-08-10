@@ -485,8 +485,10 @@ def test_rich_text_wrapped_proper_name_allowed_when_rest_is_chinese(
 
 
 @pytest.mark.parametrize(("source", "translation"), [
-    # 回显仍判失败：UI 词典词（SFX）或小写词（Hello world）
-    ("SFX", "SFX"),
+    # 回显仍判失败：UI 词典多字母词（QUIT）或小写词（Hello world）；
+    # 全大写 ≤3 缩写（SFX）走缩写豁免（见 test_vsync_echo_passes_
+    # proper_name_echo）
+    ("QUIT", "QUIT"),
     ("Hello world", "Hello world"),
 ])
 def test_real_echo_still_target_script_mismatch(source, translation):
@@ -1218,19 +1220,19 @@ def test_native_actionable_ui_uses_builtin_references_and_retries_only_once():
 
         def translate_text(self, source, target_lang, glossary):
             self.calls.append((source, target_lang, tuple(glossary)))
-            result = "SFX" if len(self.calls) == 1 else "音效"
+            result = "QUIT" if len(self.calls) == 1 else "退出"
             return result, Usage(5, 2)
 
     client = EchoThenTranslateClient()
     entry = _to_model([{
-        "file_id": "ui", "key_path": "menu/sfx", "original": "SFX",
+        "file_id": "ui", "key_path": "menu/quit", "original": "QUIT",
         "meta": {"role": "ui", "disposition": "translate"},
     }])[0]
 
     stats = BatchTranslator(client, batch_size=1, concurrency=1).run([entry])
 
     assert stats.done == 1 and stats.failed == 0 and stats.requests == 2
-    assert entry.translation == "音效"
+    assert entry.translation == "退出"
     assert len(client.calls) == 2
     expected = {
         ("Settings", "设置"), ("Quit", "退出"),
@@ -1402,21 +1404,21 @@ def test_chat_batch_and_single_fallback_include_builtin_ui_references():
 
         def chat(self, _system, messages):
             self.prompts.append(messages[0]["content"])
-            translation = "SFX" if len(self.prompts) == 1 else "音效"
+            translation = "QUIT" if len(self.prompts) == 1 else "退出"
             return json.dumps([{
-                "id": "menu/sfx@ui", "translation": translation,
+                "id": "menu/quit@ui", "translation": translation,
             }], ensure_ascii=False), Usage(5, 2)
 
     client = EchoThenTranslateChatClient()
     entry = _to_model([{
-        "file_id": "ui", "key_path": "menu/sfx", "original": "SFX",
+        "file_id": "ui", "key_path": "menu/quit", "original": "QUIT",
         "meta": {"role": "ui", "disposition": "translate"},
     }])[0]
 
     stats = BatchTranslator(client, batch_size=1, concurrency=1).run([entry])
 
     assert stats.done == 1 and stats.failed == 0 and stats.requests == 2
-    assert entry.translation == "音效" and len(client.prompts) == 2
+    assert entry.translation == "退出" and len(client.prompts) == 2
     for prompt in client.prompts:
         assert "Reference the following translations:" in prompt
         for source, target in (
@@ -2699,12 +2701,19 @@ def test_vsync_echo_passes_proper_name_echo():
         meta={"role": "display", "disposition": "translate"},
     )
     assert translator._apply_quality(entry, "VSync") is True
-    # 对照：全大写缩写（SFX）不是驼峰缩写 → 回显仍失败
+    # 对照：全大写 ≤3 字母缩写（SFX）是界面标准术语 + 1.8B 模型对单
+    # token 稳定回显 → 回显豁免（count-my-coins 实证：重试耗尽仍回显）
     entry2 = TextEntry(
         "us#3", "reported", "SFX",
         meta={"role": "display", "disposition": "translate"},
     )
-    assert translator._apply_quality(entry2, "SFX") is False
+    assert translator._apply_quality(entry2, "SFX") is True
+    # 对照：全大写 4 字母词典词（QUIT）不在缩写豁免 → 回显仍失败
+    entry3 = TextEntry(
+        "us#4", "reported", "QUIT",
+        meta={"role": "display", "disposition": "translate"},
+    )
+    assert translator._apply_quality(entry3, "QUIT") is False
 
 
 def test_quoted_blackword_in_chinese_translation_passes():
@@ -2726,3 +2735,457 @@ def test_quoted_blackword_in_chinese_translation_passes():
         meta={"role": "display", "disposition": "translate"},
     )
     assert translator._apply_quality(entry2, "按“play”键开始") is False
+
+
+def test_chinese_source_text_kept_without_model_call():
+    """原文即中文（游戏自带中文语言包）→ 首译前直接保留放行，不调用模型
+    （containment 实证：Language/CH/*.subs '警卫' 曾被模型回译成英文判
+    target_script_mismatch）。CJK 无假名即中文/韩文源。"""
+    class CountingClient:
+        config = SimpleNamespace(timeout=120.0)
+        calls = 0
+
+        def translate_text(self, *_args):
+            self.calls += 1
+            return "guard", Usage(1, 1)
+
+    client = CountingClient()
+    entry = _to_model([{
+        "file_id": "ch", "key_path": "guard",
+        "original": "警卫",
+    }])[0]
+
+    stats = BatchTranslator(client, batch_size=1, concurrency=1,
+                            lang="en→zh-CN").run([entry])
+
+    assert client.calls == 0
+    assert stats.done == 1
+    assert entry.translation == "警卫"
+    assert entry.meta.get("language_source_kept") is True
+    assert entry.meta.get("quality_passed") is True
+
+
+def test_multilingual_source_kept_after_fallback_chain_exhausted():
+    """西语/俄语源是 1.8B 模型能力边界：整条降级链（专名引用/双跳/
+    同对象译例）全失败 → 保留原文放行 + language_source_kept 标记
+    （containment 实证：37 条 Language/ES|RS 文件，玩家用 CH 语言包
+    不可见）。日文源（假名）可译不兜底。"""
+    class AlwaysEchoClient:
+        config = SimpleNamespace(timeout=120.0)
+        calls = 0
+
+        def translate_text(self, *_args):
+            self.calls += 1
+            return "Obtuviste la Aleacion Anti-Telequinetica.", Usage(1, 1)
+
+    client = AlwaysEchoClient()
+    original = 'Obtuviste la "Aleación Anti-Telequinetica".'
+    entry = _to_model([{
+        "file_id": "es", "key_path": "k", "original": original,
+    }])[0]
+
+    stats = BatchTranslator(client, batch_size=1, concurrency=1,
+                            lang="en→zh-CN").run([entry])
+
+    assert stats.done == 1
+    assert entry.translation == original
+    assert entry.meta.get("language_source_kept") is True
+    assert entry.meta.get("quality_passed") is True
+    # 降级链确实试过（首译 + 专名重译 + 双跳），不是直接放行
+    assert client.calls >= 3
+
+
+def test_title_case_action_word_not_used_as_proper_name_reference():
+    """TitleCase 动作词（Interact）不是专名：专名 references 重译不得
+    注入 (Interact, Interact) 保留引用——模型会把整条短语当术语回显
+    （containment 实证：'Interact hold' → 完整回显判 glossary_mismatch）。
+    排除后走 UI retry 裸重译，模型直译 '交互保持'。"""
+    class EchoThenTranslate:
+        config = SimpleNamespace(timeout=120.0)
+        calls = 0
+        refs_seen = []
+
+        def translate_text(self, source, _lang, glossary):
+            self.calls += 1
+            self.refs_seen.append(glossary)
+            if self.calls == 1:
+                return "Interact hold", Usage(1, 1)
+            return "交互保持", Usage(1, 1)
+
+    client = EchoThenTranslate()
+    entry = _to_model([{
+        "file_id": "ui", "key_path": "interact",
+        "original": "Interact hold",
+        "meta": {"role": "ui", "disposition": "translate"},
+    }])[0]
+
+    stats = BatchTranslator(client, batch_size=1, concurrency=1,
+                            lang="en→zh-CN").run([entry])
+
+    assert stats.done == 1
+    assert entry.translation == "交互保持"
+    # 任何一次调用的 references 都不得注入 (Interact, Interact)
+    assert not any(
+        any(src.casefold() == "interact" and tgt.casefold() == "interact"
+            for src, tgt in refs)
+        for refs in client.refs_seen)
+
+
+def test_cyrillic_and_spanish_source_detection():
+    """西里尔字母（俄语）与西语功能词 → multilingual 源判定（修复前：
+    俄语西里尔完全不在检测中 → 无兜底 → 音译/英语译文判失败恒败；
+    'No me veas' 无重音无旧表词 → 西语未被识别）。no/me 是英语高频
+    词，单命中不判（'No matter' 仍是英语）。"""
+    from hanhua.core.knowledge import _is_multilingual_source
+    assert _is_multilingual_source("клипборд")
+    assert _is_multilingual_source("Вы вставляете карту-ключ в слот")
+    assert _is_multilingual_source("Пожалуйста, нажмите клавишу для выбора {0}")
+    assert _is_multilingual_source("No me veas")
+    assert _is_multilingual_source("El cazo de hierro")
+    assert not _is_multilingual_source("No matter what happens")
+    assert not _is_multilingual_source("Tell me the truth")
+
+
+def test_cyrillic_source_kept_after_fallback_chain_exhausted():
+    """俄语源（西里尔字母）是 1.8B 模型能力边界：整条降级链（专名
+    引用/双跳/同对象译例）全失败 → 保留原文放行 + language_source_kept
+    （containment 实证：клипборд/Привет 21 条真文本——修复前西里尔
+    不在 multilingual 检测中 → 模型输出 Klipboard/Hello 音译或英语
+    译文判 target_script_mismatch 恒败）。"""
+    class AlwaysEchoClient:
+        config = SimpleNamespace(timeout=120.0)
+        calls = 0
+
+        def translate_text(self, *_args):
+            self.calls += 1
+            return "Klipboard", Usage(1, 1)
+
+    client = AlwaysEchoClient()
+    original = "клипборд"
+    entry = _to_model([{
+        "file_id": "rs", "key_path": "k", "original": original,
+    }])[0]
+
+    stats = BatchTranslator(client, batch_size=1, concurrency=1,
+                            lang="en→zh-CN").run([entry])
+
+    assert stats.done == 1
+    assert entry.translation == original
+    assert entry.meta.get("language_source_kept") is True
+    assert entry.meta.get("quality_passed") is True
+    # 降级链确实试过（首译 + 双跳，单词无专名重译），不是直接放行
+    assert client.calls >= 2
+
+
+def test_language_name_echo_is_allowed():
+    """语言名回显（Español：语言选择器显示原名是业界惯例）→ 放行
+    （containment level*.assets 实证 6 条：Español 含独立小写词
+    has_independent_lower_word → 原 proper_name_echo 分支失败）。"""
+    class EchoClient:
+        config = SimpleNamespace(timeout=120.0)
+
+        def translate_text(self, *_args):
+            return "Español", Usage(1, 1)
+
+    client = EchoClient()
+    entry = _to_model([{
+        "file_id": "lvl", "key_path": "s", "original": "Español",
+    }])[0]
+
+    stats = BatchTranslator(client, batch_size=1, concurrency=1,
+                            lang="en→zh-CN").run([entry])
+
+    assert stats.done == 1
+    assert entry.translation == "Español"
+    assert entry.meta.get("quality_passed") is True
+
+
+def test_source_noise_word_kept_in_chinese_translation():
+    """原文非词典小写词（sdfsdfsdfsdfsdfsdf 开发者乱串）在中文译文
+    保留 → 豁免放行（containment 实证 6 条：'Invert Mouse Y-Axis
+    sdfsdfsdfsdfsdfsdf' 译文保留乱串被判 target_script_mismatch，
+    修复前该词不在功能词/UI 词典也无邻接 TitleCase）。"""
+    class TranslateClient:
+        config = SimpleNamespace(timeout=120.0)
+
+        def translate_text(self, *_args):
+            return "反转鼠标 Y 轴 sdfsdfsdfsdfsdfsdf", Usage(1, 1)
+
+    client = TranslateClient()
+    entry = _to_model([{
+        "file_id": "lvl1", "key_path": "k",
+        "original": "Invert Mouse Y-Axis sdfsdfsdfsdfsdfsdf",
+    }])[0]
+
+    stats = BatchTranslator(client, batch_size=1, concurrency=1,
+                            lang="en→zh-CN").run([entry])
+
+    assert stats.done == 1
+    assert entry.translation == "反转鼠标 Y 轴 sdfsdfsdfsdfsdfsdf"
+    assert entry.meta.get("quality_passed") is True
+
+
+def test_bullet_extra_placeholder_allowed():
+    """行首星号规范化（" *Added bonus" → "* 加空格"）：extra 全为
+    bullet 且无缺失 → 放行（containment Changelog 实证 4 条：模型把
+    *Added 规范成 * 加空格，判 placeholder_mismatch 恒败）。模型
+    新增的非 bullet 占位符（%s）仍判失败。"""
+    from hanhua.core.quality import validate_translation_quality
+
+    def _entry(original):
+        return _to_model([{
+            "file_id": "cl", "key_path": "p", "original": original,
+        }])[0]
+
+    bullet_ok = validate_translation_quality(
+        _entry(" *Added bonus after beating demo"),
+        "* 通关演示后可获得额外奖励。")
+    assert bullet_ok.passed
+
+    sigh_ok = validate_translation_quality(
+        _entry("*SIGH*"), "* sigh *")
+    assert sigh_ok.passed
+
+    extra_fail = validate_translation_quality(
+        _entry("save file"), "保存 %s 文件")
+    assert not extra_fail.passed
+
+
+def test_language_name_echo_allowed_with_obj_reference_pairs():
+    """语言名回显在「同 obj 已有成功译文」时仍放行（containment
+    level1-6 assets 实证 5 条：多语言数组里 English 先译成功 →
+    _obj_reference_pairs 拒绝非多语言豁免 → Español 回显被判
+    target_script_mismatch 恒败）。语言名保留原名是业界惯例，不受
+    同 obj 译例影响。"""
+    class MockClient:
+        config = SimpleNamespace(timeout=120.0)
+
+        def translate_text(self, text, *_args):
+            if text == "English":
+                return "英语", Usage(1, 1)
+            return "Español", Usage(1, 1)
+
+    client = MockClient()
+    # 同 obj 多语言数组：English 先翻译成功填充 _obj_results，Español
+    # 后判定时 _obj_reference_pairs 非空——语言名仍豁免
+    entries = _to_model([
+        {"file_id": "lvl1", "key_path": "a", "original": "English",
+         "meta": {"asset_file": "level1", "obj": 4}},
+        {"file_id": "lvl1", "key_path": "b", "original": "Español",
+         "meta": {"asset_file": "level1", "obj": 4}},
+    ])
+
+    stats = BatchTranslator(client, batch_size=2, concurrency=1,
+                            lang="en→zh-CN").run(entries)
+
+    assert stats.done == 2
+    assert entries[0].translation == "英语"
+    assert entries[1].translation == "Español"
+    assert entries[1].meta.get("quality_passed") is True
+
+
+def test_stray_foreign_char_healed_in_translation():
+    """译文混入外语单字（'该基金会의官方口号' 的韩文 의，Hy-MT2 中英
+    翻译偶发）→ 自愈删除后通过；≥3 个外语字符（实质外语内容）不清洗
+    仍判失败；回显的外语专名（原文含 ñ 等）不受影响（containment EN
+    语言包实证 1 条）。"""
+    class MockClient:
+        config = SimpleNamespace(timeout=120.0)
+
+        def translate_text(self, *_args):
+            return "“SCP”代表“特殊收容程序”（也是该基金会의官方口号）。", Usage(1, 1)
+
+    client = MockClient()
+    entry = _to_model([{
+        "file_id": "EN", "key_path": "s",
+        "original": '"SCP" stands for "Special Containment Procedures"',
+    }])[0]
+
+    stats = BatchTranslator(client, batch_size=1, concurrency=1,
+                            lang="en→zh-CN").run([entry])
+
+    assert stats.done == 1
+    assert "의" not in entry.translation
+    assert entry.meta.get("quality_passed") is True
+
+
+def test_stray_foreign_word_with_punctuation_healed():
+    """混入块形态升级：独立韩文实义词带空格隔开、邻中文标点
+    （'最致命的 상황；同时' 的 상황 = 情况，containment 字幕第 5 轮
+    实证 2 条）→ 块前 8 字符与块后 8 字符内都有汉字即清洗（容忍空格/
+    中文标点邻居）；句尾独立词（'爱丽丝 설정' 的 설정 后无汉字）仍
+    不清洗——那是译文主体内容而非夹带。"""
+    class MockClient:
+        config = SimpleNamespace(timeout=120.0)
+
+        def translate_text(self, *_args):
+            return ("该生物展现出了非凡的运气，能够完全掌控哪怕是最致命的"
+                    " 상황；同时，它还具有惊人的能力。"), Usage(1, 1)
+
+    client = MockClient()
+    entry = _to_model([{
+        "file_id": "EN", "key_path": "s",
+        "original": ("Subject demonstrates extraordinary luck, and is able "
+                     "to fully control even the most fatal circumstances."),
+    }])[0]
+
+    stats = BatchTranslator(client, batch_size=1, concurrency=1,
+                            lang="en→zh-CN").run([entry])
+
+    assert stats.done == 1
+    assert "상황" not in entry.translation
+    assert "最致命的；同时" in entry.translation
+    assert entry.meta.get("quality_passed") is True
+
+
+def test_stray_foreign_char_not_removed_when_in_original():
+    """回显的外语专名字符（原文含 ó/ñ，如 Stefánsson）在译文出现 →
+    不清洗（非混入）。"""
+    class EchoClient:
+        config = SimpleNamespace(timeout=120.0)
+
+        def translate_text(self, *_args):
+            return "Stefánsson 是最棒的", Usage(1, 1)
+
+    client = EchoClient()
+    entry = _to_model([{
+        "file_id": "x", "key_path": "s",
+        "original": "Stefánsson is the best",
+    }])[0]
+
+    stats = BatchTranslator(client, batch_size=1, concurrency=1,
+                            lang="en→zh-CN").run([entry])
+
+    assert stats.done == 1
+    assert "á" in entry.translation
+    assert entry.meta.get("quality_passed") is True
+
+
+# ── crash-back-in-time 修复：连字符拼写变体 / 单残留词补译 ──
+
+
+def test_hyphenated_spelling_variant_not_target_script_mismatch():
+    """连字符拼写变体豁免：原文连写词（hihat）在译文按标准写法拆分
+    （Hi-hat 是踩镲标准名）→ 译文连字符词去连字符后等于原文词 →
+    分词残留（hat）是合法拼写变体，放行（crash-back-in-time
+    'hihat cymbal'→'Hi-hat 钹' 实证：hat 被当普通词残留误判恒败）。
+    反例：原文不含连写词时 hat 残留照常失败。"""
+    translator = BatchTranslator(
+        FakeClient(), batch_size=1, concurrency=1, lang="en→zh-CN")
+    entry = TextEntry(
+        "ui", "reported", "hihat cymbal",
+        meta={"role": "display", "disposition": "translate"},
+    )
+    assert translator._apply_quality(entry, "Hi-hat 钹") is True
+    # 反例：原文无 hihat 连写词 → hat 残留仍判失败
+    entry2 = TextEntry(
+        "ui", "reported", "cymbal sound",
+        meta={"role": "display", "disposition": "translate"},
+    )
+    assert translator._apply_quality(entry2, "hat 声音") is False
+
+
+class _WarpResidueClient(BaseClient):
+    """translate_text 模拟单残留词补译：裸翻译回显 warp（模型确认
+    保留该术语）→ word_residue_exempt 豁免放行。"""
+
+    def __init__(self):
+        self.calls = []
+
+    def chat(self, system, messages):
+        return "[]", Usage(0, 0)
+
+    def translate_text(self, source, _target_lang, glossary):
+        self.calls.append(source.strip())
+        if source.strip() == "warp":
+            return "warp", Usage(10, 5)
+        return "译文", Usage(10, 5)
+
+
+def test_repair_word_residue_covers_single_word():
+    """词级补译扩展覆盖单残留词：译文残留孤立小写词（'…warp 房间…'，
+    模型对游戏术语半保留）→ 补译该词 → 模型回显 → 确认保留豁免放行
+    （crash-back-in-time Uka-Uka 审判邀请 实证：首译高质量仅 warp 残留，
+    旧判定只处理英文短语 → 重试耗尽恒败）。"""
+    translator = BatchTranslator(
+        _WarpResidueClient(), batch_size=1, concurrency=1, lang="en→zh-CN")
+    entry = _to_model([{
+        "file_id": "level0", "key_path": "asset#level0#3893/str/0",
+        "original": ("You collected an invitation to an Uka-Uka Trial. "
+                     "You can access these levels from the basement, by "
+                     "standing in the middle of the warp room."),
+        "translation": ("您收到了参加 Uka-Uka 审判的邀请。您可以从地下室"
+                        "进入这些关卡，只需站在 warp 房间的中央即可。"),
+        "status": "failed",
+        "meta": {"role": "display", "disposition": "translate"},
+    }])[0]
+    assert translator._repair_word_residue(
+        entry, translator.client.translate_text,
+        "zh-CN", entry.translation)[2] is True
+
+
+def test_single_word_residue_without_translation_context_fails():
+    """对照：单残留词补译的豁免要求词在原文（防模型幻觉）——原文不含
+    warp 时 warp 残留仍判失败。"""
+    translator = BatchTranslator(
+        _WarpResidueClient(), batch_size=1, concurrency=1, lang="en→zh-CN")
+    entry = TextEntry(
+        "ui", "reported", "You can access these levels from the basement",
+        meta={"role": "display", "disposition": "translate"},
+    )
+    assert translator._apply_quality(
+        entry, "您可以从地下室进入这些关卡，站在 warp 房间的中央即可。") is False
+
+
+class _LabelValueClient(BaseClient):
+    """translate_text 对标签词输出中文译文（HUD 计数标签）。"""
+
+    def __init__(self, out):
+        self.out = out
+        self.calls = []
+
+    def chat(self, system, messages):
+        return "[]", Usage(0, 0)
+
+    def translate_text(self, source, _target_lang, glossary):
+        self.calls.append(source.strip())
+        return self.out, Usage(5, 3)
+
+
+def test_repair_word_residue_translates_label_value_format():
+    """标签-值格式串（'slash: 999' → 模型 'Slash: 999' 大小写规范化
+    回显，deadbeat 实证）：TitleCase 检查把它当专名跳过 → 按原文
+    形态恢复标签整词补译，保留 ': 999' 值格式，大小写不敏感替换。"""
+    translator = BatchTranslator(
+        _LabelValueClient("斩击"), batch_size=1, concurrency=1,
+        lang="en→zh-CN")
+    entry = _to_model([{
+        "file_id": "level1", "key_path": "asset#level1#901/str/0",
+        "original": "slash: 999",
+        "translation": "Slash: 999",
+        "status": "failed",
+        "meta": {"role": "display", "disposition": "translate"},
+    }])[0]
+    result = translator._repair_word_residue(
+        entry, translator.client.translate_text, "zh-CN", "Slash: 999")
+    assert result is not None and result[2] is True
+    assert result[1] == "斩击: 999"
+    # 裸译 + 逐词引用确认两跳（短语补译第二意见的既有设计）
+    assert translator.client.calls == ["slash", "slash"]
+
+
+def test_repair_word_residue_label_echo_fails_without_translation():
+    """对照：标签补译输出非中文（模型回显标签）→ 维持失败（防漏翻）。"""
+    translator = BatchTranslator(
+        _LabelValueClient("slash"), batch_size=1, concurrency=1,
+        lang="en→zh-CN")
+    entry = _to_model([{
+        "file_id": "level1", "key_path": "asset#level1#901/str/0",
+        "original": "slash: 999",
+        "translation": "Slash: 999",
+        "status": "failed",
+        "meta": {"role": "display", "disposition": "translate"},
+    }])[0]
+    result = translator._repair_word_residue(
+        entry, translator.client.translate_text, "zh-CN", "Slash: 999")
+    assert result is None or result[2] is False

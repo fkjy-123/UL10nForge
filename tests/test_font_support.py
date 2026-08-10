@@ -1220,6 +1220,24 @@ def test_rejects_incomplete_mono_game(tmp_path: Path) -> None:
     assert not out_dir.exists()
 
 
+def test_accepts_legacy_unity4_mono_layout(tmp_path: Path) -> None:
+    """Unity 4.x 老结构：Managed 无 UnityEngine.CoreModule.dll，仅整体
+    UnityEngine.dll（222am 实证，UnityScript/Boo.Lang 特征），不应拒绝。"""
+    game_dir = _make_mono_game(tmp_path / "game")
+    managed = game_dir / "TraceGame_Data" / "Managed"
+    (managed / "UnityEngine.CoreModule.dll").unlink()
+    (managed / "UnityEngine.dll").write_bytes(b"core-legacy")
+    (game_dir / "MonoBleedingEdge").rmdir()
+    assets = _make_assets(tmp_path / "assets")
+    out_dir = tmp_path / "output"
+
+    result = install_font_override(
+        game_dir, out_dir, FontConfig(), assets=assets)
+
+    assert result.architecture == "x64"
+    assert out_dir.exists()
+
+
 def test_accepts_legacy_mono_layout_without_monobleedingedge(
         tmp_path: Path) -> None:
     """Unity 5.x 老游戏无 MonoBleedingEdge（Mono 内嵌 UnityPlayer.dll），

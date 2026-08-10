@@ -296,6 +296,10 @@ def test_unity_input_actions_asset_folders_and_tag_fragments_are_skipped(text):
     # .NET 程序集全名（Addressables catalog m_AssemblyName 真实值）
     "Unity.ResourceManager, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null",
     "Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null",
+    # 三段程序集名（containment 实证：'Namespace.Type, ScpGame, Version=…'
+    # 命名空间类型后还有组名段，旧两段 pattern 停在第一个逗号不匹配）
+    "DeferredFog, ScpGame, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null",
+    "MyGame.Core, MyGame, Version=1.2.3.0, Culture=neutral, PublicKeyToken=null",
     # 协议相对 URL（A* 寻路库版权文件真实值）
     "//arongranberg.com/astar/",
     "//steamworks.github.io",
@@ -520,3 +524,253 @@ def test_ft_music_credit_skip():
     assert is_credit_like("Highraiser ft. inkoutlines, MC Cruel Addict")
     # 防误伤：含句子虚词的 ft. 行是正常句子
     assert not is_credit_like("the ft. files are in the folder")
+
+
+def test_json_array_residue_lines_are_structural():
+    """JSON 数组残留行（"chara_guard", / null, / true,：kv 语言文件
+    逐行提取的 JSON 结构数据，值/键无译义）→ 结构跳过（containment
+    ES/sceneStrings.subs 实证 42 条：模型音译 'chara Guardian' / 大写
+    'NULL' 恒败）。引号内带空格的对话文本（"Chara, Guard",）不受影响。"""
+    assert is_hard_structural('"chara_guard",')
+    assert is_hard_structural('"deleted",')
+    assert is_hard_structural("null,")
+    assert is_hard_structural("true,")
+    assert is_hard_structural("none,")
+    assert not is_hard_structural('"Chara, Guard",')
+    assert not is_hard_structural("null and void")
+
+
+def test_asterisk_caps_label_is_structural():
+    """星号包裹的全大写标注（*SIGH* / *SIGH* Now...：音效/情绪标注，
+    SFX 字幕键位）→ 模型稳定回显小写变体（* sigh *），翻译无意义且
+    小写残留判失败恒败（containment SCP-035 实证 6 条）。星号强调的
+    真实词（*Attention* 驼峰/TitleCase 形态）仍需翻译。"""
+    assert is_hard_structural("*SIGH*")
+    assert is_hard_structural("*SIGH* Now...")
+    assert is_hard_structural("*SIGH*  Now stop this")
+    assert not is_hard_structural("*Attention*")
+    assert not is_hard_structural("*Sigh*")
+
+
+def test_slash_name_list_is_credit():
+    """斜杠分隔的作者/团队名单（Turtle Sandwich/Catnipbuddy：制作组
+    名单，无句子虚词）→ 署名跳过（containment credits 实证：模型回显
+    被判 glossary_mismatch）。要求任一侧 ≥2 词：UI 双选项（Click/Tap、
+    Load/Save、Audio/Video）是单侧单词，仍可翻译；含虚词的斜杠句子
+    不受影响。"""
+    assert is_credit_like("Turtle Sandwich/Catnipbuddy")
+    assert is_credit_like("Turtle Sandwich / Catnipbuddy")
+    assert is_credit_like("Turtle/Catnipbuddy Games")
+    assert not is_credit_like("Click/Tap")
+    assert not is_credit_like("Load/Save")
+    assert not is_credit_like("Get the Key / Find the Door")
+
+
+def test_lang_credit_line_is_credit():
+    """本地化署名行（Russian   -   Nattakara：语言名 + 连字符 + 译者
+    名）→ 署名跳过（containment ReadMe 实证：语言名引导模型把译者名
+    音译成该语言字母（Nattakara → Наттакара）→ 目标脚本错误恒败）。"""
+    assert is_credit_like("Russian   -   Nattakara")
+    assert is_credit_like("English - John Doe")
+    assert is_credit_like("Chinese - Zhang San")
+    assert not is_credit_like("Hello - how are you")
+
+
+def test_md_bold_lead_lines_are_structural():
+    """markdown 加粗段落行（\t**All languages are loaded...：README/
+    Changelog 文档说明行，行首 [ \t]** 且行内无闭合星号）→ 结构跳过
+    （containment 实证：** 段内词模型稳定保留/半翻 → target_script_
+    mismatch 恒败 4 条）。含闭合 **（**Bold** text 对话强调）不匹配。"""
+    assert is_hard_structural('\t**All languages are loaded from the "languages.langs" json file on the')
+    assert is_hard_structural('\t**\tLocalization system - How it works')
+    assert is_hard_structural('\t**language folder to get you started.')
+    assert is_hard_structural('**Read the manual first')
+    assert not is_hard_structural('**Bold text** here')
+    assert not is_hard_structural('**WARNING**')
+
+
+def test_person_with_nickname_is_credit():
+    """人名+引号昵称署名（Sam Lynch ("InnocentSam")：制作人员名单的
+    作者名+昵称）→ 署名跳过（containment sharedassets7 TextAsset 实证
+    2 条被判 glossary_mismatch 恒败）。昵称内容可含虚词（Tom ('The
+    Cat')）——剥掉昵称后主体是纯名字才判。"""
+    assert is_credit_like('Sam Lynch ("InnocentSam")')
+    assert is_credit_like("Tom ('The Cat')")
+    assert is_credit_like('Sally Mae ("Sally Mae")')
+    assert not is_credit_like('He said ("What?") wait for me')
+    assert not is_credit_like('Press "Start" now')
+
+
+def test_clone_numbered_is_structural():
+    """资源副本实例名（CreditsVolume (1) Profile：Unity 场景对象命名
+    惯例「名 (编号) 名」，全词 TitleCase）→ 结构跳过（containment 实证：
+    模型输出解释式垃圾 '参考以下翻译：…'）。含小写词的交互提示
+    （Press (1) to start）不匹配。"""
+    assert is_hard_structural('CreditsVolume (1) Profile')
+    assert is_hard_structural('MainMenu (2)')
+    assert not is_hard_structural('Press (1) to start')
+    assert not is_hard_structural('Wait (1) minute')
+
+
+def test_yarnspinner_line_hash_and_log_forms_are_structural():
+    """YarnSpinner 字符串表键（line:hash）与插件内部串（C# 插值模板/
+    调试输出/编辑器节点边标签）→ 结构跳过（count-my-coins 实证：obj=1354
+    内 214 个 line:hash 键 + 对话文本同对象——键是内部引用非玩家文本，
+    模型回显恒败 untranslated/target_script 双形态）。"""
+    assert is_hard_structural('line:1aa64740')
+    assert is_hard_structural('line:edd9d0b1')
+    assert is_hard_structural('line:FFFFFFFF01')
+    assert is_hard_structural(
+        "Can't save variables to JSON: {nameof(variableStorage)} is not set")
+    assert is_hard_structural('(Debug): 1000')
+    assert is_hard_structural('ACTION edge')
+    assert is_hard_structural('WAIT edge')
+    # 反例：正常对话/长句不误伤
+    assert not is_hard_structural('line up and wait for the signal')
+    assert not is_hard_structural(
+        'Can you save the variables to a json file?')
+    assert not is_hard_structural('(Debugging): what happened here?')
+
+
+def test_hipster_ipsum_is_structural():
+    """hipster ipsum 占位文本（'XOXO keytar glossier mumblecore. Tote bag
+    listicle normcore kinfolk kogi hoodie...'：containment level3-6 assets
+    实证 6 条）→ 结构跳过。模型对占位文本行为随机：回显走豁免路径、
+    翻译成中文（'XOXO：Keytar风格…'）→ 行数/内容比对恒败。跳过是唯一
+    稳定出口。≥4 特征词才判（真实文本不会堆 4 个 hipster 词）。"""
+    assert is_hard_structural(
+        'XOXO keytar glossier mumblecore. Tote bag listicle normcore '
+        'kinfolk kogi hoodie four dollar toast meh. VHS fixie bespoke '
+        'cold-pressed pop-up blue bottle.')
+    assert is_hard_structural(
+        'Wayfarers taxidermy pinterest mlkshk. Vaporware shoreditch '
+        'cardigan umami. Kinfolk hashtag aesthetic kogi hoodie.')
+    assert not is_hard_structural(
+        'She wore a hoodie and a cardigan to the meeting')
+    assert not is_hard_structural(
+        'The keytar was on sale for ten dollars')
+
+
+def test_input_device_regex_is_structural():
+    """InControl/Rewired 输入插件设备匹配正则（crash-back-in-time
+    sharedassets0.assets 实证 40 条）→ 结构跳过。运行时按正则匹配手柄，
+    翻译破坏输入映射；真实显示文本不以 '.*' 或 '^'+元字符开头。"""
+    assert is_hard_structural(r'.*x[\-]*box[ ]*360.*')
+    assert is_hard_structural(r'.*MadCatz Call of Duty GamePad.*')
+    assert is_hard_structural(r'.*xbox[ ]*one.*')
+    assert is_hard_structural(r'^([xX]iaoji )?Gamesir-G3[svw]?($| [0-9]+.*)')
+    assert is_hard_structural(r'^([xX]iaoji )?Gamesir-G4[svw]?($| [0-9]+.*)')
+    # 反例：正常句子（^ 开头 + 括号不是正则）
+    assert not is_hard_structural('^Everyone should (press) start')
+    assert not is_hard_structural('Press any button to continue')
+
+
+def test_input_device_names_are_structural():
+    """InControl 设备名/设备说明（crash-back-in-time 实证 38 条）→
+    结构跳过：品牌词+设备语境、括号型号标识、冒号品牌 ID、纯品牌专名。
+    模型对设备专名回显/音译不稳定，翻译破坏按名匹配。"""
+    assert is_hard_structural('idroid:con')
+    assert is_hard_structural('ipega media gamepad controller')
+    assert is_hard_structural('Joy-Con (R)')
+    assert is_hard_structural('Joy-Con™ (R)')
+    assert is_hard_structural('idroid Snakebyte')
+    assert is_hard_structural('idroid:con Snakebyte (M1)')
+    assert is_hard_structural('idroid Snakebyte (Mode 1)')
+    assert is_hard_structural('ipega Wireless Gamepad Controller')
+    assert is_hard_structural('ipega BLUETOOTH Classic GamePad')
+    assert is_hard_structural(
+        'Nvidia Shield Portable and Nvidia Shield Wireless '
+        'Controller (2015 model)')
+    assert is_hard_structural(
+        'Full-sized ipega gamepad. Must be in Gamepad mode '
+        '(hold X + Home).')
+    assert is_hard_structural(
+        'Micro ipega controller. Must be in Gamepad mode (hold X + Home).')
+    # 反例：真实游戏文本/普通词不误伤
+    assert not is_hard_structural('hihat cymbal')
+    assert not is_hard_structural(
+        'You collected an invitation to an Uka-Uka Trial. You can access '
+        'these levels from the basement, by standing in the middle of '
+        'the warp room.')
+    assert not is_hard_structural('The controller is connected')
+    assert not is_hard_structural('Press the gamepad button to start')
+
+
+def test_version_template_and_guid_log_are_structural():
+    """版本占位模板（v?.??：crash-back-in-time level0 实证）与 C# 日志
+    拼接模板尾部（Rewired 'CustomController device instance GUID:
+    sourceId = '）→ 结构跳过。"""
+    assert is_hard_structural('v?.??')
+    assert is_hard_structural(
+        'CustomController device instance GUID: sourceId = ')
+    # 反例：完整版本号 v2.5 走 _QUALIFIED 标识符家族跳过（版本号保留
+    # 是惯例），带空格的普通短语不误伤
+    assert is_hard_structural('v2.5')
+    assert not is_hard_structural('version 1.2')
+
+
+def test_whitespace_padded_fragment_is_structural():
+    """首尾空白片段串（' to JSON. '：字符串表拆分的无完整语义碎片，
+    crash-back-in-time 实证——译文更长时写回容量截断 → object 闸门
+    WARN）→ 结构跳过。含 CJK 的 padding 串（' 继续 '）不误伤。"""
+    assert is_hard_structural(' to JSON. ')
+    assert is_hard_structural(' Can\'t save variables ')
+    assert not is_hard_structural(' 继续 ')
+    assert not is_hard_structural('Press Start to begin')
+
+
+def test_log_template_tail_is_structural():
+    """C# 日志拼接模板句（crusty-proto Eflatun.SceneReference.dll
+    'The address is not found in the Scene GUID to Address Map. Address: '
+    实证：'Address: ' 是代码续行拼接点，日志玩家不可见 → 结构跳过。
+    要求 ≥20 字符防 'Press: ' 短 UI 提示误伤；正常玩家句以标点结尾。"""
+    assert is_hard_structural(
+        'The address is not found in the Scene GUID to Address Map. '
+        'Address: ')
+    assert is_hard_structural(
+        'CustomController device instance GUID: sourceId = ')
+    assert not is_hard_structural('Press: ')
+    assert not is_hard_structural(
+        'The address was not found. Please try again.')
+    assert not is_hard_structural('Address: 123 Main Street, New York')
+
+
+def test_input_binding_path_is_structural():
+    """Rewired 输入动作绑定路径（deadbeat 实证：'Game/Jump[/Keyboard/x,
+    /Keyboard/upArrow]' 是 MonoBehaviour 内 ActionName/Binding 序列化，
+    运行时按字符串解析输入映射，翻译破坏绑定）→ 结构跳过。
+    真实显示文本的 [ 后是内容不是设备路径，不命中。"""
+    assert is_hard_structural(
+        'Win Menu/Up[/Keyboard/upArrow,/Keyboard/leftArrow]')
+    assert is_hard_structural(
+        'Win Menu/Down[/Keyboard/downArrow,/Keyboard/rightArrow]')
+    assert is_hard_structural('Win Menu/Select[/Keyboard/z]')
+    assert is_hard_structural(
+        'Game/Jump[/Keyboard/x,/Keyboard/upArrow]')
+    assert not is_hard_structural('Press [E] to interact')
+    assert not is_hard_structural('Click [File/Open] to load')
+    assert not is_hard_structural('Type /help [command] to continue')
+
+
+def test_uppercase_entropy_is_structural():
+    """全大写编码/加密串（deadbeat 实证：NIIVMMSEGAROTME… 2567 字符
+    无空格全大写，对象内嵌编码数据，翻译请求超模型槽位恒败）→ 结构
+    跳过。真实全大写英文句有空格、词/缩写 <32 字符不命中。"""
+    assert is_hard_structural(
+        'NIIVMMSEGAROTMEJQEVBPPIJFCZLZXOVMFWESPDCVLYEOTPTRXIZJQGGVSQIT'
+        'TWKIJTWNRKINZZHRZGPYIMCFYWIMMLVSJCGHRVS')
+    assert not is_hard_structural('WELCOME HOME')
+    assert not is_hard_structural('FATAL ESCAPE')
+    assert not is_hard_structural('XBOX')
+    assert not is_hard_structural('DEADBEATSENCORE')
+
+
+def test_fragment_noise_is_structural():
+    """无完整词字母碎片（deadbeat 实证：' e   i t'、'r wr TE' 对象内嵌
+    噪声，所有词 ≤2 字符、≥3 段、含首空白或全大写词段）→ 结构跳过。
+    'Hi hi hi' 类 TitleCase 语气词无全大写段不命中，走正常翻译。"""
+    assert is_hard_structural(' e   i t')
+    assert is_hard_structural('r wr TE')
+    assert not is_hard_structural('Hi hi hi')
+    assert not is_hard_structural('OK go')
+    assert not is_hard_structural('a b c')

@@ -132,15 +132,19 @@ class TestKnowledgeBase:
         kb = KnowledgeBase(tmp_path / "knowledge.db")
         described = kb.describe()
         domains = {item["domain"] for item in described}
-        # 六库蓝图齐备：text/file/rule 三形态 + 结构/文本类型/组件/质量/写回验证
-        assert domains == {"text", "file", "rule", "unity_struct",
-                           "text_type", "component", "quality",
-                           "writeback_verify"}
-        # 三形态种子齐备：文本规则 / 文件知识 / 抽象规则
-        assert any(k["kind"] == "us_record" for k in described if k["domain"] == "file")
-        assert any(k["kind"] == "placeholder_restore" for k in described if k["domain"] == "rule")
-        assert any(k["kind"] == "textmeshpro" for k in described if k["domain"] == "component")
-        assert any(k["kind"] == "verify_flow" for k in described if k["domain"] == "writeback_verify")
+        # 六库蓝图 + 保留域 file/rule（跨场景处置策略，2026-08-11 注释）；
+        # fail_case 是运行时沉淀域（record_case），无种子
+        assert domains == ((set(KnowledgeBase.SIX_LIBRARIES)
+                            | {"file", "rule"}) - {"fail_case"})
+        # 种子齐备：结构登记 / 文件知识 / 抽象规则 / 组件兼容
+        assert any(k["kind"] == "unity_version"
+                   for k in described if k["domain"] == "unity_structure")
+        assert any(k["kind"] == "us_record"
+                   for k in described if k["domain"] == "file")
+        assert any(k["kind"] == "placeholder_restore"
+                   for k in described if k["domain"] == "rule")
+        assert any(k["kind"] == "textmeshpro"
+                   for k in described if k["domain"] == "component_compat")
         assert len(described) >= len(BUILTIN_RULES)
         kb.close()
 
@@ -184,7 +188,7 @@ class TestKnowledgeBase:
         assert hits == 1
         row = kb.store.list_by_domain("text")[0]
         assert row["hits"] == 2
-        assert "game-b" in row["note"]
+        assert row["game"] == "game-b"   # 最新学习来源游戏（note 为固定模式描述）
         kb.close()
 
     def test_learn_generates_map_to_for_reference_pairs(self, tmp_path):
@@ -261,9 +265,8 @@ class TestMultilingualSource:
 
 def test_builtin_rules_shape():
     for rule in BUILTIN_RULES:
-        assert rule["domain"] in {"text", "file", "rule", "unity_struct",
-                                  "text_type", "component", "quality",
-                                  "writeback_verify"}
+        assert rule["domain"] in (set(KnowledgeBase.SIX_LIBRARIES)
+                                  | {"file", "rule"})
         assert rule["kind"]
         assert rule["pattern"]
         assert rule["action"]

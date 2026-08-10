@@ -159,3 +159,95 @@ def test_retry_gives_up():
     with pytest.raises(RuntimeError):
         client.chat("s", [{"role": "user", "content": "u"}])
     assert calls["n"] == 3
+
+
+def test_local_client_chunks_overlong_source():
+    """超长文本按行分块翻译（deadbeat 实证：3183 字符歌词 = 1099 tokens
+    超 llama-server 槽位 1024 tokens 被拒 request_error）。每请求源文本
+    ≤700 字符，逐块翻译后 \n 拼接。"""
+    requests = []
+
+    def factory():
+        def handler(request: httpx.Request) -> httpx.Response:
+            body = __import__("json").loads(request.content)
+            prompt = body["messages"][0]["content"]
+            requests.append(prompt)
+            # 模拟：把「源文本最后一段」作为译文返回（长度/结构保留）
+            source = prompt.split("additional explanation:", 1)[1].strip()
+            return httpx.Response(200, json={
+                "choices": [{"message": {"content": source}}],
+                "usage": {"prompt_tokens": 10, "completion_tokens": 5},
+            })
+        return httpx.Client(transport=httpx.MockTransport(handler))
+
+    client = create_client(ApiConfig(
+        mode="local", base_url="http://127.0.0.1:8080/v1",
+        api_key="local-token", model="Hy-MT2-1.8B-Q6_K",
+    ), transport_factory=factory)
+
+    lines = [f"Lyric line {i} with some words" for i in range(60)]
+    text = "\n".join(lines)
+    assert len(text) > 700
+    content, usage = client.translate_text(text, "zh-CN", ())
+
+    assert len(requests) > 1                      # 分块请求
+    assert content == text                        # 拼接无损
+    for prompt in requests:
+        source = prompt.split("additional explanation:", 1)[1].strip()
+        assert len(source) <= 700                 # 每块在槽位内
+    assert usage.prompt == 10 * len(requests)     # usage 聚合
+
+
+def test_local_client_chunks_word_wrapped_without_newlines():
+    """无换行超长文本按词切块（每块 ≤700 字符）。"""
+    requests = []
+
+    def factory():
+        def handler(request: httpx.Request) -> httpx.Response:
+            body = __import__("json").loads(request.content)
+            requests.append(body["messages"][0]["content"])
+            source = body["messages"][0]["content"].split(
+                "additional explanation:", 1)[1].strip()
+            return httpx.Response(200, json={
+                "choices": [{"message": {"content": source}}],
+                "usage": {"prompt_tokens": 10, "completion_tokens": 5},
+            })
+        return httpx.Client(transport=httpx.MockTransport(handler))
+
+    client = create_client(ApiConfig(
+        mode="local", base_url="http://127.0.0.1:8080/v1",
+        api_key="local-token", model="Hy-MT2-1.8B-Q6_K",
+    ), transport_factory=factory)
+
+    text = " ".join(f"word{i}" for i in range(400))
+    assert len(text) > 700
+    content, _ = client.translate_text(text, "zh-CN", ())
+    assert content == text
+    assert len(requests) > 1
+    for prompt in requests:
+        source = prompt.split("additional explanation:", 1)[1].strip()
+        assert len(source) <= 700
+
+
+def test_local_client_short_text_single_request():
+    """短文本不分块（单请求，行为不变）。"""
+    requests = []
+
+    def factory():
+        def handler(request: httpx.Request) -> httpx.Response:
+            body = __import__("json").loads(request.content)
+            requests.append(body["messages"][0]["content"])
+            return httpx.Response(200, json={
+                "choices": [{"message": {"content": "斩击: 999"}}],
+                "usage": {"prompt_tokens": 10, "completion_tokens": 5},
+            })
+        return httpx.Client(transport=httpx.MockTransport(handler))
+
+    client = create_client(ApiConfig(
+        mode="local", base_url="http://127.0.0.1:8080/v1",
+        api_key="local-token", model="Hy-MT2-1.8B-Q6_K",
+    ), transport_factory=factory)
+
+    content, _ = client.translate_text("slash: 999", "zh-CN", ())
+    assert content == "斩击: 999"
+    assert len(requests) == 1

@@ -1,0 +1,3179 @@
+游戏：222am
+导出时间：2026-08-11 16:29:36
+翻译模型：Hy-MT2-1.8B-Q6_K
+跳过文本：211 条
+
+────────────────────────────────────────────────────────────────
+[1] 跳过文本
+来源：NOTES AND CREDITS.txt
+键位：line/1
+对象：blank
+原文：
+译文：（无）
+置信度：medium
+原因：—
+角色：—
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[2] 跳过文本
+来源：NOTES AND CREDITS.txt
+键位：line/3
+对象：blank
+原文：
+译文：（无）
+置信度：medium
+原因：—
+角色：—
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[3] 跳过文本
+来源：NOTES AND CREDITS.txt
+键位：line/5
+对象：blank
+原文：
+译文：（无）
+置信度：medium
+原因：—
+角色：—
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[4] 跳过文本
+来源：NOTES AND CREDITS.txt
+键位：line/7
+对象：blank
+原文：
+译文：（无）
+置信度：medium
+原因：—
+角色：—
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[5] 跳过文本
+来源：NOTES AND CREDITS.txt
+键位：line/10
+对象：blank
+原文：
+译文：（无）
+置信度：medium
+原因：—
+角色：—
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[6] 跳过文本
+来源：NOTES AND CREDITS.txt
+键位：kv/Additional credits/11
+对象：kv_empty
+原文：
+译文：（无）
+置信度：medium
+原因：—
+角色：—
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[7] 跳过文本
+来源：NOTES AND CREDITS.txt
+键位：line/12
+对象：blank
+原文：
+译文：（无）
+置信度：medium
+原因：—
+角色：—
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[8] 跳过文本
+来源：NOTES AND CREDITS.txt
+键位：kv/Used to download youtubve videos/13
+对象：kv_structural
+原文：http://www.clipconverter.cc/
+译文：（无）
+置信度：medium
+原因：—
+角色：—
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[9] 跳过文本
+来源：NOTES AND CREDITS.txt
+键位：kv/Simple space cubemap generator/14
+对象：kv_structural
+原文：http://alexcpeterson.com/spacescape
+译文：（无）
+置信度：medium
+原因：—
+角色：—
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[10] 跳过文本
+来源：NOTES AND CREDITS.txt
+键位：kv/Moon textures/15
+对象：kv_structural
+原文：http://www.celestiamotherlode.net/catalog/moon.php
+译文：（无）
+置信度：medium
+原因：—
+角色：—
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[11] 跳过文本
+来源：NOTES AND CREDITS.txt
+键位：line/16
+对象：blank
+原文：
+译文：（无）
+置信度：medium
+原因：—
+角色：—
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[12] 跳过文本
+来源：NOTES AND CREDITS.txt
+键位：kv/Clips from youtube movies used in creating this game/17
+对象：kv_empty
+原文：
+译文：（无）
+置信度：medium
+原因：—
+角色：—
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[13] 跳过文本
+来源：NOTES AND CREDITS.txt
+键位：line/18
+对象：blank
+原文：
+译文：（无）
+置信度：medium
+原因：—
+角色：—
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[14] 跳过文本
+来源：NOTES AND CREDITS.txt
+键位：plain/19
+对象：纯文本文件行
+原文：cbs intro
+译文：（无）
+置信度：medium
+原因：—
+角色：—
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[15] 跳过文本
+来源：NOTES AND CREDITS.txt
+键位：kv/https/20
+对象：kv_structural
+原文：//www.youtube.com/watch?v=nLyskuucD_Q
+译文：（无）
+置信度：medium
+原因：—
+角色：—
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[16] 跳过文本
+来源：NOTES AND CREDITS.txt
+键位：kv/https/22
+对象：kv_structural
+原文：//www.youtube.com/watch?v=5TKkezPFviw
+译文：（无）
+置信度：medium
+原因：—
+角色：—
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[17] 跳过文本
+来源：NOTES AND CREDITS.txt
+键位：kv/https/24
+对象：kv_structural
+原文：//www.youtube.com/watch?v=uSrlecFbumE
+译文：（无）
+置信度：medium
+原因：—
+角色：—
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[18] 跳过文本
+来源：NOTES AND CREDITS.txt
+键位：kv/https/26
+对象：kv_structural
+原文：//www.youtube.com/watch?v=MM6j1k9MPbM
+译文：（无）
+置信度：medium
+原因：—
+角色：—
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[19] 跳过文本
+来源：NOTES AND CREDITS.txt
+键位：kv/https/28
+对象：kv_structural
+原文：//www.youtube.com/watch?v=8kuNnPxRlYY
+译文：（无）
+置信度：medium
+原因：—
+角色：—
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[20] 跳过文本
+来源：NOTES AND CREDITS.txt
+键位：kv/https/30
+对象：kv_structural
+原文：//www.youtube.com/watch?v=FgDhJRFqnOU
+译文：（无）
+置信度：medium
+原因：—
+角色：—
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[21] 跳过文本
+来源：NOTES AND CREDITS.txt
+键位：kv/https/32
+对象：kv_structural
+原文：//www.youtube.com/watch?v=-Qunm9_q7Dk
+译文：（无）
+置信度：medium
+原因：—
+角色：—
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[22] 跳过文本
+来源：NOTES AND CREDITS.txt
+键位：plain/33
+对象：纯文本文件行
+原文：shower
+译文：（无）
+置信度：medium
+原因：—
+角色：—
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[23] 跳过文本
+来源：NOTES AND CREDITS.txt
+键位：kv/https/34
+对象：kv_structural
+原文：//www.youtube.com/watch?v=uelPqOxrWTw
+译文：（无）
+置信度：medium
+原因：—
+角色：—
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[24] 跳过文本
+来源：NOTES AND CREDITS.txt
+键位：plain/35
+对象：纯文本文件行
+原文：flower
+译文：（无）
+置信度：medium
+原因：—
+角色：—
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[25] 跳过文本
+来源：NOTES AND CREDITS.txt
+键位：kv/https/36
+对象：kv_structural
+原文：//www.youtube.com/watch?v=_pRlC0mGzhA
+译文：（无）
+置信度：medium
+原因：—
+角色：—
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[26] 跳过文本
+来源：NOTES AND CREDITS.txt
+键位：kv/https/38
+对象：kv_structural
+原文：//www.youtube.com/watch?v=5wYZsD_ooNA
+译文：（无）
+置信度：medium
+原因：—
+角色：—
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[27] 跳过文本
+来源：NOTES AND CREDITS.txt
+键位：kv/https/40
+对象：kv_structural
+原文：//www.youtube.com/watch?v=F_z57xg2mEg
+译文：（无）
+置信度：medium
+原因：—
+角色：—
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[28] 跳过文本
+来源：NOTES AND CREDITS.txt
+键位：kv/https/42
+对象：kv_structural
+原文：//www.youtube.com/watch?v=oy6GqRQ32vM
+译文：（无）
+置信度：medium
+原因：—
+角色：—
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[29] 跳过文本
+来源：NOTES AND CREDITS.txt
+键位：kv/https/44
+对象：kv_structural
+原文：//www.youtube.com/watch?v=hj5hK5BVsj0
+译文：（无）
+置信度：medium
+原因：—
+角色：—
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[30] 跳过文本
+来源：NOTES AND CREDITS.txt
+键位：line/45
+对象：blank
+原文：
+译文：（无）
+置信度：medium
+原因：—
+角色：—
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[31] 跳过文本
+来源：NOTES AND CREDITS.txt
+键位：line/47
+对象：blank
+原文：
+译文：（无）
+置信度：medium
+原因：—
+角色：—
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[32] 跳过文本
+来源：NOTES AND CREDITS.txt
+键位：plain/48
+对象：纯文本文件行
+原文：mug 
+译文：（无）
+置信度：medium
+原因：—
+角色：—
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[33] 跳过文本
+来源：NOTES AND CREDITS.txt
+键位：kv/https/49
+对象：kv_structural
+原文：//3dwarehouse.sketchup.com/model.html?id=d7ba704184d424dfd56d9106430c3fe
+译文：（无）
+置信度：medium
+原因：—
+角色：—
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[34] 跳过文本
+来源：NOTES AND CREDITS.txt
+键位：plain/50
+对象：纯文本文件行
+原文：hand
+译文：（无）
+置信度：medium
+原因：—
+角色：—
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[35] 跳过文本
+来源：NOTES AND CREDITS.txt
+键位：kv/https/51
+对象：kv_structural
+原文：//3dwarehouse.sketchup.com/model.html?id=230627867406d1dabbef6157382afbe
+译文：（无）
+置信度：medium
+原因：—
+角色：—
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[36] 跳过文本
+来源：NOTES AND CREDITS.txt
+键位：plain/52
+对象：纯文本文件行
+原文：city
+译文：（无）
+置信度：medium
+原因：—
+角色：—
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[37] 跳过文本
+来源：NOTES AND CREDITS.txt
+键位：kv/https/53
+对象：kv_structural
+原文：//3dwarehouse.sketchup.com/model.html?id=eddc59444797b2f6972386ca34502f79
+译文：（无）
+置信度：medium
+原因：—
+角色：—
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[38] 跳过文本
+来源：NOTES AND CREDITS.txt
+键位：kv/https/55
+对象：kv_structural
+原文：//3dwarehouse.sketchup.com/model.html?id=1ba747e6c346ecc8c9f85218f97695e
+译文：（无）
+置信度：medium
+原因：—
+角色：—
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[39] 跳过文本
+来源：NOTES AND CREDITS.txt
+键位：plain/56
+对象：纯文本文件行
+原文：bedroom
+译文：（无）
+置信度：medium
+原因：—
+角色：—
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[40] 跳过文本
+来源：NOTES AND CREDITS.txt
+键位：kv/https/57
+对象：kv_structural
+原文：//3dwarehouse.sketchup.com/model.html?id=5731a5baf57f5cb97e7e25239e7b8f85
+译文：（无）
+置信度：medium
+原因：—
+角色：—
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[41] 跳过文本
+来源：NOTES AND CREDITS.txt
+键位：kv/https/59
+对象：kv_structural
+原文：//3dwarehouse.sketchup.com/model.html?id=d9560bfc0c051109f54e1b6f41fdd78a
+译文：（无）
+置信度：medium
+原因：—
+角色：—
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[42] 跳过文本
+来源：NOTES AND CREDITS.txt
+键位：plain/60
+对象：纯文本文件行
+原文：eggs
+译文：（无）
+置信度：medium
+原因：—
+角色：—
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[43] 跳过文本
+来源：NOTES AND CREDITS.txt
+键位：kv/https/61
+对象：kv_structural
+原文：//3dwarehouse.sketchup.com/model.html?id=455f3c32acbf440bf8b9d530de7a108
+译文：（无）
+置信度：medium
+原因：—
+角色：—
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[44] 跳过文本
+来源：NOTES AND CREDITS.txt
+键位：plain/62
+对象：纯文本文件行
+原文：flowers
+译文：（无）
+置信度：medium
+原因：—
+角色：—
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[45] 跳过文本
+来源：NOTES AND CREDITS.txt
+键位：kv/https/63
+对象：kv_structural
+原文：//3dwarehouse.sketchup.com/model.html?id=ucba25498-b7f2-41af-98d2-21e6899f9d7f
+译文：（无）
+置信度：medium
+原因：—
+角色：—
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[46] 跳过文本
+来源：NOTES AND CREDITS.txt
+键位：plain/64
+对象：纯文本文件行
+原文：fridge
+译文：（无）
+置信度：medium
+原因：—
+角色：—
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[47] 跳过文本
+来源：NOTES AND CREDITS.txt
+键位：kv/https/65
+对象：kv_structural
+原文：//3dwarehouse.sketchup.com/model.html?id=7e5a99c0764496724baeceb9f6693fc8
+译文：（无）
+置信度：medium
+原因：—
+角色：—
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[48] 跳过文本
+来源：NOTES AND CREDITS.txt
+键位：plain/66
+对象：纯文本文件行
+原文：ladder
+译文：（无）
+置信度：medium
+原因：—
+角色：—
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[49] 跳过文本
+来源：NOTES AND CREDITS.txt
+键位：kv/https/67
+对象：kv_structural
+原文：//3dwarehouse.sketchup.com/model.html?id=10aeda67d1c1628551ac4a419bb8d34c
+译文：（无）
+置信度：medium
+原因：—
+角色：—
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[50] 跳过文本
+来源：NOTES AND CREDITS.txt
+键位：line/68
+对象：blank
+原文：
+译文：（无）
+置信度：medium
+原因：—
+角色：—
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[51] 跳过文本
+来源：NOTES AND CREDITS.txt
+键位：line/70
+对象：blank
+原文：
+译文：（无）
+置信度：medium
+原因：—
+角色：—
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[52] 跳过文本
+来源：NOTES AND CREDITS.txt
+键位：plain/71
+对象：纯文本文件行
+原文：static
+译文：（无）
+置信度：medium
+原因：—
+角色：—
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[53] 跳过文本
+来源：NOTES AND CREDITS.txt
+键位：kv/http/72
+对象：kv_structural
+原文：//www.freesound.org/people/Jace/sounds/35291/
+译文：（无）
+置信度：medium
+原因：—
+角色：—
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[54] 跳过文本
+来源：NOTES AND CREDITS.txt
+键位：kv/http/74
+对象：kv_structural
+原文：//www.freesound.org/search/?a_tag=&a_username=&g=1&f=grouping_pack%3A"9670_vinylNoise"
+译文：（无）
+置信度：medium
+原因：—
+角色：—
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[55] 跳过文本
+来源：NOTES AND CREDITS.txt
+键位：kv/http/76
+对象：kv_structural
+原文：//www.freesound.org/people/uwesoundboiz/sounds/60393/
+译文：（无）
+置信度：medium
+原因：—
+角色：—
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[56] 跳过文本
+来源：NOTES AND CREDITS.txt
+键位：plain/77
+对象：纯文本文件行
+原文：fridge_hum
+译文：（无）
+置信度：medium
+原因：—
+角色：—
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[57] 跳过文本
+来源：NOTES AND CREDITS.txt
+键位：kv/http/78
+对象：kv_structural
+原文：//www.freesound.org/people/LanDub/sounds/209148/
+译文：（无）
+置信度：medium
+原因：—
+角色：—
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[58] 跳过文本
+来源：NOTES AND CREDITS.txt
+键位：plain/79
+对象：纯文本文件行
+原文：wind_1
+译文：（无）
+置信度：medium
+原因：—
+角色：—
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[59] 跳过文本
+来源：NOTES AND CREDITS.txt
+键位：kv/http/80
+对象：kv_structural
+原文：//www.freesound.org/people/mario1298/sounds/181245/
+译文：（无）
+置信度：medium
+原因：—
+角色：—
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[60] 跳过文本
+来源：NOTES AND CREDITS.txt
+键位：plain/81
+对象：纯文本文件行
+原文：wind_grass
+译文：（无）
+置信度：medium
+原因：—
+角色：—
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[61] 跳过文本
+来源：NOTES AND CREDITS.txt
+键位：kv/http/82
+对象：kv_structural
+原文：//www.freesound.org/people/higginsdj/sounds/94931/
+译文：（无）
+置信度：medium
+原因：—
+角色：—
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[62] 跳过文本
+来源：NOTES AND CREDITS.txt
+键位：plain/83
+对象：纯文本文件行
+原文：street
+译文：（无）
+置信度：medium
+原因：—
+角色：—
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[63] 跳过文本
+来源：NOTES AND CREDITS.txt
+键位：kv/http/84
+对象：kv_structural
+原文：//www.freesound.org/people/Jormarp/sounds/207208/
+译文：（无）
+置信度：medium
+原因：—
+角色：—
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[64] 跳过文本
+来源：NOTES AND CREDITS.txt
+键位：plain/85
+对象：纯文本文件行
+原文：footsteps
+译文：（无）
+置信度：medium
+原因：—
+角色：—
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[65] 跳过文本
+来源：NOTES AND CREDITS.txt
+键位：kv/http/86
+对象：kv_structural
+原文：//www.freesound.org/search/?q=footstep&f=grouping_pack:"9344_Footsteps"
+译文：（无）
+置信度：medium
+原因：—
+角色：—
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[66] 跳过文本
+来源：NOTES AND CREDITS.txt
+键位：kv/music box/87
+对象：kv_structural
+原文：lullaby
+译文：（无）
+置信度：medium
+原因：—
+角色：—
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[67] 跳过文本
+来源：NOTES AND CREDITS.txt
+键位：kv/http/88
+对象：kv_structural
+原文：//www.freesound.org/people/Yuval/sounds/210799/
+译文：（无）
+置信度：medium
+原因：—
+角色：—
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[68] 跳过文本
+来源：NOTES AND CREDITS.txt
+键位：plain/89
+对象：纯文本文件行
+原文：sizzle
+译文：（无）
+置信度：medium
+原因：—
+角色：—
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[69] 跳过文本
+来源：NOTES AND CREDITS.txt
+键位：kv/http/90
+对象：kv_structural
+原文：//www.freesound.org/people/edhutschek/sounds/214466/
+译文：（无）
+置信度：medium
+原因：—
+角色：—
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[70] 跳过文本
+来源：NOTES AND CREDITS.txt
+键位：kv/http/92
+对象：kv_structural
+原文：//www.freesound.org/people/cameronmusic/sounds/138411/
+译文：（无）
+置信度：medium
+原因：—
+角色：—
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[71] 跳过文本
+来源：NOTES AND CREDITS.txt
+键位：plain/93
+对象：纯文本文件行
+原文：snowfall
+译文：（无）
+置信度：medium
+原因：—
+角色：—
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[72] 跳过文本
+来源：NOTES AND CREDITS.txt
+键位：kv/http/94
+对象：kv_structural
+原文：//www.freesound.org/people/Ryding/sounds/94364/
+译文：（无）
+置信度：medium
+原因：—
+角色：—
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[73] 跳过文本
+来源：NOTES AND CREDITS.txt
+键位：kv/http/96
+对象：kv_structural
+原文：//www.freesound.org/people/kisjano/sounds/72108/
+译文：（无）
+置信度：medium
+原因：—
+角色：—
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[74] 跳过文本
+来源：NOTES AND CREDITS.txt
+键位：kv/http/98
+对象：kv_structural
+原文：//www.freesound.org/people/FreqMan/sounds/25846/
+译文：（无）
+置信度：medium
+原因：—
+角色：—
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[75] 跳过文本
+来源：NOTES AND CREDITS.txt
+键位：kv/http/100
+对象：kv_structural
+原文：//www.freesound.org/people/krissyeliot/sounds/125521/
+译文：（无）
+置信度：medium
+原因：—
+角色：—
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[76] 跳过文本
+来源：NOTES AND CREDITS.txt
+键位：kv/http/102
+对象：kv_structural
+原文：//www.freesound.org/people/SGAK/sounds/87564/
+译文：（无）
+置信度：medium
+原因：—
+角色：—
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[77] 跳过文本
+来源：NOTES AND CREDITS.txt
+键位：plain/103
+对象：纯文本文件行
+原文：boop
+译文：（无）
+置信度：medium
+原因：—
+角色：—
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[78] 跳过文本
+来源：NOTES AND CREDITS.txt
+键位：kv/http/104
+对象：kv_structural
+原文：//www.freesound.org/people/fordps3/sounds/186669/
+译文：（无）
+置信度：medium
+原因：—
+角色：—
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[79] 跳过文本
+来源：222AM_Data/Managed/Assembly-CSharp.dll
+键位：us#2
+对象：DLL #US 字符串（record_offset=229089）
+原文：Can't resolve the item ID of 
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[80] 跳过文本
+来源：222AM_Data/Managed/Assembly-CSharp.dll
+键位：us#114
+对象：DLL #US 字符串（record_offset=229201）
+原文：
+[FF0000]
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[81] 跳过文本
+来源：222AM_Data/Managed/Assembly-CSharp.dll
+键位：us#134
+对象：DLL #US 字符串（record_offset=229221）
+原文：
+[00FF00]+
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[82] 跳过文本
+来源：222AM_Data/Managed/Assembly-CSharp.dll
+键位：us#168
+对象：DLL #US 字符串（record_offset=229255）
+原文：
+[FF9900]
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[83] 跳过文本
+来源：222AM_Data/Managed/Assembly-CSharp.dll
+键位：us#188
+对象：DLL #US 字符串（record_offset=229275）
+原文：Can't equip "
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[84] 跳过文本
+来源：222AM_Data/Managed/Assembly-CSharp.dll
+键位：us#216
+对象：DLL #US 字符串（record_offset=229303）
+原文：" because it doesn't specify an item slot
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[85] 跳过文本
+来源：222AM_Data/Managed/Assembly-CSharp.dll
+键位：us#300
+对象：DLL #US 字符串（record_offset=229387）
+原文：Strength increases melee damage
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[86] 跳过文本
+来源：222AM_Data/Managed/Assembly-CSharp.dll
+键位：us#364
+对象：DLL #US 字符串（record_offset=229451）
+原文：Constitution increases health
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[87] 跳过文本
+来源：222AM_Data/Managed/Assembly-CSharp.dll
+键位：us#424
+对象：DLL #US 字符串（record_offset=229511）
+原文：Agility increases armor
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[88] 跳过文本
+来源：222AM_Data/Managed/Assembly-CSharp.dll
+键位：us#472
+对象：DLL #US 字符串（record_offset=229559）
+原文：Intelligence increases mana
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[89] 跳过文本
+来源：222AM_Data/Managed/Assembly-CSharp.dll
+键位：us#528
+对象：DLL #US 字符串（record_offset=229615）
+原文：Damage adds to the amount of damage done in combat
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[90] 跳过文本
+来源：222AM_Data/Managed/Assembly-CSharp.dll
+键位：us#630
+对象：DLL #US 字符串（record_offset=229717）
+原文：Crit increases the chance of landing a critical strike
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[91] 跳过文本
+来源：222AM_Data/Managed/Assembly-CSharp.dll
+键位：us#740
+对象：DLL #US 字符串（record_offset=229827）
+原文：Armor protects from damage
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[92] 跳过文本
+来源：222AM_Data/Managed/Assembly-CSharp.dll
+键位：us#794
+对象：DLL #US 字符串（record_offset=229881）
+原文：Health prolongs life
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[93] 跳过文本
+来源：222AM_Data/Managed/Assembly-CSharp.dll
+键位：us#836
+对象：DLL #US 字符串（record_offset=229923）
+原文：Mana increases the number of spells that can be cast
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[94] 跳过文本
+来源：222AM_Data/Managed/Assembly-CSharp.dll
+键位：us#942
+对象：DLL #US 字符串（record_offset=230029）
+原文：[FFFFFF]
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[95] 跳过文本
+来源：222AM_Data/Managed/Assembly-CSharp.dll
+键位：us#960
+对象：DLL #US 字符串（record_offset=230047）
+原文：[AAAAAA]
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[96] 跳过文本
+来源：222AM_Data/Managed/Assembly-CSharp.dll
+键位：us#978
+对象：DLL #US 字符串（record_offset=230065）
+原文：This is an example paragraph for the text list, testing line 
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[97] 跳过文本
+来源：222AM_Data/Managed/Assembly-CSharp.dll
+键位：us#1174
+对象：DLL #US 字符串（record_offset=230261）
+原文： has no Animation component
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[98] 跳过文本
+来源：222AM_Data/Managed/Assembly-CSharp.dll
+键位：us#1392
+对象：DLL #US 字符串（record_offset=230479）
+原文： has nothing for UIButtonColor to color
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[99] 跳过文本
+来源：222AM_Data/Managed/Assembly-CSharp.dll
+键位：us#1542
+对象：DLL #US 字符串（record_offset=230629）
+原文： on a parent object in order to work
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[100] 跳过文本
+来源：222AM_Data/Managed/Assembly-CSharp.dll
+键位：us#1638
+对象：DLL #US 字符串（record_offset=230725）
+原文： needs the 'Root For Bounds' parameter to be set
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[101] 跳过文本
+来源：222AM_Data/Managed/Assembly-CSharp.dll
+键位：us#1906
+对象：DLL #US 字符串（record_offset=230993）
+原文：Drop-down List
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[102] 跳过文本
+来源：222AM_Data/Managed/Assembly-CSharp.dll
+键位：us#1993
+对象：DLL #US 字符串（record_offset=231079）
+原文：UISlider expected to find a foreground object or a box collider to work with
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[103] 跳过文本
+来源：222AM_Data/Managed/Assembly-CSharp.dll
+键位：us#2148
+对象：DLL #US 字符串（record_offset=231234）
+原文：Slider thumb is only supported with Horizontal or Vertical fill direction
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[104] 跳过文本
+来源：222AM_Data/Managed/Assembly-CSharp.dll
+键位：us#2302
+对象：DLL #US 字符串（record_offset=231389）
+原文：\n
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[105] 跳过文本
+来源：222AM_Data/Managed/Assembly-CSharp.dll
+键位：us#2420
+对象：DLL #US 字符串（record_offset=231507）
+原文：X6
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[106] 跳过文本
+来源：222AM_Data/Managed/Assembly-CSharp.dll
+键位：us#2460
+对象：DLL #US 字符串（record_offset=231547）
+原文：UI
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[107] 跳过文本
+来源：222AM_Data/Managed/Assembly-CSharp.dll
+键位：us#2526
+对象：DLL #US 字符串（record_offset=231613）
+原文：Mesh0 for 
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[108] 跳过文本
+来源：222AM_Data/Managed/Assembly-CSharp.dll
+键位：us#2548
+对象：DLL #US 字符串（record_offset=231635）
+原文：Mesh1 for 
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[109] 跳过文本
+来源：222AM_Data/Managed/Assembly-CSharp.dll
+键位：us#2570
+对象：DLL #US 字符串（record_offset=231657）
+原文： (AlphaClip)
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[110] 跳过文本
+来源：222AM_Data/Managed/Assembly-CSharp.dll
+键位：us#2596
+对象：DLL #US 字符串（record_offset=231683）
+原文： (SoftClip)
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[111] 跳过文本
+来源：222AM_Data/Managed/Assembly-CSharp.dll
+键位：us#2812
+对象：DLL #US 字符串（record_offset=231899）
+原文：UIWidgets must fill the buffer with 4 vertices per quad. Found 
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[112] 跳过文本
+来源：222AM_Data/Managed/Assembly-CSharp.dll
+键位：us#3018
+对象：DLL #US 字符串（record_offset=232105）
+原文： has no mainTexture setter
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[113] 跳过文本
+来源：222AM_Data/Managed/Assembly-CSharp.dll
+键位：us#3073
+对象：DLL #US 字符串（record_offset=232159）
+原文：You can't place widgets on a layer different than the UIPanel that manages them.
+If you want to move widgets to a different layer, parent them to a new panel instead.
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[114] 跳过文本
+来源：222AM_Data/Managed/Assembly-CSharp.dll
+键位：us#3407
+对象：DLL #US 字符串（record_offset=232494）
+原文：TweenVolume needs an AudioSource to work with
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[115] 跳过文本
+来源：222AM_Data/Managed/Assembly-CSharp.dll
+键位：us#3528
+对象：DLL #US 字符串（record_offset=232614）
+原文：Can't switch coordinates until the atlas material has a valid texture
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[116] 跳过文本
+来源：222AM_Data/Managed/Assembly-CSharp.dll
+键位：us#3668
+对象：DLL #US 字符串（record_offset=232755）
+原文：Unity Bug
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[117] 跳过文本
+来源：222AM_Data/Managed/Assembly-CSharp.dll
+键位：us#3688
+对象：DLL #US 字符串（record_offset=232775）
+原文：Mouse ScrollWheel
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[118] 跳过文本
+来源：222AM_Data/Managed/Assembly-CSharp.dll
+键位：us#3800
+对象：DLL #US 字符串（record_offset=232887）
+原文： seems to have a null sprite!
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[119] 跳过文本
+来源：222AM_Data/Managed/Assembly-CSharp.dll
+键位：us#3860
+对象：DLL #US 字符串（record_offset=232947）
+原文：The tiled sprite (
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[120] 跳过文本
+来源：222AM_Data/Managed/Assembly-CSharp.dll
+键位：us#3898
+对象：DLL #US 字符串（record_offset=232985）
+原文：) is too small.
+Consider using a bigger one.
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[121] 跳过文本
+来源：222AM_Data/Managed/Assembly-CSharp.dll
+键位：us#3992
+对象：DLL #US 字符串（record_offset=233079）
+原文：Attempting to print using an invalid font!
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[122] 跳过文本
+来源：222AM_Data/Managed/Assembly-CSharp.dll
+键位：us#4145
+对象：DLL #US 字符串（record_offset=233231）
+原文：UIRoot should not be active at the same time as UIOrthoCamera. Disabling UIOrthoCamera.
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[123] 跳过文本
+来源：222AM_Data/Managed/Assembly-CSharp.dll
+键位：us#4322
+对象：DLL #US 字符串（record_offset=233408）
+原文：SendMessage is bugged when you try to pass 'null' in the parameter field. It behaves as if no parameter was specified.
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[124] 跳过文本
+来源：222AM_Data/Managed/Assembly-CSharp.dll
+键位：us#4612
+对象：DLL #US 字符串（record_offset=233699）
+原文：Unlit/Texture
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[125] 跳过文本
+来源：222AM_Data/Managed/Assembly-CSharp.dll
+键位：us#4974
+对象：DLL #US 字符串（record_offset=234061）
+原文：pabst blue ripping on ice
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[126] 跳过文本
+来源：222AM_Data/Managed/Assembly-CSharp.dll
+键位：us#5026
+对象：DLL #US 字符串（record_offset=234113）
+原文：interaction consists of
+
+mouse
+clicking
+wasd
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[127] 跳过文本
+来源：222AM_Data/Managed/Assembly-CSharp.dll
+键位：us#5116
+对象：DLL #US 字符串（record_offset=234203）
+原文：text card
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[128] 跳过文本
+来源：222AM_Data/Managed/Assembly-CSharp.dll
+键位：us#5156
+对象：DLL #US 字符串（record_offset=234243）
+原文：Movie Clip
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[129] 跳过文本
+来源：222AM_Data/Managed/Assembly-CSharp.dll
+键位：us#5178
+对象：DLL #US 字符串（record_offset=234265）
+原文：Floating Orb
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[130] 跳过文本
+来源：222AM_Data/Managed/Assembly-CSharp.dll
+键位：us#5204
+对象：DLL #US 字符串（record_offset=234291）
+原文：Floating Cube
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[131] 跳过文本
+来源：222AM_Data/Managed/Assembly-CSharp.dll
+键位：us#5232
+对象：DLL #US 字符串（record_offset=234319）
+原文：Floating Tetra
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[132] 跳过文本
+来源：222AM_Data/Managed/Assembly-CSharp.dll
+键位：us#5262
+对象：DLL #US 字符串（record_offset=234349）
+原文：full moon
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[133] 跳过文本
+来源：222AM_Data/Managed/Assembly-CSharp.dll
+键位：us#5282
+对象：DLL #US 字符串（record_offset=234369）
+原文：new moon
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[134] 跳过文本
+来源：222AM_Data/Managed/Assembly-CSharp.dll
+键位：us#5300
+对象：DLL #US 字符串（record_offset=234387）
+原文：what the sky stole
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[135] 跳过文本
+来源：222AM_Data/Managed/Assembly-CSharp.dll
+键位：us#5338
+对象：DLL #US 字符串（record_offset=234425）
+原文：look at you
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[136] 跳过文本
+来源：222AM_Data/Managed/Assembly-CSharp.dll
+键位：us#5430
+对象：DLL #US 字符串（record_offset=234517）
+原文：10 feet out
+6 feet down
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[137] 跳过文本
+来源：222AM_Data/Managed/Assembly-CSharp.dll
+键位：us#5478
+对象：DLL #US 字符串（record_offset=234565）
+原文：speaking from experience
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[138] 跳过文本
+来源：222AM_Data/Managed/Assembly-CSharp.dll
+键位：us#5528
+对象：DLL #US 字符串（record_offset=234615）
+原文：i've been here before
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[139] 跳过文本
+来源：222AM_Data/Managed/Assembly-CSharp.dll
+键位：us#5572
+对象：DLL #US 字符串（record_offset=234659）
+原文：watch me make mine
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[140] 跳过文本
+来源：222AM_Data/Managed/Assembly-CSharp.dll
+键位：us#5666
+对象：DLL #US 字符串（record_offset=234753）
+原文：what a beautiful day
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[141] 跳过文本
+来源：222AM_Data/Managed/Assembly-CSharp.dll
+键位：us#5708
+对象：DLL #US 字符串（record_offset=234795）
+原文：i wish it was still night
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[142] 跳过文本
+来源：222AM_Data/Managed/Assembly-CSharp.dll
+键位：us#5760
+对象：DLL #US 字符串（record_offset=234847）
+原文：close my eyes
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[143] 跳过文本
+来源：222AM_Data/Managed/Assembly-CSharp.dll
+键位：us#5788
+对象：DLL #US 字符串（record_offset=234875）
+原文：city walk
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[144] 跳过文本
+来源：222AM_Data/Managed/Assembly-CSharp.dll
+键位：us#5808
+对象：DLL #US 字符串（record_offset=234895）
+原文：small town ghosts
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[145] 跳过文本
+来源：222AM_Data/Managed/Assembly-CSharp.dll
+键位：us#5844
+对象：DLL #US 字符串（record_offset=234931）
+原文：recurring daydreams
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[146] 跳过文本
+来源：222AM_Data/Managed/Assembly-CSharp.dll
+键位：us#5884
+对象：DLL #US 字符串（record_offset=234971）
+原文：here are the hollow places
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[147] 跳过文本
+来源：222AM_Data/Managed/Assembly-CSharp.dll
+键位：us#5938
+对象：DLL #US 字符串（record_offset=235025）
+原文：Cup Of Joy
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[148] 跳过文本
+来源：222AM_Data/Managed/Assembly-CSharp.dll
+键位：us#6050
+对象：DLL #US 字符串（record_offset=235137）
+原文：the smell of steam
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[149] 跳过文本
+来源：222AM_Data/Managed/Assembly-CSharp.dll
+键位：us#6088
+对象：DLL #US 字符串（record_offset=235175）
+原文：Cut Vegetables
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[150] 跳过文本
+来源：222AM_Data/Managed/Assembly-CSharp.dll
+键位：us#6190
+对象：DLL #US 字符串（record_offset=235277）
+原文：a bad habit of mine
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[151] 跳过文本
+来源：222AM_Data/Managed/Assembly-CSharp.dll
+键位：us#6230
+对象：DLL #US 字符串（record_offset=235317）
+原文：this is that somewhere
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[152] 跳过文本
+来源：222AM_Data/Managed/Assembly-CSharp.dll
+键位：us#6276
+对象：DLL #US 字符串（record_offset=235363）
+原文：far as we go and farther
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[153] 跳过文本
+来源：222AM_Data/Managed/Assembly-CSharp.dll
+键位：us#6354
+对象：DLL #US 字符串（record_offset=235441）
+原文：home sweet home
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[154] 跳过文本
+来源：222AM_Data/Managed/Assembly-CSharp.dll
+键位：us#6400
+对象：DLL #US 字符串（record_offset=235487）
+原文：a cloak of petals
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[155] 跳过文本
+来源：222AM_Data/Managed/Assembly-CSharp.dll
+键位：us#6436
+对象：DLL #US 字符串（record_offset=235523）
+原文：crown of thorns and a crown of flowers
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[156] 跳过文本
+来源：222AM_Data/Managed/Assembly-CSharp.dll
+键位：us#6514
+对象：DLL #US 字符串（record_offset=235601）
+原文：city walk daytime
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[157] 跳过文本
+来源：222AM_Data/Managed/Assembly-CSharp.dll
+键位：us#6550
+对象：DLL #US 字符串（record_offset=235637）
+原文：city walk daytime glitch
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[158] 跳过文本
+来源：222AM_Data/Managed/Assembly-CSharp.dll
+键位：us#6600
+对象：DLL #US 字符串（record_offset=235687）
+原文：city walk daytime ripped sky
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[159] 跳过文本
+来源：222AM_Data/Managed/Assembly-CSharp.dll
+键位：us#6688
+对象：DLL #US 字符串（record_offset=235775）
+原文：Room Tree Grown
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[160] 跳过文本
+来源：222AM_Data/Managed/Assembly-CSharp.dll
+键位：us#6720
+对象：DLL #US 字符串（record_offset=235807）
+原文：Room Lightshaft
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[161] 跳过文本
+来源：222AM_Data/Managed/Assembly-CSharp.dll
+键位：us#6752
+对象：DLL #US 字符串（record_offset=235839）
+原文：Room Lightshaft Inaudible
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[162] 跳过文本
+来源：222AM_Data/Managed/Assembly-CSharp.dll
+键位：us#6832
+对象：DLL #US 字符串（record_offset=235919）
+原文：i'll swallow my own ashes
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[163] 跳过文本
+来源：222AM_Data/Managed/Assembly-CSharp.dll
+键位：us#6884
+对象：DLL #US 字符串（record_offset=235971）
+原文：from almost to almost
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[164] 跳过文本
+来源：222AM_Data/Managed/Assembly-CSharp.dll
+键位：us#6928
+对象：DLL #US 字符串（record_offset=236015）
+原文：wish a wish
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[165] 跳过文本
+来源：222AM_Data/Managed/Assembly-CSharp.dll
+键位：us#7064
+对象：DLL #US 字符串（record_offset=236151）
+原文：fridge friend
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[166] 跳过文本
+来源：222AM_Data/Managed/Assembly-CSharp.dll
+键位：us#7092
+对象：DLL #US 字符串（record_offset=236179）
+原文：vacation plans
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[167] 跳过文本
+来源：222AM_Data/Managed/Assembly-CSharp.dll
+键位：us#7122
+对象：DLL #US 字符串（record_offset=236209）
+原文：heart in hand
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[168] 跳过文本
+来源：222AM_Data/Managed/Assembly-CSharp.dll
+键位：us#7150
+对象：DLL #US 字符串（record_offset=236237）
+原文：a heart that hums
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[169] 跳过文本
+来源：222AM_Data/Managed/Assembly-CSharp.dll
+键位：us#7214
+对象：DLL #US 字符串（record_offset=236301）
+原文：we're stronger than we believed
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[170] 跳过文本
+来源：222AM_Data/Managed/Assembly-CSharp.dll
+键位：us#7278
+对象：DLL #US 字符串（record_offset=236365）
+原文：stronger than we ever wanted to be
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[171] 跳过文本
+来源：222AM_Data/Managed/Assembly-CSharp.dll
+键位：us#7348
+对象：DLL #US 字符串（record_offset=236435）
+原文：Cup Of Joy Eruption
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[172] 跳过文本
+来源：222AM_Data/Managed/Assembly-CSharp.dll
+键位：us#7496
+对象：DLL #US 字符串（record_offset=236583）
+原文：nothing ends
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[173] 跳过文本
+来源：222AM_Data/Managed/Assembly-CSharp.dll
+键位：us#7522
+对象：DLL #US 字符串（record_offset=236609）
+原文：but everything must rest
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[174] 跳过文本
+来源：222AM_Data/Managed/Assembly-CSharp.dll
+键位：us#7572
+对象：DLL #US 字符串（record_offset=236659）
+原文：city float
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[175] 跳过文本
+来源：222AM_Data/Managed/Assembly-CSharp.dll
+键位：us#7612
+对象：DLL #US 字符串（record_offset=236699）
+原文：Tween Custom Property (width -> localScale.x)
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[176] 跳过文本
+来源：222AM_Data/Managed/Assembly-CSharp.dll
+键位：us#7716
+对象：DLL #US 字符串（record_offset=236803）
+原文：Relative Tween of Custom Property (height -> localScale.y)
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[177] 跳过文本
+来源：222AM_Data/Managed/Assembly-CSharp.dll
+键位：us#7848
+对象：DLL #US 字符串（record_offset=236935）
+原文：Position Tween
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[178] 跳过文本
+来源：222AM_Data/Managed/Assembly-CSharp.dll
+键位：us#7896
+对象：DLL #US 字符串（record_offset=236983）
+原文：Tween Main Texture Offset
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[179] 跳过文本
+来源：222AM_Data/Managed/Assembly-CSharp.dll
+键位：us#7984
+对象：DLL #US 字符串（record_offset=237071）
+原文：UtilityFramesPerSecond needs a GUIText component!
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[180] 跳过文本
+来源：222AM_Data/Managed/Assembly-CSharp.dll
+键位：us#8084
+对象：DLL #US 字符串（record_offset=237171）
+原文：{0:F2} FPS
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[181] 跳过文本
+来源：222AM_Data/Managed/Assembly-CSharp.dll
+键位：us#8106
+对象：DLL #US 字符串（record_offset=237193）
+原文：Position Tween with 1s Delay and PingPong Loop
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[182] 跳过文本
+来源：222AM_Data/Managed/Assembly-CSharp.dll
+键位：us#8200
+对象：DLL #US 字符串（record_offset=237287）
+原文：Relative Position Tween
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[183] 跳过文本
+来源：222AM_Data/Managed/Assembly-CSharp.dll
+键位：us#8248
+对象：DLL #US 字符串（record_offset=237335）
+原文：AnimationCurve for Easing Scale
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[184] 跳过文本
+来源：222AM_Data/Managed/Assembly-CSharp.dll
+键位：us#8312
+对象：DLL #US 字符串（record_offset=237399）
+原文：Scale to 2
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[185] 跳过文本
+来源：222AM_Data/Managed/Assembly-CSharp.dll
+键位：us#8334
+对象：DLL #US 字符串（record_offset=237421）
+原文：Scale to 0.5
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[186] 跳过文本
+来源：222AM_Data/Managed/Assembly-CSharp.dll
+键位：us#8360
+对象：DLL #US 字符串（record_offset=237447）
+原文：Punch Scale to 3
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[187] 跳过文本
+来源：222AM_Data/Managed/Assembly-CSharp.dll
+键位：us#8394
+对象：DLL #US 字符串（record_offset=237481）
+原文：Rotation to 90,0,0
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[188] 跳过文本
+来源：222AM_Data/Managed/Assembly-CSharp.dll
+键位：us#8432
+对象：DLL #US 字符串（record_offset=237519）
+原文：Rotation to 270,0,0
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[189] 跳过文本
+来源：222AM_Data/Managed/Assembly-CSharp.dll
+键位：us#8472
+对象：DLL #US 字符串（record_offset=237559）
+原文：Rotation to 0,310,0
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[190] 跳过文本
+来源：222AM_Data/Managed/Assembly-CSharp.dll
+键位：us#8512
+对象：DLL #US 字符串（record_offset=237599）
+原文：Rotation by 360,0,0 (relative tween)
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[191] 跳过文本
+来源：222AM_Data/Managed/Assembly-CSharp.dll
+键位：us#8586
+对象：DLL #US 字符串（record_offset=237673）
+原文：Custom Action Tween of Alpha to 0 with 1s Delay
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[192] 跳过文本
+来源：222AM_Data/Managed/Assembly-CSharp.dll
+键位：us#8682
+对象：DLL #US 字符串（record_offset=237769）
+原文：Custom Action Tween of Alpha to 1
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[193] 跳过文本
+来源：222AM_Data/Managed/Assembly-CSharp.dll
+键位：us#8750
+对象：DLL #US 字符串（record_offset=237837）
+原文：Color to Red
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[194] 跳过文本
+来源：222AM_Data/Managed/Assembly-CSharp.dll
+键位：us#8790
+对象：DLL #US 字符串（record_offset=237877）
+原文：Color Cycler
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[195] 跳过文本
+来源：222AM_Data/Managed/Assembly-CSharp.dll
+键位：us#8816
+对象：DLL #US 字符串（record_offset=237903）
+原文：Shake Position Ramp up/down Tween
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[196] 跳过文本
+来源：222AM_Data/Managed/Assembly-CSharp.dll
+键位：us#8884
+对象：DLL #US 字符串（record_offset=237971）
+原文：Shake Position Tween
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[197] 跳过文本
+来源：222AM_Data/Managed/Assembly-CSharp.dll
+键位：us#8926
+对象：DLL #US 字符串（record_offset=238013）
+原文：Shake Scale Tween
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[198] 跳过文本
+来源：222AM_Data/Managed/Assembly-CSharp.dll
+键位：us#8962
+对象：DLL #US 字符串（record_offset=238049）
+原文：Stop All tweens
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[199] 跳过文本
+来源：222AM_Data/Managed/Assembly-CSharp.dll
+键位：us#8994
+对象：DLL #US 字符串（record_offset=238081）
+原文：Loop iteration done
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[200] 跳过文本
+来源：222AM_Data/Managed/Assembly-CSharp.dll
+键位：us#9034
+对象：DLL #US 字符串（record_offset=238121）
+原文：All done with custom action
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[201] 跳过文本
+来源：222AM_Data/Managed/Assembly-CSharp.dll
+键位：us#9090
+对象：DLL #US 字符串（record_offset=238177）
+原文：Tween Position Queue
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[202] 跳过文本
+来源：222AM_Data/Managed/Assembly-CSharp.dll
+键位：us#9132
+对象：DLL #US 字符串（record_offset=238219）
+原文：Tween Position Queue with Delays
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[203] 跳过文本
+来源：222AM_Data/Managed/Assembly-CSharp.dll
+键位：us#9198
+对象：DLL #US 字符串（record_offset=238285）
+原文：Tween Position and Rotation Queue
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[204] 跳过文本
+来源：222AM_Data/Managed/Assembly-CSharp.dll
+键位：us#9266
+对象：DLL #US 字符串（record_offset=238353）
+原文：Lots of Stuff Queue
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[205] 跳过文本
+来源：222AM_Data/Managed/Assembly-CSharp.dll
+键位：us#9306
+对象：DLL #US 字符串（record_offset=238393）
+原文：Position and Rotation Queue Done
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[206] 跳过文本
+来源：222AM_Data/Managed/Assembly-CSharp.dll
+键位：us#9431
+对象：DLL #US 字符串（record_offset=238517）
+原文：Do a position tween that lasts 5 seconds and do a rotation tween every second for 0.5 seconds while the position tween is going
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[207] 跳过文本
+来源：222AM_Data/Managed/Assembly-CSharp.dll
+键位：us#9687
+对象：DLL #US 字符串（record_offset=238774）
+原文：Bounce and Tween Color
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[208] 跳过文本
+来源：222AM_Data/Managed/Assembly-CSharp.dll
+键位：us#9734
+对象：DLL #US 字符串（record_offset=238820）
+原文：First move to 0,0,0 then do a position tween up/down/up/down while simultaneously tweening the color
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[209] 跳过文本
+来源：222AM_Data/Managed/Assembly-CSharp.dll
+键位：us#9936
+对象：DLL #US 字符串（record_offset=239023）
+原文：All done with the position/rotation flow
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[210] 跳过文本
+来源：222AM_Data/Managed/Assembly-CSharp.dll
+键位：us#10122
+对象：DLL #US 字符串（record_offset=239209）
+原文：Mouse X
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[211] 跳过文本
+来源：222AM_Data/Managed/Assembly-CSharp.dll
+键位：us#10138
+对象：DLL #US 字符串（record_offset=239225）
+原文：Mouse Y
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—

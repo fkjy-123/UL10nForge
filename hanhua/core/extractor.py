@@ -9,6 +9,7 @@ from hanhua.core.formats import (json_format, txt_format, csv_format, xml_format
                                  yaml_format, subtitle_format, po_format,
                                  ink_yarn_format, zip_format, sqlite_format,
                                  read_text, detect_eol)
+from hanhua.core.knowledge import _LANGUAGE_NAMES_CASEFOLD
 from hanhua.core.models import TextEntry, STATUS_SKIPPED
 from hanhua.core.placeholders import should_skip
 from hanhua.core.scanner import probe_head_kind
@@ -28,6 +29,29 @@ class ParsedFile:
 
 # 无空格标识符风格（如 NavMeshLink、UnityEngine、Assembly-CSharp）——大概率不是显示文本
 _NO_SPACE_TOKEN = re.compile(r"^[A-Za-z0-9_.\-/]{2,60}$")
+# 保留翻译的语言包目录：仅英文（en/english）。英文是游戏主语言文本
+# （汉化目标）；其余语言目录（ES/DE/RS/FR/CH/ZH…）是次要语言包——汉化版
+# 玩家不会以该语言游玩，翻译无意义且西语等无重音单词（Expreso/Mierda）
+# 模型无法翻译恒败（containment 实证）；中文包（CH/ZH）翻译反而破坏
+# 游戏自带中文 → 全部跳过
+_LANGUAGE_PACK_KEEP = {"en", "english"}
+
+
+def _is_non_target_language_pack(p: Path) -> bool:
+    """路径含 Language/Languages/Lang/Langs 目录且语种目录非英文 → 次要
+    语言包。语种目录要求 2-3 字母代码（ES/DE/CH）或语言全名
+    （Spanish/German，复用知识库语言名词表）——Language/Texture 之类
+    非语种目录不拦截。"""
+    parts = p.parts
+    for i, part in enumerate(parts[:-1]):
+        if part.casefold() not in {"language", "languages", "lang", "langs"}:
+            continue
+        code = parts[i + 1].casefold()
+        if code in _LANGUAGE_PACK_KEEP:
+            return False
+        if re.fullmatch(r"[a-z]{2,3}", code) or code in _LANGUAGE_NAMES_CASEFOLD:
+            return True
+    return False
 
 
 def looks_like_noise_file(entries: list[TextEntry]) -> bool:
@@ -67,7 +91,7 @@ def parse_file(path: str | Path, file_id: str | None = None) -> ParsedFile:
     eol = detect_eol(raw)
     if suffix in (".gz",):
         entries, fmt, meta = _parse_compressed(raw, p, fid)
-    elif suffix in (".json", ".json5", ".jsonl", ".ndjson", ".arb"):
+    elif suffix in (".json", ".json5", ".jsonc", ".jsonl", ".ndjson", ".arb"):
         entries = json_format.extract_json(p, fid)
         fmt, meta = "json", {}
     elif suffix in (".csv", ".tsv", ".psv"):
@@ -102,6 +126,12 @@ def parse_file(path: str | Path, file_id: str | None = None) -> ParsedFile:
         # 依据——按内容路由，JSON/XML 内容按结构化解析（否则 txt 行
         # 拆分会把 JSON 行拆成半行条目，写回破坏文件）
         entries, fmt, meta = _parse_by_content(raw, p, fid)
+    # 次要语言包（Language/ES 等）：跳过全部条目——保留条目保证写回
+    # 完整性（游戏内该语言原样保留），但不翻译（见 _is_non_target_language_pack）
+    if _is_non_target_language_pack(p):
+        for e in entries:
+            if e.status == "pending":
+                e.status = STATUS_SKIPPED
     # 智能过滤：纯数字/URL/路径/程序集名/引擎字符串等标记为跳过（保留条目保证写回完整性）
     for e in entries:
         if e.status == "pending" and (should_skip(e.original) or is_engine_string(e.original)):

@@ -1,0 +1,148 @@
+游戏：deadbeat
+写回时间：2026-08-11 17:15:13
+输出目录：D:\游戏\deadbeat_汉化
+
+文件清单：29 个
+
+- DEADBEATS ENCORE_Data/app.info（2 条）
+- DEADBEATS ENCORE_Data/level0（68 条）
+- DEADBEATS ENCORE_Data/level1（98 条）
+- DEADBEATS ENCORE_Data/level10（89 条）
+- DEADBEATS ENCORE_Data/level11（7 条）
+- DEADBEATS ENCORE_Data/level12（87 条）
+- DEADBEATS ENCORE_Data/level13（86 条）
+- DEADBEATS ENCORE_Data/level14（86 条）
+- DEADBEATS ENCORE_Data/level2（88 条）
+- DEADBEATS ENCORE_Data/level3（87 条）
+- DEADBEATS ENCORE_Data/level4（87 条）
+- DEADBEATS ENCORE_Data/level5（87 条）
+- DEADBEATS ENCORE_Data/level6（89 条）
+- DEADBEATS ENCORE_Data/level7（89 条）
+- DEADBEATS ENCORE_Data/level8（86 条）
+- DEADBEATS ENCORE_Data/level9（86 条）
+- DEADBEATS ENCORE_Data/sharedassets0.assets（223 条）
+- DEADBEATS ENCORE_Data/sharedassets1.assets（19 条）
+- DEADBEATS ENCORE_Data/sharedassets10.assets（48 条）
+- DEADBEATS ENCORE_Data/sharedassets12.assets（92 条）
+- DEADBEATS ENCORE_Data/sharedassets14.assets（18 条）
+- DEADBEATS ENCORE_Data/sharedassets2.assets（3 条）
+- DEADBEATS ENCORE_Data/sharedassets3.assets（1160 条）
+- DEADBEATS ENCORE_Data/sharedassets5.assets（40 条）
+- DEADBEATS ENCORE_Data/sharedassets6.assets（80 条）
+- DEADBEATS ENCORE_Data/sharedassets7.assets（40 条）
+- DEADBEATS ENCORE_Data/sharedassets8.assets（76 条）
+- DEADBEATS ENCORE_Data/sharedassets9.assets（58 条）
+- DEADBEATS ENCORE_Data/Managed/Assembly-CSharp.dll（52 条）
+
+────────────────────────────────────────────────────────────────
+写回结果
+文本文件：1
+输入保护：True
+重开验证：True
+变更文件：56
+写入译文：1430
+总体闸门：PASS
+字体层级：runtime_verified
+清单：.hanhua-manifest.json
+备份：None
+
+四态闸门明细
+  file=PASS
+  container=PASS
+  object=PASS
+  runtime=PASS
+
+回显跳过（译文==原文，未写入）：88 条
+
+- DEADBEATS ENCORE_Data/level0:asset#level0#1215/str/0：Dash L. Key
+
+- DEADBEATS ENCORE_Data/level0:asset#level0#1272/str/0：SonG LiSt
+- DEADBEATS ENCORE_Data/level0:asset#level0#1276/str/0：soNg lisT
+- DEADBEATS ENCORE_Data/level0:asset#level0#1279/str/0：MODS
+- DEADBEATS ENCORE_Data/level0:asset#level0#1288/str/0：Dash R. Key
+
+- DEADBEATS ENCORE_Data/level0:asset#level0#1296/str/0：DEADBEATS
+- DEADBEATS ENCORE_Data/level1:asset#level1#916/str/0：HC: 0
+- DEADBEATS ENCORE_Data/level1:asset#level1#918/str/0：BEAT
+- DEADBEATS ENCORE_Data/level1:asset#level1#928/str/0：BEAT
+- DEADBEATS ENCORE_Data/level1:asset#level1#930/str/0：BEAT
+- DEADBEATS ENCORE_Data/level1:asset#level1#931/str/0：RIP
+- DEADBEATS ENCORE_Data/level1:asset#level1#939/str/0：BEAT
+- DEADBEATS ENCORE_Data/level10:asset#level10#786/str/0：HC: 0
+- DEADBEATS ENCORE_Data/level10:asset#level10#788/str/0：BEAT
+- DEADBEATS ENCORE_Data/level10:asset#level10#796/str/0：BEAT
+- DEADBEATS ENCORE_Data/level10:asset#level10#798/str/0：BEAT
+- DEADBEATS ENCORE_Data/level10:asset#level10#799/str/0：RIP
+- DEADBEATS ENCORE_Data/level10:asset#level10#805/str/0：BEAT
+- DEADBEATS ENCORE_Data/level11:asset#level11#48/str/0：DeAD
+bEAt
+- DEADBEATS ENCORE_Data/level12:asset#level12#894/str/0：HC: 0
+- DEADBEATS ENCORE_Data/level12:asset#level12#900/str/0：BEAT
+- DEADBEATS ENCORE_Data/level12:asset#level12#917/str/0：BEAT
+- DEADBEATS ENCORE_Data/level12:asset#level12#920/str/0：BEAT
+- DEADBEATS ENCORE_Data/level12:asset#level12#921/str/0：RIP
+- DEADBEATS ENCORE_Data/level12:asset#level12#927/str/0：BEAT
+- DEADBEATS ENCORE_Data/level13:asset#level13#1046/str/0：BEAT
+- DEADBEATS ENCORE_Data/level13:asset#level13#1051/str/0：HC: 0
+- DEADBEATS ENCORE_Data/level13:asset#level13#1053/str/0：BEAT
+- DEADBEATS ENCORE_Data/level13:asset#level13#1054/str/0：RIP
+- DEADBEATS ENCORE_Data/level13:asset#level13#1061/str/0：BEAT
+- DEADBEATS ENCORE_Data/level13:asset#level13#1065/str/0：BEAT
+- DEADBEATS ENCORE_Data/level14:asset#level14#1223/str/0：BEAT
+- DEADBEATS ENCORE_Data/level14:asset#level14#1228/str/0：BEAT
+- DEADBEATS ENCORE_Data/level14:asset#level14#1245/str/0：HC: 0
+- DEADBEATS ENCORE_Data/level14:asset#level14#1248/str/0：RIP
+- DEADBEATS ENCORE_Data/level14:asset#level14#1254/str/0：BEAT
+- DEADBEATS ENCORE_Data/level14:asset#level14#1255/str/0：BEAT
+- DEADBEATS ENCORE_Data/level2:asset#level2#575/str/0：HC: 0
+- DEADBEATS ENCORE_Data/level2:asset#level2#578/str/0：BEAT
+- DEADBEATS ENCORE_Data/level2:asset#level2#586/str/0：BEAT
+- DEADBEATS ENCORE_Data/level2:asset#level2#588/str/0：BEAT
+- DEADBEATS ENCORE_Data/level2:asset#level2#589/str/0：RIP
+- DEADBEATS ENCORE_Data/level2:asset#level2#598/str/0：B3#AT
+- DEADBEATS ENCORE_Data/level3:asset#level3#632/str/0：BEAT
+- DEADBEATS ENCORE_Data/level3:asset#level3#637/str/0：HC: 0
+- DEADBEATS ENCORE_Data/level3:asset#level3#639/str/0：BEAT
+- DEADBEATS ENCORE_Data/level3:asset#level3#640/str/0：BEAT
+- DEADBEATS ENCORE_Data/level3:asset#level3#647/str/0：BEAT
+- DEADBEATS ENCORE_Data/level3:asset#level3#648/str/0：RIP
+- DEADBEATS ENCORE_Data/level4:asset#level4#633/str/0：BEAT
+- DEADBEATS ENCORE_Data/level4:asset#level4#638/str/0：HC: 0
+- DEADBEATS ENCORE_Data/level4:asset#level4#640/str/0：BEAT
+- DEADBEATS ENCORE_Data/level4:asset#level4#641/str/0：BEAT
+- DEADBEATS ENCORE_Data/level4:asset#level4#647/str/0：BEAT
+- DEADBEATS ENCORE_Data/level4:asset#level4#648/str/0：RIP
+- DEADBEATS ENCORE_Data/level5:asset#level5#633/str/0：BEAT
+- DEADBEATS ENCORE_Data/level5:asset#level5#637/str/0：HC: 0
+- DEADBEATS ENCORE_Data/level5:asset#level5#638/str/0：BEAT
+- DEADBEATS ENCORE_Data/level5:asset#level5#639/str/0：BEAT
+- DEADBEATS ENCORE_Data/level5:asset#level5#646/str/0：BEAT
+- DEADBEATS ENCORE_Data/level5:asset#level5#648/str/0：RIP
+- DEADBEATS ENCORE_Data/level6:asset#level6#893/str/0：HC: 0
+- DEADBEATS ENCORE_Data/level6:asset#level6#895/str/0：BEAT
+- DEADBEATS ENCORE_Data/level6:asset#level6#904/str/0：BEAT
+- DEADBEATS ENCORE_Data/level6:asset#level6#905/str/0：BEAT
+- DEADBEATS ENCORE_Data/level6:asset#level6#908/str/0：RIP
+- DEADBEATS ENCORE_Data/level6:asset#level6#912/str/0：BEAT
+- DEADBEATS ENCORE_Data/level7:asset#level7#891/str/0：HC: 0
+- DEADBEATS ENCORE_Data/level7:asset#level7#893/str/0：BEAT
+- DEADBEATS ENCORE_Data/level7:asset#level7#902/str/0：BEAT
+- DEADBEATS ENCORE_Data/level7:asset#level7#903/str/0：BEAT
+- DEADBEATS ENCORE_Data/level7:asset#level7#905/str/0：RIP
+- DEADBEATS ENCORE_Data/level7:asset#level7#911/str/0：BEAT
+- DEADBEATS ENCORE_Data/level8:asset#level8#797/str/0：HC: 0
+- DEADBEATS ENCORE_Data/level8:asset#level8#798/str/0：BEAT
+- DEADBEATS ENCORE_Data/level8:asset#level8#809/str/0：BEAT
+- DEADBEATS ENCORE_Data/level8:asset#level8#811/str/0：BEAT
+- DEADBEATS ENCORE_Data/level8:asset#level8#813/str/0：RIP
+- DEADBEATS ENCORE_Data/level8:asset#level8#817/str/0：BEAT
+- DEADBEATS ENCORE_Data/level9:asset#level9#797/str/0：HC: 0
+- DEADBEATS ENCORE_Data/level9:asset#level9#799/str/0：BEAT
+- DEADBEATS ENCORE_Data/level9:asset#level9#808/str/0：BEAT
+- DEADBEATS ENCORE_Data/level9:asset#level9#809/str/0：BEAT
+- DEADBEATS ENCORE_Data/level9:asset#level9#810/str/0：RIP
+- DEADBEATS ENCORE_Data/level9:asset#level9#816/str/0：BEAT
+- DEADBEATS ENCORE_Data/sharedassets0.assets:asset#sharedassets0.assets#719/str/3：Major Mono Display
+- DEADBEATS ENCORE_Data/sharedassets0.assets:asset#sharedassets0.assets#720/str/3：Noto Sans JP
+- DEADBEATS ENCORE_Data/sharedassets0.assets:asset#sharedassets0.assets#721/str/3：Noto Sans JP
+

@@ -63,6 +63,23 @@ def test_quality_rejects_untranslated_english_and_glossary_drift():
     assert "glossary_mismatch" in drift.reasons
 
 
+def test_glossary_proper_name_echo_casefold_allowed():
+    """自动沉淀专名保留映射（KRAPOS→KRAPOS）vs 模型回显 TitleCase 变体
+    （Krapos）→ 大小写不敏感放行（count-my-coins 实证：learn 时保留
+    检测 casefold，quality 检查却大小写敏感——全大写 target 不在
+    TitleCase 译文里 → glossary_mismatch 误判）。"""
+    entry = _entry("Krapos")
+    kept = validate_translation_quality(
+        entry, "Krapos", glossary=[("KRAPOS", "KRAPOS")])
+    assert kept.passed is True
+
+    entry2 = _entry("Settings")
+    # 人工术语（中文 target）大小写不敏感不影响：模型回显英文仍判失败
+    drift = validate_translation_quality(
+        entry2, "Settings", glossary=[("Settings", "设置")])
+    assert "glossary_mismatch" in drift.reasons
+
+
 def test_quality_rejects_unchanged_single_english_ui_label():
     result = validate_translation_quality(_entry("Continue", role="ui"), "Continue")
 
@@ -426,3 +443,71 @@ def test_dev_placeholder_with_lorem_suffix_is_skipped():
     entry = _entry(text, role="display")
     result = validate_translation_quality(entry, text)
     assert result.passed is True
+
+
+def test_explanatory_garbage_output_is_rejected():
+    """解释式垃圾输出：模型把翻译不了的词当提问输出解释段落（Mierda →
+    '该文本看起来像是随机组合的文字...以下是可能的解释：'）→ 判
+    explanatory_prefix 失败（containment 实证）。译文是目标语言内容，
+    解释句式不会正常出现。"""
+    entry = _entry("Mierda", role="display")
+    garbage = ("该文本看起来像是随机组合的文字，没有明确的含义。"
+               "以下是可能的解释：\n\n- **Mierda**: 这可能是西班牙语中"
+               "的\"shit\"或\"damn\"的缩写，表示\"该死\"或\"糟糕\"的意思。")
+    result = validate_translation_quality(entry, garbage)
+    assert "explanatory_prefix" in result.reasons
+
+    entry2 = _entry("CreditsVolume (1) Profile", role="display")
+    garbage2 = ('参考以下翻译：\n"Volume"可译为"音量"\n"Profile"可译为"简介"')
+    result2 = validate_translation_quality(entry2, garbage2)
+    assert "explanatory_prefix" in result2.reasons
+
+
+def test_explanatory_detection_no_false_positive():
+    """解释垃圾检测不误伤正常译文：「以下是重要信息」（非「以下是可能的
+    解释」精确句式）、短句「没有明确的含义」式描述（<20 字符）→ 不判。"""
+    entry = _entry("The following information is important", role="display")
+    result = validate_translation_quality(entry, "以下是重要信息，请仔细阅读。")
+    assert "explanatory_prefix" not in result.reasons
+
+
+def test_hipster_ipsum_is_placeholder():
+    """hipster ipsum 占位文本（'XOXO keytar glossier mumblecore. Tote bag
+    listicle normcore kinfolk kogi hoodie...'：hipster 风格 lorem ipsum
+    生成器词汇，containment level3-6 assets 实证 5 条）→ 占位文本，
+    模型回显合理。≥4 特征词同句才判（真实文本不会堆 4 个 hipster 词）。"""
+    hipster = ("XOXO keytar glossier mumblecore. Tote bag listicle normcore "
+               "kinfolk kogi hoodie hashtag edison bulb actually lo-fi "
+               "keffiyeh affogato. Health goth flexitarian enamel pin organic.")
+    from hanhua.core.quality import is_lorem_ipsum_placeholder
+    assert is_lorem_ipsum_placeholder(hipster) is True
+    assert is_lorem_ipsum_placeholder("I bought a hoodie from the food truck") is False
+    assert is_lorem_ipsum_placeholder("Hello world") is False
+
+    entry = _entry(hipster, role="display")
+    result = validate_translation_quality(entry, hipster)
+    assert result.passed is True
+
+
+def test_artistic_case_echo_is_exempt_from_untranslated():
+    """艺术化混排字回显（deadbeat 实证：'DeAD' → 模型 'deAD' 大小写
+    噪声变体）→ 豁免 untranslated_text（把艺术写法当普通词翻译成
+    '死亡' 是错误）。规范形态 dead/DEAD 段长 4 不豁免、TitleCase
+    Continue 不豁免——UI 词典词检查仍生效。"""
+    result = validate_translation_quality(
+        _entry("DeAD", role="display"), "deAD")
+    assert result.passed is True
+    result = validate_translation_quality(
+        _entry("DeAD", role="display"), "DeAD")
+    assert result.passed is True
+    # 规范形态仍判失败（dead 是 UI 词典词，必须翻译）
+    result = validate_translation_quality(
+        _entry("dead", role="display"), "dead")
+    assert "untranslated_text" in result.reasons
+    result = validate_translation_quality(
+        _entry("DEAD", role="display"), "DEAD")
+    assert "untranslated_text" in result.reasons
+    # TitleCase 普通词仍判失败（Continue 该译「继续」）
+    result = validate_translation_quality(
+        _entry("Continue", role="display"), "continue")
+    assert "untranslated_text" in result.reasons

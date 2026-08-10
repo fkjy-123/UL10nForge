@@ -1,4 +1,6 @@
 from __future__ import annotations
+import datetime as _dt
+import json
 import re
 import sqlite3
 import threading
@@ -10,7 +12,16 @@ from hanhua.core.placeholders import should_skip
 # 知识库：汉化全链路（识别/翻译/写回/质量门）遇到的特殊情况的经验存储。
 #
 # 与术语库（GlossaryStore）分工：术语库存「专名/术语的译名映射」；
-# 知识库存「特殊情况 → 处置规则」，按 domain 分库、kind 细分：
+# 知识库存「特殊情况 → 处置规则」，按 domain 分库、kind 细分。
+#
+# 六库体系（2026-08-11 知识库搭建，§0.4.3，domain 即库）：
+#   unity_structure  Unity 结构库（unity_version/resource_type/…）
+#   fail_case        失败案例库（note=结构化 JSON，FAIL 编号制）
+#   text             文本规则库（形态 kind + 类型 kind，action=translate/keep/skip）
+#   component_compat 组件兼容库（text/textmeshpro/dropdown/ui_toolkit/…）
+#   quality          翻译质量库（scoring_case/term_consistency/common_error）
+#   writeback        写回验证库（writeback_case/test_flow）
+# 另有功能域 file（文件形态）/ rule（抽象规则）承载跨场景处置策略。
 #
 #   domain=text     特殊文本形态（可翻译语义文本的特征模式）
 #     kind=spaced_action      间隔动作词（* Y A W N * → * 哈欠 *）
@@ -88,28 +99,70 @@ def _is_spaced_action(text: str) -> bool:
 _JAPANESE_KANA_RE = re.compile(r"[぀-ヿㇰ-ㇿ]")
 _ACCENTED_LATIN_RE = re.compile(
     r"[À-ÖØ-Þßà-öø-ÿ]")
+# 西里尔字母（俄/乌/保语源）：与拉丁/假名正交的独立文字系统，1.8B 模型
+# 对俄语源同样倾向输出英语/乱译（containment 实证：клипборд → Klipboard
+# 音译、Привет → 解释性垃圾）→ 硬 multilingual 特征，走双跳/兜底。
+_CYRILLIC_RE = re.compile(r"[А-Яа-яЁё]")
 # 罗曼语族（法/意/西/葡）ASCII 功能词：与英语共用拉丁字母，但冠词/介词
 # 不同（Chiave di Ferro 的 di、Il cibo 的 Il）。英语中这些词罕见（多为
 # 音名/叹词，如 la/si/e）——出现即疑为罗曼语言源文本，须译中文。
+# 西语高频词（no/me/te/se/el/los/las/que/es/son/eres/su/sus/mi/mis/
+# esta/este/estas/como/cuando/donde/quien/cual/al/ni/o/para/por）补齐
+# （containment 实证：'No me veas' 无重音无旧表词，西语未被识别）。
 _ROMANCE_FUNCTION_WORDS = frozenset("""
 il lo la le les i gli un una di del della dei delle du des au aux
 su sul sulla nel nella nello nei negli nelle con per tra fra che chi si
 je tu il elle nous vous et mais ou avec en por para entre
 da de ne ve ci vi
+no me te se su sus mi mis el los las que es son eres esta este estas
+como cuando donde quien cual al ni o u pero
 """.split())
+# 英语也高频的罗曼功能词（否定 no、宾格 me）：单命中不可判 multilingual
+# （'No matter what happens' 的 no、'Tell me the truth' 的 me 是英语），
+# 需要 ≥2 个罗曼词（'No me veas' = no+me 才是西语）。其余表内词
+# （que/es/el/los…）英语罕见，单命中即可。
+_ENGLISH_SHARED_ROMANCE_WORDS = frozenset({"no", "me", "te", "el", "o", "ni"})
 _ASCII_WORD_RE = re.compile(r"[A-Za-z]{2,}")
 
 
 def _is_multilingual_source(text: str) -> bool:
-    """原文含日文假名/带重音拉丁字母/罗曼语功能词 → 非英语源文本。
+    """原文含日文假名/带重音拉丁字母/西里尔字母/罗曼语功能词 → 非英语源。
 
     判定独立于目标语：这类原文模型对其默认输出英语是目标语错误
     （质量门拦截 + 双跳修复 + 同对象译例兜底）。
     """
-    if _JAPANESE_KANA_RE.search(text) or _ACCENTED_LATIN_RE.search(text):
+    if (_JAPANESE_KANA_RE.search(text)
+            or _ACCENTED_LATIN_RE.search(text)
+            or _CYRILLIC_RE.search(text)):
         return True
     words = [w.casefold() for w in _ASCII_WORD_RE.findall(text)]
-    return any(w in _ROMANCE_FUNCTION_WORDS for w in words)
+    hits = [w for w in words if w in _ROMANCE_FUNCTION_WORDS]
+    if len(hits) >= 2:
+        return True
+    return bool(hits and hits[0] not in _ENGLISH_SHARED_ROMANCE_WORDS)
+
+
+# 语言名（Español/Deutsch/Русский/日本語…）：语言选择器的显示文本保留
+# 原名是业界惯例——游戏语言列表从不翻译语言名，回显语言名是合理行为
+# （containment level*.assets 'Español' 回显被判 target_script_mismatch
+# 真实样本 6 条）。跨游戏通用（任何游戏的语言设置 UI 都含语言名）。
+_LANGUAGE_NAMES_CASEFOLD = frozenset(word.casefold() for word in [
+    "english", "español", "spanish", "deutsch", "german", "french",
+    "français", "japanese", "日本語", "한국어", "korean", "russian",
+    "русский", "українська", "ukrainian", "chinese", "中文",
+    "简体中文", "繁體中文", "português", "portuguese", "italiano",
+    "italian", "polski", "polish", "nederlands", "dutch", "svenska",
+    "swedish", "türkçe", "turkish", "ไทย", "thai", "việt",
+    "vietnamese", "čeština", "czech", "magyar", "hungarian",
+    "ελληνικά", "greek", "עברית", "hebrew", "العربية", "arabic",
+    "हिन्दी", "hindi", "bahasa", "indonesian", "norsk", "norwegian",
+    "suomi", "finnish", "dansk", "danish", "română", "romanian",
+    "български", "bulgarian", "english (us)", "english (uk)"])
+
+
+def _is_language_name(text: str) -> bool:
+    """原文是否语言名（忽略大小写/首尾空白）。"""
+    return text.strip().casefold() in _LANGUAGE_NAMES_CASEFOLD
 
 
 # 大写动作指令的机械直译词表（EN→ZH）。用途：learn() 沉淀「该翻未翻」
@@ -119,7 +172,8 @@ def _is_multilingual_source(text: str) -> bool:
 # 知识（动作/命令高频词），随游戏积累扩充，非单游戏特判。
 _ACTION_VERB_ZH = {
     "toss": "丢", "throw": "扔", "press": "按", "push": "推", "pull": "拉",
-    "use": "使用", "open": "打开", "close": "关闭", "enter": "进入",
+    "interact": "交互", "hold": "按住", "use": "使用", "open": "打开",
+    "close": "关闭", "enter": "进入",
     "exit": "离开", "start": "开始", "stop": "停止", "go": "出发",
     "skip": "跳过", "drop": "丢弃", "pick": "捡起", "grab": "抓住",
     "take": "拿取",
@@ -194,6 +248,15 @@ def translate_uppercase_action(text: str) -> str | None:
 
 # ── 内置种子 2：抽象规则/文件知识（跨场景处置策略，随代码分发） ──────────
 
+# 六库 domain 命名（2026-08-11 知识库体系搭建统一，§0.4.3）：
+#   unity_structure  Unity 结构库（kind: unity_version/resource_type/…）
+#   fail_case        失败案例库（note=结构化 JSON，FAIL 编号制）
+#   text             文本规则库（形态 kind + 文本类型 kind）
+#   component_compat 组件兼容库（text/textmeshpro/dropdown/ui_toolkit/…）
+#   quality          翻译质量库（scoring_case/term_consistency/common_error）
+#   writeback        写回验证库（writeback_case/test_flow）
+#   file / rule      文件知识域与抽象规则域（跨场景处置策略，保留）
+
 BUILTIN_RULES: tuple[dict, ...] = (
     # text：文本形态
     {"domain": "text", "kind": "spaced_action",
@@ -251,59 +314,54 @@ BUILTIN_RULES: tuple[dict, ...] = (
      "action": "fail_untranslated",
      "map_to": "回显一律判失败并重试（不得当专名豁免）",
      "note": "seed:全大写动作指令/间隔动作词回显不得豁免"},
-    # ── 六库蓝图：unity_struct（Unity 结构与资源定位库） ──
-    {"domain": "unity_struct", "kind": "unity_version",
+    # ── 六库蓝图：unity_structure（Unity 结构与资源定位库） ──
+    {"domain": "unity_structure", "kind": "unity_version",
      "pattern": "Unity 2018-2019：AssetBundle 常见、Text 组件多、Localization 少",
      "action": "info",
      "map_to": "资源结构简单但兼容旧格式；2021+：Addressables 增加、TMP 大量、"
                "Localization Package 普及 → 文本分散、写回复杂",
      "note": "seed:六库1-先判断 Unity 版本再选提取/写回方案"},
-    {"domain": "unity_struct", "kind": "asset_type",
+    {"domain": "unity_structure", "kind": "resource_type",
      "pattern": "TextAsset（配置/对话/JSON/CSV）",
      "action": "info",
      "map_to": "优先直接替换文本内容；MonoBehaviour 检查序列化字段；"
                "AssetBundle 备份+重建（直接改可能破坏结构）",
      "note": "seed:六库1-资源类型决定处理方式"},
-    # ── 六库蓝图：text_type（文本类型与处理规则库） ──
-    {"domain": "text_type", "kind": "debug_text",
+    # ── 六库蓝图：text（文本类型与处理规则库，文本规则库） ──
+    {"domain": "text", "kind": "debug",
      "pattern": "Debug 日志/调试输出文本",
      "action": "skip",
      "map_to": "不翻译（玩家不可见，翻译无价值且可能破坏日志语义）",
      "note": "seed:六库3-调试文本不翻译"},
-    {"domain": "text_type", "kind": "code_text",
+    {"domain": "text", "kind": "code",
      "pattern": "无空格大写驼峰（PlayerController）→ 类名/代码标识符特征",
      "action": "skip",
      "map_to": "不翻译（代码按原名查找，翻译破坏功能）；"
                "Attack Damage +10% 等游戏文本才翻译",
      "note": "seed:六库3-代码文本 vs 游戏文本的判断规则"},
-    {"domain": "text_type", "kind": "term_consistency",
-     "pattern": "技能/装备/成就等游戏术语",
-     "action": "translate_consistent",
-     "map_to": "首次翻译后全局统一（Health→生命值，不得再出现 血量/生命/HP值）",
-     "note": "seed:六库3-术语统一是汉化品质核心"},
-    # ── 六库蓝图：component（Unity 组件兼容库） ──
-    {"domain": "component", "kind": "ugui_text",
+    # ── 六库蓝图：component_compat（Unity 组件兼容库） ──
+    {"domain": "component_compat", "kind": "text",
      "pattern": "Unity UI Text 组件中文乱码",
      "action": "replace_font",
      "map_to": "默认字体不支持中文 → 替换 Font 为中文支持字体",
      "note": "seed:六库4-后台成功游戏失败的第一类原因"},
-    {"domain": "component", "kind": "textmeshpro",
+    {"domain": "component_compat", "kind": "textmeshpro",
      "pattern": "TMP 文本中文显示方块（□）",
      "action": "rebind_font_asset",
      "map_to": "TMP Font Asset 缺中文字形 → 生成中文 Atlas + 重新绑定 Font Asset",
      "note": "seed:六库4-TMP 是 2021+ 重点组件"},
-    {"domain": "component", "kind": "dropdown",
+    {"domain": "component_compat", "kind": "dropdown",
      "pattern": "Dropdown 选项翻译成功但列表仍英文",
      "action": "patch_data_source",
      "map_to": "显示文本已改但数据源未替换 → 修改 Option List 数据源",
      "note": "seed:六库4-不是所有文本都直接改字符串"},
-    {"domain": "component", "kind": "ui_toolkit",
+    {"domain": "component_compat", "kind": "ui_toolkit",
      "pattern": "UI Toolkit 文本（UXML/USS/Localization Table）",
      "action": "locate_source",
      "map_to": "文本来源在 UXML/USS/Localization Table，先定位再替换",
      "note": "seed:六库4-UI Toolkit 与 UGUI 文本存放位置不同"},
     # ── 六库蓝图：quality（翻译质量库） ──
-    {"domain": "quality", "kind": "scoring",
+    {"domain": "quality", "kind": "scoring_case",
      "pattern": "翻译质量评分：语义 40 + 上下文 30 + 中文自然 20 + 术语统一 10",
      "action": "info",
      "map_to": "Critical Strike Chance 错译『关键打击机会』=40 分；"
@@ -315,14 +373,19 @@ BUILTIN_RULES: tuple[dict, ...] = (
      "action": "context_judge",
      "map_to": "翻译后自检：是否符合上下文/游戏习惯/无歧义/不与既有术语冲突",
      "note": "seed:六库5-常见翻译错误需上下文判断"},
-    # ── 六库蓝图：writeback_verify（写回与运行验证库） ──
-    {"domain": "writeback_verify", "kind": "verify_flow",
+    {"domain": "quality", "kind": "term_consistency",
+     "pattern": "技能/装备/成就等游戏术语",
+     "action": "translate_consistent",
+     "map_to": "首次翻译后全局统一（Health→生命值，不得再出现 血量/生命/HP值）",
+     "note": "seed:六库5-术语统一是汉化品质核心（原六库3 迁移）"},
+    # ── 六库蓝图：writeback（写回与运行验证库） ──
+    {"domain": "writeback", "kind": "test_flow",
      "pattern": "写回后运行验证流程：启动→主菜单→设置→新游戏→核心玩法→"
                 "暂停菜单→存档→退出",
      "action": "verify",
      "map_to": "各环节逐项检查：游戏启动正常/菜单正常/文本显示正常",
      "note": "seed:六库6-统一验证流程，不同游戏同样覆盖"},
-    {"domain": "writeback_verify", "kind": "bundle_damage",
+    {"domain": "writeback", "kind": "writeback_case",
      "pattern": "写回后游戏黑屏",
      "action": "runtime_patch",
      "map_to": "Bundle 结构损坏 → 改用运行时替换方案，而非直接改 Bundle",
@@ -352,32 +415,64 @@ class KnowledgeStore:
                 map_to TEXT NOT NULL DEFAULT '',
                 note TEXT NOT NULL DEFAULT '',
                 hits INTEGER NOT NULL DEFAULT 0,
+                source TEXT NOT NULL DEFAULT '',
+                game TEXT NOT NULL DEFAULT '',
+                created_at TEXT NOT NULL DEFAULT '',
+                updated_at TEXT NOT NULL DEFAULT '',
                 UNIQUE(domain, kind, pattern)
             );""")
+            # 旧库兼容升级：2026-08-11 前只有 domain/kind/pattern/action/
+            # map_to/note/hits 七列——缺溯源/时间列则 ALTER 补齐（不重建）
+            cols = {r["name"] for r in self.conn.execute(
+                "PRAGMA table_info(knowledge_items)")}
+            for col, ddl in (
+                    ("source", "TEXT NOT NULL DEFAULT ''"),
+                    ("game", "TEXT NOT NULL DEFAULT ''"),
+                    ("created_at", "TEXT NOT NULL DEFAULT ''"),
+                    ("updated_at", "TEXT NOT NULL DEFAULT ''")):
+                if col not in cols:
+                    self.conn.execute(
+                        f"ALTER TABLE knowledge_items ADD COLUMN {col} {ddl}")
+            self.conn.execute(
+                "CREATE INDEX IF NOT EXISTS idx_kb_domain_kind_hits"
+                " ON knowledge_items(domain, kind, hits)")
             self.conn.commit()
+
+    @staticmethod
+    def _now() -> str:
+        return _dt.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
     # ── 写入 ──
 
     def upsert(self, domain: str, kind: str, pattern: str, *,
                action: str = "", map_to: str = "", note: str = "",
-               hits: int = 1) -> bool:
-        """幂等入库：已存在则 hits+1 并刷新来源备注，返回是否新增。"""
+               hits: int = 1, source: str = "", game: str = "") -> bool:
+        """幂等入库：已存在则 hits+1 并刷新来源备注/时间，返回是否新增。
+
+        source: seed/manual/auto（内置种子/人工沉淀/自动学习）；game:
+        沉淀来源游戏（可空）——知识可追溯、可按游戏统计（§0.4 溯源）。"""
+        now = self._now()
         with self._lock:
             row = self.conn.execute(
-                "SELECT id FROM knowledge_items"
+                "SELECT id, game FROM knowledge_items"
                 " WHERE domain=? AND kind=? AND pattern=?",
                 (domain, kind, pattern)).fetchone()
             if row is None:
                 self.conn.execute(
                     "INSERT INTO knowledge_items"
-                    "(domain, kind, pattern, action, map_to, note, hits)"
-                    " VALUES (?,?,?,?,?,?,?)",
-                    (domain, kind, pattern, action, map_to, note, hits))
+                    "(domain, kind, pattern, action, map_to, note, hits,"
+                    " source, game, created_at, updated_at)"
+                    " VALUES (?,?,?,?,?,?,?,?,?,?,?)",
+                    (domain, kind, pattern, action, map_to, note, hits,
+                     source, game, now, now))
                 self.conn.commit()
                 return True
+            prev_game = row["game"]
             self.conn.execute(
-                "UPDATE knowledge_items SET hits=hits+?, note=? WHERE id=?",
-                (max(1, hits), note, row["id"]))
+                "UPDATE knowledge_items SET hits=hits+?, note=?,"
+                " game=?, updated_at=? WHERE id=?",
+                (max(1, hits), note, game if game else prev_game, now,
+                 row["id"]))
             self.conn.commit()
             return False
 
@@ -524,7 +619,8 @@ class KnowledgeBase:
             if _is_spaced_action(original):
                 learned += self.store.upsert(
                     "text", "spaced_action", original, action="translate",
-                    note=f"auto:{source_game}:间隔动作词回显")
+                    note="自动学习：间隔动作词回显",
+                    source="auto", game=source_game)
                 hits += 1
             elif _is_uppercase_action(original):
                 # map_to 由动作词表机械直译生成：重试降级（native_translate
@@ -532,7 +628,8 @@ class KnowledgeBase:
                 learned += self.store.upsert(
                     "text", "uppercase_action", original, action="translate",
                     map_to=translate_uppercase_action(original) or "",
-                    note=f"auto:{source_game}:大写动作指令回显")
+                    note="自动学习：大写动作指令回显",
+                    source="auto", game=source_game)
                 hits += 1
             elif _is_multilingual_source(original):
                 # 其他语言源回显（法语 Clé en Fer 等模型不认识）→ 沉淀形态
@@ -540,7 +637,8 @@ class KnowledgeBase:
                 # 的 _obj_reference_pairs），模型对完全回显无机械直译来源
                 learned += self.store.upsert(
                     "text", "multilingual_source", original, action="translate",
-                    note=f"auto:{source_game}:其他语言源文本回显（含假名/重音字母）")
+                    note="自动学习：其他语言源文本回显（含假名/重音字母）",
+                    source="auto", game=source_game)
                 hits += 1
         return learned, hits
 
@@ -563,33 +661,166 @@ class KnowledgeBase:
 
     _FAIL_TYPES = frozenset(
         {"提取", "识别", "分类", "翻译", "写回", "显示", "崩溃"})
+    _FAIL_KEYS = ("fail_no", "game", "env", "issue", "phenomenon",
+                  "root_cause", "solution", "impact", "fixed_version",
+                  "fail_type")
 
     def record_case(self, *, game: str, fail_type: str, problem: str,
                     root_cause: str, fix: str, symptom: str = "",
                     impact: str = "", version: str = "",
-                    environment: str = "Unity") -> bool:
-        """失败案例入库（fail_case 域，FAIL-编号标准格式）。
+                    environment: str = "Unity",
+                    source: str = "manual") -> bool:
+        """失败案例入库（fail_case 域，FAIL-编号标准格式，note 结构化 JSON）。
 
         案例即「经验大脑」的长期积累：下次发现同类失败 → search_cases
         检索历史 → 复用已验证的修复方案，而非重新追查。
         fail_type ∈ 提取/识别/分类/翻译/写回/显示/崩溃。幂等（同问题
-        同游戏不重复）。"""
+        同游戏不重复）。note 为 JSON：
+        {fail_no, game, env, issue, phenomenon, root_cause, solution,
+        impact, fixed_version, fail_type}（§0.4.3 结构化字段）。
+        source: manual（knowledge_seed 人工）/ auto（runner 闭环自动）。"""
         if self.store is None:
             return False
         if fail_type not in self._FAIL_TYPES:
             fail_type = "翻译"
         existing = self.store.list_by_domain("fail_case")
         number = len(existing) + 1
-        note = (f"FAIL-{number:05d}|游戏:{game}|环境:{environment}|"
-                f"问题:{problem}|现象:{symptom}|根因:{root_cause}|"
-                f"解决:{fix}|影响范围:{impact}|修复版本:{version}|"
-                f"失败类型:{fail_type}")
+        note = json.dumps({
+            "fail_no": f"FAIL-{number:05d}", "game": game,
+            "env": environment, "issue": problem, "phenomenon": symptom,
+            "root_cause": root_cause, "solution": fix,
+            "impact": impact, "fixed_version": version,
+            "fail_type": fail_type,
+        }, ensure_ascii=False)
         return bool(self.store.upsert(
-            "fail_case", fail_type, problem, action="apply_fix", note=note))
+            "fail_case", fail_type, problem, action="apply_fix", note=note,
+            source=source, game=game))
+
+    def migrate_legacy_notes(self) -> tuple[int, int]:
+        """旧库 fail_case note 迁移：FAIL-|键:值| 管道格式 → 结构化 JSON。
+
+        2026-08-11 前 record_case 写管道字符串（游戏/环境/问题/现象/根因/
+        解决/影响范围/修复版本/失败类型字段齐全，只差结构化）——原地升级
+        不丢 pattern/hits。返回 (迁移数, 已新格式数)。幂等可重复执行。"""
+        if self.store is None:
+            return 0, 0
+        migrated = already = 0
+        with self.store._lock:
+            rows = self.store.list_by_domain("fail_case")
+            for r in rows:
+                note = str(r["note"])
+                if note.startswith("{"):
+                    already += 1
+                    continue
+                fields = self.parse_case_note(note)
+                if not fields.get("issue"):
+                    continue
+                new_note = json.dumps(fields, ensure_ascii=False)
+                self.store.conn.execute(
+                    "UPDATE knowledge_items SET note=? WHERE id=?",
+                    (new_note, r["id"]))
+                migrated += 1
+            self.store.conn.commit()
+        return migrated, already
+
+    def solve(self, problem: str, limit_each: int = 3) -> dict[str, list[dict]]:
+        """跨库联动检索（§0.4.1 六库关系链）：一个问题的全部答案。
+
+        按 domain 分组返回相关条目——结构方案（unity_structure）、历史
+        案例（fail_case）、判定规则（text）、组件方案（component_compat）、
+        质量规则（quality）、写回方案（writeback）。同一拆词打分逻辑
+        （整串 +3、拆词 +1、中文 2 字滑窗、同分按 hits）。"""
+        keys = [problem]
+        for run in re.findall(r"[一-鿿]{2,}", problem):
+            keys.append(run)
+            keys += [run[i:i + 2] for i in range(len(run) - 1)]
+        keys += [w.casefold() for w in
+                 re.findall(r"[A-Za-z]{3,}", problem)]
+        keys = list(dict.fromkeys(k for k in keys if k))
+        out: dict[str, list[dict]] = {}
+        for lib in self.SIX_LIBRARIES:
+            scored: list[tuple[int, int, dict]] = []
+            for row in self.list_knowledge(domain=lib):
+                hay = (f"{row.get('pattern', '')}|{row.get('map_to', '')}"
+                       f"|{row.get('note', '')}").casefold()
+                score = 0
+                if problem.casefold() in hay:
+                    score += 3
+                for k in keys:
+                    if k in hay:
+                        score += 1
+                if score > 0:
+                    scored.append(
+                        (score, int(row.get("hits", 0) or 0), row))
+            scored.sort(key=lambda t: (t[0], t[1]), reverse=True)
+            out[lib] = [r for _, _, r in scored[:limit_each]]
+        return out
+
+    def renumber_cases(self) -> int:
+        """fail_case fail_no 唯一化：按 id 升序重编 FAIL-00001 起连续编号。
+
+        旧库编号错位（len(existing)+1 与 upsert 刷新 note 叠加导致 FAIL-
+        00067 重复 48 次）——结构化迁移时一并修复编号唯一性（不丢内容）。
+        返回重编号条数。幂等：编号已连续唯一则 0。"""
+        if self.store is None:
+            return 0
+        rows = sorted(self.store.list_by_domain("fail_case"),
+                      key=lambda r: r["id"])
+        changed = 0
+        with self.store._lock:
+            for idx, r in enumerate(rows, start=1):
+                try:
+                    fields = json.loads(r["note"])
+                except ValueError:
+                    continue
+                want = f"FAIL-{idx:05d}"
+                if fields.get("fail_no") != want:
+                    fields["fail_no"] = want
+                    self.store.conn.execute(
+                        "UPDATE knowledge_items SET note=? WHERE id=?",
+                        (json.dumps(fields, ensure_ascii=False), r["id"]))
+                    changed += 1
+            self.store.conn.commit()
+        return changed
+
+    @staticmethod
+    def parse_case_note(note: str) -> dict:
+        """解析 fail_case note：新版 JSON 直接返回；旧版 FAIL-|键:值| 管道
+        格式兼容解析（迁移脚本用）。"""
+        if note.startswith("{"):
+            try:
+                return json.loads(note)
+            except ValueError:
+                pass
+        # 旧格式：FAIL-00067|游戏:x|环境:y|问题:z|…（2026-08-11 前）
+        fields = {k: "" for k in ("fail_no", "game", "env", "issue",
+                                  "phenomenon", "root_cause", "solution",
+                                  "impact", "fixed_version", "fail_type")}
+        for part in note.split("|"):
+            part = part.strip()
+            if not part:
+                continue
+            if part.startswith("FAIL-"):
+                fields["fail_no"] = part.split(" ")[0]
+                continue
+            if ":" not in part:
+                continue
+            key, _, value = part.partition(":")
+            key_map = {"游戏": "game", "环境": "env", "问题": "issue",
+                       "现象": "phenomenon", "根因": "root_cause",
+                       "解决": "solution", "影响范围": "impact",
+                       "修复版本": "fixed_version", "失败类型": "fail_type"}
+            k = key_map.get(key.strip())
+            if k:
+                fields[k] = value.strip()
+        return fields
 
     def search_cases(self, fail_type: str | None = None,
                      keyword: str | None = None) -> list[dict]:
-        """检索失败案例库：按失败类型和/或关键词过滤（案例检索复用）。"""
+        """检索失败案例库：按失败类型和/或关键词过滤（案例检索复用）。
+
+        关键词匹配 pattern（问题）或 note（结构化 JSON 全文，含游戏/根因/
+        解决/影响范围等所有字段——历史案例命中即提示复用已有方案）。"""
         if self.store is None:
             return []
         rows = self.store.list_by_domain("fail_case")
@@ -601,6 +832,122 @@ class KnowledgeBase:
                     if k in r["pattern"].casefold()
                     or k in r["note"].casefold()]
         return rows
+
+    # ── 六库统一查询接口（§0.4.3：按 domain/kind 查询 + 命中统计） ──
+
+    SIX_LIBRARIES = ("unity_structure", "fail_case", "text",
+                     "component_compat", "quality", "writeback")
+
+    def list_knowledge(self, domain: str | None = None,
+                       kind: str | None = None) -> list[dict]:
+        """按库（domain）和/或子类（kind）查询知识条目，hits 降序。
+
+        合并内置种子（BUILTIN_RULES）+ 持久库；domain 省略 = 全部六库。
+        返回条目含 hits（累计命中证据）——命中统计即「哪条知识最常用」。"""
+        rows = list(BUILTIN_RULES)
+        if self.store is not None:
+            rows += self.store.list_all()
+        if domain:
+            rows = [r for r in rows if r["domain"] == domain]
+        if kind:
+            rows = [r for r in rows if r["kind"] == kind]
+        return sorted(rows, key=lambda r: r.get("hits", 0), reverse=True)
+
+    def search_keyword(self, keyword: str,
+                       domains: tuple[str, ...] | None = None) -> list[dict]:
+        """跨库全文检索：pattern/map_to/note（含 fail_case JSON 解析字段）
+        任一处含关键词即命中，hits 降序。
+
+        用途：新游戏遇问题 → 一次检索所有相关历史知识（结构方案/失败案例/
+        组件兼容/质量规则），而非只查失败案例库（§0.4.1 六库联动）。"""
+        k = keyword.casefold()
+        rows = self.list_knowledge()
+        if domains:
+            rows = [r for r in rows if r["domain"] in domains]
+        out = []
+        for r in rows:
+            fields = (str(r.get("pattern", "")), str(r.get("map_to", "")),
+                      str(r.get("note", "")))
+            if any(k in f.casefold() for f in fields):
+                out.append(r)
+        return out
+
+    def match_case(self, problem: str, fail_type: str | None = None,
+                   limit: int = 3) -> list[dict]:
+        """失败案例智能复用：按问题短语拆词对 fail_case 全量打分检索。
+
+        runner 闭环遇到失败模式时调用——同模式历史案例直接给出已验证的
+        解决方案与修复版本，而非重新追查（§0.4.2 经验大脑复用）。
+
+        打分：整串命中 +3，拆词命中（≥2 字中文词 / ≥3 字母英文词）+1；
+        中文连续串加 2 字滑窗（「标签值格式串」→ 标签/值格/格式）——
+        无分词依赖也能按语义单元命中；同分按 hits（累计命中证据）排序，
+        特异词（slash）不被高频词（回显/判失败）淹没。"""
+        if self.store is None:
+            return []
+        keys = [problem]
+        zh_runs = re.findall(r"[一-鿿]{2,}", problem)
+        for run in zh_runs:
+            keys.append(run)
+            keys += [run[i:i + 2] for i in range(len(run) - 1)]
+        keys += [w.casefold() for w in
+                 re.findall(r"[A-Za-z]{3,}", problem)]
+        keys = list(dict.fromkeys(k for k in keys if k))
+        scored: list[tuple[int, int, dict]] = []
+        for row in self.store.list_by_domain("fail_case"):
+            if fail_type and row["kind"] != fail_type:
+                continue
+            hay = (f"{row['pattern']}|{row['map_to']}|{row['note']}"
+                   ).casefold()
+            score = 0
+            if problem.casefold() in hay:
+                score += 3
+            for k in keys:
+                if k in hay:
+                    score += 1
+            if score > 0:
+                scored.append((score, int(row.get("hits", 0)), row))
+        scored.sort(key=lambda t: (t[0], t[1]), reverse=True)
+        return [r for _, _, r in scored[:limit]]
+
+    def library_stats(self) -> dict[str, dict]:
+        """六库命中统计：每库条数（内置种子 + 持久库）与总 hits。
+
+        供 CLI 验证与报告（六库可查询 + 种子就位检查 §0.4.5）。"""
+        rows = self.list_knowledge()
+        stats: dict[str, dict] = {}
+        for lib in self.SIX_LIBRARIES:
+            lib_rows = [r for r in rows if r["domain"] == lib]
+            kinds: dict[str, int] = {}
+            for r in lib_rows:
+                kinds[r["kind"]] = kinds.get(r["kind"], 0) + 1
+            stats[lib] = {
+                "count": len(lib_rows),
+                "hits": sum(int(r.get("hits", 0)) for r in lib_rows),
+                "kinds": kinds,
+            }
+        return stats
+
+    def game_stats(self) -> dict[str, dict]:
+        """按游戏统计沉淀（持久库 game 字段）：每游戏条数与 hits。
+
+        排查进度可视化：哪些游戏沉淀最多经验（经验最丰富），哪些还没有
+        （新游戏无先验，识别/翻译依赖内置规则）。"""
+        if self.store is None:
+            return {}
+        stats: dict[str, dict] = {}
+        for r in self.store.list_all():
+            game = r.get("game") or ""
+            if not game:
+                continue
+            entry = stats.setdefault(game, {"count": 0, "hits": 0,
+                                            "domains": {}})
+            entry["count"] += 1
+            entry["hits"] += int(r.get("hits", 0))
+            entry["domains"][r["domain"]] = \
+                entry["domains"].get(r["domain"], 0) + 1
+        return dict(sorted(stats.items(),
+                           key=lambda kv: kv[1]["hits"], reverse=True))
 
     # ── 全库视图（报告/文档/人工查阅） ──
 

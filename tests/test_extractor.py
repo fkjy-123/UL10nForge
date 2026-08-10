@@ -33,3 +33,27 @@ def test_kv_empty_lines_skipped_in_content_routed_txt():
     # 所有行均被结构/空值跳过，无一条落入待翻译
     pending = [e for e in parsed.entries if e.status == "pending"]
     assert not pending
+
+
+def test_jsonc_suffix_parsed_as_json_with_comments():
+    """.jsonc（JSON with Comments）后缀走 JSON 解析路径：注释剥离 +
+    键值提取（containment 实证：Language/EN/subtitles.jsonc 曾因后缀
+    不在列表被逐行提取，639 条 JSON 行文本落 plain 全失败）。"""
+    with tempfile.TemporaryDirectory() as td:
+        p = Path(td) / "subtitles.jsonc"
+        p.write_text(
+            "{\n"
+            "    // 字幕文件（Unity 本地化 jsonc 格式）\n"
+            "    \"subs\": {\n"
+            "        \"intro_line\": \"Welcome to the facility\",\n"
+            "        \"door_hint\": \"The door is locked\",\n"
+            "    },\n"
+            "}\n",
+            encoding="utf-8")
+        parsed = parse_file(p)
+
+    assert parsed.format == "json"
+    texts = {e.original for e in parsed.entries}
+    assert "Welcome to the facility" in texts
+    assert "The door is locked" in texts
+    assert all(e.status != STATUS_SKIPPED for e in parsed.entries)

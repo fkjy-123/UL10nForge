@@ -24,7 +24,7 @@ def test_local_model_config_defaults_and_roundtrip(tmp_path):
     assert config.local_model_path == ""
     assert config.local_server_path == ""
     assert config.local_gpu_layers == -1
-    assert config.local_context_size == 4096
+    assert config.local_context_size == 6144
     assert config.local_port == 0
     assert config.local_keep_alive is True
 

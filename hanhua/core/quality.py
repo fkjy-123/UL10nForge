@@ -13,6 +13,7 @@ from hanhua.core.engine_strings import (PHYSICAL_KEY_NAMES_CASEFOLD,
 from hanhua.core.models import TextEntry
 from hanhua.core.placeholders import (DISPLAY_WORDS, FORMAT_TAG_PATTERN,
                                       SAFE_KEEPERS, _STRIP_RICH_TEXT,
+                                      is_hipster_ipsum,
                                       validate_translation)
 from hanhua.core.knowledge import (_UPPERCASE_ACTION_VERBS,
                                    _is_spaced_action,
@@ -20,6 +21,10 @@ from hanhua.core.knowledge import (_UPPERCASE_ACTION_VERBS,
 from hanhua.core.protected_spans import semantic_target_text
 
 _DISPLAY_WORDS_CASEFOLD = {word.casefold() for word in DISPLAY_WORDS}
+# 行首星号 bullet 占位符（undertale_bullet 提取的固定串 "* "）：译文
+# 新增 bullet 是模型对星号的规范化（"*SIGH*" → "* sigh *"、" *Added"
+# → "* 加空格"），无结构风险——placeholder_mismatch 放行专用
+_BULLET_PLACEHOLDER = re.compile(r"^\* $")
 
 
 @dataclass(frozen=True)
@@ -53,12 +58,12 @@ _LOREM_IPSUM_FAMILY = _LOREM_IPSUM_MARKERS | {
     # zero-deaths 特有错拼变体
     "solar", "em", "demit", "solo", "demmy", "sorenson",
 }
-
-
 def is_lorem_ipsum_placeholder(text: str) -> bool:
     words = [w.casefold() for w in _ENGLISH_WORD.findall(
         SAFE_KEEPERS.sub(" ", text))]
     if not words or not any(w in _LOREM_IPSUM_MARKERS for w in words):
+        if is_hipster_ipsum(text):
+            return True
         return False
     if all(w in _LOREM_IPSUM_FAMILY for w in words):
         return True
@@ -66,6 +71,52 @@ def is_lorem_ipsum_placeholder(text: str) -> bool:
     # lorem sit amet..."（说明性前缀 + lorem 词，Incremental RTS 真实样本）
     # → 开发者填充文本，无真实语义，模型回显合理
     return bool(re.search(r"\bgoes? here\b", text, re.I)) and len(words) <= 25
+
+
+def _max_case_run(text: str) -> int:
+    """最大连续同大小写段长（'DeAD' → 1、'Continue' → 7）。"""
+    run = best = 0
+    prev: str | None = None
+    for ch in text:
+        if not ch.isalpha():
+            run = 0
+            prev = None
+            continue
+        cur = "upper" if ch.isupper() else "lower"
+        if cur == prev:
+            run += 1
+        else:
+            run = 1
+            prev = cur
+        best = max(best, run)
+    return best
+
+
+def _artistic_case_echo(original: str, normalized: str) -> bool:
+    """艺术化混排字回显（'DeAD' → 'deAD'，deadbeat 实证）：原文是
+    交替大小写的艺术写法（段 ≤2）、译文是其大小写噪声变体（casefold
+    相同）→ 回显是正确行为（把艺术写法当普通词翻译成'死亡'是错误）。
+    多行逐行对齐检查（'DeAD\\nbEAt' 每行 ≤8 才豁免，0.25.0 修复；
+    任一行是普通词如 'Continue' 则整体不豁免）。
+    'dead'/'DEAD' 规范形态段长 4 > 2 不豁免，UI 词典词检查仍生效；
+    'Continue' TitleCase 段长 7 不豁免，仍判该译未译。"""
+    orig_lines = original.splitlines() or [original]
+    norm_lines = normalized.splitlines() or [normalized]
+    if len(orig_lines) != len(norm_lines):
+        # 行结构不一致 → 逐行不可对齐，回退整条判断（行数差即整条结构已变）
+        if len(original) > 8 or len(normalized) > 8:
+            return False
+        orig_lines, norm_lines = [original], [normalized]
+    for o, n in zip(orig_lines, norm_lines):
+        if len(o) > 8 or len(n) > 8:
+            return False
+        if o.casefold() != n.casefold():
+            return False
+        if not (_max_case_run(o) <= 2
+                and any(c.isupper() for c in o)
+                and any(c.islower() for c in o)):
+            return False
+    return True
 
 
 def _ui_check_words(words: list[str]) -> list[str]:
@@ -163,7 +214,40 @@ def quoted_proper_terms(translation: str, original: str) -> set[str]:
 
 _CJK = re.compile(
     r"[\u3400-\u9fff\uf900-\ufaff\U00020000-\U0002FA1F]")
-_EXPLANATORY = re.compile(r"^(?:translation|translated text|译文|翻译)\s*[:：]", re.I)
+
+
+def is_chinese_source(text: str) -> bool:
+    """\u4e2d\u6587\u6e90\u5224\u5b9a\uff1aCJK \u2265 2 \u4e2a\u4e14\u5360\u5b57\u6bcd \u2265 50%\uff08deadbeat 0.25.0 \u6536\u7d27\uff09\u3002
+
+    \u6e38\u620f\u81ea\u5e26\u4e2d\u6587\u8bed\u8a00\u5305\uff08Language/CH/*.subs\uff09\u539f\u6587\u5373\u4e2d\u6587 \u2192 \u76f4\u63a5\u653e\u884c\u3002
+    \u4f46\u539f\u6587\u542b\u5355\u4e2a\u65e5\u6587\u6c49\u5b57\uff08\u6b4c\u8bcd '\u6226\u4e89'\uff09+ \u5927\u91cf\u82f1\u6587\u65f6\u6574\u6761\u88ab\u8bef\u5224\u4e2d\u6587\u6e90
+    \u653e\u884c\u662f\u91cd\u5927 bug\uff08\u5b9e\u8bc1\uff1a1719 \u5b57\u7b26\u82f1\u6587\u539f\u6837\u653e\u884c\uff09\u2014\u2014\u6536\u7d27\u4e3a CJK \u2265 2
+    \u4e14 CJK \u5360\u5b57\u6bcd\u5b57\u7b26 \u2265 50%\uff0c\u82f1\u6587\u4e3a\u4e3b\u7684\u6b4c\u8bcd\u884c\u4e0d\u518d\u8bef\u653e\u884c\u3002
+    \u97e9\u6587\u539f\u6587\uff08\u65e0\u5047\u540d CJK\uff09\u5360\u6bd4\u8db3\u591f\u65f6\u540c\u6837\u653e\u884c\uff1b\u65e5\u6587\u539f\u6587\uff08\u542b\u5047\u540d\uff09\u7531
+    _is_multilingual_source \u515c\u5e95\u4e0d\u8d70\u6b64\u8def\u5f84\u3002"""
+    cjk = len(_CJK.findall(text))
+    if cjk < 2:
+        return False
+    letters = len(re.findall(r"[A-Za-z\u3400-\u9fff\uf900-\ufaff]",
+                             text))
+    if letters == 0:
+        return True
+    return cjk * 2 >= letters
+# 解释式垃圾输出：模型把「翻译不了」的词当成提问，输出解释段落而非译文
+# （containment 实证：Mierda → '该文本看起来像是随机组合的文字，没有
+# 明确的含义。以下是可能的解释：…'；CreditsVolume (1) Profile →
+# '参考以下翻译："Volume"可译为"音量"'）。两类：①「译文：」输出包装
+# 前缀——正常译文不会以此开头，任何长度都判；②解释特征句式——正常
+# 译文不会出现精确短语（「以下是重要信息」不在模式内），但需 ≥20
+# 字符防「没有明确的含义」式短句误伤（原文可能是 "has no clear
+# meaning" 的描述性文本）
+_EXPLANATORY_PREFIX = re.compile(
+    r"^(?:translation|translated text|译文|翻译)\s*[:：]", re.I)
+_EXPLANATORY_PATTERN = re.compile(
+    r"以下是(?:可能的)?(?:解释|翻译)[:：]?"
+    r"|参考以下翻译[:：]?"
+    r"|该文本看起来像是|这个文本看起来像是|看起来像是随机"
+    r"|没有明确的含义", re.I)
 
 
 def _has_illegal_controls(value: str) -> bool:
@@ -258,6 +342,85 @@ def source_term_applies(term: str, source_text: str) -> bool:
     return term.casefold() in source_text.casefold()
 
 
+def _is_lyric_like(text: str) -> bool:
+    """歌词文本特征：含假名/汉字（日文歌词）或括号音乐标记/重复结构
+    （(Guh)/(Let it die)/Sha la la）。普通词术语在歌词中常被押韵词/
+    拟声词误命中——'Miss, hit' 的 Miss 是'小姐'非'未命中'（deadbeat
+    歌词实证），歌词整体豁免普通词术语检查（keep 型与专名豁免仍生效）。"""
+    if len(text) < 200:
+        return False
+    if re.search(r"[぀-ヿ一-鿿]", text):
+        return True
+    return bool(re.search(r"\((?:[A-Za-z ,'!?]{2,20})\)", text))
+
+
+def _glossary_proper_phrase(term: str, source_text: str) -> bool:
+    """术语在原文中的出现处邻接 TitleCase 词 → 术语是专名的一部分，与
+    术语表的普通词含义无关。deadbeat 'Miss Fire Spitting' 角色名实证：
+    Miss 邻接 Fire（TitleCase）→ 与 (miss, 未命中) 术语无关 → 豁免；
+    'Slash key' 的 Slash 右邻 key（小写）→ 不豁免（触发术语确定性修复）。
+    """
+    term = term.strip()
+    if not term:
+        return False
+    # UI 词典词（Settings/Save/Options…在 DISPLAY_WORDS）：显示文本，
+    # 邻接 TitleCase 词不构成专名证据——'Open Settings menu' 的 Settings
+    # 左邻 Open（普通动词），Settings 仍是 UI 术语，译文必须含其译名
+    # （test_translation_term_missing_target_still_fails 固化）→ 不豁免
+    if term.casefold() in _DISPLAY_WORDS_CASEFOLD:
+        return False
+    # 专名形态术语（Moon Key 等 TitleCase 组合）：自身即专名短语，
+    # 邻接 TitleCase 词不构成豁免——'Use Moon Key to open...' 的 Moon
+    # 左邻 Use（句首动词），译文偏离译名（月之钥匙 vs 月光钥匙）仍是
+    # 真 drift（test_quality_rejects_untranslated_english_and_glossary_
+    # drift 固化）。豁免只适用于普通词形态术语（小写 miss 在 'Miss
+    # Fire Spitting' 专名中被 TitleCase 化 → 与 (miss, 未命中) 无关）
+    if re.fullmatch(r"[A-Z][a-z'-]*(?:\s+[A-Z][a-z'-]*)*", term):
+        return False
+    for m in re.finditer(
+            rf"(?<![A-Za-z0-9_]){re.escape(term)}(?![A-Za-z0-9_])",
+            source_text, re.I):
+        before = re.match(r"([A-Z][a-z'-]*)\s*$",
+                          source_text[:m.start()])
+        after = re.match(r"^\s*([A-Z][a-z'-]*)",
+                         source_text[m.end():])
+        if before or after:
+            return True
+    return False
+
+
+def _glossary_keep_echo(original: str, translation: str, glossary) -> bool:
+    """保留型术语回显豁免：glossary 中 keep 型术语（source==target
+    casefold，署名专名/缩写保留映射）全部覆盖原文、译文无中文且与原文
+    字母序列一致（大小写变体）→ 回显是模型对术语的保留，不是漏翻
+    （'hiss pop collection' → 'Hiss Pop Collection'，222am 实证：署名
+    专名，模型 TitleCase 化回显保留合理）。与 proper_name_echo 的区别：
+    原文可含小写普通词（hiss/pop/collection 全是小写词），身份由
+    glossary keep 规则证明，不需要 proper_name role。"""
+    if _CJK.search(translation):
+        return False
+    keep_sources = [
+        str(source) for source, target in _glossary_pairs(glossary)
+        if str(source).strip()
+        and str(target).strip()
+        and str(source).strip().casefold() == str(target).strip().casefold()
+        and source_term_applies(str(source), original)]
+    if not keep_sources:
+        return False
+    letters_src = re.sub(r"[^A-Za-z]", "", original).casefold()
+    letters_dst = re.sub(r"[^A-Za-z]", "", translation).casefold()
+    if letters_src != letters_dst:
+        return False
+    # keep 术语覆盖全部原文词：剥离术语后无剩余字母才算"原文全是保留术语"
+    rest = original
+    for term in sorted(keep_sources, key=len, reverse=True):
+        rest = re.sub(
+            rf"(?<![A-Za-z0-9_]){re.escape(term)}(?![A-Za-z0-9_])",
+            " ", rest, flags=re.I)
+    return not re.search(r"[A-Za-z]", rest)
+
+
+
 def validate_translation_quality(
     entry: TextEntry,
     translation: str,
@@ -272,7 +435,9 @@ def validate_translation_quality(
         reasons.append("empty_translation")
     if _has_illegal_controls(normalized):
         reasons.append("illegal_control")
-    if _EXPLANATORY.search(normalized):
+    if (_EXPLANATORY_PREFIX.search(normalized)
+            or (_EXPLANATORY_PATTERN.search(normalized)
+                and len(normalized) >= 20)):
         reasons.append("explanatory_prefix")
     if ("```" in normalized
             or (normalized.startswith(("- ", "* "))
@@ -284,7 +449,7 @@ def validate_translation_quality(
                 and not entry.original.lstrip().startswith(("-", "*")))):
         reasons.append("markdown_wrapper")
     if check_placeholders and normalized:
-        placeholders_ok, missing_ph, _ = validate_translation(
+        placeholders_ok, missing_ph, extra_ph = validate_translation(
             entry.original, normalized)
         if not placeholders_ok:
             # 缺失占位符全是完整标签对（<color=green>Paused</color> 整对
@@ -297,10 +462,18 @@ def validate_translation_quality(
             # extra（模型新增）不在 missing 内、仍由校验失败暴露。
             non_escape_missing = [
                 ph for ph in missing_ph if not ph.startswith("\\")]
+            # 行首星号规范化：原文 "*SIGH*" / " *Added"（星号紧接词）→
+            # 译文 "* sigh *" / "* 加空格"（模型把星号规范为强调/列表
+            # 标记）。extra 全为 bullet 且无缺失 → 样式规范化无结构
+            # 风险，放行（containment Changelog 4 条实证）；无缺失且
+            # extra 非 bullet → 模型新增占位符仍判失败
+            extra_all_bullet = bool(extra_ph) and all(
+                _BULLET_PLACEHOLDER.fullmatch(ph) for ph in extra_ph)
             if not (missing_ph and _CJK.search(normalized)
                     and (not non_escape_missing
                          or _complete_tag_pairs(non_escape_missing))):
-                reasons.append("placeholder_mismatch")
+                if not (not missing_ph and extra_all_bullet):
+                    reasons.append("placeholder_mismatch")
     src_tags = FORMAT_TAG_PATTERN.findall(entry.original)
     dst_tags = FORMAT_TAG_PATTERN.findall(normalized)
     if src_tags != dst_tags:
@@ -309,11 +482,16 @@ def validate_translation_quality(
                 and _complete_tag_pairs(missing_tags)):
             reasons.append("rich_text_mismatch")
     if (_newline_events(entry.original) != _newline_events(normalized)
-            and not _blank_line_compression(entry.original, normalized)):
+            and not _blank_line_compression(entry.original, normalized)
+            # 歌词豁免：引擎单行存储超长歌词（无 \n），模型按句分行输出
+            # 是歌词的自然渲染（deadbeat 歌词实证）——分行非结构破坏，
+            # 判失败会丢弃完整中文译文。非歌词文本原文单行译文多行仍判。
+            and not _is_lyric_like(entry.original)):
         reasons.append("newline_mismatch")
     if (_line_content_topology(entry.original)
             != _line_content_topology(normalized)
-            and not _blank_line_compression(entry.original, normalized)):
+            and not _blank_line_compression(entry.original, normalized)
+            and not _is_lyric_like(entry.original)):
         reasons.append("line_content_mismatch")
     input_tokens = tuple(
         event.value for event in interaction_input_events(entry.original)
@@ -394,6 +572,8 @@ def validate_translation_quality(
             and semantic_target_text(entry.original, entry.original)
             and not is_lorem_ipsum_placeholder(entry.original)
             and not camel_echo
+            and not _artistic_case_echo(entry.original, normalized)
+            and not _glossary_keep_echo(entry.original, normalized, glossary)
             and (has_independent_lower_word(entry.original)
                  or special_action
                  or any(
@@ -403,10 +583,17 @@ def validate_translation_quality(
         # （传原文自身：从原文中移除其保护术语后仍有内容才算未翻译；
         #  原文全为专名形态（Crash Bandicoot/Roquette/Profiler 无小写词、
         #  不在 UI 词典）时模型回显也是合理行为；'Continue'/'SFX' 在 UI
-        #  词典 → 回显仍判失败）
+        #  词典 → 回显仍判失败；glossary keep 术语组成的原文（hiss pop
+        #  collection）TitleCase 化回显是模型保留术语 → 豁免）
         reasons.append("untranslated_text")
     for source, target in _glossary_pairs(glossary):
-        if source_term_applies(source, entry.original) and target not in normalized:
+        # 大小写不敏感：自动沉淀的专名保留映射（KRAPOS→KRAPOS）与模型
+        # 回显的 TitleCase 变体（Krapos）是同一词形态变体——大小写敏感
+        # 检查把合法专名回显误判 glossary_mismatch（count-my-coins
+        # 'Krapos' 实证：learn 时保留检测 casefold，quality 检查却没
+        # casefold，自相矛盾）
+        if (source_term_applies(source, entry.original)
+                and target.casefold() not in normalized.casefold()):
             # 保留型术语（term→term 原样，learn_proper_names 自动沉淀的
             # 专名/缩写保留映射）：模型把该词翻译成中文是合理行为——
             # "FPS" 译成"帧率"优于强制保留（backrooms 实证：自动沉淀
@@ -414,6 +601,18 @@ def validate_translation_quality(
             # 仅当译文无中文翻译（纯回显/丢失）时保留型术语仍判失败。
             if (target.strip().casefold() == source.strip().casefold()
                     and _CJK.search(normalized)):
+                continue
+            # 专名邻接豁免：术语在原文中邻接 TitleCase 词 → 术语是专名
+            # 的一部分，与术语表普通词含义无关（deadbeat 'Miss Fire
+            # Spitting' 角色名的 Miss 邻接 Fire，误命中 (miss, 未命中)；
+            # 'Slash key' 的 Slash 右邻 key 小写 → 不豁免，触发术语
+            # 确定性修复）
+            if _glossary_proper_phrase(source, entry.original):
+                continue
+            # 歌词语境豁免：歌词文本整体豁免普通词术语检查（押韵词/
+            # 拟声词与术语表无关，'Miss, hit' 实证；keep 型与专名豁免
+            # 已在上方处理，此处只豁免普通词术语）
+            if _is_lyric_like(entry.original):
                 continue
             reasons.append("glossary_mismatch")
             break

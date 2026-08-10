@@ -1,0 +1,29 @@
+游戏：cell-machine
+写回时间：2026-08-11 02:33:07
+输出目录：D:\游戏\cell-machine_汉化
+
+文件清单：5 个
+
+- Cell Machine_Data/app.info（2 条）
+- Cell Machine_Data/level0（28 条）
+- Cell Machine_Data/level1（37 条）
+- Cell Machine_Data/sharedassets1.assets（1 条）
+- Cell Machine_Data/Managed/Assembly-CSharp.dll（7 条）
+
+────────────────────────────────────────────────────────────────
+写回结果
+文本文件：1
+输入保护：True
+重开验证：True
+变更文件：32
+写入译文：17
+总体闸门：PASS
+字体层级：runtime_verified
+清单：.hanhua-manifest.json
+备份：None
+
+四态闸门明细
+  file=PASS
+  container=PASS
+  object=PASS
+  runtime=PASS

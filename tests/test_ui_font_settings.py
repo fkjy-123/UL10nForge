@@ -91,9 +91,9 @@ def test_advanced_local_settings_visible_only_in_local_mode_and_refresh_vram(
     assert page.tabs.indexOf(page.advanced_tab) == 1
     assert page.local_concurrency.isEnabled() is False
     assert not page.advanced_mode_hint.isHidden()   # API 模式显示"仅本地生效"提示
-    # 初始值来自配置（默认 local_concurrency=0 自动 / 4096 / 8）
+    # 初始值来自配置（默认 local_concurrency=0 自动 / 6144 / 8）
     assert page.local_concurrency.currentData() == 0
-    assert page.local_ctx.currentData() == 4096
+    assert page.local_ctx.currentData() == 6144
     assert page.local_batch.currentData() == 8
     # 只能点选预设档位，不能直接输入（QComboBox 不可编辑）
     assert page.local_concurrency.isEditable() is False
@@ -113,7 +113,7 @@ def test_advanced_local_settings_visible_only_in_local_mode_and_refresh_vram(
     )
     monkeypatch.setattr(
         "hanhua.ui.pages.settings_page.estimate_vram",
-        lambda _model, context_size=4096, slots=1: SimpleNamespace(
+        lambda _model, context_size=6144, slots=1: SimpleNamespace(
             model_gb=1.5, kv_gb=0.28 * slots, kv_per_slot_gb=0.28,
             compute_gb=1.0, total_gb=1.5 + 0.28 * slots + 1.0),
     )
@@ -138,7 +138,7 @@ def test_advanced_local_settings_visible_only_in_local_mode_and_refresh_vram(
     loaded = SettingsStore(tmp_path / "settings.json")
     loaded.load()
     assert loaded.api.local_concurrency == 4
-    assert loaded.api.local_context_size == 4096
+    assert loaded.api.local_context_size == 6144
 
 
 def test_settings_can_select_and_persist_local_backend_without_api_key(

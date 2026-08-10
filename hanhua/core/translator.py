@@ -43,6 +43,13 @@ BUILTIN_UI_REFERENCES = (
     # → 'itch 页面'。上下文均为 "on/at itch (page/store/…)" 平台语境，
     # 普通词「痒」在游戏文本中几乎不出现，保留引用误伤风险可忽略）
     ("itch", "itch"),
+    # Unity Input System 标准操作提示（containment 实证：'Interact hold'
+    # 批量首译回显 + 词级补译跳过 TitleCase + 专名重译注入 (Interact,
+    # Interact) 后模型把整条当术语回显）→ 短语级参考译文直接引导；
+    # 单独 "Interact" 提示词由动作词排除（见 _retry_with_proper_name_
+    # reference 的 _ACTION_VERB_ZH 过滤）避免专名引用陷阱
+    ("Interact hold", "交互（长按）"),
+    ("Interact", "交互"),
 )
 BUILTIN_UI_SOURCE_TERMS = CORE_MENU_SOURCE_TERMS
 
@@ -167,10 +174,24 @@ class LocalOpenAIClient(OpenAIClient):
         "ru": "Russian",
     }
 
+    # 单用户消息源文本长度上限（字符）：llama-server 槽位 1024 tokens，
+    # 英文约 3 字符/token——3183 字符歌词 = 1099 tokens 超限被拒
+    # （deadbeat 实证：request_error）。700 字符 ≈ 230 tokens，留足
+    # prompt 引导与术语引用空间
+    _MAX_PROMPT_SOURCE_CHARS = 700
+
     def translate_text(
             self, source_text: str, target_lang: str,
             glossary=()) -> tuple[str, Usage]:
         """Translate one segment with Hy-MT2's official single-user prompt."""
+        if len(source_text) > self._MAX_PROMPT_SOURCE_CHARS:
+            return self._translate_chunked(
+                source_text, target_lang, glossary)
+        return self._translate_single(source_text, target_lang, glossary)
+
+    def _translate_single(
+            self, source_text: str, target_lang: str,
+            glossary=()) -> tuple[str, Usage]:
         language_name = self._TARGET_LANGUAGE_NAMES.get(
             str(target_lang).strip().casefold(), str(target_lang).strip())
         lines: list[str] = []
@@ -195,6 +216,139 @@ class LocalOpenAIClient(OpenAIClient):
             source_text,
         ])
         return self.chat("", [{"role": "user", "content": "\n".join(lines)}])
+
+    def _translate_chunked(
+            self, source_text: str, target_lang: str,
+            glossary=()) -> tuple[str, Usage]:
+        """超长文本按行分块翻译后拼接（deadbeat 歌词 3183 字符实证：
+        单条请求 1099 tokens 超槽位被拒；逐块请求每块在槽位内）。
+
+        分块边界优先换行（歌词/长文天然分行）；无换行按词切。块间以
+        \n 拼接保持行结构近似。逐块串行（llama-server 槽位共享）。"""
+        chunks, joiner = self._chunk_source(source_text)
+        parts: list[str] = []
+        total = Usage(0, 0)
+        for chunk in chunks:
+            out, usage = self._translate_single(
+                chunk, target_lang, glossary)
+            parts.append(out)
+            total = Usage(
+                total.prompt + usage.prompt,
+                total.completion + usage.completion)
+        return joiner.join(parts), total
+
+    def translate_lyrics(
+            self, source_text: str, target_lang: str,
+            glossary=()) -> tuple[str, Usage]:
+        """歌词/韵律行专用翻译：中文引导 + 输出限长 + 高重复惩罚。
+
+        1.8B 模型对纯英文歌词句稳定续写英文而非翻译（deadbeat
+        'Tonight, the moon has rose...' 2677 字符歌词实证：常规 prompt
+        输出英文续写被质量门拒绝）——中文引导显式声明「歌词翻译」触发
+        翻译意愿；repeat_penalty 1.35 抑制循环续写；max_tokens 按源句
+        长缩放，在续写垃圾出现前截断译文。逐句调用（multiline repair
+        已拆句）。
+
+        超长歌词（> _MAX_PROMPT_SOURCE_CHARS）分块翻译：1.8B 对超长
+        歌词的单次输出上限约 700 字符（deadbeat 'Modern-day killers'
+        3183 字符歌词实证：max_tokens 放大后模型 ~430 tokens 主动 EOS，
+        输出 700 字符摘要式译文——开头+结尾、中间 2/3 丢失）→ 分块后
+        每块 ≤700 字符，模型对每块输出完整译文，拼接恢复全歌。"""
+        if len(source_text) > self._MAX_PROMPT_SOURCE_CHARS:
+            chunks, joiner = self._chunk_source(source_text)
+            parts: list[str] = []
+            total = Usage(0, 0)
+            for chunk in chunks:
+                out, usage = self._translate_lyrics_single(
+                    chunk, target_lang, glossary)
+                parts.append(str(out).strip())
+                total = Usage(
+                    total.prompt + usage.prompt,
+                    total.completion + usage.completion)
+            return joiner.join(parts), total
+        return self._translate_lyrics_single(
+            source_text, target_lang, glossary)
+
+    def _translate_lyrics_single(
+            self, source_text: str, target_lang: str,
+            glossary=()) -> tuple[str, Usage]:
+        """单块歌词翻译（translate_lyrics 内部实现；分块路径逐块复用）。"""
+        language_name = self._TARGET_LANGUAGE_NAMES.get(
+            str(target_lang).strip().casefold(), str(target_lang).strip())
+        lines: list[str] = []
+        terms = [
+            (str(source), str(target))
+            for source, target in glossary
+            if str(source).strip() and str(target).strip()
+            and str(source).casefold() in source_text.casefold()
+        ]
+        if terms:
+            lines.append("Reference the following translations:")
+            lines.extend(
+                f"{source} translates to {target}"
+                for source, target in terms
+            )
+            lines.append("")
+        lines.extend([
+            f"这是一段歌词，翻译成{language_name}。只输出翻译后的歌词文本，",
+            "不要解释，不要续写原文，不要输出任何英文或原文。",
+            "",
+            source_text,
+        ])
+        payload = {
+            "model": self.config.model,
+            "messages": [{"role": "user", "content": "\n".join(lines)}],
+            "temperature": 0.7,
+            "top_p": 0.6,
+            "top_k": 20,
+            "repeat_penalty": 1.35,
+            # 歌词多为中英日混写，译文中文 1 字符 ≈ 1.2 token——旧缩放
+            # len//3+32 按英语假设（3 字符/token）给预算，3183 字符歌词
+            # 只给 1093 tokens → 中文翻译 ~1200 字符后预算耗尽，模型
+            # 续写原文英文回显被判 target_script_mismatch（deadbeat
+            # 'Modern-day killers' 歌词 3 条实证）。按 1 字符 ≈ 1 token
+            # 缩放 + 余量，配合 llama-server ctx 6144（prompt ~1100 +
+            # 完整译文 ~3100 tokens 装得下）。
+            "max_tokens": min(self.config.max_tokens,
+                              len(source_text) + 128),
+        }
+        response, usage = self._post(
+            self.url,
+            {"Authorization": f"Bearer {self.config.api_key}"}, payload,
+        )
+        content = response.json()["choices"][0]["message"]["content"]
+        return content, usage
+
+    @classmethod
+    def _chunk_source(cls, text: str) -> tuple[list[str], str]:
+        """按行切 ≤_MAX_PROMPT_SOURCE_CHARS 块（无换行按词切）。
+
+        返回 (块列表, 拼接分隔符)——分隔符与切分单位一致（\n 或空格），
+        块译文按同分隔符拼接保持原文结构无损。"""
+        limit = cls._MAX_PROMPT_SOURCE_CHARS
+        if "\n" in text:
+            chunks: list[str] = []
+            cur = ""
+            for line in text.split("\n"):
+                if cur and len(cur) + 1 + len(line) > limit:
+                    chunks.append(cur)
+                    cur = line
+                else:
+                    cur = f"{cur}\n{line}" if cur else line
+            if cur:
+                chunks.append(cur)
+            return chunks, "\n"
+        chunks = []
+        cur = ""
+        for word in text.split(" "):
+            if cur and len(cur) + 1 + len(word) > limit:
+                chunks.append(cur)
+                cur = word
+            else:
+                cur = f"{cur} {word}" if cur else word
+        if cur:
+            chunks.append(cur)
+        return chunks, " "
 
     def chat(self, system: str, messages: list[dict]) -> tuple[str, Usage]:
         merged = "\n\n".join(

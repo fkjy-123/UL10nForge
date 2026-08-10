@@ -1,0 +1,1113 @@
+游戏：crash-back-in-time
+写回时间：2026-08-11 14:49:02
+输出目录：D:\游戏\crash-back-in-time_汉化
+
+文件清单：7 个
+
+- Crash Bandicoot - Back In Time_Data/app.info（2 条）
+- Crash Bandicoot - Back In Time_Data/data.unity3d（7546 条）
+- Crash Bandicoot - Back In Time_Data/Managed/Assembly-CSharp-firstpass.dll（15 条）
+- Crash Bandicoot - Back In Time_Data/Managed/Assembly-CSharp.dll（250 条）
+- Crash Bandicoot - Back In Time_Data/Managed/Cinemachine.dll（22 条）
+- Crash Bandicoot - Back In Time_Data/Managed/Rewired_Core.dll（769 条）
+- Crash Bandicoot - Back In Time_Data/Managed/Rewired_Windows.dll（292 条）
+
+────────────────────────────────────────────────────────────────
+写回结果
+文本文件：1
+输入保护：True
+重开验证：True
+变更文件：33
+写入译文：5704
+总体闸门：PASS
+字体层级：runtime_verified
+清单：.hanhua-manifest.json
+备份：None
+
+四态闸门明细
+  file=PASS
+  container=PASS
+  object=PASS
+  runtime=PASS
+
+回显跳过（译文==原文，未写入）：1062 条
+
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1798/str/3：Crash Bandicoot
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1800/str/3：Roquette
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1801/str/3：Roquette
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1802/str/3：Roquette
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1804/str/57：Alt
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1804/str/58：Shift
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1808/str/28：Hat Up
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1809/str/25：Shift
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1809/str/26：ESC
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1809/str/27：Ctrl
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1809/str/28：Alt
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1813/str/1：3Dconnexion SpacePilot Pro
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1813/str/32：ISO 1
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1813/str/34：ISO 2
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1813/str/35：ESC
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1813/str/36：Ctrl
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1813/str/37：Alt
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1813/str/38：Shift
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1815/str/1：8Bitdo NES30 Pro
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1815/str/2：8Bitdo NES30/FC30 Pro
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1815/str/28：8Bitdo NES30 Pro
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1815/str/29：8Bitdo FC30 Pro
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1815/str/30：8Bitdo N30 Pro
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1815/str/31：8Bitdo F30 Pro
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1815/str/37：8Bitdo NES30 Pro
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1815/str/38：8Bitdo FC30 Pro
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1815/str/42：8Bitdo NES30 Pro
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1815/str/43：8Bitdo FC30 Pro
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1815/str/44：8Bitdo N30 Pro
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1815/str/45：8Bitdo F30 Pro
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1815/str/47：8Bitdo NES30 Pro
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1815/str/48：8Bitdo FC30 Pro
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1815/str/49：8Bitdo N30 Pro
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1815/str/50：8Bitdo F30 Pro
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1815/str/53：8Bitdo NES30 Pro
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1815/str/54：8Bitdo FC30 Pro
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1815/str/57：8Bitdo NES30 Pro
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1815/str/58：8Bitdo FC30 Pro
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1815/str/59：8Bitdo N30 Pro
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1815/str/60：8Bitdo F30 Pro
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1815/str/66：8Bitdo NES30 Pro
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1815/str/67：8Bitdo FC30 Pro
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1815/str/71：8Bitdo NES30 Pro
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1815/str/72：8Bitdo FC30 Pro
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1815/str/73：8Bitdo N30 Pro
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1815/str/74：8Bitdo F30 Pro
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1815/str/80：8Bitdo NES30 Pro
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1815/str/81：8Bitdo FC30 Pro
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1815/str/85：8Bitdo NES30 Pro
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1815/str/86：8Bitdo FC30 Pro
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1815/str/87：8Bitdo N30 Pro
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1815/str/88：8Bitdo F30 Pro
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1815/str/92：8Bitdo FC30 Pro 8Bitdo FC30 Pro
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1815/str/99：8Bitdo NES30 Pro
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1815/str/100：8Bitdo FC30 Pro
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1815/str/108：8Bitdo NES30 Pro
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1815/str/109：8Bitdo FC30 Pro
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1815/str/112：8Bitdo N30 Pro
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1815/str/113：8Bitdo F30 Pro
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1816/str/4：Stick X
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1816/str/7：Stick Y
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1817/str/1：8Bitdo SN30 Pro
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1817/str/2：8Bitdo SN30/SF30 Pro
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1817/str/31：8Bitdo SN30 Pro
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1817/str/32：8Bitdo SF30 Pro
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1817/str/33：8BitDo SN30 Pro+
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1817/str/41：8Bitdo SN30 Pro
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1817/str/42：8Bitdo SF30 Pro
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1817/str/43：8BitDo SN30 Pro+
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1817/str/44：8Bitdo SN30 Pro
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1817/str/45：8Bitdo SF30 Pro
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1817/str/47：8Bitdo SN30 Pro
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1817/str/48：8Bitdo SF30 Pro
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1817/str/49：8BitDo SN30 Pro+
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1817/str/57：8Bitdo SN30 Pro
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1817/str/58：8Bitdo SF30 Pro
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1817/str/59：8BitDo SN30 Pro+
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1817/str/67：8Bitdo SN30 Pro
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1817/str/68：8Bitdo SF30 Pro
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1817/str/78：8Bitdo SN30 Pro
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1817/str/79：8Bitdo SF30 Pro
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1817/str/83：8Bitdo SN30 Pro
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1817/str/84：8Bitdo SF30 Pro
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1817/str/86：8BitDo SN30 Pro+
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1818/str/12：SNES30 Joy
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1818/str/13：SFC30 Joy
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1818/str/21：SNES30 Joy
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1818/str/22：SFC30 Joy
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1818/str/33：SNES30 Joy
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1818/str/34：SFC30 Joy
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1818/str/46：SNES30 Joy
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1818/str/47：SFC30 Joy
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1818/str/55：SNES30 Joy
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1818/str/56：SFC30 Joy
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1818/str/59：SFC30 SFC30 Joy
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1818/str/63：SNES30              SNES30 Joy
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1818/str/70：SNES30              SNES30 Joy
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1818/str/71：FC30              FC30 Joy
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1822/str/1：Apple Siri Remote
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1822/str/4：Touchpad X
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1824/str/1：Arcade Guns G-500
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1824/str/8：Grip Button
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1824/str/20：Ultimarc
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1824/str/21：Ultimarc
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1824/str/42：Ultimarc Ultimarc
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1824/str/43：Ultimarc Ultimarc
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1824/str/44：Ultimarc Ultimarc
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1825/str/5：Joypad X
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1825/str/8：Joypad Y
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1825/str/26：Jaguar Atari
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1825/str/28：Jaguar Atari
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1825/str/31：Jaguar Atari
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1825/str/33：Jaguar Atari
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1826/str/14：BUFFALO INC.
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1826/str/15：BUFFALO INC.
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1828/str/1：CH CombatStick
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1828/str/4：Stick X
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1828/str/7：Stick Y
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1828/str/14：Grip Button
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1828/str/17：Pinky Button
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1828/str/24：POV Right
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1828/str/32：POV HAT
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1828/str/34：CH COMBATSTICK USB
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1828/str/36：CH COMBATSTICK USB
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1828/str/39：CH COMBATSTICK USB
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1828/str/43：CH COMBATSTICK USB
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1829/str/1：CH Eclipse Yoke
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1829/str/7：Yoke Z
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1829/str/25：L Flipper Up
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1829/str/26：L Flipper Down
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1829/str/38：Dial Mode 1
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1830/str/4：Stick X
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1830/str/7：Stick Y
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1830/str/15：Pinky Button
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1830/str/17：Grip Switch Up
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1830/str/31：POV Right
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1830/str/41：POV Hat
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1831/str/1：CH FlightStick Pro
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1831/str/4：Stick X
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1831/str/7：Stick Y
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1831/str/19：POV Right
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1831/str/25：POV Hat
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1831/str/27：CH FLIGHTSTICK PRO
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1831/str/29：CH FLIGHTSTICK PRO
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1831/str/32：CH FLIGHTSTICK PRO
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1831/str/36：CH FLIGHTSTICK PRO
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1832/str/1：CH Pro Pedals
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1833/str/1：CH Pro Throttle
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1833/str/4：Stick X
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1833/str/7：Stick Y
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1833/str/30：POV Right
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1833/str/36：Stick Button
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1833/str/41：POV Hat
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1834/str/6：Throttle 2
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1835/str/173：Hat 1 Up Right
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1835/str/180：Hat 2 Up
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1835/str/213：Hat 6 Up Right
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1835/str/221：Hat 7 Up Right
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1835/str/236：Hat 9 Up
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1835/str/252：Hat 11 Up
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1836/str/39：Sysgration Ltd.
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1837/str/2：Fantec Porsche 911 Turbo S, Fantec Porsche 911 Carrera
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1837/str/12：Clutch
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1837/str/13：Clutch
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1837/str/30：Shifter 1
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1837/str/31：Shifter 2
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1837/str/33：Shifter 4
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1837/str/34：Shifter 5
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1837/str/35：Shifter 6
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1837/str/36：Shifter 7
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1843/str/33：ASUS Gamepad.*
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1843/str/35：ASUS Gamepad
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1843/str/37：ASUS Gamepad
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1843/str/40：ASUS Gamepad
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1843/str/41：ASUS Gamepad
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1844/str/9：Google Nexus Remote
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1844/str/10：Nexus Remote
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1845/str/1：Horipad Ultimate
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1845/str/2：Horipad Ultimate (OSX)
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1845/str/25：HORIPAD ULTIMATE
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1845/str/27：HORIPAD ULTIMATE
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1845/str/28：HORIPAD ULTIMATE
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1846/str/1：Logitech Attack 3
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1846/str/4：Stick X
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1846/str/7：Stick Y
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1846/str/25：Logitech Attack 3
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1846/str/27：Logitech Attack 3
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1846/str/28：Logitech
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1846/str/29：Logitech Attack 3
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1846/str/31：Logitech Attack 3
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1846/str/33：Logitech Attack 3
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1846/str/34：Logitech Logitech Attack 3
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1846/str/35：Logitech Logitech Attack 3
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1846/str/36：Logitech Logitech Attack 3
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1847/str/1：Logitech Driving Force GT
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1848/str/1：Logitech Dual Action
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1848/str/34：Logitech Dual Action
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1848/str/36：Logitech Dual Action
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1848/str/37：Logitech
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1848/str/38：Logitech
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1848/str/39：Logitech Dual Action
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1848/str/40：Logitech Logitech Dual Action
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1848/str/42：Logitech Dual Action
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1848/str/44：Logitech Dual Action
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1848/str/45：Logitech Logitech Dual Action
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1848/str/46：Logitech Logitech Dual Action
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1848/str/47：Logitech Logitech Dual Action
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1849/str/1：Logitech Extreme 3D Pro
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1849/str/4：Stick X
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1849/str/7：Stick Y
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1849/str/17：Grip Button
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1849/str/28：Hat Up
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1849/str/38：Logitech Extreme 3D
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1849/str/40：Logitech Extreme 3D
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1849/str/41：Logitech
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1849/str/42：Logitech Extreme 3D
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1849/str/44：Logitech Extreme 3D
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1849/str/46：Logitech Extreme 3D
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1849/str/47：Logitech Logitech Extreme 3D
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1849/str/48：Logitech Logitech Extreme 3D
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1849/str/49：Logitech Logitech Extreme 3D
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1850/str/1：Logitech F310
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1850/str/26：Logitech
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1850/str/35：Logitech Dual Action
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1850/str/37：Logitech Dual Action
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1850/str/38：Logitech
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1850/str/39：Logitech
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1850/str/40：Logitech Dual Action
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1850/str/41：Logitech Logitech Dual Action
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1850/str/43：Logitech Dual Action
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1850/str/45：Logitech Dual Action
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1850/str/46：Logitech Logitech Dual Action
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1851/str/1：Logitech F310
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1851/str/26：Logitech
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1851/str/39：Logitech
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1851/str/40：Logitech
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1851/str/50：After Unity 2018.3.0
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1852/str/1：Logitech F710
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1852/str/26：Logitech
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1852/str/35：Logitech Cordless RumblePad 2
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1852/str/37：Logitech Cordless RumblePad 2
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1852/str/38：Logitech
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1852/str/39：Logitech
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1852/str/40：Logitech Cordless RumblePad 2
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1852/str/41：Logitech Logitech Cordless RumblePad 2
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1852/str/43：Logitech Cordless RumblePad 2
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1852/str/45：Logitech Cordless RumblePad 2
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1852/str/46：Logitech Logitech Cordless RumblePad 2
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1852/str/47：Logitech Logitech Cordless RumblePad 2
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1852/str/48：Logitech Logitech Cordless RumblePad 2
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1853/str/1：Logitech F710
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1853/str/26：Logitech
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1853/str/39：Logitech
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1853/str/40：Logitech
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1853/str/50：After Unity 2018.3.0
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1854/str/1：Logitech G25
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1854/str/11：Clutch
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1854/str/12：Clutch
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1854/str/16：Pad Button Dn
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1854/str/18：Pad Button R
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1854/str/23：Shifter 1
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1854/str/24：Shifter 2
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1854/str/26：Shifter 4
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1854/str/27：Shifter 5
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1854/str/28：Shifter 6
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1854/str/29：Shifter 7
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1855/str/1：Logitech G27
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1855/str/11：Clutch
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1855/str/12：Clutch
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1855/str/15：Wheel Button L1
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1855/str/17：Wheel Button L3
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1855/str/20：Wheel Button R3
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1855/str/22：Pad Button Dn
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1855/str/24：Pad Button R
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1855/str/29：Shifter 1
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1855/str/30：Shifter 2
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1855/str/32：Shifter 4
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1855/str/33：Shifter 5
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1855/str/34：Shifter 6
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1855/str/35：Shifter 7
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1856/str/1：Logitech G29
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1856/str/11：Clutch
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1856/str/12：Clutch
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1856/str/27：Shifter 1
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1856/str/28：Shifter 2
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1856/str/30：Shifter 4
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1856/str/31：Shifter 5
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1856/str/32：Shifter 6
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1856/str/33：Shifter 7
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1856/str/45：Logitech
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1857/str/1：Logitech G920
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1857/str/11：Clutch
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1857/str/12：Clutch
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1857/str/15：LSB
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1857/str/16：RSB
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1857/str/20：Shifter 1
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1857/str/21：Shifter 2
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1857/str/23：Shifter 4
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1857/str/24：Shifter 5
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1857/str/25：Shifter 6
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1857/str/26：Shifter 7
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1858/str/1：Logitech MOMO
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1858/str/13：Wheel Button L1
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1858/str/15：Wheel Button L3
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1858/str/18：Wheel Button R3
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1858/str/20：Shifter Down
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1858/str/21：Logitech MOMO Racing
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1858/str/23：Logitech MOMO Racing
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1858/str/25：Logitech MOMO Racing
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1859/str/1：Logitech RumblePad 2
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1859/str/40：Logitech
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1859/str/45：Logitech Logitech RumblePad 2 USB
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1860/str/1：Logitech WingMan Attack 2
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1860/str/4：Stick X
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1860/str/7：Stick Y
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1860/str/23：Logitech
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1860/str/29：Logitech WingMan Attack 2
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1860/str/30：Logitech WingMan Attack 2
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1860/str/31：Logitech WingMan Attack 2
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1861/str/1：Mad Catz C.T.R.L.R
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1862/str/1：Mad Catz C.Y.B.O.R.G V1
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1862/str/4：Stick X
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1862/str/7：Stick Y
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1862/str/22：Pinky Button
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1862/str/23：Hat Up
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1863/str/1：Mad Catz Micro C.T.R.L.R
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1863/str/28：Mad Catz Micro C.T.R.L.R
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1863/str/30：Mad Catz Micro C.T.R.L.R
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1863/str/32：Mad Catz Micro C.T.R.L.R
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1863/str/34：Mad Catz Micro C.T.R.L.R
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1863/str/36：Mad Catz Micro C.T.R.L.R
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1863/str/37：Mad Catz Micro C.T.R.L.R
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1864/str/5：Stick X
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1864/str/8：Stick Y
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1865/str/32：HJZ
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1866/str/1：Microsoft SideWinder 3D Pro
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1866/str/5：Stick X
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1866/str/8：Stick Y
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1866/str/25：Hat Up
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1866/str/35：Microsoft SideWinder 3D Pro (USB)
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1866/str/37：Microsoft SideWinder 3D Pro (USB)
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1866/str/38：Detlef <Grendel> Mueller
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1866/str/39：Detlef <Grendel> Mueller
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1866/str/40：Microsoft SideWinder 3D Pro (USB)
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1866/str/42：Microsoft SideWinder 3D Pro (USB)
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1867/str/1：Microsoft SideWinder FF Pro
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1867/str/5：Stick X
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1867/str/8：Stick Y
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1867/str/21：Shift
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1867/str/22：Hat Up
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1867/str/32：Microsoft SideWinder Force Feedback Pro (USB)
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1867/str/34：Microsoft SideWinder Force Feedback Pro (USB)
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1867/str/35：Detlef <Grendel> Mueller
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1867/str/36：Detlef <Grendel> Mueller
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1867/str/37：Microsoft SideWinder Force Feedback Pro (USB)
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1867/str/39：Microsoft SideWinder Force Feedback Pro (USB)
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1867/str/41：Detlef <Grendel> Mueller Microsoft SideWinder Force Feedback
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1867/str/42：Detlef <Grendel> Mueller Microsoft SideWinder Force Feedback
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1867/str/43：Detlef <Grendel> Mueller Microsoft SideWinder Force Feedback
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1868/str/1：Microsoft SideWinder Joystick
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1868/str/4：Stick X
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1868/str/7：Stick Y
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1868/str/25：Microsoft
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1868/str/31：Microsoft SideWinder Joystick
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1868/str/32：Microsoft SideWinder Joystick
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1868/str/33：Microsoft SideWinder Joystick
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1869/str/1：Microsoft SideWinder Precision 2
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1869/str/4：Stick X
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1869/str/7：Stick Y
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1869/str/24：Hat Up
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1869/str/37：Microsoft
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1870/str/1：Microsoft SideWinder Precision Pro
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1870/str/5：Stick X
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1870/str/8：Stick Y
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1870/str/21：Shift
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1870/str/22：Hat Up
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1870/str/32：Microsoft SideWinder Precision Pro (USB)
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1870/str/34：Microsoft SideWinder Precision Pro (USB)
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1870/str/35：Detlef <Grendel> Mueller
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1870/str/36：Detlef <Grendel> Mueller
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1870/str/37：Microsoft SideWinder Precision Pro (USB)
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1870/str/39：Microsoft SideWinder Precision Pro (USB)
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1871/str/43：Street Fighter IV FightStick TE
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1871/str/195：Street Fighter IV FightStick TE
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1871/str/197：Microsoft
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1871/str/200：Microsoft
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1871/str/210：Street Fighter IV FightStick TE
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1871/str/358：Microsoft
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1871/str/368：Street Fighter IV FightStick TE
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1871/str/519：HID
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1871/str/529：Street Fighter IV FightStick TE
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1871/str/682：Street Fighter IV FightStick TE
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1871/str/684：After Unity 2018.3.0
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1871/str/694：Street Fighter IV FightStick TE
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1871/str/705：Street Fighter IV FightStick TE
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1871/str/745：Street Fighter IV FightStick TE
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1871/str/900：Street Fighter IV FightStick TE
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1871/str/1054：Street Fighter IV FightStick TE
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1871/str/1209：Street Fighter IV FightStick TE
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1872/str/156：After Unity 2018.3.0
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1873/str/1：Moga Hero Power
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1873/str/28：Moga 2 HID
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1873/str/30：Moga 2 HID
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1873/str/31：Moga 2 HID
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1873/str/33：Moga 2 HID
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1873/str/37：Moga 2 HID
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1873/str/38：Moga 2 HID
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1874/str/1：Moga Pro Power
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1874/str/28：Moga Pro 2 HID
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1874/str/30：Moga Pro 2 HID
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1874/str/31：Moga Pro 2 HID
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1874/str/33：Moga Pro 2 HID
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1874/str/37：Moga Pro 2 HID
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1874/str/38：Moga Pro 2 HID
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1877/str/5：Stick X
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1877/str/8：Stick Y
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1878/str/5：Stick X
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1878/str/8：Stick Y
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1879/str/1：Pro Controller
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1879/str/32：Pro Controller
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1879/str/33：Pro Controller
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1879/str/34：Pro Controller
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1880/str/41：NVIDIA Shield
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1880/str/45：NVIDIA Controller v01.02
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1880/str/50：NVIDIA Controller v01.02
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1880/str/56：NVIDIA Controller v01.02
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1880/str/61：NVIDIA Controller v01.02
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1880/str/65：NVIDIA Controller v01.*
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1880/str/69：NVIDIA Controller v01.02
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1880/str/71：NVIDIA Corporation NVIDIA Controller v01.00
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1880/str/72：NVIDIA Corporation NVIDIA Controller v01.01
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1880/str/73：NVIDIA Corporation NVIDIA Controller v01.02
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1880/str/74：NVIDIA Corporation NVIDIA Controller v01.03
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1880/str/76：NVIDIA Corporation NVIDIA Controller v01.00
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1880/str/77：NVIDIA Corporation NVIDIA Controller v01.01
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1880/str/78：NVIDIA Corporation NVIDIA Controller v01.02
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1880/str/79：NVIDIA Corporation NVIDIA Controller v01.03
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1881/str/40：NVIDIA Controller v01.*
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1881/str/42：NVIDIA Controller v01.*
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1881/str/44：NVIDIA Controller v01.*
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1881/str/47：NVIDIA Controller v01.*
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1881/str/50：NVIDIA Controller v01.*
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1881/str/56：NVIDIA Controller v01.*
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1882/str/1：Nvidia Shield Remote
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1882/str/9：Mic
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1882/str/10：SHIELD Remote
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1883/str/1：Nyko AirFlo EX
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1883/str/35：AIRFLO
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1883/str/45：AIRFLO
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1884/str/1：Nyko Playpad
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1885/str/1：Nyko Playpad Pro
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1886/str/1：Oculus Remote
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1886/str/2：Oculus Remote (Unity)
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1886/str/12：Oculus Remote
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1887/str/5：Stick X
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1887/str/8：Stick Y
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1887/str/12：X Touch
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1887/str/13：Y Touch
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1887/str/21：Stick Button
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1887/str/27：Pre Unity 5.5.0p4
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1888/str/5：Stick X
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1888/str/8：Stick Y
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1888/str/12：A Touch
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1888/str/20：Stick Button
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1888/str/26：Pre Unity 5.5.0p4
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1889/str/5：Stick X
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1889/str/8：Stick Y
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1889/str/11：Stick Button
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1890/str/5：Stick X
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1890/str/8：Stick Y
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1890/str/11：Stick Button
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1892/str/2：P.I. Engineering RailDriver
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1892/str/46：Rocker 2 Up
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1893/str/2：P.I. Engineering XK-24 HID
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1893/str/36：Hat Up
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1893/str/50：XK-24 HID
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1893/str/52：XK-24 HID
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1893/str/54：XK-24 HID
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1893/str/56：XK-24 HID
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1894/str/1：Pro Flight Trainer PUMA
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1896/str/1：Razer Serval
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1896/str/35：Razer Serval
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1896/str/36：Razer Serval
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1896/str/37：Razer Serval
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1896/str/38：Razer Serval
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1896/str/39：Razer Serval
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1896/str/40：Razer Serval
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1896/str/42：Razer Serval
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1896/str/43：Razer Serval
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1898/str/1：Saitek Cyborg Evo
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1898/str/4：Stick X
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1898/str/7：Stick Y
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1898/str/22：Hat Up
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1899/str/47：Wheel Up
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1899/str/53：Mad Catz
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1900/str/31：Hat Up
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1900/str/41：Mad Catz
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1900/str/42：Mad Catz
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1901/str/5：Stick X
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1901/str/8：Stick Y
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1901/str/23：Hat Up
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1901/str/33：CYBORG 3D USB
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1901/str/35：CYBORG 3D USB
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1901/str/37：CYBORG 3D USB
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1901/str/39：CYBORG 3D USB
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1902/str/26：Shift
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1902/str/36：SAITEK
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1902/str/37：SAITEK
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1902/str/39：SAITEK P880
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1902/str/44：SAITEK P880
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1902/str/45：SAITEK P880
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1902/str/46：SAITEK P880
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1903/str/1：Saitek P990
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1903/str/28：FPS
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1904/str/4：Wheel Up
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1904/str/8：Pro Flight Cessna Trim Wheel
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1904/str/10：Pro Flight Cessna Trim Wheel
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1904/str/11：Saitek
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1904/str/12：Pro Flight Cessna Trim Wheel
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1904/str/14：Pro Flight Cessna Trim Wheel
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1904/str/16：Pro Flight Cessna Trim Wheel
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1905/str/1：Saitek Pro Flight Rudder Pedals
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1905/str/11：Saitek Pro Flight Rudder Pedals
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1905/str/12：Saitek Pro Flight Combat Rudder Pedals
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1905/str/13：Mad Catz Pro Flight Cessna Rudder Pedals
+Mad Catz Pro Fligh
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1905/str/17：Saitek Pro Flight Rudder Pedals
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1905/str/18：Saitek Pro Flight Combat Rudder Pedals
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1905/str/19：Mad Catz Pro Flight Cessna Rudder Pedals
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1905/str/20：Saitek
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1905/str/21：Saitek Pro Flight Rudder Pedals
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1905/str/22：Saitek Pro Flight Combat Rudder Pedals
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1905/str/23：Mad Catz Pro Flight Cessna Rudder Pedals
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1905/str/27：Saitek Pro Flight Rudder Pedals
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1905/str/28：Saitek Pro Flight Combat Rudder Pedals
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1905/str/29：Mad Catz Pro Flight Cessna Rudder Pedals
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1905/str/33：Saitek Pro Flight Rudder Pedals
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1905/str/34：Saitek Pro Flight Combat Rudder Pedals
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1905/str/35：Mad Catz Pro Flight Cessna Rudder Pedals
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1905/str/36：Saitek Saitek Pro Flight Rudder Pedals
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1905/str/37：Saitek Saitek Pro Flight Combat Rudder Pedals
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1905/str/38：Mad Catz Pro Flight Cessna Rudder Pedals
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1905/str/39：Saitek Saitek Pro Flight Rudder Pedals
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1905/str/40：Saitek Saitek Pro Flight Combat Rudder Pedals
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1905/str/41：Mad Catz Pro Flight Cessna Rudder Pedals
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1906/str/1：Saitek Pro Flight TPM
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1906/str/15：Mad Catz
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1907/str/18：Saitek
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1907/str/24：Saitek Saitek Pro Flight Quadrant
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1907/str/25：Saitek Saitek Pro Flight Quadrant
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1907/str/26：Saitek Saitek Pro Flight Quadrant
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1908/str/7：Yoke Z
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1908/str/28：POV Right
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1908/str/34：POV Hat
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1908/str/38：Saitek
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1908/str/44：Saitek Saitek Pro Flight Yoke
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1908/str/45：Saitek Saitek Pro Flight Yoke
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1908/str/46：Saitek Saitek Pro Flight Yoke
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1909/str/4：Stick X
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1909/str/7：Stick Y
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1909/str/22：Hat Up
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1910/str/1：Saitek X45
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1910/str/5：Stick X
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1910/str/8：Stick Y
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1910/str/26：Hat 2 Up
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1910/str/59：Saitek X45
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1910/str/61：Saitek X45
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1910/str/63：Saitek X45
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1910/str/64：Saitek
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1910/str/65：Saitek X45
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1910/str/67：Saitek X45
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1910/str/69：Saitek X45
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1910/str/70：Saitek X45
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1911/str/1：Saitek X52
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1911/str/4：Stick X
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1911/str/7：Stick Y
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1911/str/16：Pinky Trigger
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1911/str/43：E Rotary
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1911/str/69：Stick Center Hat
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1911/str/82：Saitek
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1911/str/83：Saitek
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1912/str/1：Saitek X52 Pro
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1912/str/4：Stick X
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1912/str/7：Stick Y
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1912/str/16：Pinky Trigger
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1912/str/43：E Rotary
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1912/str/64：MFD Wheel 1 Up
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1912/str/74：Stick Center Hat
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1912/str/85：Saitek
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1912/str/86：Saitek
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1913/str/1：Saitek X-55 Rhino Stick
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1913/str/4：Stick X
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1913/str/7：Stick Y
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1913/str/17：Pinky Button (D)
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1913/str/21：POV Right
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1913/str/44：POV Hat
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1913/str/56：Madcatz Saitek Pro Flight X-55 Rhino Stick
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1913/str/57：Madcatz Saitek Pro Flight X-55 Rhino Stick
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1913/str/58：Madcatz Saitek Pro Flight X-55 Rhino Stick
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1914/str/12：RTY 3
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1914/str/13：RTY 4
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1914/str/18：Pinky Switch Up (K)
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1914/str/22：Pinky Wheel Forward
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1914/str/44：TGL 1 Down
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1914/str/45：TGL 2 Up
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1914/str/46：TGL 2 Down
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1914/str/48：TGL 3 Down
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1914/str/49：TGL 4 Up
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1914/str/50：TGL 4 Down
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1914/str/51：SW 1
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1914/str/52：SW 2
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1914/str/53：SW 3
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1914/str/54：SW 4
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1914/str/55：SW 5
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1914/str/56：SW 6
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1914/str/66：Saitek Pro Flight X-55 Rhino Throttle
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1914/str/68：Saitek Pro Flight X-55 Rhino Throttle
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1914/str/70：Saitek Pro Flight X-55 Rhino Throttle
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1914/str/72：Saitek Pro Flight X-55 Rhino Throttle
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1914/str/74：Saitek Pro Flight X-55 Rhino Throttle
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1914/str/76：Saitek Pro Flight X-55 Rhino Throttle
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1914/str/77：Madcatz Saitek Pro Flight X-55 Rhino Throttle
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1914/str/78：Madcatz Saitek Pro Flight X-55 Rhino Throttle
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1914/str/79：Madcatz Saitek Pro Flight X-55 Rhino Throttle
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1915/str/1：Saitek X-56 Rhino Stick
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1915/str/4：Stick X
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1915/str/7：Stick Y
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1915/str/13：Grip Mini-Stick X (C)
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1915/str/14：Grip Mini-Stick Right (C)
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1915/str/16：Grip Mini-Stick Y (C)
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1915/str/17：Grip Mini-Stick Up (C)
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1915/str/18：Grip Mini-Stick Down (C)
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1915/str/23：Pinky Button (D)
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1915/str/27：POV Right
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1915/str/50：POV HAT
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1915/str/51：H1 HAT
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1915/str/52：H2 HAT
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1915/str/56：Mad Catz
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1915/str/57：Mad Catz
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1915/str/59：Mad Catz Saitek Pro Flight X-56 Rhino Stick
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1915/str/61：Mad Catz
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1916/str/12：RTY 3
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1916/str/13：RTY 4
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1916/str/14：Mini Stick X
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1916/str/24：Pinky Switch Up (K)
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1916/str/29：Pinky Wheel Forward
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1916/str/41：TGL 1 Down
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1916/str/42：TGL 2 Up
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1916/str/43：TGL 2 Down
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1916/str/45：TGL 3 Down
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1916/str/46：TGL 4 Up
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1916/str/47：TGL 4 Down
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1916/str/67：Saitek Pro Flight X-56 Rhino Throttle
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1916/str/69：Saitek Pro Flight X-56 Rhino Throttle
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1916/str/70：Mad Catz
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1916/str/71：Mad Catz
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1916/str/72：Saitek Pro Flight X-56 Rhino Throttle
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1916/str/73：Mad Catz Saitek Pro Flight X-56 Rhino Throttle
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1916/str/75：Mad Catz
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1916/str/76：Saitek Pro Flight X-56 Rhino Throttle
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1917/str/1：Samsung Gamepad
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1917/str/2：Samsung EI-GP20
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1917/str/30：Samsung Game Pad EI-GP20
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1917/str/32：Samsung Game Pad EI-GP20
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1917/str/33：Samsung Game Pad EI-GP20
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1917/str/35：Samsung Game Pad EI-GP20
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1917/str/37：Samsung Game Pad EI-GP20
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1917/str/38：Unity 4.3
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1917/str/39：Samsung Game Pad EI-GP20
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1917/str/42：Unity 4.5+
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1917/str/43：Samsung Game Pad EI-GP20
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1918/str/1：Satechi Gamepad
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1918/str/2：Satechi ST-UBGC
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1919/str/1：Sony DualSense
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1920/str/48：My-Power CO.,LTD.
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1920/str/49：Super Dual Box Pro
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1920/str/51：WiseGroup.,Ltd
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1920/str/57：Super Dual Box Pro
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1920/str/58：WiseGroup.,Ltd
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1921/str/45：HJZ
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1921/str/48：Gasia Co., Ltd
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1921/str/53：Gasia Co., Ltd
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1922/str/94：[KEYMAP]
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1922/str/102：[KEYMAP]
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1928/str/28：PS Vita
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1928/str/29：PS Vita
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1929/str/38：Google Inc.
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1929/str/39：Google Inc.
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1931/str/1：Steam Controller
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1931/str/36：Microsoft GamePad-[0-9]+
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1931/str/37：Microsoft StreamingGamePad-[0-9]+
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1932/str/1：SteelSeries Free
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1932/str/22：Zeemote: SteelSeries FREE
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1932/str/24：Zeemote: SteelSeries FREE
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1932/str/25：Zeemote: SteelSeries FREE
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1932/str/27：Zeemote: SteelSeries FREE
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1932/str/30：Zeemote: SteelSeries FREE
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1932/str/31：Zeemote: SteelSeries FREE
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1933/str/1：SteelSeries Nimbus+
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1933/str/2：SteelSeries Nimbus+ (OSX)
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1933/str/27：Nimbus+
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1933/str/29：Nimbus+
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1934/str/1：SteelSeries Nimbus
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1934/str/2：SteelSeries Nimbus (OSX)
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1934/str/25：Nimbus
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1934/str/27：Nimbus
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1934/str/28：Nimbus
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1935/str/1：SteelSeries Stratus XL
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1935/str/29：SteelSeries Stratus XL
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1935/str/32：SteelSeries Stratus XL
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1935/str/38：SteelSeries Stratus XL
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1935/str/40：SteelSeries Stratus XL
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1935/str/44：SteelSeries Stratus XL
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1935/str/45：SteelSeries Stratus XL
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1936/str/1：SteelSeries Stratus XL
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1936/str/2：SteelSeries Stratus XL (MFi)
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1936/str/25：SteelSeries Stratus XL
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1936/str/27：SteelSeries Stratus XL
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1936/str/28：SteelSeries Stratus XL
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1937/str/77：Logitech Dual Action
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1937/str/83：Nyko AirFlo EX
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1937/str/89：Saitek P990
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1937/str/140：Radio Shack PC Gaming Controller
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1937/str/143：Mad Catz C.T.R.L.R
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1937/str/173：SteelSeries Free
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1937/str/176：Nyko Playpad Pro
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1937/str/179：Nyko Playpad
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1937/str/188：MadCatz Micro C.T.R.L.R
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1937/str/203：Moga Hero Power
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1937/str/206：Moga Pro Power
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1937/str/209：SteelSeries Stratus XL (HID)
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1937/str/215：Razer Serval
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1937/str/218：SteelSeries Stratus XL (MFi)
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1937/str/221：SteelSeries Nimbus (MFi)
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1937/str/224：SteelSeries Nimbus+ (MFi)
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1937/str/227：Thrustmaster Score-A
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1937/str/233：Horipad Ultimate (MFi)
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1937/str/236：8Bitdo FC30 Pro
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1937/str/245：Satechi ST-UBGC
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1937/str/263：Thrustmaster Dual Analog 3
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1937/str/266：Elecom JC-U3312
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1937/str/275：Oculus Remote
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1937/str/317：8Bitdo SN30 Pro / SF30 Pro
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1937/str/320：Thrustmaster FireStorm Dual Power
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1937/str/329：Sony DualSense
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1938/str/10：CH Pro Pedals
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1938/str/13：Saitek Pro Flight Rudder Pedals
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1938/str/19：Thrustmaster T.Flight Rudder Pedals
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1938/str/22：Thrustmaster T.Flight HOTAS 4
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1939/str/8：Yoke Z
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1939/str/30：Lever 5
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1939/str/154：Lever 5
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1939/str/160：CH Eclipse Yoke
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1940/str/0：HOTAS
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1940/str/1：HOTAS
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1940/str/4：Stick X
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1940/str/8：Stick Y
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1940/str/14：Stick Mini Stick 1 X
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1940/str/16：Stick Mini Stick 1 Y
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1940/str/18：Stick Mini Stick 1 Press
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1940/str/20：Stick Mini Stick 2 X
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1940/str/22：Stick Mini Stick 2 Y
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1940/str/24：Stick Mini Stick 2 Press
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1940/str/30：Stick Pinky Button
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1940/str/32：Stick Pinky Trigger
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1940/str/34：Stick Button 1
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1940/str/36：Stick Button 2
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1940/str/40：Stick Button 4
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1940/str/52：Stick Button 10
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1940/str/54：Stick Base Button 1
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1940/str/56：Stick Base Button 2
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1940/str/58：Stick Base Button 3
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1940/str/60：Stick Base Button 4
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1940/str/62：Stick Base Button 5
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1940/str/64：Stick Base Button 6
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1940/str/66：Stick Base Button 7
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1940/str/68：Stick Base Button 8
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1940/str/70：Stick Base Button 9
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1940/str/72：Stick Base Button 10
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1940/str/74：Stick Base Button 11
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1940/str/76：Stick Base Button 12
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1940/str/82：Stick Hat 1 Right
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1940/str/90：Stick Hat 1 Left
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1940/str/98：Stick Hat 2 Right
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1940/str/102：Stick Hat 2 Down
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1940/str/114：Stick Hat 3 Right
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1940/str/130：Stick Hat 4 Right
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1940/str/134：Stick Hat 4 Down
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1940/str/138：Stick Hat 4 Left
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1940/str/150：Throttle 2
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1940/str/222：Throttle Mini Stick X
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1940/str/224：Throttle Mini Stick Y
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1940/str/262：Throttle Hat 2 Up
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1940/str/294：Throttle Hat 4 Up
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1940/str/318：Stick Mini Stick 1
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1940/str/320：Stick Mini Stick 2
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1940/str/322：Stick Hat 1
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1940/str/324：Stick Hat 2
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1940/str/326：Stick Hat 3
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1940/str/328：Stick Hat 4
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1940/str/332：Throttle 2
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1940/str/334：Throttle Mini Stick
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1940/str/336：Throttle Hat 1
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1940/str/338：Throttle Hat 2
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1940/str/340：Throttle Hat 3
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1940/str/342：Throttle Hat 4
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1940/str/347：CH Pro Throttle
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1940/str/350：Saitek X45
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1940/str/353：Saitek X52
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1940/str/356：Saitek X52 Pro
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1940/str/359：Saitek X-55 Rhino Stick
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1940/str/368：Mad Catz C.Y.B.O.R.G V1
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1940/str/377：Thrustmaster T.16000M
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1940/str/380：Thrustmaster T.Flight Hotas X
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1940/str/386：Logitech Extreme 3D Pro
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1940/str/389：Logitech WingMan Attack 2
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1940/str/392：Logitech Attack 3
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1940/str/395：Microsoft SideWinder 3D Pro
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1940/str/398：Microsoft SideWinder Precision Pro
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1940/str/401：Microsoft SideWinder Force Feedback Pro
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1940/str/407：Saitek Cyborg Evo
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1940/str/410：Microsoft SideWinder Joystick
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1940/str/416：Thrustmaster T.Flight Hotas 4
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1940/str/419：Saitek X-56 Rhino Stick
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1940/str/425：CH FlightStick Pro
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1940/str/428：CH CombatStick USB
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1940/str/431：Thrustmaster T.Flight Stick X
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1940/str/434：VKB-Sim Gladiator MKII
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1940/str/437：Microsoft SideWinder Precision 2
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1941/str/12：Clutch
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1941/str/58：Shifter 1
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1941/str/60：Shifter 2
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1941/str/64：Shifter 4
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1941/str/66：Shifter 5
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1941/str/68：Shifter 6
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1941/str/70：Shifter 7
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1941/str/72：Shifter 8
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1941/str/74：Shifter 9
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1941/str/76：Shifter 10
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1941/str/98：Logitech G25
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1941/str/101：Logitech G27
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1941/str/104：Logitech G29
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1941/str/107：Logitech G920
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1941/str/113：Thrustmaster F430
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1941/str/116：ThrustMaster T150
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1941/str/119：Thrustmaster T300 RS
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1941/str/122：Thrustmaster T500 RS
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1941/str/131：Fanatec Porsche 911 Turbo S
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1941/str/137：Logitech MOMO
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1941/str/140：Logitech Driving Force GT
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1941/str/149：Thrustmaster Ferrari 458
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1942/str/28：Throttle 2
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1942/str/122：Hat 2 Up
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1942/str/144：Throttle 2
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1942/str/157：3Dconnexion SpacePilot Pro
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1942/str/169：3Dconnexion SpaceMouse Pro
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1943/str/1：Thrustmaster T150
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1943/str/12：Clutch
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1943/str/13：Clutch
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1944/str/9：Clutch
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1944/str/10：Clutch
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1944/str/14：Thrustmaster
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1944/str/16：Thrustmaster T-Pedals
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1945/str/1：Thrustmaster T.Flight Stick X
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1945/str/4：Stick X
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1945/str/7：Stick Y
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1945/str/30：POV Right
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1945/str/37：POV HAT
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1945/str/41：Thrustmaster
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1945/str/42：Thrustmaster
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1945/str/44：Thrustmaster T.Flight Stick X
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1945/str/46：Thrustmaster
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1946/str/6：Shift 1
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1946/str/7：Shift 2
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1946/str/8：Shift 3
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1946/str/9：Shift 4
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1946/str/10：Shift 5
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1946/str/11：Shift 6
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1946/str/12：Shift 7
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1946/str/13：Shift R
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1946/str/19：Thrustmaster
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1947/str/1：Thrustmaster Dual Analog 3.2
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1948/str/1：Thrustmaster FireStorm Dual Power
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1948/str/37：FireStorm Dual Power
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1948/str/40：FireStorm Dual Power
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1948/str/43：FireStorm Dual Power
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1949/str/1：Thrustmaster F430
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1949/str/24：Manettino 1
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1949/str/25：Manettino 2
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1949/str/26：Manettino 3
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1949/str/27：Manettino 4
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1949/str/28：Manettino 5
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1949/str/32：Thrustmaster
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1949/str/33：Thrustmaster
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1950/str/23：Thrustmaster
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1950/str/24：Thrustmaster
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1951/str/1：Thrustmaster Ferrari 458
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1951/str/2：Thrustmaster Ferrari 458 (X360)
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1951/str/15：LSB
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1951/str/16：RSB
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1951/str/26：Thrustmaster
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1951/str/27：Thrustmaster
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1951/str/28：Ferrari 458 Racing Wheel
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1952/str/4：Handlebars
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1952/str/15：Clutch
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1953/str/4：Stick X
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1953/str/7：Stick Y
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1953/str/18：POV Right
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1953/str/40：Grip Hat Up
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1953/str/44：Grip Hat Press
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1953/str/46：POV Hat
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1953/str/49：Grip Hat
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1953/str/53：Thrustmaster
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1953/str/54：Thustmaster
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1954/str/64：Thrustmaster
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1955/str/1：Thrustmaster Score-A
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1956/str/1：Thrustmaster T.16000M
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1956/str/4：Stick X
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1956/str/7：Stick Y
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1956/str/34：POV Right
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1956/str/41：POV Hat
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1956/str/45：Thrustmaster
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1956/str/51：Thrustmaster T.16000M
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1956/str/52：Thrustmaster T.16000M
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1956/str/53：Thrustmaster T.16000M
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1957/str/1：Thrustmaster T300 RS
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1957/str/12：Clutch
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1957/str/13：Clutch
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1958/str/1：Thrustmaster T500 RS
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1958/str/12：Clutch
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1958/str/13：Clutch
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1959/str/1：Thrustmaster T.Flight Hotas 4
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1959/str/5：Stick X
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1959/str/8：Stick Y
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1959/str/20：POV Right
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1959/str/29：Rocker
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1959/str/43：T.Flight Hotas 4
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1959/str/45：Thrustmaster
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1959/str/46：T.Flight Hotas 4
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1959/str/47：Thrustmaster T.Flight Hotas 4
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1959/str/49：T.Flight Hotas 4
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1960/str/1：Thrustmaster T.Flight Hotas X
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1960/str/4：Stick X
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1960/str/7：Stick Y
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1960/str/17：Hat Up
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1960/str/42：Thrustmaster
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1960/str/48：Thrustmaster T.Flight Hotas X
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1960/str/49：Thrustmaster T.Flight Hotas X
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1960/str/50：Thrustmaster T.Flight Hotas X
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1961/str/1：Thrustmaster T.Flight Rudder Pedals
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1961/str/14：Thrustmaster
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1961/str/15：Thrustmaster
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1961/str/17：Thrustmaster T-Rudder
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1962/str/8：Stick X
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1962/str/11：Stick Y
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1962/str/14：Rocker
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1962/str/20：POV Hat
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1962/str/23：POV Right
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1962/str/32：Middle Hat Down
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1962/str/48：Thrustmaster
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1962/str/49：Thrustmaster
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1963/str/4：Stick X
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1963/str/7：Stick Y
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1963/str/17：Hat Up
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1965/str/1：VKB-Sim Gladiator MKII
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1965/str/5：Stick X
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1965/str/8：Stick Y
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1965/str/32：POV Hat Up
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1965/str/34：POV Hat Right
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1965/str/57：POV Hat
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1965/str/60：VKBsim Gladiator
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1965/str/62：VKBsim Gladiator
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1965/str/63：VKBsim Gladiator
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1965/str/65：VKBsim Gladiator
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1967/str/4：Whammy Bar
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1967/str/5：Whammy Bar Up
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1967/str/6：Whammy Bar Down
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1967/str/22：Strum Bar Down
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1968/str/22：LSB
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1968/str/23：RSB
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1969/str/33：Unity 4.3
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1969/str/34：小米蓝牙手柄
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1969/str/37：Unity 4.5+
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1969/str/38：小米蓝牙手柄
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1970/str/29：ZD-N+ Android
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1970/str/30：ZD-N+ Android
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1970/str/31：ZD-N+ Android
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1970/str/32：ZD-N+ Android
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1970/str/33：ZD-N+ Android
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1970/str/34：ZD ZD-N+ Android
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1970/str/35：ZD ZD-N+ Android
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1971/str/29：ZD-N+
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1971/str/30：ZD-N+
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1971/str/31：ZD-N+
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1971/str/32：ZD-N+
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1971/str/33：ZD ZD-N+
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1971/str/34：ZD ZD-N+
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1972/str/29：ZD-N+ PS3
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1972/str/30：ZD ZD-N+ PS3
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1973/str/29：ZD - V
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1973/str/30：ZD - V
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1973/str/32：ZD - V
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1973/str/33：ZD - V
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1973/str/34：ZD - V
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1973/str/36：ZD ZD - V
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets0.assets#1974/str/35：After Unity 2018.3.0
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#level0#3701/str/8：Axis
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#level0#3701/str/48：Zoom
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#level0#3701/str/49：Zoom
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#level0#3751/str/0：Gembit & Hucota7
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#level0#3756/str/0：Gembit & Hucota7
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#level0#3775/str/0：WingKn0x
+ChrissyFord
+Riko_KSB
+Potty
+KangarooPower
+
+
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#level0#3789/str/0：Gembit & Hucota7
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#level0#3792/str/0：Gembit & Hucota7
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#level0#3801/str/0：
+Edghe119 &
+The Warp Room Discord
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#level0#3803/str/0：Motwera
+Airumu
+TDYU
+ZeroDX
+CrystalFissure
+
+
+
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#level0#3825/str/0：Gembit & Hucota7
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#level0#3830/str/0：BON
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#level0#3853/str/0：Gembit & Hucota7
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#level0#3866/str/0：Gembit & Hucota7
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#level0#3872/str/0：Crash B.
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#level0#3902/str/0：SFX
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#level0#3903/str/0：BONU
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#level0#3930/str/0：Warp Room
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets2.assets#429/str/3：Roquette
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#level2#6008/str/0：Terminally Eel
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#level2#6014/str/0：III
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#level2#6240/str/0：PSXEffects v1.18.4
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets3.assets#13287/str/3：Roquette
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets3.assets#13373/str/0：POW Crate
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets3.assets#13457/str/0：Mega Monkey
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets3.assets#13716/str/0：Koala Kong Lift
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets3.assets#13716/str/2：Koala Kong Flex
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets3.assets#13716/str/3：Koala Kong Hit
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets3.assets#13763/str/0：Spiked Turtle
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets3.assets#13944/str/4：Hoagie
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets3.assets#14185/str/0：Saw Turtle
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets3.assets#14384/str/0：Firefly Follower
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets3.assets#14478/str/0：Ripper Roo
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets3.assets#14540/str/7：Hoagie
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#sharedassets3.assets#14601/str/0：Sewer Rat
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#level3#16550/str/0：Aku Crate
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#level3#16594/str/0：Uka Uka Trials:
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#level3#16632/str/0：Aku Crate
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#level3#16638/str/0：Aggro
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#level3#16663/str/0：BONU
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#level3#16689/str/0：Aku Crate
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#level3#16728/str/0：BON
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#level3#17551/str/0：PSXEffects v1.18.4
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#level4#7359/str/0：PSXEffects v1.18.4
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#level5#10103/str/0：PSXEffects v1.18.4
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#level6#8798/str/0：PSXEffects v1.18.4
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#level7#10986/str/0：PSXEffects v1.18.4
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#level8#10818/str/0：PSXEffects v1.18.4
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#level9#16744/str/0：PSXEffects v1.18.4
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#level10#13175/str/0：PSXEffects v1.18.4
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#level11#64729/str/0：PSXEffects v1.18.4
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#level12#10294/str/0：PSXEffects v1.18.4
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#level13#34035/str/0：PSXEffects v1.18.4
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#level14#3891/str/0：N Sanity Beach
+- Crash Bandicoot - Back In Time_Data/data.unity3d:asset#level14#3916/str/0：PSXEffects v1.18.4
+- Crash Bandicoot - Back In Time_Data/Managed/Rewired_Windows.dll:us#17163：HRESULT = 0x{0:X}
+- Crash Bandicoot - Back In Time_Data/Managed/Rewired_Windows.dll:us#17934：HRESULT: [0x{0:X}], Module: [{1}], ApiCode: [{2}/{3}], Messa
+

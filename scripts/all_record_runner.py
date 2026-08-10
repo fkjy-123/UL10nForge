@@ -19,7 +19,9 @@ from __future__ import annotations
 
 import argparse
 import datetime
+import hashlib
 import json
+import os
 import shutil
 import sys
 import tempfile
@@ -277,6 +279,70 @@ def _export_writeback_record(project, out_writeback: Path, profile,
     path.write_text("\n".join(blocks), encoding="utf-8")
 
 
+def _register_unity_structure(kb: KnowledgeBase, game_name: str,
+                              game_dir: Path, report) -> None:
+    """登记 unity_structure（Unity 结构库闭环沉淀 §0.4.4-5）。
+
+    每款游戏闭环登记：Unity 版本/runtime（fingerprint）+ 识别形态清单。
+    后续遇到结构相似的新游戏 → 六库检索直接命中先验结构方案。"""
+    from hanhua.core.tooling.fingerprint import fingerprint_game  # noqa: PLC0415
+    try:
+        fp = fingerprint_game(Path(game_dir))
+        if fp and fp.unity_version and fp.unity_version != "unknown":
+            kb.store.upsert(
+                "unity_structure", "unity_version",
+                f"游戏 {game_name}：Unity {fp.unity_version} · {fp.runtime}",
+                action="info",
+                map_to="该版本特征/风险见 unity_version 知识；"
+                       f"runtime={fp.runtime} 决定写回路径"
+                       "（mono→DLL #US，il2cpp→global-metadata）",
+                source="auto", game=game_name)
+    except Exception:  # noqa: BLE001
+        pass  # 指纹识别失败不阻断流程
+    for morph, files, entries in report.morphology_stats:
+        kb.store.upsert(
+            "unity_structure", "detect_method",
+            f"游戏 {game_name} 形态 {morph}：{files} 文件 / {entries} 条",
+            action="info", map_to=f"{morph} 形态（先验见识别形态清单）",
+            source="auto", game=game_name)
+
+
+def _register_writeback(kb: KnowledgeBase, game_name: str,
+                        result: dict | None, error: str = "") -> None:
+    """登记 writeback（写回验证库闭环沉淀 §0.4.4-5）。
+
+    每次写回自动登记结果与关键验证指标——同类写回失败 → 六库检索
+    直接命中历史写回方案（含四态闸门/字体层级/备份验证要点）。"""
+    if error:
+        kb.store.upsert(
+            "writeback", "writeback_case",
+            f"游戏 {game_name} 写回失败：{error[:60]}",
+            action="check", map_to="按写回失败分类定位 writer 代码路径，"
+                                   "根因修复 + 回归测试（§4 问题分类表）",
+            source="auto", game=game_name)
+        return
+    if result is None:
+        return
+    verification = result.get("verification", {})
+    gates = verification.get("gates", {})
+    gate_fails = [name for name, item in gates.items()
+                  if isinstance(item, dict) and name != "overall"
+                  and item.get("status") == "fail"]
+    overall = verification.get("overall")
+    if gate_fails:
+        map_to = ("验证要点：输入保护/重开验证/四态闸门/字体层级/备份齐全"
+                  f"；未通过闸门：{'、'.join(gate_fails)}")
+    else:
+        map_to = "四态闸门全绿，按 test_flow 流程实测游戏验证"
+    kb.store.upsert(
+        "writeback", "writeback_case",
+        f"游戏 {game_name} 写回完成：总体 {overall} · "
+        f"译文 {verification.get('written_translations')} 条 · "
+        f"变更文件 {verification.get('changed_files')} 个",
+        action="verify", map_to=map_to,
+        source="auto", game=game_name)
+
+
 def run_game(game_dir: Path, *, batch: int | None = None,
              do_translate: bool = True, do_writeback: bool = True,
              keep_library: bool = False,
@@ -297,12 +363,19 @@ def run_game(game_dir: Path, *, batch: int | None = None,
     # store.upsert 的「pending 不覆盖旧状态」断点续传语义会掩盖识别规则升级
     # （0.25.0 实证：DISPLAY_WORDS 修复后重扫，旧 skipped 条目判定未重跑），
     # 地毯式排查要求每次用最新代码重新判定，翻译记忆也一并清除（防记忆伪影）。
+    # 注意：多游戏并行时只清理**本游戏**的 slug 目录——删整个 projects/
+    # 会把并行 runner 的工作区一并删除（crash/crusty 并行实证：
+    # WinError 32 project.db 被占用，后启动方删除先启动方工作区致其崩溃）。
     if app_dir is None:
         app_dir = Path.home() / ".hanhua_sweep"
     app_dir = Path(app_dir)
     projects_dir = app_dir / "projects"
-    if projects_dir.exists():
-        shutil.rmtree(projects_dir, ignore_errors=False)
+    my_slug = hashlib.md5(
+        str(Path(game_dir).expanduser().absolute()).encode("utf-8")
+    ).hexdigest()[:10]
+    my_dir = projects_dir / my_slug
+    if my_dir.exists():
+        shutil.rmtree(my_dir, ignore_errors=False)
     app_dir.mkdir(parents=True, exist_ok=True)
     projects_dir.mkdir(parents=True, exist_ok=True)
 
@@ -323,6 +396,11 @@ def run_game(game_dir: Path, *, batch: int | None = None,
           f" · 识别条目 {report.recognized_entries}")
     for morph, files, entries in report.morphology_stats:
         print(f"  形态 {morph}: {files} 文件 / {entries} 条")
+    # 知识库闭环：登记 Unity 结构（版本/runtime/形态）——后续结构相似的
+    # 新游戏六库检索直接命中先验（§0.4.4-5 每游戏登记 unity_structure）
+    struct_kb = KnowledgeBase(REAL_USER_DIR / "knowledge.db")
+    _register_unity_structure(struct_kb, game_name, game_dir, report)
+    struct_kb.close()
     for warning in report.warnings:
         print(f"  [警告] {warning}")
     if report.warnings:
@@ -428,13 +506,20 @@ def run_game(game_dir: Path, *, batch: int | None = None,
                     root_cause="质量门原因: " + ", ".join(reasons),
                     fix="见本场 fix record（降级链或结构规则）",
                     symptom=f"{len(group)} 条同模式失败",
-                    impact="待核", version=""):
+                    impact="待核", version="", source="auto"):
                 case_added += 1
-            # 历史案例检索：同关键词命中 → 提示已有修复方案（复用而非重查）
-            for past in case_kb.search_cases(keyword=src[:20])[:2]:
-                if "见本场 fix record" in past["note"]:
+            # 历史案例智能复用：同模式历史案例 → 提示已验证方案（避免重查）
+            for past in case_kb.match_case(src, limit=2):
+                if "见本场 fix record" in str(past.get("note", "")):
                     continue
-                print(f"  [知识库] 该失败模式命中历史案例：{past['note'][:90]}")
+                note = past["note"]
+                try:
+                    parsed = json.loads(note)
+                    hint = (f"[知识库] 命中历史案例 {parsed.get('fail_no')} "
+                            f"{parsed.get('game')}：{parsed.get('solution', '')[:70]}")
+                except (ValueError, TypeError):
+                    hint = f"[知识库] 命中历史案例：{note[:90]}"
+                print(hint)
         case_kb.close()
         if case_added:
             print(f"  失败案例沉淀：新增 {case_added} 种失败模式入库")
@@ -465,6 +550,10 @@ def run_game(game_dir: Path, *, batch: int | None = None,
                              writeback_result,
                              error_title=("写回失败" if writeback_error else ""),
                              error_detail=writeback_error or "")
+    # 知识库闭环：写回结果自动登记 writeback 域（§0.4.4-5）
+    wb_kb = KnowledgeBase(REAL_USER_DIR / "knowledge.db")
+    _register_writeback(wb_kb, game_name, writeback_result, writeback_error)
+    wb_kb.close()
 
     # ── 4 导出三类文本记录（含逐条写回状态）──
     print("[4/4] 导出文本记录…")
@@ -495,6 +584,19 @@ def run_game(game_dir: Path, *, batch: int | None = None,
     return 1 if writeback_error else 0
 
 
+def _rmtree_force(path: Path) -> None:
+    """删除目录树，Windows 上先清只读属性再删。
+
+    从游戏目录复制的文件（tool-jobs 的 game.exe/global-metadata.dat）
+    常带只读位——shutil.rmtree 遇只读文件 PermissionError，残留累积
+    （0.25.0 实证：WinError 5 拒绝访问，每轮残留 tool-jobs 输入副本）。
+    """
+    def _clear_readonly(func, p, _exc):
+        os.chmod(p, 0o777)
+        func(p)
+    shutil.rmtree(path, onerror=_clear_readonly)
+
+
 def _cleanup_hanhua_output(game_dir: Path) -> None:
     """闭环后删除汉化输出目录与全部发布备份（只保留原版游戏目录）。
 
@@ -507,7 +609,7 @@ def _cleanup_hanhua_output(game_dir: Path) -> None:
     for target in targets:
         try:
             if target.exists():
-                shutil.rmtree(target)
+                _rmtree_force(target)
                 print(f"  已清理：{target.name}")
         except Exception as exc:  # noqa: BLE001
             print(f"[警告] 汉化输出清理失败（{target.name}）：{exc}")
@@ -524,7 +626,7 @@ def _discard_sweep_library(project) -> None:
     except Exception:  # noqa: BLE001
         pass
     try:
-        shutil.rmtree(project.app_dir)
+        _rmtree_force(project.app_dir)
     except Exception as exc:  # noqa: BLE001
         print(f"[警告] sweep 库清理失败（残留可能影响下次判定）：{exc}")
 

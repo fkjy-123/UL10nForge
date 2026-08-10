@@ -70,7 +70,7 @@ class ApiConfig:
     local_model_path: str = ""
     local_server_path: str = ""
     local_gpu_layers: int = -1    # -1 = 尽可能全部卸载到 GPU，0 = CPU
-    local_context_size: int = 4096
+    local_context_size: int = 6144
     local_port: int = 0           # 0 = 自动选择环回空闲端口
     local_keep_alive: bool = True
     local_concurrency: int = 0  # 0 = GPU 4 / CPU 1 automatic default

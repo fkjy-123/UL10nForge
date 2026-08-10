@@ -1,0 +1,177 @@
+游戏：containment-breach-hd-edition
+写回时间：2026-08-11 06:59:47
+输出目录：D:\游戏\containment-breach-hd-edition_汉化
+
+文件清单：37 个
+
+- CB-Remaster_Data/app.info（2 条）
+- CB-Remaster_Data/StreamingAssets/Language/EN/achievements.subs（74 条）
+- CB-Remaster_Data/StreamingAssets/Language/EN/charaStrings.subs（8 条）
+- CB-Remaster_Data/StreamingAssets/Language/EN/deathStrings.subs（19 条）
+- CB-Remaster_Data/StreamingAssets/Language/EN/drinks.subs（466 条）
+- CB-Remaster_Data/StreamingAssets/Language/EN/itemStrings.subs（70 条）
+- CB-Remaster_Data/StreamingAssets/Language/EN/loadStrings.subs（51 条）
+- CB-Remaster_Data/StreamingAssets/Language/EN/playStrings.subs（48 条）
+- CB-Remaster_Data/StreamingAssets/Language/EN/sceneStrings.subs（465 条）
+- CB-Remaster_Data/StreamingAssets/Language/EN/subtitles.jsonc（1178 条）
+- CB-Remaster_Data/StreamingAssets/Language/EN/tutoStrings.subs（10 条）
+- CB-Remaster_Data/StreamingAssets/Language/EN/uiStrings.subs（111 条）
+- CB-Remaster_Data/StreamingAssets/Language/languages.langs（14 条）
+- CB-Remaster_Data/StreamingAssets/Language/sceneStrings.subs（1344 条）
+- Changelog.txt（264 条）
+- OriginalGameCredits.txt（220 条）
+- ReadMe.txt（77 条）
+- CB-Remaster_Data/level0（61 条）
+- CB-Remaster_Data/level1（133 条）
+- CB-Remaster_Data/level2（248 条）
+- CB-Remaster_Data/level3（248 条）
+- CB-Remaster_Data/level4（248 条）
+- CB-Remaster_Data/level5（248 条）
+- CB-Remaster_Data/level6（247 条）
+- CB-Remaster_Data/level7（46 条）
+- CB-Remaster_Data/resources.assets（197 条）
+- CB-Remaster_Data/sharedassets1.assets（55 条）
+- CB-Remaster_Data/sharedassets2.assets（35 条）
+- CB-Remaster_Data/sharedassets3.assets（1 条）
+- CB-Remaster_Data/sharedassets4.assets（3 条）
+- CB-Remaster_Data/sharedassets6.assets（1 条）
+- CB-Remaster_Data/sharedassets7.assets（247 条）
+- CB-Remaster_Data/Managed/FullSerializer.dll（135 条）
+- CB-Remaster_Data/Managed/HBAO.Runtime.dll（4 条）
+- CB-Remaster_Data/Managed/NGSS.dll（9 条）
+- CB-Remaster_Data/Managed/ScpGame.dll（322 条）
+- CB-Remaster_Data/Managed/Surge.dll（20 条）
+
+────────────────────────────────────────────────────────────────
+写回结果
+文本文件：17
+输入保护：True
+重开验证：True
+变更文件：64
+写入译文：3014
+总体闸门：PASS
+字体层级：runtime_verified
+清单：.hanhua-manifest.json
+备份：None
+
+四态闸门明细
+  file=PASS
+  container=PASS
+  object=PASS
+  runtime=PASS
+
+回显跳过（译文==原文，未写入）：112 条
+
+- CB-Remaster_Data/StreamingAssets/Language/EN/achievements.subs:scribe_title：Scribe
+- CB-Remaster_Data/StreamingAssets/Language/EN/achievements.subs:dirty_metal_title：Dirty Metal
+- CB-Remaster_Data/StreamingAssets/Language/EN/drinks.subs:name_curry_1：Masala
+- CB-Remaster_Data/StreamingAssets/Language/EN/drinks.subs:name_es_0：ES
+- CB-Remaster_Data/StreamingAssets/Language/EN/drinks.subs:name_es_1：Euroshopper
+- CB-Remaster_Data/StreamingAssets/Language/EN/drinks.subs:name_espresso_0：Espresso
+- CB-Remaster_Data/StreamingAssets/Language/EN/drinks.subs:name_feces_6：Dung
+- CB-Remaster_Data/StreamingAssets/Language/EN/drinks.subs:name_feces_7：Scat
+- CB-Remaster_Data/StreamingAssets/Language/EN/drinks.subs:name_grog_0：Grog
+- CB-Remaster_Data/StreamingAssets/Language/EN/drinks.subs:name_insulin_2：Novo Rapid
+- CB-Remaster_Data/StreamingAssets/Language/EN/drinks.subs:name_iron_3：Razor Blades
+- CB-Remaster_Data/StreamingAssets/Language/EN/drinks.subs:name_iron_4：Razorblades
+- CB-Remaster_Data/StreamingAssets/Language/EN/drinks.subs:name_memes_1：Meme
+- CB-Remaster_Data/StreamingAssets/Language/EN/drinks.subs:name_memes_2：Maymays
+- CB-Remaster_Data/StreamingAssets/Language/EN/drinks.subs:name_mountain_dew_0：Mountain Dew
+- CB-Remaster_Data/StreamingAssets/Language/EN/drinks.subs:name_orange_fanta_1：Orangina
+- CB-Remaster_Data/StreamingAssets/Language/EN/drinks.subs:name_purple_drank_1：Sizzurp
+- CB-Remaster_Data/StreamingAssets/Language/EN/drinks.subs:name_purple_drank_3：Codeine
+- CB-Remaster_Data/StreamingAssets/Language/EN/drinks.subs:name_scp_294_0：SCP 294
+- CB-Remaster_Data/StreamingAssets/Language/EN/drinks.subs:name_semen_2：Jizz
+- CB-Remaster_Data/StreamingAssets/Language/EN/drinks.subs:name_semen_9：Wad
+- CB-Remaster_Data/StreamingAssets/Language/EN/drinks.subs:name_speed_3：Sanic
+- CB-Remaster_Data/StreamingAssets/Language/EN/drinks.subs:name_stearin_1：Stearine
+- CB-Remaster_Data/StreamingAssets/Language/EN/drinks.subs:name_vidya_0：Vidya
+- CB-Remaster_Data/StreamingAssets/Language/EN/drinks.subs:name_white_port_and_lemon_juice_1：WPLJ
+- CB-Remaster_Data/StreamingAssets/Language/EN/subtitles.jsonc:SFX\Room\Intro\IA\4\Crew4.ogg/0/text：Tesla Gate G-6.
+- CB-Remaster_Data/StreamingAssets/Language/languages.langs:0/Value/name：English
+- CB-Remaster_Data/StreamingAssets/Language/languages.langs:0/Value/code：EN
+- CB-Remaster_Data/StreamingAssets/Language/languages.langs:1/Value/name：Español
+- CB-Remaster_Data/StreamingAssets/Language/languages.langs:1/Value/code：ES
+- CB-Remaster_Data/StreamingAssets/Language/languages.langs:3/Value/name：简体中文
+- CB-Remaster_Data/StreamingAssets/Language/languages.langs:3/Value/code：CH
+- CB-Remaster_Data/StreamingAssets/Language/languages.langs:4/Value/name：简体中文
+- CB-Remaster_Data/StreamingAssets/Language/languages.langs:4/Value/code：CH
+- CB-Remaster_Data/StreamingAssets/Language/languages.langs:5/Value/name：简体中文
+- CB-Remaster_Data/StreamingAssets/Language/languages.langs:5/Value/code：CH
+- CB-Remaster_Data/StreamingAssets/Language/languages.langs:6/Value/code：RS
+- CB-Remaster_Data/StreamingAssets/Language/sceneStrings.subs:4_Crew4/subtitle：Tesla Gate G-6.
+- Changelog.txt:kv/*Added some improved rooms from SCP/34：CB Ultimate Edition
+- CB-Remaster_Data/level1:asset#level1#1261/str/6：FXAA
+- CB-Remaster_Data/level1:asset#level1#1261/str/7：SMAA
+- CB-Remaster_Data/level1:asset#level1#1261/str/8：TAA
+- CB-Remaster_Data/level1:asset#level1#1261/str/9：OptionController, ScpGame
+- CB-Remaster_Data/level1:asset#level1#1297/str/5：OptionController, ScpGame
+- CB-Remaster_Data/level1:asset#level1#1396/str/0：Fov
+- CB-Remaster_Data/level1:asset#level1#1400/str/7：Español
+- CB-Remaster_Data/level1:asset#level1#1400/str/9：简体中文
+- CB-Remaster_Data/level2:asset#level2#5787/str/5：OptionController, ScpGame
+- CB-Remaster_Data/level2:asset#level2#5821/str/7：Español
+- CB-Remaster_Data/level2:asset#level2#5821/str/9：简体中文
+- CB-Remaster_Data/level2:asset#level2#5840/str/0：Fov
+- CB-Remaster_Data/level2:asset#level2#6233/str/6：FXAA
+- CB-Remaster_Data/level2:asset#level2#6233/str/7：SMAA
+- CB-Remaster_Data/level2:asset#level2#6233/str/8：TAA
+- CB-Remaster_Data/level2:asset#level2#6233/str/9：OptionController, ScpGame
+- CB-Remaster_Data/level3:asset#level3#2065/str/5：OptionController, ScpGame
+- CB-Remaster_Data/level3:asset#level3#2084/str/0：Fov
+- CB-Remaster_Data/level3:asset#level3#2093/str/7：Español
+- CB-Remaster_Data/level3:asset#level3#2093/str/9：简体中文
+- CB-Remaster_Data/level3:asset#level3#2219/str/6：FXAA
+- CB-Remaster_Data/level3:asset#level3#2219/str/7：SMAA
+- CB-Remaster_Data/level3:asset#level3#2219/str/8：TAA
+- CB-Remaster_Data/level3:asset#level3#2219/str/9：OptionController, ScpGame
+- CB-Remaster_Data/level4:asset#level4#3102/str/5：OptionController, ScpGame
+- CB-Remaster_Data/level4:asset#level4#3120/str/0：Fov
+- CB-Remaster_Data/level4:asset#level4#3129/str/7：Español
+- CB-Remaster_Data/level4:asset#level4#3129/str/9：简体中文
+- CB-Remaster_Data/level4:asset#level4#3255/str/6：FXAA
+- CB-Remaster_Data/level4:asset#level4#3255/str/7：SMAA
+- CB-Remaster_Data/level4:asset#level4#3255/str/8：TAA
+- CB-Remaster_Data/level4:asset#level4#3255/str/9：OptionController, ScpGame
+- CB-Remaster_Data/level5:asset#level5#1546/str/5：OptionController, ScpGame
+- CB-Remaster_Data/level5:asset#level5#1564/str/0：Fov
+- CB-Remaster_Data/level5:asset#level5#1573/str/7：Español
+- CB-Remaster_Data/level5:asset#level5#1573/str/9：简体中文
+- CB-Remaster_Data/level5:asset#level5#1700/str/6：FXAA
+- CB-Remaster_Data/level5:asset#level5#1700/str/7：SMAA
+- CB-Remaster_Data/level5:asset#level5#1700/str/8：TAA
+- CB-Remaster_Data/level5:asset#level5#1700/str/9：OptionController, ScpGame
+- CB-Remaster_Data/level6:asset#level6#1383/str/5：OptionController, ScpGame
+- CB-Remaster_Data/level6:asset#level6#1409/str/7：Español
+- CB-Remaster_Data/level6:asset#level6#1409/str/9：简体中文
+- CB-Remaster_Data/level6:asset#level6#1427/str/0：Fov
+- CB-Remaster_Data/level6:asset#level6#1773/str/6：FXAA
+- CB-Remaster_Data/level6:asset#level6#1773/str/7：SMAA
+- CB-Remaster_Data/level6:asset#level6#1773/str/8：TAA
+- CB-Remaster_Data/level6:asset#level6#1773/str/9：OptionController, ScpGame
+- CB-Remaster_Data/level7:asset#level7#182/str/5：EndingManager, ScpGame
+- CB-Remaster_Data/level7:asset#level7#187/str/5：EndingManager, ScpGame
+- CB-Remaster_Data/level7:asset#level7#189/str/5：EndingManager, ScpGame
+- CB-Remaster_Data/resources.assets:asset#resources.assets#24181/str/0：Keycard Omni
+- CB-Remaster_Data/resources.assets:asset#resources.assets#24713/str/0：DrinkUI, ScpGame
+- CB-Remaster_Data/resources.assets:asset#resources.assets#24713/str/3：DrinkUI, ScpGame
+- CB-Remaster_Data/resources.assets:asset#resources.assets#24713/str/6：DrinkUI, ScpGame
+- CB-Remaster_Data/resources.assets:asset#resources.assets#24713/str/9：DrinkUI, ScpGame
+- CB-Remaster_Data/resources.assets:asset#resources.assets#24724/str/0：UtilGiveAchievement, ScpGame
+- CB-Remaster_Data/resources.assets:asset#resources.assets#24948/str/5：DrinkUI, ScpGame
+- CB-Remaster_Data/resources.assets:asset#resources.assets#25008/str/0：UtilGiveAchievement, ScpGame
+- CB-Remaster_Data/sharedassets1.assets:asset#sharedassets1.assets#244/str/0：Primario
+- CB-Remaster_Data/sharedassets2.assets:asset#sharedassets2.assets#1421/str/0：CinemaEffects Profile 1
+- CB-Remaster_Data/sharedassets2.assets:asset#sharedassets2.assets#1443/str/3：Courier New
+- CB-Remaster_Data/sharedassets7.assets:asset#sharedassets7.assets#4/line/22：Battleforge
+- CB-Remaster_Data/sharedassets7.assets:asset#sharedassets7.assets#4/line/23：Omencito
+- CB-Remaster_Data/sharedassets7.assets:asset#sharedassets7.assets#4/line/24：Simoxus
+- CB-Remaster_Data/sharedassets7.assets:asset#sharedassets7.assets#4/line/46：Atomicsneak
+- CB-Remaster_Data/sharedassets7.assets:asset#sharedassets7.assets#4/line/57：Prosth
+- CB-Remaster_Data/sharedassets7.assets:asset#sharedassets7.assets#4/line/78：Slagar
+- CB-Remaster_Data/sharedassets7.assets:asset#sharedassets7.assets#4/line/93：Moonstiee
+- CB-Remaster_Data/sharedassets7.assets:asset#sharedassets7.assets#4/line/118：Irontaco
+- CB-Remaster_Data/sharedassets7.assets:asset#sharedassets7.assets#4/line/119：Steelpoint
+- CB-Remaster_Data/sharedassets7.assets:asset#sharedassets7.assets#4/line/127：Flipsy
+- CB-Remaster_Data/sharedassets7.assets:asset#sharedassets7.assets#4/line/140：Haversine
+

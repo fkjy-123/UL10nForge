@@ -61,10 +61,39 @@ _HAS_LETTER = re.compile(r"[^\W_0-9]")
 _STRIP_RICH_TEXT = re.compile(r"<[^>]+>")
 # Unity 实例化对象名：frameVertical(Clone) / Player(Clone)(Clone)
 _CLONE_SUFFIX = re.compile(r"^[A-Za-z_][A-Za-z0-9_]*(?:\(Clone\))+$")
+# 资源副本实例名：CreditsVolume (1) Profile（Unity 场景对象命名惯例
+# 「名 (编号) 名」，含空格+数字括号；要求全部词 TitleCase——'Press (1)
+# to start' 这类交互提示含小写词不匹配。模型对资源名输出解释式垃圾
+# （containment 实证：'参考以下翻译：…'），翻译无意义 → 跳过）
+_CLONE_NUMBERED = re.compile(
+    r"^[A-Z][A-Za-z0-9]*(\s+[A-Z][A-Za-z0-9]*)*\s*\(\d+\)"
+    r"(\s+[A-Z][A-Za-z0-9]*)*\s*$")
+# markdown 加粗段落行：行首 [ \t]** 且行内无其他星号（无闭合标记）
+# ——README/Changelog 文档说明行（\t**All languages are loaded...），
+# 开发者文档非游戏文本；'**Bold** text' 含闭合星号不匹配（对话强调
+# 正常翻译）。模型对 ** 段内词稳定保留/半翻（containment 实证 4 条
+# target_script_mismatch 恒败）→ 跳过
+_MD_BOLD_LEAD = re.compile(r"^[ \t]*\*\*[^*]*$")
 # 点开头扩展名：.spriteatlas
 _DOT_EXTENSION = re.compile(r"^\.[A-Za-z0-9_]{2,12}$")
 # GUID 标识符：GUID:cef3ca5fc32178c449992c58120ccded
 _GUID_IDENTIFIER = re.compile(r"^GUID:[0-9a-fA-F]{32}$")
+# YarnSpinner 字符串表键（line: 前缀 + FNV 哈希）：对话文本以键引用、
+# 真实文本在邻近字符串（count-my-coins 实证：obj=1354 内 214 个键 +
+# 对话文本同对象）。键不是玩家可见文本，模型回显恒败
+# （untranslated 216 / target_script 15 双形态）→ 跳过
+_LINE_HASH_IDENTIFIER = re.compile(r"^line:[0-9a-fA-F]{6,}$")
+# C# 编译期插值残留（{nameof(x)} / {typeof(T)}）：日志消息模板字符串
+# （YarnSpinner 'Can't save variables to JSON: {nameof(variableStorage)}
+# is not set' 实证——运行时字符串不会含未展开的 nameof）→ 跳过
+_C_SHARP_INTERPOLATION = re.compile(r"\{nameof\(|\{typeof\(|\{nameof\b")
+# 调试 HUD 输出行（(Debug): 前缀：调试面板行标签，非玩家体验文本；
+# count-my-coins '(Debug): 1000' 实证：Debug 译成 调试 反而触发
+# input_token_mismatch——Debug 被当按键字面量）→ 跳过
+_DEBUG_PREFIX_LINE = re.compile(r"^\([Dd]ebug\)\s*:")
+# YarnSpinner 编辑器节点边标签（ACTION edge / WAIT edge：节点类型 +
+# edge，对话图编辑器 UI，运行时不可见）→ 跳过
+_UPPERCASE_EDGE_LABEL = re.compile(r"^[A-Z]{2,} edge$")
 # I2 Localization 复数模板占位：{0:p:mine|mines}（运行时按数量展开单复数；
 # 翻译会破坏 I2 的 plural 语法，minato 等 I2 游戏真实失败样本）
 _I2_PLURAL_BLOCK = re.compile(r"\{[^{}\n]*:p:[^{}\n]*\}")
@@ -105,6 +134,10 @@ _COMBINING_MARKS = re.compile(
 SAFE_KEEPERS = re.compile(
     r"[A-Za-z0-9_]+(?:/[A-Za-z0-9_]+){2,}"
     r"|[A-Za-z0-9-]+(?:\.[A-Za-z0-9-]+)*\.(?:com|net|org|io|gg|dev|me|it|ru|de|jp)\b"
+    # 完整 email 地址（contact@undertowgames.com：@ 前本地部分也要剥，
+    # 否则 'contact' 残留被判小写普通词——containment 实证：模型保留
+    # 邮箱是正确行为，本地部分不是漏翻）
+    r"|[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}"
     r"|@[\w.-]+"
     r"|[a-z0-9]+(?:\.[a-z0-9]+)+\b"          # 用户名/艺名（yu.una）
     r"|\d+\.\d+[.\d]*[a-z]*\b"
@@ -112,6 +145,28 @@ SAFE_KEEPERS = re.compile(
     r"|\[[A-Za-z_][A-Za-z0-9_:#.-]*\]")      # 代码标记（[var:ID]）
 # Lorem ipsum 占位文本（minato 真实样本：模型不翻译占位符是正常行为）
 _LOREM_IPSUM = re.compile(r"^Lorem ipsum\b", re.I)
+# hipster ipsum 占位文本特征词（hipster 风格 lorem ipsum 生成器的词汇，
+# 'XOXO keytar glossier mumblecore. Tote bag listicle normcore kinfolk
+# kogi hoodie...'：containment level3-6 assets 实证 6 条）。占位文本
+# 无真实语义。词表放本文件（而非 quality）：placeholders 无依赖，
+# quality 已导入 placeholders，反向导入成环。模型对占位文本行为随机
+# ——回显走豁免路径、翻译走中文（如 'XOXO：Keytar风格，更精致、更
+# 柔和。'）→ 行数/内容比对恒败。跳过是唯一稳定出口。
+_HIPSTER_IPSUM_WORDS = frozenset({
+    "keytar", "glossier", "mumblecore", "tote bag", "listicle",
+    "normcore", "kinfolk", "kogi", "hoodie", "hashtag", "edison bulb",
+    "lo-fi", "keffiyeh", "affogato", "health goth", "flexitarian",
+    "enamel pin", "aesthetic", "food truck", "man bun", "lyft", "umami",
+    "cardigan", "knausgaard", "narwhal", "mlkshk", "taxidermy",
+    "tumeric", "freegan", "slow-carb", "cronut", "shoreditch",
+    "vaporware", "pinterest", "fingerstache", "wayfarers", "chambray",
+})
+
+
+def is_hipster_ipsum(text: str) -> bool:
+    """hipster ipsum 占位文本：≥4 个特征词命中（子串匹配）。"""
+    folded = text.casefold()
+    return sum(1 for w in _HIPSTER_IPSUM_WORDS if w in folded) >= 4
 # Shell 命令（something-bad-on-the-moon 真实样本：find /var/log -name ... | tar）
 _SHELL_COMMAND = re.compile(
     r"^(?:find|tar|ls|grep|sudo|chmod|rm|mkdir|unzip|wget|curl|mv|cp)\b"
@@ -150,6 +205,112 @@ _INPUT_SYSTEM_BINDING = re.compile(
     r"^<[A-Za-z][A-Za-z0-9_.-]*>/[A-Za-z0-9_./*{}-]+$")
 _INPUT_ACTION_IDENTIFIER = re.compile(
     r"^(?:UI/[A-Za-z0-9_.{}*-]+|\*/\{[A-Za-z0-9_.-]+\})$")
+# InControl/Rewired 输入插件设备匹配正则（crash-back-in-time 实证 40 条：
+# '.*x[\-]*box[ ]*360.*'、'^([xX]iaoji )?Gamesir-G3[svw]?($| [0-9]+.*)'）——
+# 运行时按正则匹配手柄设备名，翻译破坏输入映射。真实显示文本不以 '.*'
+# 或 '^'+元字符开头（'^' 分支要求首段无空格且含分组/字符类/量词元字符，
+# 防 markdown/数学符号误伤）
+_INPUT_DEVICE_REGEX = re.compile(
+    r"^\.\*[\s\S]*|^\^[^ \r\n]*[()\[\]?$|][\s\S]*")
+# 输入设备品牌/型号词（InControl 内置设备数据库跨游戏通用）：设备名
+# （ipega media gamepad controller / idroid Snakebyte）与设备说明行
+# （Full-sized ipega gamepad. Must be in Gamepad mode…）——翻译破坏
+# 按名匹配，且模型对设备专名回显/音译都不稳定。'xbox' 太泛不入表
+# （真实文本会含 Xbox），靠 gamepad/joy-con 关键词兜底
+_INPUT_DEVICE_BRANDS = (
+    "ipega", "idroid", "snakebyte", "gamesir", "8bitdo", "madcatz",
+    "3dconnexion", "3drudder", "spacemouse", "spacepilot",
+    "spaceexplorer", "shield portable",
+)
+_INPUT_DEVICE_WORDS = ("gamepad", "game pad", "joy-con", "controller",
+                       "bluetooth", "wireless")
+# 设备名中的普通功能词（说明句 "Must be in Gamepad mode (hold X + Home)"
+# 有句子结构，但已含品牌词+gamepad 关键词被上一分支覆盖；此处是纯
+# 品牌词+型号的专名形态判定）
+_INPUT_DEVICE_FUNCTION_WORDS = frozenset({
+    "a", "an", "the", "and", "or", "of", "to", "in", "on", "for", "with",
+    "by", "you", "your", "must", "hold", "press", "use", "how", "mode",
+    "full", "micro", "sized", "mini", "pro", "classic", "wireless",
+})
+
+
+def _is_input_device_name(text: str) -> bool:
+    """输入插件设备名/设备说明 → 结构跳过（InControl DeviceInfo 家族）。
+
+    四种形态（任一命中）：
+    1. 冒号品牌 ID：idroid:con（InControl 设备 ID brand:model 形态）
+    2. 品牌词 + 设备语境词（gamepad/controller/bluetooth/wireless）：
+       'ipega media gamepad controller'、'Micro ipega controller…'
+    3. 品牌词 + 括号型号标识：(R)/(M1)/(Mode 1)/(2015 model)
+       （'idroid:con Snakebyte (M1)'）或纯品牌专名（'idroid Snakebyte'）
+    4. 括号型号标识 + 设备语境词（'Nvidia Shield … Controller (2015 model)'、
+       'Joy-Con (R)'——joy-con 既是品牌也是语境词）
+    """
+    low = text.casefold()
+    if re.fullmatch(r"[a-z]{2,20}:[a-z]{2,20}", low):
+        return True
+    has_suffix = bool(re.search(
+        r"\((?:r|m\d|mode \d|19\d\d|20\d\d(?: model)?)\)$", low))
+    has_brand = any(b in low for b in _INPUT_DEVICE_BRANDS)
+    has_context = any(k in low for k in _INPUT_DEVICE_WORDS)
+    if has_brand and has_context:
+        return True
+    if has_suffix and (has_context or has_brand):
+        return True
+    if has_brand:
+        words = re.findall(r"[a-z]+", low)
+        if words and all(
+                w not in _INPUT_DEVICE_FUNCTION_WORDS for w in words):
+            return True
+    return False
+# 版本占位/模板串（v?.??：版本号占位符——InControl 固件版本正则截断
+# 或版本格式模板，crash-back-in-time level0 实证；? 是占位信号，真实
+# 版本号 v2.5 无 ? 不命中）
+_INPUT_VERSION_TEMPLATE = re.compile(r"^[vV]?[0-9?]+\.[0-9?]+\?+$|^[vV]?\?[0-9?]*\.[0-9?]+$")
+# C# 日志拼接模板尾部（'CustomController device instance GUID: sourceId = '
+# ——Rewired 设备实例日志前缀，'=' 是拼接点，无显示价值）
+_GUID_LOG_TEMPLATE = re.compile(r"\bGUID:\s*[A-Za-z]+\s*=\s*$")
+# C# 日志/错误模板句：整句以「词: 」或「= 」拼接点结尾（'The address is
+# not found in the Scene GUID to Address Map. Address: '——crusty-proto
+# Eflatun.SceneReference.dll 实证：'Address: ' 是 code 续行拼接点；正常
+# 玩家文本以句号/叹号/问号结尾。'Press: ' 短 UI 提示 <20 字符不命中）
+_LOG_TEMPLATE_TAIL = re.compile(r"(?:[A-Za-z]+:|\w+\s*=)\s*$")
+# 首尾空白片段串（' to JSON. '：字符串表拆分出的无完整语义片段，
+# crash-back-in-time 实证——YarnSpinner 错误模板 'Can't save variables
+# to JSON.' 的尾部碎片；译文更长时写回被容量截断 → object 闸门 WARN）。
+# 含 CJK 排除（中文 padding 串 ' 继续 ' 是真实 UI 文本）
+_WHITESPACE_PADDED_FRAGMENT = re.compile(r"^\s+\S[\s\S]*\s+$")
+# Rewired 输入动作绑定路径（'Game/Jump[/Keyboard/x,/Keyboard/upArrow]'、
+# 'Win Menu/Up[/Keyboard/upArrow,/Keyboard/leftArrow]'——deadbeat 实证：
+# MonoBehaviour 里 ActionName/Binding 序列化，运行时按字符串解析输入
+# 映射，翻译破坏绑定）。形态：路径/路径 + [/设备/键,...]（[ 后紧跟 /、
+# 逗号分隔多绑定）；真实显示文本的 [ 后是内容不是设备路径，不命中
+_INPUT_BINDING_PATH = re.compile(
+    r"^[A-Za-z0-9_ -]+/[A-Za-z0-9_ -]+"
+    r"\[/[A-Za-z0-9_+-]+/[A-Za-z0-9_+-]+"
+    r"(?:,/[A-Za-z0-9_+-]+/[A-Za-z0-9_+-]+)*\]$")
+# 全大写编码/加密串（'NIIVMMSEGAROTME…' 2567 字符无空格全大写——
+# deadbeat 实证：对象内嵌编码数据，翻译请求超模型槽位恒败）。真实
+# 全大写英文句有空格不命中、全大写词/缩写长度 <32 不命中；判定还
+# 要求 ≥8 种不同字符（'A'×100 重复填充串不命中——既有测试反例）
+_UPPERCASE_ENTROPY = re.compile(r"^[A-Z0-9]{32,}$")
+# 无完整词碎片（' e   i t'、'r wr TE'——deadbeat 实证：对象内嵌的
+# 字母噪声，所有词 ≤2 字符、≥3 段、含首空白或全大写词段；无翻译
+# 语义。'Hi hi hi' 类 TitleCase 语气词无全大写段不命中，走正常翻译）
+_FRAGMENT_NOISE = re.compile(r"^[\sA-Za-z]{5,12}$")
+
+
+def _is_fragment_noise(text: str) -> bool:
+    """无完整词碎片 → 结构跳过（deadbeat ' e   i t'/'r wr TE' 实证）。"""
+    s = text.strip()
+    if not s or not _FRAGMENT_NOISE.fullmatch(text) or len(s) < 3:
+        return False
+    words = [w for w in re.split(r"\s+", s) if w]
+    if len(words) < 3 or any(len(w) >= 3 for w in words):
+        return False
+    return text[0].isspace() or any(
+        w and w.isupper() and len(w) >= 2 for w in words)
+_HAS_CJK_CHAR = re.compile(r"[㐀-鿿豈-﫿]")
 _ASSET_FOLDER = re.compile(
     r"^(?:[A-Za-z0-9][A-Za-z0-9 &_.-]{0,71})?"
     r"(?:Assets|Materials|Presets)/$",
@@ -184,7 +345,7 @@ _QUALIFIED = re.compile(r"^[a-zA-Z0-9_]+([.\-][a-zA-Z0-9_]+)+$")
 # .NET 程序集全名：Namespace.Type, Version=x.y.z, Culture=neutral, PublicKeyToken=null
 # （Addressables catalog m_AssemblyName 真实值，project-arrhythmia 失败样本）
 _ASSEMBLY_REF = re.compile(
-    r"^[^,]+,\s*Version=\d[\w.]*(?:,\s*[A-Za-z]+=[\w.]+)*$")
+    r"^[^,]+(?:,[^,]+)*,\s*Version=\d[\w.]*(?:,\s*[A-Za-z]+=[\w.]+)*$")
 # 协议相对 URL：//host/path（A* 库版权文件真实值，morfosigame 失败样本）
 _PROTOCOL_RELATIVE_URL = re.compile(r"^//[A-Za-z0-9][^\r\n]*$")
 # InputAction 绑定路径：前缀多段路径 + 方括号绑定段
@@ -202,6 +363,10 @@ _CREDIT_ATTRIBUTION = re.compile(
     r"(?i:^created\s+by\s+[A-Z0-9]|"
     r"[-:：]\s*(?:from|by)\s+[A-Z0-9]|"
     r"\sby\s+[A-Z][a-zA-Z0-9'.]*(?:\s+[A-Z][a-zA-Z0-9'.]*){0,3}$|"
+    # 本地化署名（Chinese Localization by: gugu subtitle group：语言 +
+    # Localization/Translation + by/of + 署名，containment ReadMe 实证
+    # ——署名方非大写字头也能匹配，模型把组名当普通词残留恒败）
+    r"(?:localization|translation)\s+(?:by|of)\s*:?\s+[A-Za-z]|"
     r"©|(?i:\bcopyright\b)[^\d]{0,40}\d{4})")
 # TMP SDF 字体资产名（Signed Distance Field 字体）：X SDF Y / X SDF 形状
 # （真实失败样本：ComicsCarToon SDF Zesty、roquetteplain SDF Bonus）
@@ -224,6 +389,52 @@ _CREDIT_ALIGNED = re.compile(r"^[A-Za-z0-9]+ {2,}[A-Za-z0-9]+$")
 # 音乐合作名单（Highraiser ft. inkoutlines, MC Cruel Addict：ft. =
 # featuring 合作标签，游戏音乐/音效署名行）
 _FT_CREDIT = re.compile(r"(?i:\bft\.)")
+# 人名+引号昵称署名（Sam Lynch ("InnocentSam")：制作人员名单的作者
+# 名+昵称，无句子结构；模型保留人名合理，containment sharedassets7
+# TextAsset 实证 2 条被判 glossary_mismatch 恒败）→ 署名跳过
+_PERSON_WITH_NICKNAME = re.compile(
+    r'^[A-Z][A-Za-z\'\-]+(?: [A-Z][A-Za-z\'\-]+)*\s+'
+    r'[\(\[]["\'“”「」『』]'
+    r'[^"\'“”「」『』]{1,40}'
+    r'["\'“”「」『』][\)\]]\s*$')
+# 斜杠分隔的作者/团队名单（Turtle Sandwich/Catnipbuddy：无句子虚词的
+# TitleCase 名单行，containment credits 实证——制作组名翻译无意义，
+# 且模型对名单回显/音译都不稳定）。要求斜杠任一侧 ≥2 词：UI 双选项
+# 是单侧单词（Click/Tap、Load/Save、Audio/Video——test_slashes_inside_
+# display_text_are_not_paths 固化），2 词名单（Sam Hogan / Kyuppin）
+# 无小写词走 proper_name_echo 回显放行，无需 credit 跳过
+_SLASH_NAME_LIST = re.compile(
+    r"^(?:[A-Z][A-Za-z'.-]*\s+)+[A-Z][A-Za-z'.-]*\s*/\s*"
+    r"[A-Z][A-Za-z'.-]*(?:\s+[A-Z][A-Za-z'.-]*)*$"
+    r"|^[A-Z][A-Za-z'.-]*\s*/\s*"
+    r"(?:[A-Z][A-Za-z'.-]*\s+)+[A-Z][A-Za-z'.-]*$")
+# 本地化署名行（Russian   -   Nattakara：语言名 + 连字符 + 译者名，
+# containment ReadMe/TextAsset 本地化清单实证——语言名引导模型把
+# 译者名音译成该语言字母，目标脚本错误恒败；署名保留原文合理）。
+# 语言名词表开头：'Press - Start'（按键 UI 文本）不是署名
+_LANG_CREDIT_LINE = re.compile(
+    r"^(?:english|russian|chinese|japanese|korean|french|german|"
+    r"spanish|portuguese|italian|polish|dutch|swedish|turkish|"
+    r"ukrainian|vietnamese|thai|indonesian|norwegian|finnish|danish|"
+    r"czech|hungarian|greek|romanian|bulgarian|arabic|hebrew|hindi"
+    r"|español|deutsch|français|русский|日本語|中文)\s+-\s+"
+    r"[A-Za-z][A-Za-z' .-]*$", re.I)
+# JSON 数组字面量残留行（null, / true, / false,：kv 语言文件逐行提取
+# 的 JSON 数组空槽，无译义——containment ES/sceneStrings.subs 'null,'
+# 实证 19 条）
+_JSON_LITERAL_LINE = re.compile(
+    r"^(?:null|true|false|nil|none),?\s*$", re.I)
+# JSON 数组标识符字符串残留行（"chara_guard",：带引号的标识符 + 逗号，
+# 是 JSON 数组元素（角色键）——containment ES/sceneStrings.subs 实证
+# 23 条。引号内无空白无转义（对话文本引号内必有空格）→ 不会误伤）
+_JSON_IDENTIFIER_STRING_LINE = re.compile(
+    r'^"[A-Za-z0-9_][A-Za-z0-9_$./:-]*",?\s*$')
+# 星号包裹的全大写标注（*SIGH* / *SIGH* Now...：音效/情绪标注，SFX
+# 字幕键位——模型稳定回显小写变体（* sigh *），翻译无意义且小写
+# 残留判失败恒败（containment SCP-035 实证 6 条）。星号强调的真实
+# 指令（*Attention* 需翻译）是驼峰/TitleCase 或含小写词，不匹配）
+_ASTERISK_CAPS_LABEL = re.compile(
+    r"^\*[A-Z]{2,}\*(?:\s+[^\r\n]*)?$")
 # 普通句子标记：credit 形状的行若含这些虚词仍是可翻译句子。
 # 注意不含单字母 a——标题/选项（Option A、A* star）中的 A 不是虚词
 _SENTENCE_MARKERS = re.compile(
@@ -481,6 +692,15 @@ def is_credit_like(text: str) -> bool:
         return True              # credit/署名/版权行（无句子虚词）
     if _CREDIT_YEAR_LINE.match(s) and not _SENTENCE_MARKERS.search(s):
         return True              # 人名 + 年份署名行（Darien Gore (Fleebs) 2019）
+    if (_SLASH_NAME_LIST.match(s) or _LANG_CREDIT_LINE.match(s)) \
+            and not _SENTENCE_MARKERS.search(s):
+        return True              # 作者/团队名单（Turtle Sandwich/Catnipbuddy）/
+                                 # 本地化署名行（Russian - Nattakara）
+    if _PERSON_WITH_NICKNAME.match(s):
+        # 剥掉括号昵称（昵称内容可含 The/of 等虚词，Tom ('The Cat')）后
+        # 主体只剩纯名字——再查句子虚词防对话行（He said ("What?")）
+        if not _SENTENCE_MARKERS.search(_PERSON_WITH_NICKNAME.sub("", s)):
+            return True          # 人名+昵称署名（Sam Lynch ("InnocentSam")）
     return bool(_JAM_CREDIT.match(s))   # 游戏 jam 署名（made in 48h）
 
 
@@ -522,6 +742,23 @@ def is_hard_structural(text: str) -> bool:
             or _BRACKETED_PATH.fullmatch(s)
             or _CLI_ARG.fullmatch(s)):
         return True
+    if (_INPUT_DEVICE_REGEX.match(s)
+            or _is_input_device_name(s)
+            or _INPUT_VERSION_TEMPLATE.match(s)
+            or _GUID_LOG_TEMPLATE.search(s)):
+        return True                  # 输入插件设备正则/设备名/版本占位/GUID 日志模板
+    if _INPUT_BINDING_PATH.match(s):
+        return True                  # Rewired 输入动作绑定路径（翻译破坏绑定解析）
+    if _UPPERCASE_ENTROPY.match(s) and len(set(s)) >= 8:
+        return True                  # 全大写编码/加密串（超模型槽位恒败）
+    if _is_fragment_noise(text):
+        return True                  # 无完整词字母碎片（对象内嵌噪声）
+    if len(s) >= 20 and _LOG_TEMPLATE_TAIL.search(s):
+        return True                  # C# 日志拼接模板句（'Address: ' 尾部拼接点）
+    if (text != s and _WHITESPACE_PADDED_FRAGMENT.match(text)
+            and not _HAS_CJK_CHAR.search(text)
+            and len(text) <= 48):
+        return True                  # 首尾空白片段串（字符串表拆分碎片）
     # 代码注释行（// 前缀）：C#/JS 风格注释不是游戏文本（baldis 实证：
     # resources.assets TextAsset 脚本里 '//        word:replacement:
     # notCaseSensitive' 注释行被模型当文本翻译成乱语）。要求 // 后跟
@@ -543,10 +780,20 @@ def is_hard_structural(text: str) -> bool:
         return True
     if _CLONE_SUFFIX.match(s):
         return True                  # Unity 实例化对象名 frameVertical(Clone)
+    if _CLONE_NUMBERED.match(s):
+        return True                  # 资源副本实例名 CreditsVolume (1) Profile
     if _DOT_EXTENSION.match(s):
         return True                  # 点开头扩展名 .spriteatlas
     if _GUID_IDENTIFIER.match(s):
         return True                  # GUID:xxxxxxxx 资源标识符
+    if _LINE_HASH_IDENTIFIER.match(s):
+        return True                  # YarnSpinner 字符串表键（line:hash）
+    if _C_SHARP_INTERPOLATION.search(s):
+        return True                  # C# 插值残留（{nameof(} 日志模板）
+    if _DEBUG_PREFIX_LINE.match(s):
+        return True                  # 调试 HUD 输出行（(Debug): 前缀）
+    if _UPPERCASE_EDGE_LABEL.match(s):
+        return True                  # YarnSpinner 节点边标签（ACTION edge）
     if _MASTER_AUDIO_BUS.match(s):
         return True                  # Master Audio 总线行（插件内部音频路径）
     if _I2_PLURAL_BLOCK.search(s):
@@ -562,8 +809,8 @@ def is_hard_structural(text: str) -> bool:
     zalgo = _COMBINING_MARKS.findall(s)
     if zalgo and len(zalgo) >= len(_HAS_LETTER.findall(s)):
         return True                  # zalgo 乱码（组合字符 ≥ 字母数）
-    if _LOREM_IPSUM.match(s):
-        return True                  # Lorem ipsum 占位文本（模型不翻占位符是正常行为）
+    if _LOREM_IPSUM.match(s) or is_hipster_ipsum(s):
+        return True                  # lorem/hipster 占位文本（模型不翻占位符是正常行为）
     if _SHELL_COMMAND.match(s):
         return True                  # Shell 命令（find/tar/rm…不是游戏文本）
     if _KEYBOARD_NOISE.match(s):
@@ -572,6 +819,10 @@ def is_hard_structural(text: str) -> bool:
         return True                  # 星号前缀词表条目（*shit：脚本示例词）
     if _SECTION_KEY.match(s):
         return True                  # § 键码（§m_quit ###：语言文件键值模板键）
+    if _JSON_LITERAL_LINE.match(s) or _JSON_IDENTIFIER_STRING_LINE.match(s):
+        return True                  # JSON 数组残留行（null, / "chara_guard",）
+    if _ASTERISK_CAPS_LABEL.match(s):
+        return True                  # 星号包裹全大写标注（*SIGH*：音效标注）
     if _LANG_CODE_WITH_SLASH.match(s):
         return True                  # 语言代码目录标记（EN/ / DE/）
     if _SINGLE_CHAR_KEYMAP_LINES.match(s):
@@ -587,6 +838,8 @@ def is_hard_structural(text: str) -> bool:
                                      # 失败漏网，模型整段回显恒败）
     if len(s) <= 48 and _SDF_FONT.search(s):
         return True                  # TMP SDF 字体资产名（对话不会含 SDF 词）
+    if _MD_BOLD_LEAD.match(s):
+        return True                  # markdown 加粗段落行（\t** 无闭合）
     if is_credit_like(s):
         return True                  # 署名/版权行（软猜测，见 is_credit_like）
     path_text = s
