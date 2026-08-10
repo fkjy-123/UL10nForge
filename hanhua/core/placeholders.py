@@ -160,7 +160,7 @@ _BRACKETED_PATH = re.compile(
 # CLI 参数（无空格、- 开头）：--platform=Windows（Burst 命令记录真实值）
 _CLI_ARG = re.compile(r"^--?[A-Za-z][^\s]*$")
 # base64 序列化数据（Addressables catalog m_BucketDataString 真实值）
-_BASE64 = re.compile(r"^[A-Za-z0-9+/]{16,}$")
+_BASE64 = re.compile(r"^[A-Za-z0-9+/]{16,}={0,2}$")
 # credit/署名行：- from X / by X 结尾 / created by X 开头 / ©版权行
 # （真实失败样本：CREDITS.txt 逐行、level0 的 Created by Sam Hogan）
 _CREDIT_ATTRIBUTION = re.compile(
@@ -408,6 +408,28 @@ def validate_translation(original: str, translation: str) -> tuple[bool, list[st
     return src == dst, missing, extra
 
 
+def is_credit_like(text: str) -> bool:
+    """署名/版权反模式（软猜测规则）：制作者署名/版权行。
+
+    'A game by Kyuppin' / 'made in 48h' / 'Created by Sam Hogan' /
+    '© 2021 Some Studio' 等。用于 is_hard_structural 的署名分支；但
+    **确定性显示证据**（typetree m_Text 等 UI 字段）中的署名是真实
+    显示文本（lilys-day-off level13 结局画廊实证：'A game by Kyuppin'
+    被此规则降级跳过）——extractor 降级闸门据此做证据分层：确定性
+    显示条目不被此软猜测降级，只被硬结构规则降级。
+    """
+    s = text.strip()
+    if not s or len(s) > 90:
+        return False
+    if re.match(r"(?i:^created\s+by\s+[A-Z0-9])", s):
+        return True              # created by X（短行，对话不会以此开头）
+    if _CREDIT_ATTRIBUTION.search(s) and not _SENTENCE_MARKERS.search(s):
+        return True              # credit/署名/版权行（无句子虚词）
+    if _CREDIT_YEAR_LINE.match(s) and not _SENTENCE_MARKERS.search(s):
+        return True              # 人名 + 年份署名行（Darien Gore (Fleebs) 2019）
+    return bool(_JAM_CREDIT.match(s))   # 游戏 jam 署名（made in 48h）
+
+
 def is_hard_structural(text: str) -> bool:
     """Return whether *text* is structural regardless of display provenance."""
     s = text.strip()
@@ -466,21 +488,19 @@ def is_hard_structural(text: str) -> bool:
         return True                  # Lorem ipsum 占位文本（模型不翻占位符是正常行为）
     if _SHELL_COMMAND.match(s):
         return True                  # Shell 命令（find/tar/rm…不是游戏文本）
-    if _JAM_CREDIT.match(s):
-        return True                  # 游戏 jam 署名（made in 48h）
     if _KEYBOARD_NOISE.match(s):
         return True                  # 键盘噪音测试文本（asdasdasd / fdji ijsdijn…）
     if _BASE64.fullmatch(s) and any(char.isdigit() for char in s):
         return True                  # base64 序列化数据（catalog m_BucketDataString）
+    if s.startswith("UEsDB") and _BASE64.fullmatch(s):
+        return True                  # base64 编码的 ZIP 包（TextAsset 序列化数据，
+                                     # PK\x03\x04 魔数；Morfosi level5 str/0 实证——
+                                     # 此前 '=' 填充符不在 _BASE64 字符集，fullmatch
+                                     # 失败漏网，模型整段回显恒败）
     if len(s) <= 48 and _SDF_FONT.search(s):
         return True                  # TMP SDF 字体资产名（对话不会含 SDF 词）
-    if len(s) <= 90:
-        if re.match(r"(?i:^created\s+by\s+[A-Z0-9])", s):
-            return True              # created by X（短行，对话不会以此开头）
-        if _CREDIT_ATTRIBUTION.search(s) and not _SENTENCE_MARKERS.search(s):
-            return True              # credit/署名/版权行（无句子虚词）
-        if _CREDIT_YEAR_LINE.match(s) and not _SENTENCE_MARKERS.search(s):
-            return True              # 人名 + 年份署名行（Darien Gore (Fleebs) 2019）
+    if is_credit_like(s):
+        return True                  # 署名/版权行（软猜测，见 is_credit_like）
     path_text = s
     if is_interaction_prompt(s):
         for event in interaction_input_events(s):

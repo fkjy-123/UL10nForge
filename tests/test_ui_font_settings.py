@@ -454,7 +454,6 @@ def test_write_result_reports_installed_font_only(qapp, tmp_path, monkeypatch):
                     "container": {"status": "PASS", "detail": ""},
                     "object": {"status": "PASS", "detail": ""},
                     "runtime": {"status": "PASS", "detail": ""},
-                    "gameplay": {"status": "N/A", "detail": ""},
                 },
             },
             "analysis_report": SimpleNamespace(completable=True, route=()),
@@ -466,7 +465,7 @@ def test_write_result_reports_installed_font_only(qapp, tmp_path, monkeypatch):
     assert "实际写入译文 12" in log
     assert "原游戏输入哈希 已保护" in log
     assert "输出重开验证 已通过" in log
-    assert "五态闸门" in log
+    assert "四态闸门" in log
 
     page.log_view.clear()
     page._on_written({
@@ -485,7 +484,7 @@ def test_write_result_reports_installed_font_only(qapp, tmp_path, monkeypatch):
     assert "写回未通过验证" in page.log_view.toPlainText()
     assert "字体注入未验证" in page.log_view.toPlainText()
     assert toasts[0] == (
-        "写回已验证 · 5 个变更文件 · 12 条译文 · 五态闸门 PASS"
+        "写回已验证 · 5 个变更文件 · 12 条译文 · 四态闸门 PASS"
         " · 中文字体 Lenovo-XiaoxinHeiGB",
         "success",
     )

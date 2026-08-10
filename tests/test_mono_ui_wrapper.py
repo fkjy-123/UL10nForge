@@ -44,3 +44,40 @@ def test_log_and_concat_strings_stay_skipped():
     # Console.WriteLine / String.Concat 不流入 UI setter → 保守跳过
     assert status["log only string"] == "skipped"
     assert status["composed text"] == "skipped"
+
+
+def test_unityscript_assembly_upgrades_unverified_text(tmp_path):
+    # 同一 fixture 以 Assembly-UnityScript.dll 命名：UnityScript 编译器生成的
+    # IL 形态使 ui setter 验证链大面积失效（lilys-day-off 实证 825 条对话/
+    # 服装/结局/选项文本全落 unverified 被跳过）。UnityScript 程序集字面量
+    # 几乎全是显示文本——未被剔除的字符串（含空格对话与无空格语气词
+    # 'What?' 'Hahaha!'）全部按显示文本升级；纯标识符已被 is_code_identifier
+    # 剔除（lilys-day-off 实证：29 条无空格语气词恢复翻译）。
+    import shutil
+    us = tmp_path / "Assembly-UnityScript.dll"
+    shutil.copy2(FIXTURES / "mono_ui_wrapper.dll", us)
+    pf = extract_dll_user_strings(us)
+    assert not pf.noise
+    by_text = {e.original: e for e in pf.entries}
+    # 含空格 unverified 字符串升级为可翻译
+    assert by_text["log only string"].status == "pending"
+    assert by_text["log only string"].meta["confidence"] == "medium"
+    assert by_text["log only string"].meta["reason"] == "unityscript_user_string"
+    assert by_text["composed text"].status == "pending"
+    # ui setter 验证链在 UnityScript 程序集中不受影响
+    assert by_text["Direct text assignment"].status == "pending"
+    assert by_text["Direct text assignment"].meta["confidence"] == "high"
+    # 升级后全部条目 pending（fixture 无标识符样本；标识符剔除在
+    # is_code_identifier 层保证，见下方判定性测试）
+    assert all(e.status == "pending" for e in pf.entries)
+
+
+def test_unityscript_particle_text_is_not_a_structural_identifier():
+    # 'What?' 'Hahaha!' 'Lily-chan!' 等语气词无空格但含标点，不是
+    # code_identifier/engine/structural——UnityScript 路径必升级。
+    from hanhua.core.engine_strings import is_engine_string
+    from hanhua.core.placeholders import is_hard_structural, is_code_identifier
+    for particle in ("What?", "Hahaha!", "Lily-chan?", "Kyahaaaaa~!", "NOO!!!"):
+        assert not is_code_identifier(particle)
+        assert not is_engine_string(particle)
+        assert not is_hard_structural(particle)

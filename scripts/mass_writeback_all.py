@@ -150,8 +150,7 @@ def _writeback_single(game_dir: Path, display: str, rescan: bool) -> dict:
         # 伪翻译 = 原文 + U+200B 零宽空格，在固定容量池中必然截断——审计的
         # 目标是验证写回机制本身（重开验证/闸门状态/字体部署），截断放行
         # 并完整记录，与 UI「允许部分写入并发布」语义一致（P0-2）。
-        result = project.write_all(font_config=font_cfg, allow_partial=True,
-                                   smoke=False)
+        result = project.write_all(font_config=font_cfg, allow_partial=True)
         rec["ok"] = True
         rec["text_files"] = result["text_files"]
         v2 = result["v2"]

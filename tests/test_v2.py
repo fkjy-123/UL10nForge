@@ -12,12 +12,14 @@ from hanhua.core.engine_strings import (InputEvent, has_display_text_evidence,
                                         is_interaction_prompt,
                                         is_strong_interaction_prompt)
 from hanhua.core.memory import ProjectStore
+from hanhua.core.models import STATUS_SKIPPED, TextEntry
 from hanhua.core.unity.extractor import (_is_engine_string, _raw_string_entries,
                                         _decode_field_path,
                                         _encode_field_path,
                                         _localization_bundle_probe,
                                         _looks_like_type_descriptor,
                                         _prefer_source_locale_bundles,
+                                        _should_downgrade_pending,
                                         _structural_reason,
                                         _textasset_entries,
                                         _typetree_string_entries, extract_asset_file,
@@ -114,6 +116,47 @@ def test_looks_like_type_descriptor_does_not_reject_real_text():
         "Unity.Localization")
     assert _looks_like_type_descriptor(
         "Text UnityEngine.UI.Text UnityEngine.UI")
+
+
+def _pending_entry(original, confidence="high", reason="typetree_display_field"):
+    return TextEntry(file_id="f", key_path="asset#f#1/field/k:m_Text",
+                     original=original, status="pending",
+                     meta={"kind": "typetree", "confidence": confidence,
+                           "reason": reason, "role": "display"})
+
+
+def test_downgrade_gate_keeps_credit_like_text_in_display_fields():
+    # lilys-day-off level13 结局画廊实证：'A game by Kyuppin' 是 m_Text 显示
+    # 字段里的真实显示文本，但被 credit/署名软猜测规则降级错过。证据分层：
+    # 确定性显示字段条目只被硬结构降级，署名/版权类软猜测不得推翻 UI 字段证据。
+    assert not _should_downgrade_pending(
+        _pending_entry("A game by Kyuppin"))
+    assert not _should_downgrade_pending(
+        _pending_entry("Created by Sam Hogan"))
+    assert not _should_downgrade_pending(
+        _pending_entry("made in 48h"))
+
+
+def test_downgrade_gate_soft_guess_still_applies_without_display_evidence():
+    # 无确定性证据（candidate/raw scan 形态）时，署名软猜测仍降级——原行为。
+    assert _should_downgrade_pending(
+        _pending_entry("A game by Kyuppin", confidence="low",
+                       reason="typetree_candidate"))
+    assert _should_downgrade_pending(
+        _pending_entry("Created by Sam Hogan", confidence="medium",
+                       reason="rawstr_display_evidence"))
+
+
+def test_downgrade_gate_hard_structural_always_downgrades():
+    # 硬结构（纯数字/URL）即使出现在 UI 显示字段也降级——翻译会破坏功能。
+    assert _should_downgrade_pending(_pending_entry("9"))
+    assert _should_downgrade_pending(_pending_entry("https://example.com/x"))
+    assert _should_downgrade_pending(_pending_entry("Assets/UI/panel.png"))
+    # 非 pending 条目不动
+    from dataclasses import replace
+    entry = replace(_pending_entry("A game by Kyuppin", reason="x"),
+                    status=STATUS_SKIPPED)
+    assert not _should_downgrade_pending(entry)
 
 
 def test_typetree_m_name_is_never_a_display_text():
@@ -520,6 +563,30 @@ def test_is_engine_string():
     assert _is_engine_string("Keyboard&Mouse")
     assert not _is_engine_string("Hello player")
     assert not _is_engine_string("要活下去")
+
+
+def test_input_system_binding_path_and_interaction_are_engine_strings():
+    # morfosigame 实证：InputActionAsset 序列化绑定路径/交互串是引擎语法，
+    # 全局剔除（即使对象级判定漏网也不会被提取翻译）
+    assert _is_engine_string("<Keyboard>/z")
+    assert _is_engine_string("<Keyboard>/upArrow")
+    assert _is_engine_string("<Mouse>/position")
+    assert _is_engine_string("<Gamepad>/leftStick")
+    assert _is_engine_string("<Gamepad>/buttonSouth")
+    assert _is_engine_string("Press(behavior=2)")
+    assert _is_engine_string("Hold()")
+    assert _is_engine_string("Tap()")
+    assert _is_engine_string("SlowTap()")
+    assert not _is_engine_string("<b>Hello</b>")
+
+
+def test_timeline_track_with_index_is_engine_string():
+    # 带编号轨道名（Unity Timeline 轨道重名自动加 (1)）是引擎 displayName
+    assert _is_engine_string("Animation Track (1)")
+    assert _is_engine_string("Activation Track (2)")
+    assert _is_engine_string("Audio Track (1)")
+    assert _is_engine_string("Animation Track")
+    assert not _is_engine_string("Track 7 night festival")
 
 
 @pytest.mark.parametrize("text", [
@@ -1180,12 +1247,73 @@ def test_raw_string_entries_inputsystem_actions_skipped_in_map_object():
     entries = _raw_string_entries("f1", 5, raw, {})
     by_orig = {e.original: e for e in entries}
     assert by_orig["Select"].status == "skipped"
-    assert by_orig["Select"].meta.get("reason") == "input_binding"
+    assert by_orig["Select"].meta.get("reason") == "input_system_object"
     assert by_orig["Select"].meta.get("obj_is_key_list") is True
     assert by_orig["Cancel"].status == "skipped"
-    assert by_orig["Pause"].status == "pending"
-    assert by_orig["Settings"].status == "pending"
-    assert by_orig["Quit"].status == "pending"
+    # InputSystem 配置对象内短词全部是运行时按名查找的键（morfosigame 实证），
+    # 不再逐词白名单——Pause 等若为动作名翻译即破坏输入，宁可漏译不漏保护
+    assert by_orig["Pause"].status == "skipped"
+    assert by_orig["Settings"].status == "skipped"
+    assert by_orig["Quit"].status == "skipped"
+    # 强显示证据句子仍放行（配置对象里理论上不出现，保守防误伤）
+    assert by_orig["Open Settings Menu"].status == "pending"
+
+
+def test_raw_string_entries_inputsystem_binding_path_object_all_skipped():
+    # morfosigame 实证根因：InputActionAsset 对象（map 名 'Normal' 是默认模板名，
+    # 不在 GameActions 名单里）含绑定路径 <Keyboard>/z 与 interactions 串
+    # Press(behavior=2) → 动作名 Proceed/Interact 全被翻译 → 点击对话/F 跳过
+    # 无反应。绑定路径/interactions 是输入配置强信号，对象内全部短词串跳过。
+    raw = ((b"\x00" * 12) + _with_len("Normal") + _with_len("Proceed")
+           + _with_len("<Keyboard>/z") + _with_len("<Mouse>/position")
+           + _with_len("<Gamepad>/leftStick") + _with_len("Press(behavior=2)")
+           + _with_len("Interact") + _with_len("Action") + _with_len("Button")
+           + _with_len("Controls") + _with_len("Arrow Keys"))
+    entries = _raw_string_entries("sharedassets0.assets", 19, raw, {},
+                                  "sharedassets0.assets")
+    by_orig = {e.original: e for e in entries}
+    # 绑定路径是结构串（skipped 保留标记，写回不会写），interactions 被引擎过滤
+    for name in ("<Keyboard>/z", "<Mouse>/position", "<Gamepad>/leftStick"):
+        assert by_orig[name].status == "skipped", name
+    assert "Press(behavior=2)" not in by_orig
+    # 动作名/绑定组名在输入配置对象内全部跳过
+    for name in ("Normal", "Proceed", "Interact", "Action", "Button",
+                 "Controls", "Arrow Keys"):
+        assert by_orig[name].status == "skipped", name
+        assert by_orig[name].meta.get("reason") == "input_system_object", name
+
+
+def test_raw_string_entries_timeline_object_skipped():
+    # morfosigame 实证：Timeline 轨道对象含 'Animation Track (1)'（带编号，旧正则
+    # 只匹配不带编号形式而漏网，被拆成 '动画轨道'+' (1)' 结构错乱）与动画状态名
+    # 'Player Idle' → 全部跳过；同形短词对象在 level 场景文件里仍是显示文本。
+    raw = ((b"\x00" * 12) + _with_len("Animation Track (1)")
+           + _with_len("Player Idle") + _with_len("Player Walk")
+           + _with_len("Markers"))
+    entries = _raw_string_entries("sharedassets4.assets", 23, raw, {},
+                                  "sharedassets4.assets")
+    by_orig = {e.original: e for e in entries}
+    assert by_orig["Animation Track (1)"].status == "skipped"
+    for name in ("Player Idle", "Player Walk", "Markers"):
+        assert by_orig[name].status == "skipped", name
+        assert by_orig[name].meta.get("reason") == "timeline_object", name
+
+
+def test_raw_string_entries_shared_resource_small_config_skipped_but_level_kept():
+    # 'Timothy' 在共享资源文件里是 Timeline 剪辑 displayName（morfosigame
+    # sharedassets4 116 字节 ScriptableObject 实证）→ 跳过；同样内容在 level
+    # 场景文件里是对话说话者名 → 保持 pending（真实语料：level5 136 个对话对象）。
+    so = (b"\x00" * 12) + _with_len("Timothy")   # ScriptableObject 形态（无 GameObject）
+    comp = (b"\x00\x00\x00\x00\x05\x00\x00\x00") + _with_len("Timothy")  # 场景组件形态
+    shared = _raw_string_entries("sharedassets4.assets", 23, so, {},
+                                 "sharedassets4.assets")
+    shared_component = _raw_string_entries("sharedassets4.assets", 24, comp, {},
+                                           "sharedassets4.assets")
+    level = _raw_string_entries("level5", 54107, comp, {}, "level5")
+    assert shared[0].status == "skipped"
+    assert shared[0].meta.get("reason") == "shared_resource_config_object"
+    assert shared_component[0].status == "pending"   # 组件形态不受影响
+    assert level[0].status == "pending"              # 场景文件不受影响
 
 
 def test_raw_string_entries_select_pending_without_inputsystem_signal():

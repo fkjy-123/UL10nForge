@@ -15,7 +15,8 @@ from hanhua.core.engine_strings import (CORE_MENU_SOURCE_TERMS,
 from hanhua.core.extractor import ParsedFile, looks_like_noise_file
 from hanhua.core.formats import json_format
 from hanhua.core.models import STATUS_SKIPPED, TextEntry
-from hanhua.core.placeholders import (DISPLAY_WORDS, is_hard_structural,
+from hanhua.core.placeholders import (DISPLAY_WORDS, is_credit_like,
+                                      is_hard_structural, is_key_style_identifier,
                                       should_skip, _IDENTIFIER, _WORD_CASE)
 from hanhua.core.scanner import (_has_unity_bundle_magic, _is_runtime_file,
                                  _walk_files)
@@ -62,9 +63,28 @@ _INPUTSYSTEM_ACTION_NAMES = frozenset({
     "navigate", "move", "look",
 })
 _TIMELINE_TRACK = _re.compile(
-    r"^(?:Activation|Animation|Audio|Control|Group|Marker|Playable|Signal|Cinemachine) Track$",
+    r"^(?:Activation|Animation|Audio|Control|Group|Marker|Playable|Signal|Cinemachine) "
+    r"Track(?:\s*\(\d+\))?$",
     _re.I,
 )
+# Input System 序列化绑定路径：<Keyboard>/z、<Mouse>/position、<Gamepad>/leftStick。
+# 只出现在 InputActionAsset/InputActionMap 配置对象中，是「对象是输入配置」的强信号。
+_INPUT_BINDING_PATH = _re.compile(
+    r"^<[A-Za-z0-9_.]+>/(?:[A-Za-z0-9_./-]+)?$")
+# Input System interactions 触发方式串（Press(behavior=2) 等）——同上，输入配置强信号。
+_INPUTSYSTEM_INTERACTION = _re.compile(
+    r"^(?:press|hold|tap|slowtap|multitap|doubletap|"
+    r"pressandrelease|pressdelay|presspoint)\s*\(.*\)$",
+    _re.I,
+)
+# 引擎配置对象程序集信号：MonoBehaviour 序列化含 m_AssemblyTypeName 程序集限定名，
+# 若其中出现 Input System / Timeline 程序集，对象内的名字串都是引擎配置而非显示文本。
+_INPUTSYSTEM_ASSEMBLY_SIGNALS = (
+    "UnityEngine.InputSystem", "Unity.InputSystem")
+_TIMELINE_ASSEMBLY_SIGNALS = (
+    "UnityEngine.Timeline", "UnityEngine.Playables", "Unity.Timeline")
+# Timeline 对象常见轨道/标记 displayName（不带编号的裸词形式）
+_TIMELINE_MARKER_NAMES = frozenset({"markers", "track"})
 
 # Unity Localization 结构标记：出现这些串的对象是 Localization 表/共享数据对象
 # （StringTable / SharedTableData）。其中标识符形态的字符串是表键（Key），绝不翻译。
@@ -582,6 +602,8 @@ def _structural_reason(text: str) -> str | None:
     stripped = text.strip()
     if _INPUT_ACTION_PATH.match(stripped):
         return "input_action_path"
+    if _INPUT_BINDING_PATH.match(stripped):
+        return "input_binding"
     if is_code_action_binding(stripped):
         return "code_action_binding"
     if is_physical_binding_identifier(stripped):
@@ -603,6 +625,18 @@ def _has_sentence_shape(text: str) -> bool:
     stripped = text.strip()
     return bool(_SENTENCE_END.search(stripped) or
                 (len(stripped) >= 10 and " " in stripped))
+
+
+def _is_scriptable_object_shape(raw: bytes) -> bool:
+    """MonoBehaviour 头部 m_GameObject 引用为空 → ScriptableObject 形态。
+
+    资源配置对象（Timeline 剪辑/TrackAsset/InputActionAsset 等）没有
+    m_GameObject（头部 12 字节全零）；场景组件对象（UI 脚本/对话组件等）带
+    m_GameObject 引用（非零）。2019.3 及老版 PPtr 为 4+4 字节，新版本 4+8——
+    空引用两种布局前 12 字节都全零，组件两种布局都非零（fileID=0 时 pathID
+    落在第 4 或第 8 字节起）。
+    """
+    return len(raw) >= 12 and raw[:12] == b"\x00" * 12
 
 
 def _raw_string_entries(file_id: str, obj_path_id: int, raw: bytes,
@@ -688,12 +722,52 @@ def _raw_string_entries(file_id: str, obj_path_id: int, raw: bytes,
         _has_sentence_shape(s) and _structural_reason(s) is None
         for s in non_engine)
 
-    # InputSystem 对象信号：含 action map 名（GameActions 等）→ 对象内默认
-    # action 名（Select/Cancel/Move…）是输入绑定名，翻译会破坏按键交互
-    # （deadbeat obj 717 实证：Select/Cancel 混在按钮文本对象里被放行）。
-    is_input_system_object = any(
-        s.strip().casefold() in _INPUTSYSTEM_MAP_NAMES
-        for _, _, s in scanned)
+    # InputSystem 对象信号：action map 名（GameActions 等）或绑定路径（<Keyboard>/z）
+    # 或 interactions 串（Press(behavior=2)）或 InputSystem 程序集串出现 → 该对象是
+    # 输入配置，对象内 action 名等全是运行时按名查找的键。翻译必然破坏按键交互
+    # （morfosigame 实证：默认模板 map 名 'Normal' 不在名单里，Proceed/SkipCutscene
+    # 动作名全被翻译 → 点击对话/F 跳过全部无反应；deadbeat obj 717 同理）。
+    is_input_system_object = (
+        any(
+            s.strip().casefold() in _INPUTSYSTEM_MAP_NAMES
+            or bool(_INPUT_BINDING_PATH.match(s.strip()))
+            or bool(_INPUTSYSTEM_INTERACTION.match(s.strip()))
+            for _, _, s in scanned)
+        or any(
+            sig in s for s in (s for _, _, s in scanned)
+            for sig in _INPUTSYSTEM_ASSEMBLY_SIGNALS))
+
+    # Timeline 对象信号：轨道名（Animation Track (1) 带编号形式）或 Markers 标记或
+    # Timeline/Playables 程序集串 → 轨道名/剪辑名/动画状态名按名查找，翻译破坏演出
+    # （morfosigame 实证：'Animation Track (1)' 被拆成 '动画轨道'+' (1)'，字符串
+    # 计数 2→4 结构错乱，Timeline 反序列化失败）。
+    is_timeline_object = (
+        any(
+            bool(_TIMELINE_TRACK.match(s.strip()))
+            or s.strip().casefold() in _TIMELINE_MARKER_NAMES
+            for _, _, s in scanned)
+        or any(
+            sig in s for s in (s for _, _, s in scanned)
+            for sig in _TIMELINE_ASSEMBLY_SIGNALS))
+
+    # 共享资源小配置对象：非场景文件（level*）里无句子形态、≤2 个不同短词串的对象
+    # （Timeline 剪辑 displayName 'Timothy'、'White Flash'、动画状态 'Player Idle' 等）。
+    # 场景（level）里的同形对象是对话说话者名（TIMOTHY），按现有规则正常翻译——
+    # 文件位置 + 内容形态双条件区分（morfosigame 实证：sharedassets4 116 字节
+    # 'Timothy' 对象是 AnimationPlayableAsset 剪辑名，level 对话对象含句子）。
+    is_shared_resource = not (
+        asset_file_name and Path(asset_file_name).name.casefold().startswith("level"))
+    small_words = {s.strip() for s in non_engine if s.strip()}
+    # ScriptableObject 形态（无 m_GameObject）才可能是引擎配置；场景组件
+    # 即使单短词也是显示文本（UI 脚本，如 'Battery'），不触发本规则。
+    is_small_config_object = (
+        _is_scriptable_object_shape(raw)
+        and is_shared_resource
+        and not has_marker
+        and 1 <= len(small_words) <= 2
+        and all(
+            not _has_sentence_shape(s) and len(s) <= 16
+            for s in small_words))
 
     # 对象级键列表判定：键列表对象中的标识符全部降级为 skipped（写回也据此跳过）。
     # 单词式写法（CREDITOS / Settings）是显示值不算键风格标识符——避免西语等
@@ -740,6 +814,22 @@ def _raw_string_entries(file_id: str, obj_path_id: int, raw: bytes,
             entry.status = STATUS_SKIPPED
             reason = "lifecycle_method"
             confidence, role = "low", "structural"
+        elif is_input_system_object or is_timeline_object or is_small_config_object:
+            # 引擎配置对象（输入/时间线/动画配置）：其中的短词串是运行时按名查找的
+            # 键（动作名/轨道名/状态名），翻译破坏功能；强显示证据串理论上不出现，
+            # 保守放行防误伤。注意不能用 _has_sentence_shape（≥10 字符含空格即真，
+            # 'Arrow Keys' 10 字符会被误判为句子）。
+            if has_display_text_evidence(stripped):
+                reason = "natural_language"
+                confidence, role = "medium", "display"
+            else:
+                entry.status = STATUS_SKIPPED
+                entry.meta["obj_is_key_list"] = True
+                reason = (
+                    "input_system_object" if is_input_system_object
+                    else "timeline_object" if is_timeline_object
+                    else "shared_resource_config_object")
+                confidence, role = "low", "structural"
         elif (is_single_visible
               and Path(asset_file_name).name.casefold() == "resources.assets"
               and _IDENTIFIER.match(stripped)):
@@ -754,12 +844,6 @@ def _raw_string_entries(file_id: str, obj_path_id: int, raw: bytes,
             entry.status = STATUS_SKIPPED
             entry.meta["obj_is_key_list"] = True
             reason = "localization_key_list"
-            confidence, role = "low", "structural"
-        elif (is_input_system_object
-              and stripped.casefold() in _INPUTSYSTEM_ACTION_NAMES):
-            entry.status = STATUS_SKIPPED
-            entry.meta["obj_is_key_list"] = True
-            reason = "input_binding"
             confidence, role = "low", "structural"
         elif is_code_heavy and stripped in _LIFECYCLE_METHODS:
             entry.status = STATUS_SKIPPED
@@ -918,6 +1002,30 @@ _NATIVE_TEXT_TYPES = frozenset({
 })
 
 
+def _should_downgrade_pending(entry: TextEntry) -> bool:
+    """提取后置降级闸门（证据分层）。
+
+    引擎串与键风格标识符照降；is_hard_structural 硬结构（JSON/URL/路径/
+    GUID/纯数字…翻译会破坏功能）照降；但**确定性显示证据**条目（typetree
+    UI 字段白名单 high）只被硬结构降级，署名/版权类软猜测规则不得推翻
+    UI 字段证据（lilys-day-off level13 结局画廊实证：'A game by Kyuppin'
+    在 m_Text 显示字段被 credit 规则降级错过）。
+    """
+    if entry.status != "pending" or entry.meta.get("kind") == "localization":
+        return False
+    if _is_engine_string(entry.original):
+        return True
+    if is_key_style_identifier(entry.original):
+        return True
+    if not is_hard_structural(entry.original):
+        return False
+    if (entry.meta.get("confidence") == "high"
+            and entry.meta.get("reason") == "typetree_display_field"
+            and is_credit_like(entry.original)):
+        return False
+    return True
+
+
 def extract_asset_file(path: str | Path, file_id: str | None = None,
                        progress_cb: Callable | None = None) -> ParsedFile:
     """提取一个资源文件 → ParsedFile（含文件级噪音判定）。
@@ -1018,8 +1126,7 @@ def extract_asset_file(path: str | Path, file_id: str | None = None,
         entries.extend(
             c for c in candidates if c.original not in covered)
     for e in entries:
-        if (e.status == "pending" and e.meta.get("kind") != "localization"
-                and (should_skip(e.original) or _is_engine_string(e.original))):
+        if _should_downgrade_pending(e):
             e.status = STATUS_SKIPPED
     noise = looks_like_noise_file(entries)
     return ParsedFile(fid, str(p), "v2_asset", entries, "utf-8", "\n", {"kind": "asset"}, noise)

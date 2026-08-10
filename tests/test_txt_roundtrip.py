@@ -61,6 +61,30 @@ def test_extract_txt_skips_urls_cli_args_and_structural_values(tmp_path):
     assert by_line[4].status == STATUS_SKIPPED          # 值本身是路径
 
 
+def test_extract_txt_empty_kv_value_is_skipped(tmp_path):
+    # Morfosi boot.config 实证：'nolog=' 空值 kv 行此前落入 plain 分支成为
+    # 可译条目，模型回显 → untranslated_text 恒败。现在标记 kv_empty 跳过。
+    source = "wait-for-preload=1\nnolog=\nTitle=Hello world\nkey\t\n"
+    p = tmp_path / "boot.txt"
+    p.write_text(source, encoding="utf-8")
+    entries = extract_txt(p, "boot.txt")
+    by_line = {e.meta["line_no"]: e for e in entries}
+    assert by_line[0].meta["kind"] == "kv_structural"  # 数字值（原行为，跳过）
+    assert by_line[2].status != STATUS_SKIPPED   # Title=Hello world 可翻译
+    nolog = by_line[1]
+    assert nolog.status == STATUS_SKIPPED
+    assert nolog.meta["kind"] == "kv_empty"
+    assert nolog.original == ""
+    tab_empty = by_line[3]
+    assert tab_empty.status == STATUS_SKIPPED
+    assert tab_empty.meta["kind"] == "kv_empty"
+    assert tab_empty.meta["delim"] == "\t"
+    # 写回原样输出（行保留，值区空）
+    out = apply_txt(entries)
+    assert "nolog=" in out
+    assert "key\t" in out
+
+
 def test_extract_txt_tab_delim_structural_value_has_no_delim_group(tmp_path):
     # honorplusplus 实证：_TAB 匹配无 delim 命名组，kv_structural 分支
     # 直接 m.group("delim") 会抛 IndexError 使整个扫描崩溃

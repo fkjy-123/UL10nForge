@@ -529,6 +529,26 @@ def test_manifest_keeps_vendor_named_game_dlls_but_filters_known_packages(
     ] == ["Microsoft.MyStudio.Game.dll", "Unity.MyGame.dll"]
 
 
+def test_manifest_fallback_matches_boo_assembly(tmp_path):
+    # Boo 脚本语言编译程序集（Assembly-Boo.dll，老 Unity 脚本）此前不在
+    # fallback 前缀列表，Boo 游戏整个不提取——与 UnityScript 同类遗漏。
+    root = tmp_path / "boo"
+    root.mkdir()
+    _write_pe(root / "BooGame.exe")
+    data = root / "BooGame_Data"
+    (data / "globalgamemanagers").parent.mkdir(parents=True)
+    (data / "globalgamemanagers").write_bytes(b"Unity fixture")
+    for name in ("Assembly-CSharp.dll", "Assembly-Boo.dll",
+                 "Assembly-UnityScript-firstpass.dll", "Boo.Lang.dll"):
+        _write_pe(data / "Managed" / name, cli=True)
+
+    found = [p.name for p in discover_application_assemblies(root, data)]
+
+    assert found == ["Assembly-Boo.dll", "Assembly-CSharp.dll",
+                     "Assembly-UnityScript-firstpass.dll"]
+    assert "Boo.Lang.dll" not in found  # 语言运行时（非游戏文本）不提取
+
+
 def test_real_spolous_manifest_selects_only_six_game_assemblies():
     configured = os.environ.get("HANHUA_CORPUS_DIR")
     if not configured:

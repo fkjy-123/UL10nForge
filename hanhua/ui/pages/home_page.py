@@ -264,6 +264,10 @@ class HomePage(QWidget):
         self._refresh_profile_card()
         self.window.updateProjectCard(proj)
         summary = f"{report.text_files} 个文本文件 · {report.v2_files} 个二进制资源"
+        morph_warnings = [w for w in getattr(report, "warnings", ())
+                          if w.startswith("未知文本形态")]
+        if morph_warnings:
+            Toast.show(self, "\n".join(morph_warnings), "warning")
         if report.unblocked:
             self.drop_zone.set_state("ready")
             Toast.show(self, f"分析通过：{summary}", "success")

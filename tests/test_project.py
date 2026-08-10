@@ -10,23 +10,10 @@ import hanhua.core.project as project_module
 from hanhua.core.memory import ProjectStore
 from hanhua.core.models import FontConfig
 from hanhua.core.project import Project
-from hanhua.core.smoke import SmokeResult
 from hanhua.core.tooling.il2cpp_dumper import Il2CppLiteral
 from hanhua.core.settings import SettingsStore
 from tests.test_scanner import _make_tree
 from tests.test_tooling_runner import _make_junction
-
-
-@pytest.fixture(autouse=True)
-def _no_real_smoke(monkeypatch):
-    """写回集成测试不真实启动游戏进程：冒烟视为不可验证（N/A 不阻断）。
-
-    真实进程冒烟由 tests/test_smoke.py 通过注入的 launcher 覆盖。
-    """
-    monkeypatch.setattr(
-        "hanhua.core.project.run_staging_smoke",
-        lambda *args, **kwargs: SmokeResult(
-            "unverifiable", "测试环境：不执行真实启动冒烟"))
 
 
 def test_settings_roundtrip():

@@ -195,20 +195,18 @@ class TranslatePage(QWidget):
         self.stop_btn = QPushButton("停止")
         self.retry_btn = QPushButton("重试失败")
         self.write_btn = QPushButton("写回游戏")
+        self.play_btn = QPushButton("开始游戏")
         self.reveal_btn = QPushButton("在文件夹中显示")
         self.reveal_btn.setProperty("ghost", True)
         for button, name in (
             (self.start_btn, "开始自动翻译"), (self.stop_btn, "停止自动翻译"),
             (self.retry_btn, "重试失败译文"), (self.write_btn, "安全写回游戏副本"),
-            (self.reveal_btn, "打开汉化输出目录"),
+            (self.play_btn, "启动汉化副本进入游戏"), (self.reveal_btn, "打开汉化输出目录"),
         ):
             button.setMinimumHeight(44)
             button.setAccessibleName(name)
-        self.smoke_check = QCheckBox("启动冒烟")
-        self.smoke_check.setChecked(True)
-        self.smoke_check.setToolTip(
-            "发布前启动汉化副本数秒并扫描日志（异常则阻断发布）")
-        self.smoke_check.setAccessibleName("写回前启动冒烟验证")
+        self.play_btn.setToolTip(
+            "写回验证通过后亮起，点击直接启动汉化副本进入游戏")
         self.partial_check = QCheckBox("允许部分写入")
         self.partial_check.setChecked(False)
         self.partial_check.setToolTip(
@@ -217,21 +215,23 @@ class TranslatePage(QWidget):
         self.stop_btn.setEnabled(False)
         self.retry_btn.setEnabled(False)
         self.write_btn.setEnabled(False)
+        self.play_btn.setEnabled(False)
         self.reveal_btn.setHidden(True)
         ctl.addWidget(self.start_btn)
         ctl.addWidget(self.stop_btn)
         ctl.addWidget(self.retry_btn)
         ctl.addStretch(1)
-        ctl.addWidget(self.smoke_check)
         ctl.addWidget(self.partial_check)
         ctl.addWidget(self.reveal_btn)
         ctl.addWidget(self.write_btn)
+        ctl.addWidget(self.play_btn)
         lay.addLayout(ctl)
 
         self.start_btn.clicked.connect(self.start)
         self.stop_btn.clicked.connect(self.stop)
         self.retry_btn.clicked.connect(self.retry_failed)
         self.write_btn.clicked.connect(self.write_back)
+        self.play_btn.clicked.connect(self.launch_game)
         self.reveal_btn.clicked.connect(self.reveal_output)
         self.copy_log_btn.clicked.connect(self._copy_log)
         self.clear_log_btn.clicked.connect(self._clear_log)
@@ -402,7 +402,17 @@ class TranslatePage(QWidget):
                     is_actionable_translation(entry) for entry in entries)
                 on_log(f"开始翻译：共 {len(entries)} 条，待翻译 {total_pending} 条")
                 if total_pending == 0:
-                    on_log("没有待翻译条目（全部已翻译或已锁定），可直接点击写回游戏")
+                    low_pending = sum(
+                        1 for e in entries
+                        if e.status == "pending"
+                        and e.meta.get("confidence") == "low")
+                    if low_pending:
+                        on_log(f"没有可翻译条目；另有 {low_pending} 条低置信度"
+                               f"条目（引擎消息/疑似噪音）留档，可在文本审校"
+                               f"按「低置信度」筛选查看")
+                    else:
+                        on_log("没有待翻译条目（全部已翻译或已锁定），"
+                               "可直接点击写回游戏")
                 on_log(f"模型：{api.model} · 并发 {concurrency} · 每批 {batch_size} 条")
                 on_log(f"请求地址：{client.url}")
                 stats = translator.run(entries, progress_cb=on_progress)
@@ -569,8 +579,7 @@ class TranslatePage(QWidget):
         def run_write():
             return self._write_worker(
                 project, generation, font_config, signals_holder["signals"],
-                allow_partial=self.partial_check.isChecked(),
-                smoke=self.smoke_check.isChecked())
+                allow_partial=self.partial_check.isChecked())
 
         worker = Worker(run_write)
         signals_holder["signals"] = worker.signals
@@ -615,19 +624,18 @@ class TranslatePage(QWidget):
             self.log_view.appendPlainText(f"失败记录已导出：{export_path}")
 
     def _write_worker(self, project, generation: int, font_config,
-                      signals=None, *, allow_partial: bool = False,
-                      smoke: bool = True):
+                      signals=None, *, allow_partial: bool = False):
         with self.state.project_lease(project, generation) as acquired:
             if not acquired:
                 return None
             if signals is None:
                 return project.write_all(
                     font_config=font_config,
-                    allow_partial=allow_partial, smoke=smoke)
+                    allow_partial=allow_partial)
             return project.write_all(
                 font_config=font_config,
                 stage_cb=signals.progress.emit,
-                allow_partial=allow_partial, smoke=smoke,
+                allow_partial=allow_partial,
             )
 
     def _on_write_stage(self, stage) -> None:
@@ -642,7 +650,6 @@ class TranslatePage(QWidget):
             "patching": 45,
             "runtime_payload": 65,
             "verifying": 80,
-            "smoke": 88,
             "publishing": 95,
             "published": 100,
         }
@@ -719,7 +726,7 @@ class TranslatePage(QWidget):
                 for name, item in gates.items()
                 if name != "overall"]
             self.log_view.appendPlainText(
-                f"五态闸门：{' · '.join(gate_parts)}"
+                f"四态闸门：{' · '.join(gate_parts)}"
                 f"（overall={overall}）")
             for name, item in gates.items():
                 if name != "overall" and item.get("detail"):
@@ -756,6 +763,9 @@ class TranslatePage(QWidget):
             self.log_view.appendPlainText(
                 f"发布清单：{out / manifest_name}（全量文件 hash，含未修改文件）")
         self.reveal_btn.setHidden(not verified)
+        staged_exe = self._staged_executable()
+        self.play_btn.setEnabled(
+            verified and staged_exe is not None and staged_exe.exists())
         if route_blocked or not route_complete or not verified:
             detail = (
                 "必需能力仍被阻断" if route_blocked
@@ -773,7 +783,7 @@ class TranslatePage(QWidget):
         else:
             toast = (f"写回已验证 · {changed_files} 个变更文件 · "
                      f"{written_translations} 条译文 · "
-                     f"五态闸门 {overall}")
+                     f"四态闸门 {overall}")
             if (font_level == "runtime_fallback" and font is not None
                     and font.installed):
                 toast += f" · 中文字体 {font.family}"
@@ -787,18 +797,70 @@ class TranslatePage(QWidget):
             else:
                 subprocess.Popen(["xdg-open", out])
 
+    def _staged_executable(self):
+        """汉化副本 exe 的绝对路径；无法定位时返回 None。
+
+        汉化副本与原游戏布局一致，exe 相对位置取自 fingerprint，
+        拼到 out_dir 上即为发布后的可执行文件。
+        """
+        project = self.state.project
+        if project is None:
+            return None
+        fingerprint = getattr(project, "_fingerprint", None)
+        if not callable(fingerprint):
+            return None
+        try:
+            info = fingerprint()
+        except Exception:  # noqa: BLE001 定位不到 exe 就不亮起按钮
+            return None
+        exe = getattr(info, "executable", None)
+        if exe is None:
+            return None
+        try:
+            return project.out_dir / exe.relative_to(project.game_dir)
+        except ValueError:
+            return None
+
+    def launch_game(self):
+        """启动已发布的汉化副本 exe（写回验证通过后按钮亮起）。"""
+        exe = self._staged_executable()
+        if exe is None or not exe.exists():
+            Toast.show(self, "找不到汉化副本可执行文件", "warning")
+            return
+        try:
+            # cwd 指向 exe 所在目录：Unity 游戏常见相对路径资源加载
+            subprocess.Popen([str(exe)], cwd=str(exe.parent))
+            Toast.show(self, f"已启动汉化副本：{exe.name}", "success")
+        except OSError as exc:
+            Toast.show(self, f"启动失败：{exc}", "error")
+
     # ── 状态刷新 ──
     def _refresh_chips(self):
         if self.state.project is None:
             return
         store = self.state.project.store
         s = self._last_stats
-        self.chip_pending.setText(f"待翻译 {store.count('pending')}")
+        rows = store.get_entries()
+        # 待翻译 = 引擎实际会翻的条目（is_actionable_translation），与翻译引擎
+        # 同源。此前用 store.count('pending') 裸计数：IL2CPP 低置信度引擎消息
+        # 留档（pending/low，不可自动翻译）被计入 → 显示虚高且永不减少，
+        # 「翻译已完成但待翻译不变」的真实案例（526 条引擎异常消息留档）。
+        actionable = low_pending = 0
+        for row in rows:
+            entry = self._entry_from_row(row)
+            if is_actionable_translation(entry):
+                actionable += 1
+            elif (row.get("status") == "pending"
+                    and entry.meta.get("confidence") == "low"):
+                low_pending += 1
+        self.chip_pending.setText(f"待翻译 {actionable}")
+        self.chip_pending.setToolTip(
+            f"另有 {low_pending} 条低置信度条目（引擎消息/疑似噪音）留档，"
+            "可在文本审校按「低置信度」筛选查看" if low_pending else "")
         self.chip_done.setText(f"已翻译 {store.count('translated')}")
         self.chip_failed.setText(f"失败 {store.count('failed')}")
         self.chip_skipped.setText(f"跳过 {store.count('skipped')}")
-        self.metric_pending.setValue(f"{store.count('pending')} 条")
-        rows = store.get_entries()
+        self.metric_pending.setValue(f"{actionable} 条")
         reasons: dict[str, int] = {}
         for row in rows:
             try:
@@ -813,9 +875,7 @@ class TranslatePage(QWidget):
         else:
             self.quality_reason_label.setText("质量门失败原因：无")
         if s is None:
-            n_total = sum(
-                is_actionable_translation(self._entry_from_row(row))
-                for row in rows)
+            n_total = actionable
             n_done = 0
             n_failed = 0
         else:
@@ -856,6 +916,7 @@ class TranslatePage(QWidget):
         self._refresh_chips()
         self._set_primary(self.start_btn)
         self.reveal_btn.setHidden(True)
+        self.play_btn.setEnabled(False)
 
     def _on_project_changing(self, _project):
         self.stop()

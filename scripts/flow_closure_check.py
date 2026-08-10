@@ -231,7 +231,7 @@ def run_closure(game_name: str, source: Path, work_root: Path) -> dict:
 
     before = _sha256_tree(game_dir)
     out_dir = proj.out_dir
-    result = proj.write_all(smoke=False)
+    result = proj.write_all()
     after = _sha256_tree(game_dir)
     scan_ms = int((time.time() - t0) * 1000)
 

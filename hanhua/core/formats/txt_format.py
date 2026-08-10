@@ -33,9 +33,18 @@ def extract_txt(path: str | Path, file_id: str | None = None) -> list[TextEntry]
                                      status=STATUS_SKIPPED, meta={**meta, "kind": "structural"}))
         else:
             m = _TAB.match(line) or _KV.match(line)
-            if m and m.group("value").strip():
+            if m:
                 value = m.group("value").strip()
-                if should_skip(value):
+                if not value:
+                    # 空值 kv 行（nolog= / key= 空参数）：配置项置空，不是文本。
+                    # 此前落入 plain 分支作为可译行（Morfosi boot.config 实证：
+                    # 'nolog=' 被模型回显 → untranslated_text 恒败）。写回原样输出。
+                    entries.append(TextEntry(
+                        file_id=fid, key_path=f"kv/{m.group('key').strip()}/{i}",
+                        original=value, status=STATUS_SKIPPED,
+                        meta={**meta, "kind": "kv_empty", "key": m.group("key"),
+                              "delim": "\t" if m.re is _TAB else m.group("delim")}))
+                elif should_skip(value):
                     # kv 值本身是结构/键（Assets/Plugins/x.dll、ui_newGame）不翻译
                     # 注意：_TAB 匹配无 delim 命名组（honorplusplus 实证）
                     entries.append(TextEntry(

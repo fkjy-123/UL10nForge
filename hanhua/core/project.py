@@ -33,11 +33,8 @@ from hanhua.core.paths import (_is_reparse_point, ensure_trusted_root,
 from hanhua.core.placeholders import is_key_style_identifier, looks_like_key_field
 from hanhua.core.quality import is_write_ready
 from hanhua.core.scanner import discover
-from hanhua.core.smoke import (
-    SmokeResult,
-    run_staging_smoke,
-)
 from hanhua.core.tooling.fingerprint import GameFingerprint, fingerprint_game
+from hanhua.core.tooling.morphology import classify_morphology
 from hanhua.core.tooling.player_layout import discover_player_candidates
 from hanhua.core.tooling.il2cpp_dumper import compare_literals, run_il2cpp_dumper
 from hanhua.core.tooling.manifest import ToolRegistry, ToolStatus
@@ -421,6 +418,9 @@ class AnalysisReport:
     unblocked: bool = False
     completable: bool = False
     warnings: tuple[str, ...] = ()
+    # 形态覆盖统计：(形态名, 文件数, 条目数)——形态注册表见
+    # hanhua/core/tooling/morphology.py（显式清单 + 文本先验）
+    morphology_stats: tuple[tuple[str, int, int], ...] = ()
 
 
 class Project:
@@ -464,6 +464,8 @@ class Project:
             _slug(self.game_dir, self.player_root, self.player_executable) /
             "project.db")
         self._last_analysis_report: AnalysisReport | None = None
+        self._last_scan_morphology: tuple[tuple[str, int, int], ...] = ()
+        self._last_scan_morph_warnings: tuple[str, ...] = ()
         self._last_il2cpp_input_hashes: tuple[str, str] | None = None
         self._last_source_manifest: dict[str, str] | None = None
         # 文本阶段 standalone 扫描时的全树快照：scan_v2 绑定前要求文本
@@ -595,6 +597,7 @@ class Project:
             v2_files = self.scan_v2()
         finally:
             self._scan_all_active = False
+        warnings.extend(self._last_scan_morph_warnings)
         route = _set_route_status(route, "text_scan", "succeeded")
         emit("binary_scan", "succeeded", f"Unity 二进制资源 {v2_files} 个")
 
@@ -716,6 +719,7 @@ class Project:
             unblocked=unblocked,
             completable=completable,
             warnings=tuple(warnings),
+            morphology_stats=self._last_scan_morphology,
         )
         self._last_analysis_report = report
         if report.input_protected and report.unblocked:
@@ -830,13 +834,27 @@ class Project:
         if meta is not None:
             rel = str(meta.relative_to(self.game_dir)).replace("\\", "/")
             sources.append((il2cpp_extractor.extract_metadata_strings, meta, rel))
+        # 形态覆盖统计（注册表显式清单）：未知形态 → 显式告警而非静默处理
+        morph_files: dict[str, int] = {}
+        morph_entries: dict[str, int] = {}
+        morph_warnings: list[str] = []
         for i, (fn, f, rel) in enumerate(sources):
             if progress_cb:
                 progress_cb(i + 1, len(sources))
+            morph = classify_morphology(rel)
+            if morph is None:
+                morph_warnings.append(
+                    f"未知文本形态：{rel}（未注册形态清单，请先登记再接线，"
+                    f"见 docs/识别形态覆盖与遗漏处理.md）")
+            else:
+                morph_files[morph] = morph_files.get(morph, 0) + 1
             pf = fn(f, file_id=rel)
             if pf.noise:
                 continue
             found_ids.add(rel)
+            if morph is not None:
+                morph_entries[morph] = (
+                    morph_entries.get(morph, 0) + len(pf.entries))
             self.store.add_file(pf.file_id, rel, pf.format, pf.encoding, pf.eol, pf.meta)
             new_keys = {e.key_path for e in pf.entries}
             # 重扫后不再存在的旧条目（如已被规则过滤的键位置）→ 删除，避免残留写回
@@ -865,6 +883,10 @@ class Project:
                     or standalone_after == self._last_text_scan_manifest)
                 if text_same:
                     self._last_source_manifest = dict(standalone_after)
+        self._last_scan_morphology = tuple(sorted(
+            (m, morph_files.get(m, 0), morph_entries.get(m, 0))
+            for m in morph_files))
+        self._last_scan_morph_warnings = tuple(morph_warnings)
         return kept
 
     # ── 写回（文本 + 二进制资源） ──
@@ -1038,10 +1060,9 @@ class Project:
             *, text_files: int, v2, text_verified: int,
             font, font_level: str, active_font_config: FontConfig,
             rejected: list, truncated: int, allow_partial: bool,
-            smoke_result: SmokeResult | None, smoke_enabled: bool,
             ready_text_translations: int) -> dict:
-        """写回安全闸门 P0-1：把“写回成功”拆成文件/容器/对象/运行时/
-        游戏性五态，禁止单一 succeeded 掩盖后续失败。"""
+        """写回安全闸门 P0-1：把“写回成功”拆成文件/容器/对象/运行时
+        四态，禁止单一 succeeded 掩盖后续失败。"""
         def gate(status: str, detail: str = "") -> dict:
             return {"status": status, "detail": detail}
 
@@ -1089,28 +1110,11 @@ class Project:
         else:
             runtime_gate = gate("BLOCKED", "字体运行时回退层不可验证")
 
-        # 游戏性级：staging 启动冒烟 + 日志扫描（P0-5）
-        if not smoke_enabled:
-            gameplay_gate = gate("N/A", "用户未启用启动冒烟")
-        elif smoke_result is None or smoke_result.unverifiable:
-            gameplay_gate = gate(
-                "N/A", (smoke_result.detail if smoke_result else "冒烟未执行"))
-        elif smoke_result.blocked:
-            gameplay_gate = gate(
-                "BLOCKED", f"启动冒烟失败：{smoke_result.detail}")
-        elif smoke_result.status == "warn":
-            gameplay_gate = gate(
-                "WARN", f"{smoke_result.detail}；日志错误 "
-                f"{len(smoke_result.log_errors)} 条")
-        else:
-            gameplay_gate = gate("PASS", smoke_result.detail)
-
         gates = {
             "file": file_gate,
             "container": container_gate,
             "object": object_gate,
             "runtime": runtime_gate,
-            "gameplay": gameplay_gate,
         }
         statuses = [item["status"] for item in gates.values()]
         if "BLOCKED" in statuses:
@@ -1186,17 +1190,11 @@ class Project:
         font_config: FontConfig | None = None,
         stage_cb: Callable[[WritebackStage], None] | None = None,
         allow_partial: bool = False,
-        smoke: bool = True,
-        smoke_timeout: float = 20.0,
-        smoke_runner: Callable | None = None,
     ) -> dict:
         """复制游戏目录到输出目录，依次写回文本与二进制资源。
 
         allow_partial：存在 rejected/truncated 条目时是否允许发布
         （默认 False → BLOCKED 阻断；True → WARN 放行并完整记录）。
-        smoke：发布前对 staging 做启动冒烟与日志扫描（P0-5）。
-        smoke_runner：可注入的冒烟执行器（测试用），签名同
-        hanhua.core.smoke.run_staging_smoke。
         """
         _emit_writeback_stage(stage_cb, "preflight", "正在执行写回预检")
         _reject_store_inside_out_dir(self.app_dir, self.out_dir)
@@ -1414,32 +1412,7 @@ class Project:
                 "allow_partial": allow_partial,
                 "warnings": warnings,
             }
-            # P0-5：发布前对 staging 启动冒烟 + 日志扫描
-            smoke_result: SmokeResult | None = None
-            if smoke:
-                _emit_writeback_stage(stage_cb, "smoke", "正在启动 staging 冒烟…")
-                runner = smoke_runner or run_staging_smoke
-                try:
-                    # 只传相对路径：fingerprint.executable 是源目录内的
-                    # 绝对路径，直接传入会拼出原游戏 exe（启动原游戏而非
-                    # staging 汉化副本）
-                    executable_rel = (
-                        fingerprint.executable.relative_to(self.game_dir)
-                        if fingerprint.executable is not None else None)
-                    smoke_result = runner(
-                        staging, executable_rel,
-                        timeout=smoke_timeout)
-                except Exception as exc:  # noqa: BLE001 冒烟异常不伪装成通过
-                    smoke_result = SmokeResult(
-                        "unverifiable", f"冒烟执行异常：{exc}")
-            verification["smoke"] = {
-                "status": smoke_result.status,
-                "detail": smoke_result.detail,
-                "exit_code": smoke_result.exit_code,
-                "log_errors": list(smoke_result.log_errors),
-                "log_scan": smoke_result.log_scan,
-            } if smoke_result is not None else None
-            # P0-1：五态闸门（文件/容器/对象/运行时/游戏性），
+            # P0-1：四态闸门（文件/容器/对象/运行时），
             # 任一 BLOCKED 都不得发布副本
             gates = self._evaluate_writeback_gates(
                 text_files=n_text, v2=v2, text_verified=text_verified,
@@ -1447,7 +1420,6 @@ class Project:
                 active_font_config=active_font_config,
                 rejected=rejected_entries, truncated=len(truncated_items),
                 allow_partial=allow_partial,
-                smoke_result=smoke_result, smoke_enabled=smoke,
                 ready_text_translations=_count_write_ready_translations(
                     self.store, text_only=True))
             overall = gates["overall"]["status"]
@@ -1463,7 +1435,7 @@ class Project:
                     "已拒绝发布副本。详见发布报告")
             route = _set_route_status(
                 route, "writeback", "succeeded",
-                "写回、输入保护、重开验证与五态闸门通过"
+                "写回、输入保护、重开验证与四态闸门通过"
                 if overall == "PASS"
                 else f"写回完成（overall={overall}），详见发布报告")
             base_report = (

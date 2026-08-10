@@ -95,8 +95,20 @@ _ENGINE_PATTERNS = [
     re.compile(r"table_[a-z]{2}$", re.I),                           # 表名语言变体 MonologueTable_es
     # HTTP 协议状态行（websocket-sharp.dll 网络库内部串，非游戏文本）
     re.compile(r"^HTTP/\d(?:\.\d)? \d{3} [A-Za-z][A-Za-z ]*$", re.I),
+    # Input System 序列化绑定路径（<Keyboard>/z、<Mouse>/position、<Gamepad>/leftStick）。
+    # 设备路径是引擎语法，翻译后 InputSystem 反序列化/查找绑定失败 → 按键全部无反应
+    # （morfosigame 实证：Proceed/SkipCutscene 动作被译后点击与跳过失效）。
+    re.compile(r"^<[A-Za-z0-9_.]+>/(?:[A-Za-z0-9_./-]+)?$"),
+    # Input System interactions 触发方式串（Press(behavior=2)、Hold()、Tap()）：
+    # 运行时按名字解析交互，翻译必然破坏触发条件。
+    re.compile(r"^(?:press|hold|tap|slowtap|multitap|doubletap|"
+               r"pressandrelease|pressdelay|presspoint)\s*\(.*\)$", re.I),
     # Timeline 动画资源 displayName（"AnimationPlayableAsset of Recorded"）
     re.compile(r"^animationplayableasset of\b", re.I),
+    # Timeline 轨道 displayName（Animation Track (1) 带编号形式——轨道重名自动加序号，
+    # 翻译后字符串结构破坏且按名查找失败，morfosigame 实证被拆成 '动画轨道'+' (1)'）
+    re.compile(r"^(?:Activation|Animation|Audio|Control|Group|Marker|Playable|"
+               r"Signal|Cinemachine) Track(?:\s*\(\d+\))?$", re.I),
     re.compile(r"^version=0\.0\.0\.0, culture=neutral", re.I),      # 程序集限定名尾部
     # Unity Localization 表键 / 编程命名：无空格、小写开头、含内部大写或下划线
     # （lockedEntrance、ui_newGame、takeTools）

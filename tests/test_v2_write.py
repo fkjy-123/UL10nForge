@@ -11,7 +11,6 @@ from hanhua.core.font_support import FontInstallError, FontInstallResult
 from hanhua.core.memory import ProjectStore
 from hanhua.core.models import FontConfig
 from hanhua.core.project import Project
-from hanhua.core.smoke import SmokeResult
 from hanhua.core.unity.writer import (
     WriteResult, _entries_for_object_identity, _fit_bytes, _patch_asset, _patch_dll,
     _patch_metadata,
@@ -22,15 +21,6 @@ from hanhua.core.unity.writer import (
 from tests.test_scanner import _make_tree
 from tests.test_tooling_runner import _make_junction
 from tests.test_v2_patch_pools import _build, _us_heap
-
-
-@pytest.fixture(autouse=True)
-def _no_real_smoke(monkeypatch):
-    """写回集成测试不真实启动游戏进程：冒烟视为不可验证（N/A 不阻断）。"""
-    monkeypatch.setattr(
-        "hanhua.core.project.run_staging_smoke",
-        lambda *args, **kwargs: SmokeResult(
-            "unverifiable", "测试环境：不执行真实启动冒烟"))
 
 
 def _translate_first_pending(project: Project) -> None:

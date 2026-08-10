@@ -197,7 +197,7 @@ def test_translation_start_log_uses_same_zero_actionable_scope(
 
     assert stats.total == 0
     assert any("待翻译 0 条" in line for line in logs)
-    assert any("没有待翻译条目" in line for line in logs)
+    assert any("低置信度" in line for line in logs)   # 留档提示（uncertain/open 1 条）
 
 
 def test_main_window_statusbar_reports_local_backend(qapp, tmp_path):
@@ -533,7 +533,7 @@ def test_stale_queued_write_never_targets_new_project_or_calls_back(
             self.store = Store()
             self.out_dir = tmp_path / f"{name}_汉化"
 
-        def write_all(self, *, font_config=None, allow_partial=False, smoke=True):
+        def write_all(self, *, font_config=None, allow_partial=False):
             calls.append((self.name, font_config))
             return {"text_files": 1}
 
@@ -575,7 +575,7 @@ def test_writeback_stage_progress_and_duplicate_run_guard(
             self.out_dir = tmp_path / "game_汉化"
 
         def write_all(self, *, font_config=None, stage_cb=None,
-                allow_partial=False, smoke=True):
+                allow_partial=False):
             assert font_config is not None
             for phase, message in (
                     ("copying", "正在复制原游戏"),
@@ -638,7 +638,7 @@ def test_project_switch_cannot_clear_active_write_guard(
             self.out_dir = tmp_path / f"{name}_汉化"
 
         def write_all(self, *, font_config=None, stage_cb=None,
-                allow_partial=False, smoke=True):
+                allow_partial=False):
             return {"text_files": 1}
 
     first = Project("first")
@@ -713,7 +713,7 @@ def test_active_write_holds_project_lease_across_switch(
         def __init__(self):
             self.store = Store()
 
-        def write_all(self, *, font_config=None, allow_partial=False, smoke=True):
+        def write_all(self, *, font_config=None, allow_partial=False):
             assert self.store.closed is False
             entered.set()
             assert release.wait(timeout=2)
@@ -755,7 +755,7 @@ def test_write_task_captures_font_settings_at_queue_time(
         "store": store,
         "out_dir": tmp_path / "game_汉化",
         "write_all": lambda _self, *, font_config=None, stage_cb=None,
-             allow_partial=False, smoke=True: captured.append(
+             allow_partial=False: captured.append(
             font_config) or {"text_files": 1},
     })()
     state = _state(tmp_path)
@@ -917,6 +917,64 @@ def test_active_translation_holds_project_lease_until_worker_finally(
     assert first.store.closed is True
 
 
+def test_refresh_chips_pending_uses_actionable_count(qapp, tmp_path):
+    """待翻译计数与翻译引擎同源（is_actionable_translation）：低置信度
+    留档（pending/low，IL2CPP 引擎消息）不计入，只计入可翻译条目；
+    留档条数进 tooltip 提示（真实案例：526 条引擎消息待翻译永不减少）。"""
+    rows = [
+        # 可翻译：high 置信度 pending
+        {"file_id": "a", "key_path": "k1", "original": "Hello",
+         "translation": "", "status": "pending", "locked": 0,
+         "meta": json.dumps({"confidence": "high"})},
+        # 留档：low 置信度 pending（IL2CPP 引擎消息，不可自动翻译）
+        {"file_id": "b", "key_path": "k2",
+         "original": "Address already in use",
+         "translation": "", "status": "pending", "locked": 0,
+         "meta": json.dumps({"confidence": "low",
+                             "reason": "il2cpp_sentence"})},
+        # 已翻译不计入；失败若置信度合格下次会重试 → 用 low 排除
+        {"file_id": "a", "key_path": "k3", "original": "Bye",
+         "translation": "再见", "status": "translated", "locked": 0,
+         "meta": json.dumps({"confidence": "high"})},
+        {"file_id": "a", "key_path": "k4", "original": "Oops",
+         "translation": "", "status": "failed", "locked": 0,
+         "meta": json.dumps({"confidence": "low"})},
+    ]
+    state = _state(tmp_path)
+    state.project = type("Project", (), {
+        "store": _StoreRows(rows), "out_dir": tmp_path / "game_汉化",
+    })()
+    state.analysis_report = _report()
+    page = TranslatePage(state, _Window())
+    page._last_stats = None
+    page._refresh_chips()
+    assert page.chip_pending.text() == "待翻译 1"
+    assert page.metric_pending.value_label.text() == "1 条"
+    assert "低置信度" in page.chip_pending.toolTip()
+    assert "1" in page.chip_pending.toolTip()      # 留档 1 条
+    # 进度条与计数同源（未运行时 done=0）：1 / 1
+    assert page.progress_label.text() == "0 / 1 条"
+
+
+def test_refresh_chips_pending_without_low_entries_has_no_tooltip(
+        qapp, tmp_path):
+    rows = [
+        {"file_id": "a", "key_path": "k1", "original": "Hello",
+         "translation": "", "status": "pending", "locked": 0,
+         "meta": json.dumps({"confidence": "high"})},
+    ]
+    state = _state(tmp_path)
+    state.project = type("Project", (), {
+        "store": _StoreRows(rows), "out_dir": tmp_path / "game_汉化",
+    })()
+    state.analysis_report = _report()
+    page = TranslatePage(state, _Window())
+    page._last_stats = None
+    page._refresh_chips()
+    assert page.chip_pending.text() == "待翻译 1"
+    assert page.chip_pending.toolTip() == ""
+
+
 def _report(*, unblocked=True, completable=False, route=()):
     return type("Report", (), {
         "unblocked": unblocked,
@@ -924,6 +982,80 @@ def _report(*, unblocked=True, completable=False, route=()):
         "route": route,
         "tool_results": (),
     })()
+
+
+def test_play_button_dark_until_verified_writeback_then_launches_staged_exe(
+        qapp, tmp_path, monkeypatch):
+    """开始游戏按钮：写回前禁用（黑），写回验证通过后亮起，
+    点击启动汉化副本 exe（out_dir 下、与原游戏同相对位置）。"""
+    row = {
+        "file_id": "ui.assets", "key_path": "obj/1", "original": "Continue",
+        "translation": "继续", "status": "translated", "locked": 0,
+        "meta": json.dumps({"quality_passed": True, "confidence": "high"}),
+    }
+    game_dir = tmp_path / "game"
+    game_dir.mkdir()
+    source_exe = game_dir / "Game.exe"
+    source_exe.write_bytes(b"MZfake")
+    out_dir = tmp_path / "game_汉化"
+    out_dir.mkdir()
+    (out_dir / "Game.exe").write_bytes(b"MZfake")
+
+    class Store(_StoreRows):
+        def close(self):
+            pass
+
+    class Project:
+        def __init__(self):
+            self.store = Store([row])
+            self.game_dir = game_dir
+            self.out_dir = out_dir
+
+        def _fingerprint(self):
+            return type("Fp", (), {"executable": source_exe})()
+
+    state = _state(tmp_path)
+    state.switch_project(Project())
+    page = TranslatePage(state, _Window())
+    assert page.play_btn.isEnabled() is False, "写回前按钮应禁用（黑）"
+
+    launched = []
+    monkeypatch.setattr(
+        "hanhua.ui.pages.translate_page.subprocess.Popen",
+        lambda args, cwd=None: launched.append((list(args), cwd)))
+    monkeypatch.setattr(
+        "hanhua.ui.pages.translate_page.Toast.show", lambda *a, **k: None)
+
+    result = {
+        "text_files": 1,
+        "verification": {
+            "input_protected": True,
+            "reopen_verified": True,
+            "changed_files": 1,
+            "written_translations": 1,
+            "font_level": "disabled",
+            "overall": "PASS",
+        },
+        "analysis_report": _report(unblocked=True, completable=True),
+    }
+    page._on_written(result)
+    assert page.play_btn.isEnabled() is True, "写回成功后按钮应亮起"
+
+    page.launch_game()
+    assert launched == [([str(out_dir / "Game.exe")], str(out_dir))], \
+        "必须启动汉化副本 exe，且 cwd 指向其所在目录"
+
+    # 切换项目后恢复禁用
+    class OtherStore(_StoreRows):
+        def close(self):
+            pass
+
+    state.switch_project(type("Project", (), {
+        "store": OtherStore([row]),
+        "game_dir": game_dir,
+        "out_dir": tmp_path / "other_汉化",
+    })())
+    assert page.play_btn.isEnabled() is False
 
 
 def test_translate_write_uses_unblocked_route_and_real_write_ready_count(

@@ -286,14 +286,15 @@ def discover_application_assemblies(
     fallback = [entry for entry in managed_files.values()
                 if entry.suffix.casefold() == ".dll"
                 and entry.name.casefold().startswith(
-                    ("assembly-csharp", "assembly-unityscript"))
+                    ("assembly-csharp", "assembly-unityscript", "assembly-boo"))
                 and is_pe_image(entry, require_cli=True)]
     return tuple(sorted(fallback, key=lambda path: (path.name.casefold(), path.name)))
 
 
 def _is_application_assembly_name(name: str) -> bool:
     canonical = name.casefold()
-    if canonical.startswith(("assembly-csharp", "assembly-unityscript")):
+    if canonical.startswith((
+            "assembly-csharp", "assembly-unityscript", "assembly-boo")):
         return True
     return (canonical not in _FRAMEWORK_ASSEMBLY_NAMES
             and canonical not in _PACKAGE_ASSEMBLY_NAMES

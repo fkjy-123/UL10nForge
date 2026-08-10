@@ -1,6 +1,8 @@
 import pytest
 
 from hanhua.core.placeholders import (extract_placeholders,
+                                      is_credit_like,
+                                      is_hard_structural,
                                       self_heal_format_tags,
                                       validate_translation, should_skip)
 
@@ -117,6 +119,39 @@ def test_self_heal_does_not_reorder_when_opening_tags_differ():
     src = "<b><color=#fff>Hi</color></b>"
     dst = "<color=#fff><b>你好</b></color>"
     assert self_heal_format_tags(src, dst) == dst
+
+
+def test_base64_zip_payload_is_skipped():
+    # Morfosi level5 str/0 实证：base64 编码 ZIP 包（PK\x03\x04 魔数 UEsDB，
+    # 结尾 == 填充符）。此前 _BASE64 字符集不含 '=' → fullmatch 失败漏网，
+    # 模型整段回显恒败（untranslated_text）。
+    payload = (
+        "UEsDBBQAAAgIAACYn+uubW6iYAIAAAUFAAALACQAZ3JhcGgwLmpzb24KACAAAAAAAAEAGAAAg"
+        "D7V3rGdAQCAPtXesZ0BAIA+1d6xnQFlVEtzmzAQ/isenRsP4Ne4t9ZxnB7ymLidXLjI0mI0Fh"
+        "IjidhOxv+9KyEMdbkg9tvHt9+u+CJC2RqY02ZjBH/SHMj3EfFn8m3Ug49wonuttuITOp93wV"
+        "3pnWjweaNOaLSnPszqCpwR7IfaS++coLFRotCmWvM9rLR1Fs0FlRYQMtr5aIWmrxE54etu6U"
+        "POeMoW/vSJp2UyuuCRgXJgBq6T6Xjpn3kWQ9LlIoa0EY1iklY1cE+/D0zT+XjWVVlm41lwVth"
+        "e9EsCzLSUwkZ2xJ3r0P22LsGAb58Lis0GRp5ACWJfuvhxjX0pCgsuKmHo+V4Y1KxNSn7qVsi"
+        "K2kNL74PKxpfJZvNAqk369B9+lwa4MLp67Oqmia/hSsEOb/TMqHUDpYfm+554GlQ6UnmgOwn"
+        "vJahnvTG6URxBZxof2ljI7vvPa2urEtiht7dUb4xN3cveDbYbq+/hEro/raSodkH4aWvYSh3"
+        "kDtsABkfzCwmHXbExBVo9iz8WftP9cKki8CCMdQjFLpWnt9ON8a5kHTTz3TRupY2CYI6ka1B"
+        "UuvMrpnG3I7zBBmVvkAfqr08sHrHuVtyEBHPvnyQ30Ks+XodlS318Alu+NE4KBT1pDzyjTiu"
+        "tVLthQ026sG1jCsoGYftG8H9XixSTaVYs5lM2X0xSOqF3nE0zihdlniZZBospCbsnFPZJ5WtL"
+        "NMqDU1N9coV71v1VRhtD67Dt3NDjRnxWeiC5UIXeMgOgXtoMV+JgsAheS77mAgXagnNChXmT"
+        "r5xIzQ7A82uiPHS6PjlD8z5LTmrxoZ235GQVfiM5uZDLX1BLAwQUAAAICAAAmJ/rpZsc7G0AA"
+        "AB4AAAACQAkAG1ldGEuanNvbgoAIAAAAAAAAQAYAACAPtXesZ0BAIA+1d6xnQEAgD7V3rGdA"
+        "atWKkstKs7Mz1OyUjDRM9IzNNJRUEovSizIKAaKGII4pZkpIHa0UpqxiVGauZlJspm5sWGic"
+        "aJuSrKJUaKRpZGZoYGRUaq5iVIsUH1JZUGqX2JuKkRPQGJJRlpmXkpmXrqee1FmijvIaKXYWg"
+        "BQSwECLQAUAAAICAAAmJ/rrm1uomACAAAFBQAACwAkAAAAAAAAAAAAAAAAZ3JhcGgwLmpzb24"
+        "KACAAAAAAAAEAGAAAgD7V3rGdAQCAPtXesZ0BAIA+1d6xnQFQSwECLQAUAAAICAAAmJ/rpZsc"
+        "7G0AAAB4AAAACQAkAAAAAAAAAAAAAACtAgAAbWV0YS5qc29uCgAgAAAAAAABABgAAIA+1d6x"
+        "nQEAgD7V3rGdAQCAPtXesZ0BUEsFBgAAAAACAAIAuAAAAGUDAAAAAA==")
+    assert should_skip(payload)
+    # 无 = 填充的普通 base64 序列化数据（含数字）仍拦截（原有行为）
+    assert should_skip("aGVsbG8gd29ybGQgdGhpcyBpcyBiYXNlNjQgZGF0YTEyMzQ1Njc4OTEyMzQ1"
+                       "Njc4OTAxMjM0NTY3ODkwMTIzNDU2Nzg5MDEyMzQ1Njc4OTAxMjM0NTY3")
+    # 纯字母超长串（无数字、无填充符）不是 base64 特征 → 不误伤
+    assert not should_skip("A" * 100)
 
 
 def test_skip_rules():
@@ -308,6 +343,32 @@ def test_credit_attribution_and_copyright_lines_are_skipped(text):
 ])
 def test_attribution_shaped_sentences_are_not_skipped(text):
     assert not should_skip(text)
+
+
+@pytest.mark.parametrize("text", [
+    # 署名/版权反模式（软猜测）：is_credit_like 命中……
+    "A game by Kyuppin",
+    "Created by Sam Hogan",
+    "made in 48h",
+    "© 2021 Some Studio",
+    "Game by Team Awesome",
+])
+def test_is_credit_like_soft_guess_hits_credit_lines(text):
+    assert is_credit_like(text)
+    # 提取层行为不变：is_hard_structural 仍跳过署名行
+    assert is_hard_structural(text)
+
+
+@pytest.mark.parametrize("text", [
+    # 含句子虚词/多段句子 → 不是署名行，软猜测不命中
+    "A game by Kyuppin, and it was fun",
+    "we were found by Gary.",
+    "It was made by Gary and it works",
+    "This game was made by a team of three",
+    "",
+])
+def test_is_credit_like_soft_guess_misses_sentences(text):
+    assert not is_credit_like(text)
 
 
 @pytest.mark.parametrize("text", [

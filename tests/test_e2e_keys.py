@@ -46,8 +46,7 @@ def test_key_value_end_to_end(tmp_path):
     val = [e for e in store.get_entries()
            if e["original"] == VALUE and e["translation"] == "开始游戏"]
     assert len(val) >= 1, "值译文应在重扫后保留"
-    # 写回（重建副本；不启动冒烟，避免自动化环境弹窗/进程干扰）
-    result = proj.write_all(smoke=False)
+    result = proj.write_all()
     v2 = result.get("v2")
     assert v2.files >= 1
     # 副本验证：键保持英文、值为中文

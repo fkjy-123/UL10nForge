@@ -494,6 +494,11 @@ def extract_dll_user_strings(path: str | Path, file_id: str | None = None,
     """提取 DLL #US 字符串 → ParsedFile。"""
     import dnfile
     p = Path(path)
+    # UnityScript（旧 Unity JS 语言，Assembly-UnityScript*.dll）编译器生成的 IL
+    # 与 C# 编译形态差异大，ui setter 验证链大面积失效（lilys-day-off 实证：
+    # 825 条对话/服装/结局/选项文本全落 unverified 被跳过）。该程序集字面量
+    # 几乎全是显示文本，因此对其放宽 unverified 判定。
+    is_unityscript_asm = p.name.casefold().startswith("assembly-unityscript")
     fid = file_id or str(p).replace("\\", "/")
     pe = dnfile.dnPE(str(p))
     try:
@@ -529,7 +534,16 @@ def extract_dll_user_strings(path: str | Path, file_id: str | None = None,
             if (not is_ui_text and not interaction_prompt and not uppercase_ui
                     and (is_code_identifier(s) or _is_engine_string(s))):
                 continue
-            display_text = is_ui_text or interaction_prompt or uppercase_ui
+            # UnityScript 程序集：未被上方剔除的字符串全部按显示文本升级。
+            # 含空格的是对话/UI/服装/结局文本；无空格语气词（'What?' 'Hahaha!'
+            # 'Lily-chan!' 等对话反应词，lilys-day-off 实证 29 条）也是真实
+            # 文本——纯标识符已被 is_code_identifier 剔除，此处剩余即文本。
+            unityscript_display = (
+                is_unityscript_asm
+                and not is_ui_text and not interaction_prompt and not uppercase_ui)
+            display_text = (
+                is_ui_text or interaction_prompt or uppercase_ui
+                or unityscript_display)
             entries.append(TextEntry(
                 file_id=fid, key_path=f"us#{offset}",
                 original=s, status="pending" if display_text else STATUS_SKIPPED,
@@ -543,7 +557,7 @@ def extract_dll_user_strings(path: str | Path, file_id: str | None = None,
                     "utf16_len": len(raw),
                     "confidence": (
                         "high" if is_ui_text or interaction_prompt
-                        else "medium" if uppercase_ui
+                        else "medium" if (uppercase_ui or unityscript_display)
                         else "low"),
                     "role": "display" if display_text else "structural",
                     "disposition": "translate" if display_text else "structural",
@@ -551,6 +565,7 @@ def extract_dll_user_strings(path: str | Path, file_id: str | None = None,
                         "mono_ui_setter" if is_ui_text
                         else "interaction_prompt" if interaction_prompt
                         else "user_string_uppercase_ui" if uppercase_ui
+                        else "unityscript_user_string" if unityscript_display
                         else "unverified_user_string"),
                 }))
         for e in entries:
