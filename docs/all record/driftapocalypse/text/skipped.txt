@@ -1,0 +1,4117 @@
+游戏：driftapocalypse
+导出时间：2026-08-11 23:16:13
+翻译模型：Hy-MT2-1.8B-Q6_K
+跳过文本：274 条
+
+────────────────────────────────────────────────────────────────
+[1] 跳过文本
+来源：Drift Apocalypse_Data/app.info
+键位：plain/0
+对象：纯文本文件行
+原文：TorryDEV
+译文：（无）
+置信度：medium
+原因：—
+角色：—
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[2] 跳过文本
+来源：Drift Apocalypse_Data/data.unity3d
+键位：asset#resources.assets#56/json/androidStore
+对象：—（asset_file=resources.assets、obj=56）
+原文：GooglePlay
+译文：（无）
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[3] 跳过文本
+来源：Drift Apocalypse_Data/data.unity3d
+键位：asset#resources.assets#57/json/appleSKU
+对象：—（asset_file=resources.assets、obj=57）
+原文：
+译文：（无）
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[4] 跳过文本
+来源：Drift Apocalypse_Data/data.unity3d
+键位：asset#resources.assets#57/json/appleTeamID
+对象：—（asset_file=resources.assets、obj=57）
+原文：
+译文：（无）
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[5] 跳过文本
+来源：Drift Apocalypse_Data/data.unity3d
+键位：asset#resources.assets#57/json/products/0/id
+对象：—（asset_file=resources.assets、obj=57）
+原文：com.torrydev.driftapocalypse.premium
+译文：（无）
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[6] 跳过文本
+来源：Drift Apocalypse_Data/data.unity3d
+键位：asset#resources.assets#57/json/products/0/screenshotPath
+对象：—（asset_file=resources.assets、obj=57）
+原文：
+译文：（无）
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[7] 跳过文本
+来源：Drift Apocalypse_Data/data.unity3d
+键位：asset#resources.assets#57/json/products/0/pricingTemplateID
+对象：—（asset_file=resources.assets、obj=57）
+原文：
+译文：（无）
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[8] 跳过文本
+来源：Drift Apocalypse_Data/data.unity3d
+键位：asset#sharedassets0.assets#129/str/4
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=129）
+原文：Bold
+译文：（无）
+置信度：low
+原因：shared_resource_config_object
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[9] 跳过文本
+来源：Drift Apocalypse_Data/data.unity3d
+键位：asset#level0#648/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=648）
+原文：Horizontal
+译文：（无）
+置信度：low
+原因：identifier_without_display_evidence
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[10] 跳过文本
+来源：Drift Apocalypse_Data/data.unity3d
+键位：asset#level0#648/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=648）
+原文：Vertical
+译文：（无）
+置信度：low
+原因：identifier_without_display_evidence
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[11] 跳过文本
+来源：Drift Apocalypse_Data/data.unity3d
+键位：asset#level0#648/str/2
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=648）
+原文：Submit
+译文：（无）
+置信度：low
+原因：identifier_without_display_evidence
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[12] 跳过文本
+来源：Drift Apocalypse_Data/data.unity3d
+键位：asset#level0#648/str/3
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=648）
+原文：Cancel
+译文：（无）
+置信度：low
+原因：identifier_without_display_evidence
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[13] 跳过文本
+来源：Drift Apocalypse_Data/data.unity3d
+键位：asset#level0#652/str/5
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=652）
+原文：MainMenu, Assembly-CSharp
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[14] 跳过文本
+来源：Drift Apocalypse_Data/data.unity3d
+键位：asset#level0#657/str/5
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=657）
+原文：MainMenu, Assembly-CSharp
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[15] 跳过文本
+来源：Drift Apocalypse_Data/data.unity3d
+键位：asset#level0#662/str/5
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=662）
+原文：MainMenu, Assembly-CSharp
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[16] 跳过文本
+来源：Drift Apocalypse_Data/data.unity3d
+键位：asset#level0#684/str/5
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=684）
+原文：MainMenu, Assembly-CSharp
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[17] 跳过文本
+来源：Drift Apocalypse_Data/data.unity3d
+键位：asset#level0#701/str/5
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=701）
+原文：MainMenu, Assembly-CSharp
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[18] 跳过文本
+来源：Drift Apocalypse_Data/data.unity3d
+键位：asset#level0#703/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=703）
+原文：ShopController, Assembly-CSharp
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[19] 跳过文本
+来源：Drift Apocalypse_Data/data.unity3d
+键位：asset#level0#703/str/4
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=703）
+原文：ShopController, Assembly-CSharp
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[20] 跳过文本
+来源：Drift Apocalypse_Data/data.unity3d
+键位：asset#level0#706/str/5
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=706）
+原文：MainMenu, Assembly-CSharp
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[21] 跳过文本
+来源：Drift Apocalypse_Data/data.unity3d
+键位：asset#level0#706/str/8
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=706）
+原文：MainMenu, Assembly-CSharp
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[22] 跳过文本
+来源：Drift Apocalypse_Data/data.unity3d
+键位：asset#level0#709/str/5
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=709）
+原文：MainMenu, Assembly-CSharp
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[23] 跳过文本
+来源：Drift Apocalypse_Data/data.unity3d
+键位：asset#level0#723/str/5
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=723）
+原文：MainMenu, Assembly-CSharp
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[24] 跳过文本
+来源：Drift Apocalypse_Data/data.unity3d
+键位：asset#level0#723/str/8
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=723）
+原文：MainMenu, Assembly-CSharp
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[25] 跳过文本
+来源：Drift Apocalypse_Data/data.unity3d
+键位：asset#level0#730/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=730）
+原文：MainMenu, Assembly-CSharp
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[26] 跳过文本
+来源：Drift Apocalypse_Data/data.unity3d
+键位：asset#level0#730/str/3
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=730）
+原文：MainMenu, Assembly-CSharp
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[27] 跳过文本
+来源：Drift Apocalypse_Data/data.unity3d
+键位：asset#level0#738/str/5
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=738）
+原文：MainMenu, Assembly-CSharp
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[28] 跳过文本
+来源：Drift Apocalypse_Data/data.unity3d
+键位：asset#level0#746/str/5
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=746）
+原文：MainMenu, Assembly-CSharp
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[29] 跳过文本
+来源：Drift Apocalypse_Data/data.unity3d
+键位：asset#level0#746/str/8
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=746）
+原文：MainMenu, Assembly-CSharp
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[30] 跳过文本
+来源：Drift Apocalypse_Data/data.unity3d
+键位：asset#level0#750/str/5
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=750）
+原文：MainMenu, Assembly-CSharp
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[31] 跳过文本
+来源：Drift Apocalypse_Data/data.unity3d
+键位：asset#level0#760/str/5
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=760）
+原文：MainMenu, Assembly-CSharp
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[32] 跳过文本
+来源：Drift Apocalypse_Data/data.unity3d
+键位：asset#level0#763/str/5
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=763）
+原文：MainMenu, Assembly-CSharp
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[33] 跳过文本
+来源：Drift Apocalypse_Data/data.unity3d
+键位：asset#level0#766/str/5
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=766）
+原文：MainMenu, Assembly-CSharp
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[34] 跳过文本
+来源：Drift Apocalypse_Data/data.unity3d
+键位：asset#level0#776/str/5
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=776）
+原文：MainMenu, Assembly-CSharp
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[35] 跳过文本
+来源：Drift Apocalypse_Data/data.unity3d
+键位：asset#level0#787/str/5
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=787）
+原文：MainMenu, Assembly-CSharp
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[36] 跳过文本
+来源：Drift Apocalypse_Data/data.unity3d
+键位：asset#level0#793/str/5
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=793）
+原文：ShopController, Assembly-CSharp
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[37] 跳过文本
+来源：Drift Apocalypse_Data/data.unity3d
+键位：asset#level0#798/str/5
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=798）
+原文：MainMenu, Assembly-CSharp
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[38] 跳过文本
+来源：Drift Apocalypse_Data/data.unity3d
+键位：asset#level0#807/str/5
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=807）
+原文：MainMenu, Assembly-CSharp
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[39] 跳过文本
+来源：Drift Apocalypse_Data/data.unity3d
+键位：asset#level0#810/str/5
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=810）
+原文：MainMenu, Assembly-CSharp
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[40] 跳过文本
+来源：Drift Apocalypse_Data/data.unity3d
+键位：asset#level0#810/str/8
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=810）
+原文：Tutorial
+译文：（无）
+置信度：low
+原因：code_heavy_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[41] 跳过文本
+来源：Drift Apocalypse_Data/data.unity3d
+键位：asset#level0#816/str/5
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=816）
+原文：ShopController, Assembly-CSharp
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[42] 跳过文本
+来源：Drift Apocalypse_Data/data.unity3d
+键位：asset#level0#822/str/5
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=822）
+原文：MainMenu, Assembly-CSharp
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[43] 跳过文本
+来源：Drift Apocalypse_Data/data.unity3d
+键位：asset#level0#830/str/5
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=830）
+原文：MainMenu, Assembly-CSharp
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[44] 跳过文本
+来源：Drift Apocalypse_Data/data.unity3d
+键位：asset#level0#835/str/5
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=835）
+原文：MainMenu, Assembly-CSharp
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[45] 跳过文本
+来源：Drift Apocalypse_Data/data.unity3d
+键位：asset#level0#846/str/5
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=846）
+原文：ShopController, Assembly-CSharp
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[46] 跳过文本
+来源：Drift Apocalypse_Data/data.unity3d
+键位：asset#level0#852/str/5
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=852）
+原文：ShopController, Assembly-CSharp
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[47] 跳过文本
+来源：Drift Apocalypse_Data/data.unity3d
+键位：asset#level0#857/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=857）
+原文：MainMenu, Assembly-CSharp
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[48] 跳过文本
+来源：Drift Apocalypse_Data/data.unity3d
+键位：asset#level0#857/str/3
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=857）
+原文：MainMenu, Assembly-CSharp
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[49] 跳过文本
+来源：Drift Apocalypse_Data/data.unity3d
+键位：asset#level1#688/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=688）
+原文：Horizontal
+译文：（无）
+置信度：low
+原因：identifier_without_display_evidence
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[50] 跳过文本
+来源：Drift Apocalypse_Data/data.unity3d
+键位：asset#level1#688/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=688）
+原文：Vertical
+译文：（无）
+置信度：low
+原因：identifier_without_display_evidence
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[51] 跳过文本
+来源：Drift Apocalypse_Data/data.unity3d
+键位：asset#level1#688/str/2
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=688）
+原文：Submit
+译文：（无）
+置信度：low
+原因：identifier_without_display_evidence
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[52] 跳过文本
+来源：Drift Apocalypse_Data/data.unity3d
+键位：asset#level1#688/str/3
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=688）
+原文：Cancel
+译文：（无）
+置信度：low
+原因：identifier_without_display_evidence
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[53] 跳过文本
+来源：Drift Apocalypse_Data/data.unity3d
+键位：asset#level1#698/str/5
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=698）
+原文：PauseMenu, Assembly-CSharp
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[54] 跳过文本
+来源：Drift Apocalypse_Data/data.unity3d
+键位：asset#level1#713/str/5
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=713）
+原文：PauseMenu, Assembly-CSharp
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[55] 跳过文本
+来源：Drift Apocalypse_Data/data.unity3d
+键位：asset#level1#723/str/5
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=723）
+原文：PauseMenu, Assembly-CSharp
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[56] 跳过文本
+来源：Drift Apocalypse_Data/data.unity3d
+键位：asset#level1#726/str/5
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=726）
+原文：PauseMenu, Assembly-CSharp
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[57] 跳过文本
+来源：Drift Apocalypse_Data/data.unity3d
+键位：asset#level1#735/str/5
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=735）
+原文：PauseMenu, Assembly-CSharp
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[58] 跳过文本
+来源：Drift Apocalypse_Data/data.unity3d
+键位：asset#level1#739/str/5
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=739）
+原文：PauseMenu, Assembly-CSharp
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[59] 跳过文本
+来源：Drift Apocalypse_Data/data.unity3d
+键位：asset#level1#742/str/5
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=742）
+原文：PauseMenu, Assembly-CSharp
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[60] 跳过文本
+来源：Drift Apocalypse_Data/data.unity3d
+键位：asset#level1#754/str/5
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=754）
+原文：PauseMenu, Assembly-CSharp
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[61] 跳过文本
+来源：Drift Apocalypse_Data/data.unity3d
+键位：asset#level1#769/str/5
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=769）
+原文：PauseMenu, Assembly-CSharp
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[62] 跳过文本
+来源：Drift Apocalypse_Data/data.unity3d
+键位：asset#level1#780/str/5
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=780）
+原文：PauseMenu, Assembly-CSharp
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[63] 跳过文本
+来源：Drift Apocalypse_Data/data.unity3d
+键位：asset#level1#784/str/5
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=784）
+原文：PauseMenu, Assembly-CSharp
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[64] 跳过文本
+来源：Drift Apocalypse_Data/data.unity3d
+键位：asset#level2#649/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=649）
+原文：Horizontal
+译文：（无）
+置信度：low
+原因：identifier_without_display_evidence
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[65] 跳过文本
+来源：Drift Apocalypse_Data/data.unity3d
+键位：asset#level2#649/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=649）
+原文：Vertical
+译文：（无）
+置信度：low
+原因：identifier_without_display_evidence
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[66] 跳过文本
+来源：Drift Apocalypse_Data/data.unity3d
+键位：asset#level2#649/str/2
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=649）
+原文：Submit
+译文：（无）
+置信度：low
+原因：identifier_without_display_evidence
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[67] 跳过文本
+来源：Drift Apocalypse_Data/data.unity3d
+键位：asset#level2#649/str/3
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=649）
+原文：Cancel
+译文：（无）
+置信度：low
+原因：identifier_without_display_evidence
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[68] 跳过文本
+来源：Drift Apocalypse_Data/data.unity3d
+键位：asset#level2#676/str/5
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=676）
+原文：PauseMenu, Assembly-CSharp
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[69] 跳过文本
+来源：Drift Apocalypse_Data/data.unity3d
+键位：asset#level2#681/str/5
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=681）
+原文：PauseMenu, Assembly-CSharp
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[70] 跳过文本
+来源：Drift Apocalypse_Data/data.unity3d
+键位：asset#level2#691/str/5
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=691）
+原文：PauseMenu, Assembly-CSharp
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[71] 跳过文本
+来源：Drift Apocalypse_Data/data.unity3d
+键位：asset#level2#701/str/5
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=701）
+原文：PauseMenu, Assembly-CSharp
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[72] 跳过文本
+来源：Drift Apocalypse_Data/data.unity3d
+键位：asset#level2#706/str/5
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=706）
+原文：PauseMenu, Assembly-CSharp
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[73] 跳过文本
+来源：Drift Apocalypse_Data/data.unity3d
+键位：asset#level2#710/str/5
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=710）
+原文：PauseMenu, Assembly-CSharp
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[74] 跳过文本
+来源：Drift Apocalypse_Data/data.unity3d
+键位：asset#level2#714/str/5
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=714）
+原文：PauseMenu, Assembly-CSharp
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[75] 跳过文本
+来源：Drift Apocalypse_Data/data.unity3d
+键位：asset#resources.assets#70/str/4
+对象：MonoBehaviour rawstr 数组（asset_file=resources.assets、obj=70）
+原文：Regular
+译文：（无）
+置信度：low
+原因：shared_resource_config_object
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[76] 跳过文本
+来源：Drift Apocalypse_Data/data.unity3d
+键位：asset#resources.assets#71/str/4
+对象：MonoBehaviour rawstr 数组（asset_file=resources.assets、obj=71）
+原文：Regular
+译文：（无）
+置信度：low
+原因：shared_resource_config_object
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[77] 跳过文本
+来源：Drift Apocalypse_Data/data.unity3d
+键位：asset#resources.assets#72/str/4
+对象：MonoBehaviour rawstr 数组（asset_file=resources.assets、obj=72）
+原文：Regular
+译文：（无）
+置信度：low
+原因：shared_resource_config_object
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[78] 跳过文本
+来源：Drift Apocalypse_Data/data.unity3d
+键位：asset#resources.assets#73/str/4
+对象：MonoBehaviour rawstr 数组（asset_file=resources.assets、obj=73）
+原文：Bold
+译文：（无）
+置信度：low
+原因：shared_resource_config_object
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[79] 跳过文本
+来源：Drift Apocalypse_Data/data.unity3d
+键位：asset#resources.assets#75/str/2
+对象：MonoBehaviour rawstr 数组（asset_file=resources.assets、obj=75）
+原文：Zero
+译文：（无）
+置信度：low
+原因：identifier_without_display_evidence
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[80] 跳过文本
+来源：Drift Apocalypse_Data/data.unity3d
+键位：asset#resources.assets#75/str/3
+对象：MonoBehaviour rawstr 数组（asset_file=resources.assets、obj=75）
+原文：One
+译文：（无）
+置信度：low
+原因：identifier_without_display_evidence
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[81] 跳过文本
+来源：Drift Apocalypse_Data/data.unity3d
+键位：asset#resources.assets#75/str/4
+对象：MonoBehaviour rawstr 数组（asset_file=resources.assets、obj=75）
+原文：Two
+译文：（无）
+置信度：low
+原因：identifier_without_display_evidence
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[82] 跳过文本
+来源：Drift Apocalypse_Data/data.unity3d
+键位：asset#resources.assets#75/str/5
+对象：MonoBehaviour rawstr 数组（asset_file=resources.assets、obj=75）
+原文：Three
+译文：（无）
+置信度：low
+原因：identifier_without_display_evidence
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[83] 跳过文本
+来源：Drift Apocalypse_Data/data.unity3d
+键位：asset#resources.assets#75/str/6
+对象：MonoBehaviour rawstr 数组（asset_file=resources.assets、obj=75）
+原文：Four
+译文：（无）
+置信度：low
+原因：identifier_without_display_evidence
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[84] 跳过文本
+来源：Drift Apocalypse_Data/data.unity3d
+键位：asset#resources.assets#75/str/7
+对象：MonoBehaviour rawstr 数组（asset_file=resources.assets、obj=75）
+原文：Five
+译文：（无）
+置信度：low
+原因：identifier_without_display_evidence
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[85] 跳过文本
+来源：Drift Apocalypse_Data/data.unity3d
+键位：asset#resources.assets#75/str/8
+对象：MonoBehaviour rawstr 数组（asset_file=resources.assets、obj=75）
+原文：Six
+译文：（无）
+置信度：low
+原因：identifier_without_display_evidence
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[86] 跳过文本
+来源：Drift Apocalypse_Data/data.unity3d
+键位：asset#resources.assets#75/str/9
+对象：MonoBehaviour rawstr 数组（asset_file=resources.assets、obj=75）
+原文：Seven
+译文：（无）
+置信度：low
+原因：identifier_without_display_evidence
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[87] 跳过文本
+来源：Drift Apocalypse_Data/data.unity3d
+键位：asset#resources.assets#75/str/10
+对象：MonoBehaviour rawstr 数组（asset_file=resources.assets、obj=75）
+原文：Eight
+译文：（无）
+置信度：low
+原因：identifier_without_display_evidence
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[88] 跳过文本
+来源：Drift Apocalypse_Data/data.unity3d
+键位：asset#resources.assets#75/str/11
+对象：MonoBehaviour rawstr 数组（asset_file=resources.assets、obj=75）
+原文：Nine
+译文：（无）
+置信度：low
+原因：identifier_without_display_evidence
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[89] 跳过文本
+来源：Drift Apocalypse_Data/data.unity3d
+键位：asset#resources.assets#76/str/4
+对象：MonoBehaviour rawstr 数组（asset_file=resources.assets、obj=76）
+原文：Regular
+译文：（无）
+置信度：low
+原因：shared_resource_config_object
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[90] 跳过文本
+来源：Drift Apocalypse_Data/data.unity3d
+键位：asset#resources.assets#77/str/4
+对象：MonoBehaviour rawstr 数组（asset_file=resources.assets、obj=77）
+原文：Regular
+译文：（无）
+置信度：low
+原因：shared_resource_config_object
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[91] 跳过文本
+来源：Drift Apocalypse_Data/data.unity3d
+键位：asset#resources.assets#79/str/3
+对象：MonoBehaviour rawstr 数组（asset_file=resources.assets、obj=79）
+原文：Quote
+译文：（无）
+置信度：low
+原因：identifier_without_display_evidence
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[92] 跳过文本
+来源：Drift Apocalypse_Data/data.unity3d
+键位：asset#resources.assets#79/str/6
+对象：MonoBehaviour rawstr 数组（asset_file=resources.assets、obj=79）
+原文：Link
+译文：（无）
+置信度：low
+原因：identifier_without_display_evidence
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[93] 跳过文本
+来源：Drift Apocalypse_Data/data.unity3d
+键位：asset#resources.assets#79/str/9
+对象：MonoBehaviour rawstr 数组（asset_file=resources.assets、obj=79）
+原文：Title
+译文：（无）
+置信度：low
+原因：identifier_without_display_evidence
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[94] 跳过文本
+来源：Drift Apocalypse_Data/Managed/Assembly-CSharp.dll
+键位：us#492
+对象：DLL #US 字符串（record_offset=126283）
+原文：Exit game
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[95] 跳过文本
+来源：Drift Apocalypse_Data/Managed/Assembly-CSharp.dll
+键位：us#512
+对象：DLL #US 字符串（record_offset=126303）
+原文：Show LeaderBoard
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[96] 跳过文本
+来源：Drift Apocalypse_Data/Managed/Assembly-CSharp.dll
+键位：us#650
+对象：DLL #US 字符串（record_offset=126441）
+原文：Your best: 
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[97] 跳过文本
+来源：Drift Apocalypse_Data/Managed/Assembly-CSharp.dll
+键位：us#706
+对象：DLL #US 字符串（record_offset=126497）
+原文：Score: 
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[98] 跳过文本
+来源：Drift Apocalypse_Data/Managed/Assembly-CSharp.dll
+键位：us#812
+对象：DLL #US 字符串（record_offset=126603）
+原文： ] BUY
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[99] 跳过文本
+来源：Drift Apocalypse_Data/Managed/Assembly-CSharp.dll
+键位：us#958
+对象：DLL #US 字符串（record_offset=126749）
+原文：Purchase of 
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[100] 跳过文本
+来源：Drift Apocalypse_Data/Managed/Assembly-CSharp.dll
+键位：us#1993
+对象：DLL #US 字符串（record_offset=127784）
+原文：[Yodo1 Mas] Reward video ad has been closed.
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[101] 跳过文本
+来源：Drift Apocalypse_Data/Managed/Assembly-CSharp.dll
+键位：us#2083
+对象：DLL #US 字符串（record_offset=127874）
+原文：[Yodo1 Mas] Reward video ad has shown successful.
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[102] 跳过文本
+来源：Drift Apocalypse_Data/Managed/Assembly-CSharp.dll
+键位：us#2183
+对象：DLL #US 字符串（record_offset=127974）
+原文：[Yodo1 Mas] Reward video ad error, 
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[103] 跳过文本
+来源：Drift Apocalypse_Data/Managed/Assembly-CSharp.dll
+键位：us#2255
+对象：DLL #US 字符串（record_offset=128046）
+原文：[Yodo1 Mas] Reward video ad reward, give rewards to the player.
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[104] 跳过文本
+来源：Drift Apocalypse_Data/Managed/Assembly-CSharp.dll
+键位：us#2447
+对象：DLL #US 字符串（record_offset=128238）
+原文：Error: Please make a selection
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[105] 跳过文本
+来源：Drift Apocalypse_Data/Managed/Assembly-CSharp.dll
+键位：us#2509
+对象：DLL #US 字符串（record_offset=128300）
+原文：Selected values:
+
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[106] 跳过文本
+来源：Drift Apocalypse_Data/Managed/Assembly-CSharp.dll
+键位：us#2593
+对象：DLL #US 字符串（record_offset=128384）
+原文：Show Banner Ad
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[107] 跳过文本
+来源：Drift Apocalypse_Data/Managed/Assembly-CSharp.dll
+键位：us#2623
+对象：DLL #US 字符串（record_offset=128414）
+原文：Dismiss Banner Ad
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[108] 跳过文本
+来源：Drift Apocalypse_Data/Managed/Assembly-CSharp.dll
+键位：us#2659
+对象：DLL #US 字符串（record_offset=128450）
+原文：Show Interstitial Ad
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[109] 跳过文本
+来源：Drift Apocalypse_Data/Managed/Assembly-CSharp.dll
+键位：us#2701
+对象：DLL #US 字符串（record_offset=128492）
+原文：[Yodo1 Mas] Interstitial ad has not been cached.
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[110] 跳过文本
+来源：Drift Apocalypse_Data/Managed/Assembly-CSharp.dll
+键位：us#2799
+对象：DLL #US 字符串（record_offset=128590）
+原文：Show Rewarded Ad
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[111] 跳过文本
+来源：Drift Apocalypse_Data/Managed/Assembly-CSharp.dll
+键位：us#2833
+对象：DLL #US 字符串（record_offset=128624）
+原文：[Yodo1 Mas] Reward video ad has not been cached.
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[112] 跳过文本
+来源：Drift Apocalypse_Data/Managed/Assembly-CSharp.dll
+键位：us#3116
+对象：DLL #US 字符串（record_offset=128906）
+原文：[Yodo1 Mas] The SDK has been initialized, please do not initialize the SDK repeatedly.
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[113] 跳过文本
+来源：Drift Apocalypse_Data/Managed/Assembly-CSharp.dll
+键位：us#3330
+对象：DLL #US 字符串（record_offset=129121）
+原文：[Yodo1 Mas] It looks like you have the 
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[114] 跳过文本
+来源：Drift Apocalypse_Data/Managed/Assembly-CSharp.dll
+键位：us#3411
+对象：DLL #US 字符串（record_offset=129201）
+原文： on a GameObject in your scene. Please remove the script from your scene.
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[115] 跳过文本
+来源：Drift Apocalypse_Data/Managed/Assembly-CSharp.dll
+键位：us#3604
+对象：DLL #US 字符串（record_offset=129394）
+原文：[Yodo1 Mas] The SDK has not been initialized yet. The Yodo1AdSettings is missing.
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[116] 跳过文本
+来源：Drift Apocalypse_Data/Managed/Assembly-CSharp.dll
+键位：us#3768
+对象：DLL #US 字符串（record_offset=129559）
+原文：[Yodo1 Mas] The SDK has been initialized, the app key is 
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[117] 跳过文本
+来源：Drift Apocalypse_Data/Managed/Assembly-CSharp.dll
+键位：us#3885
+对象：DLL #US 字符串（record_offset=129675）
+原文：[Yodo1 Mas] The SDK has not been initialized yet. Please initialize the SDK first.
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[118] 跳过文本
+来源：Drift Apocalypse_Data/Managed/Assembly-CSharp.dll
+键位：us#4235
+对象：DLL #US 字符串（record_offset=130026）
+原文：Trying to validate...
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[119] 跳过文本
+来源：Drift Apocalypse_Data/Managed/Assembly-CSharp.dll
+键位：us#4301
+对象：DLL #US 字符串（record_offset=130092）
+原文：Fonts/ARIAL
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[120] 跳过文本
+来源：Drift Apocalypse_Data/Managed/Assembly-CSharp.dll
+键位：us#4549
+对象：DLL #US 字符串（record_offset=130340）
+原文：Camera Target
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[121] 跳过文本
+来源：Drift Apocalypse_Data/Managed/Assembly-CSharp.dll
+键位：us#4577
+对象：DLL #US 字符串（record_offset=130368）
+原文：Mouse ScrollWheel
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[122] 跳过文本
+来源：Drift Apocalypse_Data/Managed/Assembly-CSharp.dll
+键位：us#4613
+对象：DLL #US 字符串（record_offset=130404）
+原文：Mouse Y
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[123] 跳过文本
+来源：Drift Apocalypse_Data/Managed/Assembly-CSharp.dll
+键位：us#4629
+对象：DLL #US 字符串（record_offset=130420）
+原文：Mouse X
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[124] 跳过文本
+来源：Drift Apocalypse_Data/Managed/Assembly-CSharp.dll
+键位：us#4645
+对象：DLL #US 字符串（record_offset=130436）
+原文：The <#0050FF>count is: </color>{0:2}
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[125] 跳过文本
+来源：Drift Apocalypse_Data/Managed/Assembly-CSharp.dll
+键位：us#4720
+对象：DLL #US 字符串（record_offset=130510）
+原文：Example <sprite=2> of using <sprite=7> <#ffa000>Graphics Inline</color> <sprite=5> with Text in <font="Bangers SDF" material="Bangers SDF - Drop Shadow">TextMesh<#40a0ff>Pro</color></font><sprite=0> and Unity<sprite=1>
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[126] 跳过文本
+来源：Drift Apocalypse_Data/Managed/Assembly-CSharp.dll
+键位：us#5159
+对象：DLL #US 字符串（record_offset=130949）
+原文：Example <sprite=2> of using <sprite=7> <#ffa000>Graphics Inline</color> <sprite=5> with Text in <font="Bangers SDF" material="Bangers SDF - Drop Shadow">TextMesh<#40a0ff>Pro</color></font><sprite=0> and Unity<sprite=2>
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[127] 跳过文本
+来源：Drift Apocalypse_Data/Managed/Assembly-CSharp.dll
+键位：us#5597
+对象：DLL #US 字符串（record_offset=131388）
+原文： floating text
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[128] 跳过文本
+来源：Drift Apocalypse_Data/Managed/Assembly-CSharp.dll
+键位：us#5627
+对象：DLL #US 字符串（record_offset=131418）
+原文：Frame Counter
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[129] 跳过文本
+来源：Drift Apocalypse_Data/Managed/Assembly-CSharp.dll
+键位：us#6194
+对象：DLL #US 字符串（record_offset=131985）
+原文：The count is <#0080ff>{0}</color>
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[130] 跳过文本
+来源：Drift Apocalypse_Data/Managed/Assembly-CSharp.dll
+键位：us#6344
+对象：DLL #US 字符串（record_offset=132135）
+原文：{0:2}</color> <#8080ff>FPS 
+<#FF8000>{1:2} <#8080ff>MS
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[131] 跳过文本
+来源：Drift Apocalypse_Data/Managed/Assembly-CSharp.dll
+键位：us#6454
+对象：DLL #US 字符串（record_offset=132245）
+原文：Character [
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[132] 跳过文本
+来源：Drift Apocalypse_Data/Managed/Assembly-CSharp.dll
+键位：us#6478
+对象：DLL #US 字符串（record_offset=132269）
+原文：] at Index: 
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[133] 跳过文本
+来源：Drift Apocalypse_Data/Managed/Assembly-CSharp.dll
+键位：us#6504
+对象：DLL #US 字符串（record_offset=132295）
+原文： has been selected.
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[134] 跳过文本
+来源：Drift Apocalypse_Data/Managed/Assembly-CSharp.dll
+键位：us#6544
+对象：DLL #US 字符串（record_offset=132335）
+原文：Sprite [
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[135] 跳过文本
+来源：Drift Apocalypse_Data/Managed/Assembly-CSharp.dll
+键位：us#6562
+对象：DLL #US 字符串（record_offset=132353）
+原文：Word [
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[136] 跳过文本
+来源：Drift Apocalypse_Data/Managed/Assembly-CSharp.dll
+键位：us#6576
+对象：DLL #US 字符串（record_offset=132367）
+原文：] with first character index of 
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[137] 跳过文本
+来源：Drift Apocalypse_Data/Managed/Assembly-CSharp.dll
+键位：us#6674
+对象：DLL #US 字符串（record_offset=132465）
+原文：Line [
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[138] 跳过文本
+来源：Drift Apocalypse_Data/Managed/Assembly-CSharp.dll
+键位：us#6688
+对象：DLL #US 字符串（record_offset=132479）
+原文：Link Index: 
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[139] 跳过文本
+来源：Drift Apocalypse_Data/Managed/Assembly-CSharp.dll
+键位：us#6714
+对象：DLL #US 字符串（record_offset=132505）
+原文： with ID [
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[140] 跳过文本
+来源：Drift Apocalypse_Data/Managed/Assembly-CSharp.dll
+键位：us#6736
+对象：DLL #US 字符串（record_offset=132527）
+原文：] and Text "
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[141] 跳过文本
+来源：Drift Apocalypse_Data/Managed/Assembly-CSharp.dll
+键位：us#6762
+对象：DLL #US 字符串（record_offset=132553）
+原文：" has been selected.
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[142] 跳过文本
+来源：Drift Apocalypse_Data/Managed/Assembly-CSharp.dll
+键位：us#6828
+对象：DLL #US 字符串（record_offset=132619）
+原文：OnPointerEnter()
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[143] 跳过文本
+来源：Drift Apocalypse_Data/Managed/Assembly-CSharp.dll
+键位：us#6862
+对象：DLL #US 字符串（record_offset=132653）
+原文：OnPointerExit()
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[144] 跳过文本
+来源：Drift Apocalypse_Data/Managed/Assembly-CSharp.dll
+键位：us#7050
+对象：DLL #US 字符串（record_offset=132841）
+原文：byte[
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[145] 跳过文本
+来源：Drift Apocalypse_Data/Managed/Assembly-CSharp.dll
+键位：us#7066
+对象：DLL #US 字符串（record_offset=132857）
+原文：(null)
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[146] 跳过文本
+来源：Drift Apocalypse_Data/Managed/Assembly-CSharp.dll
+键位：us#7080
+对象：DLL #US 字符串（record_offset=132871）
+原文：MM/dd/yy H:mm:ss zzz
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[147] 跳过文本
+来源：Drift Apocalypse_Data/Managed/Assembly-CSharp.dll
+键位：us#7122
+对象：DLL #US 字符串（record_offset=132913）
+原文：{0} [Play Games Plugin 0.10.12] {1} {2}: {3}
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[148] 跳过文本
+来源：Drift Apocalypse_Data/Managed/Assembly-CSharp.dll
+键位：us#7472
+对象：DLL #US 字符串（record_offset=133263）
+原文：SupportsCaptureMode called with an unknown captureMode.
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[149] 跳过文本
+来源：Drift Apocalypse_Data/Managed/Assembly-CSharp.dll
+键位：us#7584
+对象：DLL #US 字符串（record_offset=133375）
+原文：SupportsCaptureMode called with an unknown qualityLevel.
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[150] 跳过文本
+来源：Drift Apocalypse_Data/Managed/Assembly-CSharp.dll
+键位：us#7699
+对象：DLL #US 字符串（record_offset=133489）
+原文：[VideoCapabilities: mIsCameraSupported={0}, mIsMicSupported={1}, mIsWriteStorageSupported={2}, mCaptureModesSupported={3}, mQualityLevelsSupported={4}]
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[151] 跳过文本
+来源：Drift Apocalypse_Data/Managed/Assembly-CSharp.dll
+键位：us#8008
+对象：DLL #US 字符串（record_offset=133798）
+原文：[VideoCaptureState: mIsCapturing={0}, mCaptureMode={1}, mQualityLevel={2}, mIsOverlayVisible={3}, mIsPaused={4}]
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[152] 跳过文本
+来源：Drift Apocalypse_Data/Managed/Assembly-CSharp.dll
+键位：us#8234
+对象：DLL #US 字符串（record_offset=134025）
+原文：Constructing ConnectionRequest
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[153] 跳过文本
+来源：Drift Apocalypse_Data/Managed/Assembly-CSharp.dll
+键位：us#8368
+对象：DLL #US 字符串（record_offset=134159）
+原文：[Yodo1 Mas] Interstital ad has been closed.
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[154] 跳过文本
+来源：Drift Apocalypse_Data/Managed/Assembly-CSharp.dll
+键位：us#8456
+对象：DLL #US 字符串（record_offset=134247）
+原文：[Yodo1 Mas] Interstital ad has been shown.
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[155] 跳过文本
+来源：Drift Apocalypse_Data/Managed/Assembly-CSharp.dll
+键位：us#8542
+对象：DLL #US 字符串（record_offset=134333）
+原文：[Yodo1 Mas] Interstital ad error, 
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[156] 跳过文本
+来源：Drift Apocalypse_Data/Managed/Assembly-CSharp.dll
+键位：us#8716
+对象：DLL #US 字符串（record_offset=134507）
+原文：, error: 
+
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[157] 跳过文本
+来源：Drift Apocalypse_Data/Managed/Assembly-CSharp.dll
+键位：us#8796
+对象：DLL #US 字符串（record_offset=134587）
+原文：[Yodo1 Mas] Banner ad has been closed.
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[158] 跳过文本
+来源：Drift Apocalypse_Data/Managed/Assembly-CSharp.dll
+键位：us#8874
+对象：DLL #US 字符串（record_offset=134665）
+原文：[Yodo1 Mas] Banner ad has been shown.
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[159] 跳过文本
+来源：Drift Apocalypse_Data/Managed/Assembly-CSharp.dll
+键位：us#8950
+对象：DLL #US 字符串（record_offset=134741）
+原文：[Yodo1 Mas] Banner ad error, 
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[160] 跳过文本
+来源：Drift Apocalypse_Data/Managed/Assembly-CSharp.dll
+键位：us#9088
+对象：DLL #US 字符串（record_offset=134879）
+原文：\b
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[161] 跳过文本
+来源：Drift Apocalypse_Data/Managed/Assembly-CSharp.dll
+键位：us#9094
+对象：DLL #US 字符串（record_offset=134885）
+原文：\f
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[162] 跳过文本
+来源：Drift Apocalypse_Data/Managed/Assembly-CSharp.dll
+键位：us#9100
+对象：DLL #US 字符串（record_offset=134891）
+原文：\n
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[163] 跳过文本
+来源：Drift Apocalypse_Data/Managed/Assembly-CSharp.dll
+键位：us#9106
+对象：DLL #US 字符串（record_offset=134897）
+原文：\r
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[164] 跳过文本
+来源：Drift Apocalypse_Data/Managed/Assembly-CSharp.dll
+键位：us#9112
+对象：DLL #US 字符串（record_offset=134903）
+原文：\t
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[165] 跳过文本
+来源：Drift Apocalypse_Data/Managed/Assembly-CSharp.dll
+键位：us#9118
+对象：DLL #US 字符串（record_offset=134909）
+原文：\u
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[166] 跳过文本
+来源：Drift Apocalypse_Data/Managed/Assembly-CSharp.dll
+键位：us#9124
+对象：DLL #US 字符串（record_offset=134915）
+原文：Fonts & Materials/LiberationSans SDF - Drop Shadow
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[167] 跳过文本
+来源：Drift Apocalypse_Data/Managed/Assembly-CSharp.dll
+键位：us#9226
+对象：DLL #US 字符串（record_offset=135017）
+原文：The <#0050FF>count is: </color>{0}
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[168] 跳过文本
+来源：Drift Apocalypse_Data/Managed/Assembly-CSharp.dll
+键位：us#9296
+对象：DLL #US 字符串（record_offset=135087）
+原文：The <color=#0050FF>count is: </color>
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[169] 跳过文本
+来源：Drift Apocalypse_Data/Managed/Assembly-CSharp.dll
+键位：us#9462
+对象：DLL #US 字符串（record_offset=135253）
+原文：The <#0050FF>count is: </color>
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[170] 跳过文本
+来源：Drift Apocalypse_Data/Managed/Assembly-CSharp.dll
+键位：us#9722
+对象：DLL #US 字符串（record_offset=135512）
+原文：Timespans longer than ulong.MaxValue milliseconds are not allowed
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[171] 跳过文本
+来源：Drift Apocalypse_Data/Managed/Unity.2D.Animation.Triangle.Runtime.dll
+键位：us#2
+对象：DLL #US 字符串（record_offset=167193）
+原文：Invalid quality option (minimum angle).
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[172] 跳过文本
+来源：Drift Apocalypse_Data/Managed/Unity.2D.Animation.Triangle.Runtime.dll
+键位：us#110
+对象：DLL #US 字符串（record_offset=167301）
+原文：Invalid quality option (maximum angle).
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[173] 跳过文本
+来源：Drift Apocalypse_Data/Managed/Unity.2D.Animation.Triangle.Runtime.dll
+键位：us#190
+对象：DLL #US 字符串（record_offset=167381）
+原文：Input must have at least three input vertices.
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[174] 跳过文本
+来源：Drift Apocalypse_Data/Managed/Unity.2D.Animation.Triangle.Runtime.dll
+键位：us#284
+对象：DLL #US 字符串（record_offset=167475）
+原文：Mesh.TransferNodes()
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[175] 跳过文本
+来源：Drift Apocalypse_Data/Managed/Unity.2D.Animation.Triangle.Runtime.dll
+键位：us#326
+对象：DLL #US 字符串（record_offset=167517）
+原文：Triangle is flat or inverted (ID {0}).
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[176] 跳过文本
+来源：Drift Apocalypse_Data/Managed/Unity.2D.Animation.Triangle.Runtime.dll
+键位：us#404
+对象：DLL #US 字符串（record_offset=167595）
+原文：MeshValidator.IsConsistent()
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[177] 跳过文本
+来源：Drift Apocalypse_Data/Managed/Unity.2D.Animation.Triangle.Runtime.dll
+键位：us#463
+对象：DLL #US 字符串（record_offset=167653）
+原文：Asymmetric triangle-triangle bond: (Right triangle, wrong orientation)
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[178] 跳过文本
+来源：Drift Apocalypse_Data/Managed/Unity.2D.Animation.Triangle.Runtime.dll
+键位：us#605
+对象：DLL #US 字符串（record_offset=167796）
+原文：Mismatched edge coordinates between two triangles.
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[179] 跳过文本
+来源：Drift Apocalypse_Data/Managed/Unity.2D.Animation.Triangle.Runtime.dll
+键位：us#707
+对象：DLL #US 字符串（record_offset=167898）
+原文：Vertex (ID 
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[180] 跳过文本
+来源：Drift Apocalypse_Data/Managed/Unity.2D.Animation.Triangle.Runtime.dll
+键位：us#731
+对象：DLL #US 字符串（record_offset=167922）
+原文：) not connected to mesh (duplicate input vertex?)
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[181] 跳过文本
+来源：Drift Apocalypse_Data/Managed/Unity.2D.Animation.Triangle.Runtime.dll
+键位：us#831
+对象：DLL #US 字符串（record_offset=168022）
+原文：Non-regular pair of triangles found (IDs {0}/{1}).
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[182] 跳过文本
+来源：Drift Apocalypse_Data/Managed/Unity.2D.Animation.Triangle.Runtime.dll
+键位：us#933
+对象：DLL #US 字符串（record_offset=168124）
+原文：MeshValidator.IsDelaunay()
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[183] 跳过文本
+来源：Drift Apocalypse_Data/Managed/Unity.2D.Animation.Triangle.Runtime.dll
+键位：us#987
+对象：DLL #US 字符串（record_offset=168178）
+原文：ConstructCell: inconsistent topology.
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[184] 跳过文本
+来源：Drift Apocalypse_Data/Managed/Unity.2D.Animation.Triangle.Runtime.dll
+键位：us#1063
+对象：DLL #US 字符串（record_offset=168254）
+原文：ConstructBoundaryCell: inconsistent topology.
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[185] 跳过文本
+来源：Drift Apocalypse_Data/Managed/Unity.2D.Animation.Triangle.Runtime.dll
+键位：us#1155
+对象：DLL #US 字符串（record_offset=168346）
+原文：R-ID {0}
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[186] 跳过文本
+来源：Drift Apocalypse_Data/Managed/Unity.2D.Animation.Triangle.Runtime.dll
+键位：us#1173
+对象：DLL #US 字符串（record_offset=168364）
+原文：O-TID [null]
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[187] 跳过文本
+来源：Drift Apocalypse_Data/Managed/Unity.2D.Animation.Triangle.Runtime.dll
+键位：us#1199
+对象：DLL #US 字符串（record_offset=168390）
+原文：O-SID {0}
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[188] 跳过文本
+来源：Drift Apocalypse_Data/Managed/Unity.2D.Animation.Triangle.Runtime.dll
+键位：us#1219
+对象：DLL #US 字符串（record_offset=168410）
+原文：O-TID {0}
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[189] 跳过文本
+来源：Drift Apocalypse_Data/Managed/Unity.2D.Animation.Triangle.Runtime.dll
+键位：us#1239
+对象：DLL #US 字符串（record_offset=168430）
+原文：SID {0}
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[190] 跳过文本
+来源：Drift Apocalypse_Data/Managed/Unity.2D.Animation.Triangle.Runtime.dll
+键位：us#1255
+对象：DLL #US 字符串（record_offset=168446）
+原文：TID {0}
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[191] 跳过文本
+来源：Drift Apocalypse_Data/Managed/Unity.2D.Animation.Triangle.Runtime.dll
+键位：us#1271
+对象：DLL #US 字符串（record_offset=168462）
+原文：F-ID {0}
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[192] 跳过文本
+来源：Drift Apocalypse_Data/Managed/Unity.2D.Animation.Triangle.Runtime.dll
+键位：us#1289
+对象：DLL #US 字符串（record_offset=168480）
+原文：HE-ID {0} (Origin = VID-{1})
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[193] 跳过文本
+来源：Drift Apocalypse_Data/Managed/Unity.2D.Animation.Triangle.Runtime.dll
+键位：us#1347
+对象：DLL #US 字符串（record_offset=168538）
+原文：V-ID {0}
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[194] 跳过文本
+来源：Drift Apocalypse_Data/Managed/Unity.2D.Animation.Triangle.Runtime.dll
+键位：us#1365
+对象：DLL #US 字符串（record_offset=168556）
+原文：Expected 0-based indexing.
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[195] 跳过文本
+来源：Drift Apocalypse_Data/Managed/Unity.2D.Animation.Triangle.Runtime.dll
+键位：us#1429
+对象：DLL #US 字符串（record_offset=168620）
+原文：Reverse Cuthill-McKee (Bandwidth: {0} > {1})
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[196] 跳过文本
+来源：Drift Apocalypse_Data/Managed/Unity.2D.Animation.Triangle.Runtime.dll
+键位：us#1519
+对象：DLL #US 字符串（record_offset=168710）
+原文：Polygon must have at least 3 vertices.
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[197] 跳过文本
+来源：Drift Apocalypse_Data/Managed/Unity.2D.Animation.Triangle.Runtime.dll
+键位：us#1597
+对象：DLL #US 字符串（record_offset=168788）
+原文：PolygonValidator.IsConsistent()
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[198] 跳过文本
+来源：Drift Apocalypse_Data/Managed/Unity.2D.Animation.Triangle.Runtime.dll
+键位：us#1661
+对象：DLL #US 字符串（record_offset=168852）
+原文：Point {0} is null.
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[199] 跳过文本
+来源：Drift Apocalypse_Data/Managed/Unity.2D.Animation.Triangle.Runtime.dll
+键位：us#1699
+对象：DLL #US 字符串（record_offset=168890）
+原文：Point {0} has invalid coordinates.
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[200] 跳过文本
+来源：Drift Apocalypse_Data/Managed/Unity.2D.Animation.Triangle.Runtime.dll
+键位：us#1769
+对象：DLL #US 字符串（record_offset=168960）
+原文：Segment {0} is null.
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[201] 跳过文本
+来源：Drift Apocalypse_Data/Managed/Unity.2D.Animation.Triangle.Runtime.dll
+键位：us#1811
+对象：DLL #US 字符串（record_offset=169002）
+原文：Endpoints of segment {0} are coincident (IDs {1} / {2}).
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[202] 跳过文本
+来源：Drift Apocalypse_Data/Managed/Unity.2D.Animation.Triangle.Runtime.dll
+键位：us#1925
+对象：DLL #US 字符串（record_offset=169116）
+原文：Found duplicate point {0}.
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[203] 跳过文本
+来源：Drift Apocalypse_Data/Managed/Unity.2D.Animation.Triangle.Runtime.dll
+键位：us#1979
+对象：DLL #US 字符串（record_offset=169170）
+原文：PolygonValidator.HasDuplicateVertices()
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[204] 跳过文本
+来源：Drift Apocalypse_Data/Managed/Unity.2D.Animation.Triangle.Runtime.dll
+键位：us#2059
+对象：DLL #US 字符串（record_offset=169250）
+原文：Bad segment angle found at index {0}.
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[205] 跳过文本
+来源：Drift Apocalypse_Data/Managed/Unity.2D.Animation.Triangle.Runtime.dll
+键位：us#2135
+对象：DLL #US 字符串（record_offset=169326）
+原文：PolygonValidator.HasBadAngles()
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[206] 跳过文本
+来源：Drift Apocalypse_Data/Managed/Unity.2D.Animation.Triangle.Runtime.dll
+键位：us#2199
+对象：DLL #US 字符串（record_offset=169390）
+原文：Segment {0} has invalid startpoint.
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[207] 跳过文本
+来源：Drift Apocalypse_Data/Managed/Unity.2D.Animation.Triangle.Runtime.dll
+键位：us#2271
+对象：DLL #US 字符串（record_offset=169462）
+原文：Segment {0} has invalid endpoint.
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[208] 跳过文本
+来源：Drift Apocalypse_Data/Managed/Unity.2D.Animation.Triangle.Runtime.dll
+键位：us#2339
+对象：DLL #US 字符串（record_offset=169530）
+原文：Found duplicate vertex ids.
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[209] 跳过文本
+来源：Drift Apocalypse_Data/Managed/Unity.2D.Animation.Triangle.Runtime.dll
+键位：us#2395
+对象：DLL #US 字符串（record_offset=169586）
+原文：Endpoints of segment (IDs 
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[210] 跳过文本
+来源：Drift Apocalypse_Data/Managed/Unity.2D.Animation.Triangle.Runtime.dll
+键位：us#2453
+对象：DLL #US 字符串（record_offset=169644）
+原文：) are coincident.
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[211] 跳过文本
+来源：Drift Apocalypse_Data/Managed/Unity.2D.Animation.Triangle.Runtime.dll
+键位：us#2489
+对象：DLL #US 字符串（record_offset=169680）
+原文：Mesh.FormSkeleton()
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[212] 跳过文本
+来源：Drift Apocalypse_Data/Managed/Unity.2D.Animation.Triangle.Runtime.dll
+键位：us#2529
+对象：DLL #US 字符串（record_offset=169720）
+原文：Unable to find a triangle on path.
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[213] 跳过文本
+来源：Drift Apocalypse_Data/Managed/Unity.2D.Animation.Triangle.Runtime.dll
+键位：us#2599
+对象：DLL #US 字符串（record_offset=169790）
+原文：Mesh.FindDirection().1
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[214] 跳过文本
+来源：Drift Apocalypse_Data/Managed/Unity.2D.Animation.Triangle.Runtime.dll
+键位：us#2645
+对象：DLL #US 字符串（record_offset=169836）
+原文：Mesh.FindDirection().2
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[215] 跳过文本
+来源：Drift Apocalypse_Data/Managed/Unity.2D.Animation.Triangle.Runtime.dll
+键位：us#2691
+对象：DLL #US 字符串（record_offset=169882）
+原文：Attempt to find intersection of parallel segments.
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[216] 跳过文本
+来源：Drift Apocalypse_Data/Managed/Unity.2D.Animation.Triangle.Runtime.dll
+键位：us#2793
+对象：DLL #US 字符串（record_offset=169984）
+原文：Mesh.SegmentIntersection()
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[217] 跳过文本
+来源：Drift Apocalypse_Data/Managed/Unity.2D.Animation.Triangle.Runtime.dll
+键位：us#2847
+对象：DLL #US 字符串（record_offset=170038）
+原文：Failure to split a segment.
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[218] 跳过文本
+来源：Drift Apocalypse_Data/Managed/Unity.2D.Animation.Triangle.Runtime.dll
+键位：us#2903
+对象：DLL #US 字符串（record_offset=170094）
+原文：Topological inconsistency after splitting a segment.
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[219] 跳过文本
+来源：Drift Apocalypse_Data/Managed/Unity.2D.Animation.Triangle.Runtime.dll
+键位：us#3103
+对象：DLL #US 字符串（record_offset=170294）
+原文：Mesh.InsertSegment().1
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[220] 跳过文本
+来源：Drift Apocalypse_Data/Managed/Unity.2D.Animation.Triangle.Runtime.dll
+键位：us#3149
+对象：DLL #US 字符串（record_offset=170340）
+原文：Mesh.InsertSegment().2
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[221] 跳过文本
+来源：Drift Apocalypse_Data/Managed/Unity.2D.Animation.Triangle.Runtime.dll
+键位：us#3195
+对象：DLL #US 字符串（record_offset=170386）
+原文：Triangle has an invalid vertex index.
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[222] 跳过文本
+来源：Drift Apocalypse_Data/Managed/Unity.2D.Animation.Triangle.Runtime.dll
+键位：us#3271
+对象：DLL #US 字符串（record_offset=170462）
+原文：MeshReader.Reconstruct()
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[223] 跳过文本
+来源：Drift Apocalypse_Data/Managed/Unity.2D.Animation.Triangle.Runtime.dll
+键位：us#3321
+对象：DLL #US 字符串（record_offset=170512）
+原文：Segment has an invalid vertex index.
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[224] 跳过文本
+来源：Drift Apocalypse_Data/Managed/Unity.2D.Animation.Triangle.Runtime.dll
+键位：us#3422
+对象：DLL #US 字符串（record_offset=170612）
+原文：Ran out of precision: I attempted to split a segment to a smaller size than can be accommodated by the finite precision of floating point arithmetic.
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[225] 跳过文本
+来源：Drift Apocalypse_Data/Managed/Unity.2D.Animation.Triangle.Runtime.dll
+键位：us#3722
+对象：DLL #US 字符串（record_offset=170913）
+原文：Quality.SplitEncSegs()
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[226] 跳过文本
+来源：Drift Apocalypse_Data/Managed/Unity.2D.Animation.Triangle.Runtime.dll
+键位：us#3768
+对象：DLL #US 字符串（record_offset=170959）
+原文：Ran out of precision
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[227] 跳过文本
+来源：Drift Apocalypse_Data/Managed/Unity.2D.Animation.Triangle.Runtime.dll
+键位：us#3810
+对象：DLL #US 字符串（record_offset=171001）
+原文：New vertex falls on existing vertex.
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[228] 跳过文本
+来源：Drift Apocalypse_Data/Managed/Unity.2D.Animation.Triangle.Runtime.dll
+键位：us#3884
+对象：DLL #US 字符串（record_offset=171075）
+原文：Quality.SplitTriangle()
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[229] 跳过文本
+来源：Drift Apocalypse_Data/Managed/Unity.2D.Animation.Triangle.Runtime.dll
+键位：us#3933
+对象：DLL #US 字符串（record_offset=171123）
+原文：The new vertex is at the circumcenter of triangle: This probably means that I am trying to refine triangles to a smaller size than can be accommodated by the finite precision of floating point arithmetic.
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[230] 跳过文本
+来源：Drift Apocalypse_Data/Managed/Unity.2D.Animation.Triangle.Runtime.dll
+键位：us#4343
+对象：DLL #US 字符串（record_offset=171534）
+原文：The new vertex is at the circumcenter of triangle.
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[231] 跳过文本
+来源：Drift Apocalypse_Data/Managed/Unity.2D.Animation.Triangle.Runtime.dll
+键位：us#4446
+对象：DLL #US 字符串（record_offset=171636）
+原文：I ran out of Steiner points, but the mesh has encroached subsegments, and therefore might not be truly Delaunay. If the Delaunay property is important to you, try increasing the number of Steiner points.
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[232] 跳过文本
+来源：Drift Apocalypse_Data/Managed/Unity.2D.Animation.Triangle.Runtime.dll
+键位：us#4854
+对象：DLL #US 字符串（record_offset=172045）
+原文：Quality.EnforceQuality()
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[233] 跳过文本
+来源：Drift Apocalypse_Data/Managed/Unity.2D.Animation.Triangle.Runtime.dll
+键位：us#4904
+对象：DLL #US 字符串（record_offset=172095）
+原文：B-SID {0}
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[234] 跳过文本
+来源：Drift Apocalypse_Data/Managed/Unity.2D.Animation.Triangle.Runtime.dll
+键位：us#4924
+对象：DLL #US 字符串（record_offset=172115）
+原文：B-TID {0}
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[235] 跳过文本
+来源：Drift Apocalypse_Data/Managed/Unity.2D.Animation.Triangle.Runtime.dll
+键位：us#4944
+对象：DLL #US 字符串（record_offset=172135）
+原文：A duplicate vertex appeared and was ignored (ID {0}).
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[236] 跳过文本
+来源：Drift Apocalypse_Data/Managed/Unity.2D.Animation.Triangle.Runtime.dll
+键位：us#5052
+对象：DLL #US 字符串（record_offset=172243）
+原文：Dwyer.Triangulate()
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[237] 跳过文本
+来源：Drift Apocalypse_Data/Managed/Unity.2D.Animation.Triangle.Runtime.dll
+键位：us#5092
+对象：DLL #US 字符串（record_offset=172283）
+原文：A duplicate vertex appeared and was ignored.
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[238] 跳过文本
+来源：Drift Apocalypse_Data/Managed/Unity.2D.Animation.Triangle.Runtime.dll
+键位：us#5182
+对象：DLL #US 字符串（record_offset=172373）
+原文：Incremental.Triangulate()
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[239] 跳过文本
+来源：Drift Apocalypse_Data/Managed/Unity.2D.Animation.Triangle.Runtime.dll
+键位：us#5234
+对象：DLL #US 字符串（record_offset=172425）
+原文：Input vertices are all identical.
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[240] 跳过文本
+来源：Drift Apocalypse_Data/Managed/Unity.2D.Animation.Triangle.Runtime.dll
+键位：us#5302
+对象：DLL #US 字符串（record_offset=172493）
+原文：SweepLine.Triangulate()
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[241] 跳过文本
+来源：Drift Apocalypse_Data/Managed/Unity.2D.Animation.Triangle.Runtime.dll
+键位：us#5350
+对象：DLL #US 字符串（record_offset=172541）
+原文：A duplicate vertex appeared and was ignored (ID 
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[242] 跳过文本
+来源：Drift Apocalypse_Data/Managed/Unity.2D.Animation.Triangle.Runtime.dll
+键位：us#5454
+对象：DLL #US 字符串（record_offset=172645）
+原文：SweepLine.Triangulate().1
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[243] 跳过文本
+来源：Drift Apocalypse_Data/Managed/Unity.2D.Animation.Triangle.Runtime.dll
+键位：us#5506
+对象：DLL #US 字符串（record_offset=172697）
+原文：SweepLine.Triangulate().2
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[244] 跳过文本
+来源：Drift Apocalypse_Data/Managed/Unity.2D.Animation.Triangle.Runtime.dll
+键位：us#5560
+对象：DLL #US 字符串（record_offset=172751）
+原文：A session is active. Finish before starting a new.
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[245] 跳过文本
+来源：Drift Apocalypse_Data/Managed/Unity.2D.Animation.Triangle.Runtime.dll
+键位：us#5674
+对象：DLL #US 字符串（record_offset=172865）
+原文：#!N
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[246] 跳过文本
+来源：Drift Apocalypse_Data/Managed/Unity.2D.Animation.Triangle.Runtime.dll
+键位：us#5682
+对象：DLL #US 字符串（record_offset=172873）
+原文：#!G{0}
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[247] 跳过文本
+来源：Drift Apocalypse_Data/Managed/Unity.2D.Animation.Triangle.Runtime.dll
+键位：us#5696
+对象：DLL #US 字符串（record_offset=172887）
+原文：#!M{0}
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[248] 跳过文本
+来源：Drift Apocalypse_Data/Managed/Unity.2D.Animation.Triangle.Runtime.dll
+键位：us#5780
+对象：DLL #US 字符串（record_offset=172971）
+原文：File format not supported.
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[249] 跳过文本
+来源：Drift Apocalypse_Data/Managed/Unity.2D.Animation.Triangle.Runtime.dll
+键位：us#5868
+对象：DLL #US 字符串（record_offset=173059）
+原文：Could not load '
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[250] 跳过文本
+来源：Drift Apocalypse_Data/Managed/Unity.2D.Animation.Triangle.Runtime.dll
+键位：us#5902
+对象：DLL #US 字符串（record_offset=173093）
+原文：' file.
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[251] 跳过文本
+来源：Drift Apocalypse_Data/Managed/Unity.2D.Animation.Triangle.Runtime.dll
+键位：us#5918
+对象：DLL #US 字符串（record_offset=173109）
+原文：File format '
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[252] 跳过文本
+来源：Drift Apocalypse_Data/Managed/Unity.2D.Animation.Triangle.Runtime.dll
+键位：us#5946
+对象：DLL #US 字符串（record_offset=173137）
+原文：' not supported.
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[253] 跳过文本
+来源：Drift Apocalypse_Data/Managed/Unity.2D.Animation.Triangle.Runtime.dll
+键位：us#5984
+对象：DLL #US 字符串（record_offset=173175）
+原文：Can't read input file.
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[254] 跳过文本
+来源：Drift Apocalypse_Data/Managed/Unity.2D.Animation.Triangle.Runtime.dll
+键位：us#6030
+对象：DLL #US 字符串（record_offset=173221）
+原文：Triangle only works with two-dimensional meshes.
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[255] 跳过文本
+来源：Drift Apocalypse_Data/Managed/Unity.2D.Animation.Triangle.Runtime.dll
+键位：us#6128
+对象：DLL #US 字符串（record_offset=173319）
+原文：Can't read input file (vertices).
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[256] 跳过文本
+来源：Drift Apocalypse_Data/Managed/Unity.2D.Animation.Triangle.Runtime.dll
+键位：us#6196
+对象：DLL #US 字符串（record_offset=173387）
+原文：Invalid vertex.
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[257] 跳过文本
+来源：Drift Apocalypse_Data/Managed/Unity.2D.Animation.Triangle.Runtime.dll
+键位：us#6228
+对象：DLL #US 字符串（record_offset=173419）
+原文：No nodes available.
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[258] 跳过文本
+来源：Drift Apocalypse_Data/Managed/Unity.2D.Animation.Triangle.Runtime.dll
+键位：us#6268
+对象：DLL #US 字符串（record_offset=173459）
+原文：Can't read input file (segments).
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[259] 跳过文本
+来源：Drift Apocalypse_Data/Managed/Unity.2D.Animation.Triangle.Runtime.dll
+键位：us#6336
+对象：DLL #US 字符串（record_offset=173527）
+原文：Segment has no endpoints.
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[260] 跳过文本
+来源：Drift Apocalypse_Data/Managed/Unity.2D.Animation.Triangle.Runtime.dll
+键位：us#6388
+对象：DLL #US 字符串（record_offset=173579）
+原文：Invalid first endpoint of segment.
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[261] 跳过文本
+来源：Drift Apocalypse_Data/Managed/Unity.2D.Animation.Triangle.Runtime.dll
+键位：us#6458
+对象：DLL #US 字符串（record_offset=173649）
+原文：MeshReader.ReadPolyfile()
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[262] 跳过文本
+来源：Drift Apocalypse_Data/Managed/Unity.2D.Animation.Triangle.Runtime.dll
+键位：us#6510
+对象：DLL #US 字符串（record_offset=173701）
+原文：Invalid second endpoint of segment.
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[263] 跳过文本
+来源：Drift Apocalypse_Data/Managed/Unity.2D.Animation.Triangle.Runtime.dll
+键位：us#6582
+对象：DLL #US 字符串（record_offset=173773）
+原文：Can't read input file (holes).
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[264] 跳过文本
+来源：Drift Apocalypse_Data/Managed/Unity.2D.Animation.Triangle.Runtime.dll
+键位：us#6644
+对象：DLL #US 字符串（record_offset=173835）
+原文：Invalid hole.
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[265] 跳过文本
+来源：Drift Apocalypse_Data/Managed/Unity.2D.Animation.Triangle.Runtime.dll
+键位：us#6672
+对象：DLL #US 字符串（record_offset=173863）
+原文：Can't read input file (region).
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[266] 跳过文本
+来源：Drift Apocalypse_Data/Managed/Unity.2D.Animation.Triangle.Runtime.dll
+键位：us#6736
+对象：DLL #US 字符串（record_offset=173927）
+原文：Invalid region attributes.
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[267] 跳过文本
+来源：Drift Apocalypse_Data/Managed/Unity.2D.Animation.Triangle.Runtime.dll
+键位：us#6790
+对象：DLL #US 字符串（record_offset=173981）
+原文：Can't read input file (elements).
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[268] 跳过文本
+来源：Drift Apocalypse_Data/Managed/Unity.2D.Animation.Triangle.Runtime.dll
+键位：us#6858
+对象：DLL #US 字符串（record_offset=174049）
+原文：Triangle attributes not supported.
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[269] 跳过文本
+来源：Drift Apocalypse_Data/Managed/Unity.2D.Animation.Triangle.Runtime.dll
+键位：us#6960
+对象：DLL #US 字符串（record_offset=174151）
+原文：Triangle has no nodes.
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[270] 跳过文本
+来源：Drift Apocalypse_Data/Managed/Unity.2D.Animation.Triangle.Runtime.dll
+键位：us#7018
+对象：DLL #US 字符串（record_offset=174209）
+原文：Can't read input file (area).
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[271] 跳过文本
+来源：Drift Apocalypse_Data/Managed/Unity.2D.Animation.Triangle.Runtime.dll
+键位：us#7078
+对象：DLL #US 字符串（record_offset=174269）
+原文：Number of area constraints doesn't match number of triangles.
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[272] 跳过文本
+来源：Drift Apocalypse_Data/Managed/Unity.2D.Animation.Triangle.Runtime.dll
+键位：us#7202
+对象：DLL #US 字符串（record_offset=174393）
+原文：ReadAreaFile()
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[273] 跳过文本
+来源：Drift Apocalypse_Data/Managed/Unity.2D.Animation.Triangle.Runtime.dll
+键位：us#7370
+对象：DLL #US 字符串（record_offset=174561）
+原文：Area constraints must not be negative.
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[274] 跳过文本
+来源：Drift Apocalypse_Data/Managed/Unity.2D.Animation.Triangle.Runtime.dll
+键位：us#7448
+对象：DLL #US 字符串（record_offset=174639）
+原文：Index must be 0 or 1.
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—

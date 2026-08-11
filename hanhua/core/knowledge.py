@@ -380,6 +380,20 @@ _ACTION_VERB_ZH = {
     "punch": "出拳", "hit": "击打", "poke": "戳", "pat": "轻拍",
     "clean": "清洁", "wash": "清洗", "rinse": "冲洗", "dry": "晾干",
     "iron": "熨烫", "fold": "折叠", "hang": "挂起", "wear": "穿戴",
+    # UI 设置/配置命令动词（F22-3 防过宽：'Adjust spring pressure 调整
+    # spring 压力'——Adjust/Change 是祈使命令动词，TitleCase 短语段豁免
+    # 不得放行未译的命令动词；与 Press/Open 同类，属操作动词词表）
+    "adjust": "调整", "change": "更改", "set": "设置", "select": "选择",
+    "choose": "选择", "toggle": "切换", "enable": "启用",
+    "disable": "禁用", "move": "移动", "delete": "删除", "add": "添加",
+    "switch": "切换", "update": "更新", "edit": "编辑", "modify": "修改",
+    "increase": "增加", "decrease": "减少", "reset": "重置", "clear": "清除",
+    "apply": "应用", "sort": "排序", "filter": "筛选", "scroll": "滚动",
+    "copy": "复制", "paste": "粘贴", "rename": "重命名",
+    "configure": "配置", "customize": "自定义", "refresh": "刷新",
+    "retry": "重试", "connect": "连接", "disconnect": "断开",
+    "import": "导入", "export": "导出", "download": "下载",
+    "upload": "上传", "install": "安装", "uninstall": "卸载",
 }
 # 大写动作短语中常见名词（TOSS TRASH 的 TRASH），补动作词的语义完整
 _COMMON_NOUN_ZH = {

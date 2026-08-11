@@ -64,6 +64,50 @@ def test_quality_rejects_untranslated_english_and_glossary_drift():
     assert "glossary_mismatch" in drift.reasons
 
 
+def test_glossary_verb_usage_exempted():
+    """F17 动词用法豁免：术语词在原文是动词用法（前邻 to/助动词）→ 与
+    术语表的标签含义无关。doubleshake "shouldn't be hard to miss" 的
+    miss=错过/遗漏，译文「遗漏」正确——不得被 (miss, 未命中) 误杀；
+    'miss: 999' 标签格式（deadbeat 音游 HUD）不受影响照常生效。"""
+    entry = _entry("Hm, I think 4 should do. The seeds grow in high "
+                   "places around the island, and shouldn't be hard to miss.")
+    ok = validate_translation_quality(
+        entry, "嗯，我觉得选4就可以了。这些种子生长在岛屿上的高处，"
+               "应该不会容易遗漏吧。",
+        glossary=[("miss", "未命中")])
+    assert ok.passed is True
+
+    # 标签格式不受豁免：deadbeat 实证 miss: 999 模型回显须判失败
+    label = _entry("miss: 999")
+    fail = validate_translation_quality(
+        label, "miss: 999", glossary=[("miss", "未命中")])
+    assert "glossary_mismatch" in fail.reasons
+
+
+def test_short_uppercase_abbreviation_echo_allowed():
+    """F19 ≤3 全大写缩写回显豁免：MAX/SFX/UI 是界面标准术语，1.8B
+    模型对单 token 缩写稳定回显（count-my-coins 'SFX' 实证；proper_name
+    echo 侧已有同规则，本门补一致；driftapocalypse 'MAX' ×3 实证重试
+    耗尽仍回显）。4+ 字母 UI 词、多词组合、动作指令不受影响。"""
+    for word in ("MAX", "SFX", "UI", "OK"):
+        entry = _entry(word)
+        ok = validate_translation_quality(entry, word)
+        assert ok.passed is True, f"{word} 回显应豁免: {ok.reasons}"
+
+    # 4+ 字母 UI 词典词（QUIT）回显仍判失败
+    quit_entry = _entry("QUIT")
+    quit_res = validate_translation_quality(quit_entry, "QUIT")
+    assert "untranslated_text" in quit_res.reasons
+    # 多词组合（MAX SPEED 半翻）仍判失败
+    combo = _entry("MAX SPEED")
+    combo_res = validate_translation_quality(combo, "MAX SPEED")
+    assert "untranslated_text" in combo_res.reasons
+    # 动作指令（TOSS TRASH）仍判失败（knowledge 规则）
+    action = _entry("TOSS TRASH")
+    action_res = validate_translation_quality(action, "TOSS TRASH")
+    assert "untranslated_text" in action_res.reasons
+
+
 def test_glossary_proper_name_echo_casefold_allowed():
     """自动沉淀专名保留映射（KRAPOS→KRAPOS）vs 模型回显 TitleCase 变体
     （Krapos）→ 大小写不敏感放行（count-my-coins 实证：learn 时保留

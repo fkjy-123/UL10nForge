@@ -716,6 +716,36 @@ def test_input_device_names_are_structural():
     assert not is_hard_structural('Press the gamepad button to start')
 
 
+def test_input_api_names_are_structural():
+    """输入系统 API/组件名孤立词（ffs-full-game-demo 实证 'xinput'：
+    设备枚举字符串，无品牌词/语境词不命中设备名分支）→ 结构跳过。
+    只收明确 API 形态词（'hid' 是真实英语词 hide 过去式不收）。"""
+    assert is_hard_structural('xinput')
+    assert is_hard_structural('XInput')
+    assert is_hard_structural('dinput8')
+    assert is_hard_structural('rawinput')
+    assert is_hard_structural('xinput1_4')
+    # 反例：真实英语词/游戏文本不误伤
+    assert not is_hard_structural('hid')
+    assert not is_hard_structural('HID')
+    assert not is_hard_structural('Press the input button')
+
+
+def test_regex_pattern_is_structural():
+    """正则表达式串（ffs-full-game-demo 实证 '[dD]+ual[ ]*[sS]+ense'：
+    DualSense 手柄匹配模式）→ 结构跳过。字符类+量词是正则形态特征，
+    翻译破坏运行时匹配逻辑。不误伤 markdown 链接/按键提示（无量词）。"""
+    assert is_hard_structural(r'[dD]+ual[ ]*[sS]+ense')
+    assert is_hard_structural(r'[a-z]+[0-9]*')
+    assert is_hard_structural(r'[A-Za-z0-9_-]+\.exe')
+    assert is_hard_structural(r'\d{4}-\d{2}-\d{2}')
+    # 反例：markdown 链接（后跟 '(' 非量词）、按键提示 [A]（无量词）、
+    # 正常文本
+    assert not is_hard_structural('[text](https://example.com)')
+    assert not is_hard_structural('Press [A] to jump')
+    assert not is_hard_structural('Select the option')
+
+
 def test_version_template_and_guid_log_are_structural():
     """版本占位模板（v?.??：crash-back-in-time level0 实证）与 C# 日志
     拼接模板尾部（Rewired 'CustomController device instance GUID:
@@ -794,3 +824,20 @@ def test_fragment_noise_is_structural():
     assert not is_hard_structural('Hi hi hi')
     assert not is_hard_structural('OK go')
     assert not is_hard_structural('a b c')
+
+
+def test_engine_ctrl_code_is_structural():
+    """引擎富文本控制码串（faerie-afterlight 实证：'.^.b'×178、'^tr'、
+    '^denvis'——'^' 前缀字母段是引擎样式/命令标记，剥除后无可译英文
+    词）→ 结构跳过。要求剥除后无 ≥3 字母连续段，防误伤含 ^ 的真实
+    文本（'x^2 + y^2' 剥后 x/y 单字母）。"""
+    assert is_hard_structural('.^.b')
+    assert is_hard_structural('^tr')
+    assert is_hard_structural('^cb')
+    assert is_hard_structural('^denvis')
+    assert is_hard_structural('^rt')
+    assert is_hard_structural('^as')
+    # 反例：含 ^ 的真实文本（数学表达式剥后单字母、正常句子无控制码）
+    assert not is_hard_structural('x^2 + y^2')
+    assert not is_hard_structural('Press {0} to open Map of this area')
+    assert not is_hard_structural('Solium dual')

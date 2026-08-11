@@ -29,6 +29,16 @@ class ParsedFile:
 
 # 无空格标识符风格（如 NavMeshLink、UnityEngine、Assembly-CSharp）——大概率不是显示文本
 _NO_SPACE_TOKEN = re.compile(r"^[A-Za-z0-9_.\-/]{2,60}$")
+# Unity 引擎配置文件（所有 Unity 游戏通用，文件级跳过——保留条目保证写回
+# 完整性但不翻译）：
+# - boot.config：引擎启动参数（gfx-enable-*/wait-for-*/scripting-runtime-version/
+#   vr-enabled/hdr-display-enabled），值域是引擎枚举（legacy/net_4_x/0/1）——
+#   非英文数字值（如 scripting-runtime-version=legacy）是合法配置值，翻译即
+#   破坏引擎解析（dollhouse 实证：legacy →「遗产」写回）。配置文件名本身
+#   全引擎通用，不是单游戏特判。
+# 注：app.info 不在此列——内容是作者名/游戏名（元数据记录，引擎不解析），
+# 翻译成中文是合理的标题本地化，无功能破坏。
+_UNITY_ENGINE_CONFIG_FILES = {"boot.config"}
 # 保留翻译的语言包目录：仅英文（en/english）。英文是游戏主语言文本
 # （汉化目标）；其余语言目录（ES/DE/RS/FR/CH/ZH…）是次要语言包——汉化版
 # 玩家不会以该语言游玩，翻译无意义且西语等无重音单词（Expreso/Mierda）
@@ -129,6 +139,11 @@ def parse_file(path: str | Path, file_id: str | None = None) -> ParsedFile:
     # 次要语言包（Language/ES 等）：跳过全部条目——保留条目保证写回
     # 完整性（游戏内该语言原样保留），但不翻译（见 _is_non_target_language_pack）
     if _is_non_target_language_pack(p):
+        for e in entries:
+            if e.status == "pending":
+                e.status = STATUS_SKIPPED
+    # Unity 引擎配置文件（boot.config）：值域是引擎枚举，翻译即破坏引擎解析
+    if p.name in _UNITY_ENGINE_CONFIG_FILES:
         for e in entries:
             if e.status == "pending":
                 e.status = STATUS_SKIPPED

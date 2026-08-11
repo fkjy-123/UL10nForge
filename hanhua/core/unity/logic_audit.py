@@ -214,24 +214,38 @@ def verify_string_length_headers(raw: bytes,
     的结构侧防线：变长译文扩容插入后，若长度头未同步（写成了旧长度），
     Unity 加载按长度头解析会读到错位数据。译文存在性 + 长度头正确 →
     字符串边界未被破坏。返回问题列表（空 = 通过）。
+
+    注意：译文可能作为更长字符串的子串出现（doubleshake 实证：
+    `<w=sassy>Quest Discovered!` 与 `Quest Discovered!` 是相邻独立字符串，
+    译文 `任务被发现啦！` 在标签字符串内部也出现一次）——子串位置的
+    前 4 字节是标签文本（"ssy>"）不是长度头。必须遍历**所有**出现位置，
+    任一位置长度头匹配即通过；全部不匹配才判定边界破坏。
     """
     problems: list[str] = []
     for original, translation in translations.items():
         if not translation or translation == original:
             continue
         payload = translation.encode("utf-8")
-        pos = raw.find(payload)
-        if pos < 0:
+        if payload not in raw:
             continue  # 存在性由 verify_logic_layer 负责
-        length_offset = pos - 4
-        if length_offset < 0:
-            problems.append(f"译文 {translation!r} 位置过前，无法核对长度头")
-            continue
-        head = int.from_bytes(raw[length_offset:pos], "little")
-        if head != len(payload):
-            problems.append(
-                f"译文 {translation!r}（原文 {original!r}）长度头 {head} "
-                f"≠ 实际字节 {len(payload)}（字符串边界被破坏）")
+        head_ok = False
+        too_early = False
+        pos = raw.find(payload)
+        while pos >= 0:
+            length_offset = pos - 4
+            if length_offset < 0:
+                too_early = True
+            elif int.from_bytes(raw[length_offset:pos], "little") == len(payload):
+                head_ok = True
+                break
+            pos = raw.find(payload, pos + 1)
+        if not head_ok:
+            if too_early:
+                problems.append(f"译文 {translation!r} 位置过前，无法核对长度头")
+            else:
+                problems.append(
+                    f"译文 {translation!r}（原文 {original!r}）全部出现处长度头 "
+                    f"≠ 实际字节 {len(payload)}（字符串边界被破坏）")
             if len(problems) >= 5:
                 problems.append("…（仅列前 5 项）")
                 break

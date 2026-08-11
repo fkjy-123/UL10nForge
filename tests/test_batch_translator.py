@@ -375,6 +375,10 @@ def test_japanese_proper_name_echo_is_allowed(source, translation):
     ("Adjust ram pressure", "调整 ram 压力"),
     ("Open the steam valve", "打开 steam 阀门"),
     ("ragdoll count", "ragdoll 计数"),
+    # F16：3+ 连续辅音含 j/q/z/k 的乱串/真词边界——length 的 ngth、
+    # spring 的 spr 是真实词组合（含 s 开头合法连缀），不得豁免
+    ("Adjust spring pressure", "调整 spring 压力"),
+    ("Change the length", "改变 length"),
 ])
 def test_common_word_leftovers_still_target_script_mismatch(source, translation):
     translator = BatchTranslator(
@@ -385,6 +389,44 @@ def test_common_word_leftovers_still_target_script_mismatch(source, translation)
     )
 
     assert translator._apply_quality(entry, translation) is False
+
+
+@pytest.mark.parametrize(("source", "translation"), [
+    # F16-A 连字符专名段：Loam-arino 的 arino 是专名的一部分（doubleshake
+    # 实证 'Hi, Loam-arino!' 译文保留 arino 被判 target_script_mismatch）
+    ("Howdy, Loam-arino! Is there anything I can help you with?",
+     "嗨，Loam-arino！有什么我可以帮助你的吗？"),
+    # F16-B 测试噪音块子串：asd ⊂ asdasdasdasd（重复 3-gram 乱串块），
+    # 模型保留噪音段是正确行为（doubleshake 测试文本实证）
+    ("asd\nasdasdasdasd\nfiller text", "asd\nasdasdasdasd\n填充文本"),
+])
+def test_noise_and_hyphen_proper_names_allowed(source, translation):
+    translator = BatchTranslator(
+        FakeClient(), batch_size=1, concurrency=1, lang="en→zh-CN")
+    entry = TextEntry(
+        "ui", "reported", source,
+        meta={"role": "display", "disposition": "translate"},
+    )
+
+    assert translator._apply_quality(entry, translation) is True
+
+
+@pytest.mark.parametrize(("source", "translation"), [
+    # F16-B 罕见辅音连缀乱串：ksjdh（含 j/k）是英语没有的辅音组合
+    # （doubleshake aksjdhashd 实证）→ 保留乱串豁免；真词组合
+    # （spring 的 spr、length 的 ngth）不含 j/q/z/k 照常判失败
+    ("Come to Caliko Coast!!!!\naksjdhashd\nasdlajsdhasjkdh",
+     "快来卡利科海岸吧！！！\naksjdhashd\nasdlajsdhasjkdh"),
+])
+def test_rare_consonant_run_noise_allowed(source, translation):
+    translator = BatchTranslator(
+        FakeClient(), batch_size=1, concurrency=1, lang="en→zh-CN")
+    entry = TextEntry(
+        "ui", "reported", source,
+        meta={"role": "display", "disposition": "translate"},
+    )
+
+    assert translator._apply_quality(entry, translation) is True
 
 
 @pytest.mark.parametrize(("source", "translation"), [
@@ -549,6 +591,79 @@ def test_title_case_ui_word_inside_proper_name_phrase_allowed(
     )
 
     assert translator._apply_quality(entry, translation) is True
+
+
+@pytest.mark.parametrize(("source", "translation"), [
+    # driftapocalypse 真实样本：日志串中 Play Games Plugin 插件专名的
+    # Play 是品牌词（Google Play Games），模型保留正确；DateTime.Now 是
+    # .NET API 名（驼峰豁免）。F18 修复前 Play 是 UI 词典词且在短语
+    # 开头（left_title=False）→ 误判 target_script_mismatch
+    ("*** [Play Games Plugin 0.10.12] ERROR: Failed to format DateTime.Now",
+     "[Play Games Plugin 0.10.12] 错误：无法格式化 DateTime.Now"),
+    # 服务短语（Play Store）语义层已剥除 → 天然豁免
+    ("Play Store", "请查看 Play Store 评分"),
+])
+def test_brand_ui_word_in_proper_phrase_allowed(source, translation):
+    translator = BatchTranslator(
+        FakeClient(), batch_size=1, concurrency=1, lang="en→zh-CN")
+    entry = TextEntry(
+        "ui", "reported", source,
+        meta={"role": "display", "disposition": "translate"},
+    )
+
+    assert translator._apply_quality(entry, translation) is True
+
+
+@pytest.mark.parametrize(("source", "translation"), [
+    # eyeless-jack 真实样本：Pixabay 音乐作者用户名列表（下划线连接
+    # 标识符形态），模型翻译主体+保留用户名正确。F20 修复前 Music
+    # （UI 词典词）在词序末尾被判英文残留 → 误杀 target_script_mismatch
+    ("MUSIC<br>All music is from the following Pixabay Users:<br>"
+     "UNIVERSFIELD<br>Tim_Kulig_Free_Music<br>Eremit_der_Schatten<br>"
+     "Brotheration_Records",
+     "音乐<br>所有音乐均来自以下 Pixabay 用户：<br>UNIVERSFIELD<br>"
+     "Tim_Kulig_Free_Music<br>Eremit_der_Schatten<br>"
+     "Brotheration_Records"),
+])
+def test_underscore_identifier_words_allowed(source, translation):
+    translator = BatchTranslator(
+        FakeClient(), batch_size=1, concurrency=1, lang="en→zh-CN")
+    entry = TextEntry(
+        "ui", "reported", source,
+        meta={"role": "display", "disposition": "translate"},
+    )
+
+    assert translator._apply_quality(entry, translation) is True
+
+
+def test_underscore_identifier_does_not_mask_real_half_translation():
+    # 对照：真半翻（中文+英文句子残留）不受下划线豁免影响
+    translator = BatchTranslator(
+        FakeClient(), batch_size=1, concurrency=1, lang="en→zh-CN")
+    entry = TextEntry(
+        "ui", "reported", "Open the file",
+        meta={"role": "display", "disposition": "translate"},
+    )
+
+    assert translator._apply_quality(entry, "打开 Open the file") is False
+
+
+@pytest.mark.parametrize(("source", "translation"), [
+    # 短组合漏翻回显：Play Button 是「播放按钮」不是专名 → 仍判失败
+    ("Play Button", "播放 按钮 Play Button"),
+    ("Play Button", "Play Button"),
+    # 全词典词 TitleCase 序列漏翻回显 → 仍判失败（无非词典专名词）
+    ("Play Settings Resume", "Play Settings Resume"),
+])
+def test_ui_word_short_proper_combo_still_fails(source, translation):
+    translator = BatchTranslator(
+        FakeClient(), batch_size=1, concurrency=1, lang="en→zh-CN")
+    entry = TextEntry(
+        "ui", "reported", source,
+        meta={"role": "display", "disposition": "translate"},
+    )
+
+    assert translator._apply_quality(entry, translation) is False
 
 
 def test_lowercase_article_inside_proper_name_phrase_allowed():

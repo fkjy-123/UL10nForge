@@ -1,22 +1,22 @@
 # dollhouse 地毯式排查记录
 
 - 游戏目录：D:\游戏\dollhouse
-- 时间：2026-08-11 18:55:17
+- 时间：2026-08-11 20:12:45
 
 ## 1 识别
-- 文本文件：2 · 二进制资源：0
-- 识别条目：3
+- 文本文件：1 · 二进制资源：0
+- 识别条目：2
 - 形态统计：
   - asset_unity: 2 文件 / 0 条
   - mono_csharp: 1 文件 / 0 条
 - 状态分布：
-  - pending: 3
+  - pending: 2
   - translated: 0
   - failed: 0
-  - skipped: 4
+  - skipped: 0
 - 置信度分布：
   - high: 0
-  - medium: 3
+  - medium: 2
   - low: 0
 - 工具状态：
   - bmfont: verified
@@ -27,13 +27,13 @@
   - writeback: pending 使用原生 locator、staging、重开验证与原子提交
 
 ## 2 翻译
-- 总条目：3 · 完成：3（记忆命中 0） · 失败：0
-- 请求：3 · 输入 86 tokens · 输出 13 tokens
-- 耗时：1.7s · 吞吐 107 条/分
+- 总条目：2 · 完成：2（记忆命中 0） · 失败：0
+- 请求：2 · 输入 59 tokens · 输出 11 tokens
+- 耗时：1.5s · 吞吐 79 条/分
 
 ## 3 写回
-- 文本文件：2 · 写入译文：3
-- 输入保护：True · 重开验证：True · 变更文件：28
+- 文本文件：1 · 写入译文：2
+- 输入保护：True · 重开验证：True · 变更文件：27
 - 总体闸门：WARN · 字体：payload_deployed
 
 ## 4 分析（待办）

@@ -50,6 +50,13 @@ _ONLY_SYMBOL = re.compile(r"^[\W_]+$")
 # （* 被当强调标记），翻译无意义 → 词表条目跳过。星号+空格
 # （"* (text)" 对话格式）不匹配。
 _STAR_PREFIXED_WORD = re.compile(r"^\*[a-z]{3,}$")
+# 引擎富文本控制码（faerie-afterlight 实证：'.^.b' 的 '^b'、'^tr'、
+# '^denvis'——'^' + 字母段是引擎样式/命令标记）。剥除后无可译英文词
+# 的串在 is_hard_structural 中跳过；含真实内容的（'^denvis' 剥后
+# 'denvis'）不误伤（denvis 印尼语内容走正常翻译）。
+_ENGINE_CTRL_CODE = re.compile(r"\^[^A-Za-z0-9]{0,2}[A-Za-z]{1,12}")
+# 3+ 字母英文词（控制码剥除后的可译语义判定用）
+_ENGLISH_WORD_MIN3 = re.compile(r"[A-Za-z]{3,}")
 # 混合符号 token：无空格、含至少一个强代码符号（%#&^$@|\）、含字母。
 # 匹配随机 token/编码串（'xChDC-Gs%OmaMl+g'）；正常英文句子的强符号
 # 都是 '100% sure' 式带空格或有 '=' 成对出现（a=b），不匹配。
@@ -217,6 +224,22 @@ _INPUT_ACTION_IDENTIFIER = re.compile(
 # 防 markdown/数学符号误伤）
 _INPUT_DEVICE_REGEX = re.compile(
     r"^\.\*[\s\S]*|^\^[^ \r\n]*[()\[\]?$|][\s\S]*")
+# 输入系统 API/组件名（微软 XInput/DirectInput 家族 + 常见输入后端）：
+# 设备枚举/绑定字符串里孤立出现（ffs-full-game-demo 实证 'xinput'），
+# 无品牌词/语境词不命中 _is_input_device_name，此处补孤立 API 名。
+# 只收明确 API 形态词（'hid' 是真实英语词 hide 过去式，不收；
+# 含版本后缀的 DLL 名不会出现在真实句子中）
+_INPUT_API_NAMES = frozenset({
+    "xinput", "xinput1_3", "xinput1_4", "xinput9_1_0", "dinput",
+    "dinput8", "rawinput", "dxinput", "winmm", "wgl",
+})
+# 正则表达式串（手柄/设备名匹配模式，'[dD]+ual[ ]*[sS]+ense'——
+# DualSense 匹配正则，ffs-full-game-demo 实证）：字符类 [xX] 后跟量词
+# +/*/{} 是正则形态特征，真实显示文本不用字符类+量词结构；翻译破坏
+# 运行时匹配逻辑。不匹配 markdown 链接 [text](url)（后跟 '(' 非量词）、
+# 按键提示 [A]（无量词）
+_REGEX_PATTERN = re.compile(
+    r"\[[A-Za-z0-9^\\ \t-]+][+*?]|\\[dDwWsS]|\([^)\s]*\)[+*?]")
 # 输入设备品牌/型号词（InControl 内置设备数据库跨游戏通用）：设备名
 # （ipega media gamepad controller / idroid Snakebyte）与设备说明行
 # （Full-sized ipega gamepad. Must be in Gamepad mode…）——翻译破坏
@@ -776,6 +799,10 @@ def is_hard_structural(text: str) -> bool:
             or _INPUT_VERSION_TEMPLATE.match(s)
             or _GUID_LOG_TEMPLATE.search(s)):
         return True                  # 输入插件设备正则/设备名/版本占位/GUID 日志模板
+    if s.casefold() in _INPUT_API_NAMES:
+        return True                  # 输入系统 API/组件名（xinput 等，ffs 实证）
+    if _REGEX_PATTERN.search(s):
+        return True                  # 正则表达式串（字符类+量词形态，ffs 实证）
     if _INPUT_BINDING_PATH.match(s):
         return True                  # Rewired 输入动作绑定路径（翻译破坏绑定解析）
     if _UPPERCASE_ENTROPY.match(s) and len(set(s)) >= 8:
@@ -844,6 +871,14 @@ def is_hard_structural(text: str) -> bool:
         return True                  # Shell 命令（find/tar/rm…不是游戏文本）
     if _KEYBOARD_NOISE.match(s):
         return True                  # 键盘噪音测试文本（asdasdasd / fdji ijsdijn…）
+    # 引擎富文本控制码串（faerie-afterlight 实证：'.^.b'×178、'^tr'、
+    # '^denvis'——'^' 前缀字母段是引擎样式/命令标记（GameMaker/类
+    # RichText 控制码），剥除后无可译英文词 → 结构跳过。要求剥除后
+    # 无 ≥3 字母连续段（'x^2 + y^2' 剥后 x/y 单字母 → 不误伤）。
+    if (_ENGINE_CTRL_CODE.search(s)
+            and not _ENGLISH_WORD_MIN3.search(
+                _ENGINE_CTRL_CODE.sub("", s))):
+        return True
     if _STAR_PREFIXED_WORD.match(s):
         return True                  # 星号前缀词表条目（*shit：脚本示例词）
     if _SECTION_KEY.match(s):

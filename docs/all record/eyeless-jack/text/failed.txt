@@ -1,0 +1,19 @@
+游戏：eyeless-jack
+导出时间：2026-08-12 01:14:51
+翻译模型：Hy-MT2-1.8B-Q6_K
+失败文本：1 条
+
+────────────────────────────────────────────────────────────────
+[1] 失败文本
+来源：Eyeless Jack_Data/Managed/Assembly-CSharp.dll
+键位：us#740
+对象：DLL #US 字符串（record_offset=47731）
+原文：Look in the mirror
+译文：Look in the mirror
+置信度：high
+原因：mono_ui_setter
+角色：display
+质量评分：untranslated_text（passed=False）
+翻译评价：untranslated_text
+需要优化：否
+写回：—

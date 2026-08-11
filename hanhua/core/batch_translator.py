@@ -25,10 +25,12 @@ from hanhua.core.protected_spans import (protected_slot_parts,
 from hanhua.core.prompts import build_batch_user_prompt
 from hanhua.core.quality import (_CJK, _EXPLANATORY_PATTERN,
                                  _EXPLANATORY_PREFIX, _glossary_keep_echo,
-                                 _is_lyric_like, _ui_check_words,
+                                 _glossary_pairs, _is_lyric_like,
+                                 _ui_check_words,
                                  has_independent_lower_word,
                                  is_camel_tech_abbreviation,
                                  is_chinese_source,
+                                 is_log_template,
                                  is_lorem_ipsum_placeholder,
                                  quoted_proper_terms,
                                  source_term_applies,
@@ -108,20 +110,64 @@ _FILE_REFERENCE_WORDS = frozenset(
     {"readme", "changelog", "license", "credits"})
 
 
+# 测试噪音块：原文中的无空格字母块 + 乱串形态（重复 3-gram / 罕见辅音
+# 连缀）→ 整块是开发者乱串（doubleshake 实证：测试文本
+# 'aksjdhashd/asdlajsdhasjkdh/asdasdasd' 与可译句同条目）。其子串
+# （asd ⊂ asdasdasdasd）同属噪音段，模型保留是正确行为。
+_NOISE_BLOCK_RE = re.compile(r"[A-Za-z]+")
+# 罕见辅音连缀：3+ 连续辅音且含 j/q/z/k——英语真实词中 j/q/z 不参与
+# 辅音连缀、k 仅双连（sk/ck），3+ 连出现即乱串形态（aksjdhashd 的
+# ksjdh、asdlajsdhasjkdh 的 jsdh）；length 的 ngth/spring 的 spr 等
+# 真实组合不含这些字母，照常判漏翻
+_RARE_CONSONANT_RUN = re.compile(
+    r"[bcdfghjklmnpqrstvwxyz]*[jqzk][bcdfghjklmnpqrstvwxyz]*")
+# 连字符专名（Loam-arino）：小写段是专名的一部分，模型保留不是漏翻
+# （doubleshake 'Hi, Loam-arino!' → 嗨，Loam-arino！实证）
+
+
+def _noise_blocks(original: str) -> list[str]:
+    """原文中的测试噪音块：≥8 字符 + 重复 3-gram（sdfsdfsdfsdfsdfsdf）
+    或 ≥6 字符 + 罕见辅音连缀（aksjdhashd）→ 开发者乱串块。"""
+    blocks = _NOISE_BLOCK_RE.findall(original)
+    return [b for b in blocks
+            if (len(b) >= 8 and _KEYBOARD_NOISE_3GRAM.search(b))
+            or (len(b) >= 6 and any(
+                _RARE_CONSONANT_RUN.fullmatch(run)
+                for run in re.findall(r"[bcdfghjklmnpqrstvwxyz]{3,}", b)))]
+
+
 def _kept_word_plausible(original: str, word: str) -> bool:
     """模型保留的原文词是否「非普通英语词漏翻」→ 放行合理。
 
-    三条形态特征（满足任一）：
+    形态特征（满足任一）：
     - 键盘噪音：≥8 字符 + 重复 3-gram（sdfsdfsdfsdfsdfsdf 开发者乱串）
+    - 罕见辅音连缀：≥6 字符 + 3+ 连续辅音含 j/q/z/k（aksjdhashd 类
+      一次性乱串——无重复 3-gram 但辅音组合是英语没有的）
+    - 噪音块子串：词是原文乱串块（asdasdasdasd）的一段（asd）
+    - 连字符专名段：词是原文连写专名（Loam-arino）的一部分（arino）
     - 命令/参数语法：原文中词紧跟 [（playsub [character] 的命令名）或
       词在方括号内（[identifier] 的参数占位符）
     - 文件引用词（readme/changelog/license/credits）
 
-    普通英语词（ram/ragdoll/name）不具备上述特征 → 仍判漏翻失败
-    （test_common_word_leftovers_still_target_script_mismatch 固化）。
+    普通英语词（ram/ragdoll/name/length/spring）不具备上述特征 → 仍判
+    漏翻失败（test_common_word_leftovers_still_target_script_mismatch
+    固化）。
     """
     w = word.casefold()
     if len(w) >= 8 and _KEYBOARD_NOISE_3GRAM.search(w):
+        return True
+    if len(w) >= 6 and any(
+            _RARE_CONSONANT_RUN.fullmatch(run)
+            for run in re.findall(r"[bcdfghjklmnpqrstvwxyz]{3,}", w)):
+        return True
+    if any(w in b.casefold() for b in _noise_blocks(original)):
+        return True
+    # 连字符专名段：词是原文连写专名的一段（Loam-arino 的 arino、
+    # 词-词 任意一段，大小写不敏感）
+    if (re.search(rf"(?<![A-Za-z])[A-Za-z]+-{re.escape(word)}(?![A-Za-z])",
+                  original, re.I)
+            or re.search(rf"(?<![A-Za-z]){re.escape(word)}-[A-Za-z]+(?![A-Za-z])",
+                         original, re.I)):
         return True
     if w in _FILE_REFERENCE_WORDS:
         return True
@@ -1814,7 +1860,8 @@ class BatchTranslator:
                      or (source_has_semantic_text and not proper_name
                          and not contains_chinese and not proper_name_echo
                          and not lorem_placeholder
-                         and not glossary_keep_echo))):
+                         and not glossary_keep_echo
+                         and not is_log_template(entry.original)))):
             entry.translation = result.normalized_translation
             entry.quality_reasons = ("target_script_mismatch",)
             entry.meta = dict(entry.meta)
@@ -1847,6 +1894,12 @@ class BatchTranslator:
             self, entry: TextEntry, translation: str) -> bool:
         role = str(entry.meta.get("role", "display"))
         disposition = str(entry.meta.get("disposition", ""))
+        # 调试日志模板串（'MEMORY: cur = {0}MB, max = {1}MB'）：变量名
+        # cur/max/real/total 是脚本标识符无语义，译文保留是正确行为 →
+        # 豁免英文残留检查（final-shot 实证；回显侧豁免在 quality
+        # untranslated_text 判定，见 is_log_template）
+        if is_log_template(entry.original):
+            return False
         allowed_terms = []
         if role == "proper_name" or disposition == "proper_name":
             allowed_terms.append(entry.original)
@@ -1976,6 +2029,84 @@ class BatchTranslator:
                 and original_ascii[match.start() - 1].isdigit())
             or (match.end() < len(original_ascii)
                 and original_ascii[match.end()].isdigit())}
+        # 下划线连接标识符的组成部分（Pixabay 音乐作者用户名
+        # Tim_Kulig_Free_Music / Brotheration_Records / Eremit_der_Schatten
+        # ——eyeless-jack 实证）：下划线连接是标识符/用户名/文件名的形态
+        # 特征（真实英文句子用空格），译文保留用户名正确 → 其各段豁免。
+        # 用原文计算（防模型幻觉新词）。
+        underscore_identifier_words: set[str] = set()
+        for um in re.finditer(r"[A-Za-z]+(?:_[A-Za-z]+)+", original_ascii):
+            underscore_identifier_words.update(
+                w.casefold() for w in _ENGLISH_WORD.findall(um.group(0)))
+        # 键位绑定后缀豁免（faerie-afterlight 实证 ×10）：'Press {0} to
+        # open Map of ...</color>.:map' 的 '.:map' 是按键绑定显示标记
+        # （键名后缀），译文保留 ':map'/':interact'/':jump' 是正确行为
+        # ——绑定名是引擎指令不是英文残留。要求原文同形（':' + 小写
+        # 键名）防模型幻觉新增后缀。
+        keybind_suffix_words = {
+            m.group(1).casefold()
+            for m in re.finditer(r":([a-z]{2,})", original_ascii)}
+        # 原文 TitleCase 首词短语段豁免（faerie 实证 ×6）：'Before Pish
+        # Shop'→'Pish Shop之前'（商店专名）、"Wispy's Chat (Auto
+        # Dialogue)"→"Wispy's Chat (自动对话)"（频道专名）、'Solium
+        # dual\tPolar-Solium'→'Solium dual：双极型电池'（物品专名）、
+        # 'Vallon noir III' 法语物品名、多语言打包对话（'...Wispy:
+        # Mungkin suara itu sungguh datang dari Lucentia...'——模型只译
+        # 英语段、保留印尼语/西语段是正确行为）。
+        # 形态：原文中以 TitleCase 词（≥3 字符、非功能词/交互动作词/
+        # UI 词典词/术语表词）开头、后续词任意大小写延续（词间间隔
+        # ≤3 字符，容 's 属格与 tab）的连续词段，段长 ≥2 且段内含
+        # 非功能词 → 段内词全豁免。
+        # 防过宽：'I like 吃披萨' 的 I 单字符不成立段首（1.8B 模型输出
+        # 功能词残留是真半翻译）；'Press 按钮' 的 Press 是交互动作词；
+        # 'Slash key' 命中术语表 (slash, 斩击) → 术语要求优先，不豁免
+        # （deadbeat 实证）；'The Fidelity' 的 The 是功能词段首不成立。
+        title_phrase_words: set[str] = set()
+        _term_cf = {
+            str(s).casefold() for s, _ in _glossary_pairs(self.glossary)}
+        _term_cf |= {
+            str(t).casefold() for _, t in _glossary_pairs(self.glossary)}
+        # 外语文本特征（faerie 实证 '¿Acaso se me cayó por'：西语段内
+        # 2 字母功能词 se/me 被 _ENGLISH_WORD 的 ≥3 过滤 → 段间隙 7 > 3
+        # 断开 → cayo/por 漏豁免）。译文含非 ASCII 字母（且非中文表意字）
+        # 说明存在保留的外语段 → 段间隙放宽到 7（容纳两个 2 字母外语
+        # 功能词）。防过宽：纯 ASCII 译文（'Use it in the room 在房间
+        # 使用' 类真半翻译）不放宽，间隙 4-7 仍断开。
+        _foreign_gap = any(
+            char.isalpha() and not char.isascii()
+            and not self._is_chinese_ideograph(char)
+            for char in translation)
+        _title_matches = list(_ENGLISH_WORD.finditer(original_ascii))
+        _phrase_seg: list[tuple[int, int]] = []  # (词起点, 词终点)
+        for _tm in _title_matches:
+            _w = _tm.group(0)
+            _wcf = _w.casefold()
+            _is_title_start = (
+                len(_w) >= 3 and _w[0].isupper() and _w[1:].islower()
+                and _wcf not in _ENGLISH_FUNCTION_WORDS
+                and _wcf not in _ACTION_VERB_ZH
+                and _wcf not in _DISPLAY_WORDS_CASEFOLD
+                and _wcf not in _BUILTIN_UI_TERMS_CASEFOLD
+                and _wcf not in _term_cf)
+            _gap = (_tm.start() - _phrase_seg[-1][1]
+                    if _phrase_seg else 4)
+            _gap_ok = _gap <= 3 or (_foreign_gap and _gap <= 7)
+            if _is_title_start and _gap_ok:
+                _phrase_seg.append((_tm.start(), _tm.end()))
+            elif _phrase_seg and _gap_ok:
+                # 段延续：小写词/功能词紧跟 TitleCase 首词（Solium dual、
+                # Vallon noir III、Mungkin suara itu…）
+                _phrase_seg.append((_tm.start(), _tm.end()))
+            else:
+                _phrase_seg = ([( _tm.start(), _tm.end())]
+                               if _is_title_start else [])
+            if len(_phrase_seg) >= 2 and any(
+                    original_ascii[s:e].casefold()
+                    not in _ENGLISH_FUNCTION_WORDS
+                    for s, e in _phrase_seg):
+                title_phrase_words.update(
+                    original_ascii[s:e].casefold()
+                    for s, e in _phrase_seg)
         # 词级补译确认的保留词（'itch page' 补译 → 模型输出保留 itch 专名）
         # → 仅本条生效的豁免（补译时已校验词在原文出现，防幻觉）
         word_residue_exempt = {
@@ -2046,6 +2177,19 @@ class BatchTranslator:
                 if (word.casefold() in digit_adjacent_words
                         and word.casefold() in source_terms_cf):
                     continue
+                # 下划线连接标识符组成部分（用户名 Tim_Kulig_Free_Music）：
+                # 保留是正确行为 → 豁免（eyeless-jack 实证）
+                if word.casefold() in underscore_identifier_words:
+                    continue
+                # 键位绑定后缀（':map'/':interact'——faerie 实证）：
+                # 绑定名是引擎指令，译文保留正确 → 豁免
+                if word.casefold() in keybind_suffix_words:
+                    continue
+                # 原文 TitleCase 短语段/多语言段（'Pish Shop' 商店专名、
+                # 'Mungkin suara itu…' 印尼语段——faerie 实证）：模型
+                # 保留专名/外语段只译其余 → 豁免
+                if word.casefold() in title_phrase_words:
+                    continue
                 if word.casefold() in word_residue_exempt:
                     continue
                 if word.casefold() in translated_quote_proper:
@@ -2073,6 +2217,27 @@ class BatchTranslator:
                                    and semantic_words[i + 1][0].isupper()
                                    and semantic_words[i + 1][1:].islower())
                     if not (left_title and right_title):
+                        # UI 词典词（TitleCase 形态）右侧连续 ≥2 个非词典
+                        # TitleCase 专名词 → 专名短语（'Play Games Plugin'
+                        # 的 Play——Google Play Games 插件专名，Play 是品牌
+                        # 词非按钮动词；driftapocalypse 日志串实证，短语
+                        # 被标点断开仍按全局词序列判定）→ 豁免；
+                        # 短组合（'Play Button'/'Play Store' 漏翻回显）与
+                        # 全词典词序列（'Play Settings' 漏翻回显）仍判失败
+                        if (not word.islower()
+                                and word.casefold() in _DISPLAY_WORDS_CASEFOLD):
+                            j = i + 1
+                            right_proper = []
+                            while (j < len(semantic_words)
+                                   and semantic_words[j][0].isupper()
+                                   and semantic_words[j][1:].islower()):
+                                right_proper.append(semantic_words[j])
+                                j += 1
+                            if (len(right_proper) >= 2 and any(
+                                    w.casefold()
+                                    not in _DISPLAY_WORDS_CASEFOLD
+                                    for w in right_proper)):
+                                continue
                         # 原文非词典小写词保留豁免（sdfsdfsdfsdfsdfsdf 开发者
                         # 乱串、playsub 命令、readme 文件名）：原文即含该
                         # 小写词、译文已含中文、词非功能词/UI 词典（the/
@@ -2112,6 +2277,19 @@ class BatchTranslator:
             if (word.casefold() in digit_adjacent_words
                     and word.casefold() in source_terms_cf):
                 continue
+            # 下划线连接标识符组成部分（用户名 Tim_Kulig_Free_Music）：
+            # 保留是正确行为 → 豁免（eyeless-jack 实证）
+            if word.casefold() in underscore_identifier_words:
+                continue
+            # 键位绑定后缀（':map'/':interact'——faerie 实证）：
+            # 绑定名是引擎指令，译文保留正确 → 豁免
+            if word.casefold() in keybind_suffix_words:
+                continue
+            # 原文 TitleCase 短语段/多语言段（'Pish Shop' 商店专名、
+            # 'Mungkin suara itu…' 印尼语段——faerie 实证）：模型
+            # 保留专名/外语段只译其余 → 豁免
+            if word.casefold() in title_phrase_words:
+                continue
             if word.casefold() in word_residue_exempt:
                 continue
             if word.casefold() in translated_quote_proper:
@@ -2138,6 +2316,22 @@ class BatchTranslator:
                                and semantic_words[i + 1][0].isupper()
                                and semantic_words[i + 1][1:].islower())
                 if not (left_title and right_title):
+                    # UI 词典词右侧连续 ≥2 个非词典 TitleCase 专名词 →
+                    # 豁免（同短语分支：'Play Games Plugin' 的 Play）
+                    if (not word.islower()
+                            and word.casefold() in _DISPLAY_WORDS_CASEFOLD):
+                        j = i + 1
+                        right_proper = []
+                        while (j < len(semantic_words)
+                               and semantic_words[j][0].isupper()
+                               and semantic_words[j][1:].islower()):
+                            right_proper.append(semantic_words[j])
+                            j += 1
+                        if (len(right_proper) >= 2 and any(
+                                w.casefold()
+                                not in _DISPLAY_WORDS_CASEFOLD
+                                for w in right_proper)):
+                            continue
                     # 原文非词典小写词保留豁免（同短语分支：sdfsdf 乱串/
                     # readme/playsub 类——原文含该词+译文含中文+非功能词/
                     # UI 词典+非普通词形态 → 保留合理）

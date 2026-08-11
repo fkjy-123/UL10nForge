@@ -435,6 +435,46 @@ class ProjectStore:
                 (json.dumps(profile.__dict__, ensure_ascii=False),))
             self.conn.commit()
 
+    # ── 通用 profile key-value（扫描绑定清单持久化，2026-08-12） ──
+    # --resume 续跑跳过扫描，但 write_all 输入闸门要求 _last_source_manifest
+    # 非 None、IL2CPP 写回要求规范输入证据——成功扫描后把清单存库，
+    # 续跑时恢复（faerie 续跑实证：resume 写回被「缺少成功扫描绑定的
+    # 完整输入清单」拒绝）。
+    def get_profile_value(self, key: str, default=None):
+        """读取通用 profile 值（JSON 解析失败返回 default）。"""
+        try:
+            with self._lock:
+                row = self.conn.execute(
+                    "SELECT value FROM profile WHERE key=?", (key,)).fetchone()
+        except sqlite3.OperationalError:
+            return default   # profile 表尚未 init_schema（旧库/全新库）
+        if not row:
+            return default
+        try:
+            return json.loads(row["value"])
+        except (json.JSONDecodeError, TypeError):
+            return default
+
+    def set_profile_value(self, key: str, value) -> None:
+        """写入通用 profile 值（JSON 序列化，覆盖旧值）。"""
+        try:
+            with self._lock:
+                self.conn.execute(
+                    "INSERT OR REPLACE INTO profile(key, value) VALUES (?, ?)",
+                    (key, json.dumps(value, ensure_ascii=False)))
+                self.conn.commit()
+        except sqlite3.OperationalError:
+            pass   # 表不存在时无法持久化——下次扫描（init_schema 后）重写
+
+    def del_profile_value(self, key: str) -> None:
+        """删除通用 profile 值（扫描失败清空绑定，防陈旧清单误用）。"""
+        try:
+            with self._lock:
+                self.conn.execute("DELETE FROM profile WHERE key=?", (key,))
+                self.conn.commit()
+        except sqlite3.OperationalError:
+            pass
+
     def close(self):
         with self._lock:
             self.conn.close()

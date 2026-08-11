@@ -22,6 +22,7 @@ import datetime
 import hashlib
 import json
 import os
+import re
 import shutil
 import sys
 import tempfile
@@ -35,6 +36,8 @@ from hanhua.core.glossary import GlossaryStore  # noqa: E402
 from hanhua.core.knowledge import KnowledgeBase  # noqa: E402
 from hanhua.core.local_model import LocalModelManager  # noqa: E402
 from hanhua.core.models import TextEntry  # noqa: E402
+from hanhua.core.reviewer import (ReviewItem, ReviewResult,  # noqa: E402
+                                  SemanticReviewer, extract_term_pairs)
 from hanhua.core.project import Project  # noqa: E402
 from hanhua.core.prompts import (build_system_prompt,  # noqa: E402
                                  collect_known_names)
@@ -45,6 +48,50 @@ from hanhua.core.batch_translator import BatchTranslator  # noqa: E402
 _SEPARATOR = "─" * 64
 DEFAULT_OUT_BASE = PROJECT_ROOT / "docs" / "all record"
 REAL_USER_DIR = Path.home() / ".hanhua"
+
+# 语言分布预检（多语言游戏识别盲区，faerie-afterlight 实证）：法语/日语/
+# 印尼语条目混在英文游戏里，翻译把外语段当英文翻（12 kana 失败 + 印尼语
+# 段保留误判）。扫描后统计原文语言特征写入 summary「语言分布」——分析者
+# 据此知道本游戏含非英语文本，翻译需保留外语段（F22-3 已系统性豁免）。
+_CJK_IDEOGRAPH = re.compile(r"[㐀-鿿豈-﫿]")
+_KANA = re.compile(r"[぀-ヿㇰ-ㇿ]")
+_CYRILLIC = re.compile(r"[Ѐ-ӿ]")
+_ACCENT_LATIN = re.compile(
+    r"[àáâäãåæçèéêëìíîïñòóôöõøùúûüýÿœšž]")
+_ASCII_LETTER = re.compile(r"[A-Za-z]")
+_LANG_CATEGORIES = (
+    ("日语", _KANA),
+    ("中文", _CJK_IDEOGRAPH),
+    ("俄语/西里尔", _CYRILLIC),
+    ("重音拉丁（法/西/德等）", _ACCENT_LATIN),
+    ("英文/ASCII", _ASCII_LETTER),
+)
+
+
+def _language_profile(rows, sample_limit: int = 30000) -> list[tuple[str, int]]:
+    """统计原文语言分布（按行抽样，特征优先级：假名>中文>西里尔>重音
+    拉丁>ASCII）。返回 [(类别, 条数), ...]（仅非零类别，按条数降序）。"""
+    counts = {name: 0 for name, _ in _LANG_CATEGORIES}
+    other = 0
+    total = 0
+    for row in rows:
+        original = str(row.get("original") or "")
+        if not original:
+            continue
+        if total >= sample_limit:
+            break
+        total += 1
+        for name, pattern in _LANG_CATEGORIES:
+            if pattern.search(original):
+                counts[name] += 1
+                break
+        else:
+            other += 1
+    out = [(name, n) for name, n in counts.items() if n]
+    if other:
+        out.append(("其他/无字母", other))
+    out.sort(key=lambda item: item[1], reverse=True)
+    return out
 
 
 def _safe_name(name: str) -> str:
@@ -119,12 +166,16 @@ def _object_label(meta: dict, row: dict) -> str:
 
 def _export_text_records(project, out_text: Path, profile,
                          model_name: str = "",
-                         writeback_status: dict[str, str] | None = None) -> None:
+                         writeback_status: dict[str, str] | None = None,
+                         review_results: dict[str, ReviewResult] | None = None) -> None:
     """导出 translated/failed/skipped 三类文本全字段记录。
 
     writeback_status：{locator: 状态} 映射（written/rejected/回显跳过），
     在写回完成后导出时为每条记录标注实际写回结果（避免「后台显示成功、
     实际未写入」的统计虚高）。
+    review_results：{locator: ReviewResult} 语义审核结论——不合格条目
+    在导出中标注「需要优化：是（审核：<问题>）」与建议译文，取代旧的
+    形式化「需要优化：否」（用户实证：Resume→简历 类语义错误旧门不报）。
     """
     store = project.store
     categories = {
@@ -167,6 +218,21 @@ def _export_text_records(project, out_text: Path, profile,
                 wb_line = "写回：已写入"
             else:
                 wb_line = "写回：—"
+            review = None
+            if review_results:
+                review = review_results.get(
+                    f"{row['file_id']}:{row.get('key_path', '')}")
+            if review is not None and review.verdict == "flag":
+                eval_text = (f"需优化（审核：{review.issue}——"
+                             f"{review.reason}）")
+                opt_text = (f"是（审核：{review.issue}——{review.reason}"
+                            f"{'；建议：' + review.suggestion if review.suggestion else ''}）")
+            else:
+                eval_text = ('回显保留原文（未实际翻译）' if echoed
+                             else '已产出译文' if category == 'translated'
+                             else quality_text or '—')
+                opt_text = ('是（回显未翻译）' if echoed
+                            else '否（审核通过或未审核）')
             blocks += [
                 _SEPARATOR,
                 f"[{index}] {title}",
@@ -179,8 +245,8 @@ def _export_text_records(project, out_text: Path, profile,
                 f"原因：{reason or '—'}",
                 f"角色：{role or '—'}",
                 f"质量评分：{quality_text}（passed={quality_passed}）",
-                f"翻译评价：{'回显保留原文（未实际翻译）' if echoed else '已产出译文' if category == 'translated' else quality_text or '—'}",
-                f"需要优化：{'是（回显未翻译）' if echoed else '否'}",
+                f"翻译评价：{eval_text}",
+                f"需要优化：{opt_text}",
                 wb_line,
             ]
             if detail:
@@ -445,11 +511,144 @@ def _register_writeback(kb: KnowledgeBase, game_name: str,
         source="auto", game=game_name)
 
 
+def _text_type_for(meta: dict) -> str:
+    """从 meta 推断文本类型（供审核模型语境判断）。"""
+    kind = meta.get("kind") or ""
+    if kind == "us":
+        return "DLL 字符串"
+    if kind == "il2cpp":
+        return "IL2CPP 字符串"
+    if kind == "textasset":
+        return "文本脚本"
+    if kind == "plain":
+        return "纯文本"
+    role = str(meta.get("role") or "")
+    if "button" in role or role == "display" and len(role) < 12:
+        return "UI 显示文本"
+    if "log" in role or "debug" in role:
+        return "调试日志"
+    return "游戏文本"
+
+
+def _run_semantic_review(project, entries, out_dir: Path, game_name: str,
+                         glossary: GlossaryStore,
+                         skip: bool = False) -> tuple[dict[str, ReviewResult], dict]:
+    """翻译后语义审核（翻译质量升级核心，2026-08-12）。
+
+    对全部已翻译条目做语义级审核（术语/语境/专名/语义/风格五维），
+    不合格条目标记「需要优化」并写 review 报告；术语词对自动沉淀
+    全局术语库（后续游戏翻译按词对约束模型输出）。
+
+    返回 (review_results: {locator: ReviewResult}, summary)。
+    审核服务不可用/失败 → 返回空结果（不阻断写回，控制台告警）。
+    """
+    summary = {"reviewed": 0, "flagged": 0, "pairs": 0, "skipped": skip}
+    if skip:
+        return {}, summary
+    reviewer = SemanticReviewer()
+    if not reviewer.usable:
+        print("  [审核] 跳过：未配置审核凭据（~/.claude/settings.json）")
+        return {}, summary
+    items: list[ReviewItem] = []
+    originals: dict[str, str] = {}
+    locators: dict[str, str] = {}
+    for e in entries:
+        if e.status != "translated" or not e.translation:
+            continue
+        if str(e.translation) == str(e.original):
+            continue                       # 回显跳过非审核对象
+        locator = f"{e.file_id}:{e.key_path}"
+        eid = f"e{len(items)}"
+        items.append(ReviewItem(
+            entry_id=eid,
+            original=str(e.original)[:600],
+            translation=str(e.translation)[:600],
+            text_type=_text_type_for(e.meta),
+        ))
+        originals[eid] = str(e.original)
+        locators[eid] = locator
+    if not items:
+        print("  [审核] 无可审核条目（0 条已翻译）")
+        return {}, summary
+    print(f"  [审核] 语义审核 {len(items)} 条（"
+          f"{reviewer.config.model}）…")
+    results = reviewer.review_batch(items)
+    summary["reviewed"] = len(results)
+    flagged = [r for r in results.values() if r.verdict == "flag"]
+    summary["flagged"] = len(flagged)
+    # 术语词对沉淀：审核发现术语/专名错误 → 建议词对 → 全局术语库
+    # （后续游戏翻译 prompt 注入按词对约束模型输出，质量逐游戏上升）
+    pairs = extract_term_pairs(flagged, originals)
+    added = 0
+    for term, trans in pairs:
+        try:
+            glossary.add(term, trans, category="审核术语",
+                         note=f"来源 {game_name} 语义审核")
+            added += 1
+        except Exception:  # noqa: BLE001
+            pass
+    summary["pairs"] = added
+    if added:
+        print(f"  [审核] 术语沉淀 {added} 条词对 → 全局术语库"
+              f"（后续游戏自动按词对约束翻译）")
+    # 审核报告
+    review_dir = out_dir / "review"
+    review_dir.mkdir(parents=True, exist_ok=True)
+    by_issue: dict[str, int] = {}
+    for r in flagged:
+        by_issue[r.issue or "其他"] = by_issue.get(r.issue or "其他", 0) + 1
+    issue_text = "、".join(f"{k} {v} 条" for k, v in by_issue.items()) or "无"
+    (review_dir / "review-report.md").write_text(
+        "\n".join([
+            f"# {game_name} 语义审核报告", "",
+            f"- 审核模型：{reviewer.config.model}",
+            f"- 审核条数：{len(results)}（跳过回显/未翻译）",
+            f"- 不合格：{len(flagged)} 条（{issue_text}）",
+            f"- 术语沉淀：{added} 条词对 → 全局术语库", "",
+            "## 不合格清单", "",
+        ] + [
+            f"[{r.entry_id}] {locators.get(r.entry_id, r.entry_id)}\n"
+            f"  原文：{originals.get(r.entry_id, '')[:120]}\n"
+            f"  译文：{r.suggestion or '（无建议）'}\n"
+            f"  问题：{r.issue}——{r.reason}"
+            for r in flagged
+        ] + [""]), encoding="utf-8")
+    try:
+        (review_dir / "review.json").write_text(
+            json.dumps([{
+                "locator": locators.get(r.entry_id, r.entry_id),
+                "original": originals.get(r.entry_id, ""),
+                "verdict": r.verdict, "issue": r.issue,
+                "reason": r.reason, "suggestion": r.suggestion,
+            } for r in results.values()], ensure_ascii=False, indent=1),
+            encoding="utf-8")
+    except Exception:  # noqa: BLE001
+        pass
+    # 映射回 locator
+    mapped: dict[str, ReviewResult] = {}
+    for eid, r in results.items():
+        mapped[locators.get(eid, eid)] = r
+    return mapped, summary
+
+
 def run_game(game_dir: Path, *, batch: int | None = None,
              do_translate: bool = True, do_writeback: bool = True,
              keep_library: bool = False,
-             app_dir: Path | None = None) -> int:
-    """单游戏完整流程。返回退出码：0=流程完成（待分析），2=扫描阻断。"""
+             do_review: bool = True,
+             app_dir: Path | None = None,
+             resume: bool = False,
+             no_cleanup: bool = False) -> int:
+    """单游戏完整流程。返回退出码：0=流程完成（待分析），2=扫描阻断。
+
+    resume=True：项目库已存在时跳过扫描+翻译，从语义审核/写回/导出继续
+    （runner 中断恢复——faerie 实证：翻译完成 18634 条后卡在内嵌审核
+    超时循环，重跑要重扫重翻 4.5h）。库不存在则报错退出。
+
+    no_cleanup=True：写回成功后保留 `_汉化` 发布目录（默认闭环即删）。
+    实机测试前置（《实机测试计划》§0：汉化输出目录仍在）——实测组合
+    `--resume --no-review --no-cleanup`：快速重新发布，实测通过后
+    手动清理或重跑普通流程。
+    """
     game_dir = Path(game_dir).resolve()
     if not game_dir.is_dir():
         print(f"[错误] 游戏目录不存在：{game_dir}")
@@ -476,7 +675,10 @@ def run_game(game_dir: Path, *, batch: int | None = None,
         str(Path(game_dir).expanduser().absolute()).encode("utf-8")
     ).hexdigest()[:10]
     my_dir = projects_dir / my_slug
-    if my_dir.exists():
+    if resume and not my_dir.exists():
+        print(f"[错误] --resume 但项目库不存在：{my_dir}")
+        return 5
+    if my_dir.exists() and not resume:
         shutil.rmtree(my_dir, ignore_errors=False)
     app_dir.mkdir(parents=True, exist_ok=True)
     projects_dir.mkdir(parents=True, exist_ok=True)
@@ -490,33 +692,52 @@ def run_game(game_dir: Path, *, batch: int | None = None,
     print(f"项目库：{app_dir}")
 
     # ── 1 扫描 ──
-    print("[1/4] 扫描识别…")
-    project = Project.open_game_dir(game_dir, app_dir)
-    report = project.scan_all()
-    profile = project.profile
-    print(f"  文本文件 {report.text_files} · v2 文件 {report.v2_files}"
-          f" · 识别条目 {report.recognized_entries}")
-    for morph, files, entries in report.morphology_stats:
-        print(f"  形态 {morph}: {files} 文件 / {entries} 条")
-    # 知识库闭环：登记 Unity 结构（版本/runtime/形态）——后续结构相似的
-    # 新游戏六库检索直接命中先验（§0.4.4-5 每游戏登记 unity_structure）
-    struct_kb = KnowledgeBase(REAL_USER_DIR / "knowledge.db")
-    _register_unity_structure(struct_kb, game_name, game_dir, report)
-    struct_kb.close()
-    for warning in report.warnings:
-        print(f"  [警告] {warning}")
-    if report.warnings:
-        (out_dir / "scan_warnings.txt").write_text(
-            "\n".join(report.warnings), encoding="utf-8")
-    if not report.unblocked:
-        print("[阻断] 扫描未通过，无法继续翻译/写回（见 summary.md）")
-        _write_summary(project, report, None, None, game_name, out_dir,
-                       blocked=True)
-        return 2
+    if resume:
+        print("[1/4] 续跑：跳过扫描（使用现有项目库）")
+        project = Project.open_game_dir(game_dir, app_dir)
+        report = None
+        profile = project.profile
+    else:
+        print("[1/4] 扫描识别…")
+        project = Project.open_game_dir(game_dir, app_dir)
+        report = project.scan_all()
+        profile = project.profile
+        print(f"  文本文件 {report.text_files} · v2 文件 {report.v2_files}"
+             f" · 识别条目 {report.recognized_entries}")
+        for morph, files, entries in report.morphology_stats:
+            print(f"  形态 {morph}: {files} 文件 / {entries} 条")
+        # 知识库闭环：登记 Unity 结构（版本/runtime/形态）——后续结构相似的
+        # 新游戏六库检索直接命中先验（§0.4.4-5 每游戏登记 unity_structure）
+        struct_kb = KnowledgeBase(REAL_USER_DIR / "knowledge.db")
+        _register_unity_structure(struct_kb, game_name, game_dir, report)
+        struct_kb.close()
+        for warning in report.warnings:
+            print(f"  [警告] {warning}")
+        if report.warnings:
+            (out_dir / "scan_warnings.txt").write_text(
+                "\n".join(report.warnings), encoding="utf-8")
+        if not report.unblocked:
+            print("[阻断] 扫描未通过，无法继续翻译/写回（见 summary.md）")
+            _write_summary(project, report, None, None, game_name, out_dir,
+                           blocked=True, language_profile=None)
+            return 2
+    # 语言分布预检：多语言游戏盲区（faerie 法语/日语/印尼语实证）——
+    # 非英语文本占比高 → 分析者需注意保留外语段（续跑时同样执行）
+    try:
+        lang_profile = _language_profile(project.store.get_entries())
+    except Exception:  # noqa: BLE001 - 预检失败不阻断流程
+        lang_profile = None
+    if lang_profile:
+        print("  语言分布：" + "，".join(
+            f"{name} {n}" for name, n in lang_profile))
 
     # ── 2 翻译（真实本地模型） ──
     stats = None
-    if do_translate:
+    review_results: dict[str, ReviewResult] = {}
+    review_summary: dict = {}
+    entries: list = []
+    glossary: GlossaryStore | None = None
+    if do_translate and not resume:
         print("[2/4] 翻译（真实本地模型）…")
         manager = LocalModelManager(PROJECT_ROOT, startup_timeout=180)
         try:
@@ -527,7 +748,8 @@ def run_game(game_dir: Path, *, batch: int | None = None,
         except Exception as exc:  # noqa: BLE001
             print(f"[错误] 本地模型启动失败：{exc}")
             _write_summary(project, report, None, None, game_name, out_dir,
-                           error=f"本地模型启动失败：{exc}")
+                           error=f"本地模型启动失败：{exc}",
+                           language_profile=lang_profile)
             return 4
 
         glossary = GlossaryStore(REAL_USER_DIR / "glossary.db")
@@ -633,8 +855,42 @@ def run_game(game_dir: Path, *, batch: int | None = None,
         case_kb.close()
         if case_added:
             print(f"  失败案例沉淀：新增 {case_added} 种失败模式入库")
+    elif resume:
+        print("[2/4] 续跑：跳过翻译（store 已有译文），加载条目与术语库…")
+        glossary = GlossaryStore(REAL_USER_DIR / "glossary.db")
+        glossary.init_schema()
+        entries = [_entry_from_row(r) for r in project.store.get_entries()]
+        done = project.store.count("translated")
+        failed = project.store.count("failed")
+        skipped = project.store.count("skipped")
+        print(f"  条目 {len(entries)} · 已翻译 {done} · 失败 {failed}"
+              f" · 跳过 {skipped}")
+        # 伪 stats：翻译细节见上轮（summary 按「续跑」来源标注）
+        from types import SimpleNamespace
+        stats = SimpleNamespace(
+            total=len(entries), done=done, failed=failed, from_memory=0,
+            requests=0, input_tokens=0, output_tokens=0,
+            elapsed=0.0, rate_per_minute=0.0)
     else:
         print("[2/4] 跳过翻译（--no-translate）")
+
+    # ── 翻译后语义审核（翻译质量升级，2026-08-12）──
+    # 质量门只查机械问题（回显/格式/长度），Resume→简历 类语义错误
+    # 检测不到；审核用强模型五维判定（术语/语境/专名/语义/风格），
+    # 不合格条目标记「需要优化」+ 建议，术语词对沉淀全局库。
+    # 续跑模式同样执行——runner 中断恢复的主战场正是审核（faerie 实证：
+    # 翻译完成 18634 条后卡在旧 timeout=120 审核超时循环，重跑需 4.5h）。
+    if do_review and (do_translate or resume):
+        try:
+            review_results, review_summary = _run_semantic_review(
+                project, entries, out_dir, game_name,
+                glossary=glossary, skip=False)
+            if review_summary.get("flagged"):
+                print(f"  [审核] 不合格 {review_summary['flagged']} 条"
+                      f"（见 review/review-report.md，需人工确认）")
+        except Exception as exc:  # noqa: BLE001 - 审核失败不阻断写回
+            print(f"  [审核] 失败：{exc}")
+            review_results, review_summary = {}, {}
 
     # ── 3 写回（真实）──（先写回再导出，导出才能标注每条实际写回状态）
     writeback_result = None
@@ -684,20 +940,29 @@ def run_game(game_dir: Path, *, batch: int | None = None,
         }
     _export_text_records(project, out_text, profile,
                          model_name=str(api.model or ""),
-                         writeback_status=writeback_status)
+                         writeback_status=writeback_status,
+                         review_results=review_results or None)
     translated = project.store.count("translated")
     failed = project.store.count("failed")
     skipped = project.store.count("skipped")
     print(f"  translated {translated} · failed {failed} · skipped {skipped}")
 
     _write_summary(project, report, stats, writeback_result, game_name,
-                   out_dir, error=writeback_error)
+                   out_dir, error=writeback_error,
+                   review_summary=review_summary or None,
+                   language_profile=lang_profile)
     print(f"═══ {game_name} 记录完成：{out_dir} ═══")
     # 闭环成功 → 删汉化输出目录与发布备份，只保留原版（做完一个删一个）。
-    # 写回失败不删（需排查/回滚，备份是回滚依据）。
-    if writeback_result is not None and not writeback_error:
+    # 写回失败不删（需排查/回滚，备份是回滚依据）。--no-cleanup 供实机
+    # 测试保留发布目录（实测通过后再手动清理）。
+    if writeback_result is not None and not writeback_error and not no_cleanup:
         _cleanup_hanhua_output(game_dir)
-    if not keep_library:
+    # 闭环成功 → 删库（keep_library=False 默认）。
+    # 写回失败不删：库是 --resume 续跑凭据（译文 + 扫描绑定清单全在库里，
+    # 删除后连 resume 都无法重试）。faerie 实证 2026-08-12：写回失败后
+    # 库被无条件删除，18698 条译文仅靠 git 导出恢复——与「写回失败不删
+    # _汉化」同一原则（955 行），失败需排查/重试。
+    if not keep_library and not writeback_error:
         _discard_sweep_library(project)
     return 1 if writeback_error else 0
 
@@ -757,7 +1022,28 @@ def _discard_sweep_library(project) -> None:
 
 def _write_summary(project, report, stats, writeback_result, game_name,
                    out_dir: Path, *, blocked: bool = False,
-                   error: str = "") -> None:
+                   error: str = "",
+                   review_summary: dict | None = None,
+                   language_profile: list[tuple[str, int]] | None = None) -> None:
+    if report is None:
+        # 续跑模式：报告字段从 store 统计构造（扫描详情见上轮 summary.md）
+        from types import SimpleNamespace
+        counts = {
+            st: project.store.count(st)
+            for st in ("pending", "translated", "failed", "skipped")
+        }
+        report = SimpleNamespace(
+            text_files="（续跑，见上轮 summary.md）",
+            v2_files="（续跑，见上轮 summary.md）",
+            recognized_entries=sum(counts.values()),
+            status_counts=list(counts.items()),
+            morphology_stats=[],
+            confidence_counts=[],
+            tool_statuses=[],
+            route=[],
+            warnings=[],
+            unblocked=True,
+        )
     lines = [
         f"# {game_name} 地毯式排查记录",
         "",
@@ -767,6 +1053,8 @@ def _write_summary(project, report, stats, writeback_result, game_name,
         "## 1 识别",
         f"- 文本文件：{report.text_files} · 二进制资源：{report.v2_files}",
         f"- 识别条目：{report.recognized_entries}",
+        "- 语言分布（抽样预检，多语言游戏盲区）：",
+        *[f"  - {name}: {count} 条" for name, count in language_profile or ()],
         "- 形态统计：",
         *[f"  - {m}: {f} 文件 / {e} 条" for m, f, e in report.morphology_stats],
         "- 状态分布：",
@@ -815,17 +1103,29 @@ def _write_summary(project, report, stats, writeback_result, game_name,
         ]
     else:
         lines += ["## 3 写回", "- （未写回）", ""]
+    if stats is not None and review_summary:
+        lines += [
+            "## 3.5 语义审核（翻译质量升级）",
+            f"- 审核条数：{review_summary.get('reviewed', 0)}"
+            f" · 不合格：{review_summary.get('flagged', 0)}"
+            f" · 术语沉淀：{review_summary.get('pairs', 0)}",
+            "- 不合格清单见 review/review-report.md（需人工确认后优化）",
+            "",
+        ]
     lines += [
         "## 4 分析（待办）",
         "- [ ] 成功文本质量抽检（译文是否得当/是否无关文本）",
+        "- [ ] 语义审核不合格项确认与优化（review/review-report.md）",
         "- [ ] 失败文本根因系统彻查（同类问题全解）",
         "- [ ] 跳过文本逐条判定（该翻→识别修复；不该翻→记录判定）",
         "- [ ] 写回问题根源修复",
+        "- [ ] 写回后实机测试（按实机测试计划逐项验证）",
         "- [ ] 修复后用升级版本重跑本游戏全流程（闭环）",
         "- [ ] 闭环后删除汉化输出目录",
         "",
         "记录文件：",
         "- text/translated.txt / text/failed.txt / text/skipped.txt",
+        "- review/review-report.md / review.json（语义审核）",
         "- writeback/writeback.txt",
         "",
     ]
@@ -841,8 +1141,17 @@ def main() -> int:
                         help="跳过翻译（只扫描+记录）")
     parser.add_argument("--no-writeback", action="store_true",
                         help="跳过写回")
+    parser.add_argument("--no-review", action="store_true",
+                        help="跳过翻译后语义审核（默认开）")
     parser.add_argument("--keep-library", action="store_true",
                         help="保留扫描中间库（调试）")
+    parser.add_argument("--resume", action="store_true",
+                        help="项目库已存在时续跑：跳过扫描+翻译，从语义审核/"
+                        "写回/导出继续（runner 中断恢复，faerie 实证：翻译完成"
+                        "后卡在内嵌审核超时循环）")
+    parser.add_argument("--no-cleanup", action="store_true",
+                        help="写回成功后保留 `_汉化` 发布目录（默认闭环即删；"
+                        "实机测试前置，实测通过后再清理）")
     args = parser.parse_args()
     return run_game(
         args.game_dir,
@@ -850,6 +1159,9 @@ def main() -> int:
         do_translate=not args.no_translate,
         do_writeback=not args.no_writeback,
         keep_library=args.keep_library,
+        do_review=not args.no_review,
+        resume=args.resume,
+        no_cleanup=args.no_cleanup,
     )
 
 

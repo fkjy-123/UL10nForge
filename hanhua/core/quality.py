@@ -21,6 +21,32 @@ from hanhua.core.knowledge import (_UPPERCASE_ACTION_VERBS,
 from hanhua.core.protected_spans import semantic_target_text
 
 _DISPLAY_WORDS_CASEFOLD = {word.casefold() for word in DISPLAY_WORDS}
+# 输入设备词（方向盘/手柄/摇杆 HUD 语境标记）：原文含任一设备词 → 输入
+# 绑定形态，方向词（left/right/up/down）按方向语义强制检查；普通文本
+# （pick the right door）无设备词 → 方向词是普通英语词，自由翻译
+# （ffs 2083 失败实证：方向盘输入词对污染全局术语表误杀普通文本）
+_INPUT_DEVICE_WORDS = (
+    "stick", "button", "hat", "pov", "switch", "trigger", "shoulder",
+    "wheel", "throttle", "dial", "shifter", "paddle", "pedal", "lever",
+    "knob", "rotary",
+)
+# 方向词 → 译文必须含的方向中文字（left→左、right→右、up→上、down→下）
+_DIRECTION_WORD_ZH = {
+    "left": ("左",), "right": ("右",), "up": ("上",), "down": ("下",),
+}
+
+
+def _input_binding_context(original: str) -> bool:
+    """原文是否输入绑定语境（设备词或 F22-2 键位绑定后缀 `:xxx`）→
+    方向词按输入方向语义检查。'Hat Right' 含设备词 Hat → 语境；
+    'pick the right door' / 'Right Tilt' 无设备词 → 非语境（方向词
+    自由译：正确的/右侧）。"""
+    lower = original.casefold()
+    if any(re.search(
+            rf"(?<![A-Za-z0-9_]){w}(?![A-Za-z0-9_])", lower)
+            for w in _INPUT_DEVICE_WORDS):
+        return True
+    return bool(re.search(r":([a-z]{2,})\s*$", original, re.I))
 # 行首星号 bullet 占位符（undertale_bullet 提取的固定串 "* "）：译文
 # 新增 bullet 是模型对星号的规范化（"*SIGH*" → "* sigh *"、" *Added"
 # → "* 加空格"），无结构风险——placeholder_mismatch 放行专用
@@ -399,6 +425,75 @@ def _glossary_proper_phrase(term: str, source_text: str) -> bool:
     return False
 
 
+def _glossary_verb_usage(term: str, source_text: str) -> bool:
+    """术语词在原文中处于动词用法（前邻 to 不定式或助动词）→ 该出现与
+    术语表的标签/判定含义无关。doubleshake "shouldn't be hard to miss"
+    的 miss 是"错过/遗漏"（译文"遗漏"正确），术语表 (miss, 未命中) 是
+    音游 HUD 判定标签（deadbeat 'miss: 999' 实证）——动词用法豁免；
+    'miss: 999' / 'Slash key' 前邻是冒号/行首 → 不豁免，术语照常生效。
+    口语助动词缩写（gonna/wanna/gotta/lemme/dunno/oughta/ain't）同属
+    动词用法（field-hospital-web 叙事文本 'are gonna miss him dearly'
+    的 miss=想念 实证：译文"想念"被 (miss, 未命中) 误杀）。
+    守卫与 _glossary_proper_phrase 一致：UI 词典词（Settings）与专名
+    形态术语（Moon Key）不适用此豁免（防把真术语漂移当动词放过）。
+    """
+    term = term.strip()
+    if not term:
+        return False
+    if term.casefold() in _DISPLAY_WORDS_CASEFOLD:
+        return False
+    if re.fullmatch(r"[A-Z][a-z'-]*(?:\s+[A-Z][a-z'-]*)*", term):
+        return False
+    for m in re.finditer(
+            rf"(?<![A-Za-z0-9_]){re.escape(term)}(?![A-Za-z0-9_])",
+            source_text, re.I):
+        before = re.search(
+            r"(?i)(?<![A-Za-z])(?:to|can|could|will|would|shall|should|"
+            r"may|might|must|do|does|did|not|never|don'?t|won'?t|"
+            r"couldn'?t|shouldn'?t|wouldn'?t|am|is|are|was|were|be|been|"
+            r"gonna|wanna|gotta|lemme|dunno|oughta|ain'?t|"
+            r"I'?m|I|you|he|she|we|they|it|me|him|her|us|them)\s+$",
+            source_text[:m.start()])
+        if before:
+            return True
+    return False
+
+
+_LOG_TEMPLATE_RE = re.compile(
+    r"^[A-Z]{3,}:\s*[a-z]{2,}\s*=\s*\{[0-9]+\}")
+
+
+def is_log_template(text: str) -> bool:
+    """调试日志模板串：'MEMORY: cur = {0}MB, max = {1}MB' / 'CHANNELS:
+    real = {0}, total = {1}'——Unity Debug.Log 格式串（全大写标签 + 冒号 +
+    小写变量赋值 + 占位符）。变量名（cur/real/max/total）是脚本标识符
+    无语义、日志行仅调试可见 → 模型保留变量名（译文含中文）或整行回显
+    都是合理行为（final-shot 实证 ×2）。形态防过宽：标签必须全大写
+    （普通 UI 'Score = {0}' 不满足）、变量必须小写且带 = {n} 赋值模板
+    ——防 'LEVEL: 1' 类真 UI 文本误豁免。
+    """
+    return bool(_LOG_TEMPLATE_RE.match(text or ""))
+
+
+# 法语特征字符（重音拉丁字母：法语 é/è/à/ç/œ 等；西语 ó/ñ、德语 ä 等
+# 同样覆盖——外语重音即说明非英语语境，英语术语表双关词都不适用）
+_FRENCH_ACCENT_CHARS = set("àâäéèêëîïôöùûüçñÿœ")
+# 法语功能词（高频介词/代词/系动词，'c'est encore vous' 实证）
+_FRENCH_MARKER_WORD = re.compile(
+    r"(?i)\b(c'est|qu'est|les|des|une|un|vous|nous|je|tu|ma|mes|ses|"
+    r"est|sont|il|elle|chez|avec|pour|dans|sur)\b")
+
+
+def _french_marker(source_text: str) -> bool:
+    """原文是否法语特征文本（重音字母或法语功能词）→ 英语借词术语
+    （encore→安可）不适用（faerie-afterlight 实证 9 条法语对话：
+    'Hé, c'est encore vous !' 的 encore 是法语「又/再」日常副词，不是
+    演出「安可」）。防过宽：英语原文 'Encore! Encore!' 无法语特征 →
+    术语表照常生效（test_english_encore_still_checked 固化）。"""
+    return (bool(_FRENCH_ACCENT_CHARS & set(source_text))
+            or _FRENCH_MARKER_WORD.search(source_text) is not None)
+
+
 def _glossary_keep_echo(original: str, translation: str, glossary) -> bool:
     """保留型术语回显豁免：glossary 中 keep 型术语（source==target
     casefold，署名专名/缩写保留映射）全部覆盖原文、译文无中文且与原文
@@ -578,12 +673,24 @@ def validate_translation_quality(
                         normalized, re.I)):
                 reasons.append("action_word_residue")
                 break
+    # 全大写 ≤3 字母缩写回显（MAX/SFX/UI/OK）：单 token 缩写是界面
+    # 标准术语，1.8B 模型稳定回显（count-my-coins 'SFX' 实证；proper_name
+    # echo 侧已有同规则 1847 行，本门补一致；driftapocalypse 'MAX' ×3
+    # 实证重试耗尽仍回显）。要求原文与译文残留词全为 ≤3 全大写缩写，
+    # 防 'GAME OVER'/'TOSS TRASH' 类多词回显误放行（动作指令
+    # special_action 不豁免）。
+    short_abbr_echo = (
+        translated_words
+        and not special_action
+        and all(len(w) <= 3 and w.isupper() for w in translated_words))
     if (original_words and translated_words and not _CJK.search(normalized)
             and semantic_target_text(entry.original, entry.original)
             and not is_lorem_ipsum_placeholder(entry.original)
             and not camel_echo
             and not _artistic_case_echo(entry.original, normalized)
             and not _glossary_keep_echo(entry.original, normalized, glossary)
+            and not short_abbr_echo
+            and not is_log_template(entry.original)
             and (has_independent_lower_word(entry.original)
                  or special_action
                  or any(
@@ -612,12 +719,27 @@ def validate_translation_quality(
             if (target.strip().casefold() == source.strip().casefold()
                     and _CJK.search(normalized)):
                 continue
+            # 法语原文豁免：重音字母/法语功能词说明原文是法语（或含法语
+            # 段）→ 英语术语表双关词不适用（faerie-afterlight 实证 9 条：
+            # 'Hé, c'est encore vous !' 的 encore=又/再，术语 (encore, 安可)
+            # 是演出借词含义；'I miss my father' 的 miss=想念由动词豁免
+            # 处理）。防过宽：英语原文（'Encore! Encore!'）无法语特征 →
+            # 术语照常生效
+            if _french_marker(entry.original):
+                continue
             # 专名邻接豁免：术语在原文中邻接 TitleCase 词 → 术语是专名
             # 的一部分，与术语表普通词含义无关（deadbeat 'Miss Fire
             # Spitting' 角色名的 Miss 邻接 Fire，误命中 (miss, 未命中)；
             # 'Slash key' 的 Slash 右邻 key 小写 → 不豁免，触发术语
             # 确定性修复）
             if _glossary_proper_phrase(source, entry.original):
+                continue
+            # 动词用法豁免：术语词在原文中是动词用法（前邻 to/助动词，
+            # "shouldn't be hard to miss" 的 miss=错过）→ 与术语表的
+            # 标签含义无关（doubleshake d_scrap14 实证：译文「遗漏」
+            # 语义正确被 (miss, 未命中) 误判 glossary_mismatch）；
+            # 'miss: 999' 标签格式前邻冒号 → 不豁免
+            if _glossary_verb_usage(source, entry.original):
                 continue
             # 歌词语境豁免：歌词文本整体豁免普通词术语检查（押韵词/
             # 拟声词与术语表无关，'Miss, hit' 实证；keep 型与专名豁免
@@ -626,6 +748,22 @@ def validate_translation_quality(
                 continue
             reasons.append("glossary_mismatch")
             break
+    # 方向语义检查（输入绑定语境）：原文含方向词（left/right/up/down）+
+    # 译文有中文 → 译文必须含对应方向字。1.8B 在 HUD 方向指令上把方向词
+    # 译成「正确/抬起/按住」类语义错（ffs 'Hat Right'→'正确' 实证），
+    # 术语表 (Right, 右拨片) 曾拦截但误杀普通文本（'pick the right door'
+    # → '正确的门'）——改为仅输入绑定语境检查：无设备词/键位后缀的普通
+    # 文本方向词自由翻译（right=正确的/右边），不查方向字。
+    if _input_binding_context(entry.original) and _CJK.search(normalized):
+        missing = [
+            zh
+            for word, zh in _DIRECTION_WORD_ZH.items()
+            if re.search(
+                rf"(?<![A-Za-z0-9_]){word}(?![A-Za-z0-9_])",
+                entry.original, re.I)
+            and not any(c in normalized for c in zh)]
+        if missing:
+            reasons.append("direction_mismatch")
     max_chars = entry.meta.get("max_chars")
     if (type(max_chars) is int and max_chars > 0 and len(normalized) > max_chars):
         # 超长不判失败：译文质量合格只是物理容量放不下——写回端 _fit_bytes

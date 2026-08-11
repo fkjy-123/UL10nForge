@@ -2723,3 +2723,70 @@ def test_xml_key_position_still_downgraded():
                           meta={"textasset_format": "xml",
                                 "inner_path": "/messages/message[0]/value"})
     assert _should_downgrade_pending(val_entry) is False
+
+
+def test_boot_config_engine_file_whole_skipped():
+    """F14（dollhouse 实证）：boot.config 是 Unity 引擎启动配置文件，
+    值域是引擎枚举（scripting-runtime-version=legacy/net_4_x）——legacy
+    是合法英文单词，单靠 should_skip/引擎串判定会漏网被当显示文本翻译
+    写回，引擎按值匹配即破坏。修复：文件级整体跳过（保留条目保证写回
+    完整性），非单游戏特判（boot.config 所有 Unity 游戏通用）。"""
+    from hanhua.core.extractor import parse_file
+    import tempfile, os
+    boot = ("gfx-enable-native-gfx-jobs=\n"
+            "wait-for-native-debugger=0\n"
+            "scripting-runtime-version=legacy\n"
+            "vr-enabled=0\n"
+            "hdr-display-enabled=0\n")
+    with tempfile.TemporaryDirectory() as td:
+        p = os.path.join(td, "boot.config")
+        with open(p, "w", encoding="utf-8") as f:
+            f.write(boot)
+        pf = parse_file(p)
+        pending = [e for e in pf.entries if e.status == "pending"]
+        assert pending == [], f"boot.config 不应有可译条目: {pending}"
+        # 全部条目保留（写回完整性）
+        assert len(pf.entries) == 5
+
+
+def test_boot_config_named_other_ext_not_skipped():
+    """对照：同名逻辑仅限 Unity 引擎配置文件 boot.config——普通游戏配置
+    boot.txt 含英文文本照常可译（不误伤游戏自身的同名配置文件）。"""
+    from hanhua.core.extractor import parse_file
+    import tempfile, os
+    with tempfile.TemporaryDirectory() as td:
+        p = os.path.join(td, "boot.txt")
+        with open(p, "w", encoding="utf-8") as f:
+            f.write("welcome to the game\npress start to begin\n")
+        pf = parse_file(p)
+        pending = [e for e in pf.entries if e.status == "pending"]
+        assert len(pending) == 2, f"boot.txt 应照常可译: {pending}"
+
+
+def test_verify_length_headers_skips_embedded_substring():
+    """F15（doubleshake 实证写回失败）：译文作为更长字符串的子串出现时
+    （`<w=sassy>任务被发现啦！` 内部），该子串位置前 4 字节是标签文本
+    （"ssy>"）不是长度头——旧实现 find 到第一个位置即误报边界破坏。
+    修复：遍历全部出现位置，任一位置长度头匹配即通过。"""
+    from hanhua.core.unity.logic_audit import verify_string_length_headers
+    translation = "任务被发现啦！"
+    payload = translation.encode("utf-8")
+    tagged = f"<w=sassy>{translation}".encode("utf-8")
+    # 标签字符串（长度头 26）+ 独立字符串（长度头 21）
+    raw = (len(tagged).to_bytes(4, "little") + tagged
+           + len(payload).to_bytes(4, "little") + payload)
+    problems = verify_string_length_headers(raw, {"Quest Discovered!": translation})
+    assert problems == [], problems
+
+
+def test_verify_length_headers_detects_broken_header():
+    """对照：长度头与字节数不一致（写成了旧长度）仍应报错——边界破坏
+    检测不能被子串豁免绕过。"""
+    from hanhua.core.unity.logic_audit import verify_string_length_headers
+    translation = "任务被发现啦！"
+    payload = translation.encode("utf-8")
+    # 长度头写旧值 17（实际 21）→ 必须报错
+    raw = (17).to_bytes(4, "little") + payload
+    problems = verify_string_length_headers(raw, {"Quest Discovered!": translation})
+    assert problems, "长度头损坏必须被检测到"
+    assert "长度头" in problems[0]

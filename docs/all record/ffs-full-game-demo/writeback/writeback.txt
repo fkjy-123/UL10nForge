@@ -1,0 +1,926 @@
+游戏：ffs-full-game-demo
+写回时间：2026-08-12 14:03:01
+输出目录：D:\游戏\ffs-full-game-demo_汉化
+
+文件清单：19 个
+
+- app.info（2 条）
+- level0（92 条）
+- level1（295 条）
+- level2（5 条）
+- level3（78 条）
+- level4（251 条）
+- level5（279 条）
+- level6（277 条）
+- level7（280 条）
+- level8（281 条）
+- sharedassets0.assets（6163 条）
+- sharedassets1.assets（217 条）
+- sharedassets2.assets（2 条）
+- sharedassets4.assets（96 条）
+- sharedassets5.assets（12 条）
+- sharedassets6.assets（11 条）
+- sharedassets7.assets（4 条）
+- sharedassets8.assets（132 条）
+- il2cpp_data/Metadata/global-metadata.dat（2896 条）
+
+────────────────────────────────────────────────────────────────
+写回结果
+文本文件：1
+输入保护：True
+重开验证：True
+变更文件：19
+写入译文：6333
+总体闸门：PASS
+字体层级：runtime_verified
+清单：.hanhua-manifest.json
+备份：.ffs-full-game-demo_汉化.backup-8da17c94183a4fa7afc99259372d1c84
+
+四态闸门明细
+  file=PASS
+  container=PASS
+  object=PASS
+  runtime=PASS
+
+────────────────────────────────────────────────────────────────
+知识库案例转规则：5 条已启用（writeback_case → 可执行检测）
+
+- [fit_bytes_nul_padding] 固定容量池截短译文后字符串尾部带 NUL 导致逻辑判定失灵（实现：writer._fit_bytes（pad 模式容量对齐）+ 译文长度头自证（logic_audit.verify_string_l）
+- [placeholder_preserve] 写回截断把 {0} 占位符切开导致 string.Format 崩溃（实现：writer._restore_placeholders / _placeholders_intact（截断不得破坏占位符，缺失补末）
+- [textasset_encoding_preserve] TextAsset 非 UTF-8 内容被 decode-repla（实现：writer 写回按源编码/严格校验，不把非 UTF-8 当 UTF-8 重写）
+- [unityevent_binding_preserve] 替换 prefab/资源后 UnityEvent 事件绑定断裂按钮无（实现：extractor._UNITYEVENT_SIGNALS 对象信号 → structural 跳过+ logic_audit.lo）
+- [logic_key_compare] 代码把显示文本当逻辑键（按钮文字/物品名比较分发）（实现：logic_audit.LOGIC_COMPARE_WORDS 比较词表 + 代码对象联合判定（写回自动回退））
+
+────────────────────────────────────────────────────────────────
+逻辑层审计（写回逻辑敏感形态 / 扩容 / 语义回退 / 重开验证）
+
+疑似逻辑键（report，已写回需复核）：146 条
+
+- [logic_compare_word] Pause → 暂停（asset#level0#111/str/64）
+- [logic_compare_word] Pause → 暂停（asset#level0#111/str/65）
+- [logic_compare_word] Pause → 暂停（asset#level1#734/str/64）
+- [logic_compare_word] Pause → 暂停（asset#level1#734/str/65）
+- [logic_compare_word] Play → 播放（asset#level1#744/str/0）
+- [logic_compare_word] Exit → 退出（asset#level1#746/str/0）
+- [logic_compare_word] Settings → 设置（asset#level1#751/str/0）
+- [logic_compare_word] Close → 关闭（asset#level1#1148/str/6）
+- [logic_compare_word] Pause → 暂停（asset#level3#54/str/64）
+- [logic_compare_word] Pause → 暂停（asset#level3#54/str/65）
+- [logic_compare_word] Pause → 暂停（asset#level4#11535/str/64）
+- [logic_compare_word] Pause → 暂停（asset#level4#11535/str/65）
+- [short_code_word] end → 结束（asset#level4#11624/str/0）
+- [logic_compare_word] Close → 关闭（asset#level4#11656/str/6）
+- [logic_compare_word] Pause → 暂停（asset#level5#16042/str/64）
+- [logic_compare_word] Pause → 暂停（asset#level5#16042/str/65）
+- [logic_compare_word] Close → 关闭（asset#level5#16215/str/6）
+- [logic_compare_word] Pause → 暂停（asset#level6#14899/str/64）
+- [logic_compare_word] Pause → 暂停（asset#level6#14899/str/65）
+- [logic_compare_word] Close → 关闭（asset#level6#15023/str/6）
+- [logic_compare_word] Pause → 暂停（asset#level7#3277/str/64）
+- [logic_compare_word] Pause → 暂停（asset#level7#3277/str/65）
+- [logic_compare_word] Close → 关闭（asset#level7#3602/str/6）
+- [logic_compare_word] Pause → 暂停（asset#level8#13784/str/64）
+- [logic_compare_word] Pause → 暂停（asset#level8#13784/str/65）
+- [logic_compare_word] Close → 关闭（asset#level8#14311/str/6）
+- [logic_compare_word] Back → 返回（asset#sharedassets0.assets#101/str/6）
+- [logic_compare_word] Back → 返回（asset#sharedassets0.assets#102/str/6）
+- [logic_compare_word] Back → 返回（asset#sharedassets0.assets#103/str/6）
+- [logic_compare_word] Back → 返回（asset#sharedassets0.assets#104/str/6）
+…（其余 116 条）
+
+短词/常见按钮文本（note，正常可译）：67 条（抽样：['button', 'button', 'button', 'button', 'button', 'end', 'button', 'button']）
+
+rawstr 扩容写入：3308 条（译文 UTF-8 字节 > 原文）
+
+- Cursor (Horizontal) → 光标（水平方向）（19 → 24 字节，+5）
+- Cursor (Horizontal) → 光标（水平方向）（19 → 24 字节，+5）
+- Cursor (Horizontal +) → 光标（水平方向+）（21 → 25 字节，+4）
+- Cursor (Horizontal (-) → 光标（水平方向）（-）（22 → 31 字节，+9）
+- Cursor (Vertical) → 光标（垂直方向）（17 → 24 字节，+7）
+- Cursor (Vertical) → 光标（垂直方向）（17 → 24 字节，+7）
+- Cursor (Vertical +) → 光标（垂直方向 +）（19 → 26 字节，+7）
+- Cursor (Vertical -) → 光标（垂直方向 -）（19 → 26 字节，+7）
+- Cursor (Click) → 光标（点击）（14 → 18 字节，+4）
+- Cursor (Click) → 光标（点击）（14 → 18 字节，+4）
+- Horizontal → 水平方向（10 → 12 字节，+2）
+- Horizontal → 水平方向（10 → 12 字节，+2）
+- Horizontal (+) → 水平方向 (+)（14 → 16 字节，+2）
+- Vertical (+) → 垂直（+）（12 → 13 字节，+1）
+- Vertical (-) → 垂直（-）（12 → 13 字节，+1）
+- Turn X → 转向 X（6 → 8 字节，+2）
+- Turn X → 转向 X（6 → 8 字节，+2）
+- Turn X (+) → 转动 X (+)（10 → 12 字节，+2）
+- Turn X (-) → 转向 X (-)（10 → 12 字节，+2）
+- Look Y → 看吧，Y（6 → 10 字节，+4）
+…（其余 3288 条）
+
+回显跳过（译文==原文，未写入）：802 条
+
+- app.info:plain/0：Nicec00lkidd Games
+- level0:asset#level0#111/str/8：Axis
+- level0:asset#level0#113/str/0：Demo 1.1b
+- level0:asset#level0#133/str/9：Chase
+- level1:asset#level1#734/str/8：Axis
+- level1:asset#level1#792/str/0：SFX
+- level1:asset#level1#799/str/0：Rumble
+- level3:asset#level3#54/str/8：Axis
+- level4:asset#level4#11535/str/8：Axis
+- level4:asset#level4#11560/str/0：SFX
+- level4:asset#level4#11565/str/0：Rumble
+- level5:asset#level5#16042/str/8：Axis
+- level5:asset#level5#16054/str/0：SFX
+- level5:asset#level5#16059/str/0：Rumble
+- level6:asset#level6#14899/str/8：Axis
+- level6:asset#level6#14911/str/0：SFX
+- level6:asset#level6#14916/str/0：Rumble
+- level7:asset#level7#3277/str/8：Axis
+- level7:asset#level7#3283/str/0：?? IQ
+- level7:asset#level7#3333/str/0：SFX
+- level7:asset#level7#3336/str/0：Rumble
+- level7:asset#level7#3400/str/6：Maya
+- level8:asset#level8#13784/str/8：Axis
+- level8:asset#level8#13924/str/0：SFX
+- level8:asset#level8#13927/str/0：Rumble
+- sharedassets0.assets:asset#sharedassets0.assets#102/str/25：Shift
+- sharedassets0.assets:asset#sharedassets0.assets#102/str/26：ESC
+- sharedassets0.assets:asset#sharedassets0.assets#102/str/27：Ctrl
+- sharedassets0.assets:asset#sharedassets0.assets#102/str/28：Alt
+- sharedassets0.assets:asset#sharedassets0.assets#106/str/1：3Dconnexion SpacePilot Pro
+- sharedassets0.assets:asset#sharedassets0.assets#106/str/32：ISO 1
+- sharedassets0.assets:asset#sharedassets0.assets#106/str/34：ISO 2
+- sharedassets0.assets:asset#sharedassets0.assets#106/str/35：ESC
+- sharedassets0.assets:asset#sharedassets0.assets#106/str/36：Ctrl
+- sharedassets0.assets:asset#sharedassets0.assets#106/str/37：Alt
+- sharedassets0.assets:asset#sharedassets0.assets#106/str/38：Shift
+- sharedassets0.assets:asset#sharedassets0.assets#108/str/1：8Bitdo NES30 Pro
+- sharedassets0.assets:asset#sharedassets0.assets#108/str/2：8Bitdo NES30/FC30 Pro
+- sharedassets0.assets:asset#sharedassets0.assets#108/str/28：8Bitdo NES30 Pro
+- sharedassets0.assets:asset#sharedassets0.assets#108/str/29：8Bitdo FC30 Pro
+- sharedassets0.assets:asset#sharedassets0.assets#108/str/30：8Bitdo N30 Pro
+- sharedassets0.assets:asset#sharedassets0.assets#108/str/31：8Bitdo F30 Pro
+- sharedassets0.assets:asset#sharedassets0.assets#108/str/37：8Bitdo NES30 Pro
+- sharedassets0.assets:asset#sharedassets0.assets#108/str/38：8Bitdo FC30 Pro
+- sharedassets0.assets:asset#sharedassets0.assets#108/str/42：8Bitdo NES30 Pro
+- sharedassets0.assets:asset#sharedassets0.assets#108/str/43：8Bitdo FC30 Pro
+- sharedassets0.assets:asset#sharedassets0.assets#108/str/44：8Bitdo N30 Pro
+- sharedassets0.assets:asset#sharedassets0.assets#108/str/45：8Bitdo F30 Pro
+- sharedassets0.assets:asset#sharedassets0.assets#108/str/47：8Bitdo NES30 Pro
+- sharedassets0.assets:asset#sharedassets0.assets#108/str/48：8Bitdo FC30 Pro
+- sharedassets0.assets:asset#sharedassets0.assets#108/str/49：8Bitdo N30 Pro
+- sharedassets0.assets:asset#sharedassets0.assets#108/str/50：8Bitdo F30 Pro
+- sharedassets0.assets:asset#sharedassets0.assets#108/str/53：8Bitdo NES30 Pro
+- sharedassets0.assets:asset#sharedassets0.assets#108/str/54：8Bitdo FC30 Pro
+- sharedassets0.assets:asset#sharedassets0.assets#108/str/57：8Bitdo NES30 Pro
+- sharedassets0.assets:asset#sharedassets0.assets#108/str/58：8Bitdo FC30 Pro
+- sharedassets0.assets:asset#sharedassets0.assets#108/str/59：8Bitdo N30 Pro
+- sharedassets0.assets:asset#sharedassets0.assets#108/str/60：8Bitdo F30 Pro
+- sharedassets0.assets:asset#sharedassets0.assets#108/str/66：8Bitdo NES30 Pro
+- sharedassets0.assets:asset#sharedassets0.assets#108/str/67：8Bitdo FC30 Pro
+- sharedassets0.assets:asset#sharedassets0.assets#108/str/71：8Bitdo NES30 Pro
+- sharedassets0.assets:asset#sharedassets0.assets#108/str/72：8Bitdo FC30 Pro
+- sharedassets0.assets:asset#sharedassets0.assets#108/str/73：8Bitdo N30 Pro
+- sharedassets0.assets:asset#sharedassets0.assets#108/str/74：8Bitdo F30 Pro
+- sharedassets0.assets:asset#sharedassets0.assets#108/str/80：8Bitdo NES30 Pro
+- sharedassets0.assets:asset#sharedassets0.assets#108/str/81：8Bitdo FC30 Pro
+- sharedassets0.assets:asset#sharedassets0.assets#108/str/85：8Bitdo NES30 Pro
+- sharedassets0.assets:asset#sharedassets0.assets#108/str/86：8Bitdo FC30 Pro
+- sharedassets0.assets:asset#sharedassets0.assets#108/str/87：8Bitdo N30 Pro
+- sharedassets0.assets:asset#sharedassets0.assets#108/str/88：8Bitdo F30 Pro
+- sharedassets0.assets:asset#sharedassets0.assets#108/str/91：8Bitdo NES30 Pro 8Bitdo NES30 Pro
+- sharedassets0.assets:asset#sharedassets0.assets#108/str/93：8Bitdo N30 Pro 8Bitdo N30 Pro
+- sharedassets0.assets:asset#sharedassets0.assets#108/str/94：8Bitdo F30 Pro 8Bitdo F30 Pro
+- sharedassets0.assets:asset#sharedassets0.assets#108/str/99：8Bitdo NES30 Pro
+- sharedassets0.assets:asset#sharedassets0.assets#108/str/100：8Bitdo FC30 Pro
+- sharedassets0.assets:asset#sharedassets0.assets#108/str/108：8Bitdo NES30 Pro
+- sharedassets0.assets:asset#sharedassets0.assets#108/str/109：8Bitdo FC30 Pro
+- sharedassets0.assets:asset#sharedassets0.assets#108/str/112：8Bitdo N30 Pro
+- sharedassets0.assets:asset#sharedassets0.assets#108/str/113：8Bitdo F30 Pro
+- sharedassets0.assets:asset#sharedassets0.assets#109/str/8：Stick Up
+- sharedassets0.assets:asset#sharedassets0.assets#110/str/1：8Bitdo SN30 Pro
+- sharedassets0.assets:asset#sharedassets0.assets#110/str/2：8Bitdo SN30/SF30 Pro
+- sharedassets0.assets:asset#sharedassets0.assets#110/str/31：8Bitdo SN30 Pro
+- sharedassets0.assets:asset#sharedassets0.assets#110/str/32：8Bitdo SF30 Pro
+- sharedassets0.assets:asset#sharedassets0.assets#110/str/33：8BitDo SN30 Pro+
+- sharedassets0.assets:asset#sharedassets0.assets#110/str/41：8Bitdo SN30 Pro
+- sharedassets0.assets:asset#sharedassets0.assets#110/str/42：8Bitdo SF30 Pro
+- sharedassets0.assets:asset#sharedassets0.assets#110/str/43：8BitDo SN30 Pro+
+- sharedassets0.assets:asset#sharedassets0.assets#110/str/44：8Bitdo SN30 Pro
+- sharedassets0.assets:asset#sharedassets0.assets#110/str/45：8Bitdo SF30 Pro
+- sharedassets0.assets:asset#sharedassets0.assets#110/str/47：8Bitdo SN30 Pro
+- sharedassets0.assets:asset#sharedassets0.assets#110/str/48：8Bitdo SF30 Pro
+- sharedassets0.assets:asset#sharedassets0.assets#110/str/49：8BitDo SN30 Pro+
+- sharedassets0.assets:asset#sharedassets0.assets#110/str/57：8Bitdo SN30 Pro
+- sharedassets0.assets:asset#sharedassets0.assets#110/str/58：8Bitdo SF30 Pro
+- sharedassets0.assets:asset#sharedassets0.assets#110/str/59：8BitDo SN30 Pro+
+- sharedassets0.assets:asset#sharedassets0.assets#110/str/67：8Bitdo SN30 Pro
+- sharedassets0.assets:asset#sharedassets0.assets#110/str/68：8Bitdo SF30 Pro
+- sharedassets0.assets:asset#sharedassets0.assets#110/str/78：8Bitdo SN30 Pro
+- sharedassets0.assets:asset#sharedassets0.assets#110/str/79：8Bitdo SF30 Pro
+- sharedassets0.assets:asset#sharedassets0.assets#110/str/83：8Bitdo SN30 Pro
+- sharedassets0.assets:asset#sharedassets0.assets#110/str/84：8Bitdo SF30 Pro
+- sharedassets0.assets:asset#sharedassets0.assets#110/str/86：8BitDo SN30 Pro+
+- sharedassets0.assets:asset#sharedassets0.assets#111/str/12：SNES30 Joy
+- sharedassets0.assets:asset#sharedassets0.assets#111/str/13：SFC30 Joy
+- sharedassets0.assets:asset#sharedassets0.assets#111/str/21：SNES30 Joy
+- sharedassets0.assets:asset#sharedassets0.assets#111/str/22：SFC30 Joy
+- sharedassets0.assets:asset#sharedassets0.assets#111/str/33：SNES30 Joy
+- sharedassets0.assets:asset#sharedassets0.assets#111/str/34：SFC30 Joy
+- sharedassets0.assets:asset#sharedassets0.assets#111/str/46：SNES30 Joy
+- sharedassets0.assets:asset#sharedassets0.assets#111/str/47：SFC30 Joy
+- sharedassets0.assets:asset#sharedassets0.assets#111/str/55：SNES30 Joy
+- sharedassets0.assets:asset#sharedassets0.assets#111/str/56：SFC30 Joy
+- sharedassets0.assets:asset#sharedassets0.assets#111/str/58：SNES30 SNES30 Joy
+- sharedassets0.assets:asset#sharedassets0.assets#111/str/59：SFC30 SFC30 Joy
+- sharedassets0.assets:asset#sharedassets0.assets#111/str/63：SNES30              SNES30 Joy
+- sharedassets0.assets:asset#sharedassets0.assets#111/str/64：SFC30              SFC30 Joy
+- sharedassets0.assets:asset#sharedassets0.assets#111/str/70：SNES30              SNES30 Joy
+- sharedassets0.assets:asset#sharedassets0.assets#111/str/71：FC30              FC30 Joy
+- sharedassets0.assets:asset#sharedassets0.assets#115/str/1：Apple Siri Remote
+- sharedassets0.assets:asset#sharedassets0.assets#117/str/1：Arcade Guns G-500
+- sharedassets0.assets:asset#sharedassets0.assets#117/str/8：Grip Button
+- sharedassets0.assets:asset#sharedassets0.assets#117/str/20：Ultimarc
+- sharedassets0.assets:asset#sharedassets0.assets#117/str/21：Ultimarc
+- sharedassets0.assets:asset#sharedassets0.assets#117/str/42：Ultimarc Ultimarc
+- sharedassets0.assets:asset#sharedassets0.assets#117/str/43：Ultimarc Ultimarc
+- sharedassets0.assets:asset#sharedassets0.assets#117/str/44：Ultimarc Ultimarc
+- sharedassets0.assets:asset#sharedassets0.assets#118/str/5：Joypad X
+- sharedassets0.assets:asset#sharedassets0.assets#118/str/6：Joypad Right
+- sharedassets0.assets:asset#sharedassets0.assets#118/str/8：Joypad Y
+- sharedassets0.assets:asset#sharedassets0.assets#118/str/10：Joypad Down
+- sharedassets0.assets:asset#sharedassets0.assets#118/str/26：Jaguar Atari
+- sharedassets0.assets:asset#sharedassets0.assets#118/str/28：Jaguar Atari
+- sharedassets0.assets:asset#sharedassets0.assets#118/str/31：Jaguar Atari
+- sharedassets0.assets:asset#sharedassets0.assets#118/str/33：Jaguar Atari
+- sharedassets0.assets:asset#sharedassets0.assets#119/str/14：BUFFALO INC.
+- sharedassets0.assets:asset#sharedassets0.assets#119/str/15：BUFFALO INC.
+- sharedassets0.assets:asset#sharedassets0.assets#121/str/1：CH CombatStick
+- sharedassets0.assets:asset#sharedassets0.assets#121/str/8：Stick Up
+- sharedassets0.assets:asset#sharedassets0.assets#121/str/14：Grip Button
+- sharedassets0.assets:asset#sharedassets0.assets#121/str/17：Pinky Button
+- sharedassets0.assets:asset#sharedassets0.assets#121/str/34：CH COMBATSTICK USB
+- sharedassets0.assets:asset#sharedassets0.assets#121/str/36：CH COMBATSTICK USB
+- sharedassets0.assets:asset#sharedassets0.assets#121/str/39：CH COMBATSTICK USB
+- sharedassets0.assets:asset#sharedassets0.assets#121/str/43：CH COMBATSTICK USB
+- sharedassets0.assets:asset#sharedassets0.assets#122/str/1：CH Eclipse Yoke
+- sharedassets0.assets:asset#sharedassets0.assets#122/str/7：Yoke Z
+- sharedassets0.assets:asset#sharedassets0.assets#122/str/11：Lever 1 Up
+- sharedassets0.assets:asset#sharedassets0.assets#122/str/25：L Flipper Up
+- sharedassets0.assets:asset#sharedassets0.assets#122/str/26：L Flipper Down
+- sharedassets0.assets:asset#sharedassets0.assets#122/str/27：R Flipper Up
+- sharedassets0.assets:asset#sharedassets0.assets#122/str/28：R Flipper Down
+- sharedassets0.assets:asset#sharedassets0.assets#123/str/8：Stick Up
+- sharedassets0.assets:asset#sharedassets0.assets#123/str/15：Pinky Button
+- sharedassets0.assets:asset#sharedassets0.assets#124/str/1：CH FlightStick Pro
+- sharedassets0.assets:asset#sharedassets0.assets#124/str/8：Stick Up
+- sharedassets0.assets:asset#sharedassets0.assets#124/str/27：CH FLIGHTSTICK PRO
+- sharedassets0.assets:asset#sharedassets0.assets#124/str/29：CH FLIGHTSTICK PRO
+- sharedassets0.assets:asset#sharedassets0.assets#124/str/32：CH FLIGHTSTICK PRO
+- sharedassets0.assets:asset#sharedassets0.assets#124/str/36：CH FLIGHTSTICK PRO
+- sharedassets0.assets:asset#sharedassets0.assets#125/str/1：CH Pro Pedals
+- sharedassets0.assets:asset#sharedassets0.assets#126/str/8：Stick Up
+- sharedassets0.assets:asset#sharedassets0.assets#129/str/39：Sysgration Ltd.
+- sharedassets0.assets:asset#sharedassets0.assets#129/str/45：Sysgration Ltd. Elecom Wired Gamepad
+- sharedassets0.assets:asset#sharedassets0.assets#129/str/46：Sysgration Ltd. Elecom Wired Gamepad
+- sharedassets0.assets:asset#sharedassets0.assets#129/str/47：Sysgration Ltd. Elecom Wired Gamepad
+- sharedassets0.assets:asset#sharedassets0.assets#130/str/2：Fantec Porsche 911 Turbo S, Fantec Porsche 911 Carrera
+- sharedassets0.assets:asset#sharedassets0.assets#130/str/12：Clutch
+- sharedassets0.assets:asset#sharedassets0.assets#130/str/13：Clutch
+- sharedassets0.assets:asset#sharedassets0.assets#132/str/18：L Press
+- sharedassets0.assets:asset#sharedassets0.assets#137/str/9：Google Nexus Remote
+- sharedassets0.assets:asset#sharedassets0.assets#137/str/10：Nexus Remote
+- sharedassets0.assets:asset#sharedassets0.assets#138/str/1：Horipad Ultimate
+- sharedassets0.assets:asset#sharedassets0.assets#138/str/2：Horipad Ultimate (OSX)
+- sharedassets0.assets:asset#sharedassets0.assets#138/str/25：HORIPAD ULTIMATE
+- sharedassets0.assets:asset#sharedassets0.assets#138/str/27：HORIPAD ULTIMATE
+- sharedassets0.assets:asset#sharedassets0.assets#138/str/28：HORIPAD ULTIMATE
+- sharedassets0.assets:asset#sharedassets0.assets#139/str/1：Logitech Attack 3
+- sharedassets0.assets:asset#sharedassets0.assets#139/str/8：Stick Up
+- sharedassets0.assets:asset#sharedassets0.assets#139/str/25：Logitech Attack 3
+- sharedassets0.assets:asset#sharedassets0.assets#139/str/27：Logitech Attack 3
+- sharedassets0.assets:asset#sharedassets0.assets#139/str/28：Logitech
+- sharedassets0.assets:asset#sharedassets0.assets#139/str/29：Logitech Attack 3
+- sharedassets0.assets:asset#sharedassets0.assets#139/str/31：Logitech Attack 3
+- sharedassets0.assets:asset#sharedassets0.assets#139/str/33：Logitech Attack 3
+- sharedassets0.assets:asset#sharedassets0.assets#139/str/34：Logitech Logitech Attack 3
+- sharedassets0.assets:asset#sharedassets0.assets#139/str/35：Logitech Logitech Attack 3
+- sharedassets0.assets:asset#sharedassets0.assets#139/str/36：Logitech Logitech Attack 3
+- sharedassets0.assets:asset#sharedassets0.assets#140/str/1：Logitech Driving Force GT
+- sharedassets0.assets:asset#sharedassets0.assets#141/str/1：Logitech Dual Action
+- sharedassets0.assets:asset#sharedassets0.assets#141/str/34：Logitech Dual Action
+- sharedassets0.assets:asset#sharedassets0.assets#141/str/36：Logitech Dual Action
+- sharedassets0.assets:asset#sharedassets0.assets#141/str/37：Logitech
+- sharedassets0.assets:asset#sharedassets0.assets#141/str/38：Logitech
+- sharedassets0.assets:asset#sharedassets0.assets#141/str/39：Logitech Dual Action
+- sharedassets0.assets:asset#sharedassets0.assets#141/str/40：Logitech Logitech Dual Action
+- sharedassets0.assets:asset#sharedassets0.assets#141/str/42：Logitech Dual Action
+- sharedassets0.assets:asset#sharedassets0.assets#141/str/44：Logitech Dual Action
+- sharedassets0.assets:asset#sharedassets0.assets#141/str/45：Logitech Logitech Dual Action
+- sharedassets0.assets:asset#sharedassets0.assets#141/str/46：Logitech Logitech Dual Action
+- sharedassets0.assets:asset#sharedassets0.assets#141/str/47：Logitech Logitech Dual Action
+- sharedassets0.assets:asset#sharedassets0.assets#142/str/1：Logitech Extreme 3D Pro
+- sharedassets0.assets:asset#sharedassets0.assets#142/str/8：Stick Up
+- sharedassets0.assets:asset#sharedassets0.assets#142/str/17：Grip Button
+- sharedassets0.assets:asset#sharedassets0.assets#142/str/38：Logitech Extreme 3D
+- sharedassets0.assets:asset#sharedassets0.assets#142/str/40：Logitech Extreme 3D
+- sharedassets0.assets:asset#sharedassets0.assets#142/str/41：Logitech
+- sharedassets0.assets:asset#sharedassets0.assets#142/str/42：Logitech Extreme 3D
+- sharedassets0.assets:asset#sharedassets0.assets#142/str/44：Logitech Extreme 3D
+- sharedassets0.assets:asset#sharedassets0.assets#142/str/46：Logitech Extreme 3D
+- sharedassets0.assets:asset#sharedassets0.assets#142/str/47：Logitech Logitech Extreme 3D
+- sharedassets0.assets:asset#sharedassets0.assets#142/str/48：Logitech Logitech Extreme 3D
+- sharedassets0.assets:asset#sharedassets0.assets#142/str/49：Logitech Logitech Extreme 3D
+- sharedassets0.assets:asset#sharedassets0.assets#143/str/1：Logitech F310
+- sharedassets0.assets:asset#sharedassets0.assets#143/str/26：Logitech
+- sharedassets0.assets:asset#sharedassets0.assets#143/str/35：Logitech Dual Action
+- sharedassets0.assets:asset#sharedassets0.assets#143/str/37：Logitech Dual Action
+- sharedassets0.assets:asset#sharedassets0.assets#143/str/38：Logitech
+- sharedassets0.assets:asset#sharedassets0.assets#143/str/39：Logitech
+- sharedassets0.assets:asset#sharedassets0.assets#143/str/40：Logitech Dual Action
+- sharedassets0.assets:asset#sharedassets0.assets#143/str/41：Logitech Logitech Dual Action
+- sharedassets0.assets:asset#sharedassets0.assets#143/str/43：Logitech Dual Action
+- sharedassets0.assets:asset#sharedassets0.assets#143/str/45：Logitech Dual Action
+- sharedassets0.assets:asset#sharedassets0.assets#143/str/46：Logitech Logitech Dual Action
+- sharedassets0.assets:asset#sharedassets0.assets#144/str/1：Logitech F310
+- sharedassets0.assets:asset#sharedassets0.assets#144/str/26：Logitech
+- sharedassets0.assets:asset#sharedassets0.assets#144/str/39：Logitech
+- sharedassets0.assets:asset#sharedassets0.assets#144/str/40：Logitech
+- sharedassets0.assets:asset#sharedassets0.assets#144/str/50：After Unity 2018.3.0
+- sharedassets0.assets:asset#sharedassets0.assets#144/str/54：Logitech Gamepad F310
+- sharedassets0.assets:asset#sharedassets0.assets#145/str/1：Logitech F710
+- sharedassets0.assets:asset#sharedassets0.assets#145/str/2：Logitech F710 (D)
+- sharedassets0.assets:asset#sharedassets0.assets#145/str/26：Logitech
+- sharedassets0.assets:asset#sharedassets0.assets#145/str/35：Logitech Cordless RumblePad 2
+- sharedassets0.assets:asset#sharedassets0.assets#145/str/37：Logitech Cordless RumblePad 2
+- sharedassets0.assets:asset#sharedassets0.assets#145/str/38：Logitech
+- sharedassets0.assets:asset#sharedassets0.assets#145/str/39：Logitech
+- sharedassets0.assets:asset#sharedassets0.assets#145/str/40：Logitech Cordless RumblePad 2
+- sharedassets0.assets:asset#sharedassets0.assets#145/str/41：Logitech Logitech Cordless RumblePad 2
+- sharedassets0.assets:asset#sharedassets0.assets#145/str/43：Logitech Cordless RumblePad 2
+- sharedassets0.assets:asset#sharedassets0.assets#145/str/45：Logitech Cordless RumblePad 2
+- sharedassets0.assets:asset#sharedassets0.assets#145/str/46：Logitech Logitech Cordless RumblePad 2
+- sharedassets0.assets:asset#sharedassets0.assets#145/str/47：Logitech Logitech Cordless RumblePad 2
+- sharedassets0.assets:asset#sharedassets0.assets#145/str/48：Logitech Logitech Cordless RumblePad 2
+- sharedassets0.assets:asset#sharedassets0.assets#146/str/1：Logitech F710
+- sharedassets0.assets:asset#sharedassets0.assets#146/str/26：Logitech
+- sharedassets0.assets:asset#sharedassets0.assets#146/str/39：Logitech
+- sharedassets0.assets:asset#sharedassets0.assets#146/str/40：Logitech
+- sharedassets0.assets:asset#sharedassets0.assets#146/str/50：After Unity 2018.3.0
+- sharedassets0.assets:asset#sharedassets0.assets#147/str/1：Logitech G25
+- sharedassets0.assets:asset#sharedassets0.assets#147/str/11：Clutch
+- sharedassets0.assets:asset#sharedassets0.assets#147/str/12：Clutch
+- sharedassets0.assets:asset#sharedassets0.assets#147/str/18：Pad Button R
+- sharedassets0.assets:asset#sharedassets0.assets#148/str/1：Logitech G27
+- sharedassets0.assets:asset#sharedassets0.assets#148/str/11：Clutch
+- sharedassets0.assets:asset#sharedassets0.assets#148/str/12：Clutch
+- sharedassets0.assets:asset#sharedassets0.assets#148/str/24：Pad Button R
+- sharedassets0.assets:asset#sharedassets0.assets#149/str/1：Logitech G29
+- sharedassets0.assets:asset#sharedassets0.assets#149/str/11：Clutch
+- sharedassets0.assets:asset#sharedassets0.assets#149/str/12：Clutch
+- sharedassets0.assets:asset#sharedassets0.assets#149/str/45：Logitech
+- sharedassets0.assets:asset#sharedassets0.assets#150/str/1：Logitech G920
+- sharedassets0.assets:asset#sharedassets0.assets#150/str/11：Clutch
+- sharedassets0.assets:asset#sharedassets0.assets#150/str/12：Clutch
+- sharedassets0.assets:asset#sharedassets0.assets#150/str/15：LSB
+- sharedassets0.assets:asset#sharedassets0.assets#150/str/16：RSB
+- sharedassets0.assets:asset#sharedassets0.assets#151/str/1：Logitech MOMO
+- sharedassets0.assets:asset#sharedassets0.assets#152/str/1：Logitech RumblePad 2
+- sharedassets0.assets:asset#sharedassets0.assets#152/str/40：Logitech
+- sharedassets0.assets:asset#sharedassets0.assets#152/str/45：Logitech Logitech RumblePad 2 USB
+- sharedassets0.assets:asset#sharedassets0.assets#153/str/1：Logitech WingMan Attack 2
+- sharedassets0.assets:asset#sharedassets0.assets#153/str/8：Stick Up
+- sharedassets0.assets:asset#sharedassets0.assets#153/str/23：Logitech
+- sharedassets0.assets:asset#sharedassets0.assets#153/str/29：Logitech WingMan Attack 2
+- sharedassets0.assets:asset#sharedassets0.assets#153/str/30：Logitech WingMan Attack 2
+- sharedassets0.assets:asset#sharedassets0.assets#153/str/31：Logitech WingMan Attack 2
+- sharedassets0.assets:asset#sharedassets0.assets#154/str/1：Mad Catz C.T.R.L.R
+- sharedassets0.assets:asset#sharedassets0.assets#155/str/1：Mad Catz C.Y.B.O.R.G V1
+- sharedassets0.assets:asset#sharedassets0.assets#155/str/8：Stick Up
+- sharedassets0.assets:asset#sharedassets0.assets#155/str/22：Pinky Button
+- sharedassets0.assets:asset#sharedassets0.assets#156/str/1：Mad Catz Micro C.T.R.L.R
+- sharedassets0.assets:asset#sharedassets0.assets#156/str/28：Mad Catz Micro C.T.R.L.R
+- sharedassets0.assets:asset#sharedassets0.assets#156/str/30：Mad Catz Micro C.T.R.L.R
+- sharedassets0.assets:asset#sharedassets0.assets#156/str/32：Mad Catz Micro C.T.R.L.R
+- sharedassets0.assets:asset#sharedassets0.assets#156/str/34：Mad Catz Micro C.T.R.L.R
+- sharedassets0.assets:asset#sharedassets0.assets#156/str/36：Mad Catz Micro C.T.R.L.R
+- sharedassets0.assets:asset#sharedassets0.assets#156/str/37：Mad Catz Micro C.T.R.L.R
+- sharedassets0.assets:asset#sharedassets0.assets#157/str/9：Stick Up
+- sharedassets0.assets:asset#sharedassets0.assets#158/str/32：HJZ
+- sharedassets0.assets:asset#sharedassets0.assets#159/str/1：Microsoft SideWinder 3D Pro
+- sharedassets0.assets:asset#sharedassets0.assets#159/str/9：Stick Up
+- sharedassets0.assets:asset#sharedassets0.assets#159/str/35：Microsoft SideWinder 3D Pro (USB)
+- sharedassets0.assets:asset#sharedassets0.assets#159/str/37：Microsoft SideWinder 3D Pro (USB)
+- sharedassets0.assets:asset#sharedassets0.assets#159/str/38：Detlef <Grendel> Mueller
+- sharedassets0.assets:asset#sharedassets0.assets#159/str/39：Detlef <Grendel> Mueller
+- sharedassets0.assets:asset#sharedassets0.assets#159/str/40：Microsoft SideWinder 3D Pro (USB)
+- sharedassets0.assets:asset#sharedassets0.assets#159/str/42：Microsoft SideWinder 3D Pro (USB)
+- sharedassets0.assets:asset#sharedassets0.assets#160/str/1：Microsoft SideWinder FF Pro
+- sharedassets0.assets:asset#sharedassets0.assets#160/str/9：Stick Up
+- sharedassets0.assets:asset#sharedassets0.assets#160/str/21：Shift
+- sharedassets0.assets:asset#sharedassets0.assets#160/str/32：Microsoft SideWinder Force Feedback Pro (USB)
+- sharedassets0.assets:asset#sharedassets0.assets#160/str/34：Microsoft SideWinder Force Feedback Pro (USB)
+- sharedassets0.assets:asset#sharedassets0.assets#160/str/35：Detlef <Grendel> Mueller
+- sharedassets0.assets:asset#sharedassets0.assets#160/str/36：Detlef <Grendel> Mueller
+- sharedassets0.assets:asset#sharedassets0.assets#160/str/37：Microsoft SideWinder Force Feedback Pro (USB)
+- sharedassets0.assets:asset#sharedassets0.assets#160/str/39：Microsoft SideWinder Force Feedback Pro (USB)
+- sharedassets0.assets:asset#sharedassets0.assets#160/str/41：Detlef <Grendel> Mueller Microsoft SideWinder Force Feedback
+- sharedassets0.assets:asset#sharedassets0.assets#160/str/42：Detlef <Grendel> Mueller Microsoft SideWinder Force Feedback
+- sharedassets0.assets:asset#sharedassets0.assets#160/str/43：Detlef <Grendel> Mueller Microsoft SideWinder Force Feedback
+- sharedassets0.assets:asset#sharedassets0.assets#161/str/1：Microsoft SideWinder Joystick
+- sharedassets0.assets:asset#sharedassets0.assets#161/str/8：Stick Up
+- sharedassets0.assets:asset#sharedassets0.assets#161/str/25：Microsoft
+- sharedassets0.assets:asset#sharedassets0.assets#161/str/31：Microsoft SideWinder Joystick
+- sharedassets0.assets:asset#sharedassets0.assets#161/str/32：Microsoft SideWinder Joystick
+- sharedassets0.assets:asset#sharedassets0.assets#161/str/33：Microsoft SideWinder Joystick
+- sharedassets0.assets:asset#sharedassets0.assets#162/str/1：Microsoft SideWinder Precision 2
+- sharedassets0.assets:asset#sharedassets0.assets#162/str/8：Stick Up
+- sharedassets0.assets:asset#sharedassets0.assets#162/str/37：Microsoft
+- sharedassets0.assets:asset#sharedassets0.assets#163/str/1：Microsoft SideWinder Precision Pro
+- sharedassets0.assets:asset#sharedassets0.assets#163/str/9：Stick Up
+- sharedassets0.assets:asset#sharedassets0.assets#163/str/21：Shift
+- sharedassets0.assets:asset#sharedassets0.assets#163/str/32：Microsoft SideWinder Precision Pro (USB)
+- sharedassets0.assets:asset#sharedassets0.assets#163/str/34：Microsoft SideWinder Precision Pro (USB)
+- sharedassets0.assets:asset#sharedassets0.assets#163/str/35：Detlef <Grendel> Mueller
+- sharedassets0.assets:asset#sharedassets0.assets#163/str/36：Detlef <Grendel> Mueller
+- sharedassets0.assets:asset#sharedassets0.assets#163/str/37：Microsoft SideWinder Precision Pro (USB)
+- sharedassets0.assets:asset#sharedassets0.assets#163/str/39：Microsoft SideWinder Precision Pro (USB)
+- sharedassets0.assets:asset#sharedassets0.assets#164/str/43：Street Fighter IV FightStick TE
+- sharedassets0.assets:asset#sharedassets0.assets#164/str/193：Street Fighter IV FightStick TE
+- sharedassets0.assets:asset#sharedassets0.assets#164/str/207：Street Fighter IV FightStick TE
+- sharedassets0.assets:asset#sharedassets0.assets#164/str/209：Microsoft
+- sharedassets0.assets:asset#sharedassets0.assets#164/str/212：Microsoft
+- sharedassets0.assets:asset#sharedassets0.assets#164/str/222：Street Fighter IV FightStick TE
+- sharedassets0.assets:asset#sharedassets0.assets#164/str/372：Microsoft
+- sharedassets0.assets:asset#sharedassets0.assets#164/str/382：Street Fighter IV FightStick TE
+- sharedassets0.assets:asset#sharedassets0.assets#164/str/540：Street Fighter IV FightStick TE
+- sharedassets0.assets:asset#sharedassets0.assets#164/str/683：HID API
+- sharedassets0.assets:asset#sharedassets0.assets#164/str/693：Street Fighter IV FightStick TE
+- sharedassets0.assets:asset#sharedassets0.assets#164/str/846：Street Fighter IV FightStick TE
+- sharedassets0.assets:asset#sharedassets0.assets#164/str/848：After Unity 2018.3.0
+- sharedassets0.assets:asset#sharedassets0.assets#164/str/858：Street Fighter IV FightStick TE
+- sharedassets0.assets:asset#sharedassets0.assets#164/str/869：Street Fighter IV FightStick TE
+- sharedassets0.assets:asset#sharedassets0.assets#164/str/909：Street Fighter IV FightStick TE
+- sharedassets0.assets:asset#sharedassets0.assets#164/str/1064：Street Fighter IV FightStick TE
+- sharedassets0.assets:asset#sharedassets0.assets#164/str/1218：Street Fighter IV FightStick TE
+- sharedassets0.assets:asset#sharedassets0.assets#164/str/1373：Street Fighter IV FightStick TE
+- sharedassets0.assets:asset#sharedassets0.assets#165/str/193：After Unity 2018.3.0
+- sharedassets0.assets:asset#sharedassets0.assets#166/str/1：Moga Hero Power
+- sharedassets0.assets:asset#sharedassets0.assets#166/str/28：Moga 2 HID
+- sharedassets0.assets:asset#sharedassets0.assets#166/str/30：Moga 2 HID
+- sharedassets0.assets:asset#sharedassets0.assets#166/str/31：Moga 2 HID
+- sharedassets0.assets:asset#sharedassets0.assets#166/str/33：Moga 2 HID
+- sharedassets0.assets:asset#sharedassets0.assets#166/str/37：Moga 2 HID
+- sharedassets0.assets:asset#sharedassets0.assets#166/str/38：Moga 2 HID
+- sharedassets0.assets:asset#sharedassets0.assets#167/str/1：Moga Pro Power
+- sharedassets0.assets:asset#sharedassets0.assets#167/str/28：Moga Pro 2 HID
+- sharedassets0.assets:asset#sharedassets0.assets#167/str/30：Moga Pro 2 HID
+- sharedassets0.assets:asset#sharedassets0.assets#167/str/31：Moga Pro 2 HID
+- sharedassets0.assets:asset#sharedassets0.assets#167/str/33：Moga Pro 2 HID
+- sharedassets0.assets:asset#sharedassets0.assets#167/str/37：Moga Pro 2 HID
+- sharedassets0.assets:asset#sharedassets0.assets#167/str/38：Moga Pro 2 HID
+- sharedassets0.assets:asset#sharedassets0.assets#170/str/9：Stick Up
+- sharedassets0.assets:asset#sharedassets0.assets#171/str/9：Stick Up
+- sharedassets0.assets:asset#sharedassets0.assets#172/str/1：Pro Controller
+- sharedassets0.assets:asset#sharedassets0.assets#172/str/36：Pro Controller
+- sharedassets0.assets:asset#sharedassets0.assets#172/str/37：Pro Controller
+- sharedassets0.assets:asset#sharedassets0.assets#172/str/38：Pro Controller
+- sharedassets0.assets:asset#sharedassets0.assets#173/str/41：NVIDIA Shield
+- sharedassets0.assets:asset#sharedassets0.assets#173/str/43：NVIDIA Controller v01.00
+- sharedassets0.assets:asset#sharedassets0.assets#173/str/45：NVIDIA Controller v01.02
+- sharedassets0.assets:asset#sharedassets0.assets#173/str/46：NVIDIA Controller v01.03
+- sharedassets0.assets:asset#sharedassets0.assets#173/str/48：NVIDIA Controller v01.00
+- sharedassets0.assets:asset#sharedassets0.assets#173/str/50：NVIDIA Controller v01.02
+- sharedassets0.assets:asset#sharedassets0.assets#173/str/51：NVIDIA Controller v01.03
+- sharedassets0.assets:asset#sharedassets0.assets#173/str/54：NVIDIA Controller v01.00
+- sharedassets0.assets:asset#sharedassets0.assets#173/str/56：NVIDIA Controller v01.02
+- sharedassets0.assets:asset#sharedassets0.assets#173/str/57：NVIDIA Controller v01.03
+- sharedassets0.assets:asset#sharedassets0.assets#173/str/59：NVIDIA Controller v01.00
+- sharedassets0.assets:asset#sharedassets0.assets#173/str/61：NVIDIA Controller v01.02
+- sharedassets0.assets:asset#sharedassets0.assets#173/str/62：NVIDIA Controller v01.03
+- sharedassets0.assets:asset#sharedassets0.assets#173/str/67：NVIDIA Controller v01.00
+- sharedassets0.assets:asset#sharedassets0.assets#173/str/69：NVIDIA Controller v01.02
+- sharedassets0.assets:asset#sharedassets0.assets#173/str/70：NVIDIA Controller v01.03
+- sharedassets0.assets:asset#sharedassets0.assets#173/str/71：NVIDIA Corporation NVIDIA Controller v01.00
+- sharedassets0.assets:asset#sharedassets0.assets#173/str/72：NVIDIA Corporation NVIDIA Controller v01.01
+- sharedassets0.assets:asset#sharedassets0.assets#173/str/73：NVIDIA Corporation NVIDIA Controller v01.02
+- sharedassets0.assets:asset#sharedassets0.assets#173/str/74：NVIDIA Corporation NVIDIA Controller v01.03
+- sharedassets0.assets:asset#sharedassets0.assets#173/str/76：NVIDIA Corporation NVIDIA Controller v01.00
+- sharedassets0.assets:asset#sharedassets0.assets#173/str/77：NVIDIA Corporation NVIDIA Controller v01.01
+- sharedassets0.assets:asset#sharedassets0.assets#173/str/78：NVIDIA Corporation NVIDIA Controller v01.02
+- sharedassets0.assets:asset#sharedassets0.assets#173/str/79：NVIDIA Corporation NVIDIA Controller v01.03
+- sharedassets0.assets:asset#sharedassets0.assets#174/str/48：NVIDIA Corporation NVIDIA Controller v01.*
+- sharedassets0.assets:asset#sharedassets0.assets#174/str/52：NVIDIA Corporation NVIDIA Controller v01.*
+- sharedassets0.assets:asset#sharedassets0.assets#174/str/54：NVIDIA Corporation NVIDIA Controller v01.*
+- sharedassets0.assets:asset#sharedassets0.assets#175/str/1：Nvidia Shield Remote
+- sharedassets0.assets:asset#sharedassets0.assets#175/str/10：SHIELD Remote
+- sharedassets0.assets:asset#sharedassets0.assets#176/str/1：Nyko AirFlo EX
+- sharedassets0.assets:asset#sharedassets0.assets#176/str/35：AIRFLO
+- sharedassets0.assets:asset#sharedassets0.assets#176/str/45：AIRFLO
+- sharedassets0.assets:asset#sharedassets0.assets#177/str/1：Nyko Playpad
+- sharedassets0.assets:asset#sharedassets0.assets#178/str/1：Nyko Playpad Pro
+- sharedassets0.assets:asset#sharedassets0.assets#179/str/1：Oculus Remote
+- sharedassets0.assets:asset#sharedassets0.assets#179/str/2：Oculus Remote (Unity)
+- sharedassets0.assets:asset#sharedassets0.assets#179/str/12：Oculus Remote
+- sharedassets0.assets:asset#sharedassets0.assets#180/str/9：Stick Up
+- sharedassets0.assets:asset#sharedassets0.assets#180/str/13：Y Touch
+- sharedassets0.assets:asset#sharedassets0.assets#181/str/9：Stick Up
+- sharedassets0.assets:asset#sharedassets0.assets#181/str/12：A Touch
+- sharedassets0.assets:asset#sharedassets0.assets#182/str/9：Stick Up
+- sharedassets0.assets:asset#sharedassets0.assets#183/str/9：Stick Up
+- sharedassets0.assets:asset#sharedassets0.assets#185/str/2：P.I. Engineering RailDriver
+- sharedassets0.assets:asset#sharedassets0.assets#185/str/5：Lever 1 Up
+- sharedassets0.assets:asset#sharedassets0.assets#186/str/2：P.I. Engineering XK-24 HID
+- sharedassets0.assets:asset#sharedassets0.assets#186/str/50：XK-24 HID
+- sharedassets0.assets:asset#sharedassets0.assets#186/str/52：XK-24 HID
+- sharedassets0.assets:asset#sharedassets0.assets#186/str/54：XK-24 HID
+- sharedassets0.assets:asset#sharedassets0.assets#186/str/56：XK-24 HID
+- sharedassets0.assets:asset#sharedassets0.assets#187/str/1：Pro Flight Trainer PUMA
+- sharedassets0.assets:asset#sharedassets0.assets#189/str/1：Razer Serval
+- sharedassets0.assets:asset#sharedassets0.assets#189/str/35：Razer Serval
+- sharedassets0.assets:asset#sharedassets0.assets#189/str/36：Razer Serval
+- sharedassets0.assets:asset#sharedassets0.assets#189/str/37：Razer Serval
+- sharedassets0.assets:asset#sharedassets0.assets#189/str/38：Razer Serval
+- sharedassets0.assets:asset#sharedassets0.assets#189/str/39：Razer Serval
+- sharedassets0.assets:asset#sharedassets0.assets#189/str/40：Razer Serval
+- sharedassets0.assets:asset#sharedassets0.assets#189/str/42：Razer Serval
+- sharedassets0.assets:asset#sharedassets0.assets#189/str/43：Razer Serval
+- sharedassets0.assets:asset#sharedassets0.assets#191/str/1：Saitek Cyborg Evo
+- sharedassets0.assets:asset#sharedassets0.assets#191/str/8：Stick Up
+- sharedassets0.assets:asset#sharedassets0.assets#192/str/53：Mad Catz
+- sharedassets0.assets:asset#sharedassets0.assets#193/str/41：Mad Catz
+- sharedassets0.assets:asset#sharedassets0.assets#193/str/42：Mad Catz
+- sharedassets0.assets:asset#sharedassets0.assets#194/str/9：Stick Up
+- sharedassets0.assets:asset#sharedassets0.assets#194/str/33：CYBORG 3D USB
+- sharedassets0.assets:asset#sharedassets0.assets#194/str/35：CYBORG 3D USB
+- sharedassets0.assets:asset#sharedassets0.assets#194/str/37：CYBORG 3D USB
+- sharedassets0.assets:asset#sharedassets0.assets#194/str/39：CYBORG 3D USB
+- sharedassets0.assets:asset#sharedassets0.assets#195/str/26：Shift
+- sharedassets0.assets:asset#sharedassets0.assets#195/str/36：SAITEK
+- sharedassets0.assets:asset#sharedassets0.assets#195/str/37：SAITEK
+- sharedassets0.assets:asset#sharedassets0.assets#195/str/39：SAITEK P880
+- sharedassets0.assets:asset#sharedassets0.assets#195/str/44：SAITEK P880
+- sharedassets0.assets:asset#sharedassets0.assets#195/str/45：SAITEK P880
+- sharedassets0.assets:asset#sharedassets0.assets#195/str/46：SAITEK P880
+- sharedassets0.assets:asset#sharedassets0.assets#196/str/1：Saitek P990
+- sharedassets0.assets:asset#sharedassets0.assets#196/str/28：FPS
+- sharedassets0.assets:asset#sharedassets0.assets#197/str/1：Saitek Pro Flight Cessna Trim Wheel
+- sharedassets0.assets:asset#sharedassets0.assets#197/str/6：Saitek Pro Flight Cessna Trim Wheel
+- sharedassets0.assets:asset#sharedassets0.assets#197/str/8：Pro Flight Cessna Trim Wheel
+- sharedassets0.assets:asset#sharedassets0.assets#197/str/10：Pro Flight Cessna Trim Wheel
+- sharedassets0.assets:asset#sharedassets0.assets#197/str/11：Saitek
+- sharedassets0.assets:asset#sharedassets0.assets#197/str/12：Pro Flight Cessna Trim Wheel
+- sharedassets0.assets:asset#sharedassets0.assets#197/str/14：Pro Flight Cessna Trim Wheel
+- sharedassets0.assets:asset#sharedassets0.assets#197/str/16：Pro Flight Cessna Trim Wheel
+- sharedassets0.assets:asset#sharedassets0.assets#197/str/17：Saitek Pro Flight Cessna Trim Wheel
+- sharedassets0.assets:asset#sharedassets0.assets#197/str/18：Saitek Pro Flight Cessna Trim Wheel
+- sharedassets0.assets:asset#sharedassets0.assets#198/str/1：Saitek Pro Flight Rudder Pedals
+- sharedassets0.assets:asset#sharedassets0.assets#198/str/11：Saitek Pro Flight Rudder Pedals
+- sharedassets0.assets:asset#sharedassets0.assets#198/str/12：Saitek Pro Flight Combat Rudder Pedals
+- sharedassets0.assets:asset#sharedassets0.assets#198/str/13：Mad Catz Pro Flight Cessna Rudder Pedals
+Mad Catz Pro Fligh
+- sharedassets0.assets:asset#sharedassets0.assets#198/str/17：Saitek Pro Flight Rudder Pedals
+- sharedassets0.assets:asset#sharedassets0.assets#198/str/18：Saitek Pro Flight Combat Rudder Pedals
+- sharedassets0.assets:asset#sharedassets0.assets#198/str/19：Mad Catz Pro Flight Cessna Rudder Pedals
+- sharedassets0.assets:asset#sharedassets0.assets#198/str/20：Saitek
+- sharedassets0.assets:asset#sharedassets0.assets#198/str/21：Saitek Pro Flight Rudder Pedals
+- sharedassets0.assets:asset#sharedassets0.assets#198/str/22：Saitek Pro Flight Combat Rudder Pedals
+- sharedassets0.assets:asset#sharedassets0.assets#198/str/23：Mad Catz Pro Flight Cessna Rudder Pedals
+- sharedassets0.assets:asset#sharedassets0.assets#198/str/27：Saitek Pro Flight Rudder Pedals
+- sharedassets0.assets:asset#sharedassets0.assets#198/str/28：Saitek Pro Flight Combat Rudder Pedals
+- sharedassets0.assets:asset#sharedassets0.assets#198/str/29：Mad Catz Pro Flight Cessna Rudder Pedals
+- sharedassets0.assets:asset#sharedassets0.assets#198/str/33：Saitek Pro Flight Rudder Pedals
+- sharedassets0.assets:asset#sharedassets0.assets#198/str/34：Saitek Pro Flight Combat Rudder Pedals
+- sharedassets0.assets:asset#sharedassets0.assets#198/str/35：Mad Catz Pro Flight Cessna Rudder Pedals
+- sharedassets0.assets:asset#sharedassets0.assets#198/str/36：Saitek Saitek Pro Flight Rudder Pedals
+- sharedassets0.assets:asset#sharedassets0.assets#198/str/37：Saitek Saitek Pro Flight Combat Rudder Pedals
+- sharedassets0.assets:asset#sharedassets0.assets#198/str/38：Mad Catz Pro Flight Cessna Rudder Pedals
+- sharedassets0.assets:asset#sharedassets0.assets#198/str/39：Saitek Saitek Pro Flight Rudder Pedals
+- sharedassets0.assets:asset#sharedassets0.assets#198/str/40：Saitek Saitek Pro Flight Combat Rudder Pedals
+- sharedassets0.assets:asset#sharedassets0.assets#198/str/41：Mad Catz Pro Flight Cessna Rudder Pedals
+- sharedassets0.assets:asset#sharedassets0.assets#199/str/1：Saitek Pro Flight TPM
+- sharedassets0.assets:asset#sharedassets0.assets#199/str/15：Mad Catz
+- sharedassets0.assets:asset#sharedassets0.assets#200/str/4：Lever 1 Up
+- sharedassets0.assets:asset#sharedassets0.assets#200/str/18：Saitek
+- sharedassets0.assets:asset#sharedassets0.assets#200/str/24：Saitek Saitek Pro Flight Quadrant
+- sharedassets0.assets:asset#sharedassets0.assets#200/str/25：Saitek Saitek Pro Flight Quadrant
+- sharedassets0.assets:asset#sharedassets0.assets#200/str/26：Saitek Saitek Pro Flight Quadrant
+- sharedassets0.assets:asset#sharedassets0.assets#201/str/7：Yoke Z
+- sharedassets0.assets:asset#sharedassets0.assets#201/str/9：Lever 1 Up
+- sharedassets0.assets:asset#sharedassets0.assets#201/str/38：Saitek
+- sharedassets0.assets:asset#sharedassets0.assets#201/str/44：Saitek Saitek Pro Flight Yoke
+- sharedassets0.assets:asset#sharedassets0.assets#201/str/45：Saitek Saitek Pro Flight Yoke
+- sharedassets0.assets:asset#sharedassets0.assets#201/str/46：Saitek Saitek Pro Flight Yoke
+- sharedassets0.assets:asset#sharedassets0.assets#202/str/8：Stick Up
+- sharedassets0.assets:asset#sharedassets0.assets#203/str/1：Saitek X45
+- sharedassets0.assets:asset#sharedassets0.assets#203/str/9：Stick Up
+- sharedassets0.assets:asset#sharedassets0.assets#203/str/59：Saitek X45
+- sharedassets0.assets:asset#sharedassets0.assets#203/str/61：Saitek X45
+- sharedassets0.assets:asset#sharedassets0.assets#203/str/63：Saitek X45
+- sharedassets0.assets:asset#sharedassets0.assets#203/str/64：Saitek
+- sharedassets0.assets:asset#sharedassets0.assets#203/str/65：Saitek X45
+- sharedassets0.assets:asset#sharedassets0.assets#203/str/67：Saitek X45
+- sharedassets0.assets:asset#sharedassets0.assets#203/str/69：Saitek X45
+- sharedassets0.assets:asset#sharedassets0.assets#203/str/70：Saitek X45
+- sharedassets0.assets:asset#sharedassets0.assets#204/str/1：Saitek X52
+- sharedassets0.assets:asset#sharedassets0.assets#204/str/8：Stick Up
+- sharedassets0.assets:asset#sharedassets0.assets#204/str/16：Pinky Trigger
+- sharedassets0.assets:asset#sharedassets0.assets#204/str/43：E Rotary
+- sharedassets0.assets:asset#sharedassets0.assets#204/str/82：Saitek
+- sharedassets0.assets:asset#sharedassets0.assets#204/str/83：Saitek
+- sharedassets0.assets:asset#sharedassets0.assets#205/str/8：Stick Up
+- sharedassets0.assets:asset#sharedassets0.assets#205/str/16：Pinky Trigger
+- sharedassets0.assets:asset#sharedassets0.assets#205/str/43：E Rotary
+- sharedassets0.assets:asset#sharedassets0.assets#205/str/64：MFD Wheel 1 Up
+- sharedassets0.assets:asset#sharedassets0.assets#205/str/85：Saitek
+- sharedassets0.assets:asset#sharedassets0.assets#205/str/86：Saitek
+- sharedassets0.assets:asset#sharedassets0.assets#206/str/8：Stick Up
+- sharedassets0.assets:asset#sharedassets0.assets#206/str/17：Pinky Button (D)
+- sharedassets0.assets:asset#sharedassets0.assets#207/str/12：RTY 3
+- sharedassets0.assets:asset#sharedassets0.assets#207/str/13：RTY 4
+- sharedassets0.assets:asset#sharedassets0.assets#207/str/18：Pinky Switch Up (K)
+- sharedassets0.assets:asset#sharedassets0.assets#207/str/22：Pinky Wheel Forward
+- sharedassets0.assets:asset#sharedassets0.assets#207/str/45：TGL 2 Up
+- sharedassets0.assets:asset#sharedassets0.assets#207/str/46：TGL 2 Down
+- sharedassets0.assets:asset#sharedassets0.assets#207/str/49：TGL 4 Up
+- sharedassets0.assets:asset#sharedassets0.assets#207/str/50：TGL 4 Down
+- sharedassets0.assets:asset#sharedassets0.assets#207/str/51：SW 1
+- sharedassets0.assets:asset#sharedassets0.assets#207/str/52：SW 2
+- sharedassets0.assets:asset#sharedassets0.assets#207/str/53：SW 3
+- sharedassets0.assets:asset#sharedassets0.assets#207/str/54：SW 4
+- sharedassets0.assets:asset#sharedassets0.assets#207/str/55：SW 5
+- sharedassets0.assets:asset#sharedassets0.assets#207/str/56：SW 6
+- sharedassets0.assets:asset#sharedassets0.assets#208/str/8：Stick Up
+- sharedassets0.assets:asset#sharedassets0.assets#208/str/17：Grip Mini-Stick Up (C)
+- sharedassets0.assets:asset#sharedassets0.assets#208/str/23：Pinky Button (D)
+- sharedassets0.assets:asset#sharedassets0.assets#208/str/51：H1 HAT
+- sharedassets0.assets:asset#sharedassets0.assets#208/str/52：H2 HAT
+- sharedassets0.assets:asset#sharedassets0.assets#208/str/56：Mad Catz
+- sharedassets0.assets:asset#sharedassets0.assets#208/str/57：Mad Catz
+- sharedassets0.assets:asset#sharedassets0.assets#208/str/61：Mad Catz
+- sharedassets0.assets:asset#sharedassets0.assets#209/str/12：RTY 3
+- sharedassets0.assets:asset#sharedassets0.assets#209/str/13：RTY 4
+- sharedassets0.assets:asset#sharedassets0.assets#209/str/24：Pinky Switch Up (K)
+- sharedassets0.assets:asset#sharedassets0.assets#209/str/29：Pinky Wheel Forward
+- sharedassets0.assets:asset#sharedassets0.assets#209/str/42：TGL 2 Up
+- sharedassets0.assets:asset#sharedassets0.assets#209/str/43：TGL 2 Down
+- sharedassets0.assets:asset#sharedassets0.assets#209/str/46：TGL 4 Up
+- sharedassets0.assets:asset#sharedassets0.assets#209/str/47：TGL 4 Down
+- sharedassets0.assets:asset#sharedassets0.assets#209/str/70：Mad Catz
+- sharedassets0.assets:asset#sharedassets0.assets#209/str/71：Mad Catz
+- sharedassets0.assets:asset#sharedassets0.assets#209/str/75：Mad Catz
+- sharedassets0.assets:asset#sharedassets0.assets#210/str/1：Samsung Gamepad
+- sharedassets0.assets:asset#sharedassets0.assets#210/str/2：Samsung EI-GP20
+- sharedassets0.assets:asset#sharedassets0.assets#210/str/30：Samsung Game Pad EI-GP20
+- sharedassets0.assets:asset#sharedassets0.assets#210/str/32：Samsung Game Pad EI-GP20
+- sharedassets0.assets:asset#sharedassets0.assets#210/str/33：Samsung Game Pad EI-GP20
+- sharedassets0.assets:asset#sharedassets0.assets#210/str/35：Samsung Game Pad EI-GP20
+- sharedassets0.assets:asset#sharedassets0.assets#210/str/37：Samsung Game Pad EI-GP20
+- sharedassets0.assets:asset#sharedassets0.assets#210/str/38：Unity 4.3
+- sharedassets0.assets:asset#sharedassets0.assets#210/str/39：Samsung Game Pad EI-GP20
+- sharedassets0.assets:asset#sharedassets0.assets#210/str/42：Unity 4.5+
+- sharedassets0.assets:asset#sharedassets0.assets#210/str/43：Samsung Game Pad EI-GP20
+- sharedassets0.assets:asset#sharedassets0.assets#211/str/2：Satechi ST-UBGC
+- sharedassets0.assets:asset#sharedassets0.assets#212/str/1：Sony DualSense
+- sharedassets0.assets:asset#sharedassets0.assets#212/str/63：[KEYMAP]
+- sharedassets0.assets:asset#sharedassets0.assets#213/str/48：My-Power CO.,LTD.
+- sharedassets0.assets:asset#sharedassets0.assets#213/str/49：Super Dual Box Pro
+- sharedassets0.assets:asset#sharedassets0.assets#213/str/51：WiseGroup.,Ltd
+- sharedassets0.assets:asset#sharedassets0.assets#213/str/57：Super Dual Box Pro
+- sharedassets0.assets:asset#sharedassets0.assets#213/str/58：WiseGroup.,Ltd
+- sharedassets0.assets:asset#sharedassets0.assets#214/str/45：HJZ
+- sharedassets0.assets:asset#sharedassets0.assets#214/str/48：Gasia Co., Ltd
+- sharedassets0.assets:asset#sharedassets0.assets#214/str/53：Gasia Co., Ltd
+- sharedassets0.assets:asset#sharedassets0.assets#215/str/98：[KEYMAP]
+- sharedassets0.assets:asset#sharedassets0.assets#215/str/107：[KEYMAP]
+- sharedassets0.assets:asset#sharedassets0.assets#221/str/28：PS Vita
+- sharedassets0.assets:asset#sharedassets0.assets#221/str/29：PS Vita
+- sharedassets0.assets:asset#sharedassets0.assets#222/str/38：Google Inc.
+- sharedassets0.assets:asset#sharedassets0.assets#222/str/39：Google Inc.
+- sharedassets0.assets:asset#sharedassets0.assets#224/str/1：Steam Controller
+- sharedassets0.assets:asset#sharedassets0.assets#224/str/2：Steam Controller
+- sharedassets0.assets:asset#sharedassets0.assets#225/str/1：SteelSeries Free
+- sharedassets0.assets:asset#sharedassets0.assets#226/str/1：SteelSeries Nimbus+
+- sharedassets0.assets:asset#sharedassets0.assets#226/str/2：SteelSeries Nimbus+ (OSX)
+- sharedassets0.assets:asset#sharedassets0.assets#226/str/27：Nimbus+
+- sharedassets0.assets:asset#sharedassets0.assets#226/str/29：Nimbus+
+- sharedassets0.assets:asset#sharedassets0.assets#227/str/1：SteelSeries Nimbus
+- sharedassets0.assets:asset#sharedassets0.assets#227/str/2：SteelSeries Nimbus (OSX)
+- sharedassets0.assets:asset#sharedassets0.assets#227/str/25：Nimbus
+- sharedassets0.assets:asset#sharedassets0.assets#227/str/27：Nimbus
+- sharedassets0.assets:asset#sharedassets0.assets#227/str/28：Nimbus
+- sharedassets0.assets:asset#sharedassets0.assets#228/str/1：SteelSeries Stratus XL
+- sharedassets0.assets:asset#sharedassets0.assets#228/str/29：SteelSeries Stratus XL
+- sharedassets0.assets:asset#sharedassets0.assets#228/str/32：SteelSeries Stratus XL
+- sharedassets0.assets:asset#sharedassets0.assets#228/str/38：SteelSeries Stratus XL
+- sharedassets0.assets:asset#sharedassets0.assets#228/str/40：SteelSeries Stratus XL
+- sharedassets0.assets:asset#sharedassets0.assets#228/str/44：SteelSeries Stratus XL
+- sharedassets0.assets:asset#sharedassets0.assets#228/str/45：SteelSeries Stratus XL
+- sharedassets0.assets:asset#sharedassets0.assets#229/str/1：SteelSeries Stratus XL
+- sharedassets0.assets:asset#sharedassets0.assets#229/str/2：SteelSeries Stratus XL (MFi)
+- sharedassets0.assets:asset#sharedassets0.assets#229/str/25：SteelSeries Stratus XL
+- sharedassets0.assets:asset#sharedassets0.assets#229/str/27：SteelSeries Stratus XL
+- sharedassets0.assets:asset#sharedassets0.assets#229/str/28：SteelSeries Stratus XL
+- sharedassets0.assets:asset#sharedassets0.assets#230/str/77：Logitech Dual Action
+- sharedassets0.assets:asset#sharedassets0.assets#230/str/83：Nyko AirFlo EX
+- sharedassets0.assets:asset#sharedassets0.assets#230/str/89：Saitek P990
+- sharedassets0.assets:asset#sharedassets0.assets#230/str/101：Logitech F710 (D)
+- sharedassets0.assets:asset#sharedassets0.assets#230/str/140：Radio Shack PC Gaming Controller
+- sharedassets0.assets:asset#sharedassets0.assets#230/str/143：Mad Catz C.T.R.L.R
+- sharedassets0.assets:asset#sharedassets0.assets#230/str/173：SteelSeries Free
+- sharedassets0.assets:asset#sharedassets0.assets#230/str/176：Nyko Playpad Pro
+- sharedassets0.assets:asset#sharedassets0.assets#230/str/179：Nyko Playpad
+- sharedassets0.assets:asset#sharedassets0.assets#230/str/188：MadCatz Micro C.T.R.L.R
+- sharedassets0.assets:asset#sharedassets0.assets#230/str/203：Moga Hero Power
+- sharedassets0.assets:asset#sharedassets0.assets#230/str/206：Moga Pro Power
+- sharedassets0.assets:asset#sharedassets0.assets#230/str/209：SteelSeries Stratus XL (HID)
+- sharedassets0.assets:asset#sharedassets0.assets#230/str/215：Razer Serval
+- sharedassets0.assets:asset#sharedassets0.assets#230/str/218：SteelSeries Stratus XL (MFi)
+- sharedassets0.assets:asset#sharedassets0.assets#230/str/221：SteelSeries Nimbus (MFi)
+- sharedassets0.assets:asset#sharedassets0.assets#230/str/224：SteelSeries Nimbus+ (MFi)
+- sharedassets0.assets:asset#sharedassets0.assets#230/str/227：Thrustmaster Score-A
+- sharedassets0.assets:asset#sharedassets0.assets#230/str/233：Horipad Ultimate (MFi)
+- sharedassets0.assets:asset#sharedassets0.assets#230/str/236：8Bitdo FC30 Pro
+- sharedassets0.assets:asset#sharedassets0.assets#230/str/245：Satechi ST-UBGC
+- sharedassets0.assets:asset#sharedassets0.assets#230/str/263：Thrustmaster Dual Analog 3
+- sharedassets0.assets:asset#sharedassets0.assets#230/str/266：Elecom JC-U3312
+- sharedassets0.assets:asset#sharedassets0.assets#230/str/275：Oculus Remote
+- sharedassets0.assets:asset#sharedassets0.assets#230/str/317：8Bitdo SN30 Pro / SF30 Pro
+- sharedassets0.assets:asset#sharedassets0.assets#230/str/320：Thrustmaster FireStorm Dual Power
+- sharedassets0.assets:asset#sharedassets0.assets#230/str/329：Sony DualSense
+- sharedassets0.assets:asset#sharedassets0.assets#231/str/10：CH Pro Pedals
+- sharedassets0.assets:asset#sharedassets0.assets#231/str/13：Saitek Pro Flight Rudder Pedals
+- sharedassets0.assets:asset#sharedassets0.assets#231/str/19：Thrustmaster T.Flight Rudder Pedals
+- sharedassets0.assets:asset#sharedassets0.assets#231/str/22：Thrustmaster T.Flight HOTAS 4
+- sharedassets0.assets:asset#sharedassets0.assets#232/str/8：Yoke Z
+- sharedassets0.assets:asset#sharedassets0.assets#232/str/160：CH Eclipse Yoke
+- sharedassets0.assets:asset#sharedassets0.assets#233/str/0：HOTAS
+- sharedassets0.assets:asset#sharedassets0.assets#233/str/1：HOTAS
+- sharedassets0.assets:asset#sharedassets0.assets#233/str/9：Stick Up
+- sharedassets0.assets:asset#sharedassets0.assets#233/str/20：Stick Mini Stick 2 X
+- sharedassets0.assets:asset#sharedassets0.assets#233/str/138：Stick Hat 4 Left
+- sharedassets0.assets:asset#sharedassets0.assets#233/str/320：Stick Mini Stick 2
+- sharedassets0.assets:asset#sharedassets0.assets#233/str/338：Throttle Hat 2
+- sharedassets0.assets:asset#sharedassets0.assets#233/str/350：Saitek X45
+- sharedassets0.assets:asset#sharedassets0.assets#233/str/353：Saitek X52
+- sharedassets0.assets:asset#sharedassets0.assets#233/str/368：Mad Catz C.Y.B.O.R.G V1
+- sharedassets0.assets:asset#sharedassets0.assets#233/str/377：Thrustmaster T.16000M
+- sharedassets0.assets:asset#sharedassets0.assets#233/str/380：Thrustmaster T.Flight Hotas X
+- sharedassets0.assets:asset#sharedassets0.assets#233/str/386：Logitech Extreme 3D Pro
+- sharedassets0.assets:asset#sharedassets0.assets#233/str/389：Logitech WingMan Attack 2
+- sharedassets0.assets:asset#sharedassets0.assets#233/str/392：Logitech Attack 3
+- sharedassets0.assets:asset#sharedassets0.assets#233/str/395：Microsoft SideWinder 3D Pro
+- sharedassets0.assets:asset#sharedassets0.assets#233/str/398：Microsoft SideWinder Precision Pro
+- sharedassets0.assets:asset#sharedassets0.assets#233/str/401：Microsoft SideWinder Force Feedback Pro
+- sharedassets0.assets:asset#sharedassets0.assets#233/str/407：Saitek Cyborg Evo
+- sharedassets0.assets:asset#sharedassets0.assets#233/str/410：Microsoft SideWinder Joystick
+- sharedassets0.assets:asset#sharedassets0.assets#233/str/416：Thrustmaster T.Flight Hotas 4
+- sharedassets0.assets:asset#sharedassets0.assets#233/str/425：CH FlightStick Pro
+- sharedassets0.assets:asset#sharedassets0.assets#233/str/428：CH CombatStick USB
+- sharedassets0.assets:asset#sharedassets0.assets#233/str/434：VKB-Sim Gladiator MKII
+- sharedassets0.assets:asset#sharedassets0.assets#233/str/437：Microsoft SideWinder Precision 2
+- sharedassets0.assets:asset#sharedassets0.assets#234/str/12：Clutch
+- sharedassets0.assets:asset#sharedassets0.assets#234/str/98：Logitech G25
+- sharedassets0.assets:asset#sharedassets0.assets#234/str/101：Logitech G27
+- sharedassets0.assets:asset#sharedassets0.assets#234/str/104：Logitech G29
+- sharedassets0.assets:asset#sharedassets0.assets#234/str/107：Logitech G920
+- sharedassets0.assets:asset#sharedassets0.assets#234/str/113：Thrustmaster F430
+- sharedassets0.assets:asset#sharedassets0.assets#234/str/116：ThrustMaster T150
+- sharedassets0.assets:asset#sharedassets0.assets#234/str/119：Thrustmaster T300 RS
+- sharedassets0.assets:asset#sharedassets0.assets#234/str/122：Thrustmaster T500 RS
+- sharedassets0.assets:asset#sharedassets0.assets#234/str/131：Fanatec Porsche 911 Turbo S
+- sharedassets0.assets:asset#sharedassets0.assets#234/str/137：Logitech MOMO
+- sharedassets0.assets:asset#sharedassets0.assets#234/str/140：Logitech Driving Force GT
+- sharedassets0.assets:asset#sharedassets0.assets#234/str/149：Thrustmaster Ferrari 458
+- sharedassets0.assets:asset#sharedassets0.assets#235/str/157：3Dconnexion SpacePilot Pro
+- sharedassets0.assets:asset#sharedassets0.assets#235/str/169：3Dconnexion SpaceMouse Pro
+- sharedassets0.assets:asset#sharedassets0.assets#236/str/1：Thrustmaster T150
+- sharedassets0.assets:asset#sharedassets0.assets#236/str/12：Clutch
+- sharedassets0.assets:asset#sharedassets0.assets#236/str/13：Clutch
+- sharedassets0.assets:asset#sharedassets0.assets#237/str/9：Clutch
+- sharedassets0.assets:asset#sharedassets0.assets#237/str/10：Clutch
+- sharedassets0.assets:asset#sharedassets0.assets#237/str/14：Thrustmaster
+- sharedassets0.assets:asset#sharedassets0.assets#237/str/16：Thrustmaster T-Pedals
+- sharedassets0.assets:asset#sharedassets0.assets#238/str/8：Stick Up
+- sharedassets0.assets:asset#sharedassets0.assets#238/str/38：T.Flight Stick X
+- sharedassets0.assets:asset#sharedassets0.assets#238/str/40：T.Flight Stick X
+- sharedassets0.assets:asset#sharedassets0.assets#238/str/41：Thrustmaster
+- sharedassets0.assets:asset#sharedassets0.assets#238/str/42：Thrustmaster
+- sharedassets0.assets:asset#sharedassets0.assets#238/str/43：T.Flight Stick X
+- sharedassets0.assets:asset#sharedassets0.assets#238/str/46：Thrustmaster
+- sharedassets0.assets:asset#sharedassets0.assets#238/str/47：T.Flight Stick X
+- sharedassets0.assets:asset#sharedassets0.assets#239/str/6：Shift 1
+- sharedassets0.assets:asset#sharedassets0.assets#239/str/7：Shift 2
+- sharedassets0.assets:asset#sharedassets0.assets#239/str/8：Shift 3
+- sharedassets0.assets:asset#sharedassets0.assets#239/str/9：Shift 4
+- sharedassets0.assets:asset#sharedassets0.assets#239/str/10：Shift 5
+- sharedassets0.assets:asset#sharedassets0.assets#239/str/11：Shift 6
+- sharedassets0.assets:asset#sharedassets0.assets#239/str/12：Shift 7
+- sharedassets0.assets:asset#sharedassets0.assets#239/str/13：Shift R
+- sharedassets0.assets:asset#sharedassets0.assets#239/str/19：Thrustmaster
+- sharedassets0.assets:asset#sharedassets0.assets#240/str/1：Thrustmaster Dual Analog 3.2
+- sharedassets0.assets:asset#sharedassets0.assets#241/str/1：Thrustmaster FireStorm Dual Power
+- sharedassets0.assets:asset#sharedassets0.assets#241/str/37：FireStorm Dual Power
+- sharedassets0.assets:asset#sharedassets0.assets#241/str/40：FireStorm Dual Power
+- sharedassets0.assets:asset#sharedassets0.assets#241/str/43：FireStorm Dual Power
+- sharedassets0.assets:asset#sharedassets0.assets#242/str/1：Thrustmaster F430
+- sharedassets0.assets:asset#sharedassets0.assets#242/str/24：Manettino 1
+- sharedassets0.assets:asset#sharedassets0.assets#242/str/25：Manettino 2
+- sharedassets0.assets:asset#sharedassets0.assets#242/str/26：Manettino 3
+- sharedassets0.assets:asset#sharedassets0.assets#242/str/27：Manettino 4
+- sharedassets0.assets:asset#sharedassets0.assets#242/str/28：Manettino 5
+- sharedassets0.assets:asset#sharedassets0.assets#242/str/32：Thrustmaster
+- sharedassets0.assets:asset#sharedassets0.assets#242/str/33：Thrustmaster
+- sharedassets0.assets:asset#sharedassets0.assets#243/str/23：Thrustmaster
+- sharedassets0.assets:asset#sharedassets0.assets#243/str/24：Thrustmaster
+- sharedassets0.assets:asset#sharedassets0.assets#244/str/1：Thrustmaster Ferrari 458
+- sharedassets0.assets:asset#sharedassets0.assets#244/str/2：Thrustmaster Ferrari 458 (X360)
+- sharedassets0.assets:asset#sharedassets0.assets#244/str/15：LSB
+- sharedassets0.assets:asset#sharedassets0.assets#244/str/16：RSB
+- sharedassets0.assets:asset#sharedassets0.assets#244/str/26：Thrustmaster
+- sharedassets0.assets:asset#sharedassets0.assets#244/str/27：Thrustmaster
+- sharedassets0.assets:asset#sharedassets0.assets#245/str/4：Handlebars
+- sharedassets0.assets:asset#sharedassets0.assets#245/str/15：Clutch
+- sharedassets0.assets:asset#sharedassets0.assets#246/str/8：Stick Up
+- sharedassets0.assets:asset#sharedassets0.assets#246/str/53：Thrustmaster
+- sharedassets0.assets:asset#sharedassets0.assets#246/str/54：Thustmaster
+- sharedassets0.assets:asset#sharedassets0.assets#247/str/64：Thrustmaster
+- sharedassets0.assets:asset#sharedassets0.assets#248/str/1：Thrustmaster Score-A
+- sharedassets0.assets:asset#sharedassets0.assets#249/str/1：Thrustmaster T.16000M
+- sharedassets0.assets:asset#sharedassets0.assets#249/str/8：Stick Up
+- sharedassets0.assets:asset#sharedassets0.assets#249/str/45：Thrustmaster
+- sharedassets0.assets:asset#sharedassets0.assets#249/str/51：Thrustmaster T.16000M
+- sharedassets0.assets:asset#sharedassets0.assets#249/str/52：Thrustmaster T.16000M
+- sharedassets0.assets:asset#sharedassets0.assets#249/str/53：Thrustmaster T.16000M
+- sharedassets0.assets:asset#sharedassets0.assets#250/str/1：Thrustmaster T300 RS
+- sharedassets0.assets:asset#sharedassets0.assets#250/str/12：Clutch
+- sharedassets0.assets:asset#sharedassets0.assets#250/str/13：Clutch
+- sharedassets0.assets:asset#sharedassets0.assets#251/str/1：Thrustmaster T500 RS
+- sharedassets0.assets:asset#sharedassets0.assets#251/str/12：Clutch
+- sharedassets0.assets:asset#sharedassets0.assets#251/str/13：Clutch
+- sharedassets0.assets:asset#sharedassets0.assets#252/str/1：Thrustmaster T.Flight Hotas 4
+- sharedassets0.assets:asset#sharedassets0.assets#252/str/9：Stick Up
+- sharedassets0.assets:asset#sharedassets0.assets#252/str/43：T.Flight Hotas 4
+- sharedassets0.assets:asset#sharedassets0.assets#252/str/45：Thrustmaster
+- sharedassets0.assets:asset#sharedassets0.assets#252/str/46：T.Flight Hotas 4
+- sharedassets0.assets:asset#sharedassets0.assets#252/str/47：Thrustmaster T.Flight Hotas 4
+- sharedassets0.assets:asset#sharedassets0.assets#252/str/49：T.Flight Hotas 4
+- sharedassets0.assets:asset#sharedassets0.assets#253/str/1：Thrustmaster T.Flight Hotas X
+- sharedassets0.assets:asset#sharedassets0.assets#253/str/8：Stick Up
+- sharedassets0.assets:asset#sharedassets0.assets#253/str/42：Thrustmaster
+- sharedassets0.assets:asset#sharedassets0.assets#253/str/48：Thrustmaster T.Flight Hotas X
+- sharedassets0.assets:asset#sharedassets0.assets#253/str/49：Thrustmaster T.Flight Hotas X
+- sharedassets0.assets:asset#sharedassets0.assets#253/str/50：Thrustmaster T.Flight Hotas X
+- sharedassets0.assets:asset#sharedassets0.assets#254/str/1：Thrustmaster T.Flight Rudder Pedals
+- sharedassets0.assets:asset#sharedassets0.assets#254/str/14：Thrustmaster
+- sharedassets0.assets:asset#sharedassets0.assets#254/str/15：Thrustmaster
+- sharedassets0.assets:asset#sharedassets0.assets#254/str/17：Thrustmaster T-Rudder
+- sharedassets0.assets:asset#sharedassets0.assets#255/str/12：Stick Up
+- sharedassets0.assets:asset#sharedassets0.assets#255/str/48：Thrustmaster
+- sharedassets0.assets:asset#sharedassets0.assets#255/str/49：Thrustmaster
+- sharedassets0.assets:asset#sharedassets0.assets#256/str/8：Stick Up
+- sharedassets0.assets:asset#sharedassets0.assets#258/str/1：VKB-Sim Gladiator MKII
+- sharedassets0.assets:asset#sharedassets0.assets#258/str/9：Stick Up
+- sharedassets0.assets:asset#sharedassets0.assets#258/str/60：VKBsim Gladiator
+- sharedassets0.assets:asset#sharedassets0.assets#258/str/62：VKBsim Gladiator
+- sharedassets0.assets:asset#sharedassets0.assets#258/str/63：VKBsim Gladiator
+- sharedassets0.assets:asset#sharedassets0.assets#258/str/65：VKBsim Gladiator
+- sharedassets0.assets:asset#sharedassets0.assets#260/str/4：Whammy Bar
+- sharedassets0.assets:asset#sharedassets0.assets#260/str/5：Whammy Bar Up
+- sharedassets0.assets:asset#sharedassets0.assets#260/str/6：Whammy Bar Down
+- sharedassets0.assets:asset#sharedassets0.assets#261/str/22：LSB
+- sharedassets0.assets:asset#sharedassets0.assets#261/str/23：RSB
+- sharedassets0.assets:asset#sharedassets0.assets#262/str/33：Unity 4.3
+- sharedassets0.assets:asset#sharedassets0.assets#262/str/34：小米蓝牙手柄
+- sharedassets0.assets:asset#sharedassets0.assets#262/str/37：Unity 4.5+
+- sharedassets0.assets:asset#sharedassets0.assets#262/str/38：小米蓝牙手柄
+- sharedassets0.assets:asset#sharedassets0.assets#263/str/29：ZD-N+ Android
+- sharedassets0.assets:asset#sharedassets0.assets#263/str/30：ZD-N+ Android
+- sharedassets0.assets:asset#sharedassets0.assets#263/str/31：ZD-N+ Android
+- sharedassets0.assets:asset#sharedassets0.assets#263/str/32：ZD-N+ Android
+- sharedassets0.assets:asset#sharedassets0.assets#263/str/33：ZD-N+ Android
+- sharedassets0.assets:asset#sharedassets0.assets#263/str/34：ZD ZD-N+ Android
+- sharedassets0.assets:asset#sharedassets0.assets#263/str/35：ZD ZD-N+ Android
+- sharedassets0.assets:asset#sharedassets0.assets#264/str/29：ZD-N+
+- sharedassets0.assets:asset#sharedassets0.assets#264/str/30：ZD-N+
+- sharedassets0.assets:asset#sharedassets0.assets#264/str/31：ZD-N+
+- sharedassets0.assets:asset#sharedassets0.assets#264/str/32：ZD-N+
+- sharedassets0.assets:asset#sharedassets0.assets#264/str/33：ZD ZD-N+
+- sharedassets0.assets:asset#sharedassets0.assets#264/str/34：ZD ZD-N+
+- sharedassets0.assets:asset#sharedassets0.assets#265/str/29：ZD-N+ PS3
+- sharedassets0.assets:asset#sharedassets0.assets#265/str/30：ZD ZD-N+ PS3
+- sharedassets0.assets:asset#sharedassets0.assets#266/str/29：ZD - V
+- sharedassets0.assets:asset#sharedassets0.assets#266/str/30：ZD - V
+- sharedassets0.assets:asset#sharedassets0.assets#266/str/32：ZD - V
+- sharedassets0.assets:asset#sharedassets0.assets#266/str/33：ZD - V
+- sharedassets0.assets:asset#sharedassets0.assets#266/str/34：ZD - V
+- sharedassets0.assets:asset#sharedassets0.assets#266/str/36：ZD ZD - V
+- sharedassets0.assets:asset#sharedassets0.assets#267/str/35：After Unity 2018.3.0
+- sharedassets1.assets:asset#sharedassets1.assets#565/str/57：Alt
+- sharedassets1.assets:asset#sharedassets1.assets#565/str/58：Shift
+- sharedassets1.assets:asset#sharedassets1.assets#747/str/0：Subtitle
+- sharedassets6.assets:asset#sharedassets6.assets#130/str/9：*Unintelligible*
+- sharedassets7.assets:asset#sharedassets7.assets#85/str/3：Comic Sans MS
+
+
+警告：1 条
+
+- 无译文条目：il2cpp_data/Metadata/global-metadata.dat

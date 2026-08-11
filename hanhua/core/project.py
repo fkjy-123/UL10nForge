@@ -479,7 +479,67 @@ class Project:
         # 文本阶段 standalone 扫描时的全树快照：scan_v2 绑定前要求文本
         # 条目与当前树同源，防止陈旧文本条目对新树写回（review 实证）
         self._last_text_scan_manifest: dict[str, str] | None = None
+        # --resume 续跑恢复：上次成功扫描绑定的清单持久化在库中（跳过
+        # 扫描的续跑必须恢复，否则 write_all 输入闸门与 IL2CPP 规范输入
+        # 证据均为 None → 写回被拒——faerie 续跑实证 2026-08-12）。
+        # 校验仍有效：恢复的旧清单会与实际树 hash 比对，输入被改动仍拒绝。
+        _il = self.store.get_profile_value("il2cpp_input_hashes")
+        self._last_il2cpp_input_hashes = (
+            tuple(_il) if isinstance(_il, list) else None)
+        self._last_source_manifest = self.store.get_profile_value(
+            "source_manifest")
+        self._last_text_scan_manifest = self.store.get_profile_value(
+            "text_scan_manifest")
+        # IL2CPP 交叉验证证据持久化恢复：write_all 闸门要求 report 携带
+        # il2cpp_dumper 交叉验证结果（native_total/agreement 等）——resume
+        # 跳过扫描时从库恢复轻量 report（ffs 续跑实证 2026-08-12：写回被拒
+        # 「缺少本次项目成功的 native/Il2CppDumper 交叉验证证据」）。输入
+        # 一致性由 il2cpp_input_hashes 校验兜底，指纹以当前检测为准。
+        _ev = self.store.get_profile_value("il2cpp_cross_check")
+        if isinstance(_ev, dict):
+            _route_status = _ev.get("route_status")
+            _tool_status = _ev.get("tool_status")
+            route = (
+                (BackendStep("tool_analysis", "il2cpp_dumper",
+                             _route_status, True, "high", ""),)
+                if _route_status else ()
+            )
+            tool_results = (
+                (ToolAnalysisResult(
+                    "il2cpp_dumper", _tool_status, True,
+                    details=tuple((str(k), str(v)) for k, v in
+                                  (_ev.get("details") or {}).items()),
+                    reason=str(_ev.get("tool_reason") or "")),)
+                if _tool_status else ()
+            )
+            try:
+                self._last_analysis_report = AnalysisReport(
+                    fingerprint=self._fingerprint(),
+                    tool_statuses=(),
+                    route=route,
+                    font_capability=FontProviderCapability(
+                        provider_id="", runtime="", architecture="",
+                        provider_supported=True, payload_available=False),
+                    tool_results=tool_results,
+                    input_protected=bool(_ev.get("input_protected", False)),
+                    unblocked=bool(_ev.get("unblocked", False)),
+                )
+            except Exception:  # noqa: BLE001 - 恢复失败不阻断（重扫后证据重建）
+                self._last_analysis_report = None
         self._scan_all_active = False
+
+    def _store_scan_state(self) -> None:
+        """持久化扫描绑定状态（--resume 续跑恢复用）。
+
+        在所有设置/清空扫描清单的点之后调用：把三个字段当前值统一存库。
+        存 JSON null 与删除等价（get_profile_value 解析 null → None）。
+        """
+        self.store.set_profile_value(
+            "source_manifest", self._last_source_manifest)
+        self.store.set_profile_value(
+            "il2cpp_input_hashes", self._last_il2cpp_input_hashes)
+        self.store.set_profile_value(
+            "text_scan_manifest", self._last_text_scan_manifest)
 
     def _fingerprint(self) -> GameFingerprint:
         return fingerprint_game(
@@ -579,6 +639,7 @@ class Project:
         self.store.init_schema()
         base = self.analyze()
         self._last_il2cpp_input_hashes = None
+        self._store_scan_state()
         if (
             base.fingerprint.player_root is None
             and "ambiguous_player_layout" in base.fingerprint.evidence
@@ -752,6 +813,27 @@ class Project:
                 before_hashes[fingerprint.game_assembly],
                 before_hashes[fingerprint.metadata],
             )
+        # IL2CPP 交叉验证证据持久化（resume 写回闸门需要 report 携带
+        # il2cpp_dumper 结果——ffs 续跑实证：report=None → 写回被拒）。
+        # 与三清单同一模式：scan_all 成功时存，__init__ 恢复轻量 report。
+        if fingerprint.runtime == "il2cpp":
+            _dumper = next((
+                item for item in report.tool_results
+                if item.tool_id == "il2cpp_dumper"), None)
+            _route_status = next((
+                step.status for step in route
+                if step.step_id == "tool_analysis"), None)
+            self.store.set_profile_value("il2cpp_cross_check", {
+                "route_status": _route_status,
+                "tool_status": _dumper.status if _dumper else None,
+                "tool_reason": _dumper.reason if _dumper else None,
+                "details": dict(_dumper.details) if _dumper else {},
+                "input_protected": report.input_protected,
+                "unblocked": report.unblocked,
+            })
+        else:
+            self.store.set_profile_value("il2cpp_cross_check", None)
+        self._store_scan_state()
         return report
 
     def scan(self) -> int:
@@ -761,6 +843,7 @@ class Project:
         if not self._scan_all_active:
             self._last_source_manifest = None
             standalone_before = _tree_hashes(self.game_dir)
+            self._store_scan_state()
         fingerprint = self._fingerprint()
         selected_root = self._structured_scan_root(fingerprint)
         excluded_roots = self._excluded_sibling_player_roots(fingerprint)
@@ -814,6 +897,7 @@ class Project:
                     if any(e["file_id"] in v2_file_ids
                            for e in self.store.get_entries()):
                         self._last_source_manifest = dict(standalone_after)
+        self._store_scan_state()
         return kept
 
     # ── v2：Unity 二进制资源扫描（.assets / DLL / IL2CPP metadata） ──
@@ -823,6 +907,7 @@ class Project:
         if not self._scan_all_active:
             self._last_source_manifest = None
             standalone_before = _tree_hashes(self.game_dir)
+            self._store_scan_state()
         fingerprint = self._fingerprint()
         selected_root = self._structured_scan_root(fingerprint)
         excluded_roots = self._excluded_sibling_player_roots(fingerprint)
@@ -895,6 +980,7 @@ class Project:
             (m, morph_files.get(m, 0), morph_entries.get(m, 0))
             for m in morph_files))
         self._last_scan_morph_warnings = tuple(morph_warnings)
+        self._store_scan_state()
         return kept
 
     # ── 写回（文本 + 二进制资源） ──
