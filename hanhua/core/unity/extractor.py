@@ -10,6 +10,7 @@ from hanhua.core.engine_strings import (CORE_MENU_SOURCE_TERMS,
                                          has_display_text_evidence,
                                         is_code_action_binding,
                                         is_engine_string,
+                                        is_engine_string_core,
                                         is_interaction_prompt,
                                         is_physical_binding_identifier)
 from hanhua.core.extractor import ParsedFile, looks_like_noise_file
@@ -17,7 +18,8 @@ from hanhua.core.formats import json_format
 from hanhua.core.models import STATUS_SKIPPED, TextEntry
 from hanhua.core.placeholders import (DISPLAY_WORDS, is_credit_like,
                                       is_hard_structural, is_key_style_identifier,
-                                      should_skip, _IDENTIFIER, _WORD_CASE)
+                                      should_skip, _HAS_LETTER, _LOG_TEMPLATE_TAIL,
+                                      _QUALIFIED, _IDENTIFIER, _WORD_CASE)
 from hanhua.core.scanner import (_has_unity_bundle_magic, _is_runtime_file,
                                  _walk_files)
 import re as _re
@@ -97,6 +99,25 @@ _TIMELINE_MARKER_NAMES = frozenset({"markers", "track"})
 # Unity Localization 结构标记：出现这些串的对象是 Localization 表/共享数据对象
 # （StringTable / SharedTableData）。其中标识符形态的字符串是表键（Key），绝不翻译。
 _LOCALIZATION_MARKERS = ("UnityEngine.Localization", "Unity.Localization", "DistributedUIDGenerator")
+
+# UnityEvent 事件绑定对象信号：MonoBehaviour 序列化内嵌 UnityEvent 持久化
+# 回调字段（m_PersistentCalls/m_Target/m_MethodName）——方法名/目标名是
+# 反射按名绑定键，翻译必断绑（知识库 writeback_case「替换 prefab/资源后
+# UnityEvent 事件绑定断裂按钮无反应」转规则：点击回调链断裂 = 按键没反应）。
+_UNITYEVENT_SIGNALS = frozenset({
+    "m_PersistentCalls", "persistentCalls", "m_Listener",
+    "m_Target", "m_MethodName", "m_Arguments",
+})
+
+# 署名/credit 形态：作者名 + 作品平台 ID/URL（pixiv/twitter/artstation 等
+# 平台名 + 数字 ID 或用户名，或括号包裹）。「林まか (pixiv: 10768714)」
+# （doog 实证）是作者署名+作品引用——翻译/半翻损坏引用信息，识别层跳过。
+_SIGNATURE_CREDIT_RE = _re.compile(
+    r"\(?\b(?:pixiv|twitter|x(?:\s*\(twitter\))?|facebook|instagram|"
+    r"artstation|deviantart|newgrounds|sketchfab|youtube|furaffinity|"
+    r"booth|fantia)\b\s*[:：]?\s*@?[\w.-]{2,}",
+    _re.I,
+)
 
 ASSET_SUFFIXES = {".assets", ".ab", ".unity3d", ".bundle", ".pak"}
 _BUNDLE_SUFFIXES = frozenset(ASSET_SUFFIXES - {".assets"})
@@ -626,6 +647,11 @@ def _structural_reason(text: str) -> str | None:
         return "default_placeholder"
     if _TIMELINE_TRACK.match(stripped):
         return "timeline_track"
+    # 署名/credit 形态（doog 实证「林まか (pixiv: 10768714)」被当显示文本
+    # 放行后模型改动大小写/半翻——作者署名+作品 ID 是引用信息不是翻译
+    # 内容，翻译反而损坏署名信息）→ 结构跳过。
+    if _SIGNATURE_CREDIT_RE.search(stripped):
+        return "signature_credit"
     return None
 
 
@@ -758,6 +784,15 @@ def _raw_string_entries(file_id: str, obj_path_id: int, raw: bytes,
             sig in s for s in (s for _, _, s in scanned)
             for sig in _TIMELINE_ASSEMBLY_SIGNALS))
 
+    # UnityEvent 事件绑定对象信号：对象字符串池含持久化回调字段
+    # （m_PersistentCalls/m_Target/m_MethodName）→ 对象是事件绑定配置，
+    # 其中方法名/目标名是反射按名绑定键（知识库案例「UnityEvent 事件
+    # 绑定断裂按钮无反应」转规则）。判定在完整扫描列表上做（引擎串被
+    # 过滤不影响信号——与 InputSystem/Timeline 信号同模式）。
+    is_unityevent_object = any(
+        sig in s for s in (s for _, _, s in scanned)
+        for sig in _UNITYEVENT_SIGNALS)
+
     # 共享资源小配置对象：非场景文件（level*）里无句子形态、≤2 个不同短词串的对象
     # （Timeline 剪辑 displayName 'Timothy'、'White Flash'、动画状态 'Player Idle' 等）。
     # 场景（level）里的同形对象是对话说话者名（TIMOTHY），按现有规则正常翻译——
@@ -838,10 +873,12 @@ def _raw_string_entries(file_id: str, obj_path_id: int, raw: bytes,
             entry.status = STATUS_SKIPPED
             reason = "lifecycle_method"
             confidence, role = "low", "structural"
-        elif is_input_system_object or is_timeline_object or is_small_config_object:
-            # 引擎配置对象（输入/时间线/动画配置）：其中的短词串是运行时按名查找的
-            # 键（动作名/轨道名/状态名），翻译破坏功能；强显示证据串理论上不出现，
-            # 保守放行防误伤。注意不能用 _has_sentence_shape（≥10 字符含空格即真，
+        elif is_input_system_object or is_timeline_object or is_unityevent_object or is_small_config_object:
+            # 引擎配置对象（输入/时间线/UnityEvent 事件绑定/动画配置）：
+            # 其中的短词串是运行时按名查找的键（动作名/轨道名/方法名/
+            # 状态名），翻译破坏功能（UnityEvent 绑定断裂 → 按钮无反应，
+            # 知识库案例转规则）；强显示证据串理论上不出现，保守放行防
+            # 误伤。注意不能用 _has_sentence_shape（≥10 字符含空格即真，
             # 'Arrow Keys' 10 字符会被误判为句子）。
             if has_display_text_evidence(stripped):
                 reason = "natural_language"
@@ -852,6 +889,7 @@ def _raw_string_entries(file_id: str, obj_path_id: int, raw: bytes,
                 reason = (
                     "input_system_object" if is_input_system_object
                     else "timeline_object" if is_timeline_object
+                    else "unityevent_object" if is_unityevent_object
                     else "shared_resource_config_object")
                 confidence, role = "low", "structural"
         elif (is_single_visible
@@ -871,9 +909,20 @@ def _raw_string_entries(file_id: str, obj_path_id: int, raw: bytes,
                 reason = "resource_identifier_without_display_evidence"
                 confidence, role = "low", "structural"
         elif is_single_visible:
-            entry.status = "pending"
-            reason = "single_visible_string"
-            confidence, role = "high", "display"
+            # 孤立纯小写长词（≥10 字符）：触发器/字段名形态（fieldtrigger
+            # 12 字符实证——MonoBehaviour rawstr 数组里孤立的代码词被
+            # 无条件放行后模型回显恒败）。对象内无其他显示证据可参照，
+            # 长纯小写词无空格无分隔符是代码标识符形态；真实显示文本
+            # 的孤立长词（staircase/hallway 等场景词）短于此阈值。
+            if (stripped.islower() and stripped.isalpha()
+                    and len(stripped) >= 10):
+                entry.status = STATUS_SKIPPED
+                reason = "isolated_lowercode_word"
+                confidence, role = "low", "structural"
+            else:
+                entry.status = "pending"
+                reason = "single_visible_string"
+                confidence, role = "high", "display"
         elif is_key_list and _IDENTIFIER.match(stripped):
             entry.status = STATUS_SKIPPED
             entry.meta["obj_is_key_list"] = True
@@ -1186,6 +1235,32 @@ def _should_downgrade_pending(entry: TextEntry) -> bool:
     """
     if entry.status != "pending" or entry.meta.get("kind") == "localization":
         return False
+    fmt = entry.meta.get("textasset_format")
+    inner = str(entry.meta.get("inner_path", ""))
+    if fmt == "xml" and ("/value" in inner or inner.endswith("/value")):
+        # xml value 节点是确定性显示文本证据（doog 的 messages/
+        # message[N]/value 是游戏内显示文本）——后置闸门的**软猜测
+        # 反模式**（引擎串编程命名形态 PascalCase/驼峰、key_style
+        # 混合大小写、_QUALIFIED 标识符形态、credit_like 句子署名、
+        # log_template 冒号结尾）不得推翻格式判定（doog 实证 33 条
+        # xml value 罗马音台词 FeeNGAh/Konbanmio-n、西语 UI
+        # 'Seleccione dificultad:'、英文成就句 'Get revived by…' 被
+        # 误降级哑跳过）。仅形态标记明确的机器数据（URL/GUID/JSON/
+        # 纯数字/输入设备/绑定路径/base64/路径/已知引擎词表）与无
+        # 语言内容短串仍降级。key 节点（全大写键名 PICKUP_* 由
+        # key_style 判定跳过）不豁免。
+        s = entry.original.strip()
+        if len(s) < 2 or not _HAS_LETTER.search(s):
+            return True
+        if is_engine_string_core(s):
+            return True
+        if not is_hard_structural(s):
+            return False
+        return not (
+            is_credit_like(s)                       # 'Get revived by…' 含 by 被当署名
+            or _QUALIFIED.match(s)                  # 'Konbanmio-n' 连字符被当程序集名
+            or (len(s) >= 20 and _LOG_TEMPLATE_TAIL.search(s))  # 冒号结尾西语 UI 被当日志模板
+        )
     if _is_engine_string(entry.original):
         return True
     if is_key_style_identifier(entry.original):

@@ -131,17 +131,22 @@ _COMBINING_MARKS = re.compile(
 # 3+ 段路径（User/Blah/Hey/HotelParadiseScreenshot）、域名（itch.io /
 # OpenGameArt.com）、@用户名（@zkfie）、版本号（0.4.0beta）、文件扩展名
 # （SPOLOUS.exe）、代码标记（[var:ID]）
+# 后缀边界用 (?![A-Za-z0-9]) 而非 \b：Python re 的 \b 是 Unicode 词边界，
+# 中文（\w）算词字符——'Speedrun.com上的排行榜' 的 com 后紧跟中文时
+# \b 不成立 → 域名不剥 → com 被当小写普通词残留误判 target_script_mismatch
+# （deepest-sword 实证）。lookahead 只排除 ASCII 词字符继续拼接（comedy
+# 的 com 后接字母仍不剥），中文/标点/空白照常构成边界。
 SAFE_KEEPERS = re.compile(
     r"[A-Za-z0-9_]+(?:/[A-Za-z0-9_]+){2,}"
-    r"|[A-Za-z0-9-]+(?:\.[A-Za-z0-9-]+)*\.(?:com|net|org|io|gg|dev|me|it|ru|de|jp)\b"
+    r"|[A-Za-z0-9-]+(?:\.[A-Za-z0-9-]+)*\.(?:com|net|org|io|gg|dev|me|it|ru|de|jp)(?![A-Za-z0-9])"
     # 完整 email 地址（contact@undertowgames.com：@ 前本地部分也要剥，
     # 否则 'contact' 残留被判小写普通词——containment 实证：模型保留
     # 邮箱是正确行为，本地部分不是漏翻）
     r"|[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}"
     r"|@[\w.-]+"
-    r"|[a-z0-9]+(?:\.[a-z0-9]+)+\b"          # 用户名/艺名（yu.una）
-    r"|\d+\.\d+[.\d]*[a-z]*\b"
-    r"|\.[A-Za-z]{2,5}\b"                    # 文件扩展名（SPOLOUS.exe 的 .exe）
+    r"|[a-z0-9]+(?:\.[a-z0-9]+)+(?![A-Za-z0-9])"   # 用户名/艺名（yu.una）
+    r"|\d+\.\d+[.\d]*[a-z]*(?![A-Za-z0-9])"
+    r"|\.[A-Za-z]{2,5}(?![A-Za-z0-9])"            # 文件扩展名（SPOLOUS.exe 的 .exe）
     r"|\[[A-Za-z_][A-Za-z0-9_:#.-]*\]")      # 代码标记（[var:ID]）
 # Lorem ipsum 占位文本（minato 真实样本：模型不翻译占位符是正常行为）
 _LOREM_IPSUM = re.compile(r"^Lorem ipsum\b", re.I)
@@ -531,6 +536,14 @@ def is_key_style_identifier(text: str) -> bool:
         return False
     if _WORD_CASE.match(s):
         return False                      # CREDITOS / Settings / V-SYNC → 显示文本
+    if s.islower() and s.isalpha():
+        # 纯小写纯字母单词（shower/city/bedroom/eggs）→ 显示文本。键名
+        # 几乎总带分隔符（ui_newGame/MENU_PLAY/phone_call_01）或混合
+        # 大小写（lockedEntrance）；无分隔符纯小写是自然语言单词形态。
+        # DISPLAY_WORDS 白名单覆盖不了全部常见场景词（222am 实证：
+        # shower/city/bedroom/eggs/ladder/mug 20 条音效/场景标签被当键
+        # 跳过）——形态规则治本，白名单治标
+        return False
     if s.lower() in DISPLAY_WORDS:
         return False                      # start / menu / ok → 显示文本
     return True                           # ui_newGame / MENU_PLAY → 键
@@ -637,10 +650,26 @@ def self_heal_format_tags(original: str, translation: str) -> str:
                    if not _LITERAL_NEWLINE.fullmatch(src_texts[i])]
     if not missing_idx:
         return translation
-    if len(missing_idx) >= len(dst_texts):
-        # 译文保留的占位符 ≤ 缺失量 → 结构锚点不足（模型完全没翻/全丢标签），
-        # 补全会把标记堆到末尾（位置全错）→ 交 protected/multiline repair 重建
-        return translation
+    if missing_idx and len(missing_idx) >= len(dst_texts):
+        # 译文保留的占位符 ≤ 缺失量 → 通常结构锚点不足（模型全丢标签时
+        # 补全会把标记堆到末尾、位置全错）→ 交 protected/multiline
+        # repair 重建。例外：缺失是 src 尾部连续缺口且末尾缺失占位符
+        # 本身位于原文末尾（句末的 {w=3}{x}/</color>）→ append 恢复的
+        # 是原文原位置，可确定性补全——1.8B 稳定漏写句末标签
+        # （a-catfiends 丢 '{w=3}{x}' 留 '{punch=3,2}' 实证：丢 2 留 1
+        # 被原限制拒绝，好译文被弃、placeholder_mismatch 恒败）。
+        # 'Press <color=red>E</color> to continue' 的 </color> 后还有
+        # 文本 → 非原文末尾 → 仍拒绝（append 会拉长样式范围，须重试）。
+        if not dst_texts:
+            return translation
+        last_missing = missing_idx[-1]
+        tail_contiguous = (
+            last_missing == len(src_texts) - 1
+            and all(missing_idx[k] == missing_idx[k - 1] + 1
+                    for k in range(1, len(missing_idx)))
+            and src_spans[last_missing][1] == len(original))
+        if not tail_contiguous:
+            return translation
     # 每个缺失占位符插到「其后第一个已匹配译文占位符」之前（末尾缺口 → append）
     by_pos: dict[int, list[str]] = {}
     for mi in missing_idx:

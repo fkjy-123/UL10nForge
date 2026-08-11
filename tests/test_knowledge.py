@@ -6,6 +6,8 @@ import pytest
 from hanhua.core.knowledge import (BUILTIN_RULES, KnowledgeBase,
                                    KnowledgeStore, _is_multilingual_source,
                                    _is_spaced_action, _is_uppercase_action,
+                                   aggregate_spaced_letters,
+                                   spaced_action_lexicon,
                                    translate_uppercase_action)
 from hanhua.core.models import TextEntry
 
@@ -63,11 +65,39 @@ class TestSpacedAction:
         assert _is_spaced_action("* Y A W N *")
         assert _is_spaced_action("G A S P")
         assert _is_spaced_action("* S C O F F *")
+        # F8-A：对话动画标签前缀/后缀不阻碍判定（{punch}/{w=3}/{x} 是
+        # 动画参数不是词——a-catfiends 实证原判定失效 → 回显恒败）
+        assert _is_spaced_action("{punch=3,2}* Y A W N *{w=3}{x}")
+        assert _is_spaced_action("* S I G H *{w=3}{x}")
 
     def test_non_spaced_not_detected(self):
         assert not _is_spaced_action("* TOSS TRASH *")
         assert not _is_spaced_action("HELLO")
         assert not _is_spaced_action("")
+        # 完整句子不被误判（I am/am 是词不是单字母）
+        assert not _is_spaced_action(
+            "I am {punch=3,2}NOT who I used to be.{w=3}{x}")
+
+    def test_aggregate_spaced_letters(self):
+        assert aggregate_spaced_letters("* Y A W N *") == "* YAWN *"
+        assert aggregate_spaced_letters(
+            "{punch=3,2}* Y A W N *{w=3}{x}") == (
+            "{punch=3,2}* YAWN *{w=3}{x}")
+        # 无间隔词 → 原样返回
+        assert aggregate_spaced_letters("TOSS TRASH") == "TOSS TRASH"
+
+    def test_spaced_action_lexicon_covers_core_actions(self):
+        """F10-A：间隔动作词封闭词典（1.8B 对聚合形态仍稳定回显——
+        动作旁白词确定性直填）。"""
+        for word, zh in (("YAWN", "打哈欠"), ("SCOFF", "嗤笑"),
+                         ("SIGH", "叹气"), ("GASP", "倒吸一口气"),
+                         ("VOMITS", "呕吐"), ("GROAN", "呻吟")):
+            assert spaced_action_lexicon(word) == zh, word
+        # 未收录（开放文本）→ None 交模型
+        assert spaced_action_lexicon("FLOWCHART") is None
+        assert spaced_action_lexicon("") is None
+        # 大小写归一
+        assert spaced_action_lexicon("yawn") == "打哈欠"
 
 
 # ── 持久库：多形态分库 ──
@@ -286,3 +316,55 @@ def test_prompt_injection_via_build_system_prompt(tmp_path):
     kb.close()
     # 不传知识库 → 无该块（默认行为不变）
     assert "【特殊情况规则" not in build_system_prompt(GameProfile(), "")
+
+
+def test_writeback_case_rules_all_implemented():
+    """知识库案例转规则（2026-08-11）：writeback_case 5 条理论案例必须
+    全部映射到已实现规则（规则清单可查询，写回链路启用报告用）。"""
+    from hanhua.core.knowledge import WRITEBACK_CASE_RULES, writeback_case_rules
+    assert len(WRITEBACK_CASE_RULES) == 5
+    rules = writeback_case_rules()
+    assert [r["rule"] for r in rules] == [
+        "fit_bytes_nul_padding", "placeholder_preserve",
+        "textasset_encoding_preserve", "unityevent_binding_preserve",
+        "logic_key_compare",
+    ]
+    for rule in rules:
+        assert rule["case"] and rule["impl"], rule["rule"]
+    # 规则实现真实性抽查：unityevent 规则对应 extractor 信号常量
+    from hanhua.core.unity.extractor import _UNITYEVENT_SIGNALS
+    assert "m_PersistentCalls" in _UNITYEVENT_SIGNALS
+    # logic_key_compare 规则对应比较词表
+    from hanhua.core.unity.logic_audit import LOGIC_COMPARE_WORDS
+    assert "continue" in LOGIC_COMPARE_WORDS
+
+
+class TestLanguageOptionFill:
+    """语言选项标签确定性直填（F12-A，doog 实证 'Language: ENGLISH'
+    模型 4 次重试稳定乱译 → 封闭集合词典直填不走模型）。"""
+
+    def test_language_label_fill(self):
+        from hanhua.core.knowledge import language_option_translation
+        assert language_option_translation("Language: ENGLISH") == "语言：英语"
+        assert language_option_translation("language: japanese") == "语言：日语"
+        assert language_option_translation("Language：Spanish") == "语言：西班牙语"
+        assert language_option_translation("言语：日本語") == "语言：日语"
+        assert language_option_translation("Idioma: Español") == "语言：西班牙语"
+
+    def test_pure_language_name_not_fill(self):
+        # 纯语言名保留原名是业界惯例（_is_language_name 豁免），直填只覆盖
+        # 「标签 + 语言名」组合形态
+        from hanhua.core.knowledge import language_option_translation
+        assert language_option_translation("ENGLISH") is None
+        assert language_option_translation("Español") is None
+        assert language_option_translation("日本語") is None
+
+    def test_label_with_unknown_language_not_fill(self):
+        from hanhua.core.knowledge import language_option_translation
+        # 表外语言名交模型（不硬编码所有语种）
+        assert language_option_translation("Language: Klingon") is None
+
+    def test_non_language_text_not_fill(self):
+        from hanhua.core.knowledge import language_option_translation
+        assert language_option_translation("Press START to begin") is None
+        assert language_option_translation("Volume: High") is None

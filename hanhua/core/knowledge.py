@@ -4,6 +4,7 @@ import json
 import re
 import sqlite3
 import threading
+import unicodedata
 from pathlib import Path
 
 from hanhua.core.placeholders import should_skip
@@ -61,6 +62,49 @@ kick punch hit poke pat clean wash rinse dry iron fold hang wear
 """.split())
 
 
+# ── 写回逻辑层规则（writeback_case 案例转规则，2026-08-11）──────────
+# 知识库 writeback_case 域 5 条理论案例（来源：写回资料大全）→ 每条对应
+# 一个已实现的可执行规则。写回时 runner 报告「案例规则启用」命中，规则
+# 真正落地在代码（UnityEvent 对象信号/逻辑键比较词/长度头自证/占位符
+# 恢复），案例记录本身不再只是备忘。
+WRITEBACK_CASE_RULES: tuple[dict, ...] = (
+    {
+        "case": "固定容量池截短译文后字符串尾部带 NUL 导致逻辑判定失灵",
+        "rule": "fit_bytes_nul_padding",
+        "impl": "writer._fit_bytes（pad 模式容量对齐）+ 译文长度头自证"
+                "（logic_audit.verify_string_length_headers）",
+    },
+    {
+        "case": "写回截断把 {0} 占位符切开导致 string.Format 崩溃",
+        "rule": "placeholder_preserve",
+        "impl": "writer._restore_placeholders / _placeholders_intact"
+                "（截断不得破坏占位符，缺失补末尾）",
+    },
+    {
+        "case": "TextAsset 非 UTF-8 内容被 decode-replace 污染",
+        "rule": "textasset_encoding_preserve",
+        "impl": "writer 写回按源编码/严格校验，不把非 UTF-8 当 UTF-8 重写",
+    },
+    {
+        "case": "替换 prefab/资源后 UnityEvent 事件绑定断裂按钮无反应",
+        "rule": "unityevent_binding_preserve",
+        "impl": "extractor._UNITYEVENT_SIGNALS 对象信号 → structural 跳过"
+                "+ logic_audit.logic_key_evidence 写回回退（reflection 按名绑定键）",
+    },
+    {
+        "case": "代码把显示文本当逻辑键（按钮文字/物品名比较分发）",
+        "rule": "logic_key_compare",
+        "impl": "logic_audit.LOGIC_COMPARE_WORDS 比较词表 + 代码对象联合"
+                "判定（写回自动回退）",
+    },
+)
+
+
+def writeback_case_rules() -> tuple[dict, ...]:
+    """写回逻辑层规则清单（案例 → 规则 → 实现），供 runner 报告启用状态。"""
+    return WRITEBACK_CASE_RULES
+
+
 def _is_uppercase_action(text: str) -> bool:
     """全大写短语 + 含动作动词 → 大写动作指令（TOSS TRASH / PRESS START）。
 
@@ -79,15 +123,88 @@ def _is_uppercase_action(text: str) -> bool:
                for word in words)
 
 
+_SPACED_LETTERS = re.compile(r"\b[A-Z](?: [A-Z]\b)+")
+
+
 def _is_spaced_action(text: str) -> bool:
     """间隔动作词：单字母以空格间隔的全大写词（* Y A W N * / G A S P）。
-    字母间有空格 = 文字化动作/音效表现（打哈欠/惊呼），非专名。"""
-    stripped = str(text).strip("* \t")
+    字母间有空格 = 文字化动作/音效表现（打哈欠/惊呼），非专名。
+    先剥花括号对话标签（{punch=3,2}* Y A W N *{w=3}{x} 的 {punch}/{w=3}/
+    {x} 是动画参数不是词——a-catfiends 实证：不剥则判定失效，回显靠
+    单字母词判失败、修复链无兜底 → 恒败）。"""
+    stripped = re.sub(r"\{[^{}]*\}", " ", str(text)).strip("* \t")
     if len(stripped) < 3 or " " not in stripped:
         return False
     parts = stripped.split()
     return bool(parts and all(
         len(part) == 1 and part.isupper() for part in parts))
+
+
+def aggregate_spaced_letters(text: str) -> str:
+    """聚合间隔字母词：'* Y A W N *' → '* YAWN *'（打字机逐字动画的
+    视觉写法）。模型对原形态稳定回显（1.8B 能力边界），聚合后能正确
+    翻译且标签原位保留（a-catfiends 实证：'{punch=3,2}* YAWN *{w=3}{x}'
+    → '{punch=3,2}* 哎呀 *{w=3}{x}'）。"""
+    return _SPACED_LETTERS.sub(lambda m: m.group(0).replace(" ", ""), text)
+
+
+# 间隔动作词封闭词典（2026-08-11 实测）：1.8B 对 * SCOFF */* SIGH */
+# * YAWN */* GASP * 聚合形态仍稳定回显（只去空格不翻译，VOMITS 偶译
+# 「吐出物」质量差）——动作旁白词是封闭词表，确定性直填比依赖模型
+# 可靠（模型能力边界兜底，非词级补译能处理的开放文本）。
+_SPACED_ACTION_LEXICON: dict[str, str] = {
+    "YAWN": "打哈欠", "GASP": "倒吸一口气", "SCOFF": "嗤笑",
+    "SIGH": "叹气", "VOMITS": "呕吐", "GROAN": "呻吟", "GROANING": "呻吟",
+    "SHIVER": "颤抖", "TREMBLE": "颤抖", "SHUDDER": "战栗",
+    "COUGH": "咳嗽", "HICCUP": "打嗝", "SNORE": "打鼾", "PANT": "喘气",
+    "PUFF": "喘气", "SNIFF": "抽鼻子", "SNIFFLE": "抽鼻子",
+    "WHINE": "呜咽", "WHIMPER": "呜咽", "SOB": "啜泣", "CRY": "哭泣",
+    "WEEP": "哭泣", "LAUGH": "大笑", "GIGGLE": "咯咯笑", "CHUCKLE": "轻笑",
+    "SCREAM": "尖叫", "SHOUT": "喊叫", "MUMBLE": "嘟囔", "MUTTER": "咕哝",
+    "WHISPER": "低语", "HUFF": "哼了一声", "GRUNT": "咕哝一声",
+    "HUM": "哼着歌", "HUMMING": "哼着歌", "BURP": "打嗝", "BELCH": "打嗝",
+    "SNEEZE": "打喷嚏", "NOD": "点点头", "SHAKE": "摇摇头",
+    "STARE": "盯着看", "BLINK": "眨眨眼", "WINK": "眨眨眼",
+    "SMILE": "微笑", "FROWN": "皱起眉头", "GRIMACE": "扮鬼脸",
+    "SHRUG": "耸耸肩", "HUG": "拥抱", "TAP": "轻敲", "KNOCK": "敲门",
+    "THUD": "砰的一声", "BANG": "砰的一声", "CRASH": "哗啦一声",
+    "RING": "铃声响起", "BUZZ": "嗡嗡响", "CLICK": "咔嗒一声",
+    "TICK": "滴答", "TOCK": "滴答", "POP": "啪的一声",
+    "SNAP": "啪的一声", "CRACK": "咔嚓一声", "SQUEAK": "吱呀一声",
+    "CREAK": "吱呀一声", "RUSTLE": "沙沙作响", "WHOOSH": "呼的一声",
+    "THUMP": "砰的一声", "DRIP": "滴水", "PLOP": "扑通一声",
+    "GULP": "咽了口唾沫", "SWALLOW": "咽了口唾沫",
+    "SPIT": "啐了一口", "SPUTTER": "结结巴巴", "STAMMER": "结结巴巴",
+    "STUTTER": "结结巴巴", "FALTER": "踉跄", "STAGGER": "踉跄",
+    "TOTTER": "摇摇晃晃", "WAVER": "动摇", "HESITATE": "犹豫",
+    "FLINCH": "缩了一下", "WINCES": "龇牙咧嘴", "WINCE": "龇牙咧嘴",
+    "PAUSE": "停顿", "FREEZE": "僵住", "FROZE": "僵住",
+    "BOLT": "冲了出去", "DASH": "冲了出去", "RUSH": "冲了出去",
+    "MARCH": "大步走", "STOMP": "跺脚", "TROT": "小跑", "RUN": "跑",
+    "WALK": "走", "JUMP": "跳起来", "LEAP": "一跃而起", "HOP": "蹦跳",
+    "SLIDE": "滑行", "CRAWL": "爬行", "STOOP": "俯身", "BEND": "弯腰",
+    "CROUCH": "蹲下", "KNEEL": "跪下", "BOW": "鞠躬", "CURTSY": "行屈膝礼",
+    "SALUTE": "敬礼", "WAVE": "挥手", "POINT": "指着", "FINGER": "指着",
+    "SHAKE_HEAD": "摇摇头", "NOD_HEAD": "点点头",
+    "CHEER": "欢呼", "CLAP": "鼓掌", "APPLAUSE": "鼓掌",
+    "WHISTLE": "吹口哨", "BOO": "嘘声", "HISS": "发出嘘声",
+    "GROWL": "低吼", "SNARL": "龇牙低吼", "HOWL": "嚎叫", "BARK": "吠叫",
+    "MEOW": "喵喵叫", "PURR": "发出呼噜声", "MOO": "哞哞叫",
+    "CLUCK": "咯咯叫", "COCK": "喔喔叫", "CROW": "喔喔叫", "TWITTER": "啾啾叫",
+    "CHIRP": "啾啾叫", "SQUEAL": "尖叫", "SCREECH": "尖叫", "SHRIEK": "尖叫",
+    "YELP": "惊叫", "WALLOW": "打滚", "WRITHE": "打滚", "SQUIRM": "扭动",
+    "WRIGGLE": "扭动", "TWITCH": "抽搐", "TIC": "抽搐",
+    "SHIVERING": "瑟瑟发抖", "TREMBLING": "瑟瑟发抖",
+    "SHUDDERING": "浑身发抖", "QUIVER": "颤抖", "QUAVER": "声音颤抖",
+    "WAIL": "嚎啕大哭", "LAMENT": "哀叹", "MOURN": "哀悼",
+    "HUFFING": "气喘吁吁", "PUFFING": "气喘吁吁", "WHEEZE": "气喘吁吁",
+    "CHOKE": "噎住", "GAG": "干呕", "RETCH": "干呕", "HEAVE": "干呕",
+}
+
+
+def spaced_action_lexicon(word: str) -> str | None:
+    """间隔动作词词典查询：'YAWN' → '打哈欠'（未收录返回 None）。"""
+    return _SPACED_ACTION_LEXICON.get(str(word).strip().upper())
 
 
 # 其他语言（非英语）源文本的脚本特征：日文假名（平/片）与带重音拉丁
@@ -163,6 +280,63 @@ _LANGUAGE_NAMES_CASEFOLD = frozenset(word.casefold() for word in [
 def _is_language_name(text: str) -> bool:
     """原文是否语言名（忽略大小写/首尾空白）。"""
     return text.strip().casefold() in _LANGUAGE_NAMES_CASEFOLD
+
+
+# 语言选项标签直填表（EN→ZH）：「Language: ENGLISH」形态的选项行——
+# 1.8B 对选项文本乱译（doog 实证「Language: ENGLISH」→「I AM GOD
+# HAND! WAO! 翻译成…」4 次重试稳定乱译 → newline/line_content mismatch
+# 恒败）或回显（JAPONÉS）。语言选项标签是封闭集合（标签词 + 语言名），
+# 确定性直填不走模型。纯语言名（Español/日本語）保留原名是业界惯例
+# （_is_language_name 豁免），本直填只覆盖「标签 + 语言名」组合形态。
+_LANGUAGE_OPTION_ZH = {
+    "english": "英语", "spanish": "西班牙语", "japanese": "日语",
+    "french": "法语", "german": "德语", "italian": "意大利语",
+    "portuguese": "葡萄牙语", "russian": "俄语", "korean": "韩语",
+    "chinese": "中文", "polish": "波兰语", "dutch": "荷兰语",
+    "swedish": "瑞典语", "turkish": "土耳其语", "thai": "泰语",
+    "vietnamese": "越南语", "czech": "捷克语", "hungarian": "匈牙利语",
+    "greek": "希腊语", "hebrew": "希伯来语", "arabic": "阿拉伯语",
+    "hindi": "印地语", "indonesian": "印尼语", "norwegian": "挪威语",
+    "finnish": "芬兰语", "danish": "丹麦语", "romanian": "罗马尼亚语",
+    "bulgarian": "保加利亚语", "ukrainian": "乌克兰语",
+    # 原语语言名（语言选择器里常见自身语言名；拉丁语种为去重音后拼写）
+    "日本語": "日语", "한국어": "韩语", "中文": "中文",
+    "简体中文": "中文", "繁體中文": "繁体中文",
+    "espanol": "西班牙语", "francais": "法语", "deutsch": "德语",
+    "italiano": "意大利语", "portugues": "葡萄牙语",
+    "nederlands": "荷兰语", "svenska": "瑞典语", "turkce": "土耳其语",
+    "polski": "波兰语", "cesky": "捷克语", "magyar": "匈牙利语",
+    "dansk": "丹麦语", "norsk": "挪威语", "suomi": "芬兰语",
+    "romana": "罗马尼亚语",
+    # 非拉丁书写系原语名（NFKD 不转写，直接原形入表）
+    "русский": "俄语", "ελληνικά": "希腊语", "עברית": "希伯来语",
+    "العربية": "阿拉伯语", "हिन्दी": "印地语", "ไทย": "泰语",
+}
+_LANGUAGE_LABEL_RE = re.compile(
+    r"^(?:language|lang|languagemode|言語|言语|idioma|язык)\s*[:：]?\s*"
+    r"(.+?)\s*$", re.I)
+
+
+def language_option_translation(text: str) -> str | None:
+    """语言选项标签确定性直填：'Language: ENGLISH' → '语言：英语'。
+
+    仅覆盖「语言标签 + 语言名」组合形态（标签词可多种语言写法）；
+    纯语言名 / 非表内语言名 → None（前者保留原名惯例，后者交模型）。
+    语言名查表前 NFKD 去重音（Español→espanol）保证多语言写法命中。
+    """
+    stripped = text.strip()
+    m = _LANGUAGE_LABEL_RE.match(stripped)
+    if not m:
+        return None
+    # NFKD 去重音：Español→espanol（先分解再丢弃组合记号——casefold
+    # 不吞组合符，直接 casefold 会留下 n+U+0303 查表失败）
+    decomposed = unicodedata.normalize("NFKD", m.group(1).strip())
+    name = "".join(ch for ch in decomposed
+                   if not unicodedata.combining(ch)).casefold()
+    zh = _LANGUAGE_OPTION_ZH.get(name)
+    if not zh:
+        return None
+    return f"语言：{zh}"
 
 
 # 大写动作指令的机械直译词表（EN→ZH）。用途：learn() 沉淀「该翻未翻」

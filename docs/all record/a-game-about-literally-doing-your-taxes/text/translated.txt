@@ -1,5 +1,5 @@
 游戏：a-game-about-literally-doing-your-taxes
-导出时间：2026-08-10 21:54:38
+导出时间：2026-08-11 17:50:15
 翻译模型：Hy-MT2-1.8B-Q6_K
 成功文本：96 条
 
@@ -9,7 +9,7 @@
 键位：plain/0
 对象：纯文本文件行
 原文：Not a Sailor Studios
-译文：不是 Sailor Studios 的作品
+译文：不是Sailor Studios
 置信度：medium
 原因：—
 角色：—
@@ -24,7 +24,7 @@
 键位：plain/1
 对象：纯文本文件行
 原文：A Game About Literally Doing Your Taxes
-译文：一款关于如何准确报税的游戏
+译文：一款关于如何正确缴纳税款的游戏
 置信度：medium
 原因：—
 角色：—
@@ -343,7 +343,7 @@ FOR BEST EXPERIENCE
 键位：asset#level2#236/str/0
 对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=236）
 原文：YAY TAX
-译文：太棒了！税务问题解决了。
+译文：太棒了！免税了。
 置信度：medium
 原因：display_phrase
 角色：display

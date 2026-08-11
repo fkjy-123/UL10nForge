@@ -1,5 +1,5 @@
 游戏：a-game-about-literally-doing-your-taxes
-导出时间：2026-08-10 21:54:38
+导出时间：2026-08-11 17:50:15
 翻译模型：Hy-MT2-1.8B-Q6_K
 跳过文本：294 条
 

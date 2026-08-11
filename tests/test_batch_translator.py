@@ -3189,3 +3189,167 @@ def test_repair_word_residue_label_echo_fails_without_translation():
     result = translator._repair_word_residue(
         entry, translator.client.translate_text, "zh-CN", "Slash: 999")
     assert result is None or result[2] is False
+
+
+class _MaxResidueClient(BaseClient):
+    """translate_text 对全大写词典词 MAX 输出中文（'最大'）。"""
+
+    def __init__(self):
+        self.calls = []
+
+    def chat(self, system, messages):
+        return "[]", Usage(0, 0)
+
+    def translate_text(self, source, _target_lang, glossary):
+        if source.strip() == "MAX":
+            return "最大", Usage(10, 5)
+        return "译文", Usage(10, 5)
+
+
+def test_repair_word_residue_covers_upper_ui_dict_word():
+    """全大写 UI 词典词补译（F6，deepest-sword 'MAX SEARCH OPTIMIZED'
+    实证）：MAX 在 UI 词典（=最大）是普通语义词不是专名——全大写形态
+    旧判定跳过补译（当专名）→ 模型对全大写稳定回显 → 恒败。修复：
+    全大写 + 词典词 → 可补译，补译输出中文 → 替换放行。"""
+    translator = BatchTranslator(
+        _MaxResidueClient(), batch_size=1, concurrency=1, lang="en→zh-CN")
+    entry = _to_model([{
+        "file_id": "Assembly-CSharp.dll", "key_path": "us#11152",
+        "original": "MAX SEARCH OPTIMIZED",
+        "translation": "MAX 搜索优化版",
+        "status": "failed",
+        "meta": {"role": "display", "disposition": "translate",
+                 "confidence": "medium"},
+    }])[0]
+    good = translator._repair_word_residue(
+        entry, translator.client.translate_text,
+        "zh-CN", entry.translation)
+    assert good[2] is True
+    assert "最大" in entry.translation
+    assert "MAX" not in entry.translation
+
+
+def test_repair_word_residue_skips_upper_non_dict_proper():
+    """对照：全大写非词典词（Gamejolt 类专名）维持跳过补译——专名
+    形态按专名路径处理，不误进词级补译。"""
+    translator = BatchTranslator(
+        _MaxResidueClient(), batch_size=1, concurrency=1, lang="en→zh-CN")
+    entry = _to_model([{
+        "file_id": "level0", "key_path": "asset#level0#1/str/0",
+        "original": "Visit GAMEJOLT page",
+        "translation": "访问 GAMEJOLT 页面",
+        "status": "failed",
+        "meta": {"role": "display", "disposition": "translate"},
+    }])[0]
+    # 无残留词可补译（GAMEJOLT 非词典词不提取）→ 返回 None 维持原判定
+    assert translator._repair_word_residue(
+        entry, translator.client.translate_text,
+        "zh-CN", entry.translation) is None
+
+
+class _SpacedActionClient(BaseClient):
+    """translate_text 收到聚合版原文后输出中文（F8-A：1.8B 对原形态
+    '* Y A W N *' 稳定回显，聚合 '* YAWN *' 后能译且标签原位保留——
+    mock 模拟聚合后的正确模型行为）。"""
+
+    def __init__(self):
+        self.calls = []
+
+    def chat(self, system, messages):
+        return "[]", Usage(0, 0)
+
+    def translate_text(self, source, _target_lang, _glossary):
+        self.calls.append(source)
+        return "{punch=3,2}* 哈欠 *{w=3}{x}", Usage(10, 5)
+
+
+def test_repair_spaced_action_translation_aggregates_and_translates():
+    """F8-A：词典未收录的间隔动作词走模型路径——聚合为正常词后模型
+    译出中文且标签原位保留。断言：translate_text 收到聚合版原文、
+    译文通过质量门（占位符齐全顺序对 + 含中文）。"""
+    translator = BatchTranslator(
+        _SpacedActionClient(), batch_size=1, concurrency=1, lang="en→zh-CN")
+    entry = _to_model([{
+        "file_id": "level1", "key_path": "asset#level1#2907/str/0",
+        "original": "{punch=3,2}* Z I P P E R *{w=3}{x}",
+        "translation": "{punch=3,2}* Z I P P E R *{w=3}{x}",
+        "status": "failed",
+        "meta": {"role": "display", "disposition": "translate",
+                 "confidence": "high"},
+    }])[0]
+    good = translator._repair_spaced_action_translation(
+        entry, translator.client.translate_text, "zh-CN")
+    assert good[2] is True
+    assert translator.client.calls[0] == "{punch=3,2}* ZIPPER *{w=3}{x}"
+    assert "哈欠" in entry.translation
+    assert "{punch=3,2}" in entry.translation
+    assert "{w=3}{x}" in entry.translation
+
+
+def test_repair_spaced_action_lexicon_direct_fill_for_catalogued_words():
+    """F10-A：词典收录词（YAWN）词典直填优先，模型不被调用
+    （1.8B 对聚合形态仍回显，词典是确定性正确路径）。"""
+    translator = BatchTranslator(
+        _SpacedActionClient(), batch_size=1, concurrency=1, lang="en→zh-CN")
+    entry = _to_model([{
+        "file_id": "level1", "key_path": "asset#level1#2908/str/0",
+        "original": "{punch=3,2}* Y A W N *{w=3}{x}",
+        "translation": "{punch=3,2}* Y A W N *{w=3}{x}",
+        "status": "failed",
+        "meta": {"role": "display", "disposition": "translate",
+                 "confidence": "high"},
+    }])[0]
+    good = translator._repair_spaced_action_translation(
+        entry, translator.client.translate_text, "zh-CN")
+    assert good[2] is True
+    assert translator.client.calls == []      # 词典直填，不走模型
+    assert "打哈欠" in entry.translation
+    assert "{punch=3,2}" in entry.translation
+    assert "{w=3}{x}" in entry.translation
+
+
+class _EchoAggregatedClient(_SpacedActionClient):
+    """模型只回显聚合形态（'* SCOFF *'，2026-08-11 实测 1.8B 对
+    SCOFF/SIGH/YAWN/GASP 稳定行为）→ 词典兜底必须接管。"""
+
+    def translate_text(self, source, _target_lang, _glossary):
+        self.calls.append(source)
+        return source, Usage(10, 5)
+
+
+def test_repair_spaced_action_lexicon_takes_over_when_model_echoes():
+    """F10-A：聚合后模型仍回显（只去空格不翻译）→ 封闭词典直填中文，
+    不走模型结果。a-catfiends 剩余 3 条失败中的 SCOFF/SIGH 实证。"""
+    translator = BatchTranslator(
+        _EchoAggregatedClient(), batch_size=1, concurrency=1, lang="en→zh-CN")
+    entry = _to_model([{
+        "file_id": "level1", "key_path": "asset#level1#3101/str/0",
+        "original": "{punch=3,2}* S C O F F *{w=3}{x}",
+        "translation": "{punch=3,2}* S C O F F *{w=3}{x}",
+        "status": "failed",
+        "meta": {"role": "display", "disposition": "translate",
+                 "confidence": "high"},
+    }])[0]
+    good = translator._repair_spaced_action_translation(
+        entry, translator.client.translate_text, "zh-CN")
+    assert good[2] is True
+    assert "嗤笑" in entry.translation
+    assert "{punch=3,2}" in entry.translation
+    assert "{w=3}{x}" in entry.translation
+
+
+def test_repair_spaced_action_translation_skips_non_spaced():
+    """对照：无间隔词的原文（普通句子）聚合无变化 → 返回 None 交后续
+    降级链（不触发聚合重译）。"""
+    translator = BatchTranslator(
+        _SpacedActionClient(), batch_size=1, concurrency=1, lang="en→zh-CN")
+    entry = _to_model([{
+        "file_id": "level1", "key_path": "asset#level1#3046/str/0",
+        "original": "I am {punch=3,2}NOT who I used to be.{w=3}{x}",
+        "translation": "我已经不再是曾经的我了。{punch=3,2}",
+        "status": "failed",
+        "meta": {"role": "display", "disposition": "translate"},
+    }])[0]
+    assert translator._repair_spaced_action_translation(
+        entry, translator.client.translate_text, "zh-CN") is None
+    assert translator.client.calls == []

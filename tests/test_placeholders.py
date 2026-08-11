@@ -90,6 +90,26 @@ def test_self_heal_backfills_missing_closing_color_tag():
     assert self_heal_format_tags(src, dst) == src
 
 
+def test_self_heal_backfills_tail_gap_when_anchor_sparse():
+    """F8-B，a-catfiends 真实样本：译文丢尾部 {w=3}{x} 只留 {punch=3,2}
+    ——missing(2) >= dst(1) 曾被锚点限制拒绝补全（好译文被弃、失败恒
+    现）；缺失全在最后保留占位符之后 → append 位置唯一正确 → 补全。"""
+    src = "I am {punch=3,2}NOT who I used to be.{w=3}{x}"
+    dst = "我已经不再是曾经的我了。{punch=3,2}"
+    healed = self_heal_format_tags(src, dst)
+    assert healed == "我已经不再是曾经的我了。{punch=3,2}{w=3}{x}"
+    ok, missing, extra = validate_translation(src, healed)
+    assert ok
+
+
+def test_self_heal_still_rejects_mid_gap_when_anchor_sparse():
+    """对照：缺失在最后保留占位符之前（中段缺口 + 锚点不足）→ 仍拒绝
+    补全（位置不可靠，交 protected/multiline repair 重建）。"""
+    src = "{punch=3,2}A {w=3} B{x}"
+    dst = "甲 {w=3} 乙"
+    assert self_heal_format_tags(src, dst) == dst
+
+
 def test_self_heal_reorders_reversed_closing_tags():
     # the-keeper 真实样本：</b></color> 逆序 → 重排为原文顺序 </color></b>
     src = "<b><color=#eb5354>Thanks!</color></b>"

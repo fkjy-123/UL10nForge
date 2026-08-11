@@ -1,0 +1,1954 @@
+游戏：death-trips
+导出时间：2026-08-11 17:29:43
+翻译模型：Hy-MT2-1.8B-Q6_K
+跳过文本：130 条
+
+────────────────────────────────────────────────────────────────
+[1] 跳过文本
+来源：Death Trips_Data/app.info
+键位：plain/0
+对象：纯文本文件行
+原文：forameuss
+译文：（无）
+置信度：medium
+原因：—
+角色：—
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[2] 跳过文本
+来源：Death Trips_Data/level0
+键位：asset#level0#49/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=49）
+原文：set_font
+译文：（无）
+置信度：low
+原因：method_name
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[3] 跳过文本
+来源：Death Trips_Data/level0
+键位：asset#level0#49/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=49）
+原文：TMPro.TMP_FontAsset, Unity.TextMeshPro
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[4] 跳过文本
+来源：Death Trips_Data/level0
+键位：asset#level0#49/str/3
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=49）
+原文：UnityEngine.AudioClip, UnityEngine
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[5] 跳过文本
+来源：Death Trips_Data/level0
+键位：asset#level0#49/str/4
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=49）
+原文：set_font
+译文：（无）
+置信度：low
+原因：method_name
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[6] 跳过文本
+来源：Death Trips_Data/level0
+键位：asset#level0#49/str/5
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=49）
+原文：TMPro.TMP_FontAsset, Unity.TextMeshPro
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[7] 跳过文本
+来源：Death Trips_Data/level0
+键位：asset#level0#49/str/6
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=49）
+原文：Exit
+译文：（无）
+置信度：low
+原因：code_heavy_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[8] 跳过文本
+来源：Death Trips_Data/level0
+键位：asset#level0#49/str/7
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=49）
+原文：UnityEngine.Object, UnityEngine
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[9] 跳过文本
+来源：Death Trips_Data/level0
+键位：asset#level0#49/str/9
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=49）
+原文：UnityEngine.AudioClip, UnityEngine
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[10] 跳过文本
+来源：Death Trips_Data/level0
+键位：asset#level0#51/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=51）
+原文：set_font
+译文：（无）
+置信度：low
+原因：method_name
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[11] 跳过文本
+来源：Death Trips_Data/level0
+键位：asset#level0#51/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=51）
+原文：TMPro.TMP_FontAsset, Unity.TextMeshPro
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[12] 跳过文本
+来源：Death Trips_Data/level0
+键位：asset#level0#51/str/3
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=51）
+原文：UnityEngine.AudioClip, UnityEngine
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[13] 跳过文本
+来源：Death Trips_Data/level0
+键位：asset#level0#51/str/4
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=51）
+原文：set_font
+译文：（无）
+置信度：low
+原因：method_name
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[14] 跳过文本
+来源：Death Trips_Data/level0
+键位：asset#level0#51/str/5
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=51）
+原文：TMPro.TMP_FontAsset, Unity.TextMeshPro
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[15] 跳过文本
+来源：Death Trips_Data/level0
+键位：asset#level0#51/str/7
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=51）
+原文：UnityEngine.Object, UnityEngine
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[16] 跳过文本
+来源：Death Trips_Data/level0
+键位：asset#level0#51/str/9
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=51）
+原文：UnityEngine.AudioClip, UnityEngine
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[17] 跳过文本
+来源：Death Trips_Data/level0
+键位：asset#level0#53/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=53）
+原文：Horizontal
+译文：（无）
+置信度：low
+原因：identifier_without_display_evidence
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[18] 跳过文本
+来源：Death Trips_Data/level0
+键位：asset#level0#53/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=53）
+原文：Vertical
+译文：（无）
+置信度：low
+原因：identifier_without_display_evidence
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[19] 跳过文本
+来源：Death Trips_Data/level0
+键位：asset#level0#53/str/2
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=53）
+原文：Submit
+译文：（无）
+置信度：low
+原因：identifier_without_display_evidence
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[20] 跳过文本
+来源：Death Trips_Data/level0
+键位：asset#level0#53/str/3
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=53）
+原文：Cancel
+译文：（无）
+置信度：low
+原因：identifier_without_display_evidence
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[21] 跳过文本
+来源：Death Trips_Data/level0
+键位：asset#level0#59/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=59）
+原文：Normal
+译文：（无）
+置信度：low
+原因：code_heavy_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[22] 跳过文本
+来源：Death Trips_Data/level0
+键位：asset#level0#59/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=59）
+原文：Highlighted
+译文：（无）
+置信度：low
+原因：code_heavy_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[23] 跳过文本
+来源：Death Trips_Data/level0
+键位：asset#level0#59/str/2
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=59）
+原文：Pressed
+译文：（无）
+置信度：low
+原因：code_heavy_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[24] 跳过文本
+来源：Death Trips_Data/level0
+键位：asset#level0#59/str/3
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=59）
+原文：Selected
+译文：（无）
+置信度：low
+原因：code_heavy_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[25] 跳过文本
+来源：Death Trips_Data/level0
+键位：asset#level0#59/str/4
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=59）
+原文：Disabled
+译文：（无）
+置信度：low
+原因：code_heavy_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[26] 跳过文本
+来源：Death Trips_Data/level0
+键位：asset#level0#59/str/5
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=59）
+原文：GoToWeb, Assembly-CSharp
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[27] 跳过文本
+来源：Death Trips_Data/level0
+键位：asset#level0#59/str/7
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=59）
+原文：UnityEngine.Object, UnityEngine
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[28] 跳过文本
+来源：Death Trips_Data/level1
+键位：asset#level1#34/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=34）
+原文：set_font
+译文：（无）
+置信度：low
+原因：method_name
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[29] 跳过文本
+来源：Death Trips_Data/level1
+键位：asset#level1#34/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=34）
+原文：TMPro.TMP_FontAsset, Unity.TextMeshPro
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[30] 跳过文本
+来源：Death Trips_Data/level1
+键位：asset#level1#34/str/3
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=34）
+原文：UnityEngine.AudioClip, UnityEngine
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[31] 跳过文本
+来源：Death Trips_Data/level1
+键位：asset#level1#34/str/4
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=34）
+原文：set_font
+译文：（无）
+置信度：low
+原因：method_name
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[32] 跳过文本
+来源：Death Trips_Data/level1
+键位：asset#level1#34/str/5
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=34）
+原文：TMPro.TMP_FontAsset, Unity.TextMeshPro
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[33] 跳过文本
+来源：Death Trips_Data/level1
+键位：asset#level1#34/str/6
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=34）
+原文：Loadette
+译文：（无）
+置信度：low
+原因：code_heavy_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[34] 跳过文本
+来源：Death Trips_Data/level1
+键位：asset#level1#34/str/7
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=34）
+原文：UnityEngine.Object, UnityEngine
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[35] 跳过文本
+来源：Death Trips_Data/level1
+键位：asset#level1#34/str/9
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=34）
+原文：UnityEngine.AudioClip, UnityEngine
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[36] 跳过文本
+来源：Death Trips_Data/level1
+键位：asset#level1#36/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=36）
+原文：Horizontal
+译文：（无）
+置信度：low
+原因：identifier_without_display_evidence
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[37] 跳过文本
+来源：Death Trips_Data/level1
+键位：asset#level1#36/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=36）
+原文：Vertical
+译文：（无）
+置信度：low
+原因：identifier_without_display_evidence
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[38] 跳过文本
+来源：Death Trips_Data/level1
+键位：asset#level1#36/str/2
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=36）
+原文：Submit
+译文：（无）
+置信度：low
+原因：identifier_without_display_evidence
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[39] 跳过文本
+来源：Death Trips_Data/level1
+键位：asset#level1#36/str/3
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=36）
+原文：Cancel
+译文：（无）
+置信度：low
+原因：identifier_without_display_evidence
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[40] 跳过文本
+来源：Death Trips_Data/level2
+键位：asset#level2#2423/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=2423）
+原文：UnityEngine.GameObject, UnityEngine
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[41] 跳过文本
+来源：Death Trips_Data/level2
+键位：asset#level2#2423/str/2
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=2423）
+原文：UnityEngine.Object, UnityEngine
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[42] 跳过文本
+来源：Death Trips_Data/level2
+键位：asset#level2#2423/str/3
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=2423）
+原文：Elevator, Assembly-CSharp
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[43] 跳过文本
+来源：Death Trips_Data/level2
+键位：asset#level2#2423/str/5
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=2423）
+原文：UnityEngine.Object, UnityEngine
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[44] 跳过文本
+来源：Death Trips_Data/level2
+键位：asset#level2#2423/str/6
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=2423）
+原文：Juas1, Assembly-CSharp
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[45] 跳过文本
+来源：Death Trips_Data/level2
+键位：asset#level2#2423/str/7
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=2423）
+原文：Jijijiji
+译文：（无）
+置信度：low
+原因：code_heavy_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[46] 跳过文本
+来源：Death Trips_Data/level2
+键位：asset#level2#2423/str/8
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=2423）
+原文：UnityEngine.Object, UnityEngine
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[47] 跳过文本
+来源：Death Trips_Data/level2
+键位：asset#level2#2423/str/9
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=2423）
+原文：UnityEngine.GameObject, UnityEngine
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[48] 跳过文本
+来源：Death Trips_Data/level2
+键位：asset#level2#2423/str/11
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=2423）
+原文：UnityEngine.Object, UnityEngine
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[49] 跳过文本
+来源：Death Trips_Data/level2
+键位：asset#level2#2427/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=2427）
+原文：UnityEngine.Object, UnityEngine
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[50] 跳过文本
+来源：Death Trips_Data/level2
+键位：asset#level2#2428/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=2428）
+原文：Horizontal
+译文：（无）
+置信度：low
+原因：identifier_without_display_evidence
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[51] 跳过文本
+来源：Death Trips_Data/level2
+键位：asset#level2#2428/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=2428）
+原文：Vertical
+译文：（无）
+置信度：low
+原因：identifier_without_display_evidence
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[52] 跳过文本
+来源：Death Trips_Data/level2
+键位：asset#level2#2428/str/2
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=2428）
+原文：Submit
+译文：（无）
+置信度：low
+原因：identifier_without_display_evidence
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[53] 跳过文本
+来源：Death Trips_Data/level2
+键位：asset#level2#2428/str/3
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=2428）
+原文：Cancel
+译文：（无）
+置信度：low
+原因：identifier_without_display_evidence
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[54] 跳过文本
+来源：Death Trips_Data/level2
+键位：asset#level2#2432/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=2432）
+原文：JillController, Assembly-CSharp
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[55] 跳过文本
+来源：Death Trips_Data/level2
+键位：asset#level2#2432/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=2432）
+原文：Visible
+译文：（无）
+置信度：low
+原因：code_heavy_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[56] 跳过文本
+来源：Death Trips_Data/level2
+键位：asset#level2#2432/str/2
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=2432）
+原文：UnityEngine.Object, UnityEngine
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[57] 跳过文本
+来源：Death Trips_Data/level2
+键位：asset#level2#2432/str/3
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=2432）
+原文：JillController, Assembly-CSharp
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[58] 跳过文本
+来源：Death Trips_Data/level2
+键位：asset#level2#2432/str/4
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=2432）
+原文：Invisible
+译文：（无）
+置信度：low
+原因：code_heavy_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[59] 跳过文本
+来源：Death Trips_Data/level2
+键位：asset#level2#2432/str/5
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=2432）
+原文：UnityEngine.Object, UnityEngine
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[60] 跳过文本
+来源：Death Trips_Data/level2
+键位：asset#level2#2433/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=2433）
+原文：UnityEngine.Object, UnityEngine
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[61] 跳过文本
+来源：Death Trips_Data/level2
+键位：asset#level2#2433/str/2
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=2433）
+原文：set_material
+译文：（无）
+置信度：low
+原因：method_name
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[62] 跳过文本
+来源：Death Trips_Data/level2
+键位：asset#level2#2433/str/3
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=2433）
+原文：UnityEngine.Material, UnityEngine
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[63] 跳过文本
+来源：Death Trips_Data/level2
+键位：asset#level2#2433/str/4
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=2433）
+原文：Play
+译文：（无）
+置信度：low
+原因：code_heavy_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[64] 跳过文本
+来源：Death Trips_Data/level2
+键位：asset#level2#2433/str/5
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=2433）
+原文：UnityEngine.Object, UnityEngine
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[65] 跳过文本
+来源：Death Trips_Data/level2
+键位：asset#level2#2433/str/6
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=2433）
+原文：set_shader
+译文：（无）
+置信度：low
+原因：method_name
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[66] 跳过文本
+来源：Death Trips_Data/level2
+键位：asset#level2#2433/str/7
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=2433）
+原文：UnityEngine.Shader, UnityEngine
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[67] 跳过文本
+来源：Death Trips_Data/level2
+键位：asset#level2#2433/str/8
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=2433）
+原文：set_shader
+译文：（无）
+置信度：low
+原因：method_name
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[68] 跳过文本
+来源：Death Trips_Data/level2
+键位：asset#level2#2433/str/9
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=2433）
+原文：UnityEngine.Shader, UnityEngine
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[69] 跳过文本
+来源：Death Trips_Data/level2
+键位：asset#level2#2439/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=2439）
+原文：JillController, Assembly-CSharp
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[70] 跳过文本
+来源：Death Trips_Data/level2
+键位：asset#level2#2439/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=2439）
+原文：Visible
+译文：（无）
+置信度：low
+原因：code_heavy_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[71] 跳过文本
+来源：Death Trips_Data/level2
+键位：asset#level2#2439/str/2
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=2439）
+原文：UnityEngine.Object, UnityEngine
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[72] 跳过文本
+来源：Death Trips_Data/level2
+键位：asset#level2#2439/str/3
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=2439）
+原文：JillController, Assembly-CSharp
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[73] 跳过文本
+来源：Death Trips_Data/level2
+键位：asset#level2#2439/str/4
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=2439）
+原文：Invisible
+译文：（无）
+置信度：low
+原因：code_heavy_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[74] 跳过文本
+来源：Death Trips_Data/level2
+键位：asset#level2#2439/str/5
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=2439）
+原文：UnityEngine.Object, UnityEngine
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[75] 跳过文本
+来源：Death Trips_Data/level2
+键位：asset#level2#2443/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=2443）
+原文：set_shader
+译文：（无）
+置信度：low
+原因：method_name
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[76] 跳过文本
+来源：Death Trips_Data/level2
+键位：asset#level2#2443/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=2443）
+原文：UnityEngine.Shader, UnityEngine
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[77] 跳过文本
+来源：Death Trips_Data/level2
+键位：asset#level2#2443/str/2
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=2443）
+原文：set_shader
+译文：（无）
+置信度：low
+原因：method_name
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[78] 跳过文本
+来源：Death Trips_Data/level2
+键位：asset#level2#2443/str/3
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=2443）
+原文：UnityEngine.Shader, UnityEngine
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[79] 跳过文本
+来源：Death Trips_Data/level2
+键位：asset#level2#2443/str/4
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=2443）
+原文：Lol
+译文：（无）
+置信度：low
+原因：code_heavy_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[80] 跳过文本
+来源：Death Trips_Data/level2
+键位：asset#level2#2443/str/5
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=2443）
+原文：UnityEngine.Object, UnityEngine
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[81] 跳过文本
+来源：Death Trips_Data/level2
+键位：asset#level2#2451/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=2451）
+原文：set_shader
+译文：（无）
+置信度：low
+原因：method_name
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[82] 跳过文本
+来源：Death Trips_Data/level2
+键位：asset#level2#2451/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=2451）
+原文：UnityEngine.Shader, UnityEngine
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[83] 跳过文本
+来源：Death Trips_Data/level2
+键位：asset#level2#2451/str/2
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=2451）
+原文：set_shader
+译文：（无）
+置信度：low
+原因：method_name
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[84] 跳过文本
+来源：Death Trips_Data/level2
+键位：asset#level2#2451/str/3
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=2451）
+原文：UnityEngine.Shader, UnityEngine
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[85] 跳过文本
+来源：Death Trips_Data/level2
+键位：asset#level2#2451/str/4
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=2451）
+原文：set_enabled
+译文：（无）
+置信度：low
+原因：method_name
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[86] 跳过文本
+来源：Death Trips_Data/level2
+键位：asset#level2#2451/str/5
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=2451）
+原文：UnityEngine.Object, UnityEngine
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[87] 跳过文本
+来源：Death Trips_Data/level2
+键位：asset#level2#2451/str/6
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=2451）
+原文：Play
+译文：（无）
+置信度：low
+原因：code_heavy_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[88] 跳过文本
+来源：Death Trips_Data/level2
+键位：asset#level2#2451/str/7
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=2451）
+原文：UnityEngine.Object, UnityEngine
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[89] 跳过文本
+来源：Death Trips_Data/level2
+键位：asset#level2#2451/str/8
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=2451）
+原文：set_enabled
+译文：（无）
+置信度：low
+原因：method_name
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[90] 跳过文本
+来源：Death Trips_Data/level2
+键位：asset#level2#2451/str/9
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=2451）
+原文：UnityEngine.Object, UnityEngine
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[91] 跳过文本
+来源：Death Trips_Data/level2
+键位：asset#level2#2451/str/10
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=2451）
+原文：key, Assembly-CSharp
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[92] 跳过文本
+来源：Death Trips_Data/level2
+键位：asset#level2#2451/str/12
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=2451）
+原文：UnityEngine.Object, UnityEngine
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[93] 跳过文本
+来源：Death Trips_Data/level2
+键位：asset#level2#2457/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=2457）
+原文：UnityEngine.GameObject, UnityEngine
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[94] 跳过文本
+来源：Death Trips_Data/level2
+键位：asset#level2#2457/str/2
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=2457）
+原文：UnityEngine.Object, UnityEngine
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[95] 跳过文本
+来源：Death Trips_Data/level2
+键位：asset#level2#2457/str/3
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=2457）
+原文：UnityEngine.MonoBehaviour, UnityEngine
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[96] 跳过文本
+来源：Death Trips_Data/level2
+键位：asset#level2#2457/str/5
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=2457）
+原文：UnityEngine.Object, UnityEngine
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[97] 跳过文本
+来源：Death Trips_Data/level2
+键位：asset#level2#2457/str/6
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=2457）
+原文：UnityEngine.Collider, UnityEngine
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[98] 跳过文本
+来源：Death Trips_Data/level2
+键位：asset#level2#2457/str/7
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=2457）
+原文：set_enabled
+译文：（无）
+置信度：low
+原因：method_name
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[99] 跳过文本
+来源：Death Trips_Data/level2
+键位：asset#level2#2457/str/8
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=2457）
+原文：UnityEngine.Object, UnityEngine
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[100] 跳过文本
+来源：Death Trips_Data/level2
+键位：asset#level2#2457/str/9
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=2457）
+原文：UnityEngine.GameObject, UnityEngine
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[101] 跳过文本
+来源：Death Trips_Data/level2
+键位：asset#level2#2457/str/11
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=2457）
+原文：UnityEngine.Object, UnityEngine
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[102] 跳过文本
+来源：Death Trips_Data/level2
+键位：asset#level2#2457/str/12
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=2457）
+原文：UnityEngine.Behaviour, UnityEngine
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[103] 跳过文本
+来源：Death Trips_Data/level2
+键位：asset#level2#2457/str/13
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=2457）
+原文：set_enabled
+译文：（无）
+置信度：low
+原因：method_name
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[104] 跳过文本
+来源：Death Trips_Data/level2
+键位：asset#level2#2457/str/14
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=2457）
+原文：UnityEngine.Object, UnityEngine
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[105] 跳过文本
+来源：Death Trips_Data/level2
+键位：asset#level2#2458/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=2458）
+原文：Play
+译文：（无）
+置信度：low
+原因：code_heavy_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[106] 跳过文本
+来源：Death Trips_Data/level2
+键位：asset#level2#2458/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=2458）
+原文：UnityEngine.Object, UnityEngine
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[107] 跳过文本
+来源：Death Trips_Data/level2
+键位：asset#level2#2458/str/2
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=2458）
+原文：Door, Assembly-CSharp
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[108] 跳过文本
+来源：Death Trips_Data/level2
+键位：asset#level2#2458/str/4
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=2458）
+原文：UnityEngine.Object, UnityEngine
+译文：（无）
+置信度：low
+原因：type_reference
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[109] 跳过文本
+来源：Death Trips_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#132/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=132）
+原文：Grain
+译文：（无）
+置信度：low
+原因：shared_resource_config_object
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[110] 跳过文本
+来源：Death Trips_Data/sharedassets2.assets
+键位：asset#sharedassets2.assets#287/str/3
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets2.assets、obj=287）
+原文：Daubmark
+译文：（无）
+置信度：low
+原因：identifier_without_display_evidence
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[111] 跳过文本
+来源：Death Trips_Data/sharedassets2.assets
+键位：asset#sharedassets2.assets#287/str/4
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets2.assets、obj=287）
+原文：Book
+译文：（无）
+置信度：low
+原因：identifier_without_display_evidence
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[112] 跳过文本
+来源：Death Trips_Data/Managed/Assembly-CSharp-firstpass.dll
+键位：us#2
+对象：DLL #US 字符串（record_offset=98217）
+原文：This script need an Image with a readbale Texture2D to work.
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[113] 跳过文本
+来源：Death Trips_Data/Managed/Assembly-CSharp-firstpass.dll
+键位：us#208
+对象：DLL #US 字符串（record_offset=98423）
+原文：Rigidbody dragger
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[114] 跳过文本
+来源：Death Trips_Data/Managed/Assembly-CSharp-firstpass.dll
+键位：us#267
+对象：DLL #US 字符串（record_offset=98481）
+原文：FOVKick camera is null, please supply the camera to the constructor
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[115] 跳过文本
+来源：Death Trips_Data/Managed/Assembly-CSharp-firstpass.dll
+键位：us#404
+对象：DLL #US 字符串（record_offset=98618）
+原文：FOVKick Increase curve is null, please define the curve for the field of view kicks
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[116] 跳过文本
+来源：Death Trips_Data/Managed/Assembly-CSharp-firstpass.dll
+键位：us#588
+对象：DLL #US 字符串（record_offset=98803）
+原文：Mouse X
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[117] 跳过文本
+来源：Death Trips_Data/Managed/Assembly-CSharp-firstpass.dll
+键位：us#604
+对象：DLL #US 字符串（record_offset=98819）
+原文：Mouse Y
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[118] 跳过文本
+来源：Death Trips_Data/Managed/Assembly-CSharp-firstpass.dll
+键位：us#642
+对象：DLL #US 字符串（record_offset=98857）
+原文： Waypoint Target
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[119] 跳过文本
+来源：Death Trips_Data/Managed/Assembly-CSharp-firstpass.dll
+键位：us#1124
+对象：DLL #US 字符串（record_offset=99339）
+原文：__WaterReflection
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[120] 跳过文本
+来源：Death Trips_Data/Managed/Assembly-CSharp-firstpass.dll
+键位：us#1160
+对象：DLL #US 字符串（record_offset=99375）
+原文：Water Refl Camera id
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[121] 跳过文本
+来源：Death Trips_Data/Managed/Assembly-CSharp-firstpass.dll
+键位：us#1214
+对象：DLL #US 字符串（record_offset=99429）
+原文：__WaterRefraction
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[122] 跳过文本
+来源：Death Trips_Data/Managed/Assembly-CSharp-firstpass.dll
+键位：us#1250
+对象：DLL #US 字符串（record_offset=99465）
+原文：Water Refr Camera id
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[123] 跳过文本
+来源：Death Trips_Data/Managed/Assembly-CSharp-firstpass.dll
+键位：us#1484
+对象：DLL #US 字符串（record_offset=99699）
+原文：There is already a virtual axis named 
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[124] 跳过文本
+来源：Death Trips_Data/Managed/Assembly-CSharp-firstpass.dll
+键位：us#1588
+对象：DLL #US 字符串（record_offset=99803）
+原文：There is already a virtual button named 
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[125] 跳过文本
+来源：Death Trips_Data/Managed/Assembly-CSharp-firstpass.dll
+键位：us#1671
+对象：DLL #US 字符串（record_offset=99885）
+原文： This is not possible to be called for standalone input. Please check your platform and code where this is called
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[126] 跳过文本
+来源：Death Trips_Data/Managed/Assembly-CSharp-firstpass.dll
+键位：us#2031
+对象：DLL #US 字符串（record_offset=100246）
+原文：Skid Trails - Detached
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[127] 跳过文本
+来源：Death Trips_Data/Managed/Assembly-CSharp-firstpass.dll
+键位：us#2089
+对象：DLL #US 字符串（record_offset=100304）
+原文： AeroplaneContoller not found in object hierarchy
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[128] 跳过文本
+来源：Death Trips_Data/Managed/Assembly-CSharp-firstpass.dll
+键位：us#2210
+对象：DLL #US 字符串（record_offset=100424）
+原文：Warning: no main camera found. Ball needs a Camera tagged "MainCamera", for camera-relative controls.
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[129] 跳过文本
+来源：Death Trips_Data/Managed/Assembly-CSharp-firstpass.dll
+键位：us#2507
+对象：DLL #US 字符串（record_offset=100721）
+原文：Warning: no main camera found. Third person character needs a Camera tagged "MainCamera", for camera-relative controls.
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—
+
+────────────────────────────────────────────────────────────────
+[130] 跳过文本
+来源：Death Trips_Data/Managed/Assembly-CSharp.dll
+键位：us#98
+对象：DLL #US 字符串（record_offset=22445）
+原文：\n
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否
+写回：—

@@ -75,6 +75,15 @@ _ENGINE_STRINGS_LOWER = {s.strip().lower() for s in ENGINE_STRINGS}
 # 前缀匹配引擎串（演示文本等带后缀的确定性内容；_is_engine_string 会先 strip 再匹配）
 _ENGINE_PREFIX = ("text -", "pts - lorem ipsum", "bitfield", "default sprite asset")
 
+_ENGINE_NAMING_PATTERNS = [
+    # Unity Localization 表键 / 编程命名：无空格、小写开头、含内部大写或下划线
+    # （lockedEntrance、ui_newGame、takeTools）
+    re.compile(r"^[a-z][a-zA-Z0-9_]*[A-Z][a-zA-Z0-9_]*$"),
+    re.compile(r"^[a-z]+_[a-zA-Z0-9_]+$"),
+    # PascalCase 数据/类名（FlashlightData、MonologueTable）
+    re.compile(r"^[A-Z][a-z]+[A-Z][a-zA-Z0-9]*$"),
+]
+
 _ENGINE_PATTERNS = [
     re.compile(r"^;"),                                              # ;Gamepad
     re.compile(r"[;&].*[;&]"),                                      # Keyboard&Mouse;Gamepad 组合绑定
@@ -110,12 +119,6 @@ _ENGINE_PATTERNS = [
     re.compile(r"^(?:Activation|Animation|Audio|Control|Group|Marker|Playable|"
                r"Signal|Cinemachine) Track(?:\s*\(\d+\))?$", re.I),
     re.compile(r"^version=0\.0\.0\.0, culture=neutral", re.I),      # 程序集限定名尾部
-    # Unity Localization 表键 / 编程命名：无空格、小写开头、含内部大写或下划线
-    # （lockedEntrance、ui_newGame、takeTools）
-    re.compile(r"^[a-z][a-zA-Z0-9_]*[A-Z][a-zA-Z0-9_]*$"),
-    re.compile(r"^[a-z]+_[a-zA-Z0-9_]+$"),
-    # PascalCase 数据/类名（FlashlightData、MonologueTable）
-    re.compile(r"^[A-Z][a-z]+[A-Z][a-zA-Z0-9]*$"),
 ]
 
 _DISPLAY_WORD = re.compile(r"[A-Za-zÀ-ÖØ-öø-ÿА-Яа-я]{2,}")
@@ -395,17 +398,32 @@ def interaction_input_events(text: str) -> tuple[InputEvent, ...]:
     return tuple(event for _, event in positioned)
 
 
-def is_engine_string(s: str) -> bool:
-    """引擎内部字符串判定：着色器属性、序列化引用、程序集限定名、已知引擎字符串。"""
+def is_engine_string_core(s: str) -> bool:
+    """确定性引擎串核心判定（无编程命名形态猜测）：着色器属性、序列化
+    引用、程序集限定名、已知引擎字符串、哈希、绑定路径、富文本标签、
+    表情名、语言名 (en)、HTTP 状态行、Timeline/Interaction 形态。
+
+    与 is_engine_string 的区别：不含「编程命名」形态猜测（驼峰/PascalCase/
+    小写下划线——lockedEntrance/FlashlightData 类）。PascalCase 形态对
+    **无结构上下文**的 raw scan 是类名猜测，但对结构化格式 value 位置
+    会误伤罗马音台词等真实显示文本（doog 实证 'FeeNGAh' 等 hololive
+    罗马音歌词被引擎串判定跳过）——格式化文本降级用本核心判定。
+    """
     s2 = s.strip()
     if _ENGINE_PROP.match(s2) or _ENGINE_NAME.search(s2):
         return True
     low = s2.lower()
     if low in _ENGINE_STRINGS_LOWER or low.startswith(_ENGINE_PREFIX):
         return True
-    if any(p.search(s2) for p in _ENGINE_PATTERNS):
+    return any(p.search(s2) for p in _ENGINE_PATTERNS)
+
+
+def is_engine_string(s: str) -> bool:
+    """引擎内部字符串判定：着色器属性、序列化引用、程序集限定名、已知引擎字符串。"""
+    if is_engine_string_core(s):
         return True
-    return False
+    s2 = s.strip()
+    return any(p.search(s2) for p in _ENGINE_NAMING_PATTERNS)
 
 
 def has_display_text_evidence(text: str) -> bool:

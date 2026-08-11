@@ -1,7 +1,7 @@
 游戏：a-catfiends-impending-relapse
-导出时间：2026-08-10 20:31:06
+导出时间：2026-08-11 18:19:56
 翻译模型：Hy-MT2-1.8B-Q6_K
-成功文本：234 条
+成功文本：246 条
 
 ────────────────────────────────────────────────────────────────
 [1] 成功文本
@@ -9,7 +9,7 @@
 键位：plain/0
 对象：纯文本文件行
 原文：KALKAM'S ACOLYTES
-译文：卡尔卡姆的跟班们
+译文：卡卡尔姆的叛徒们
 置信度：medium
 原因：—
 角色：—
@@ -39,7 +39,7 @@
 键位：asset#level0#127/str/0
 对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=127）
 原文：YOU ARE NOT WHO YOU USED TO BE.{w=3}{x}
-译文：你已不再是曾经的你了。{w=3}{x}
+译文：你已不再是从前那个你了。{w=3}{x}
 置信度：high
 原因：single_visible_string
 角色：display
@@ -54,7 +54,7 @@
 键位：asset#level0#128/str/0
 对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=128）
 原文：/// . . . /// . . . /// loading \\\ . . . \\\ . . . \\\{w=3}
-译文：/// . . . /// . . . /// 加载中 . . . . . .{w=3}
+译文：/// . . . /// . . . /// 加载中 . . . . . . .{w=3}
 置信度：high
 原因：single_visible_string
 角色：display
@@ -71,7 +71,7 @@
 原文：
 WON'T YOU KEEP IT THAT WAY, GIL?{w=3}{x}
 译文：
-你不会那样做吧，Gil？{w=3}{x}
+你不会一直保持这个状态吧，Gil？{w=3}{x}
 置信度：high
 原因：single_visible_string
 角色：display
@@ -88,7 +88,7 @@ WON'T YOU KEEP IT THAT WAY, GIL?{w=3}{x}
 原文：
 AFTER YEARS OF EFFORT,{w=0.5} YOU ARE NOW SOBER.{w=3}{x}
 译文：
-经过多年的努力之后，你现在终于清醒了。{w=0.5}{w=3}{x}
+经过多年的努力，你现在终于清醒了。{w=0.5}{w=3}{x}
 置信度：high
 原因：single_visible_string
 角色：display
@@ -103,7 +103,7 @@ AFTER YEARS OF EFFORT,{w=0.5} YOU ARE NOW SOBER.{w=3}{x}
 键位：asset#level0#132/str/0
 对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=132）
 原文：YOU ARE INVESTIGATING BACTERIAL PHENOMENA DEEP WITHIN THE VACUUM CAVERNS OF THE GREATER LABYRINTH.{w=3}{x}
-译文：您正在深入调查大咽道真空腔内的细菌现象。{w=3}{x}
+译文：您正在深入调查大咽头道中的细菌现象。{w=3}{x}
 置信度：high
 原因：single_visible_string
 角色：display
@@ -120,7 +120,7 @@ AFTER YEARS OF EFFORT,{w=0.5} YOU ARE NOW SOBER.{w=3}{x}
 原文：
 GLISLYA SPECIALIST FROM THE ACADEMY OF CORRADAILE.{w=3}{x}
 译文：
-来自科拉达莱学院的 GLISLYA 专家。{w=3}{x}
+来自科拉达莱学院的专业人士——GLISLYA。{w=3}{x}
 置信度：high
 原因：single_visible_string
 角色：display
@@ -152,7 +152,7 @@ GLISLYA SPECIALIST FROM THE ACADEMY OF CORRADAILE.{w=3}{x}
 原文：
 A SPECIES OF AMBIENT, HYPERLIFE BACTERIA FOUND THRIVING THROUGHOUT THE LABYRINTH.{w=3}{x}
 译文：
-一种存在于咽道中的环境适应型超生命细菌。{w=3}{x}
+一种存在于咽部的环境微生物，能够在这种环境中生存。{w=3}{x}
 置信度：high
 原因：single_visible_string
 角色：display
@@ -182,7 +182,7 @@ A SPECIES OF AMBIENT, HYPERLIFE BACTERIA FOUND THRIVING THROUGHOUT THE LABYRINTH
 键位：asset#level0#142/str/0
 对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=142）
 原文：YOUR NAME IS GIL KUR,{w=3}{x}
-译文：你的名字是吉尔·库尔。{w=3}{x}
+译文：您的名字是吉尔·库尔。{w=3}{x}
 置信度：high
 原因：single_visible_string
 角色：display
@@ -224,12 +224,10 @@ A SPECIES OF AMBIENT, HYPERLIFE BACTERIA FOUND THRIVING THROUGHOUT THE LABYRINTH
 ────────────────────────────────────────────────────────────────
 [15] 成功文本
 来源：a catfiend's impending relapse_Data/level0
-键位：asset#level0#155/str/0
-对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=155）
-原文：AND,{w=0.5} IN SOME CASES,{w=0.5}
-EVEN REVERSE THE FLOW OF TIME.{w=3}{x}
-译文：并且，在某些情况下，{w=0.5}。
-甚至逆转时间的流动。{w=0.5}{w=3}{x}
+键位：asset#level0#146/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=146）
+原文：flowchart
+译文：流程图
 置信度：high
 原因：single_visible_string
 角色：display
@@ -241,10 +239,12 @@ EVEN REVERSE THE FLOW OF TIME.{w=3}{x}
 ────────────────────────────────────────────────────────────────
 [16] 成功文本
 来源：a catfiend's impending relapse_Data/level0
-键位：asset#level0#156/str/0
-对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=156）
-原文：PROLONGED EXPOSURE TO HEALTHY COLONIES IS KNOWN TO PRODUCE A MOST RAPTUROUS HIGH.{w=3}{x}
-译文：长期接触健康殖民地环境已知会导致最迅速的衰老。{w=3}{x}
+键位：asset#level0#155/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=155）
+原文：AND,{w=0.5} IN SOME CASES,{w=0.5}
+EVEN REVERSE THE FLOW OF TIME.{w=3}{x}
+译文：在某些情况下，AND为{w=0.5}。
+甚至可以逆转时间的流动。{w=0.5}{w=3}{x}
 置信度：high
 原因：single_visible_string
 角色：display
@@ -255,6 +255,21 @@ EVEN REVERSE THE FLOW OF TIME.{w=3}{x}
 
 ────────────────────────────────────────────────────────────────
 [17] 成功文本
+来源：a catfiend's impending relapse_Data/level0
+键位：asset#level0#156/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=156）
+原文：PROLONGED EXPOSURE TO HEALTHY COLONIES IS KNOWN TO PRODUCE A MOST RAPTUROUS HIGH.{w=3}{x}
+译文：长期接触健康殖民地环境被认为会导致最强烈的高反应性。{w=3}{x}
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[18] 成功文本
 来源：a catfiend's impending relapse_Data/level0
 键位：asset#level0#158/str/0
 对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=158）
@@ -269,7 +284,7 @@ EVEN REVERSE THE FLOW OF TIME.{w=3}{x}
 写回：已写入
 
 ────────────────────────────────────────────────────────────────
-[18] 成功文本
+[19] 成功文本
 来源：a catfiend's impending relapse_Data/level0
 键位：asset#level0#164/str/0
 对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=164）
@@ -284,7 +299,7 @@ EVEN REVERSE THE FLOW OF TIME.{w=3}{x}
 写回：已写入
 
 ────────────────────────────────────────────────────────────────
-[19] 成功文本
+[20] 成功文本
 来源：a catfiend's impending relapse_Data/level0
 键位：asset#level0#168/str/0
 对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=168）
@@ -299,7 +314,7 @@ EVEN REVERSE THE FLOW OF TIME.{w=3}{x}
 写回：已写入
 
 ────────────────────────────────────────────────────────────────
-[20] 成功文本
+[21] 成功文本
 来源：a catfiend's impending relapse_Data/level0
 键位：asset#level0#170/str/0
 对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=170）
@@ -314,7 +329,7 @@ EVEN REVERSE THE FLOW OF TIME.{w=3}{x}
 写回：已写入
 
 ────────────────────────────────────────────────────────────────
-[21] 成功文本
+[22] 成功文本
 来源：a catfiend's impending relapse_Data/level0
 键位：asset#level0#176/str/0
 对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=176）
@@ -329,7 +344,7 @@ EVEN REVERSE THE FLOW OF TIME.{w=3}{x}
 写回：已写入
 
 ────────────────────────────────────────────────────────────────
-[22] 成功文本
+[23] 成功文本
 来源：a catfiend's impending relapse_Data/level0
 键位：asset#level0#186/str/0
 对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=186）
@@ -344,7 +359,7 @@ EVEN REVERSE THE FLOW OF TIME.{w=3}{x}
 写回：已写入
 
 ────────────────────────────────────────────────────────────────
-[23] 成功文本
+[24] 成功文本
 来源：a catfiend's impending relapse_Data/level0
 键位：asset#level0#188/str/0
 对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=188）
@@ -359,7 +374,7 @@ EVEN REVERSE THE FLOW OF TIME.{w=3}{x}
 写回：已写入
 
 ────────────────────────────────────────────────────────────────
-[24] 成功文本
+[25] 成功文本
 来源：a catfiend's impending relapse_Data/level0
 键位：asset#level0#194/str/0
 对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=194）
@@ -374,7 +389,7 @@ EVEN REVERSE THE FLOW OF TIME.{w=3}{x}
 写回：已写入
 
 ────────────────────────────────────────────────────────────────
-[25] 成功文本
+[26] 成功文本
 来源：a catfiend's impending relapse_Data/level0
 键位：asset#level0#196/str/0
 对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=196）
@@ -389,7 +404,7 @@ EVEN REVERSE THE FLOW OF TIME.{w=3}{x}
 写回：已写入
 
 ────────────────────────────────────────────────────────────────
-[26] 成功文本
+[27] 成功文本
 来源：a catfiend's impending relapse_Data/level0
 键位：asset#level0#221/str/0
 对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=221）
@@ -404,7 +419,7 @@ EVEN REVERSE THE FLOW OF TIME.{w=3}{x}
 写回：已写入
 
 ────────────────────────────────────────────────────────────────
-[27] 成功文本
+[28] 成功文本
 来源：a catfiend's impending relapse_Data/level0
 键位：asset#level0#222/str/0
 对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=222）
@@ -419,7 +434,7 @@ EVEN REVERSE THE FLOW OF TIME.{w=3}{x}
 写回：已写入
 
 ────────────────────────────────────────────────────────────────
-[28] 成功文本
+[29] 成功文本
 来源：a catfiend's impending relapse_Data/level1
 键位：asset#level1#2823/str/0
 对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=2823）
@@ -434,14 +449,12 @@ EVEN REVERSE THE FLOW OF TIME.{w=3}{x}
 写回：已写入
 
 ────────────────────────────────────────────────────────────────
-[29] 成功文本
+[30] 成功文本
 来源：a catfiend's impending relapse_Data/level1
-键位：asset#level1#2850/str/0
-对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=2850）
-原文：
-KEEP YOUR HEAD ABOVE WATER.{w=3}{x}
-译文：
-将头部保持在水面以上。{w=3}{x}
+键位：asset#level1#2849/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=2849）
+原文：flowchart
+译文：流程图
 置信度：high
 原因：single_visible_string
 角色：display
@@ -451,7 +464,24 @@ KEEP YOUR HEAD ABOVE WATER.{w=3}{x}
 写回：已写入
 
 ────────────────────────────────────────────────────────────────
-[30] 成功文本
+[31] 成功文本
+来源：a catfiend's impending relapse_Data/level1
+键位：asset#level1#2850/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=2850）
+原文：
+KEEP YOUR HEAD ABOVE WATER.{w=3}{x}
+译文：
+保持头部高于水面。{w=3}{x}
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[32] 成功文本
 来源：a catfiend's impending relapse_Data/level1
 键位：asset#level1#2851/str/0
 对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=2851）
@@ -466,7 +496,7 @@ KEEP YOUR HEAD ABOVE WATER.{w=3}{x}
 写回：已写入
 
 ────────────────────────────────────────────────────────────────
-[31] 成功文本
+[33] 成功文本
 来源：a catfiend's impending relapse_Data/level1
 键位：asset#level1#2852/str/0
 对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=2852）
@@ -481,7 +511,7 @@ KEEP YOUR HEAD ABOVE WATER.{w=3}{x}
 写回：已写入
 
 ────────────────────────────────────────────────────────────────
-[32] 成功文本
+[34] 成功文本
 来源：a catfiend's impending relapse_Data/level1
 键位：asset#level1#2853/str/0
 对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=2853）
@@ -496,12 +526,12 @@ KEEP YOUR HEAD ABOVE WATER.{w=3}{x}
 写回：已写入
 
 ────────────────────────────────────────────────────────────────
-[33] 成功文本
+[35] 成功文本
 来源：a catfiend's impending relapse_Data/level1
 键位：asset#level1#2854/str/0
 对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=2854）
 原文：An overgrown dreadnought's an ornery thing, y'know?{w=3}{x}
-译文：你知道的，那种巨大的无畏舰其实是个很难对付的对手吧？{w=3}{x}
+译文：你知道的，那种庞大的无畏舰其实是个难对付的家伙吧？{w=3}{x}
 置信度：high
 原因：single_visible_string
 角色：display
@@ -511,7 +541,22 @@ KEEP YOUR HEAD ABOVE WATER.{w=3}{x}
 写回：已写入
 
 ────────────────────────────────────────────────────────────────
-[34] 成功文本
+[36] 成功文本
+来源：a catfiend's impending relapse_Data/level1
+键位：asset#level1#2858/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=2858）
+原文：milk
+译文：牛奶
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[37] 成功文本
 来源：a catfiend's impending relapse_Data/level1
 键位：asset#level1#2862/str/0
 对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=2862）
@@ -526,7 +571,7 @@ KEEP YOUR HEAD ABOVE WATER.{w=3}{x}
 写回：已写入
 
 ────────────────────────────────────────────────────────────────
-[35] 成功文本
+[38] 成功文本
 来源：a catfiend's impending relapse_Data/level1
 键位：asset#level1#2863/str/0
 对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=2863）
@@ -541,7 +586,7 @@ KEEP YOUR HEAD ABOVE WATER.{w=3}{x}
 写回：已写入
 
 ────────────────────────────────────────────────────────────────
-[36] 成功文本
+[39] 成功文本
 来源：a catfiend's impending relapse_Data/level1
 键位：asset#level1#2864/str/0
 对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=2864）
@@ -556,61 +601,12 @@ KEEP YOUR HEAD ABOVE WATER.{w=3}{x}
 写回：已写入
 
 ────────────────────────────────────────────────────────────────
-[37] 成功文本
+[40] 成功文本
 来源：a catfiend's impending relapse_Data/level1
 键位：asset#level1#2866/str/0
 对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=2866）
 原文：It looks like {punch=3,2}SHIT up here! e_e{w=3}{x}
-译文：看起来这里好像是 {punch=3,2}SHIT！e_e{w=3}{x}
-置信度：high
-原因：single_visible_string
-角色：display
-质量评分：—（passed=True）
-翻译评价：已产出译文
-需要优化：否
-写回：已写入
-
-────────────────────────────────────────────────────────────────
-[38] 成功文本
-来源：a catfiend's impending relapse_Data/level1
-键位：asset#level1#2867/str/0
-对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=2867）
-原文：— GIL KUR'S PERSONAL JOURNAL,{w=1.5}
-FOUND ADRIFT IN THE WRECCA CAVERN.{w=4}{x}
-译文：— 吉尔·库尔的个人日记,{w=1.5}
-在弗雷卡洞穴中找到了归宿。{w=4}{x}
-置信度：high
-原因：single_visible_string
-角色：display
-质量评分：—（passed=True）
-翻译评价：已产出译文
-需要优化：否
-写回：已写入
-
-────────────────────────────────────────────────────────────────
-[39] 成功文本
-来源：a catfiend's impending relapse_Data/level1
-键位：asset#level1#2872/str/0
-对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=2872）
-原文：
-a warmth that . . .{w=0.5} c a s c a d e s .{w=4}{x}
-译文：
-一种温暖感……{w=0.5} 可以消除痛苦。{w=4}{x}
-置信度：high
-原因：single_visible_string
-角色：display
-质量评分：—（passed=True）
-翻译评价：已产出译文
-需要优化：否
-写回：已写入
-
-────────────────────────────────────────────────────────────────
-[40] 成功文本
-来源：a catfiend's impending relapse_Data/level1
-键位：asset#level1#2873/str/0
-对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=2873）
-原文：I go to sleep and see indigo ripples,{w=4}{x}
-译文：我入睡后，看到的是蓝色的涟漪。{w=4}{x}
+译文：看起来这里应该是 {punch=3,2}SHIT！e_e{w=3}{x}
 置信度：high
 原因：single_visible_string
 角色：display
@@ -621,6 +617,72 @@ a warmth that . . .{w=0.5} c a s c a d e s .{w=4}{x}
 
 ────────────────────────────────────────────────────────────────
 [41] 成功文本
+来源：a catfiend's impending relapse_Data/level1
+键位：asset#level1#2867/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=2867）
+原文：— GIL KUR'S PERSONAL JOURNAL,{w=1.5}
+FOUND ADRIFT IN THE WRECCA CAVERN.{w=4}{x}
+译文：——吉尔库的个人日记，{w=1.5}
+在WRECCA的洞穴中发现了意外的发现。{w=4}{x}
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[42] 成功文本
+来源：a catfiend's impending relapse_Data/level1
+键位：asset#level1#2869/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=2869）
+原文：This, {w=0.5}err,{w=0.5} might actually be 
+difficult without certain substances.{w=3}{x}
+译文：这， {w=0.5}呃，{w=0.5} 实际上可能是
+没有某些物质的话，事情就会变得困难。{w=3}{x}
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[43] 成功文本
+来源：a catfiend's impending relapse_Data/level1
+键位：asset#level1#2872/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=2872）
+原文：
+a warmth that . . .{w=0.5} c a s c a d e s .{w=4}{x}
+译文：
+一种温暖……{w=0.5} 可以避免冲突。{w=4}{x}
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[44] 成功文本
+来源：a catfiend's impending relapse_Data/level1
+键位：asset#level1#2873/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=2873）
+原文：I go to sleep and see indigo ripples,{w=4}{x}
+译文：我入睡后，看到的是靛蓝色的波纹。{w=4}{x}
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[45] 成功文本
 来源：a catfiend's impending relapse_Data/level1
 键位：asset#level1#2875/str/0
 对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=2875）
@@ -635,13 +697,13 @@ a warmth that . . .{w=0.5} c a s c a d e s .{w=4}{x}
 写回：已写入
 
 ────────────────────────────────────────────────────────────────
-[42] 成功文本
+[46] 成功文本
 来源：a catfiend's impending relapse_Data/level1
 键位：asset#level1#2876/str/0
 对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=2876）
 原文：I can feel this cavern beyond my senses.{w=4}{x}
 
-译文：我能感受到这个洞穴的存在，而这种感觉超出了我的感官所能感知的范围。{w=4}{x}
+译文：我能感受到这个洞穴的存在，这超出了我的感官所能感知的范围。{w=4}{x}
 
 置信度：high
 原因：single_visible_string
@@ -652,12 +714,12 @@ a warmth that . . .{w=0.5} c a s c a d e s .{w=4}{x}
 写回：已写入
 
 ────────────────────────────────────────────────────────────────
-[43] 成功文本
+[47] 成功文本
 来源：a catfiend's impending relapse_Data/level1
 键位：asset#level1#2877/str/0
 对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=2877）
 原文：It's ALL my fault,{w=4}{x}
-译文：这都是我的错。{w=4}{x}
+译文：这全是我的错。{w=4}{x}
 置信度：high
 原因：single_visible_string
 角色：display
@@ -667,12 +729,12 @@ a warmth that . . .{w=0.5} c a s c a d e s .{w=4}{x}
 写回：已写入
 
 ────────────────────────────────────────────────────────────────
-[44] 成功文本
+[48] 成功文本
 来源：a catfiend's impending relapse_Data/level1
 键位：asset#level1#2878/str/0
 对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=2878）
 原文：I decide it wouldn't hurt to see the ocean again.{w=4}{x}
-译文：我决定，再看看海洋也不坏。{w=4}{x}
+译文：我决定，再看看海洋也没什么坏处吧。{w=4}{x}
 置信度：high
 原因：single_visible_string
 角色：display
@@ -682,7 +744,7 @@ a warmth that . . .{w=0.5} c a s c a d e s .{w=4}{x}
 写回：已写入
 
 ────────────────────────────────────────────────────────────────
-[45] 成功文本
+[49] 成功文本
 来源：a catfiend's impending relapse_Data/level1
 键位：asset#level1#2879/str/0
 对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=2879）
@@ -697,14 +759,14 @@ a warmth that . . .{w=0.5} c a s c a d e s .{w=4}{x}
 写回：已写入
 
 ────────────────────────────────────────────────────────────────
-[46] 成功文本
+[50] 成功文本
 来源：a catfiend's impending relapse_Data/level1
 键位：asset#level1#2880/str/0
 对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=2880）
 原文：I must remind myself of what I'm risking if, {w=4}{x}
 
 
-译文：我必须提醒自己，如果 {w=4}{x} 发生的话，我会面临什么风险。
+译文：我必须提醒自己，如果 {w=4}{x}，我将会面临什么风险。
 
 
 置信度：high
@@ -716,7 +778,7 @@ a warmth that . . .{w=0.5} c a s c a d e s .{w=4}{x}
 写回：已写入
 
 ────────────────────────────────────────────────────────────────
-[47] 成功文本
+[51] 成功文本
 来源：a catfiend's impending relapse_Data/level1
 键位：asset#level1#2882/str/0
 对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=2882）
@@ -731,7 +793,7 @@ a warmth that . . .{w=0.5} c a s c a d e s .{w=4}{x}
 写回：已写入
 
 ────────────────────────────────────────────────────────────────
-[48] 成功文本
+[52] 成功文本
 来源：a catfiend's impending relapse_Data/level1
 键位：asset#level1#2885/str/0
 对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=2885）
@@ -748,7 +810,7 @@ possibility of an outer labyrinth. e_e{w=3}{x}
 写回：已写入
 
 ────────────────────────────────────────────────────────────────
-[49] 成功文本
+[53] 成功文本
 来源：a catfiend's impending relapse_Data/level1
 键位：asset#level1#2890/str/0
 对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=2890）
@@ -763,13 +825,13 @@ possibility of an outer labyrinth. e_e{w=3}{x}
 写回：已写入
 
 ────────────────────────────────────────────────────────────────
-[50] 成功文本
+[54] 成功文本
 来源：a catfiend's impending relapse_Data/level1
 键位：asset#level1#2893/str/0
 对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=2893）
 原文：No one did this to me.{w=4}{x}
 
-译文：没有人对我这样做过。{w=4}{x}
+译文：没有人这么对我。{w=4}{x}
 
 置信度：high
 原因：single_visible_string
@@ -780,14 +842,14 @@ possibility of an outer labyrinth. e_e{w=3}{x}
 写回：已写入
 
 ────────────────────────────────────────────────────────────────
-[51] 成功文本
+[55] 成功文本
 来源：a catfiend's impending relapse_Data/level1
 键位：asset#level1#2895/str/0
 对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=2895）
 原文：
 all for what stirs beneath the surface.{w=4}{x}
 译文：
-一切都是为了那些在表面之下蠢蠢作态的事物。{w=4}{x}
+一切都是为了那些在表面之下蠢蠢作动的事物。{w=4}{x}
 置信度：high
 原因：single_visible_string
 角色：display
@@ -797,7 +859,7 @@ all for what stirs beneath the surface.{w=4}{x}
 写回：已写入
 
 ────────────────────────────────────────────────────────────────
-[52] 成功文本
+[56] 成功文本
 来源：a catfiend's impending relapse_Data/level1
 键位：asset#level1#2897/str/0
 对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=2897）
@@ -812,74 +874,12 @@ all for what stirs beneath the surface.{w=4}{x}
 写回：已写入
 
 ────────────────────────────────────────────────────────────────
-[53] 成功文本
+[57] 成功文本
 来源：a catfiend's impending relapse_Data/level1
 键位：asset#level1#2899/str/0
 对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=2899）
 原文：I'll worry about gardening after this little jaunt.{w=3}{x}
-译文：这次短途旅行之后，我会去打理花园的事情。{w=3}{x}
-置信度：high
-原因：single_visible_string
-角色：display
-质量评分：—（passed=True）
-翻译评价：已产出译文
-需要优化：否
-写回：已写入
-
-────────────────────────────────────────────────────────────────
-[54] 成功文本
-来源：a catfiend's impending relapse_Data/level1
-键位：asset#level1#2900/str/0
-对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=2900）
-原文：
-I'm still a CAT.{w=3}{x}
-译文：
-我仍然是一名CAT。{w=3}{x}
-置信度：high
-原因：single_visible_string
-角色：display
-质量评分：—（passed=True）
-翻译评价：已产出译文
-需要优化：否
-写回：已写入
-
-────────────────────────────────────────────────────────────────
-[55] 成功文本
-来源：a catfiend's impending relapse_Data/level1
-键位：asset#level1#2901/str/0
-对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=2901）
-原文：I'm not as spry as I used to be, but . . .{w=3}{x}
-译文：我不再像以前那样活跃了，但是……{w=3}{x}
-置信度：high
-原因：single_visible_string
-角色：display
-质量评分：—（passed=True）
-翻译评价：已产出译文
-需要优化：否
-写回：已写入
-
-────────────────────────────────────────────────────────────────
-[56] 成功文本
-来源：a catfiend's impending relapse_Data/level1
-键位：asset#level1#2902/str/0
-对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=2902）
-原文：Shouldn't risk bringing LABOLIS-7 much closer,{w=1.5} not after what happened to my reconnaissance drone.{w=3}{x}
-译文：难道不应该避免让 LABOLIS-7 更接近目标吗？{w=1.5}考虑到我的侦察无人机所遭遇的事情之后，实在不应该这样做。{w=3}{x}
-置信度：high
-原因：single_visible_string
-角色：display
-质量评分：—（passed=True）
-翻译评价：已产出译文
-需要优化：否
-写回：已写入
-
-────────────────────────────────────────────────────────────────
-[57] 成功文本
-来源：a catfiend's impending relapse_Data/level1
-键位：asset#level1#2903/str/0
-对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=2903）
-原文：It's possible they've all been attracted to this mysterious "maelstrom."{w=3}{x}
-译文：很可能，他们都被这个神秘的“漩涡”所吸引。{w=3}{x}
+译文：这次短途旅行之后，我会去处理园艺的事情。{w=3}{x}
 置信度：high
 原因：single_visible_string
 角色：display
@@ -891,12 +891,12 @@ I'm still a CAT.{w=3}{x}
 ────────────────────────────────────────────────────────────────
 [58] 成功文本
 来源：a catfiend's impending relapse_Data/level1
-键位：asset#level1#2904/str/0
-对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=2904）
+键位：asset#level1#2900/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=2900）
 原文：
-{punch=10,3}! !  BACTERIAL ANOMALY DETECTED  ! !{w=3}{x}
+I'm still a CAT.{w=3}{x}
 译文：
-{punch=10,3}! ! 细菌异常检测到！！！{w=3}{x}
+我还是个CAT。{w=3}{x}
 置信度：high
 原因：single_visible_string
 角色：display
@@ -908,10 +908,10 @@ I'm still a CAT.{w=3}{x}
 ────────────────────────────────────────────────────────────────
 [59] 成功文本
 来源：a catfiend's impending relapse_Data/level1
-键位：asset#level1#2905/str/0
-对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=2905）
-原文：{punch=10,3}! !  CAUTION  ! !{w=3}{x}
-译文：{punch=10,3}！！注意！！！{w=3}{x}
+键位：asset#level1#2901/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=2901）
+原文：I'm not as spry as I used to be, but . . .{w=3}{x}
+译文：我不再像以前那么活跃了，但是……{w=3}{x}
 置信度：high
 原因：single_visible_string
 角色：display
@@ -923,10 +923,10 @@ I'm still a CAT.{w=3}{x}
 ────────────────────────────────────────────────────────────────
 [60] 成功文本
 来源：a catfiend's impending relapse_Data/level1
-键位：asset#level1#2906/str/0
-对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=2906）
-原文：Now why haven't my cytomites—{w=1.5}{x}
-译文：现在，为什么我的细胞还没有生长呢？{w=1.5}{x}
+键位：asset#level1#2902/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=2902）
+原文：Shouldn't risk bringing LABOLIS-7 much closer,{w=1.5} not after what happened to my reconnaissance drone.{w=3}{x}
+译文：难道不应该避免让 LABOLIS-7 更接近目标吗？{w=1.5}毕竟我的侦察无人机已经遭遇了不幸……{w=3}{x}
 置信度：high
 原因：single_visible_string
 角色：display
@@ -938,14 +938,10 @@ I'm still a CAT.{w=3}{x}
 ────────────────────────────────────────────────────────────────
 [61] 成功文本
 来源：a catfiend's impending relapse_Data/level1
-键位：asset#level1#2909/str/0
-对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=2909）
-原文：
-APPROXIMATELY 5,108,383,000,000 NAUTICAL LIGHTYEARS 
-FROM THE GRAY HAUNT.{w=3}{x}
-译文：
-大约 5,108,383,000,000 海里光年
-来自灰色幽灵的威胁。{w=3}{x}
+键位：asset#level1#2903/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=2903）
+原文：It's possible they've all been attracted to this mysterious "maelstrom."{w=3}{x}
+译文：很可能他们都被这个神秘的“漩涡”所吸引。{w=3}{x}
 置信度：high
 原因：single_visible_string
 角色：display
@@ -957,12 +953,12 @@ FROM THE GRAY HAUNT.{w=3}{x}
 ────────────────────────────────────────────────────────────────
 [62] 成功文本
 来源：a catfiend's impending relapse_Data/level1
-键位：asset#level1#2911/str/0
-对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=2911）
-原文：So I hope it's no issue bouncing my way 
-through this dilapidated reef.{w=3}{x}
-译文：所以我希望这样不会造成任何问题。
-通过这座破败的珊瑚礁。{w=3}{x}
+键位：asset#level1#2904/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=2904）
+原文：
+{punch=10,3}! !  BACTERIAL ANOMALY DETECTED  ! !{w=3}{x}
+译文：
+{punch=10,3}! ! 检测到细菌异常！！！{w=3}{x}
 置信度：high
 原因：single_visible_string
 角色：display
@@ -973,6 +969,101 @@ through this dilapidated reef.{w=3}{x}
 
 ────────────────────────────────────────────────────────────────
 [63] 成功文本
+来源：a catfiend's impending relapse_Data/level1
+键位：asset#level1#2905/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=2905）
+原文：{punch=10,3}! !  CAUTION  ! !{w=3}{x}
+译文：{punch=10,3}! ! 注意！ !{w=3}{x}
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[64] 成功文本
+来源：a catfiend's impending relapse_Data/level1
+键位：asset#level1#2906/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=2906）
+原文：Now why haven't my cytomites—{w=1.5}{x}
+译文：现在，为什么我的细胞还没有生长呢——{w=1.5}{x}
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[65] 成功文本
+来源：a catfiend's impending relapse_Data/level1
+键位：asset#level1#2907/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=2907）
+原文：{punch=3,2}* Y A W N *{w=3}{x}
+译文：{punch=3,2}* 咻咻 *{w=3}{x}
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[66] 成功文本
+来源：a catfiend's impending relapse_Data/level1
+键位：asset#level1#2909/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=2909）
+原文：
+APPROXIMATELY 5,108,383,000,000 NAUTICAL LIGHTYEARS 
+FROM THE GRAY HAUNT.{w=3}{x}
+译文：
+大约 5,108,383,000,000 天文光年
+来自灰衣鬼魂的诅咒。{w=3}{x}
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[67] 成功文本
+来源：a catfiend's impending relapse_Data/level1
+键位：asset#level1#2910/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=2910）
+原文：— WRECCA CAVERN —{w=3}{x}
+译文：— WRECCA CAVERN —{w=3}{x}
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：回显保留原文（未实际翻译）
+需要优化：是（回显未翻译）
+写回：未执行（回显——译文与原文相同，无需写回）
+
+────────────────────────────────────────────────────────────────
+[68] 成功文本
+来源：a catfiend's impending relapse_Data/level1
+键位：asset#level1#2911/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=2911）
+原文：So I hope it's no issue bouncing my way 
+through this dilapidated reef.{w=3}{x}
+译文：所以我希望穿越这片破败的珊瑚礁不会有什么问题。{w=3}{x}
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[69] 成功文本
 来源：a catfiend's impending relapse_Data/level1
 键位：asset#level1#2914/str/0
 对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=2914）
@@ -987,7 +1078,22 @@ through this dilapidated reef.{w=3}{x}
 写回：已写入
 
 ────────────────────────────────────────────────────────────────
-[64] 成功文本
+[70] 成功文本
+来源：a catfiend's impending relapse_Data/level1
+键位：asset#level1#2918/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=2918）
+原文：kalkam
+译文：卡卡姆
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[71] 成功文本
 来源：a catfiend's impending relapse_Data/level1
 键位：asset#level1#2946/str/0
 对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=2946）
@@ -1002,7 +1108,7 @@ through this dilapidated reef.{w=3}{x}
 写回：已写入
 
 ────────────────────────────────────────────────────────────────
-[65] 成功文本
+[72] 成功文本
 来源：a catfiend's impending relapse_Data/level1
 键位：asset#level1#2951/str/0
 对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=2951）
@@ -1017,7 +1123,7 @@ through this dilapidated reef.{w=3}{x}
 写回：已写入
 
 ────────────────────────────────────────────────────────────────
-[66] 成功文本
+[73] 成功文本
 来源：a catfiend's impending relapse_Data/level1
 键位：asset#level1#2953/str/0
 对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=2953）
@@ -1032,7 +1138,7 @@ through this dilapidated reef.{w=3}{x}
 写回：已写入
 
 ────────────────────────────────────────────────────────────────
-[67] 成功文本
+[74] 成功文本
 来源：a catfiend's impending relapse_Data/level1
 键位：asset#level1#2973/str/0
 对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=2973）
@@ -1047,14 +1153,14 @@ through this dilapidated reef.{w=3}{x}
 写回：已写入
 
 ────────────────────────────────────────────────────────────────
-[68] 成功文本
+[75] 成功文本
 来源：a catfiend's impending relapse_Data/level1
 键位：asset#level1#2984/str/0
 对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=2984）
 原文：
 {punch=10,3}! !  GLISLYA COLONY DETECTED  ! !{w=0.5}{x}
 译文：
-{punch=10,3}! ! 发现 GLISLYA 殖民地！！！{w=0.5}{x}
+{punch=10,3}! ! 已检测到GLISLYA殖民地！！！{w=0.5}{x}
 置信度：high
 原因：single_visible_string
 角色：display
@@ -1064,14 +1170,14 @@ through this dilapidated reef.{w=3}{x}
 写回：已写入
 
 ────────────────────────────────────────────────────────────────
-[69] 成功文本
+[76] 成功文本
 来源：a catfiend's impending relapse_Data/level1
 键位：asset#level1#2985/str/0
 对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=2985）
 原文：
 And I'll do it WITHOUT Corradaile's cocktails.{w=3}{x}
 译文：
-我会不使用 Corradaile 的鸡尾酒来做的。{w=3}{x}
+我会不借助 Corradaile 的鸡尾酒来做到这一点。{w=3}{x}
 置信度：high
 原因：single_visible_string
 角色：display
@@ -1081,12 +1187,12 @@ And I'll do it WITHOUT Corradaile's cocktails.{w=3}{x}
 写回：已写入
 
 ────────────────────────────────────────────────────────────────
-[70] 成功文本
+[77] 成功文本
 来源：a catfiend's impending relapse_Data/level1
 键位：asset#level1#2986/str/0
 对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=2986）
 原文：The fiends therein were . . . {w=1){i}p e c u l i a r .{/i}{w=3}{x}
-译文：其中的敌人……{w=1){i}令人困惑。{/i}{w=3}{x}
+译文：其中的恶魔们……{w=1){i}令人困惑。{/i}{w=3}{x}
 置信度：high
 原因：single_visible_string
 角色：display
@@ -1096,12 +1202,27 @@ And I'll do it WITHOUT Corradaile's cocktails.{w=3}{x}
 写回：已写入
 
 ────────────────────────────────────────────────────────────────
-[71] 成功文本
+[78] 成功文本
+来源：a catfiend's impending relapse_Data/level1
+键位：asset#level1#2987/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=2987）
+原文：flowchart
+译文：流程图
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[79] 成功文本
 来源：a catfiend's impending relapse_Data/level1
 键位：asset#level1#2988/str/0
 对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=2988）
 原文：It still . . .{w=1.5} bothers me.{w=3}{x}
-译文：它仍然……{w=1.5}让我困扰。{w=3}{x}
+译文：它仍然……{w=1.5}让我感到困扰。{w=3}{x}
 置信度：high
 原因：single_visible_string
 角色：display
@@ -1111,7 +1232,7 @@ And I'll do it WITHOUT Corradaile's cocktails.{w=3}{x}
 写回：已写入
 
 ────────────────────────────────────────────────────────────────
-[72] 成功文本
+[80] 成功文本
 来源：a catfiend's impending relapse_Data/level1
 键位：asset#level1#2989/str/0
 对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=2989）
@@ -1126,7 +1247,7 @@ And I'll do it WITHOUT Corradaile's cocktails.{w=3}{x}
 写回：已写入
 
 ────────────────────────────────────────────────────────────────
-[73] 成功文本
+[81] 成功文本
 来源：a catfiend's impending relapse_Data/level1
 键位：asset#level1#2991/str/0
 对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=2991）
@@ -1141,7 +1262,22 @@ And I'll do it WITHOUT Corradaile's cocktails.{w=3}{x}
 写回：已写入
 
 ────────────────────────────────────────────────────────────────
-[74] 成功文本
+[82] 成功文本
+来源：a catfiend's impending relapse_Data/level1
+键位：asset#level1#2992/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=2992）
+原文：{punch=8, 1}* G A S P *{w=3}{x}
+译文：{punch=8, 1}* 啊！*{w=3}{x}
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[83] 成功文本
 来源：a catfiend's impending relapse_Data/level1
 键位：asset#level1#2997/str/0
 对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=2997）
@@ -1156,12 +1292,12 @@ And I'll do it WITHOUT Corradaile's cocktails.{w=3}{x}
 写回：已写入
 
 ────────────────────────────────────────────────────────────────
-[75] 成功文本
+[84] 成功文本
 来源：a catfiend's impending relapse_Data/level1
 键位：asset#level1#2998/str/0
 对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=2998）
 原文：ENTER THE VESSEL, GIL.{w=3}{x}
-译文：进入容器，吉尔。{w=3}{x}
+译文：进入船舱，吉尔。{w=3}{x}
 置信度：high
 原因：single_visible_string
 角色：display
@@ -1171,7 +1307,7 @@ And I'll do it WITHOUT Corradaile's cocktails.{w=3}{x}
 写回：已写入
 
 ────────────────────────────────────────────────────────────────
-[76] 成功文本
+[85] 成功文本
 来源：a catfiend's impending relapse_Data/level1
 键位：asset#level1#2999/str/0
 对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=2999）
@@ -1188,7 +1324,7 @@ SEEK THE DREADNOUGHT'S INNER GARDEN.{w=3}{x}
 写回：已写入
 
 ────────────────────────────────────────────────────────────────
-[77] 成功文本
+[86] 成功文本
 来源：a catfiend's impending relapse_Data/level1
 键位：asset#level1#3000/str/0
 对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=3000）
@@ -1205,12 +1341,12 @@ before it grows out of control.{w=3}{x}
 写回：已写入
 
 ────────────────────────────────────────────────────────────────
-[78] 成功文本
+[87] 成功文本
 来源：a catfiend's impending relapse_Data/level1
 键位：asset#level1#3001/str/0
 对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=3001）
 原文：I'll need to expose myself to the "discharge" if I'm to salvage the vessel.{w=3}{x}
-译文：如果我想要挽救这个容器，就必须让自己接触那种“排放物”。{w=3}{x}
+译文：如果我想要挽救这个容器，就必须让自己接触到那种“排放物”。{w=3}{x}
 置信度：high
 原因：single_visible_string
 角色：display
@@ -1220,12 +1356,12 @@ before it grows out of control.{w=3}{x}
 写回：已写入
 
 ────────────────────────────────────────────────────────────────
-[79] 成功文本
+[88] 成功文本
 来源：a catfiend's impending relapse_Data/level1
 键位：asset#level1#3002/str/0
 对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=3002）
 原文：The maelstrom must've been a bacterial storm ejection!{w=3}{x}
-译文：那股狂风暴想必就是由细菌引发的吧！{w=3}{x}
+译文：那股狂暴的流体肯定是由细菌引发的风暴产生的吧！{w=3}{x}
 置信度：high
 原因：single_visible_string
 角色：display
@@ -1235,12 +1371,12 @@ before it grows out of control.{w=3}{x}
 写回：已写入
 
 ────────────────────────────────────────────────────────────────
-[80] 成功文本
+[89] 成功文本
 来源：a catfiend's impending relapse_Data/level1
 键位：asset#level1#3003/str/0
 对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=3003）
 原文：I wonder how it got here.{w=3}{x}
-译文：我想知道它是怎么到这里的。{w=3}{x}
+译文：我想知道它是怎么来到这里的。{w=3}{x}
 置信度：high
 原因：single_visible_string
 角色：display
@@ -1250,12 +1386,12 @@ before it grows out of control.{w=3}{x}
 写回：已写入
 
 ────────────────────────────────────────────────────────────────
-[81] 成功文本
+[90] 成功文本
 来源：a catfiend's impending relapse_Data/level1
 键位：asset#level1#3005/str/0
 对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=3005）
 原文：If only there were cost-effective ways of moving them.{w=3}{x}
-译文：要是能有经济划算的运输方式就好了。{w=3}{x}
+译文：要是能有经济实惠的运输方式就好了。{w=3}{x}
 置信度：high
 原因：single_visible_string
 角色：display
@@ -1265,12 +1401,12 @@ before it grows out of control.{w=3}{x}
 写回：已写入
 
 ────────────────────────────────────────────────────────────────
-[82] 成功文本
+[91] 成功文本
 来源：a catfiend's impending relapse_Data/level1
 键位：asset#level1#3006/str/0
 对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=3006）
 原文：And experience a high like no other . . .{w=3}{x}
-译文：并体验一种前所未有的美妙感受……{w=3}{x}
+译文：并体验一种前所未有的愉悦感……{w=3}{x}
 置信度：high
 原因：single_visible_string
 角色：display
@@ -1280,12 +1416,12 @@ before it grows out of control.{w=3}{x}
 写回：已写入
 
 ────────────────────────────────────────────────────────────────
-[83] 成功文本
+[92] 成功文本
 来源：a catfiend's impending relapse_Data/level1
 键位：asset#level1#3008/str/0
 对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=3008）
 原文："ONLY A FEW DROPS," they'd say.{w=3}{x}
-译文：“只有几滴而已，”他们会这么说。{w=3}{x}
+译文：“只有几滴而已，”他们会说。{w=3}{x}
 置信度：high
 原因：single_visible_string
 角色：display
@@ -1295,7 +1431,7 @@ before it grows out of control.{w=3}{x}
 写回：已写入
 
 ────────────────────────────────────────────────────────────────
-[84] 成功文本
+[93] 成功文本
 来源：a catfiend's impending relapse_Data/level1
 键位：asset#level1#3009/str/0
 对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=3009）
@@ -1310,14 +1446,14 @@ before it grows out of control.{w=3}{x}
 写回：已写入
 
 ────────────────────────────────────────────────────────────────
-[85] 成功文本
+[94] 成功文本
 来源：a catfiend's impending relapse_Data/level1
 键位：asset#level1#3010/str/0
 对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=3010）
 原文：A sandstone ruin stricken with streams of 
 not-milk out of distant DRR.{w=3}{x}
 译文：一座被溪流侵蚀的砂岩废墟
-非牛奶来源的，来自遥远地区的DRR。{w=3}{x}
+非牛奶来源的、来自遥远地区的产品。{w=3}{x}
 置信度：high
 原因：single_visible_string
 角色：display
@@ -1327,13 +1463,13 @@ not-milk out of distant DRR.{w=3}{x}
 写回：已写入
 
 ────────────────────────────────────────────────────────────────
-[86] 成功文本
+[95] 成功文本
 来源：a catfiend's impending relapse_Data/level1
 键位：asset#level1#3011/str/0
 对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=3011）
 原文：A colony like this would be an absolute 
 GODSEND back home . . .{w=3}{x}
-译文：这样的殖民地绝对是个了不起的东西。
+译文：这样的殖民地绝对是个不错的选择。
 愿上帝保佑你们回家……{w=3}{x}
 置信度：high
 原因：single_visible_string
@@ -1344,12 +1480,12 @@ GODSEND back home . . .{w=3}{x}
 写回：已写入
 
 ────────────────────────────────────────────────────────────────
-[87] 成功文本
+[96] 成功文本
 来源：a catfiend's impending relapse_Data/level1
 键位：asset#level1#3012/str/0
 对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=3012）
 原文："Aren't you a little too OLD for that? You'll—"{w=3}{x}
-译文：你不是年纪太大了吗？你会……{w=3}{x}
+译文：你不是年纪太大了吗？你会——{w=3}{x}
 置信度：high
 原因：single_visible_string
 角色：display
@@ -1359,12 +1495,12 @@ GODSEND back home . . .{w=3}{x}
 写回：已写入
 
 ────────────────────────────────────────────────────────────────
-[88] 成功文本
+[97] 成功文本
 来源：a catfiend's impending relapse_Data/level1
 键位：asset#level1#3013/str/0
 对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=3013）
 原文：Can't keep my head above water, I suppose.{w=3}{x}
-译文：我想，我实在无法维持下去了。{w=3}{x}
+译文：我想，我实在无法保持清醒了。{w=3}{x}
 置信度：high
 原因：single_visible_string
 角色：display
@@ -1374,7 +1510,7 @@ GODSEND back home . . .{w=3}{x}
 写回：已写入
 
 ────────────────────────────────────────────────────────────────
-[89] 成功文本
+[98] 成功文本
 来源：a catfiend's impending relapse_Data/level1
 键位：asset#level1#3014/str/0
 对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=3014）
@@ -1389,12 +1525,12 @@ GODSEND back home . . .{w=3}{x}
 写回：已写入
 
 ────────────────────────────────────────────────────────────────
-[90] 成功文本
+[99] 成功文本
 来源：a catfiend's impending relapse_Data/level1
 键位：asset#level1#3015/str/0
 对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=3015）
 原文：I wonder what brought it to mind.{w=3}{x}
-译文：我想知道是什么让我想到它了。{w=3}{x}
+译文：我想知道是什么让我想起了它。{w=3}{x}
 置信度：high
 原因：single_visible_string
 角色：display
@@ -1404,12 +1540,12 @@ GODSEND back home . . .{w=3}{x}
 写回：已写入
 
 ────────────────────────────────────────────────────────────────
-[91] 成功文本
+[100] 成功文本
 来源：a catfiend's impending relapse_Data/level1
 键位：asset#level1#3018/str/0
 对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=3018）
 原文：{punch=10,3}! !  CAUTION  ! !{w=3}{x}
-译文：{punch=10,3}！！注意！！！{w=3}{x}
+译文：{punch=10,3}! ! 注意！ !{w=3}{x}
 置信度：high
 原因：single_visible_string
 角色：display
@@ -1419,7 +1555,7 @@ GODSEND back home . . .{w=3}{x}
 写回：已写入
 
 ────────────────────────────────────────────────────────────────
-[92] 成功文本
+[101] 成功文本
 来源：a catfiend's impending relapse_Data/level1
 键位：asset#level1#3019/str/0
 对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=3019）
@@ -1434,13 +1570,13 @@ GODSEND back home . . .{w=3}{x}
 写回：未执行（回显——译文与原文相同，无需写回）
 
 ────────────────────────────────────────────────────────────────
-[93] 成功文本
+[102] 成功文本
 来源：a catfiend's impending relapse_Data/level1
 键位：asset#level1#3020/str/0
 对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=3020）
 原文：A malfunctioning dreadnought's a dangerous thing, y'know?{w=3}{x}
 
-译文：你知道的，出故障的战列舰可是很危险的。{w=3}{x}
+译文：你知道的，故障状态的无畏舰可是很危险的。{w=3}{x}
 
 置信度：high
 原因：single_visible_string
@@ -1451,12 +1587,12 @@ GODSEND back home . . .{w=3}{x}
 写回：已写入
 
 ────────────────────────────────────────────────────────────────
-[94] 成功文本
+[103] 成功文本
 来源：a catfiend's impending relapse_Data/level1
 键位：asset#level1#3021/str/0
 对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=3021）
 原文：YEAH, OKAY—{punch=10,1}FUCK OFF, YUL.{w=3}{x}
-译文：是的，好吧——{punch=10,1}去你的吧，YUL。{w=3}{x}
+译文：是的，没问题——{punch=10,1}滚开，YUL。{w=3}{x}
 置信度：high
 原因：single_visible_string
 角色：display
@@ -1466,7 +1602,7 @@ GODSEND back home . . .{w=3}{x}
 写回：已写入
 
 ────────────────────────────────────────────────────────────────
-[95] 成功文本
+[104] 成功文本
 来源：a catfiend's impending relapse_Data/level1
 键位：asset#level1#3022/str/0
 对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=3022）
@@ -1481,12 +1617,12 @@ GODSEND back home . . .{w=3}{x}
 写回：已写入
 
 ────────────────────────────────────────────────────────────────
-[96] 成功文本
+[105] 成功文本
 来源：a catfiend's impending relapse_Data/level1
 键位：asset#level1#3023/str/0
 对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=3023）
 原文：It's just so GRAY and EMPTY this far out.{w=3}{x}
-译文：在这里，四周一片灰暗而空旷。{w=3}{x}
+译文：在这么远的地方，周围一片灰色且空荡荡的。{w=3}{x}
 置信度：high
 原因：single_visible_string
 角色：display
@@ -1496,7 +1632,7 @@ GODSEND back home . . .{w=3}{x}
 写回：已写入
 
 ────────────────────────────────────────────────────────────────
-[97] 成功文本
+[106] 成功文本
 来源：a catfiend's impending relapse_Data/level1
 键位：asset#level1#3024/str/0
 对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=3024）
@@ -1511,12 +1647,12 @@ GODSEND back home . . .{w=3}{x}
 写回：已写入
 
 ────────────────────────────────────────────────────────────────
-[98] 成功文本
+[107] 成功文本
 来源：a catfiend's impending relapse_Data/level1
 键位：asset#level1#3025/str/0
 对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=3025）
 原文：Almost feels like home, huh?{w=3}{x}
-译文：简直就像家一样，对吧？{w=3}{x}
+译文：感觉就像在家一样，对吧？{w=3}{x}
 置信度：high
 原因：single_visible_string
 角色：display
@@ -1526,7 +1662,7 @@ GODSEND back home . . .{w=3}{x}
 写回：已写入
 
 ────────────────────────────────────────────────────────────────
-[99] 成功文本
+[108] 成功文本
 来源：a catfiend's impending relapse_Data/level1
 键位：asset#level1#3027/str/0
 对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=3027）
@@ -1541,12 +1677,12 @@ GODSEND back home . . .{w=3}{x}
 写回：已写入
 
 ────────────────────────────────────────────────────────────────
-[100] 成功文本
+[109] 成功文本
 来源：a catfiend's impending relapse_Data/level1
 键位：asset#level1#3028/str/0
 对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=3028）
 原文：Yet here I am trying to rationalize a relapse!{w=3}{x}
-译文：然而，我现在却试图为这次复发找借口！{w=3}{x}
+译文：然而，我现在却试图为这种复发找借口！{w=3}{x}
 置信度：high
 原因：single_visible_string
 角色：display
@@ -1556,7 +1692,7 @@ GODSEND back home . . .{w=3}{x}
 写回：已写入
 
 ────────────────────────────────────────────────────────────────
-[101] 成功文本
+[110] 成功文本
 来源：a catfiend's impending relapse_Data/level1
 键位：asset#level1#3030/str/0
 对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=3030）
@@ -1573,12 +1709,12 @@ GODSEND back home . . .{w=3}{x}
 写回：已写入
 
 ────────────────────────────────────────────────────────────────
-[102] 成功文本
+[111] 成功文本
 来源：a catfiend's impending relapse_Data/level1
 键位：asset#level1#3032/str/0
 对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=3032）
 原文：I shouldn't have come here.{w=3}{x}
-译文：我不应该来这里。{w=3}{x}
+译文：我不该来这里的。{w=3}{x}
 置信度：high
 原因：single_visible_string
 角色：display
@@ -1588,12 +1724,12 @@ GODSEND back home . . .{w=3}{x}
 写回：已写入
 
 ────────────────────────────────────────────────────────────────
-[103] 成功文本
+[112] 成功文本
 来源：a catfiend's impending relapse_Data/level1
 键位：asset#level1#3033/str/0
 对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=3033）
 原文：A shame I'll need to dissipate such a healthy colony!{w=3}{x}
-译文：真可惜，我不得不让这么一个健康的群体灭绝了！{w=3}{x}
+译文：真可惜，我不得不消灭这么一个健康的群体！{w=3}{x}
 置信度：high
 原因：single_visible_string
 角色：display
@@ -1603,7 +1739,7 @@ GODSEND back home . . .{w=3}{x}
 写回：已写入
 
 ────────────────────────────────────────────────────────────────
-[104] 成功文本
+[113] 成功文本
 来源：a catfiend's impending relapse_Data/level1
 键位：asset#level1#3034/str/0
 对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=3034）
@@ -1620,12 +1756,12 @@ this OBVIOUSLY requires further investigation.{w=3}{x}
 写回：已写入
 
 ────────────────────────────────────────────────────────────────
-[105] 成功文本
+[114] 成功文本
 来源：a catfiend's impending relapse_Data/level1
 键位：asset#level1#3035/str/0
 对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=3035）
 原文：It's no wonder the Gray Haunt’s the way it is.{w=3}{x}
-译文：难怪格雷幽灵会如此行事。{w=3}{x}
+译文：难怪格雷幽灵团会如此行事。{w=3}{x}
 置信度：high
 原因：single_visible_string
 角色：display
@@ -1635,7 +1771,7 @@ this OBVIOUSLY requires further investigation.{w=3}{x}
 写回：已写入
 
 ────────────────────────────────────────────────────────────────
-[106] 成功文本
+[115] 成功文本
 来源：a catfiend's impending relapse_Data/level1
 键位：asset#level1#3036/str/0
 对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=3036）
@@ -1650,7 +1786,7 @@ this OBVIOUSLY requires further investigation.{w=3}{x}
 写回：已写入
 
 ────────────────────────────────────────────────────────────────
-[107] 成功文本
+[116] 成功文本
 来源：a catfiend's impending relapse_Data/level1
 键位：asset#level1#3038/str/0
 对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=3038）
@@ -1665,7 +1801,7 @@ this OBVIOUSLY requires further investigation.{w=3}{x}
 写回：已写入
 
 ────────────────────────────────────────────────────────────────
-[108] 成功文本
+[117] 成功文本
 来源：a catfiend's impending relapse_Data/level1
 键位：asset#level1#3039/str/0
 对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=3039）
@@ -1680,12 +1816,12 @@ this OBVIOUSLY requires further investigation.{w=3}{x}
 写回：已写入
 
 ────────────────────────────────────────────────────────────────
-[109] 成功文本
+[118] 成功文本
 来源：a catfiend's impending relapse_Data/level1
 键位：asset#level1#3043/str/0
 对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=3043）
 原文：You don't come by this sort of warmth often . . .{w=3}{x}
-译文：你并不常能感受到这种温暖……{w=3}{x}
+译文：你并不经常能遇到这种温暖……{w=3}{x}
 置信度：high
 原因：single_visible_string
 角色：display
@@ -1695,14 +1831,14 @@ this OBVIOUSLY requires further investigation.{w=3}{x}
 写回：已写入
 
 ────────────────────────────────────────────────────────────────
-[110] 成功文本
+[119] 成功文本
 来源：a catfiend's impending relapse_Data/level1
 键位：asset#level1#3044/str/0
 对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=3044）
 原文："Can't overcome a dreadnought's defenses 
 through sober eyes," huh?{w=3}{x}
-译文：无法突破无畏舰的防御体系
-“用清醒的眼神来看吧，”是吗？{w=3}{x}
+译文：无法突破无畏舰的防御工事
+“用清醒的眼光来看吧，”是吗？{w=3}{x}
 置信度：high
 原因：single_visible_string
 角色：display
@@ -1712,7 +1848,7 @@ through sober eyes," huh?{w=3}{x}
 写回：已写入
 
 ────────────────────────────────────────────────────────────────
-[111] 成功文本
+[120] 成功文本
 来源：a catfiend's impending relapse_Data/level1
 键位：asset#level1#3045/str/0
 对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=3045）
@@ -1727,12 +1863,12 @@ through sober eyes," huh?{w=3}{x}
 写回：已写入
 
 ────────────────────────────────────────────────────────────────
-[112] 成功文本
+[121] 成功文本
 来源：a catfiend's impending relapse_Data/level1
 键位：asset#level1#3046/str/0
 对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=3046）
 原文：I am {punch=3,2}NOT who I used to be.{w=3}{x}
-译文：我 {punch=3,2}不是我以前的样子。{w=3}{x}
+译文：我已不再是曾经的我了。{punch=3,2}{w=3}{x}
 置信度：high
 原因：single_visible_string
 角色：display
@@ -1742,7 +1878,7 @@ through sober eyes," huh?{w=3}{x}
 写回：已写入
 
 ────────────────────────────────────────────────────────────────
-[113] 成功文本
+[122] 成功文本
 来源：a catfiend's impending relapse_Data/level1
 键位：asset#level1#3047/str/0
 对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=3047）
@@ -1757,7 +1893,7 @@ through sober eyes," huh?{w=3}{x}
 写回：已写入
 
 ────────────────────────────────────────────────────────────────
-[114] 成功文本
+[123] 成功文本
 来源：a catfiend's impending relapse_Data/level1
 键位：asset#level1#3049/str/0
 对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=3049）
@@ -1772,14 +1908,14 @@ through sober eyes," huh?{w=3}{x}
 写回：已写入
 
 ────────────────────────────────────────────────────────────────
-[115] 成功文本
+[124] 成功文本
 来源：a catfiend's impending relapse_Data/level1
 键位：asset#level1#3051/str/0
 对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=3051）
 原文：
 even if it's literally eating me alive . . .{w=3}{x}
 译文：
-即使这真的要把我活活吃掉了……{w=3}{x}
+即使这真的会把我活活吃掉……{w=3}{x}
 置信度：high
 原因：single_visible_string
 角色：display
@@ -1789,7 +1925,7 @@ even if it's literally eating me alive . . .{w=3}{x}
 写回：已写入
 
 ────────────────────────────────────────────────────────────────
-[116] 成功文本
+[125] 成功文本
 来源：a catfiend's impending relapse_Data/level1
 键位：asset#level1#3052/str/0
 对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=3052）
@@ -1804,7 +1940,7 @@ even if it's literally eating me alive . . .{w=3}{x}
 写回：已写入
 
 ────────────────────────────────────────────────────────────────
-[117] 成功文本
+[126] 成功文本
 来源：a catfiend's impending relapse_Data/level1
 键位：asset#level1#3053/str/0
 对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=3053）
@@ -1819,14 +1955,14 @@ even if it's literally eating me alive . . .{w=3}{x}
 写回：已写入
 
 ────────────────────────────────────────────────────────────────
-[118] 成功文本
+[127] 成功文本
 来源：a catfiend's impending relapse_Data/level1
 键位：asset#level1#3054/str/0
 对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=3054）
 原文：
 waiting for the "PLEASURE PALACE" to reveal itself.{w=3}{x}
 译文：
-等待“欢乐宫殿”的显现。{w=3}{x}
+等待“愉悦宫殿”的显现。{w=3}{x}
 置信度：high
 原因：single_visible_string
 角色：display
@@ -1836,7 +1972,7 @@ waiting for the "PLEASURE PALACE" to reveal itself.{w=3}{x}
 写回：已写入
 
 ────────────────────────────────────────────────────────────────
-[119] 成功文本
+[128] 成功文本
 来源：a catfiend's impending relapse_Data/level1
 键位：asset#level1#3056/str/0
 对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=3056）
@@ -1851,12 +1987,12 @@ waiting for the "PLEASURE PALACE" to reveal itself.{w=3}{x}
 写回：已写入
 
 ────────────────────────────────────────────────────────────────
-[120] 成功文本
+[129] 成功文本
 来源：a catfiend's impending relapse_Data/level1
 键位：asset#level1#3057/str/0
 对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=3057）
 原文：I . . .{w=1.5} sure hope not.{w=3}{x}
-译文：我……希望不会如此。{w=1.5}{w=3}{x}
+译文：我……希望不会如此吧。{w=1.5}{w=3}{x}
 置信度：high
 原因：single_visible_string
 角色：display
@@ -1866,7 +2002,7 @@ waiting for the "PLEASURE PALACE" to reveal itself.{w=3}{x}
 写回：已写入
 
 ────────────────────────────────────────────────────────────────
-[121] 成功文本
+[130] 成功文本
 来源：a catfiend's impending relapse_Data/level1
 键位：asset#level1#3058/str/0
 对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=3058）
@@ -1881,12 +2017,12 @@ waiting for the "PLEASURE PALACE" to reveal itself.{w=3}{x}
 写回：已写入
 
 ────────────────────────────────────────────────────────────────
-[122] 成功文本
+[131] 成功文本
 来源：a catfiend's impending relapse_Data/level1
 键位：asset#level1#3062/str/0
 对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=3062）
 原文：Well, {w=1.5}I was RIGHT.{w=3}{x}
-译文：嗯，{w=1.5}我的判断是正确的。{w=3}{x}
+译文：嗯，{w=1.5}我是对的。{w=3}{x}
 置信度：high
 原因：single_visible_string
 角色：display
@@ -1896,7 +2032,7 @@ waiting for the "PLEASURE PALACE" to reveal itself.{w=3}{x}
 写回：已写入
 
 ────────────────────────────────────────────────────────────────
-[123] 成功文本
+[132] 成功文本
 来源：a catfiend's impending relapse_Data/level1
 键位：asset#level1#3063/str/0
 对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=3063）
@@ -1911,7 +2047,7 @@ waiting for the "PLEASURE PALACE" to reveal itself.{w=3}{x}
 写回：已写入
 
 ────────────────────────────────────────────────────────────────
-[124] 成功文本
+[133] 成功文本
 来源：a catfiend's impending relapse_Data/level1
 键位：asset#level1#3065/str/0
 对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=3065）
@@ -1926,12 +2062,12 @@ waiting for the "PLEASURE PALACE" to reveal itself.{w=3}{x}
 写回：已写入
 
 ────────────────────────────────────────────────────────────────
-[125] 成功文本
+[134] 成功文本
 来源：a catfiend's impending relapse_Data/level1
 键位：asset#level1#3066/str/0
 对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=3066）
 原文：I shan't be swayed by this . . .{w=1.5} dark cathedral's cytological hallways.{w=3}{x}
-译文：我不会被这一点所动摇的……{w=1.5} 黑暗大教堂的细胞学走廊。{w=3}{x}
+译文：我不会被这种景象所动摇的……{w=1.5}那座黑暗的教堂里的细胞学走廊。{w=3}{x}
 置信度：high
 原因：single_visible_string
 角色：display
@@ -1941,7 +2077,7 @@ waiting for the "PLEASURE PALACE" to reveal itself.{w=3}{x}
 写回：已写入
 
 ────────────────────────────────────────────────────────────────
-[126] 成功文本
+[135] 成功文本
 来源：a catfiend's impending relapse_Data/level1
 键位：asset#level1#3067/str/0
 对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=3067）
@@ -1956,7 +2092,7 @@ waiting for the "PLEASURE PALACE" to reveal itself.{w=3}{x}
 写回：已写入
 
 ────────────────────────────────────────────────────────────────
-[127] 成功文本
+[136] 成功文本
 来源：a catfiend's impending relapse_Data/level1
 键位：asset#level1#3068/str/0
 对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=3068）
@@ -1971,12 +2107,12 @@ waiting for the "PLEASURE PALACE" to reveal itself.{w=3}{x}
 写回：已写入
 
 ────────────────────────────────────────────────────────────────
-[128] 成功文本
+[137] 成功文本
 来源：a catfiend's impending relapse_Data/level1
 键位：asset#level1#3069/str/0
 对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=3069）
 原文：ANYWAY . . . {w=3}{x}
-译文：无论如何……{w=3}{x}
+译文：不管怎样……{w=3}{x}
 置信度：high
 原因：single_visible_string
 角色：display
@@ -1986,7 +2122,7 @@ waiting for the "PLEASURE PALACE" to reveal itself.{w=3}{x}
 写回：已写入
 
 ────────────────────────────────────────────────────────────────
-[129] 成功文本
+[138] 成功文本
 来源：a catfiend's impending relapse_Data/level1
 键位：asset#level1#3072/str/0
 对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=3072）
@@ -2001,7 +2137,7 @@ waiting for the "PLEASURE PALACE" to reveal itself.{w=3}{x}
 写回：已写入
 
 ────────────────────────────────────────────────────────────────
-[130] 成功文本
+[139] 成功文本
 来源：a catfiend's impending relapse_Data/level1
 键位：asset#level1#3073/str/0
 对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=3073）
@@ -2016,12 +2152,12 @@ waiting for the "PLEASURE PALACE" to reveal itself.{w=3}{x}
 写回：已写入
 
 ────────────────────────────────────────────────────────────────
-[131] 成功文本
+[140] 成功文本
 来源：a catfiend's impending relapse_Data/level1
 键位：asset#level1#3074/str/0
 对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=3074）
 原文：It'll go against regulations, but . . .{w=3}{x}
-译文：这会违反规定，但是……{w=3}{x}
+译文：这会违反相关规定，但是……{w=3}{x}
 置信度：high
 原因：single_visible_string
 角色：display
@@ -2031,7 +2167,7 @@ waiting for the "PLEASURE PALACE" to reveal itself.{w=3}{x}
 写回：已写入
 
 ────────────────────────────────────────────────────────────────
-[132] 成功文本
+[141] 成功文本
 来源：a catfiend's impending relapse_Data/level1
 键位：asset#level1#3076/str/0
 对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=3076）
@@ -2048,12 +2184,12 @@ Like, {w=1.5}a {punch=3,1}DOLORIFIAN cigarette.{w=3}{x}
 写回：已写入
 
 ────────────────────────────────────────────────────────────────
-[133] 成功文本
+[142] 成功文本
 来源：a catfiend's impending relapse_Data/level1
 键位：asset#level1#3077/str/0
 对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=3077）
 原文：{i}I know that I will.{/i}{w=3}{x}
-译文：{i}我知道我会的。{/i}{w=3}{x}
+译文：{i}我知道我一定会这么做。{/i}{w=3}{x}
 置信度：high
 原因：single_visible_string
 角色：display
@@ -2063,12 +2199,12 @@ Like, {w=1.5}a {punch=3,1}DOLORIFIAN cigarette.{w=3}{x}
 写回：已写入
 
 ────────────────────────────────────────────────────────────────
-[134] 成功文本
+[143] 成功文本
 来源：a catfiend's impending relapse_Data/level1
 键位：asset#level1#3078/str/0
 对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=3078）
 原文：I can already feel myself sinking . . .{w=3}{x}
-译文：我已经开始感到自己要沉下去了……{w=3}{x}
+译文：我已经感觉到自己正在下沉了……{w=3}{x}
 置信度：high
 原因：single_visible_string
 角色：display
@@ -2078,7 +2214,7 @@ Like, {w=1.5}a {punch=3,1}DOLORIFIAN cigarette.{w=3}{x}
 写回：已写入
 
 ────────────────────────────────────────────────────────────────
-[135] 成功文本
+[144] 成功文本
 来源：a catfiend's impending relapse_Data/level1
 键位：asset#level1#3079/str/0
 对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=3079）
@@ -2095,7 +2231,7 @@ Like, {w=1.5}a {punch=3,1}DOLORIFIAN cigarette.{w=3}{x}
 写回：已写入
 
 ────────────────────────────────────────────────────────────────
-[136] 成功文本
+[145] 成功文本
 来源：a catfiend's impending relapse_Data/level1
 键位：asset#level1#3082/str/0
 对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=3082）
@@ -2110,14 +2246,14 @@ Like, {w=1.5}a {punch=3,1}DOLORIFIAN cigarette.{w=3}{x}
 写回：已写入
 
 ────────────────────────────────────────────────────────────────
-[137] 成功文本
+[146] 成功文本
 来源：a catfiend's impending relapse_Data/level1
 键位：asset#level1#3083/str/0
 对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=3083）
 原文：
 But they're {punch=3,1}NOT.{w=3}{x}
 译文：
-但它们是 {punch=3,1}不是.{w=3}{x}
+但它们是{punch=3,1}不是.{w=3}{x}
 置信度：high
 原因：single_visible_string
 角色：display
@@ -2127,12 +2263,12 @@ But they're {punch=3,1}NOT.{w=3}{x}
 写回：已写入
 
 ────────────────────────────────────────────────────────────────
-[138] 成功文本
+[147] 成功文本
 来源：a catfiend's impending relapse_Data/level1
 键位：asset#level1#3084/str/0
 对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=3084）
 原文：My struggles feel . . .{w=1.5} external.{w=3}{x}
-译文：我的挣扎感觉……像是外部因素造成的。{w=1.5}{w=3}{x}
+译文：我的挣扎感觉……像是外部因素导致的。{w=1.5}{w=3}{x}
 置信度：high
 原因：single_visible_string
 角色：display
@@ -2142,12 +2278,12 @@ But they're {punch=3,1}NOT.{w=3}{x}
 写回：已写入
 
 ────────────────────────────────────────────────────────────────
-[139] 成功文本
+[148] 成功文本
 来源：a catfiend's impending relapse_Data/level1
 键位：asset#level1#3085/str/0
 对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=3085）
 原文：Didn't they invite me to drink from those lactescent streamlets alongside them?{w=3}{x}
-译文：他们不是邀请我和他们一起喝那些甘甜的水流吗？{w=3}{x}
+译文：他们不是邀请我和他们一起从那些清澈的溪流中饮水吗？{w=3}{x}
 置信度：high
 原因：single_visible_string
 角色：display
@@ -2157,7 +2293,7 @@ But they're {punch=3,1}NOT.{w=3}{x}
 写回：已写入
 
 ────────────────────────────────────────────────────────────────
-[140] 成功文本
+[149] 成功文本
 来源：a catfiend's impending relapse_Data/level1
 键位：asset#level1#3086/str/0
 对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=3086）
@@ -2174,7 +2310,7 @@ at least of my own absentminded designs.{w=3}{x}
 写回：已写入
 
 ────────────────────────────────────────────────────────────────
-[141] 成功文本
+[150] 成功文本
 来源：a catfiend's impending relapse_Data/level1
 键位：asset#level1#3087/str/0
 对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=3087）
@@ -2189,7 +2325,7 @@ at least of my own absentminded designs.{w=3}{x}
 写回：已写入
 
 ────────────────────────────────────────────────────────────────
-[142] 成功文本
+[151] 成功文本
 来源：a catfiend's impending relapse_Data/level1
 键位：asset#level1#3088/str/0
 对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=3088）
@@ -2204,14 +2340,14 @@ at least of my own absentminded designs.{w=3}{x}
 写回：已写入
 
 ────────────────────────────────────────────────────────────────
-[143] 成功文本
+[152] 成功文本
 来源：a catfiend's impending relapse_Data/level1
 键位：asset#level1#3089/str/0
 对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=3089）
 原文：
 I'll get used to it.{w=3}{x}
 译文：
-我会慢慢适应的。{w=3}{x}
+我会慢慢习惯的。{w=3}{x}
 置信度：high
 原因：single_visible_string
 角色：display
@@ -2221,7 +2357,7 @@ I'll get used to it.{w=3}{x}
 写回：已写入
 
 ────────────────────────────────────────────────────────────────
-[144] 成功文本
+[153] 成功文本
 来源：a catfiend's impending relapse_Data/level1
 键位：asset#level1#3090/str/0
 对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=3090）
@@ -2236,7 +2372,7 @@ I'll get used to it.{w=3}{x}
 写回：已写入
 
 ────────────────────────────────────────────────────────────────
-[145] 成功文本
+[154] 成功文本
 来源：a catfiend's impending relapse_Data/level1
 键位：asset#level1#3091/str/0
 对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=3091）
@@ -2251,7 +2387,7 @@ I'll get used to it.{w=3}{x}
 写回：已写入
 
 ────────────────────────────────────────────────────────────────
-[146] 成功文本
+[155] 成功文本
 来源：a catfiend's impending relapse_Data/level1
 键位：asset#level1#3092/str/0
 对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=3092）
@@ -2268,14 +2404,14 @@ half-buried in an ashen desert.{w=3}{x}
 写回：已写入
 
 ────────────────────────────────────────────────────────────────
-[147] 成功文本
+[156] 成功文本
 来源：a catfiend's impending relapse_Data/level1
 键位：asset#level1#3093/str/0
 对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=3093）
 原文：
 it only happened to poor Gef.{w=3}{x}
 译文：
-这只发生在可怜的Gef身上而已。{w=3}{x}
+这只是不幸的Gef. {w=3}{x}所遭遇的事情而已。
 置信度：high
 原因：single_visible_string
 角色：display
@@ -2285,7 +2421,7 @@ it only happened to poor Gef.{w=3}{x}
 写回：已写入
 
 ────────────────────────────────────────────────────────────────
-[148] 成功文本
+[157] 成功文本
 来源：a catfiend's impending relapse_Data/level1
 键位：asset#level1#3094/str/0
 对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=3094）
@@ -2302,7 +2438,7 @@ I can SEE it. e_e{w=3}{x}
 写回：已写入
 
 ────────────────────────────────────────────────────────────────
-[149] 成功文本
+[158] 成功文本
 来源：a catfiend's impending relapse_Data/level1
 键位：asset#level1#3095/str/0
 对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=3095）
@@ -2317,7 +2453,7 @@ I can SEE it. e_e{w=3}{x}
 写回：已写入
 
 ────────────────────────────────────────────────────────────────
-[150] 成功文本
+[159] 成功文本
 来源：a catfiend's impending relapse_Data/level1
 键位：asset#level1#3098/str/0
 对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=3098）
@@ -2332,12 +2468,12 @@ I can SEE it. e_e{w=3}{x}
 写回：已写入
 
 ────────────────────────────────────────────────────────────────
-[151] 成功文本
+[160] 成功文本
 来源：a catfiend's impending relapse_Data/level1
 键位：asset#level1#3099/str/0
 对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=3099）
 原文：I can't let these old habits resurface . . .{w=3}{x}
-译文：我不能让这些旧习惯重新出现……{w=3}{x}
+译文：我无法让这些旧习惯重新出现……{w=3}{x}
 置信度：high
 原因：single_visible_string
 角色：display
@@ -2347,7 +2483,7 @@ I can SEE it. e_e{w=3}{x}
 写回：已写入
 
 ────────────────────────────────────────────────────────────────
-[152] 成功文本
+[161] 成功文本
 来源：a catfiend's impending relapse_Data/level1
 键位：asset#level1#3101/str/0
 对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=3101）
@@ -2362,7 +2498,7 @@ I can SEE it. e_e{w=3}{x}
 写回：已写入
 
 ────────────────────────────────────────────────────────────────
-[153] 成功文本
+[162] 成功文本
 来源：a catfiend's impending relapse_Data/level1
 键位：asset#level1#3102/str/0
 对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=3102）
@@ -2377,7 +2513,7 @@ I can SEE it. e_e{w=3}{x}
 写回：已写入
 
 ────────────────────────────────────────────────────────────────
-[154] 成功文本
+[163] 成功文本
 来源：a catfiend's impending relapse_Data/level1
 键位：asset#level1#3103/str/0
 对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=3103）
@@ -2392,12 +2528,12 @@ I can SEE it. e_e{w=3}{x}
 写回：已写入
 
 ────────────────────────────────────────────────────────────────
-[155] 成功文本
+[164] 成功文本
 来源：a catfiend's impending relapse_Data/level1
 键位：asset#level1#3104/str/0
 对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=3104）
 原文：This all feels . . . {w=1.5}uncanny.{w=3}{x}
-译文：这一切感觉……真是不可思议啊。{w=1.5}{w=3}{x}
+译文：这一切看起来……真是不可思议啊。{w=1.5}{w=3}{x}
 置信度：high
 原因：single_visible_string
 角色：display
@@ -2407,12 +2543,12 @@ I can SEE it. e_e{w=3}{x}
 写回：已写入
 
 ────────────────────────────────────────────────────────────────
-[156] 成功文本
+[165] 成功文本
 来源：a catfiend's impending relapse_Data/level1
 键位：asset#level1#3105/str/0
 对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=3105）
 原文：What I wouldn't GIVE to rest up here a little while!{w=3}{x}
-译文：我多希望能在这里休息一会儿啊！{w=3}{x}
+译文：我多么希望能在这里休息一会儿啊！{w=3}{x}
 置信度：high
 原因：single_visible_string
 角色：display
@@ -2422,7 +2558,7 @@ I can SEE it. e_e{w=3}{x}
 写回：已写入
 
 ────────────────────────────────────────────────────────────────
-[157] 成功文本
+[166] 成功文本
 来源：a catfiend's impending relapse_Data/level1
 键位：asset#level1#3106/str/0
 对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=3106）
@@ -2437,7 +2573,7 @@ I can SEE it. e_e{w=3}{x}
 写回：已写入
 
 ────────────────────────────────────────────────────────────────
-[158] 成功文本
+[167] 成功文本
 来源：a catfiend's impending relapse_Data/level1
 键位：asset#level1#3107/str/0
 对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=3107）
@@ -2452,14 +2588,12 @@ I can SEE it. e_e{w=3}{x}
 写回：已写入
 
 ────────────────────────────────────────────────────────────────
-[159] 成功文本
+[168] 成功文本
 来源：a catfiend's impending relapse_Data/level1
-键位：asset#level1#3109/str/0
-对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=3109）
-原文：I'm still on LABOLIS-7, hallucinating that 
-I've SOMEHOW climbed all this way—{w=3}{x}
-译文：我仍然在 LABOLIS-7 上，产生了幻觉。
-我不知怎么的爬到了这里——{w=3}{x}
+键位：asset#level1#3108/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=3108）
+原文：{punch=10,1}* V O M I T S *{w=3}{x}
+译文：{punch=10,1}* 呕吐 *{w=3}{x}
 置信度：high
 原因：single_visible_string
 角色：display
@@ -2469,7 +2603,24 @@ I've SOMEHOW climbed all this way—{w=3}{x}
 写回：已写入
 
 ────────────────────────────────────────────────────────────────
-[160] 成功文本
+[169] 成功文本
+来源：a catfiend's impending relapse_Data/level1
+键位：asset#level1#3109/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=3109）
+原文：I'm still on LABOLIS-7, hallucinating that 
+I've SOMEHOW climbed all this way—{w=3}{x}
+译文：我仍然在 LABOLIS-7 上，产生了幻觉。
+我不知怎么的，终于爬到了这里——{w=3}{x}
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[170] 成功文本
 来源：a catfiend's impending relapse_Data/level1
 键位：asset#level1#3110/str/0
 对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=3110）
@@ -2486,7 +2637,7 @@ I can't possibly be here . . .{w=3}{x}
 写回：已写入
 
 ────────────────────────────────────────────────────────────────
-[161] 成功文本
+[171] 成功文本
 来源：a catfiend's impending relapse_Data/level1
 键位：asset#level1#3111/str/0
 对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=3111）
@@ -2501,12 +2652,12 @@ I can't possibly be here . . .{w=3}{x}
 写回：已写入
 
 ────────────────────────────────────────────────────────────────
-[162] 成功文本
+[172] 成功文本
 来源：a catfiend's impending relapse_Data/level1
 键位：asset#level1#3112/str/0
 对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=3112）
 原文：{punch=3,2}* H E S I T A N T  L A U G H T E R *{w=3}{x}
-译文：{punch=3,2}* 站立的斗士 *{w=3}{x}
+译文：{punch=3,2}* 等待中的战斗者 *{w=3}{x}
 置信度：high
 原因：single_visible_string
 角色：display
@@ -2516,12 +2667,12 @@ I can't possibly be here . . .{w=3}{x}
 写回：已写入
 
 ────────────────────────────────────────────────────────────────
-[163] 成功文本
+[173] 成功文本
 来源：a catfiend's impending relapse_Data/level1
 键位：asset#level1#3114/str/0
 对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=3114）
 原文：Shouldn't this place be CRAWLING with vacuum scavengers right about now?{w=3}{x}
-译文：现在这个时候，这里不应该是有清洁人员正在清理垃圾才对吧？{w=3}{x}
+译文：现在这个时候，这里不应该是有清洁人员正在清理垃圾吗？{w=3}{x}
 置信度：high
 原因：single_visible_string
 角色：display
@@ -2531,7 +2682,7 @@ I can't possibly be here . . .{w=3}{x}
 写回：已写入
 
 ────────────────────────────────────────────────────────────────
-[164] 成功文本
+[174] 成功文本
 来源：a catfiend's impending relapse_Data/level1
 键位：asset#level1#3115/str/0
 对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=3115）
@@ -2546,12 +2697,12 @@ I can't possibly be here . . .{w=3}{x}
 写回：已写入
 
 ────────────────────────────────────────────────────────────────
-[165] 成功文本
+[175] 成功文本
 来源：a catfiend's impending relapse_Data/level1
 键位：asset#level1#3117/str/0
 对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=3117）
 原文：I thought this was over.{w=3}{x}
-译文：我以为一切都结束了。{w=3}{x}
+译文：我以为这一切都结束了。{w=3}{x}
 置信度：high
 原因：single_visible_string
 角色：display
@@ -2561,7 +2712,7 @@ I can't possibly be here . . .{w=3}{x}
 写回：已写入
 
 ────────────────────────────────────────────────────────────────
-[166] 成功文本
+[176] 成功文本
 来源：a catfiend's impending relapse_Data/level1
 键位：asset#level1#3118/str/0
 对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=3118）
@@ -2576,13 +2727,13 @@ I can't possibly be here . . .{w=3}{x}
 写回：已写入
 
 ────────────────────────────────────────────────────────────────
-[167] 成功文本
+[177] 成功文本
 来源：a catfiend's impending relapse_Data/level1
 键位：asset#level1#3119/str/0
 对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=3119）
 原文：I would love nothing more than to be 
 swept away by this current.{w=3}{x}
-译文：我惟愿能成为那样的人。
+译文：我多么希望自己能成为那样的人啊。
 被这股水流冲走了。{w=3}{x}
 置信度：high
 原因：single_visible_string
@@ -2593,12 +2744,12 @@ swept away by this current.{w=3}{x}
 写回：已写入
 
 ────────────────────────────────────────────────────────────────
-[168] 成功文本
+[178] 成功文本
 来源：a catfiend's impending relapse_Data/level1
 键位：asset#level1#3120/str/0
 对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=3120）
 原文："Performing an unauthorized summit, Gil? Hmm . . ."{w=3}{x}
-译文：擅自召开峰会，吉尔？嗯……{w=3}{x}
+译文：“擅自举行峰会吗，吉尔？嗯……”{w=3}{x}
 置信度：high
 原因：single_visible_string
 角色：display
@@ -2608,7 +2759,7 @@ swept away by this current.{w=3}{x}
 写回：已写入
 
 ────────────────────────────────────────────────────────────────
-[169] 成功文本
+[179] 成功文本
 来源：a catfiend's impending relapse_Data/level1
 键位：asset#level1#3122/str/0
 对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=3122）
@@ -2623,12 +2774,12 @@ swept away by this current.{w=3}{x}
 写回：已写入
 
 ────────────────────────────────────────────────────────────────
-[170] 成功文本
+[180] 成功文本
 来源：a catfiend's impending relapse_Data/level1
 键位：asset#level1#3124/str/0
 对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=3124）
 原文： {punch=3,2}* N E R V O U S  C H U C K L E *{w=3}{x}
-译文：{punch=3,2}* 无词汇可查询* {w=3}{x}
+译文：{punch=3,2}* 无效词汇 *{w=3}{x}
 置信度：high
 原因：single_visible_string
 角色：display
@@ -2638,7 +2789,7 @@ swept away by this current.{w=3}{x}
 写回：已写入
 
 ────────────────────────────────────────────────────────────────
-[171] 成功文本
+[181] 成功文本
 来源：a catfiend's impending relapse_Data/level1
 键位：asset#level1#3125/str/0
 对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=3125）
@@ -2653,7 +2804,7 @@ swept away by this current.{w=3}{x}
 写回：已写入
 
 ────────────────────────────────────────────────────────────────
-[172] 成功文本
+[182] 成功文本
 来源：a catfiend's impending relapse_Data/level1
 键位：asset#level1#3126/str/0
 对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=3126）
@@ -2668,7 +2819,7 @@ swept away by this current.{w=3}{x}
 写回：已写入
 
 ────────────────────────────────────────────────────────────────
-[173] 成功文本
+[183] 成功文本
 来源：a catfiend's impending relapse_Data/level1
 键位：asset#level1#3127/str/0
 对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=3127）
@@ -2683,12 +2834,12 @@ swept away by this current.{w=3}{x}
 写回：已写入
 
 ────────────────────────────────────────────────────────────────
-[174] 成功文本
+[184] 成功文本
 来源：a catfiend's impending relapse_Data/level1
 键位：asset#level1#3128/str/0
 对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=3128）
 原文：And to think they're entrusted to masochistic assholes like us catfiends!{w=3}{x}
-译文：而他们竟然被委托给像我们这样的“猫奴”般的受虐狂！{w=3}{x}
+译文：而他们居然被委托给像我们这样的“恋猫狂人”这种自虐的混蛋！{w=3}{x}
 置信度：high
 原因：single_visible_string
 角色：display
@@ -2698,7 +2849,7 @@ swept away by this current.{w=3}{x}
 写回：已写入
 
 ────────────────────────────────────────────────────────────────
-[175] 成功文本
+[185] 成功文本
 来源：a catfiend's impending relapse_Data/level1
 键位：asset#level1#3129/str/0
 对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=3129）
@@ -2713,7 +2864,7 @@ swept away by this current.{w=3}{x}
 写回：已写入
 
 ────────────────────────────────────────────────────────────────
-[176] 成功文本
+[186] 成功文本
 来源：a catfiend's impending relapse_Data/level1
 键位：asset#level1#3130/str/0
 对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=3130）
@@ -2730,7 +2881,7 @@ all burning in a {punch=3,2}{i}milky fire.{/i}{w=3}{x}
 写回：已写入
 
 ────────────────────────────────────────────────────────────────
-[177] 成功文本
+[187] 成功文本
 来源：a catfiend's impending relapse_Data/level1
 键位：asset#level1#3131/str/0
 对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=3131）
@@ -2745,7 +2896,7 @@ all burning in a {punch=3,2}{i}milky fire.{/i}{w=3}{x}
 写回：已写入
 
 ────────────────────────────────────────────────────────────────
-[178] 成功文本
+[188] 成功文本
 来源：a catfiend's impending relapse_Data/level1
 键位：asset#level1#3133/str/0
 对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=3133）
@@ -2760,7 +2911,7 @@ all burning in a {punch=3,2}{i}milky fire.{/i}{w=3}{x}
 写回：已写入
 
 ────────────────────────────────────────────────────────────────
-[179] 成功文本
+[189] 成功文本
 来源：a catfiend's impending relapse_Data/level1
 键位：asset#level1#3135/str/0
 对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=3135）
@@ -2775,12 +2926,12 @@ all burning in a {punch=3,2}{i}milky fire.{/i}{w=3}{x}
 写回：已写入
 
 ────────────────────────────────────────────────────────────────
-[180] 成功文本
+[190] 成功文本
 来源：a catfiend's impending relapse_Data/level1
 键位：asset#level1#3136/str/0
 对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=3136）
 原文：Haven't felt this anxious around a cytovessel since the {punch=3,2}"SIEGE OF KARKINOS-9" way back when!{w=3}{x}
-译文：自从“SIEGE OF KARKINOS-9”事件以来，我就再也没有感到这么焦虑过了！{punch=3,2}{w=3}{x}
+译文：自从“SIEGE OF KARKINOS-9”那次事件以来，我就再也没有这么焦虑过了！{punch=3,2}{w=3}{x}
 置信度：high
 原因：single_visible_string
 角色：display
@@ -2790,12 +2941,12 @@ all burning in a {punch=3,2}{i}milky fire.{/i}{w=3}{x}
 写回：已写入
 
 ────────────────────────────────────────────────────────────────
-[181] 成功文本
+[191] 成功文本
 来源：a catfiend's impending relapse_Data/level1
 键位：asset#level1#3138/str/0
 对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=3138）
 原文：I was washing her out of my fur for weeks . . .{w=3}{x}
-译文：我花了几个星期的时间来为她清洗毛发……{w=3}{x}
+译文：我花了几个星期的时间来清洗她的毛发……{w=3}{x}
 置信度：high
 原因：single_visible_string
 角色：display
@@ -2805,7 +2956,7 @@ all burning in a {punch=3,2}{i}milky fire.{/i}{w=3}{x}
 写回：已写入
 
 ────────────────────────────────────────────────────────────────
-[182] 成功文本
+[192] 成功文本
 来源：a catfiend's impending relapse_Data/level1
 键位：asset#level1#3139/str/0
 对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=3139）
@@ -2820,12 +2971,12 @@ all burning in a {punch=3,2}{i}milky fire.{/i}{w=3}{x}
 写回：已写入
 
 ────────────────────────────────────────────────────────────────
-[183] 成功文本
+[193] 成功文本
 来源：a catfiend's impending relapse_Data/level1
 键位：asset#level1#3140/str/0
 对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=3140）
 原文：Out of everyone in our expedition, though,{w=3}{x}
-译文：在我们探险队中的所有人当中，不过，{w=3}{x}
+译文：在我们探险队的所有人当中，不过，{w=3}{x}
 置信度：high
 原因：single_visible_string
 角色：display
@@ -2835,12 +2986,12 @@ all burning in a {punch=3,2}{i}milky fire.{/i}{w=3}{x}
 写回：已写入
 
 ────────────────────────────────────────────────────────────────
-[184] 成功文本
+[194] 成功文本
 来源：a catfiend's impending relapse_Data/level1
 键位：asset#level1#3141/str/0
 对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=3141）
 原文：The possibility of spontaneous annihilation was almost unbearable at times.{w=3}{x}
-译文：有时，自发湮灭的可能性简直让人难以忍受。{w=3}{x}
+译文：有时候，自发湮灭的可能性简直让人难以忍受。{w=3}{x}
 置信度：high
 原因：single_visible_string
 角色：display
@@ -2850,7 +3001,7 @@ all burning in a {punch=3,2}{i}milky fire.{/i}{w=3}{x}
 写回：已写入
 
 ────────────────────────────────────────────────────────────────
-[185] 成功文本
+[195] 成功文本
 来源：a catfiend's impending relapse_Data/level1
 键位：asset#level1#3143/str/0
 对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=3143）
@@ -2865,12 +3016,12 @@ all burning in a {punch=3,2}{i}milky fire.{/i}{w=3}{x}
 写回：已写入
 
 ────────────────────────────────────────────────────────────────
-[186] 成功文本
+[196] 成功文本
 来源：a catfiend's impending relapse_Data/level1
 键位：asset#level1#3144/str/0
 对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=3144）
 原文：Don't we just {punch=3,2}LOVE to break shit?{w=3}{x}
-译文：我们不是应该通过“{punch=3,2}LOVE”来打破一切吗？{w=3}{x}
+译文：我们不是喜欢破坏一切吗？{punch=3,2}{w=3}{x}
 置信度：high
 原因：single_visible_string
 角色：display
@@ -2880,7 +3031,7 @@ all burning in a {punch=3,2}{i}milky fire.{/i}{w=3}{x}
 写回：已写入
 
 ────────────────────────────────────────────────────────────────
-[187] 成功文本
+[197] 成功文本
 来源：a catfiend's impending relapse_Data/level1
 键位：asset#level1#3145/str/0
 对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=3145）
@@ -2895,12 +3046,12 @@ all burning in a {punch=3,2}{i}milky fire.{/i}{w=3}{x}
 写回：已写入
 
 ────────────────────────────────────────────────────────────────
-[188] 成功文本
+[198] 成功文本
 来源：a catfiend's impending relapse_Data/level1
 键位：asset#level1#3147/str/0
 对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=3147）
 原文：{punch=10,3}! !  CAUTION  ! !{w=3}{x}
-译文：{punch=10,3}！！注意！！！{w=3}{x}
+译文：{punch=10,3}! ! 注意！ !{w=3}{x}
 置信度：high
 原因：single_visible_string
 角色：display
@@ -2910,7 +3061,7 @@ all burning in a {punch=3,2}{i}milky fire.{/i}{w=3}{x}
 写回：已写入
 
 ────────────────────────────────────────────────────────────────
-[189] 成功文本
+[199] 成功文本
 来源：a catfiend's impending relapse_Data/level1
 键位：asset#level1#3148/str/0
 对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=3148）
@@ -2925,7 +3076,7 @@ all burning in a {punch=3,2}{i}milky fire.{/i}{w=3}{x}
 写回：已写入
 
 ────────────────────────────────────────────────────────────────
-[190] 成功文本
+[200] 成功文本
 来源：a catfiend's impending relapse_Data/level1
 键位：asset#level1#3149/str/0
 对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=3149）
@@ -2940,14 +3091,14 @@ all burning in a {punch=3,2}{i}milky fire.{/i}{w=3}{x}
 写回：已写入
 
 ────────────────────────────────────────────────────────────────
-[191] 成功文本
+[201] 成功文本
 来源：a catfiend's impending relapse_Data/level1
 键位：asset#level1#3150/str/0
 对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=3150）
 原文：
 And it's all fucked up, too!{w=3}{x}
 译文：
-而且情况也完全乱套了！{w=3}{x}
+而且情况也一团糟了！{w=3}{x}
 置信度：high
 原因：single_visible_string
 角色：display
@@ -2957,12 +3108,12 @@ And it's all fucked up, too!{w=3}{x}
 写回：已写入
 
 ────────────────────────────────────────────────────────────────
-[192] 成功文本
+[202] 成功文本
 来源：a catfiend's impending relapse_Data/level1
 键位：asset#level1#3169/str/0
 对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=3169）
 原文：Now who would've thought I'd live long enough to summit another dreadnought?{w=3}{x}
-译文：谁会想到，我会活到足够久的年龄，能够再次征服那艘可怕的战舰呢？{w=3}{x}
+译文：谁会想到，我会活到足以再次征服那艘可怕的战舰呢？{w=3}{x}
 置信度：high
 原因：single_visible_string
 角色：display
@@ -2972,7 +3123,7 @@ And it's all fucked up, too!{w=3}{x}
 写回：已写入
 
 ────────────────────────────────────────────────────────────────
-[193] 成功文本
+[203] 成功文本
 来源：a catfiend's impending relapse_Data/level1
 键位：asset#level1#3170/str/0
 对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=3170）
@@ -2987,7 +3138,7 @@ And it's all fucked up, too!{w=3}{x}
 写回：已写入
 
 ────────────────────────────────────────────────────────────────
-[194] 成功文本
+[204] 成功文本
 来源：a catfiend's impending relapse_Data/level1
 键位：asset#level1#3171/str/0
 对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=3171）
@@ -3002,12 +3153,12 @@ And it's all fucked up, too!{w=3}{x}
 写回：已写入
 
 ────────────────────────────────────────────────────────────────
-[195] 成功文本
+[205] 成功文本
 来源：a catfiend's impending relapse_Data/level1
 键位：asset#level1#3172/str/0
 对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=3172）
 原文：It . . . {w=1.5}couldn't hurt to sunbathe a little while once I'm up there, right?{w=3}{x}
-译文：嗯……既然我已经到那儿了，稍微晒晒太阳也没什么坏处吧？{w=1.5}{w=3}{x}
+译文：嗯……既然我已经到了那里，那稍微晒晒太阳也没什么坏处吧？{w=1.5}{w=3}{x}
 置信度：high
 原因：single_visible_string
 角色：display
@@ -3017,12 +3168,12 @@ And it's all fucked up, too!{w=3}{x}
 写回：已写入
 
 ────────────────────────────────────────────────────────────────
-[196] 成功文本
+[206] 成功文本
 来源：a catfiend's impending relapse_Data/level1
 键位：asset#level1#3177/str/0
 对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=3177）
 原文：I wonder if I'll ever remember how we ultimately traversed the outer—{w=1.5}{x}
-译文：我想知道，我是否还会记得我们最终是如何穿越那个外部空间的——{w=1.5}{x}
+译文：我想知道，是否会有朝一日我能记住我们究竟是如何穿越那个外部空间的——{w=1.5}{x}
 置信度：high
 原因：single_visible_string
 角色：display
@@ -3032,13 +3183,13 @@ And it's all fucked up, too!{w=3}{x}
 写回：已写入
 
 ────────────────────────────────────────────────────────────────
-[197] 成功文本
+[207] 成功文本
 来源：a catfiend's impending relapse_Data/level1
 键位：asset#level1#3178/str/0
 对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=3178）
 原文：I've seen whole cities melted into milky mush because of minute miscalculations.{w=3}{x}
 
-译文：我见过整个城市因为微小的计算错误而化为乳状黏液。{w=3}{x}
+译文：我见过整座城市因为微小的计算错误而变成乳状的糊状物。{w=3}{x}
 
 置信度：high
 原因：single_visible_string
@@ -3049,12 +3200,12 @@ And it's all fucked up, too!{w=3}{x}
 写回：已写入
 
 ────────────────────────────────────────────────────────────────
-[198] 成功文本
+[208] 成功文本
 来源：a catfiend's impending relapse_Data/level1
 键位：asset#level1#3179/str/0
 对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=3179）
 原文：It won't be long before I can wash away these troublesome memories with—{w=1.5}{x}
-译文：用不了多久，我就能用——{w=1.5}{x}来洗掉这些令人烦恼的记忆了。
+译文：用不了多久，我就能用—{w=1.5}{x}来洗掉这些令人烦恼的记忆了。
 置信度：high
 原因：single_visible_string
 角色：display
@@ -3064,7 +3215,22 @@ And it's all fucked up, too!{w=3}{x}
 写回：已写入
 
 ────────────────────────────────────────────────────────────────
-[199] 成功文本
+[209] 成功文本
+来源：a catfiend's impending relapse_Data/level1
+键位：asset#level1#3180/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=3180）
+原文：flowchart
+译文：流程图
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[210] 成功文本
 来源：a catfiend's impending relapse_Data/level1
 键位：asset#level1#3181/str/0
 对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=3181）
@@ -3079,7 +3245,7 @@ And it's all fucked up, too!{w=3}{x}
 写回：已写入
 
 ────────────────────────────────────────────────────────────────
-[200] 成功文本
+[211] 成功文本
 来源：a catfiend's impending relapse_Data/level1
 键位：asset#level1#3182/str/0
 对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=3182）
@@ -3094,12 +3260,12 @@ And it's all fucked up, too!{w=3}{x}
 写回：已写入
 
 ────────────────────────────────────────────────────────────────
-[201] 成功文本
+[212] 成功文本
 来源：a catfiend's impending relapse_Data/level1
 键位：asset#level1#3201/str/0
 对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=3201）
 原文：LOCATION
-译文：位置
+译文：位置/地点
 置信度：high
 原因：single_visible_string
 角色：display
@@ -3109,7 +3275,7 @@ And it's all fucked up, too!{w=3}{x}
 写回：已写入
 
 ────────────────────────────────────────────────────────────────
-[202] 成功文本
+[213] 成功文本
 来源：a catfiend's impending relapse_Data/level1
 键位：asset#level1#3220/str/0
 对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=3220）
@@ -3124,7 +3290,7 @@ And it's all fucked up, too!{w=3}{x}
 写回：已写入
 
 ────────────────────────────────────────────────────────────────
-[203] 成功文本
+[214] 成功文本
 来源：a catfiend's impending relapse_Data/level1
 键位：asset#level1#3223/str/0
 对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=3223）
@@ -3139,7 +3305,7 @@ And it's all fucked up, too!{w=3}{x}
 写回：已写入
 
 ────────────────────────────────────────────────────────────────
-[204] 成功文本
+[215] 成功文本
 来源：a catfiend's impending relapse_Data/level1
 键位：asset#level1#3225/str/0
 对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=3225）
@@ -3154,7 +3320,7 @@ And it's all fucked up, too!{w=3}{x}
 写回：已写入
 
 ────────────────────────────────────────────────────────────────
-[205] 成功文本
+[216] 成功文本
 来源：a catfiend's impending relapse_Data/level1
 键位：asset#level1#3232/str/0
 对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=3232）
@@ -3181,7 +3347,7 @@ PRESS [ S P A C E ] TO JUMP
 写回：已写入
 
 ────────────────────────────────────────────────────────────────
-[206] 成功文本
+[217] 成功文本
 来源：a catfiend's impending relapse_Data/level1
 键位：asset#level1#3256/str/0
 对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=3256）
@@ -3196,7 +3362,7 @@ PRESS [ S P A C E ] TO JUMP
 写回：已写入
 
 ────────────────────────────────────────────────────────────────
-[207] 成功文本
+[218] 成功文本
 来源：a catfiend's impending relapse_Data/level1
 键位：asset#level1#3272/str/0
 对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=3272）
@@ -3211,7 +3377,7 @@ PRESS [ S P A C E ] TO JUMP
 写回：已写入
 
 ────────────────────────────────────────────────────────────────
-[208] 成功文本
+[219] 成功文本
 来源：a catfiend's impending relapse_Data/level1
 键位：asset#level1#3282/str/0
 对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=3282）
@@ -3226,7 +3392,7 @@ PRESS [ S P A C E ] TO JUMP
 写回：已写入
 
 ────────────────────────────────────────────────────────────────
-[209] 成功文本
+[220] 成功文本
 来源：a catfiend's impending relapse_Data/level1
 键位：asset#level1#3286/str/0
 对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=3286）
@@ -3241,7 +3407,7 @@ PRESS [ S P A C E ] TO JUMP
 写回：已写入
 
 ────────────────────────────────────────────────────────────────
-[210] 成功文本
+[221] 成功文本
 来源：a catfiend's impending relapse_Data/level1
 键位：asset#level1#3288/str/0
 对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=3288）
@@ -3256,7 +3422,7 @@ PRESS [ S P A C E ] TO JUMP
 写回：已写入
 
 ────────────────────────────────────────────────────────────────
-[211] 成功文本
+[222] 成功文本
 来源：a catfiend's impending relapse_Data/level1
 键位：asset#level1#3313/str/0
 对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=3313）
@@ -3271,7 +3437,7 @@ PRESS [ S P A C E ] TO JUMP
 写回：已写入
 
 ────────────────────────────────────────────────────────────────
-[212] 成功文本
+[223] 成功文本
 来源：a catfiend's impending relapse_Data/resources.assets
 键位：asset#resources.assets#1229/str/0
 对象：MonoBehaviour rawstr 数组（asset_file=resources.assets、obj=1229）
@@ -3286,7 +3452,7 @@ PRESS [ S P A C E ] TO JUMP
 写回：已写入
 
 ────────────────────────────────────────────────────────────────
-[213] 成功文本
+[224] 成功文本
 来源：a catfiend's impending relapse_Data/resources.assets
 键位：asset#resources.assets#1253/str/0
 对象：MonoBehaviour rawstr 数组（asset_file=resources.assets、obj=1253）
@@ -3301,12 +3467,12 @@ PRESS [ S P A C E ] TO JUMP
 写回：已写入
 
 ────────────────────────────────────────────────────────────────
-[214] 成功文本
+[225] 成功文本
 来源：a catfiend's impending relapse_Data/resources.assets
 键位：asset#resources.assets#1261/str/0
 对象：MonoBehaviour rawstr 数组（asset_file=resources.assets、obj=1261）
 原文：New Block
-译文：新区块
+译文：新块
 置信度：high
 原因：single_visible_string
 角色：display
@@ -3316,7 +3482,7 @@ PRESS [ S P A C E ] TO JUMP
 写回：已写入
 
 ────────────────────────────────────────────────────────────────
-[215] 成功文本
+[226] 成功文本
 来源：a catfiend's impending relapse_Data/resources.assets
 键位：asset#resources.assets#1266/str/0
 对象：MonoBehaviour rawstr 数组（asset_file=resources.assets、obj=1266）
@@ -3331,7 +3497,7 @@ PRESS [ S P A C E ] TO JUMP
 写回：已写入
 
 ────────────────────────────────────────────────────────────────
-[216] 成功文本
+[227] 成功文本
 来源：a catfiend's impending relapse_Data/resources.assets
 键位：asset#resources.assets#1271/str/0
 对象：MonoBehaviour rawstr 数组（asset_file=resources.assets、obj=1271）
@@ -3346,7 +3512,7 @@ PRESS [ S P A C E ] TO JUMP
 写回：已写入
 
 ────────────────────────────────────────────────────────────────
-[217] 成功文本
+[228] 成功文本
 来源：a catfiend's impending relapse_Data/resources.assets
 键位：asset#resources.assets#1278/str/0
 对象：MonoBehaviour rawstr 数组（asset_file=resources.assets、obj=1278）
@@ -3361,7 +3527,7 @@ PRESS [ S P A C E ] TO JUMP
 写回：已写入
 
 ────────────────────────────────────────────────────────────────
-[218] 成功文本
+[229] 成功文本
 来源：a catfiend's impending relapse_Data/resources.assets
 键位：asset#resources.assets#1279/str/0
 对象：MonoBehaviour rawstr 数组（asset_file=resources.assets、obj=1279）
@@ -3376,7 +3542,7 @@ PRESS [ S P A C E ] TO JUMP
 写回：已写入
 
 ────────────────────────────────────────────────────────────────
-[219] 成功文本
+[230] 成功文本
 来源：a catfiend's impending relapse_Data/resources.assets
 键位：asset#resources.assets#1286/str/0
 对象：MonoBehaviour rawstr 数组（asset_file=resources.assets、obj=1286）
@@ -3391,7 +3557,7 @@ PRESS [ S P A C E ] TO JUMP
 写回：已写入
 
 ────────────────────────────────────────────────────────────────
-[220] 成功文本
+[231] 成功文本
 来源：a catfiend's impending relapse_Data/resources.assets
 键位：asset#resources.assets#1287/str/0
 对象：MonoBehaviour rawstr 数组（asset_file=resources.assets、obj=1287）
@@ -3406,7 +3572,7 @@ PRESS [ S P A C E ] TO JUMP
 写回：已写入
 
 ────────────────────────────────────────────────────────────────
-[221] 成功文本
+[232] 成功文本
 来源：a catfiend's impending relapse_Data/resources.assets
 键位：asset#resources.assets#1305/str/0
 对象：MonoBehaviour rawstr 数组（asset_file=resources.assets、obj=1305）
@@ -3421,7 +3587,7 @@ PRESS [ S P A C E ] TO JUMP
 写回：已写入
 
 ────────────────────────────────────────────────────────────────
-[222] 成功文本
+[233] 成功文本
 来源：a catfiend's impending relapse_Data/resources.assets
 键位：asset#resources.assets#1306/str/0
 对象：MonoBehaviour rawstr 数组（asset_file=resources.assets、obj=1306）
@@ -3436,7 +3602,7 @@ PRESS [ S P A C E ] TO JUMP
 写回：已写入
 
 ────────────────────────────────────────────────────────────────
-[223] 成功文本
+[234] 成功文本
 来源：a catfiend's impending relapse_Data/resources.assets
 键位：asset#resources.assets#1316/str/0
 对象：MonoBehaviour rawstr 数组（asset_file=resources.assets、obj=1316）
@@ -3451,7 +3617,7 @@ PRESS [ S P A C E ] TO JUMP
 写回：已写入
 
 ────────────────────────────────────────────────────────────────
-[224] 成功文本
+[235] 成功文本
 来源：a catfiend's impending relapse_Data/resources.assets
 键位：asset#resources.assets#1319/str/5
 对象：MonoBehaviour rawstr 数组（asset_file=resources.assets、obj=1319）
@@ -3466,7 +3632,7 @@ PRESS [ S P A C E ] TO JUMP
 写回：已写入
 
 ────────────────────────────────────────────────────────────────
-[225] 成功文本
+[236] 成功文本
 来源：a catfiend's impending relapse_Data/resources.assets
 键位：asset#resources.assets#1320/str/0
 对象：MonoBehaviour rawstr 数组（asset_file=resources.assets、obj=1320）
@@ -3481,7 +3647,7 @@ PRESS [ S P A C E ] TO JUMP
 写回：已写入
 
 ────────────────────────────────────────────────────────────────
-[226] 成功文本
+[237] 成功文本
 来源：a catfiend's impending relapse_Data/resources.assets
 键位：asset#resources.assets#1321/str/0
 对象：MonoBehaviour rawstr 数组（asset_file=resources.assets、obj=1321）
@@ -3496,7 +3662,7 @@ PRESS [ S P A C E ] TO JUMP
 写回：已写入
 
 ────────────────────────────────────────────────────────────────
-[227] 成功文本
+[238] 成功文本
 来源：a catfiend's impending relapse_Data/resources.assets
 键位：asset#resources.assets#1325/str/5
 对象：MonoBehaviour rawstr 数组（asset_file=resources.assets、obj=1325）
@@ -3511,7 +3677,7 @@ PRESS [ S P A C E ] TO JUMP
 写回：已写入
 
 ────────────────────────────────────────────────────────────────
-[228] 成功文本
+[239] 成功文本
 来源：a catfiend's impending relapse_Data/resources.assets
 键位：asset#resources.assets#1329/str/5
 对象：MonoBehaviour rawstr 数组（asset_file=resources.assets、obj=1329）
@@ -3526,7 +3692,7 @@ PRESS [ S P A C E ] TO JUMP
 写回：已写入
 
 ────────────────────────────────────────────────────────────────
-[229] 成功文本
+[240] 成功文本
 来源：a catfiend's impending relapse_Data/resources.assets
 键位：asset#resources.assets#1475/str/0
 对象：MonoBehaviour rawstr 数组（asset_file=resources.assets、obj=1475）
@@ -3548,10 +3714,10 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
 Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
 
 <b>Lorem</b>
-Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+因为，既然是为了获得某种好处，那么任何努力都是值得的。不过，前提是这些努力必须能够带来实际的益处。Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
 
 <b>Ipsum</b>
-Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+因为，为了获得任何好处，就必须付出努力。除非能从其中获得某种利益，否则就没有任何意义。除了那些令人不悦的、令人讨厌的内容之外，其他一切都是可以接受的。因为，他们并不关心那些让人烦恼的事情，他们只是想享受生活而已。
 置信度：high
 原因：single_visible_string
 角色：display
@@ -3561,7 +3727,7 @@ Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliqu
 写回：已写入
 
 ────────────────────────────────────────────────────────────────
-[230] 成功文本
+[241] 成功文本
 来源：a catfiend's impending relapse_Data/sharedassets1.assets
 键位：asset#sharedassets1.assets#100/str/0
 对象：MonoBehaviour rawstr 数组（asset_file=sharedassets1.assets、obj=100）
@@ -3576,7 +3742,7 @@ Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliqu
 写回：已写入
 
 ────────────────────────────────────────────────────────────────
-[231] 成功文本
+[242] 成功文本
 来源：a catfiend's impending relapse_Data/Managed/Cinemachine.dll
 键位：us#412
 对象：DLL #US 字符串（record_offset=185631）
@@ -3591,7 +3757,7 @@ Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliqu
 写回：已写入
 
 ────────────────────────────────────────────────────────────────
-[232] 成功文本
+[243] 成功文本
 来源：a catfiend's impending relapse_Data/Managed/Cinemachine.dll
 键位：us#766
 对象：DLL #US 字符串（record_offset=185985）
@@ -3606,7 +3772,7 @@ Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliqu
 写回：已写入
 
 ────────────────────────────────────────────────────────────────
-[233] 成功文本
+[244] 成功文本
 来源：a catfiend's impending relapse_Data/Managed/Unity.ProBuilder.dll
 键位：us#28965
 对象：DLL #US 字符串（record_offset=341596）
@@ -3621,7 +3787,22 @@ Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliqu
 写回：未执行（回显——译文与原文相同，无需写回）
 
 ────────────────────────────────────────────────────────────────
-[234] 成功文本
+[245] 成功文本
+来源：a catfiend's impending relapse_Data/Managed/Unity.ProBuilder.dll
+键位：us#28985
+对象：DLL #US 字符串（record_offset=341616）
+原文：UCLA Gold
+译文：UCLA Gold
+置信度：medium
+原因：user_string_uppercase_ui
+角色：display
+质量评分：—（passed=True）
+翻译评价：回显保留原文（未实际翻译）
+需要优化：是（回显未翻译）
+写回：未执行（回显——译文与原文相同，无需写回）
+
+────────────────────────────────────────────────────────────────
+[246] 成功文本
 来源：a catfiend's impending relapse_Data/Managed/Unity.ProBuilder.dll
 键位：us#29395
 对象：DLL #US 字符串（record_offset=342026）

@@ -130,6 +130,12 @@ class WriteResult:
     _attempted_locators: set[str] = field(default_factory=set, repr=False)
     _resolved_locators: set[str] = field(default_factory=set, repr=False)
     truncated_items: list[str] = field(default_factory=list)   # 截断条目摘要（最多 30 条）
+    # ── 写回逻辑层审计（logic_audit）──
+    logic_audit: list[dict] = field(default_factory=list)      # 写回前敏感形态审计
+    raw_expansions: list[dict] = field(default_factory=list)   # rawstr 扩容记录（译文>原文）
+    logic_mismatches: list[str] = field(default_factory=list)  # 重开逻辑验证失败（字符串边界）
+    logic_reverted: int = 0        # 反向语义审计自动回退条目数（译文→原文，防逻辑键断链）
+    logic_reverted_items: list[str] = field(default_factory=list)  # 回退摘要（最多 30 条）
 
     def __post_init__(self):
         if self.entries and not self.attempted:
@@ -181,6 +187,16 @@ class WriteResult:
         if len(self.truncated_items) < 30:
             self.truncated_items.append(
                 f"「{original[:42]}」→「{translation[:42]}」")
+
+    def note_logic_reverted(self, entry: dict, reason: str) -> None:
+        """逻辑键自动回退记录：主动不写译文（保留原文）——与 rejected
+        （尝试写但失败）语义不同，不触发对象闸门阻断。"""
+        locator = self.note_attempt(entry)
+        self.logic_reverted += 1
+        if len(self.logic_reverted_items) < 30:
+            self.logic_reverted_items.append(
+                f"{reason}:「{str(entry.get('original', ''))[:36]}」"
+                f"→「{str(entry.get('translation', ''))[:36]}」({locator})")
 
 
 # 截断提示符：TMP 动态字体可能缺「…」字形（A-主题5-2 递归报错实证），
@@ -565,12 +581,20 @@ def _verify_saved_bundle(
             tuple[str, int], list[tuple[list[str | int], str]]] | None = None,
         expected_immutable_values: dict[
             tuple[str, int], list[tuple[list[str | int], object]]] | None = None,
+        expected_string_sequences: dict[
+            tuple[str, int], tuple[list[str], dict[str, str]]] | None = None,
 ) -> None:
     """重开临时容器，确认目标对象正确且未目标对象字节不变。
 
     expected_immutable_values：写回前快照的不可变字段集合（key/ID/引用/
     地址/脚本绑定），重开后必须保持逐值一致——防止定位错误把标识符当
     文本改写。
+
+    expected_string_sequences：逻辑层验证（§写回逻辑层检查）——rawstr
+    改动对象的字符串序列快照（内容序列 + 原文→译文映射），重开后按同一
+    扫描规则重新扫描，数量与逐项内容必须一致。扩容插入若破坏字符串长度
+    头边界，序列必然变化——这是「字节自证」验证发现不了的结构破坏
+    （游戏加载该对象失败 → 按钮无响应/卡住）。
     """
     from UnityPy import Environment
 
@@ -629,6 +653,23 @@ def _verify_saved_bundle(
                         mismatched.append((key, field_path))
             except (KeyError, TypeError, ValueError, AttributeError):
                 mismatched.append(key)
+        # 逻辑层验证：rawstr 改动对象字符串序列一致性（边界未破坏）
+        for key, (expected_sequence, translations) in (
+                (expected_string_sequences or {}).items()):
+            obj = actual_objects.get(key)
+            if obj is None:
+                missing.append(key)
+                continue
+            try:
+                actual_raw = obj.get_raw_data()
+            except Exception:  # noqa: BLE001
+                mismatched.append((key, "raw_read_failed"))
+                continue
+            from hanhua.core.unity.logic_audit import verify_logic_layer
+            ok, problems = verify_logic_layer(
+                actual_raw, expected_sequence, translations)
+            if not ok:
+                mismatched.append((key, "; ".join(problems)))
         if missing or mismatched:
             raise ValueError(
                 "Unity bundle 写回验证失败："
@@ -740,6 +781,14 @@ def write_back_v2(store: ProjectStore, game_dir: Path, out_dir: Path,
     ]
     _validate_addressables_catalog_sources(
         game_dir, out_dir, changed_bundle_candidates)
+    # ── 写回前逻辑层审计：对全部待写回条目做逻辑敏感形态检查（只报告
+    # 不阻断——按钮文本 back/retry 大量命中短词形态，阻断会误伤真实
+    # 显示文本；camelCase/snake_case 等代码标识符形态命中 warn 级）──
+    from hanhua.core.unity.logic_audit import audit_entries_before_writeback
+    for f in v2_files:
+        result.logic_audit.extend(audit_entries_before_writeback(
+            e for e in entries_by_file[f["id"]]
+            if _should_write_entry(e) and e["translation"] != e["original"]))
     for f in v2_files:
         entries = entries_by_file[f["id"]]
         candidates = [e for e in entries if e["translation"] != e["original"]]
@@ -789,6 +838,9 @@ def _patch_asset(path: Path, entries: list[dict], result: WriteResult):
         tuple[str, int], list[tuple[list[str | int], str]]] = {}
     expected_immutable_values: dict[
         tuple[str, int], list[tuple[list[str | int], object]]] = {}
+    # 逻辑层审计：rawstr 改动对象的字符串序列快照（重开验证用）
+    expected_string_sequences: dict[
+        tuple[str, int], tuple[list[str], dict[str, str]]] = {}
     baseline_hashes: dict[tuple[str, int], tuple[int, bytes]] = {}
     changed_any = False
     patched_entries: list[dict] = []
@@ -1019,9 +1071,69 @@ def _patch_asset(path: Path, entries: list[dict], result: WriteResult):
                     for entry, _ in raw_items:
                         result.note_rejected(entry, "object_read_failed")
                     continue
+                # 逻辑层审计：写回前快照对象字符串序列（重开验证时按同一
+                # 扫描规则重新扫描，比较数量与内容——rawstr 扩容插入若
+                # 破坏字符串长度头边界，序列必然变化）+ 扩容记录
+                from hanhua.core.unity.logic_audit import (
+                    audit_raw_expansion, audit_repeat_consistency,
+                    logic_key_evidence, snapshot_object_strings,
+                )
+                string_sequence = snapshot_object_strings(bytes(raw))
+                obj_strings = string_sequence
+                string_translations: dict[str, str] = {}
+                for e, meta in raw_items:
+                    expansion = audit_raw_expansion(
+                        e, meta, e["original"], e["translation"])
+                    if expansion:
+                        result.raw_expansions.append(expansion)
+                # 互斥一致性：同对象同原文多处出现（doog 实证 Splash ×6）——
+                # 任一位置是结构跳过（键身份）或各处译文不一致（模型波动），
+                # 全组保留原文，防「译文+原文」混排断链（代码按字典查原文）。
+                consistency = audit_repeat_consistency(raw_items)
+                for rec in consistency:
+                    result.logic_audit.append({**rec, "stage": "consistency"})
+                # 反向语义审计（知识库案例「UnityEvent 绑定断裂」「显示文本
+                # 当逻辑键」转规则）：对每个待翻译条目按「对象角色 + 形态」
+                # 判定逻辑键身份——确定性逻辑键（类型描述符/事件绑定方法名/
+                # 代码对象中的比较词）自动回退译文（不写补丁，保留原文）。
+                # 疑似键（report 级）照常写入并进审计段供复核。
+                reverted_locators: set[str] = set()
+                for e, meta in raw_items:
+                    stripped = str(e["original"]).strip()
+                    verdict = logic_key_evidence(stripped, meta, obj_strings)
+                    if not verdict:
+                        continue
+                    if verdict[0] == "revert":
+                        e["status"] = "skipped"
+                        reverted_locators.add(str(meta.get("offset")))
+                        result.note_logic_reverted(e, verdict[1])
+                        result.logic_audit.append({
+                            "stage": "semantic_revert",
+                            "locator": str(e.get("key_path") or ""),
+                            "obj": meta.get("obj"),
+                            "original": e["original"],
+                            "translation": e["translation"],
+                            "reason": verdict[1],
+                        })
+                    else:  # report 级：疑似逻辑键——照常写入，进审计段供复核
+                        result.logic_audit.append({
+                            "stage": "semantic_report",
+                            "locator": str(e.get("key_path") or ""),
+                            "obj": meta.get("obj"),
+                            "original": e["original"],
+                            "translation": e["translation"],
+                            "reason": verdict[1],
+                        })
+                write_items = [
+                    (e, meta) for e, meta in raw_items
+                    if str(e.get("translation") or "") != str(e.get("original") or "")
+                    and str(meta.get("offset")) not in reverted_locators
+                ]
+                for e, meta in write_items:
+                    string_translations[e["original"]] = e["translation"]
                 changed = False
                 # 从后向前处理：较高偏移处的扩容不会影响尚未处理的较低偏移。
-                for e, meta in sorted(raw_items, key=lambda x: -x[1].get("offset", 0)):
+                for e, meta in sorted(write_items, key=lambda x: -x[1].get("offset", 0)):
                     _patch_serialized_string(raw, meta["offset"], e["translation"])
                     changed = True
                     patched_entries.append(e)
@@ -1029,6 +1141,8 @@ def _patch_asset(path: Path, entries: list[dict], result: WriteResult):
                     expected = bytes(raw)
                     obj.set_raw_data(expected)
                     expected_raw_by_path_id[object_key] = expected
+                    expected_string_sequences[object_key] = (
+                        string_sequence, string_translations)
                     changed_any = True
         if not changed_any:
             return
@@ -1059,9 +1173,16 @@ def _patch_asset(path: Path, entries: list[dict], result: WriteResult):
                 saved.write_bytes(container.save(packer="original"))
             else:
                 saved.write_bytes(container.save())
-            _verify_saved_bundle(
-                saved, expected_raw_by_path_id, baseline_hashes,
-                expected_typetree_values, expected_immutable_values)
+            try:
+                _verify_saved_bundle(
+                    saved, expected_raw_by_path_id, baseline_hashes,
+                    expected_typetree_values, expected_immutable_values,
+                    expected_string_sequences)
+            except ValueError as exc:
+                # 逻辑层验证失败（含字符串序列不一致）——记录审计详情后
+                # 重新抛出：整体拒绝写回，副本保持原样，绝不落地坏产物
+                result.logic_mismatches.append(str(exc))
+                raise
             _dispose_environment(env)
             gc.collect()
             # 兜底：若仍撞上 Defender 扫描锁定窗口，短重试几次

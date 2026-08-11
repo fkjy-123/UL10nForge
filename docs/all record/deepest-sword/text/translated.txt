@@ -1,0 +1,2302 @@
+游戏：deepest-sword
+导出时间：2026-08-11 17:44:35
+翻译模型：Hy-MT2-1.8B-Q6_K
+成功文本：152 条
+
+────────────────────────────────────────────────────────────────
+[1] 成功文本
+来源：Deepest Sword_Data/app.info
+键位：plain/0
+对象：纯文本文件行
+原文：Cosmic Adventure Squad
+译文：宇宙冒险小队
+置信度：medium
+原因：—
+角色：—
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[2] 成功文本
+来源：Deepest Sword_Data/app.info
+键位：plain/1
+对象：纯文本文件行
+原文：Deepest Sword
+译文：最深的剑
+置信度：medium
+原因：—
+角色：—
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[3] 成功文本
+来源：Deepest Sword_Data/level0
+键位：asset#level0#533/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=533）
+原文：press any key
+译文：按任意键
+置信度：high
+原因：interaction_prompt
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[4] 成功文本
+来源：Deepest Sword_Data/level0
+键位：asset#level0#534/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=534）
+原文：Quit Game
+译文：退出游戏
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[5] 成功文本
+来源：Deepest Sword_Data/level0
+键位：asset#level0#536/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=536）
+原文：Speedrun
+译文：速通
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[6] 成功文本
+来源：Deepest Sword_Data/level0
+键位：asset#level0#540/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=540）
+原文：Potions: {0}/{1}
+译文：药水：{0}/{1}
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[7] 成功文本
+来源：Deepest Sword_Data/level0
+键位：asset#level0#541/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=541）
+原文：SPEEDRUN
+译文：速度跑
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[8] 成功文本
+来源：Deepest Sword_Data/level0
+键位：asset#level0#542/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=542）
+原文：A game by
+译文：一款由……开发的游戏
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[9] 成功文本
+来源：Deepest Sword_Data/level0
+键位：asset#level0#544/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=544）
+原文：Restore Defaults
+译文：恢复默认设置
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[10] 成功文本
+来源：Deepest Sword_Data/level0
+键位：asset#level0#545/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=545）
+原文：v{0}
+译文：v{0}
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：回显保留原文（未实际翻译）
+需要优化：是（回显未翻译）
+写回：未执行（回显——译文与原文相同，无需写回）
+
+────────────────────────────────────────────────────────────────
+[11] 成功文本
+来源：Deepest Sword_Data/level0
+键位：asset#level0#546/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=546）
+原文：STARTING STAGE
+译文：起始阶段
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[12] 成功文本
+来源：Deepest Sword_Data/level0
+键位：asset#level0#548/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=548）
+原文：SHOW MILLISECONDS
+译文：显示毫秒数
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[13] 成功文本
+来源：Deepest Sword_Data/level0
+键位：asset#level0#549/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=549）
+原文：Website
+译文：网站
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[14] 成功文本
+来源：Deepest Sword_Data/level0
+键位：asset#level0#550/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=550）
+原文：DYNAMIC CAMERA
+译文：动态相机
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[15] 成功文本
+来源：Deepest Sword_Data/level0
+键位：asset#level0#551/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=551）
+原文：Discord
+译文：Discord
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：回显保留原文（未实际翻译）
+需要优化：是（回显未翻译）
+写回：未执行（回显——译文与原文相同，无需写回）
+
+────────────────────────────────────────────────────────────────
+[16] 成功文本
+来源：Deepest Sword_Data/level0
+键位：asset#level0#553/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=553）
+原文：SHOW BEST TIME
+译文：显示最佳时间
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[17] 成功文本
+来源：Deepest Sword_Data/level0
+键位：asset#level0#554/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=554）
+原文：PAUSE MENU
+译文：暂停菜单
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[18] 成功文本
+来源：Deepest Sword_Data/level0
+键位：asset#level0#555/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=555）
+原文：Controls
+译文：控制
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[19] 成功文本
+来源：Deepest Sword_Data/level0
+键位：asset#level0#556/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=556）
+原文：MP: {0}/{1}
+译文：MP: {0}/{1}
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：回显保留原文（未实际翻译）
+需要优化：是（回显未翻译）
+写回：未执行（回显——译文与原文相同，无需写回）
+
+────────────────────────────────────────────────────────────────
+[20] 成功文本
+来源：Deepest Sword_Data/level0
+键位：asset#level0#558/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=558）
+原文：Cosmic Adventure Squad
+译文：宇宙冒险小队
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[21] 成功文本
+来源：Deepest Sword_Data/level0
+键位：asset#level0#559/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=559）
+原文：Camera & Audio
+译文：相机与音频设备
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[22] 成功文本
+来源：Deepest Sword_Data/level0
+键位：asset#level0#561/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=561）
+原文：CAMERA & AUDIO
+译文：摄像头与音频
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[23] 成功文本
+来源：Deepest Sword_Data/level0
+键位：asset#level0#564/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=564）
+原文：Length: {0}
+译文：长度：{0}
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[24] 成功文本
+来源：Deepest Sword_Data/level0
+键位：asset#level0#565/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=565）
+原文：SFX
+
+译文：SFX
+
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：回显保留原文（未实际翻译）
+需要优化：是（回显未翻译）
+写回：未执行（回显——译文与原文相同，无需写回）
+
+────────────────────────────────────────────────────────────────
+[25] 成功文本
+来源：Deepest Sword_Data/level0
+键位：asset#level0#567/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=567）
+原文：Playtime: {0}
+译文：玩耍时间：{0}
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[26] 成功文本
+来源：Deepest Sword_Data/level0
+键位：asset#level0#568/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=568）
+原文：SHOW LAPS
+译文：显示步骤
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[27] 成功文本
+来源：Deepest Sword_Data/level0
+键位：asset#level0#569/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=569）
+原文：CREDITS
+译文：来源/版权信息
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[28] 成功文本
+来源：Deepest Sword_Data/level0
+键位：asset#level0#570/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=570）
+原文： Back
+译文：返回
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[29] 成功文本
+来源：Deepest Sword_Data/level0
+键位：asset#level0#571/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=571）
+原文：DEEPEST
+SWORD
+译文：DEEPEST
+剑
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[30] 成功文本
+来源：Deepest Sword_Data/level0
+键位：asset#level0#572/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=572）
+原文：Credits
+译文：致谢
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[31] 成功文本
+来源：Deepest Sword_Data/level0
+键位：asset#level0#573/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=573）
+原文：Thanks for playing!
+译文：谢谢你的参与！
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[32] 成功文本
+来源：Deepest Sword_Data/level0
+键位：asset#level0#574/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=574）
+原文：Best: {0}
+译文：最佳：{0}
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[33] 成功文本
+来源：Deepest Sword_Data/level0
+键位：asset#level0#576/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=576）
+原文：Twitter
+译文：Twitter
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：回显保留原文（未实际翻译）
+需要优化：是（回显未翻译）
+写回：未执行（回显——译文与原文相同，无需写回）
+
+────────────────────────────────────────────────────────────────
+[34] 成功文本
+来源：Deepest Sword_Data/level0
+键位：asset#level0#577/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=577）
+原文：FULL RESET
+译文：完全重置
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[35] 成功文本
+来源：Deepest Sword_Data/level0
+键位：asset#level0#578/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=578）
+原文：Leaderboards on Speedrun.com
+译文：Speedrun.com上的排行榜
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[36] 成功文本
+来源：Deepest Sword_Data/level0
+键位：asset#level0#581/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=581）
+原文：Right
+译文：对
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[37] 成功文本
+来源：Deepest Sword_Data/level0
+键位：asset#level0#582/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=582）
+原文：CAMERA SHAKE
+译文：相机摇晃
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[38] 成功文本
+来源：Deepest Sword_Data/level0
+键位：asset#level0#583/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=583）
+原文：HP: {0}/{1}
+译文：HP: {0}/{1}
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：回显保留原文（未实际翻译）
+需要优化：是（回显未翻译）
+写回：未执行（回显——译文与原文相同，无需写回）
+
+────────────────────────────────────────────────────────────────
+[39] 成功文本
+来源：Deepest Sword_Data/level0
+键位：asset#level0#585/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=585）
+原文：by Cosmic Adventure Squad
+译文：由 Cosmic Adventure Squad 提供
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[40] 成功文本
+来源：Deepest Sword_Data/level0
+键位：asset#level0#586/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=586）
+原文：CONGRATULATIONS
+译文：恭喜！
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[41] 成功文本
+来源：Deepest Sword_Data/level0
+键位：asset#level0#588/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=588）
+原文：buy us coffee!
+译文：请给我们买咖啡吧！
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[42] 成功文本
+来源：Deepest Sword_Data/level0
+键位：asset#level0#589/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=589）
+原文：Left
+译文：左
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[43] 成功文本
+来源：Deepest Sword_Data/level0
+键位：asset#level0#590/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=590）
+原文：CONTROLS
+译文：控制
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[44] 成功文本
+来源：Deepest Sword_Data/level0
+键位：asset#level0#592/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=592）
+原文：RESPAWN
+译文：重生
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[45] 成功文本
+来源：Deepest Sword_Data/level0
+键位：asset#level0#593/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=593）
+原文：SWORD
+译文：SWORD
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：回显保留原文（未实际翻译）
+需要优化：是（回显未翻译）
+写回：未执行（回显——译文与原文相同，无需写回）
+
+────────────────────────────────────────────────────────────────
+[46] 成功文本
+来源：Deepest Sword_Data/level0
+键位：asset#level0#595/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=595）
+原文：Completion Time
+译文：完成时间
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[47] 成功文本
+来源：Deepest Sword_Data/level0
+键位：asset#level0#596/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=596）
+原文：MUSIC
+译文：音乐
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[48] 成功文本
+来源：Deepest Sword_Data/level0
+键位：asset#level0#597/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=597）
+原文：click to restart
+译文：点击以重新启动
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[49] 成功文本
+来源：Deepest Sword_Data/level0
+键位：asset#level0#625/str/6
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=625）
+原文：Toggle
+译文：切换
+置信度：medium
+原因：code_heavy_display_word
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[50] 成功文本
+来源：Deepest Sword_Data/level0
+键位：asset#level0#632/str/6
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=632）
+原文：Back
+译文：返回
+置信度：medium
+原因：code_heavy_display_word
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[51] 成功文本
+来源：Deepest Sword_Data/level0
+键位：asset#level0#634/str/6
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=634）
+原文：Toggle
+译文：切换
+置信度：medium
+原因：code_heavy_display_word
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[52] 成功文本
+来源：Deepest Sword_Data/level0
+键位：asset#level0#735/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=735）
+原文：Idle
+译文：空闲
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[53] 成功文本
+来源：Deepest Sword_Data/level1
+键位：asset#level1#508/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=508）
+原文：Press R to 
+return to checkpoints
+译文：按 R 键
+返回检查点
+置信度：high
+原因：interaction_prompt
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[54] 成功文本
+来源：Deepest Sword_Data/level1
+键位：asset#level1#509/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=509）
+原文：Use mouse buttons 
+or left and right arrows
+to rotate your sword
+译文：使用鼠标按钮
+或者左右箭头
+旋转你的剑
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[55] 成功文本
+来源：Deepest Sword_Data/level1
+键位：asset#level1#510/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=510）
+原文：Understanding the pivot is key...
+译文：理解这个“支点”是关键……
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[56] 成功文本
+来源：Deepest Sword_Data/level1
+键位：asset#level1#511/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=511）
+原文：Stab its heart!
+v
+译文：刺穿它的心脏！
+v
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[57] 成功文本
+来源：Deepest Sword_Data/level1
+键位：asset#level1#512/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=512）
+原文：Use A and D to move
+译文：使用 A 和 D 进行移动。
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[58] 成功文本
+来源：Deepest Sword_Data/level1
+键位：asset#level1#513/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=513）
+原文：Reach for it...
+译文：伸手去拿它吧……
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[59] 成功文本
+来源：Deepest Sword_Data/level1
+键位：asset#level1#514/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=514）
+原文：A slow fall slips less...
+译文：缓慢的下降会减少下滑的幅度……
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[60] 成功文本
+来源：Deepest Sword_Data/level1
+键位：asset#level1#515/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=515）
+原文：This is a test dialog text
+Second Line
+译文：这是一段测试用对话文本。
+第二行
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[61] 成功文本
+来源：Deepest Sword_Data/level1
+键位：asset#level1#516/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=516）
+原文：This is a test dialog text
+Second Line
+译文：这是一段测试用对话文本。
+第二行
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[62] 成功文本
+来源：Deepest Sword_Data/level1
+键位：asset#level1#517/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=517）
+原文：This is a test dialog text
+Second Line
+译文：这是一段测试用对话文本。
+第二行
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[63] 成功文本
+来源：Deepest Sword_Data/level1
+键位：asset#level1#524/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=524）
+原文：He he, that tickles.
+译文：嘿嘿，这真有趣。
+置信度：medium
+原因：natural_language
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[64] 成功文本
+来源：Deepest Sword_Data/level1
+键位：asset#level1#524/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=524）
+原文：I've lengthened your blade a bit more.
+译文：我稍微把刀刃的长度延长了一些。
+置信度：medium
+原因：natural_language
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[65] 成功文本
+来源：Deepest Sword_Data/level1
+键位：asset#level1#533/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=533）
+原文：Idle
+译文：空闲
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[66] 成功文本
+来源：Deepest Sword_Data/level1
+键位：asset#level1#537/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=537）
+原文：Idle
+译文：空闲
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[67] 成功文本
+来源：Deepest Sword_Data/level1
+键位：asset#level1#542/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=542）
+原文：Idle
+译文：空闲
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[68] 成功文本
+来源：Deepest Sword_Data/level1
+键位：asset#level1#549/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=549）
+原文：AAHHH!!!
+译文：啊！！！
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[69] 成功文本
+来源：Deepest Sword_Data/level1
+键位：asset#level1#559/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=559）
+原文：Is it even in?
+译文：它真的能进去吗？
+置信度：medium
+原因：natural_language
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[70] 成功文本
+来源：Deepest Sword_Data/level1
+键位：asset#level1#559/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=559）
+原文：I've brought you back.<br>I've made your blade longer.
+译文：我带你回来了。<br>我把你的刀刃变长了。
+置信度：medium
+原因：natural_language
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[71] 成功文本
+来源：Deepest Sword_Data/level1
+键位：asset#level1#560/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=560）
+原文：Ah, felt something that time...
+译文：啊，这次感觉到了什么……
+置信度：medium
+原因：natural_language
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[72] 成功文本
+来源：Deepest Sword_Data/level1
+键位：asset#level1#560/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=560）
+原文：It's almost at the limits.<br>You'll notice its weight.
+译文：它已经接近极限了。<br>你会感觉到它的重量。
+置信度：medium
+原因：natural_language
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[73] 成功文本
+来源：Deepest Sword_Data/level1
+键位：asset#level1#578/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=578）
+原文：Oh, so deep...
+译文：哦，真深啊……
+置信度：medium
+原因：natural_language
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[74] 成功文本
+来源：Deepest Sword_Data/level1
+键位：asset#level1#578/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=578）
+原文：You hold the longest sword in the land!
+译文：你拥有世上最长的剑！
+置信度：medium
+原因：natural_language
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[75] 成功文本
+来源：Deepest Sword_Data/level1
+键位：asset#level1#580/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=580）
+原文：Who dares challenge me!?<br>Take your best stab!
+译文：谁敢挑战我！？<br>那就拿出你最好的技巧来吧！
+置信度：medium
+原因：natural_language
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[76] 成功文本
+来源：Deepest Sword_Data/level1
+键位：asset#level1#580/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=580）
+原文：Here to try again?
+译文：再来一次？
+置信度：medium
+原因：natural_language
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[77] 成功文本
+来源：Deepest Sword_Data/level1
+键位：asset#level1#580/str/2
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=580）
+原文：Lets see what you got.
+译文：让我们看看你有什么东西吧。
+置信度：medium
+原因：natural_language
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[78] 成功文本
+来源：Deepest Sword_Data/level1
+键位：asset#level1#580/str/3
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=580）
+原文：What a long sword you have...
+译文：你拥有多么长的一把剑啊……
+置信度：medium
+原因：natural_language
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[79] 成功文本
+来源：Deepest Sword_Data/level1
+键位：asset#level1#580/str/4
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=580）
+原文：Uhh, wait a minute!
+译文：呃，等一下！
+置信度：medium
+原因：natural_language
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[80] 成功文本
+来源：Deepest Sword_Data/sharedassets1.assets
+键位：asset#sharedassets1.assets#171/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets1.assets、obj=171）
+原文：Venture deep into<br>the Cavern of Longing.
+译文：深入探索<br>渴望的洞穴。
+置信度：medium
+原因：natural_language
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[81] 成功文本
+来源：Deepest Sword_Data/sharedassets1.assets
+键位：asset#sharedassets1.assets#171/str/2
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets1.assets、obj=171）
+原文：Drive it deeper in this time.
+译文：更深入地探索它吧。
+置信度：medium
+原因：natural_language
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[82] 成功文本
+来源：Deepest Sword_Data/sharedassets1.assets
+键位：asset#sharedassets1.assets#171/str/3
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets1.assets、obj=171）
+原文：Be careful of its weight.
+译文：注意它的重量。
+置信度：medium
+原因：natural_language
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[83] 成功文本
+来源：Deepest Sword_Data/sharedassets1.assets
+键位：asset#sharedassets1.assets#171/str/4
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets1.assets、obj=171）
+原文：Such length may be troublesome.
+译文：这样的长度可能会带来麻烦。
+置信度：medium
+原因：natural_language
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[84] 成功文本
+来源：Deepest Sword_Data/sharedassets1.assets
+键位：asset#sharedassets1.assets#171/str/5
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets1.assets、obj=171）
+原文：It is the Deepest Sword!
+译文：这是最锋利的剑！
+置信度：medium
+原因：natural_language
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[85] 成功文本
+来源：Deepest Sword_Data/sharedassets1.assets
+键位：asset#sharedassets1.assets#172/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets1.assets、obj=172）
+原文：Long the Dragon<br>lies ahead...
+译文：龙之传说<br>谎言就在前方……
+置信度：medium
+原因：natural_language
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[86] 成功文本
+来源：Deepest Sword_Data/sharedassets1.assets
+键位：asset#sharedassets1.assets#172/str/2
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets1.assets、obj=172）
+原文：The cavern looks deeper<br>than before.
+译文：那洞穴看起来更加深了。<br>比以前更糟糕了。
+置信度：medium
+原因：natural_language
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[87] 成功文本
+来源：Deepest Sword_Data/sharedassets1.assets
+键位：asset#sharedassets1.assets#172/str/3
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets1.assets、obj=172）
+原文：It's getting deeper and deeper.
+译文：它变得越来越深了。
+置信度：medium
+原因：natural_language
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[88] 成功文本
+来源：Deepest Sword_Data/sharedassets1.assets
+键位：asset#sharedassets1.assets#172/str/4
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets1.assets、obj=172）
+原文：It's even deeper now.<br>Don't give up.
+译文：现在的情况更加糟糕了。<br>不要放弃。
+置信度：medium
+原因：natural_language
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[89] 成功文本
+来源：Deepest Sword_Data/sharedassets1.assets
+键位：asset#sharedassets1.assets#172/str/5
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets1.assets、obj=172）
+原文：So deep...
+译文：这么深……
+置信度：medium
+原因：natural_language
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[90] 成功文本
+来源：Deepest Sword_Data/Managed/Assembly-CSharp.dll
+键位：us#2
+对象：DLL #US 字符串（record_offset=224169）
+原文：ANIM: No frames in: {0}
+译文：动画：{0}中无帧。
+置信度：medium
+原因：user_string_uppercase_ui
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[91] 成功文本
+来源：Deepest Sword_Data/Managed/Assembly-CSharp.dll
+键位：us#428
+对象：DLL #US 字符串（record_offset=224595）
+原文：<color=#FFFFFF>+{0} potions</color>
+译文：<color=#FFFFFF>+{0} 瓶药水</color>
+置信度：medium
+原因：user_string_uppercase_ui
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[92] 成功文本
+来源：Deepest Sword_Data/Managed/Assembly-CSharp.dll
+键位：us#968
+对象：DLL #US 字符串（record_offset=225135）
+原文：New Best Time!
+译文：最佳时机到啦！
+置信度：high
+原因：mono_ui_setter
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[93] 成功文本
+来源：Deepest Sword_Data/Managed/Assembly-CSharp.dll
+键位：us#7226
+对象：DLL #US 字符串（record_offset=231393）
+原文：NOTHING TWEEENING AT BEGINNING
+译文：一开始就没有任何事情需要处理。
+置信度：medium
+原因：user_string_uppercase_ui
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[94] 成功文本
+来源：Deepest Sword_Data/Managed/Assembly-CSharp.dll
+键位：us#7288
+对象：DLL #US 字符串（record_offset=231455）
+原文：OBJECT NOT TWEEENING AT BEGINNING
+译文：该对象在初始化时不会执行任何操作。
+置信度：medium
+原因：user_string_uppercase_ui
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[95] 成功文本
+来源：Deepest Sword_Data/Managed/Assembly-CSharp.dll
+键位：us#7356
+对象：DLL #US 字符串（record_offset=231523）
+原文：EVENT GAMEOBJECT RECEIVED
+译文：收到的游戏事件对象
+置信度：medium
+原因：user_string_uppercase_ui
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[96] 成功文本
+来源：Deepest Sword_Data/Managed/Assembly-CSharp.dll
+键位：us#7408
+对象：DLL #US 字符串（record_offset=231575）
+原文：EVENT GAMEOBJECT NOT REMOVED
+译文：事件相关对象无法移除
+置信度：medium
+原因：user_string_uppercase_ui
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[97] 成功文本
+来源：Deepest Sword_Data/Managed/Assembly-CSharp.dll
+键位：us#7466
+对象：DLL #US 字符串（record_offset=231633）
+原文：EVENT GAMEOBJECT REMOVED
+译文：事件游戏对象已移除
+置信度：medium
+原因：user_string_uppercase_ui
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[98] 成功文本
+来源：Deepest Sword_Data/Managed/Assembly-CSharp.dll
+键位：us#7516
+对象：DLL #US 字符串（record_offset=231683）
+原文：EVENT ALL RECEIVED
+译文：所有收到的事件
+置信度：medium
+原因：user_string_uppercase_ui
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[99] 成功文本
+来源：Deepest Sword_Data/Managed/Assembly-CSharp.dll
+键位：us#7554
+对象：DLL #US 字符串（record_offset=231721）
+原文：EVENT ALL REMOVED
+译文：所有事件已移除。
+置信度：medium
+原因：user_string_uppercase_ui
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[100] 成功文本
+来源：Deepest Sword_Data/Managed/Assembly-CSharp.dll
+键位：us#7604
+对象：DLL #US 字符串（record_offset=231771）
+原文：SPLINE POSITIONING AT HALFWAY
+译文：SPLINE定位到 halfway位置
+置信度：medium
+原因：user_string_uppercase_ui
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[101] 成功文本
+来源：Deepest Sword_Data/Managed/Assembly-CSharp.dll
+键位：us#7976
+对象：DLL #US 字符串（record_offset=232143）
+原文：ROTATE AROUND MULTIPLE
+译文：围绕多个物体旋转
+置信度：medium
+原因：user_string_uppercase_ui
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[102] 成功文本
+来源：Deepest Sword_Data/Managed/Assembly-CSharp.dll
+键位：us#8090
+对象：DLL #US 字符串（record_offset=232257）
+原文：ROTATE REPEAT
+译文：旋转/重复
+置信度：medium
+原因：user_string_uppercase_ui
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[103] 成功文本
+来源：Deepest Sword_Data/Managed/Assembly-CSharp.dll
+键位：us#8118
+对象：DLL #US 字符串（record_offset=232285）
+原文：DESTROY ON COMPLETE
+译文：彻底摧毁
+置信度：medium
+原因：user_string_uppercase_ui
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[104] 成功文本
+来源：Deepest Sword_Data/Managed/Assembly-CSharp.dll
+键位：us#8512
+对象：DLL #US 字符串（record_offset=232679）
+原文：TWEENED WITH ZERO TIME
+译文：以零时间完成
+置信度：medium
+原因：user_string_uppercase_ui
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[105] 成功文本
+来源：Deepest Sword_Data/Managed/Assembly-CSharp.dll
+键位：us#8558
+对象：DLL #US 字符串（record_offset=232725）
+原文：CANCELS DO NOT EFFECT FINISHING
+译文：取消操作不会影响最终完成状态。
+置信度：medium
+原因：user_string_uppercase_ui
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[106] 成功文本
+来源：Deepest Sword_Data/Managed/Assembly-CSharp.dll
+键位：us#8622
+对象：DLL #US 字符串（record_offset=232789）
+原文：MOVE TO TRANSFORM WORKS
+译文：迁移以进行改造工作
+置信度：medium
+原因：user_string_uppercase_ui
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[107] 成功文本
+来源：Deepest Sword_Data/Managed/Assembly-CSharp.dll
+键位：us#8670
+对象：DLL #US 字符串（record_offset=232837）
+原文：SPLINE WITH TWO POINTS SUCCEEDS
+译文：两点连接式样被采用。
+置信度：medium
+原因：user_string_uppercase_ui
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[108] 成功文本
+来源：Deepest Sword_Data/Managed/Assembly-CSharp.dll
+键位：us#8734
+对象：DLL #US 字符串（record_offset=232901）
+原文：ZERO TIME FINSHES CORRECTLY
+译文：永远无法正确地判断出“FINSH”的状态
+置信度：medium
+原因：user_string_uppercase_ui
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[109] 成功文本
+来源：Deepest Sword_Data/Managed/Assembly-CSharp.dll
+键位：us#8930
+对象：DLL #US 字符串（record_offset=233097）
+原文：ROTATE AROUND
+译文：旋转四周
+置信度：medium
+原因：user_string_uppercase_ui
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[110] 成功文本
+来源：Deepest Sword_Data/Managed/Assembly-CSharp.dll
+键位：us#8996
+对象：DLL #US 字符串（record_offset=233163）
+原文：ROTATE AROUND 360
+译文：旋转 360 度
+置信度：medium
+原因：user_string_uppercase_ui
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[111] 成功文本
+来源：Deepest Sword_Data/Managed/Assembly-CSharp.dll
+键位：us#9074
+对象：DLL #US 字符串（record_offset=233241）
+原文：ONCOMPLETE OBJECT
+译文：未完成的对象
+置信度：medium
+原因：user_string_uppercase_ui
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[112] 成功文本
+来源：Deepest Sword_Data/Managed/Assembly-CSharp.dll
+键位：us#9134
+对象：DLL #US 字符串（record_offset=233301）
+原文：ON START
+译文：开始时
+置信度：medium
+原因：user_string_uppercase_ui
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[113] 成功文本
+来源：Deepest Sword_Data/Managed/Assembly-CSharp.dll
+键位：us#9178
+对象：DLL #US 字符串（record_offset=233345）
+原文：MOVE Y
+译文：移动 Y
+置信度：medium
+原因：user_string_uppercase_ui
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[114] 成功文本
+来源：Deepest Sword_Data/Managed/Assembly-CSharp.dll
+键位：us#9192
+对象：DLL #US 字符串（record_offset=233359）
+原文：MOVE LOCAL Z
+译文：移动局部Z坐标
+置信度：medium
+原因：user_string_uppercase_ui
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[115] 成功文本
+来源：Deepest Sword_Data/Managed/Assembly-CSharp.dll
+键位：us#9256
+对象：DLL #US 字符串（record_offset=233423）
+原文：VALUE2 UPDATE
+译文：VALUE2 更新
+置信度：medium
+原因：user_string_uppercase_ui
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[116] 成功文本
+来源：Deepest Sword_Data/Managed/Assembly-CSharp.dll
+键位：us#9284
+对象：DLL #US 字符串（record_offset=233451）
+原文：CHANGING TIME DOESN'T JUMP AHEAD
+译文：变化的时代不会提前到来。
+置信度：medium
+原因：user_string_uppercase_ui
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[117] 成功文本
+来源：Deepest Sword_Data/Managed/Assembly-CSharp.dll
+键位：us#9416
+对象：DLL #US 字符串（record_offset=233583）
+原文：EASING TYPES
+译文：缓解类型
+置信度：medium
+原因：user_string_uppercase_ui
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[118] 成功文本
+来源：Deepest Sword_Data/Managed/Assembly-CSharp.dll
+键位：us#9442
+对象：DLL #US 字符串（record_offset=233609）
+原文：TWO DESTROY ON COMPLETE'S SUCCEED
+译文：两架战机摧毁了COMPLETE的防御系统
+置信度：medium
+原因：user_string_uppercase_ui
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[119] 成功文本
+来源：Deepest Sword_Data/Managed/Assembly-CSharp.dll
+键位：us#9510
+对象：DLL #US 字符串（record_offset=233677）
+原文：ON START WAS CALLED
+译文：启动时被调用了
+置信度：medium
+原因：user_string_uppercase_ui
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[120] 成功文本
+来源：Deepest Sword_Data/Managed/Assembly-CSharp.dll
+键位：us#9550
+对象：DLL #US 字符串（record_offset=233717）
+原文：ON UPDATE VAL
+译文：ON UPDATE VAL
+置信度：medium
+原因：user_string_uppercase_ui
+角色：display
+质量评分：—（passed=True）
+翻译评价：回显保留原文（未实际翻译）
+需要优化：是（回显未翻译）
+写回：未执行（回显——译文与原文相同，无需写回）
+
+────────────────────────────────────────────────────────────────
+[121] 成功文本
+来源：Deepest Sword_Data/Managed/Assembly-CSharp.dll
+键位：us#9578
+对象：DLL #US 字符串（record_offset=233745）
+原文：DELAYED SOUND
+译文：延迟声音
+置信度：medium
+原因：user_string_uppercase_ui
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[122] 成功文本
+来源：Deepest Sword_Data/Managed/Assembly-CSharp.dll
+键位：us#9606
+对象：DLL #US 字符串（record_offset=233773）
+原文：BEZIER CLOSED LOOP SHOULD END AT START
+译文：BEZIER闭合回路应始于起点。
+置信度：medium
+原因：user_string_uppercase_ui
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[123] 成功文本
+来源：Deepest Sword_Data/Managed/Assembly-CSharp.dll
+键位：us#9724
+对象：DLL #US 字符串（record_offset=233891）
+原文：SPLINE CLOSED LOOP SHOULD END AT START
+译文：SPLINE闭合循环应始于起点。
+置信度：medium
+原因：user_string_uppercase_ui
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[124] 成功文本
+来源：Deepest Sword_Data/Managed/Assembly-CSharp.dll
+键位：us#9816
+对象：DLL #US 字符串（record_offset=233983）
+原文：SEQ MOVE X FINISHED
+译文：SEQ 移动 X 已完成
+置信度：medium
+原因：user_string_uppercase_ui
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[125] 成功文本
+来源：Deepest Sword_Data/Managed/Assembly-CSharp.dll
+键位：us#9872
+对象：DLL #US 字符串（record_offset=234039）
+原文：SEQ SCALE X FINISHED
+译文：SEQ SCALE X 已完成
+置信度：medium
+原因：user_string_uppercase_ui
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[126] 成功文本
+来源：Deepest Sword_Data/Managed/Assembly-CSharp.dll
+键位：us#9932
+对象：DLL #US 字符串（record_offset=234099）
+原文：OUT OF BOUNDS
+译文：超出范围/失控
+置信度：medium
+原因：user_string_uppercase_ui
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[127] 成功文本
+来源：Deepest Sword_Data/Managed/Assembly-CSharp.dll
+键位：us#10000
+对象：DLL #US 字符串（record_offset=234167）
+原文：SETONSTART CALLS
+译文：SETONSTART 调用
+置信度：medium
+原因：user_string_uppercase_ui
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[128] 成功文本
+来源：Deepest Sword_Data/Managed/Assembly-CSharp.dll
+键位：us#10066
+对象：DLL #US 字符串（record_offset=234233）
+原文：GROUP FINISH
+译文：小组完成
+置信度：medium
+原因：user_string_uppercase_ui
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[129] 成功文本
+来源：Deepest Sword_Data/Managed/Assembly-CSharp.dll
+键位：us#10146
+对象：DLL #US 字符串（record_offset=234313）
+原文：GROUP POSITION FINISH
+译文：组位置完成
+置信度：medium
+原因：user_string_uppercase_ui
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[130] 成功文本
+来源：Deepest Sword_Data/Managed/Assembly-CSharp.dll
+键位：us#10190
+对象：DLL #US 字符串（record_offset=234357）
+原文：GROUP POSITION ON UPDATE
+译文：更新时的组位置
+置信度：medium
+原因：user_string_uppercase_ui
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[131] 成功文本
+来源：Deepest Sword_Data/Managed/Assembly-CSharp.dll
+键位：us#10240
+对象：DLL #US 字符串（record_offset=234407）
+原文：RESUME OUT OF ORDER
+译文：无序摘要
+置信度：medium
+原因：user_string_uppercase_ui
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[132] 成功文本
+来源：Deepest Sword_Data/Managed/Assembly-CSharp.dll
+键位：us#10382
+对象：DLL #US 字符串（record_offset=234549）
+原文：SCALED TIMING DIFFERENCE
+译文：SCALED 时间差
+置信度：medium
+原因：user_string_uppercase_ui
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[133] 成功文本
+来源：Deepest Sword_Data/Managed/Assembly-CSharp.dll
+键位：us#10536
+对象：DLL #US 字符串（record_offset=234703）
+原文：SCALED ENDING POSITION
+译文：SCALED ENDING POSITION
+置信度：medium
+原因：user_string_uppercase_ui
+角色：display
+质量评分：—（passed=True）
+翻译评价：回显保留原文（未实际翻译）
+需要优化：是（回显未翻译）
+写回：未执行（回显——译文与原文相同，无需写回）
+
+────────────────────────────────────────────────────────────────
+[134] 成功文本
+来源：Deepest Sword_Data/Managed/Assembly-CSharp.dll
+键位：us#10664
+对象：DLL #US 字符串（record_offset=234831）
+原文：ON UPDATE FIRED
+译文：关于更新后是否触发触发操作
+置信度：medium
+原因：user_string_uppercase_ui
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[135] 成功文本
+来源：Deepest Sword_Data/Managed/Assembly-CSharp.dll
+键位：us#10696
+对象：DLL #US 字符串（record_offset=234863）
+原文：VECTOR3 CALLBACK CALLED
+译文：VECTOR3 已调用回调
+置信度：medium
+原因：user_string_uppercase_ui
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[136] 成功文本
+来源：Deepest Sword_Data/Managed/Assembly-CSharp.dll
+键位：us#10776
+对象：DLL #US 字符串（record_offset=234943）
+原文：WE CAN RETRIEVE A DESCRIPTION
+译文：我们可以获取一个描述。
+置信度：medium
+原因：user_string_uppercase_ui
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[137] 成功文本
+来源：Deepest Sword_Data/Managed/Assembly-CSharp.dll
+键位：us#10868
+对象：DLL #US 字符串（record_offset=235035）
+原文：START IGNORE TIMING
+译文：开始忽略时间匹配
+置信度：medium
+原因：user_string_uppercase_ui
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[138] 成功文本
+来源：Deepest Sword_Data/Managed/Assembly-CSharp.dll
+键位：us#11036
+对象：DLL #US 字符串（record_offset=235203）
+原文：BEZIER RATIO POINT
+译文：BEZIER比率点
+置信度：medium
+原因：user_string_uppercase_ui
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[139] 成功文本
+来源：Deepest Sword_Data/Managed/Assembly-CSharp.dll
+键位：us#11120
+对象：DLL #US 字符串（record_offset=235287）
+原文：GROUP IDS MATCH
+译文：GROUP IDS 匹配
+置信度：medium
+原因：user_string_uppercase_ui
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[140] 成功文本
+来源：Deepest Sword_Data/Managed/Assembly-CSharp.dll
+键位：us#11152
+对象：DLL #US 字符串（record_offset=235319）
+原文：MAX SEARCH OPTIMIZED
+译文：MAX 搜索优化版
+置信度：medium
+原因：user_string_uppercase_ui
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[141] 成功文本
+来源：Deepest Sword_Data/Managed/Assembly-CSharp.dll
+键位：us#11240
+对象：DLL #US 字符串（record_offset=235407）
+原文：SOMETHING IS TWEENING
+译文：有东西正在靠近了。
+置信度：medium
+原因：user_string_uppercase_ui
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[142] 成功文本
+来源：Deepest Sword_Data/Managed/Assembly-CSharp.dll
+键位：us#11284
+对象：DLL #US 字符串（record_offset=235451）
+原文：CANCEL AFTER RESET SHOULD FAIL
+译文：如果重置后取消操作会失败，则应取消操作。
+置信度：medium
+原因：user_string_uppercase_ui
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[143] 成功文本
+来源：Deepest Sword_Data/Managed/Assembly-CSharp.dll
+键位：us#11366
+对象：DLL #US 字符串（record_offset=235533）
+原文：GROUP ISTWEENING
+译文：群组 I 隔离
+置信度：medium
+原因：user_string_uppercase_ui
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[144] 成功文本
+来源：Deepest Sword_Data/Managed/Assembly-CSharp.dll
+键位：us#11400
+对象：DLL #US 字符串（record_offset=235567）
+原文：GROUP RESUME
+译文：团队简历
+置信度：medium
+原因：user_string_uppercase_ui
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[145] 成功文本
+来源：Deepest Sword_Data/Managed/Assembly-CSharp.dll
+键位：us#11426
+对象：DLL #US 字符串（record_offset=235593）
+原文：CANCEL TWEEN LTDESCR
+译文：取消 TWEEN LTDESCR
+置信度：medium
+原因：user_string_uppercase_ui
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[146] 成功文本
+来源：Deepest Sword_Data/Managed/Assembly-CSharp.dll
+键位：us#11468
+对象：DLL #US 字符串（record_offset=235635）
+原文：CANCEL TWEEN LEANTWEEN
+译文：取消 Tween，改为 LEANTWEEN。
+置信度：medium
+原因：user_string_uppercase_ui
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[147] 成功文本
+来源：Deepest Sword_Data/Managed/Assembly-CSharp.dll
+键位：us#11514
+对象：DLL #US 字符串（record_offset=235681）
+原文：ON UPDATE NOT CALLED DURING PAUSE
+译文：在暂停期间不会调用更新操作
+置信度：medium
+原因：user_string_uppercase_ui
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[148] 成功文本
+来源：Deepest Sword_Data/Managed/Assembly-CSharp.dll
+键位：us#11650
+对象：DLL #US 字符串（record_offset=235817）
+原文：RESET CORRECTLY CLEANS UP
+译文：正确重置可以清除问题。
+置信度：medium
+原因：user_string_uppercase_ui
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[149] 成功文本
+来源：Deepest Sword_Data/Managed/Assembly-CSharp.dll
+键位：us#11710
+对象：DLL #US 字符串（record_offset=235877）
+原文：AFTER LOTS OF CANCELS
+译文：由于多次取消活动/计划
+置信度：medium
+原因：user_string_uppercase_ui
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[150] 成功文本
+来源：Deepest Sword_Data/Managed/Cinemachine.dll
+键位：us#412
+对象：DLL #US 字符串（record_offset=176119）
+原文：SOLO 
+译文：SOLO
+置信度：medium
+原因：user_string_uppercase_ui
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[151] 成功文本
+来源：Deepest Sword_Data/Managed/Cinemachine.dll
+键位：us#828
+对象：DLL #US 字符串（record_offset=176535）
+原文：**ANY CAMERA**
+译文：任何相机
+置信度：medium
+原因：user_string_uppercase_ui
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[152] 成功文本
+来源：Deepest Sword_Data/Managed/Unity.2D.Animation.Triangle.Runtime.dll
+键位：us#3009
+对象：DLL #US 字符串（record_offset=170200）
+原文：Unable to locate PSLG vertex in triangulation.
+译文：无法在三角剖分中找到 PSLG 顶点。
+置信度：medium
+原因：user_string_uppercase_ui
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否
+写回：已写入

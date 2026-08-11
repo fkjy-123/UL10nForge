@@ -12,7 +12,9 @@ from hanhua.core.engine_strings import (PHYSICAL_KEY_NAMES_CASEFOLD,
                                         interaction_input_tokens)
 from hanhua.core.knowledge import (_ACTION_VERB_ZH, _JAPANESE_KANA_RE,
                                    _is_language_name, _is_multilingual_source,
-                                   _is_spaced_action, _is_uppercase_action)
+                                   _is_spaced_action, _is_uppercase_action,
+                                   aggregate_spaced_letters,
+                                   language_option_translation)
 from hanhua.core.placeholders import (DISPLAY_WORDS, SAFE_KEEPERS,
                                       self_heal_format_tags)
 from hanhua.core.local_model import sanitize_exception
@@ -642,6 +644,20 @@ class BatchTranslator:
                 e.meta["quality_reasons"] = []
                 e.meta["language_source_kept"] = True
                 return e, e.original, True
+            # 语言选项标签确定性直填（Language: ENGLISH → 语言：英语）：
+            # 标签 + 语言名是封闭集合，1.8B 对选项文本乱译（doog 实证
+            # 「Language: ENGLISH」4 次重试稳定乱译 → newline/line_content
+            # mismatch 恒败）——确定性直填优先于模型，不走 LLM。
+            deterministic = language_option_translation(e.original)
+            if deterministic:
+                e.translation = deterministic
+                e.status = "translated"
+                e.quality_reasons = ()
+                e.meta = dict(e.meta)
+                e.meta["quality_passed"] = True
+                e.meta["quality_reasons"] = []
+                e.meta["deterministic_fill"] = "language_option"
+                return e, deterministic, True
             try:
                 native_translate = getattr(self.client, "translate_text", None)
                 if callable(native_translate):
@@ -791,6 +807,27 @@ class BatchTranslator:
                     return e, "", False
                 if retried is not None and retried[2]:
                     return retried
+            # 间隔动作词聚合重译：'* Y A W N *' 逐字空格是打字机视觉写法
+            # （动作旁白），1.8B 对原形态稳定回显（a-catfiends 实证 4 次
+            # 仍回显，untranslated_text 恒败）；聚合为正常词（'* YAWN *'）
+            # 后模型能正确译出中文且标签原位保留（实验实证）。聚合无变化
+            # 或失败 → 恢复首译状态继续后续降级链。
+            if (callable(getattr(self.client, "translate_text", None))
+                    and not sub[0][2]
+                    and self._allows_fallback_retry(e)
+                    and _is_spaced_action(e.original)
+                    and not _CJK.search(sub[0][1] or "")
+                    and "untranslated_text" in set(e.quality_reasons)):
+                repaired = self._repair_spaced_action_translation(
+                    e, native_translate, target_lang)
+                if self._is_cancelled():
+                    restore_original_state()
+                    return e, "", False
+                if repaired is not None and repaired[2]:
+                    return repaired
+                if repaired is not None and not repaired[2]:
+                    (e.translation, e.status, e.quality_reasons, e.meta) = (
+                        first_fail_state)
             # 多语言源双跳：模型对含假名/重音字母的原文（日语/意语/法语等）
             # 倾向输出**英语译文**（准确但目标语错误，质量门拒绝）→ 以英语
             # 译文为中间源再译一次中文（模型英译中强项，alisa-demo 实证
@@ -1149,6 +1186,10 @@ class BatchTranslator:
         # （crash-back-in-time Uka-Uka 审判邀请 实证：首译高质量仅 warp
         # 残留，旧判定重试耗尽恒败）。条件：词在原文（防幻觉）、非功能词/
         # UI 词典/物理键、译文已含中文；短语覆盖的词不重复处理。
+        # 全大写 UI 词典词例外（MAX 残留 = '最大'）：全大写通常被当专名
+        # 跳过补译，但词典词（MAX/ON/OFF 类）是普通语义词，模型对全大写
+        # 稳定回显（deepest-sword 'MAX SEARCH OPTIMIZED' 实证：MAX 半翻
+        # 且 special_action 阻断专名豁免 → 恒败）→ 词典内全大写词可补译
         residue_words: list[str] = []
         if _CJK.search(translation):
             phrase_ranges = [
@@ -1159,10 +1200,17 @@ class BatchTranslator:
                        for ps, pe in phrase_ranges):
                     continue
                 w = m.group(0)
-                if (3 <= len(w) <= 16 and w[0].islower() and not w.isupper()
+                # 纯小写普通词 或 全大写词典词（MAX=最大）；TitleCase 与
+                # 全大写非词典词（Gamejolt 类专名）维持跳过
+                lower_word = w[0].islower() and not w.isupper()
+                upper_ui_word = w.isupper() and (
+                    w.casefold() in _DISPLAY_WORDS_CASEFOLD)
+                if (3 <= len(w) <= 16
+                        and (lower_word or upper_ui_word)
                         and w.casefold() in source_terms_cf
                         and w.casefold() not in _ENGLISH_FUNCTION_WORDS
-                        and w.casefold() not in _DISPLAY_WORDS_CASEFOLD
+                        and (w.casefold() not in _DISPLAY_WORDS_CASEFOLD
+                             or w.isupper())
                         and w.casefold() not in _BUILTIN_UI_TERMS_CASEFOLD
                         and w.casefold() not in PHYSICAL_KEY_NAMES_CASEFOLD
                         and w not in residue_words):
@@ -1307,6 +1355,47 @@ class BatchTranslator:
             (word, word) for word in proper_words)
         try:
             out, usage = native_translate(original, target_lang, references)
+        except Exception as exc:  # noqa: BLE001
+            self._record_usage(None)
+            self._mark_request_failed(entry, exc)
+            return entry, "", False
+        self._record_usage(usage)
+        if self._is_cancelled():
+            return entry, "", False
+        if not isinstance(out, str) or not out.strip():
+            return None
+        good = self._apply_quality(entry, out)
+        return entry, out, good
+
+    def _repair_spaced_action_translation(
+            self, entry: TextEntry, native_translate, target_lang: str,
+            ) -> tuple[TextEntry, str, bool] | None:
+        """间隔动作词聚合重译：'* Y A W N *' 逐字空格是打字机视觉写法
+        （哈欠/惊呼等动作旁白），1.8B 对原形态稳定回显（a-catfiends
+        实证 4 次重试仍回显）；聚合为正常词（'* YAWN *'）后模型能译出
+        中文且标签原位保留（实验实证：'{punch=3,2}* YAWN *{w=3}{x}'
+        → '{punch=3,2}* 哎呀 *{w=3}{x}'）。聚合无变化（无间隔词）→
+        None 交后续降级链。
+
+        2026-08-11 实测补强：1.8B 对 * SCOFF */* SIGH */* YAWN *
+        /* GASP * 聚合形态仍稳定回显（只去空格不翻译）——动作旁白词
+        是封闭词表，先查 _SPACED_ACTION_LEXICON 确定性直填（不走模型），
+        未收录才交模型；两者都失败返回 None 不截断降级链。"""
+        aggregated = aggregate_spaced_letters(entry.original)
+        if aggregated == entry.original:
+            return None
+        # 封闭词典兜底：聚合形态中 * WORD * 的 WORD 在词典 → 直填
+        # （模型能力边界：单动作词不在 1.8B 翻译范围，实测稳定回显）
+        from hanhua.core.knowledge import spaced_action_lexicon
+        m = re.search(r"\* ([A-Z]+) \*", aggregated)
+        if m and spaced_action_lexicon(m.group(1)):
+            out = aggregated.replace(
+                m.group(0), f"* {spaced_action_lexicon(m.group(1))} *")
+            good = self._apply_quality(entry, out)
+            return entry, out, good
+        try:
+            out, usage = native_translate(
+                aggregated, target_lang, self.references)
         except Exception as exc:  # noqa: BLE001
             self._record_usage(None)
             self._mark_request_failed(entry, exc)

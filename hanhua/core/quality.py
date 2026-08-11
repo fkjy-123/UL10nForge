@@ -153,11 +153,21 @@ def has_independent_lower_word(text: str) -> bool:
     Jump During Playtime's Jumprope Minigame' 的 s 曾误判小写词 → 译文
     已含中文仍被 untranslated_text 拒（baldis 实证 [6]）。单字母 + 前邻
     撇号 → 撇号缩写的字母碎片，跳过。
+    花括号占位符紧邻的单字母（'v{0}' 版本号模板的 v、'{0}' 后接单位字母）
+    是格式串载体不是普通词——deepest-sword 实证：版本号模板 'v{0}' 回显
+    是正确行为，v 被当独立小写词 → proper_name_echo 豁免失效 →
+    target_script_mismatch 恒败。
     """
     cleaned = _STRIP_RICH_TEXT.sub(" ", SAFE_KEEPERS.sub(" ", text))
     for match in _LOWER_ASCII_WORD.finditer(cleaned):
         if (len(match.group(0)) == 1 and match.start() > 0
                 and cleaned[match.start() - 1] == "'"):
+            continue
+        if (len(match.group(0)) == 1
+                and ((match.start() > 0
+                      and cleaned[match.start() - 1] in "{}")
+                     or (match.end() < len(cleaned)
+                         and cleaned[match.end()] in "{}"))):
             continue
         return True
     return False

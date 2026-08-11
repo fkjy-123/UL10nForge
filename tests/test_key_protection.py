@@ -41,6 +41,24 @@ def test_word_style_is_not_key():
     assert not is_key_style_identifier("save")
 
 
+def test_lowercase_word_not_key_style():
+    """纯小写纯字母单词 → 显示文本（待办 A 治理，222am 实证：shower/
+    city/bedroom/eggs/ladder/mug 等常见场景词不在 165 词白名单 → 曾判
+    键跳过）。键名几乎总带分隔符或混合大小写，无分隔符纯小写是自然
+    语言单词形态。"""
+    assert not is_key_style_identifier("shower")
+    assert not is_key_style_identifier("city")
+    assert not is_key_style_identifier("bedroom")
+    assert not is_key_style_identifier("eggs")
+    assert not is_key_style_identifier("ladder")
+    assert not is_key_style_identifier("mug")
+    # 对照：带分隔符/混合大小写/数字的键不受影响
+    assert is_key_style_identifier("phone_call_01")
+    assert is_key_style_identifier("m_address")
+    assert is_key_style_identifier("lockedEntrance")
+    assert is_key_style_identifier("v1_0")
+
+
 def test_key_style_not_plain_text():
     assert not is_key_style_identifier("Hello player")      # 有空格
     assert not is_key_style_identifier("BOSS: Took you long")  # 标点

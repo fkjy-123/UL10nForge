@@ -239,6 +239,108 @@ def _export_writeback_record(project, out_writeback: Path, profile,
             *gate_lines,
             "",
         ]
+        # 知识库案例转规则：writeback_case 5 条理论案例 → 可执行规则
+        # （规则实现清单见 knowledge.writeback_case_rules，写回链路已启用）
+        from hanhua.core.knowledge import writeback_case_rules
+        rules = writeback_case_rules()
+        blocks += [
+            _SEPARATOR,
+            f"知识库案例转规则：{len(rules)} 条已启用（writeback_case → 可执行检测）", ""]
+        for rule in rules:
+            blocks.append(
+                f"- [{rule['rule']}] {rule['case'][:34]}（实现：{rule['impl'][:66]}）")
+        blocks.append("")
+        # 逻辑层审计（§写回逻辑层检查）：写回前敏感形态 / rawstr 扩容 /
+        # 反向语义审计回退 / 互斥一致性 / 重开逻辑验证失败。warn 级全列，
+        # note 级只列统计与抽样。
+        logic_audit = verification.get("logic_audit") or []
+        raw_expansions = verification.get("raw_expansions") or []
+        logic_mismatches = verification.get("logic_mismatches") or []
+        logic_reverted = verification.get("logic_reverted") or 0
+        if (logic_audit or raw_expansions or logic_mismatches or logic_reverted):
+            blocks += [_SEPARATOR, "逻辑层审计（写回逻辑敏感形态 / 扩容 / 语义回退 / 重开验证）", ""]
+        if logic_mismatches:
+            blocks += [f"重开逻辑验证失败：{len(logic_mismatches)} 项（写回整体拒绝）", ""]
+            for item in logic_mismatches:
+                blocks.append(f"- {item}")
+            blocks.append("")
+        # 反向语义审计：确定性逻辑键自动回退译文（保留原文）——知识库
+        # 案例「UnityEvent 绑定断裂」「显示文本当逻辑键」转规则
+        semantic_reverts = [
+            a for a in logic_audit if a.get("stage") == "semantic_revert"]
+        if semantic_reverts:
+            blocks += [
+                f"逻辑键自动回退（译文保留原文，防断链）：{logic_reverted} 条", ""]
+            for item in semantic_reverts[:30]:
+                blocks.append(
+                    f"- [{item.get('reason')}] {item.get('original', '')[:40]}"
+                    f" → {item.get('translation', '')[:40]}"
+                    f"（{item.get('locator', '')[:70]}）")
+            if len(semantic_reverts) > 30:
+                blocks.append(f"…（其余 {len(semantic_reverts) - 30} 条）")
+            blocks.append("")
+        semantic_reports = [
+            a for a in logic_audit if a.get("stage") == "semantic_report"]
+        written_total = verification.get("written") or 0
+        if semantic_reports:
+            blocks += [
+                f"疑似逻辑键（report，已写回需复核）：{len(semantic_reports)} 条", ""]
+            for item in semantic_reports[:30]:
+                blocks.append(
+                    f"- [{item.get('reason')}] {item.get('original', '')[:40]}"
+                    f" → {item.get('translation', '')[:40]}"
+                    f"（{item.get('locator', '')[:70]}）")
+            if len(semantic_reports) > 30:
+                blocks.append(f"…（其余 {len(semantic_reports) - 30} 条）")
+            # 召回率监控（防识别层哑信号）：疑似逻辑键占比超阈值 → 告警。
+            # 高占比说明识别层放行了大量「对象角色不明」的标识符/比较词，
+            # 游戏按名查找有断链风险，须人工复核而不是默默写回。
+            if written_total and len(semantic_reports) / written_total > 0.05:
+                blocks.append(
+                    f"⚠ 疑似逻辑键占比 {len(semantic_reports)}/{written_total}"
+                    f"（{len(semantic_reports) / written_total:.0%}）> 5%——"
+                    f"识别层可能漏判逻辑键，建议复核上述条目后决定回退")
+            blocks.append("")
+        consistencies = [
+            a for a in logic_audit if a.get("stage") == "consistency"]
+        if consistencies:
+            blocks += [f"同原文互斥一致性：{len(consistencies)} 组（全组保留原文防混排）", ""]
+            for item in consistencies[:20]:
+                blocks.append(
+                    f"- {item.get('original', '')[:40]}"
+                    f"（对象 {item.get('obj')}，出现 {item.get('count')} 次）"
+                    f"：{item.get('reason', '')}")
+            if len(consistencies) > 20:
+                blocks.append(f"…（其余 {len(consistencies) - 20} 组）")
+            blocks.append("")
+        form_audits = [a for a in logic_audit if not a.get("stage")]
+        warns = [a for a in form_audits if a.get("severity") == "warn"]
+        if warns:
+            blocks += [f"疑似逻辑字符串（warn，已写回需人工复核）：{len(warns)} 条", ""]
+            for item in warns[:30]:
+                blocks.append(
+                    f"- [{item.get('pattern')}] {item.get('original', '')[:40]}"
+                    f" → {item.get('translation', '')[:40]}"
+                    f"（{item.get('locator', '')[:70]}）")
+            if len(warns) > 30:
+                blocks.append(f"…（其余 {len(warns) - 30} 条见 translated.txt 全量对照）")
+            blocks.append("")
+        notes = [a for a in form_audits if a.get("severity") != "warn"]
+        if notes:
+            blocks.append(
+                f"短词/常见按钮文本（note，正常可译）：{len(notes)} 条"
+                f"（抽样：{[n['original'] for n in notes[:8]]}）")
+            blocks.append("")
+        if raw_expansions:
+            blocks += [f"rawstr 扩容写入：{len(raw_expansions)} 条（译文 UTF-8 字节 > 原文）", ""]
+            for item in raw_expansions[:20]:
+                blocks.append(
+                    f"- {item.get('original', '')[:36]} → {item.get('translation', '')[:36]}"
+                    f"（{item.get('src_bytes')} → {item.get('dst_bytes')} 字节，"
+                    f"+{item.get('delta_bytes')}）")
+            if len(raw_expansions) > 20:
+                blocks.append(f"…（其余 {len(raw_expansions) - 20} 条）")
+            blocks.append("")
         # 逐条明细：rejected/truncated 全量 + 回显跳过清单（written 条数
         # 大时只列统计与抽样，全文对照由 text/translated.txt 的「写回」字段承担）
         rejected = verification.get("rejected_entries", [])
@@ -520,6 +622,14 @@ def run_game(game_dir: Path, *, batch: int | None = None,
                 except (ValueError, TypeError):
                     hint = f"[知识库] 命中历史案例：{note[:90]}"
                 print(hint)
+            # 质量库联动（死区接入，§0.4.4-5 六库闭环）：质量门拒绝时除
+            # fail_case 外还检索 quality 域（scoring_case/common_error/
+            # term_consistency 规则知识）——质量规则真实进入失败处理决策，
+            # 而非只沉淀不查（用户两次追问知识库不是摆设）
+            for past in case_kb.search_keyword(
+                    src, domains=("quality",))[:2]:
+                print(f"[知识库] 命中质量规则 {past['kind']}："
+                      f"{str(past.get('note', ''))[:90]}")
         case_kb.close()
         if case_added:
             print(f"  失败案例沉淀：新增 {case_added} 种失败模式入库")
@@ -553,6 +663,14 @@ def run_game(game_dir: Path, *, batch: int | None = None,
     # 知识库闭环：写回结果自动登记 writeback 域（§0.4.4-5）
     wb_kb = KnowledgeBase(REAL_USER_DIR / "knowledge.db")
     _register_writeback(wb_kb, game_name, writeback_result, writeback_error)
+    # 组件兼容库联动（死区接入）：写回失败时按错误信息检索 component_compat
+    # 域（乱码/方块/黑屏/Dropdown 等组件兼容知识）——组件库真实进入写回
+    # 失败处理，而非只种不用
+    if writeback_error:
+        for past in wb_kb.search_keyword(
+                writeback_error, domains=("component_compat",))[:3]:
+            print(f"[知识库] 命中组件兼容 {past['kind']}："
+                  f"{str(past.get('note', ''))[:90]}")
     wb_kb.close()
 
     # ── 4 导出三类文本记录（含逐条写回状态）──
@@ -616,17 +734,23 @@ def _cleanup_hanhua_output(game_dir: Path) -> None:
 
 
 def _discard_sweep_library(project) -> None:
-    """清理本游戏的扫描/翻译中间库（仅 sweep 专用目录内）。
+    """清理本游戏的扫描/翻译中间库（仅**本游戏 slug** 目录）。
 
     Windows 上 sqlite 连接未关闭时 rmtree 会因文件句柄失败（0.25.0 实证：
     库残留导致重扫复用旧状态）。先 close 连接，删除失败则显式告警。
+
+    只删本游戏 slug 目录（store.db 的父目录），不删整个 app_dir——
+    双游戏并行时删 projects/ 会把并行 runner 的工作区一并删除
+    （crash/crusty 并行实证：WinError 32 project.db 被占用；death-trips
+    清理时 deepest-sword 库正被使用同证）。启动清理（§run 前 my_dir）
+    与本处结束清理必须保持一致的目标目录。
     """
     try:
         project.store.close()
     except Exception:  # noqa: BLE001
         pass
     try:
-        _rmtree_force(project.app_dir)
+        _rmtree_force(Path(project.store.db).parent)
     except Exception as exc:  # noqa: BLE001
         print(f"[警告] sweep 库清理失败（残留可能影响下次判定）：{exc}")
 

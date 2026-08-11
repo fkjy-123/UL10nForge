@@ -3,7 +3,8 @@ from __future__ import annotations
 import pytest
 
 from hanhua.core.models import TextEntry
-from hanhua.core.quality import validate_translation_quality
+from hanhua.core.quality import (has_independent_lower_word,
+                                 validate_translation_quality)
 
 
 def _entry(original: str, **meta) -> TextEntry:
@@ -511,3 +512,38 @@ def test_artistic_case_echo_is_exempt_from_untranslated():
     result = validate_translation_quality(
         _entry("Continue", role="display"), "continue")
     assert "untranslated_text" in result.reasons
+
+
+def test_safe_keepers_domain_suffix_after_chinese_is_stripped():
+    """SAFE_KEEPERS 域名/版本/扩展名后缀边界（F4，deepest-sword 实证）：
+    Python re 的 \b 是 Unicode 词边界，中文（\w）算词字符——译文
+    'Speedrun.com上的排行榜' 的 com 后紧跟中文时 \b 不成立 → 域名不剥 →
+    com 被当小写普通词残留误判 target_script_mismatch。修复：后缀边界用
+    (?![A-Za-z0-9])（只排除 ASCII 词字符继续拼接）。"""
+    from hanhua.core.placeholders import SAFE_KEEPERS
+    # 域名后缀 + 中文（译文最常见形态）→ 剥
+    assert SAFE_KEEPERS.sub(" ", "Speedrun.com上的排行榜") == " 上的排行榜"
+    assert SAFE_KEEPERS.sub(" ", "itch.io页面") == " 页面"
+    # 版本号 + 中文 → 剥（beta 不被当小写普通词）
+    assert SAFE_KEEPERS.sub(" ", "版本0.4.0beta说明") == "版本 说明"
+    # 文件扩展名 + 中文 → 剥
+    assert SAFE_KEEPERS.sub(" ", "SPOLOUS.exe游戏") == "SPOLOUS 游戏"
+    # 用户名/艺名（小写域名分支）+ 中文 → 剥
+    assert SAFE_KEEPERS.sub(" ", "yu.una上的") == " 上的"
+    # 回归：ASCII 词字符继续拼接不剥（comedy 的 com 不是域名后缀；
+    # 大写开头避开小写用户名分支——全小写 welcome.coming 本就是
+    # 用户名/艺名形态，旧行为同样剥）
+    assert SAFE_KEEPERS.sub(" ", "ABC.comedy") == "ABC.comedy"
+    assert SAFE_KEEPERS.sub(" ", "itch.io") == " "
+
+
+def test_has_independent_lower_word_version_template_letter_exempt():
+    """单字母 + 花括号占位符（'v{0}' 版本号模板）不是独立小写普通词
+    （F5，deepest-sword 实证）：版本号模板回显是正确行为，v 被当独立
+    小写词 → proper_name_echo 豁免失效 → target_script_mismatch 恒败。"""
+    assert has_independent_lower_word("v{0}") is False
+    assert has_independent_lower_word("{0}v") is False
+    # 回归：普通小写词/撇号属格尾巴行为不变
+    assert has_independent_lower_word("hello world") is True
+    assert has_independent_lower_word("Jump During Playtime's Jumprope") is False
+    assert has_independent_lower_word("MEGA CORP") is False

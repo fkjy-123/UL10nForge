@@ -1392,6 +1392,23 @@ class Project:
                 for item in writer_outcome.rejected
             ]
             truncated_items = list(getattr(v2, "truncated_items", ()) or ())
+            # 写回逻辑层审计数据（logic_audit：写回前敏感形态 / raw_expansions：
+            # rawstr 扩容 / logic_mismatches：重开逻辑验证失败）
+            logic_audit = list(getattr(v2, "logic_audit", ()) or ())
+            raw_expansions = list(getattr(v2, "raw_expansions", ()) or ())
+            logic_mismatches = list(getattr(v2, "logic_mismatches", ()) or ())
+            logic_reverted = int(getattr(v2, "logic_reverted", 0) or 0)
+            logic_reverted_items = list(
+                getattr(v2, "logic_reverted_items", ()) or ())
+            if logic_mismatches:
+                warnings.append(
+                    f"重开逻辑验证失败 {len(logic_mismatches)} 项："
+                    + "；".join(str(item)[:80] for item in logic_mismatches[:3]))
+            if logic_reverted:
+                warnings.append(
+                    f"逻辑键自动回退 {logic_reverted} 条（译文保留原文，防"
+                    f"断链）：" + "；".join(
+                        str(item) for item in logic_reverted_items[:5]))
             if truncated_items:
                 warnings.append(
                     f"截断 {len(truncated_items)} 条（容量内部分翻译已写入）："
@@ -1427,6 +1444,11 @@ class Project:
                 "font_payload_deployed": bool(font.payload_deployed),
                 "font_runtime_verified": font.runtime_verified,
                 "allow_partial": allow_partial,
+                "logic_audit": logic_audit,
+                "raw_expansions": raw_expansions,
+                "logic_mismatches": logic_mismatches,
+                "logic_reverted": logic_reverted,
+                "logic_reverted_items": logic_reverted_items,
                 "warnings": warnings,
             }
             # P0-1：四态闸门（文件/容器/对象/运行时），

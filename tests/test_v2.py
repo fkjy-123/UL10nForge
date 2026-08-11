@@ -957,6 +957,29 @@ def test_single_string_object_is_high_confidence_display_text():
     assert entry.meta["reason"] == "single_visible_string"
 
 
+def test_isolated_long_lowercase_word_is_skipped_as_code_identifier():
+    """F10-B：孤立纯小写长词（≥10 字符）跳过（fieldtrigger 12 字符
+    实证——MonoBehaviour rawstr 里孤立的代码词被无条件放行后模型回显
+    恒败；触发器/字段名形态，翻译破坏功能）。"""
+    entries = _raw_string_entries("f1", 5, _with_len("fieldtrigger"), {})
+    assert len(entries) == 1
+    entry = entries[0]
+    assert entry.status == "skipped"
+    assert entry.meta["role"] == "structural"
+    assert entry.meta["disposition"] == "structural"
+    assert entry.meta["reason"] == "isolated_lowercode_word"
+
+
+def test_short_lowercase_scene_word_still_translated():
+    """对照：短纯小写场景词（shower/city/bedroom，222am 实证）不受
+    isolated_lowercode_word 影响——场景词形态可翻译。"""
+    for word in ("shower", "city", "bedroom", "ladder", "mug"):
+        entries = _raw_string_entries("f1", 5, _with_len(word), {})
+        assert len(entries) == 1, word
+        assert entries[0].status == "pending", word
+        assert entries[0].meta["disposition"] == "translate", word
+
+
 def test_resources_asset_single_identifier_requires_display_evidence():
     entry = _raw_string_entries(
         "resources.assets", 5, _with_len("Enum"), {}, "resources.assets",
@@ -2609,3 +2632,94 @@ def test_us_meta_carries_max_chars_budget():
     src = open("hanhua/core/unity/mono_dll.py", encoding="utf-8").read()
     assert '"max_chars": len(raw)' in src
     assert '"utf16_len": len(raw)' in src
+
+
+def test_unityevent_object_method_names_are_structural():
+    """知识库案例「UnityEvent 事件绑定断裂按钮无反应」转规则：事件绑定
+    对象（m_PersistentCalls 信号）中的方法名/目标名是反射按名绑定键，
+    翻译即断绑（按钮点击回调链断裂）→ 全部 structural 跳过。"""
+    raw = (_with_len("m_PersistentCalls")
+           + _with_len("OnClick")
+           + _with_len("Play"))
+    entries = _raw_string_entries("f1", 9, raw, {})
+    assert len(entries) >= 1
+    for entry in entries:
+        assert entry.status == "skipped", entry.original
+        assert entry.meta["reason"] == "unityevent_object"
+
+
+def test_unityevent_object_without_signal_is_normal():
+    """对照：无事件绑定信号的对象（普通字符串）不受 UnityEvent 规则
+    影响——同形态方法名串在普通对象里照常判定（按现有规则，不得出现
+    unityevent_object 身份）。"""
+    raw = _with_len("Play") + _with_len("Save") + _with_len("Load")
+    entries = _raw_string_entries("f1", 9, raw, {})
+    assert entries
+    assert all(e.meta["reason"] != "unityevent_object" for e in entries)
+
+
+def test_signature_credit_skipped():
+    """F12-B（doog 实证 2 条失败）：'林まか (pixiv: 10768714)' 是作者署名，
+    不是游戏内显示文本——翻译即失真（署名该原样保留）。识别层对
+    pixiv/twitter 等平台名 + ID 的署名形态直接 structural 跳过。"""
+    raw = (_with_len("林まか (pixiv: 10768714)")
+           + _with_len("Kenney (twitter: kenneyNL)")
+           + _with_len("Twitter: @dev"))
+    entries = _raw_string_entries("f1", 9, raw, {})
+    assert len(entries) >= 1
+    for entry in entries:
+        assert entry.status == "skipped", entry.original
+        assert entry.meta["reason"] == "signature_credit"
+
+
+def test_signature_credit_text_not_skipped():
+    """对照：正文里的平台名/ID 不是署名形态（无括号作者结构/无 © 开头），
+    照常作为可译文本（正文谈平台不跳过）。"""
+    raw = _with_len("Follow us on twitter!")
+    entries = _raw_string_entries("f1", 9, raw, {})
+    assert entries
+    assert all(e.meta["reason"] != "signature_credit" for e in entries)
+
+
+def test_formatted_value_soft_guess_not_downgraded():
+    """F13（doog 实证 33 条哑跳过）：xml value 位置的文本节点是确定性
+    显示文本证据——后置闸门的软猜测反模式（key_style 混合大小写、
+    _QUALIFIED 连字符标识符、credit_like 署名、log_template 冒号结尾、
+    PascalCase 引擎串形态）不得推翻格式判定。罗马音台词（Konbanmio-n）、
+    西语 UI（Seleccione dificultad:）、英文成就句（Get revived by…）
+    必须恢复 pending 进池。"""
+    from hanhua.core.unity.extractor import _should_downgrade_pending
+    samples = [
+        ("Konbanmio-n", False),                      # 罗马音台词（连字符 + 混合大小写）
+        ("FeeNGAh", False),                          # 罗马音台词（PascalCase 形态）
+        ("Seleccione dificultad:", False),           # 西语 UI（冒号结尾 + 长句）
+        ("Get revived by Hololive's resident necromancer", False),  # 英文成就句（含 by）
+        ("POS.", False),                             # HUD 缩写
+        ("E1M1", False),                             # 关卡名
+        # 仍应降级：机器数据形态明确 / 无语言内容
+        ("https://example.com/asset", True),
+        ("A", True),
+        ("!!!", True),
+    ]
+    for text, should_drop in samples:
+        e = TextEntry(file_id="f", key_path="x", original=text, meta={
+            "textasset_format": "xml",
+            "inner_path": "/messages/message[1]/value",
+        })
+        got = _should_downgrade_pending(e)
+        assert got is should_drop, f"{text!r}: expect drop={should_drop}, got {got}"
+
+
+def test_xml_key_position_still_downgraded():
+    """对照（F13 修复边界）：xml key 位置的键名（PICKUP_BACKPACK 全大写
+    +下划线）仍由 key_style 判定跳过——value 节点豁免软猜测**不改变**
+    key 位置的键名判定（键名翻译即断键）。"""
+    from hanhua.core.unity.extractor import _should_downgrade_pending
+    key_entry = TextEntry(file_id="f", key_path="x", original="PICKUP_BACKPACK",
+                          meta={"textasset_format": "xml",
+                                "inner_path": "/messages/message[0]/key"})
+    assert _should_downgrade_pending(key_entry) is True
+    val_entry = TextEntry(file_id="f", key_path="x", original="PICKUP_BACKPACK",
+                          meta={"textasset_format": "xml",
+                                "inner_path": "/messages/message[0]/value"})
+    assert _should_downgrade_pending(val_entry) is False
