@@ -32,6 +32,7 @@ from pathlib import Path
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(PROJECT_ROOT))
 
+from hanhua.core.agent_memory import AgentMemory  # noqa: E402
 from hanhua.core.glossary import GlossaryStore  # noqa: E402
 from hanhua.core.knowledge import KnowledgeBase  # noqa: E402
 from hanhua.core.local_model import LocalModelManager  # noqa: E402
@@ -765,6 +766,14 @@ def run_game(game_dir: Path, *, batch: int | None = None,
         knowledge_prompt = knowledge.format_for_prompt()
         knowledge_pairs = knowledge.format_reference_pairs()
         knowledge.close()
+        # 经验记忆（AgentMemory）：跨游戏持久、证据驱动。本次运行前
+        # 重置会话统计；active 记忆译例并入 glossary（混合运用参考档）；
+        # 高置信短语由 BatchTranslator 翻译前直接应用（仍过质量门复查，
+        # 拒绝则反馈降级直至退休）
+        agent_memory = AgentMemory(REAL_USER_DIR / "agent_memory.db")
+        agent_memory.init_schema()
+        agent_memory.session_reset()
+        agent_pairs = agent_memory.reference_pairs()
 
         entries = [_entry_from_row(r) for r in project.store.get_entries()]
         collected_names = collect_known_names(
@@ -783,7 +792,9 @@ def run_game(game_dir: Path, *, batch: int | None = None,
             memory=project.store, model=api.model, lang=lang,
             system_prompt=system,
             glossary=[(row["term"], row["translation"])
-                      for row in glossary_rows] + knowledge_pairs,
+                      for row in glossary_rows] + knowledge_pairs
+                     + agent_pairs,
+            agent_memory=agent_memory, agent_game=game_name,
         )
         from hanhua.core.models import is_actionable_translation
         pending_count = sum(is_actionable_translation(e) for e in entries)
@@ -793,6 +804,20 @@ def run_game(game_dir: Path, *, batch: int | None = None,
         print(f"  完成：{stats.done} 条（记忆 {stats.from_memory}）"
               f" · 失败 {stats.failed} · 请求 {stats.requests}"
               f" · 耗时 {stats.elapsed:.1f}s")
+        # 经验记忆报告：本次会话记忆活动落盘（memory-report.md 与 GUI
+        # 记录文档同构）——用户可追踪记忆如何成长、哪些记忆不可信
+        mem_report = agent_memory.session_report(game=game_name)
+        s = mem_report["session"]
+        print(f"  经验记忆：提案 {s['proposed']} · 晋升 {s['confirmed']}"
+              f" · 直接应用 {s['direct_applied']}"
+              f"（采纳 {s['accepted']} / 拒绝 {s['rejected']}）"
+              f" · 退休 {s['retired']}"
+              f"{' · ⚠️ 语境冲突 ' + str(s['conflicts']) if s.get('conflicts') else ''}")
+        try:
+            from hanhua.core.record_writer import _write_memory_report
+            _write_memory_report(out_dir, mem_report)
+        except Exception as exc:  # noqa: BLE001 报告落盘失败不阻断闭环
+            print(f"  [经验记忆] 报告落盘失败：{exc}")
         # 术语库学习：把本游戏确认保留的专名写入全局库，后续游戏自动复用
         learn_glossary = GlossaryStore(REAL_USER_DIR / "glossary.db")
         learn_glossary.init_schema()

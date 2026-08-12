@@ -1,0 +1,403 @@
+"""AgentMemory：跨游戏经验记忆——把工具变为有记忆的翻译 agent。
+
+三层记忆架构（2026-08-12 用户指令「设计记忆模块，使其变成一个真正的
+agent」）：
+  权威知识（人工）  GlossaryStore / KnowledgeStore —— 人工确认、权威
+  经验记忆（自动）  AgentMemory（本模块）—— 证据驱动、语境敏感、跨游戏持久
+  工作记忆（会话）  ProjectStore.memory —— 会话缓存（速度，保留现状）
+
+核心设计（用户关键要求「必须记住好的内容，按具体情况翻译」）：
+  1. 只记住好的内容：只有质量门通过 + 非回显（echo_exempt 排除）的
+     翻译才能提案；单次翻译只是提案（pending），同一（原文, 语境）
+     在 ≥2 条证据上译文一致才晋升 active 参与运用——杜绝「一次巧合
+     进全局记忆」。
+  2. 按具体情况翻译（语境敏感）：同一原文在不同语境译法不同——
+     'Resume' 按钮（role=ui_button）→ 继续游戏；'Resume' 名词
+     （role=display）→ 简历。记忆单元 = (type, key, context_key)
+     三元组唯一；同 key 不同语境是独立记忆，运用时精确语境匹配
+     优先，多语境分化的原文绝不用无语境记忆兜底（防污染）。
+  3. 直接运用（混合模式，用户确认）：phrase 型高置信记忆
+     （evidence ≥ 3 + 零拒绝 + 跨游戏或人工）在翻译前直接作为译文
+     应用（仍过质量门复查）；一般置信（active）注入 prompt 参考。
+     term 型（≤2 词短词）绝不直接应用，只注入参考——单字词对是
+     术语污染源（miss/right 事故），必须留出人工判断。
+  4. 反馈闭环：直接应用的译文被质量门拒绝 → rejects+1 → 退休
+     （rejects ≥ 2）；采纳 → hits+1。降级/退休在报告中可见，
+     用户可追踪哪些记忆不可信。
+  5. 离散知识：不记住游戏，记住（原文, 语境）→ 译文 与 形态 → 处置
+     的可跨游戏复用单元。
+"""
+
+from __future__ import annotations
+
+import json
+import sqlite3
+import threading
+from pathlib import Path
+
+# ── 阈值（记忆生命周期） ─────────────────────────────────────────────
+ACTIVE_MIN_EVIDENCE = 2    # pending → active 的证据门槛（参与注入）
+DIRECT_APPLY_MIN_EVIDENCE = 3  # 直接应用的最低证据（多游戏验证级别）
+RETIRE_MAX_REJECTS = 2     # 被质量门拒绝 N 次 → 退休（不可信）
+TERM_MAX_WORDS = 1         # 单字词（Resume/miss/Save）绝不全自动应用——
+                           # 语境依赖最强、术语污染源（ffs 事故），只注入
+REPORT_TOP = 5             # 报告里展示的 TOP 记忆数
+
+
+def context_key_of(role: str = "", morph: str = "") -> str:
+    """语境归一化键：role 与形态组合（固定顺序），空值省略。
+
+    'Resume' 按钮（role=ui_button）与 'Resume' 名词（role=display）是
+    不同语境键 → 独立记忆单元，互不覆盖、互不串用。
+    """
+    parts = []
+    if role:
+        parts.append(f"r:{role}")
+    if morph:
+        parts.append(f"m:{morph}")
+    return "|".join(parts)
+
+
+class AgentMemory:
+    """跨游戏经验记忆库（SQLite，app_dir/agent_memory.db）。"""
+
+    def __init__(self, db_path: str | Path):
+        self.db = Path(db_path)
+        self.db.parent.mkdir(parents=True, exist_ok=True)
+        self._lock = threading.RLock()
+        self.conn = sqlite3.connect(str(self.db), check_same_thread=False)
+        self.conn.row_factory = sqlite3.Row
+        # 会话统计（翻译开始前 reset，报告时取）——不落库，纯运行期
+        self._session: dict[str, int] = {}
+        self._session_proposals: list[dict] = []  # 本会话新增提案快照
+        # 延迟提案队列（翻译批处理：逐条 propose 落库太慢，flush 批量）
+        self._deferred: list[tuple] = []
+
+    def init_schema(self):
+        with self._lock:
+            self.conn.executescript("""
+            CREATE TABLE IF NOT EXISTS memories(
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                type TEXT NOT NULL,
+                key TEXT NOT NULL,
+                context_key TEXT NOT NULL DEFAULT '',
+                value TEXT NOT NULL,
+                context TEXT NOT NULL DEFAULT '{}',
+                evidence_count INTEGER NOT NULL DEFAULT 1,
+                games TEXT NOT NULL DEFAULT '[]',
+                hits INTEGER NOT NULL DEFAULT 0,
+                rejects INTEGER NOT NULL DEFAULT 0,
+                status TEXT NOT NULL DEFAULT 'pending',
+                source TEXT NOT NULL DEFAULT 'auto',
+                source_game TEXT NOT NULL DEFAULT '',
+                conflicts INTEGER NOT NULL DEFAULT 0,
+                created_at TEXT NOT NULL DEFAULT '',
+                updated_at TEXT NOT NULL DEFAULT '',
+                last_used_at TEXT NOT NULL DEFAULT '',
+                UNIQUE(type, key, context_key)
+            );""")
+            self.conn.execute(
+                "CREATE INDEX IF NOT EXISTS idx_mem_status"
+                " ON memories(status, evidence_count)")
+            self.conn.commit()
+
+    @staticmethod
+    def _now() -> str:
+        import datetime as _dt
+        return _dt.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+    @staticmethod
+    def _games_of(row) -> set[str]:
+        try:
+            return set(json.loads(row["games"]))
+        except (ValueError, TypeError):
+            return set()
+
+    # ── 写入：提案 → 证据积累 → 晋升 active ──────────────────────────
+
+    def propose(self, key: str, value: str, game: str, *,
+                role: str = "", morph: str = "", source: str = "auto",
+                type_: str = "phrase") -> None:
+        """质量门通过 + 非回显的译文提案（证据 +1）。
+
+        key=原文（phrase）或短词（term）；role/morph 构成语境键。
+        同一 (type, key, context_key) 再次出现：
+          - 译文相同 → evidence+1，games 去重合并；
+          - 译文不同 → 不覆盖（不同译文是语境分化信号，交给
+            detect_conflicts 报告，人工/语境键区隔）。
+        证据 ≥ ACTIVE_MIN_EVIDENCE 且 rejects == 0 → 晋升 active。
+        """
+        if not key or not value:
+            return
+        ckey = context_key_of(role, morph)
+        now = self._now()
+        with self._lock:
+            row = self.conn.execute(
+                "SELECT id, value, evidence_count, status, rejects, games"
+                " FROM memories WHERE type=? AND key=? AND context_key=?",
+                (type_, key, ckey)).fetchone()
+            if row is None:
+                self.conn.execute(
+                    "INSERT INTO memories"
+                    "(type, key, context_key, value, context, evidence_count,"
+                    " games, source, source_game, created_at, updated_at)"
+                    " VALUES (?,?,?,?,?,?,?,?,?,?,?)",
+                    (type_, key, ckey, value,
+                     json.dumps({"role": role, "morph": morph},
+                                ensure_ascii=False),
+                     1, json.dumps([game], ensure_ascii=False),
+                     source, game, now, now))
+                self._session["proposed"] = self._session.get("proposed", 0) + 1
+                self._session_proposals.append(
+                    {"type": type_, "key": key, "value": value,
+                     "context_key": ckey, "game": game})
+            else:
+                if row["value"] != value:
+                    # 同语境同原文不同译文：不覆盖、不积累证据——证据
+                    # 不一致 = 记忆不可靠，conflicts+1 落库（报告可见，
+                    # 人工复核），保留首译文
+                    self.conn.execute(
+                        "UPDATE memories SET conflicts=conflicts+1,"
+                        " updated_at=? WHERE id=?",
+                        (now, row["id"]))
+                    self.conn.commit()
+                    self._session["conflicts"] = \
+                        self._session.get("conflicts", 0) + 1
+                    return
+                games = self._games_of(row) | {game}
+                evidence = int(row["evidence_count"]) + 1
+                status = row["status"]
+                if status == "pending" and evidence >= ACTIVE_MIN_EVIDENCE \
+                        and int(row["rejects"]) == 0:
+                    status = "active"
+                    self._session["confirmed"] = \
+                        self._session.get("confirmed", 0) + 1
+                self.conn.execute(
+                    "UPDATE memories SET evidence_count=?, games=?, status=?,"
+                    " updated_at=? WHERE id=?",
+                    (evidence, json.dumps(sorted(games), ensure_ascii=False),
+                     status, now, row["id"]))
+                self._session["evidence_added"] = \
+                    self._session.get("evidence_added", 0) + 1
+            self.conn.commit()
+
+    def propose_deferred(self, key: str, value: str, game: str, *,
+                         role: str = "", morph: str = "", source: str = "auto",
+                         type_: str = "phrase") -> None:
+        """延迟提案：进队列，flush() 时批量入库（翻译批处理性能）。"""
+        self._deferred.append(
+            (type_, key, value, game, role, morph, source))
+
+    def flush(self) -> None:
+        """批量处理延迟提案（翻译批 flush 时调用）。"""
+        if not self._deferred:
+            return
+        pending, self._deferred = self._deferred, []
+        for type_, key, value, game, role, morph, source in pending:
+            self.propose(key, value, game, role=role, morph=morph,
+                         source=source, type_=type_)
+
+    def propose_many(self, rows: list[tuple], game: str = "", *,
+                     role: str = "", source: str = "auto",
+                     type_: str = "phrase") -> None:
+        """批量提案（GUI/runner 收尾或测试直调）。rows: [(key, value)]"""
+        for key, value in rows:
+            self.propose(key, value, game, role=role, source=source,
+                         type_=type_)
+
+    # ── 运用：翻译前直接应用（混合模式的高置信档） ───────────────────
+
+    def direct_applications(self, originals: list[str],
+                            role_by_original: dict[str, str] | None = None
+                            ) -> dict[str, str]:
+        """高置信 phrase 记忆的直接应用：{原文: 译文}。
+
+        准入：type=phrase + status=active + evidence ≥ 3 + rejects == 0
+        +（跨游戏 games ≥ 2 或 source=manual）。
+        语境匹配顺序：
+          1) 精确语境（role 相同）命中 → 用该语境记忆；
+          2) 无精确语境 → 原文存在**唯一**无语境记忆（context_key=''）
+             时兜底；
+          3) 原文存在多个语境记忆（已语境分化）→ 不兜底（防 Resume
+             按钮记忆污染对话文本）。
+        """
+        if not originals:
+            return {}
+        out: dict[str, str] = {}
+        roles = role_by_original or {}
+        with self._lock:
+            for original in originals:
+                # 直接应用只对多词短语（>1 词）：单字词（Resume/miss）
+                # 语境依赖最强、是术语污染源（ffs 事故），全自动应用
+                # 会跨语境误用——只允许参考注入
+                if len(str(original).split()) <= TERM_MAX_WORDS:
+                    continue
+                rows = self.conn.execute(
+                    "SELECT key, context_key, value, evidence_count,"
+                    " rejects, status, games, source"
+                    " FROM memories WHERE type='phrase' AND key=?"
+                    " AND status='active'", (original,)).fetchall()
+                if not rows:
+                    continue
+                role = roles.get(original, "")
+                # 精确语境优先
+                want = context_key_of(role)
+                chosen = next((r for r in rows if r["context_key"] == want),
+                              None)
+                if chosen is None and len(rows) == 1:
+                    # 无精确语境且原文只有一条记忆 → 唯一记忆兜底
+                    # （尚未语境分化，用其译法安全）；多条记忆（已分化
+                    # 成多语境）→ 不兜底（防 Resume 按钮记忆污染对话）
+                    chosen = rows[0]
+                if chosen is None:
+                    continue
+                # 1 次拒绝后仍给一次机会（可能是质量门误杀）；
+                # ≥2 次（RETIRE_MAX_REJECTS）确认不可信 → 退休停用
+                if int(chosen["rejects"]) >= RETIRE_MAX_REJECTS:
+                    continue
+                if int(chosen["evidence_count"]) < DIRECT_APPLY_MIN_EVIDENCE:
+                    continue
+                games = self._games_of(chosen)
+                if len(games) < 2 and chosen["source"] != "manual":
+                    continue
+                out[original] = chosen["value"]
+                self._session["direct_applied"] = \
+                    self._session.get("direct_applied", 0) + 1
+        return out
+
+    # ── 运用：注入 prompt 参考（混合模式的参考档） ───────────────────
+
+    def reference_pairs(self, limit: int = 0) -> list[tuple[str, str]]:
+        """active 记忆的 (原文, 译文) 参考对，注入翻译 prompt。
+
+        term 型（≤2 词）与 phrase 型都注入（模型在完整语境中判断，
+        优于 glossary 强制约束——参考而非强制）。hits 高的靠前。
+        """
+        rows = self.conn.execute(
+            "SELECT key, value, hits FROM memories"
+            " WHERE status='active' ORDER BY hits DESC, evidence_count DESC"
+        ).fetchall()
+        pairs = [(r["key"], r["value"]) for r in rows]
+        if limit > 0:
+            pairs = pairs[:limit]
+        return pairs
+
+    # ── 反馈闭环：应用结果 → 证据升降级 ─────────────────────────────
+
+    def apply_feedback(self, key: str, context_key: str, *,
+                       accepted: bool, type_: str = "phrase") -> None:
+        """直接应用的记忆反馈：采纳 → hits+1；拒绝 → rejects+1 → 退休。
+
+        被质量门拒绝 = 记忆不可信（该原文在真实语境被判失败）——
+        rejects ≥ RETIRE_MAX_REJECTS → status=retired，不再参与任何
+        运用。retired 记忆保留记录（报告可查），不删除（可人工复核
+        后手动改回）。
+        """
+        now = self._now()
+        with self._lock:
+            row = self.conn.execute(
+                "SELECT id, hits, rejects, status FROM memories"
+                " WHERE type=? AND key=? AND context_key=?",
+                (type_, key, context_key)).fetchone()
+            if row is None:
+                return
+            if accepted:
+                self.conn.execute(
+                    "UPDATE memories SET hits=hits+1, last_used_at=?,"
+                    " updated_at=? WHERE id=?",
+                    (now, now, row["id"]))
+                self._session["accepted"] = self._session.get("accepted", 0) + 1
+            else:
+                rejects = int(row["rejects"]) + 1
+                status = "retired" if rejects >= RETIRE_MAX_REJECTS \
+                    else row["status"]
+                if status == "retired":
+                    self._session["retired"] = \
+                        self._session.get("retired", 0) + 1
+                self.conn.execute(
+                    "UPDATE memories SET rejects=?, status=?, updated_at=?"
+                    " WHERE id=?",
+                    (rejects, status, now, row["id"]))
+                self._session["rejected"] = self._session.get("rejected", 0) + 1
+            self.conn.commit()
+
+    # ── 冲突检测：同 key 多译文（语境分化或污染信号） ───────────────
+
+    def detect_conflicts(self) -> list[dict]:
+        """同语境同原文出现不同译文 → 冲突组（报告/人工复核）。
+
+        语境分化（同 key 不同 context_key 不同译文，Resume 按钮/名词）
+        是正常现象、不算冲突；只有**同一语境**内译文反复不一
+        （conflicts 计数）才上报——那是记忆污染信号。
+        """
+        rows = self.conn.execute(
+            "SELECT key, context_key, value, conflicts, evidence_count,"
+            " hits, status FROM memories"
+            " WHERE conflicts > 0 ORDER BY conflicts DESC").fetchall()
+        return [dict(r) for r in rows]
+
+    # ── 会话统计与报告 ──────────────────────────────────────────────
+
+    def session_reset(self):
+        """翻译会话开始前重置统计。"""
+        with self._lock:
+            self._session = {}
+            self._session_proposals = []
+
+    def session_report(self, game: str = "") -> dict:
+        """本会话记忆活动报告（写入记录文档，用户第一眼可见记忆在
+        如何成长）。返回结构化 dict。"""
+        with self._lock:
+            counts = {s: self._session.get(s, 0) for s in (
+                "proposed", "evidence_added", "confirmed", "conflicts",
+                "direct_applied", "accepted", "rejected", "retired")}
+            rows = self.conn.execute(
+                "SELECT type, status, COUNT(*) c FROM memories"
+                " GROUP BY type, status ORDER BY type, status").fetchall()
+            library = {}
+            for r in rows:
+                library.setdefault(r["type"], {})[r["status"]] = r["c"]
+            conflicts = self.detect_conflicts()
+            top = self.conn.execute(
+                "SELECT key, context_key, value, evidence_count, hits,"
+                " rejects, games FROM memories WHERE status='active'"
+                " ORDER BY hits DESC, evidence_count DESC LIMIT ?",
+                (REPORT_TOP,)).fetchall()
+            top_list = []
+            for r in top:
+                item = {"key": r["key"], "context_key": r["context_key"],
+                        "value": r["value"],
+                        "evidence": r["evidence_count"], "hits": r["hits"],
+                        "rejects": r["rejects"],
+                        "games": sorted(self._games_of(r))}
+                top_list.append(item)
+        return {
+            "game": game,
+            "session": counts,
+            "library": library,
+            "top_memories": top_list,
+            "conflicts": conflicts,
+        }
+
+    # ── 管理/统计（报告、调试） ─────────────────────────────────────
+
+    def list_all(self) -> list[dict]:
+        with self._lock:
+            return [dict(r) for r in self.conn.execute(
+                "SELECT * FROM memories ORDER BY status, evidence_count DESC")]
+
+    def count(self) -> int:
+        with self._lock:
+            row = self.conn.execute(
+                "SELECT COUNT(*) c FROM memories").fetchone()
+            return row["c"] if row else 0
+
+    def close(self):
+        with self._lock:
+            self.conn.close()
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, *exc):
+        self.close()

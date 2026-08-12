@@ -7,6 +7,7 @@ from concurrent.futures import FIRST_COMPLETED, ThreadPoolExecutor, as_completed
 from dataclasses import replace
 from typing import Callable
 
+from hanhua.core.agent_memory import context_key_of
 from hanhua.core.engine_strings import (PHYSICAL_KEY_NAMES_CASEFOLD,
                                         interaction_input_events,
                                         interaction_input_tokens)
@@ -324,7 +325,8 @@ class BatchTranslator:
     def __init__(self, client: BaseClient, batch_size: int = 25, concurrency: int = 3,
                  memory=None, model: str = "", lang: str = "→zh-CN",
                  system_prompt: str = "", placeholder_check: bool = True,
-                 glossary=(), cancellation_event=None):
+                 glossary=(), cancellation_event=None,
+                 agent_memory=None, agent_game: str = ""):
         self.client = client
         self.batch_size = max(1, batch_size)
         self.concurrency = max(1, concurrency)
@@ -335,6 +337,10 @@ class BatchTranslator:
         self.placeholder_check = placeholder_check
         self.glossary = tuple(glossary)
         self.cancellation_event = cancellation_event
+        # 经验记忆（AgentMemory，跨游戏）：高置信短语直接应用 +
+        # 质量门通过译文沉淀证据。agent_game 用于记忆溯源（来源游戏）。
+        self.agent_memory = agent_memory
+        self.agent_game = agent_game
         self.references = merge_translation_references(self.glossary)
         # Q1 语义门对照表。三条件：
         # 1) source 必须内置于参考表（_BUILTIN_UI_EXACT）——用户自定义术语
@@ -412,12 +418,13 @@ class BatchTranslator:
         new_memory: list[tuple] = []
 
         def flush():
-            if not self.memory:
-                return
-            self.memory.batch_update_translation_results(changed)
-            changed.clear()
-            self.memory.batch_add_memory(new_memory)
-            new_memory.clear()
+            if self.memory:
+                self.memory.batch_update_translation_results(changed)
+                changed.clear()
+                self.memory.batch_add_memory(new_memory)
+                new_memory.clear()
+            if self.agent_memory is not None:
+                self.agent_memory.flush()
 
         def emit_stats():
             """降级逐条期间实时上报进度（重算当前计数）。"""
@@ -433,7 +440,8 @@ class BatchTranslator:
             if progress_cb:
                 progress_cb(replace(stats))
 
-        # 1) 翻译记忆命中
+        # 1) 翻译记忆命中（工作记忆，会话级缓存）
+        hits: dict[str, str] = {}
         if self.memory:
             pending = [e for e in entries if _auto_translatable(e)]
             hits = self.memory.get_memory_hits([e.original for e in pending], self.model, self.lang)
@@ -455,6 +463,42 @@ class BatchTranslator:
                         e.meta.pop("quality_passed", None)
                         e.meta.pop("quality_reasons", None)
                     changed.append(e)
+            flush()
+            if progress_cb:
+                progress_cb(replace(stats))
+
+        # 1b) 经验记忆直接应用（AgentMemory 高置信短语，混合运用高档）。
+        # 门槛（agent_memory.direct_applications 内）：多词短语 + 证据≥3
+        # + 零拒绝 + 跨游戏（或人工）。工作记忆命中优先；直接应用的
+        # 译文仍过质量门复查——拒绝则反馈降级（rejects+1 → 退休）。
+        if self.agent_memory is not None:
+            pending = [e for e in entries if _auto_translatable(e)]
+            roles = {e.original: str(e.meta.get("role", ""))
+                     for e in pending}
+            direct = self.agent_memory.direct_applications(
+                [e.original for e in pending], roles)
+            for e in pending:
+                if e.original not in direct or e.original in hits:
+                    continue
+                candidate = direct[e.original]
+                good = self._apply_quality(e, candidate)
+                if good:
+                    e.status = STATUS_TRANSLATED
+                    stats.done += 1
+                    stats.from_memory += 1
+                else:
+                    rejected = list(e.quality_reasons)
+                    e.translation = ""
+                    e.status = "pending"
+                    e.quality_reasons = ()
+                    e.meta["agent_memory_rejected_reasons"] = rejected
+                    e.meta.pop("quality_passed", None)
+                    e.meta.pop("quality_reasons", None)
+                self.agent_memory.apply_feedback(
+                    e.original,
+                    context_key_of(str(e.meta.get("role", ""))),
+                    accepted=good)
+                changed.append(e)
             flush()
             if progress_cb:
                 progress_cb(replace(stats))
@@ -502,6 +546,12 @@ class BatchTranslator:
                     if not en.meta.get("echo_exempt"):
                         new_memory.append(
                             (en.original, en.translation, self.model, self.lang))
+                # 经验记忆沉淀（native 路径）：质量门通过 + 非回显 → 提案
+                if good and en.translation and self.agent_memory:
+                    if not en.meta.get("echo_exempt"):
+                        self.agent_memory.propose_deferred(
+                            en.original, en.translation, self.agent_game,
+                            role=str(en.meta.get("role", "")))
                 completed_representatives += 1
                 if completed_representatives % self.batch_size == 0:
                     flush()
@@ -576,6 +626,13 @@ class BatchTranslator:
                                 new_memory.append(
                                     (en.original, en.translation,
                                      self.model, self.lang))
+                        # 经验记忆沉淀（线程池路径）：同上
+                        if good and en.translation and self.agent_memory:
+                            if not en.meta.get("echo_exempt"):
+                                self.agent_memory.propose_deferred(
+                                    en.original, en.translation,
+                                    self.agent_game,
+                                    role=str(en.meta.get("role", "")))
                     flush()
                     emit_stats()
                     if not self._stop.is_set() and not (cancelled is not None and cancelled.is_set()):

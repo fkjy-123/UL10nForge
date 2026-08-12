@@ -3603,3 +3603,103 @@ def test_builtin_ui_gate_respects_user_glossary_override():
                   status="pending",
                   meta={"role": "display", "disposition": "translate"})
     assert bt._apply_quality(e, "恢复")
+
+
+# ── AgentMemory 集成（2026-08-12 记忆模块） ──────────────────────────
+
+def _mem_store(tmp_path):
+    from hanhua.core.agent_memory import AgentMemory
+    mem = AgentMemory(tmp_path / "agent.db")
+    mem.init_schema()
+    return mem
+
+
+def test_agent_memory_direct_applies_high_confidence_phrase(tmp_path):
+    """跨游戏高置信短语记忆 → 翻译前直接应用（模型不调用）+ 采纳反馈。"""
+    mem = _mem_store(tmp_path)
+    for g in ("g1", "g2", "g3"):
+        mem.propose("Press Start now", "现在按开始", g, role="display")
+    entry = TextEntry(
+        "f", "k", "Press Start now", meta={
+            "role": "display", "disposition": "translate",
+            "confidence": "high"})
+    client = FakeClient()
+    stats = BatchTranslator(
+        client, batch_size=1, concurrency=1, memory=None,
+        agent_memory=mem, agent_game="demo-game", lang="en→zh-CN",
+    ).run([entry])
+    assert client.calls == 0            # 未调用模型
+    assert stats.done == 1
+    assert entry.status == "translated"
+    assert entry.translation == "现在按开始"
+    assert stats.from_memory >= 1
+    assert mem.list_all()[0]["hits"] == 1  # 采纳反馈
+
+
+def test_agent_memory_rejected_direct_apply_retires(tmp_path):
+    """直接应用被质量门拒绝 → 反馈降级 → 2 次拒绝后退休。"""
+    mem = _mem_store(tmp_path)
+    for g in ("g1", "g2", "g3"):
+        mem.propose("TOSS TRASH", "TOSS TRASH",
+                    g, role="display")  # 回显译文 = 质量门必拒
+    for _ in range(2):
+        # 每轮重建条目（模拟跨场次；同一库累计 rejects）
+        entry = TextEntry(
+            "f", "k", "TOSS TRASH", meta={
+                "role": "display", "disposition": "translate",
+                "confidence": "high"})
+        stats = BatchTranslator(
+            FakeClient(), batch_size=1, concurrency=1, memory=None,
+            agent_memory=mem, agent_game="demo-game",
+        ).run([entry])
+        assert stats.done == 1          # 直接应用被拒 → 模型兜底翻译成功
+        # 被拒痕迹：该轮先尝试了记忆直接应用（rejects+1）
+        assert "agent_memory_rejected_reasons" in entry.meta
+    row = mem.list_all()[0]
+    assert row["rejects"] == 2
+    assert row["status"] == "retired"   # 2 次确认不可信
+    # 第三轮：退休后不再尝试直接应用（无被拒痕迹）→ 纯模型翻译
+    entry = TextEntry(
+        "f", "k", "TOSS TRASH", meta={
+            "role": "display", "disposition": "translate",
+            "confidence": "high"})
+    stats = BatchTranslator(
+        FakeClient(mapping={"TOSS TRASH": "丢垃圾"}),
+        batch_size=1, concurrency=1, memory=None,
+        agent_memory=mem, agent_game="demo-game",
+    ).run([entry])
+    assert stats.done == 1
+    assert entry.translation == "丢垃圾"
+    assert "agent_memory_rejected_reasons" not in entry.meta
+
+
+def test_agent_memory_proposes_successful_translations(tmp_path):
+    """模型翻译成功（质量门通过+非回显）→ 经验记忆提案。"""
+    mem = _mem_store(tmp_path)
+    entry = TextEntry("f", "k", "Hello friend", meta={
+        "role": "display", "disposition": "translate", "confidence": "high"})
+    client = FakeClient(mapping={"Hello friend": "你好朋友"})
+    BatchTranslator(
+        client, batch_size=1, concurrency=1, memory=None,
+        agent_memory=mem, agent_game="demo-game", lang="en→zh-CN",
+    ).run([entry])
+    assert entry.status == "translated"
+    row = mem.list_all()[0]
+    assert row["evidence_count"] == 1
+    assert row["status"] == "pending"          # 单次翻译只是提案
+    assert row["source_game"] == "demo-game"
+
+
+def test_agent_memory_skips_echo_exempt_entries(tmp_path):
+    """回显豁免条目不进经验记忆（Q4：结构串不污染记忆）。"""
+    mem = _mem_store(tmp_path)
+    entry = TextEntry("f", "k", "Prologue", meta={
+        "role": "display", "disposition": "translate", "confidence": "high",
+        "echo_exempt": "proper_name"})
+    client = FakeClient(mapping={"Prologue": "序章"})
+    BatchTranslator(
+        client, batch_size=1, concurrency=1, memory=None,
+        agent_memory=mem, agent_game="demo-game",
+    ).run([entry])
+    assert entry.status == "translated"
+    assert mem.count() == 0

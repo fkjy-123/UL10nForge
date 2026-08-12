@@ -12,6 +12,7 @@ from PySide6.QtWidgets import (QCheckBox, QFrame, QHBoxLayout, QLabel,
                                QPlainTextEdit, QProgressBar, QPushButton,
                                QVBoxLayout, QWidget)
 
+from hanhua.core.agent_memory import AgentMemory
 from hanhua.core.batch_translator import BatchTranslator
 from hanhua.core.glossary import GlossaryStore
 from hanhua.core.knowledge import KnowledgeBase
@@ -107,6 +108,10 @@ class TranslatePage(QWidget):
         self._write_terminal_message = ""
         self._last_stats = None
         self._pool = QThreadPool.globalInstance()
+        # 经验记忆（AgentMemory）：跨游戏持久、证据驱动——懒创建于
+        # app_dir/agent_memory.db；每次翻译运行前 session_reset，写回后
+        # session_report 随记录文档落盘（用户可追踪记忆成长）
+        self._agent_memory: AgentMemory | None = None
 
         lay = QVBoxLayout(self)
         lay.setContentsMargins(26, 22, 26, 18)
@@ -368,6 +373,16 @@ class TranslatePage(QWidget):
                 [str(e.original or "") for e in entries0])
             known_names = glossary.known_names_for(collected_names)
             glossary.close()
+            # 经验记忆（AgentMemory）：跨游戏持久。本次运行前重置会话统计；
+            # 记忆的参考译例并入 glossary（active 记忆，混合运用参考档）；
+            # 高置信短语由 BatchTranslator 翻译前直接应用（仍过质量门）
+            if self._agent_memory is None:
+                self._agent_memory = AgentMemory(
+                    self.state.app_dir / "agent_memory.db")
+                self._agent_memory.init_schema()
+            agent_memory = self._agent_memory
+            agent_memory.session_reset()
+            agent_pairs = agent_memory.reference_pairs()
             if api.mode == "local":
                 on_log("正在启动本地 Hy-MT2 模型服务…")
                 if cancel.is_set():
@@ -409,7 +424,12 @@ class TranslatePage(QWidget):
                     memory=store, model=api.model, lang=lang,
                     system_prompt=system,
                     glossary=[(row["term"], row["translation"])
-                              for row in glossary_rows] + knowledge_pairs,
+                              for row in glossary_rows] + knowledge_pairs
+                             + agent_pairs,
+                    agent_memory=agent_memory,
+                    agent_game=str(getattr(
+                        getattr(project, "game_dir", None), "name", "")
+                        or getattr(project, "name", "")),
                     cancellation_event=cancel)
                 run.attach_translator(translator)
                 entries = [self._entry_from_row(r) for r in store.get_entries()]
@@ -563,12 +583,20 @@ class TranslatePage(QWidget):
         out_root = self.state.resource_dir / "docs" / "all record"
         api = getattr(self.state, "api", None)
         model_name = str(getattr(api, "model", "") or "")
+        # 经验记忆报告随记录文档落盘（本次会话记忆活动快照）
+        agent_report = None
+        if self._agent_memory is not None:
+            agent_report = self._agent_memory.session_report(
+                game=str(getattr(
+                    getattr(self.state.project, "game_dir", None),
+                    "name", "") or ""))
         try:
             return export_records(
                 self.state.project, out_root,
                 write_result=write_result,
                 error_title=error_title, error_detail=error_detail,
-                model_name=model_name)
+                model_name=model_name,
+                agent_report=agent_report)
         except Exception as exc:  # noqa: BLE001 记录导出不阻断写回主流程
             Toast.show(self, f"记录导出失败：{exc}", "error")
             return None

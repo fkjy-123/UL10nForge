@@ -375,7 +375,8 @@ def _write_summary(project, out_dir: Path, profile, *,
                    model_name: str = "",
                    result: dict | None = None,
                    error_title: str = "",
-                   error_detail: str = "") -> None:
+                   error_detail: str = "",
+                   agent_report: dict | None = None) -> None:
     """summary.md：识别/翻译/写回统计（与 runner 记录同构）。"""
     store = project.store
     counts = _status_counts(store)
@@ -408,6 +409,29 @@ def _write_summary(project, out_dir: Path, profile, *,
         blocks += ["- ⚠️ 哨兵告警："]
         blocks += [f"  - {w}" for w in sentinels]
         blocks += [""]
+    # 经验记忆（AgentMemory，2026-08-12 记忆模块）：本次会话记忆活动
+    # 摘要——用户第一眼可见记忆在如何成长（沉淀/运用/降级），完整版
+    # 见 memory-report.md
+    if agent_report:
+        s = agent_report.get("session") or {}
+        blocks += ["## 经验记忆（AgentMemory）"]
+        blocks += [
+            f"- 沉淀：提案 {s.get('proposed', 0)} · 证据积累 "
+            f"{s.get('evidence_added', 0)} · 晋升 active "
+            f"{s.get('confirmed', 0)}",
+            f"- 运用：直接应用 {s.get('direct_applied', 0)} 条"
+            f"（采纳 {s.get('accepted', 0)} / 拒绝 {s.get('rejected', 0)}）"
+            f"· 退休 {s.get('retired', 0)} 条",
+        ]
+        if s.get("conflicts"):
+            blocks.append(
+                f"- ⚠️ 同语境译文冲突 {s.get('conflicts')} 次——"
+                "同一原文在相同语境出现不同译文，记忆未覆盖、"
+                "需人工复核（详见 memory-report.md）")
+        blocks.append(
+            f"- 记忆库总量：{sum(n for t in (agent_report.get('library') or {}) for n in t.values())} 条"
+            "（详见 memory-report.md）")
+        blocks.append("")
     blocks += ["## 2 翻译", f"- 总条目：{sum(counts.values())}"]
     if error_title:
         blocks.append(f"- 状态：翻译已中断（{error_title}）")
@@ -623,15 +647,71 @@ def _write_auto_docs(project, out_dir: Path, profile, *,
         "\n".join(blocks), encoding="utf-8")
 
 
+def _write_memory_report(out_dir: Path, report: dict) -> None:
+    """memory-report.md：经验记忆（AgentMemory）完整报告。
+
+    与 summary.md 的记忆节分工：summary 是用户第一眼摘要（沉淀/运用/
+    冲突告警），本文件是完整明细（TOP 记忆、冲突清单、库状态）——
+    用户可追踪记忆在如何成长、哪些记忆不可信。
+    """
+    s = report.get("session") or {}
+    library = report.get("library") or {}
+    game = report.get("game") or ""
+    blocks = [
+        f"# 经验记忆报告（{game or '本游戏'}）", "",
+        "经验记忆（AgentMemory）是跨游戏自动学习的离散知识单元：",
+        "只沉淀质量门通过且非回显的译文，多次一致证据才晋升 active；",
+        "高置信短语在翻译时直接应用（仍过质量门复查），一般置信注入",
+        "prompt 参考；被拒绝的记忆降级直至退休。",
+        "",
+        "## 1 本次会话",
+        f"- 提案：{s.get('proposed', 0)}（新记忆单元首条证据）",
+        f"- 证据积累：{s.get('evidence_added', 0)}（已有记忆再次通过质量门）",
+        f"- 晋升 active：{s.get('confirmed', 0)}（≥2 次一致证据）",
+        f"- 直接应用：{s.get('direct_applied', 0)} 条"
+        f"（采纳 {s.get('accepted', 0)} / 拒绝 {s.get('rejected', 0)}）",
+        f"- 退休：{s.get('retired', 0)}（被质量门拒绝 ≥2 次，不可信）",
+        "",
+        "## 2 记忆库状态（按类型 × 状态）", "",
+    ]
+    for type_, statuses in sorted(library.items()):
+        blocks.append(f"- {type_}: "
+                      + " · ".join(f"{k} {v}" for k, v in statuses.items()))
+    blocks += ["", "## 3 TOP 记忆（按命中）", "",
+               "| 原文 | 语境 | 译文 | 证据 | 命中 | 拒绝 | 游戏 |",
+               "|---|---|---|---|---|---|---|"]
+    for m in report.get("top_memories") or []:
+        blocks.append(
+            f"| {m['key']} | {m['context_key'] or '—'} | {m['value']} "
+            f"| {m['evidence']} | {m['hits']} | {m['rejects']} "
+            f"| {'/'.join(m['games']) or '—'} |")
+    conflicts = report.get("conflicts") or []
+    blocks += ["", "## 4 冲突/待复核", ""]
+    if conflicts:
+        for c in conflicts:
+            blocks.append(
+                f"- ⚠️ `{c['key']}`（语境 `{c['context_key'] or '—'}`）"
+                f"出现 {c['conflicts']} 次不同译文——记忆未采纳新译文，"
+                "需人工裁决（保留译文或人工术语表强制）")
+    else:
+        blocks.append("- 无（语境分化正常，不算冲突）")
+    blocks.append("")
+    (out_dir / "memory-report.md").write_text(
+        "\n".join(blocks), encoding="utf-8")
+
+
 def export_records(project, out_root: Path | None = None, *,
                    write_result: dict | None = None,
                    error_title: str = "",
                    error_detail: str = "",
-                   model_name: str = "") -> Path | None:
+                   model_name: str = "",
+                   agent_report: dict | None = None) -> Path | None:
     """GUI 手动汉化写回后自动生成完整记录文档。
 
     成功路径传 write_result；失败路径传 error_title/error_detail
     （二者均有写回清单/摘要落盘，保证失败也有依据）。返回记录目录。
+    agent_report：经验记忆（AgentMemory）会话报告 dict——非 None 时
+    summary.md 追加记忆节 + 生成 memory-report.md（记忆如何成长可见）。
     """
     try:
         profile = project.store.get_profile()
@@ -652,7 +732,10 @@ def export_records(project, out_root: Path | None = None, *,
         _write_summary(
             project, out_dir, profile, model_name=model_name,
             result=write_result,
-            error_title=error_title, error_detail=error_detail)
+            error_title=error_title, error_detail=error_detail,
+            agent_report=agent_report)
+        if agent_report:
+            _write_memory_report(out_dir, agent_report)
         _write_auto_docs(
             project, out_dir, profile,
             result=write_result,
