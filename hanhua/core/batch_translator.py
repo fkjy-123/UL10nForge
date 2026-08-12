@@ -27,8 +27,10 @@ from hanhua.core.protected_spans import (protected_slot_parts,
 from hanhua.core.prompts import build_batch_user_prompt
 from hanhua.core.quality import (_CJK, _EXPLANATORY_PATTERN,
                                  _EXPLANATORY_PREFIX, _glossary_keep_echo,
-                                 _glossary_pairs, _is_lyric_like,
-                                 _ui_check_words,
+                                 _glossary_pairs, _is_format_template,
+                                 _is_lyric_like, _ui_check_words,
+                                 PHYSICAL_KEY_NAMES_CASEFOLD,
+                                 QualityResult,
                                  has_independent_lower_word,
                                  is_camel_tech_abbreviation,
                                  is_chinese_source,
@@ -428,6 +430,29 @@ class BatchTranslator:
             if (source.strip().casefold() in merged_builtin
                 and " " not in source.strip()
                 and source.strip().casefold() not in user_sources)}
+        # 术语/知识/记忆词对精确索引（casefold→译文）：单全大写键名
+        # （JUMP/Vsync）1.8B 带译例仍稳定回显（force-reboot 16 条恒败
+        # 实证）→ _chat_each 词对精确命中时确定性直填，打破回显死循环。
+        # learn 沉淀的 single_lexicon_word、AgentMemory 词对、人工术语
+        # 全在此表；质量门复查兜底词对污染（不合规 → 拒绝走模型链）。
+        self._glossary_exact: dict[str, str] = {}
+        for item in self.glossary:
+            if isinstance(item, (tuple, list)) and len(item) >= 2:
+                src, tgt = item[0], item[1]
+            elif isinstance(item, dict):
+                src, tgt = item.get("term"), item.get("translation")
+            else:
+                src = getattr(item, "term", None)
+                tgt = getattr(item, "translation", None)
+            if (isinstance(src, str) and src.strip()
+                    and isinstance(tgt, str) and tgt.strip()
+                    # 键名 source 不直填（headache 实证：SPACE→空间 污染
+                    # 词对在记忆库 active，原文 "SPACE" 精确命中会直填
+                    # 「空间」——键名不该被翻译，跳过直填走模型链，质量门
+                    # 全键名词对豁免已拦截该词对本身）
+                    and src.strip().casefold()
+                    not in PHYSICAL_KEY_NAMES_CASEFOLD):
+                self._glossary_exact[src.strip().casefold()] = tgt
         self._stop = threading.Event()
         self._metrics_lock = threading.Lock()
         self._consistency_lock = threading.Lock()
@@ -959,6 +984,29 @@ class BatchTranslator:
                 e.meta["quality_reasons"] = []
                 e.meta["deterministic_fill"] = "language_option"
                 return e, deterministic, True
+            # 术语/知识/记忆词对精确命中 → 确定性直填（先于模型调用）。
+            # 1.8B 对单全大写键名（JUMP/Vsync）带译例仍稳定回显
+            # （force-reboot 16 条恒败实证）——词对精确命中直接落译文，
+            # 打破回显死循环。专名词对（FOXYPAW→FOXYPAW）直填=回显，
+            # 质量门专名豁免链放行，行为与模型一致。仍过质量门复查：
+            # 词对译文不合规（沉淀污染）→ 拒绝并恢复，走正常模型链。
+            exact_zh = self._glossary_exact.get(
+                e.original.strip().casefold())
+            if exact_zh:
+                direct_state = (
+                    e.translation, e.status, e.quality_reasons,
+                    dict(e.meta))
+                if self._apply_quality(e, exact_zh):
+                    e.translation = exact_zh
+                    e.status = "translated"
+                    e.quality_reasons = ()
+                    e.meta = dict(e.meta)
+                    e.meta["quality_passed"] = True
+                    e.meta["quality_reasons"] = []
+                    e.meta["deterministic_fill"] = "glossary_pair"
+                    return e, exact_zh, True
+                (e.translation, e.status, e.quality_reasons, e.meta) = (
+                    direct_state)
             try:
                 native_translate = getattr(self.client, "translate_text", None)
                 if callable(native_translate):
@@ -2026,6 +2074,19 @@ class BatchTranslator:
             entry, translation, self.glossary,
             check_placeholders=self.placeholder_check,
         )
+        # 格式模板串自愈：日期/数字格式模板（yyyy-MM-dd HH:mm:ss）是
+        # 不可译文本——模型对格式串稳定回显或「修正」（force-reboot
+        # 实证 .ss→:ss 改动），任何改动都是格式破坏 → 恢复原文。
+        # quality 侧 untranslated_text 已豁免（_is_format_template，
+        # fix-25），此处补 target_script_mismatch 豁免缺口（恢复原文后
+        # 纯 ASCII 仍触发 contains_wrong_script，由下方目标脚本判定
+        # 加格式模板豁免放行）——第三轮 3 条恒败实证。
+        if _is_format_template(entry.original):
+            original_stripped = entry.original.strip()
+            if result.normalized_translation != original_stripped:
+                result = QualityResult(
+                    result.passed, result.confidence, result.reasons,
+                    original_stripped)
         target = self.lang.rsplit("→", 1)[-1].strip().casefold()
         translation = result.normalized_translation
         is_simplified_chinese = target in {"zh", "zh-cn", "zh-hans"}
@@ -2111,12 +2172,14 @@ class BatchTranslator:
             entry.original, translation, self.glossary)
         if (result.passed and is_simplified_chinese
                 and ((contains_wrong_script and not proper_name_echo
-                      and not lorem_placeholder)
+                      and not lorem_placeholder
+                      and not _is_format_template(entry.original))
                      or (source_has_semantic_text and not proper_name
                          and not contains_chinese and not proper_name_echo
                          and not lorem_placeholder
                          and not glossary_keep_echo
-                         and not is_log_template(entry.original)))):
+                         and not is_log_template(entry.original)
+                         and not _is_format_template(entry.original)))):
             entry.translation = result.normalized_translation
             entry.quality_reasons = ("target_script_mismatch",)
             entry.meta = dict(entry.meta)
@@ -2143,16 +2206,18 @@ class BatchTranslator:
                 entry.meta["quality_reasons"] = ["builtin_ui_mismatch"]
                 _record_failure_attempt(entry, "builtin_ui_mismatch")
                 return False
-        if proper_name_echo or lorem_placeholder or glossary_keep_echo:
-            # Q4 回显豁免打标：译文=原文（字母序列相同/占位/术语保留）——
-            # 这是「模型未翻译」而非「翻译结果」。打标后：1) 写回/审计/
-            # 统计可见该条目是回显保留而非真译文；2) 记忆写入跳过（防
-            # 「原文→原文」无效记忆污染跨游戏锚定）。
+        if (proper_name_echo or lorem_placeholder or glossary_keep_echo
+                or _is_format_template(entry.original)):
+            # Q4 回显豁免打标：译文=原文（字母序列相同/占位/术语保留/
+            # 格式模板）——这是「模型未翻译」而非「翻译结果」。打标后：
+            # 1) 写回/审计/统计可见该条目是回显保留而非真译文；
+            # 2) 记忆写入跳过（防「原文→原文」无效记忆污染跨游戏锚定）。
             entry.meta = dict(entry.meta)
             entry.meta["echo_exempt"] = (
                 "proper_name" if proper_name_echo
                 else "lorem_placeholder" if lorem_placeholder
-                else "glossary_keep")
+                else "glossary_keep" if glossary_keep_echo
+                else "format_template")
         if result.passed:
             role = str(entry.meta.get("role", "display"))
             consistency_key = (entry.original, role)

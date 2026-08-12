@@ -1,0 +1,19 @@
+游戏：foxhunt-chapter1
+导出时间：2026-08-12 20:59:55
+翻译模型：Hy-MT2-1.8B-Q6_K
+失败文本：1 条
+
+────────────────────────────────────────────────────────────────
+[1] 失败文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#13943/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=13943）
+原文：RESUME
+译文：摘要
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：builtin_ui_mismatch（passed=False）
+翻译评价：builtin_ui_mismatch
+需要优化：否（审核通过或未审核）
+写回：—

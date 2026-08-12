@@ -1,0 +1,127 @@
+游戏：headache
+写回时间：2026-08-12 23:13:29
+输出目录：D:\游戏\headache_汉化
+
+文件清单：11 个
+
+- app.info（2 条）
+- Plugins/x86/lib_burst_generated.txt（316 条）
+- level0（150 条）
+- level1（272 条）
+- level2（115 条）
+- level3（12 条）
+- level4（8 条）
+- resources.assets（137 条）
+- sharedassets0.assets（219 条）
+- sharedassets2.assets（238 条）
+- il2cpp_data/Metadata/global-metadata.dat（1881 条）
+
+────────────────────────────────────────────────────────────────
+写回结果
+文本文件：2
+输入保护：True
+重开验证：True
+变更文件：10
+写入译文：175
+总体闸门：PASS
+字体层级：runtime_verified
+清单：.hanhua-manifest.json
+备份：None
+
+四态闸门明细
+  file=PASS
+  container=PASS
+  object=PASS
+  runtime=PASS
+
+────────────────────────────────────────────────────────────────
+知识库案例转规则：5 条已启用（writeback_case → 可执行检测）
+
+- [fit_bytes_nul_padding] 固定容量池截短译文后字符串尾部带 NUL 导致逻辑判定失灵（实现：writer._fit_bytes（pad 模式容量对齐）+ 译文长度头自证（logic_audit.verify_string_l）
+- [placeholder_preserve] 写回截断把 {0} 占位符切开导致 string.Format 崩溃（实现：writer._restore_placeholders / _placeholders_intact（截断不得破坏占位符，缺失补末）
+- [textasset_encoding_preserve] TextAsset 非 UTF-8 内容被 decode-repla（实现：writer 写回按源编码/严格校验，不把非 UTF-8 当 UTF-8 重写）
+- [unityevent_binding_preserve] 替换 prefab/资源后 UnityEvent 事件绑定断裂按钮无（实现：extractor._UNITYEVENT_SIGNALS 对象信号 → structural 跳过+ logic_audit.lo）
+- [logic_key_compare] 代码把显示文本当逻辑键（按钮文字/物品名比较分发）（实现：logic_audit.LOGIC_COMPARE_WORDS 比较词表 + 代码对象联合判定（写回自动回退））
+
+────────────────────────────────────────────────────────────────
+逻辑层审计（写回逻辑敏感形态 / 扩容 / 语义回退 / 重开验证）
+
+疑似逻辑键（report，已写回需复核）：23 条
+
+- [logic_compare_word] CONTINUE → 继续（asset#level0#1098/str/0）
+- [logic_compare_word] QUIT → 退出（asset#level0#1101/str/0）
+- [logic_compare_word] OPTIONS
+ → 选项（asset#level0#1110/str/0）
+- [logic_compare_word] PAUSE → 暂停（asset#level0#1114/str/0）
+- [logic_compare_word] OPTIONS → 选项（asset#level0#1123/str/0）
+- [logic_compare_word] Options → 选项（asset#level0#1176/str/8）
+- [logic_compare_word] Close → 关闭（asset#level0#1214/str/6）
+- [logic_compare_word] Play → 播放（asset#level0#1284/str/0）
+- [logic_compare_word] OPTIONS → 选项（asset#level1#452/str/0）
+- [logic_compare_word] OPTIONS → 选项（asset#level1#458/str/0）
+- [logic_compare_word] CONTINUE → 继续（asset#level1#461/str/0）
+- [logic_compare_word] QUIT → 退出（asset#level1#467/str/0）
+- [logic_compare_word] Options → 选项（asset#level1#528/str/8）
+- [logic_compare_word] Quit → 退出（asset#level1#562/str/6）
+- [logic_compare_word] OPTIONS → 选项（asset#level2#1194/str/0）
+- [logic_compare_word] PAUSE → 暂停（asset#level2#1205/str/0）
+- [logic_compare_word] CONTINUE → 继续（asset#level2#1217/str/0）
+- [logic_compare_word] OPTIONS
+ → 选项
+（asset#level2#1221/str/0）
+- [logic_compare_word] EXIT → 退出（asset#level2#1227/str/0）
+- [logic_compare_word] Close → 关闭（asset#level2#1255/str/6）
+- [logic_compare_word] Options → 选项（asset#level2#1287/str/8）
+- [logic_compare_word] Exit → 退出（asset#level2#1381/str/6）
+- [logic_compare_word] Play → 播放（asset#sharedassets0.assets#1655/str/0）
+
+rawstr 扩容写入：103 条（译文 UTF-8 字节 > 原文）
+
+- HEALTH: → 健康：（7 → 9 字节，+2）
+- QUIT → 退出（4 → 6 字节，+2）
+- LIVES USED: → 使用次数：（11 → 15 字节，+4）
+- 20000 ALIVE → 20000 还活着（11 → 15 字节，+4）
+- Gameplay → 游戏玩法（8 → 12 字节，+4）
+- YOU'RE DEAD → 你死了。（11 → 12 字节，+1）
+- RETRIES: → 尝试次数：（8 → 15 字节，+7）
+- AMMO: → 弹药：（5 → 9 字节，+4）
+- PRESS SPACE TO RESTART → 按空格键进行重启（22 → 24 字节，+2）
+- PAUSE → 暂停（5 → 6 字节，+1）
+- FLOOR COMPLETE → 楼层已完全完成（14 → 21 字节，+7）
+- SCORE: → 得分：（6 → 9 字节，+3）
+- BULLETS FIRED:  → 发射的子弹：（15 → 18 字节，+3）
+- PRESS E TO INTERACT → 媒体 E 进行互动（19 → 21 字节，+2）
+- STOMP HIS HEAD UNTIL HE BLEEDS → 敲打他的头部直到他流血为止（30 → 39 字节，+9）
+- GET THE FUCK OUT OF THERE → 他妈的滚开，别在那里待着了。（25 → 42 字节，+17）
+- SPACE TO DASH → DASH 被翻译为 DASH（13 → 22 字节，+9）
+- Close → 关闭（5 → 6 字节，+1）
+- Play → 播放（4 → 6 字节，+2）
+- Pistol Grip → 手枪握把（11 → 12 字节，+1）
+…（其余 83 条）
+
+回显跳过（译文==原文，未写入）：19 条
+
+- Plugins/x86/lib_burst_generated.txt:kv/--platform/1：Windows
+- Plugins/x86/lib_burst_generated.txt:kv/--format/6：Coff
+- Plugins/x86/lib_burst_generated.txt:kv/--pdb-search-paths/141：Temp/ManagedSymbols/
+- Plugins/x86/lib_burst_generated.txt:kv/--platform/158：Windows
+- Plugins/x86/lib_burst_generated.txt:kv/--format/163：Coff
+- Plugins/x86/lib_burst_generated.txt:kv/--pdb-search-paths/298：Temp/ManagedSymbols/
+- level0:asset#level0#1099/str/0：4m 28s
+- level1:asset#level1#477/str/0：DASH
+- level2:asset#level2#1189/str/0：4m 28s
+- level2:asset#level2#1195/str/0：EXPOSED X7
+- level2:asset#level2#1226/str/0：COMBO
+- resources.assets:asset#resources.assets#394/str/2：Bloo Goo
+- resources.assets:asset#resources.assets#420/str/0：CURBSTOMP
+- resources.assets:asset#resources.assets#423/str/0：MISFIRE
+- resources.assets:asset#resources.assets#439/str/0：Uzi Grip
+- resources.assets:asset#resources.assets#440/str/0：Book Grip
+- resources.assets:asset#resources.assets#453/str/0：Ashtray Grip
+- sharedassets0.assets:asset#sharedassets0.assets#1638/str/0：CURBSTOMP
+- sharedassets0.assets:asset#sharedassets0.assets#1658/str/2：BAT
+
+
+警告：1 条
+
+- 无译文条目：il2cpp_data/Metadata/global-metadata.dat

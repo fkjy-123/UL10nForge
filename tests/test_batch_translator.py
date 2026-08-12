@@ -271,6 +271,46 @@ def test_proper_name_echo_not_target_script_mismatch(source, translation):
     assert entry.meta["quality_passed"] is True
 
 
+@pytest.mark.parametrize("fmt", [
+    "yyyy-MM-dd HH:mm:ss.FFFFFF",
+    "yyyy-MM-dd HH:mm:ss.FFFF",
+    "HH:mm:ss",
+])
+def test_format_template_echo_not_target_script_mismatch(fmt):
+    """fix-26 格式模板回显豁免 target_script_mismatch：日期/数字格式串
+    是不可译文本，回显是正确行为（force-reboot 第三轮 3 条恒败实证；
+    quality 侧 untranslated_text 已豁免，此处补目标脚本判定缺口）。"""
+    translator = BatchTranslator(
+        FakeClient(), batch_size=1, concurrency=1, lang="en→zh-CN")
+    entry = TextEntry(
+        "ui", "reported", fmt,
+        meta={"role": "display", "disposition": "translate"},
+    )
+
+    assert translator._apply_quality(entry, fmt) is True
+    assert entry.meta["quality_passed"] is True
+    assert entry.meta["echo_exempt"] == "format_template"
+
+
+def test_format_template_altered_by_model_is_restored():
+    """fix-26 格式模板自愈：模型「修正」格式串（.ss→:ss）是格式破坏
+    → 恢复原文（不可译文本，任何改动都破坏游戏时间格式），不得写回
+    破坏版（force-reboot 实证 yyyy-MM-dd HH:mm.ss.FFFF）。"""
+    source = "yyyy-MM-dd HH:mm.ss.FFFF"
+    altered = "yyyy-MM-dd HH:mm:ss.FFFF"
+    translator = BatchTranslator(
+        FakeClient(), batch_size=1, concurrency=1, lang="en→zh-CN")
+    entry = TextEntry(
+        "ui", "reported", source,
+        meta={"role": "display", "disposition": "translate"},
+    )
+
+    assert translator._apply_quality(entry, altered) is True
+    assert entry.translation == source
+    assert entry.meta["quality_passed"] is True
+    assert entry.meta["echo_exempt"] == "format_template"
+
+
 def test_proper_name_echo_marked_exempt():
     """Q4 回归：回显豁免通过的条目必须打 echo_exempt 标（写回/统计可见
     它是「模型未翻译」而非真译文），且不得作为记忆源。"""
@@ -1469,8 +1509,10 @@ def test_protected_repair_backfills_key_when_stripped_segment_echoes():
 
 
 def test_protected_repair_backfill_skips_when_key_already_in_whole():
-    # 整段译文已含按键翻译（'回车：配置'）→ 回填 'Enter' 会重复 → 跳过，
-    # 剥离段本身翻译成功（'配置' 有中文）→ 直接用剥离段重建
+    # fix-30（headache 实证）：回车 是 ENTER 的中文通称 → 整段译文
+    # 「回车：配置」直接通过质量门（键名保留语义），不再触发 protected
+    # repair 回填（旧行为：无 ENTER 字面量 → input_token_mismatch 误杀
+    # → 剥离按键段重建 'enter 配置'——译文反而生硬）
     class StripOkClient:
         config = SimpleNamespace(timeout=120.0)
 
@@ -1492,9 +1534,9 @@ def test_protected_repair_backfill_skips_when_key_already_in_whole():
 
     stats = BatchTranslator(client, batch_size=1, concurrency=1).run([entry])
 
-    assert stats.done == 1 and stats.failed == 0 and stats.requests == 2
-    assert entry.translation == "enter 配置"
-    assert client.calls == ["enter : config", ": config"]
+    assert stats.done == 1 and stats.failed == 0 and stats.requests == 1
+    assert entry.translation == "回车：配置"
+    assert client.calls == ["enter : config"]
 
 
 def test_input_token_mismatch_is_actionable_ui_retry():

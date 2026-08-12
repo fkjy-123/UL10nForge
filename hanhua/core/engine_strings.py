@@ -262,6 +262,9 @@ PHYSICAL_KEY_NAMES_CASEFOLD = {
     "delete", "del", "insert", "home", "end", "pageup", "pagedown",
     "shift", "ctrl", "control", "alt", "capslock", "numlock",
     "scrolllock", "printscreen", "prtsc", "pause", "break",
+    # 鼠标键（force-reboot 实证：RMB 被译「人民币」且被记忆沉淀成词对，
+    # 跨游戏误杀正确译文——键名必须可识别，见 quality._KEY_LABEL_CASEFOLD）
+    "rmb", "lmb", "mmb",
     *{f"f{i}" for i in range(1, 13)},
 }
 _LITERAL_GLYPH = (

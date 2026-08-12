@@ -3,7 +3,8 @@ from __future__ import annotations
 import pytest
 
 from hanhua.core.models import TextEntry
-from hanhua.core.quality import (has_independent_lower_word,
+from hanhua.core.quality import (_is_format_template,
+                                 has_independent_lower_word,
                                  validate_translation_quality)
 
 
@@ -62,6 +63,24 @@ def test_quality_rejects_untranslated_english_and_glossary_drift():
 
     assert "untranslated_text" in untranslated.reasons
     assert "glossary_mismatch" in drift.reasons
+
+
+def test_glossary_exact_pair_wins_over_substring_pair():
+    """fix-26 精确词对优先：原文精确命中 (ENTER NAME→输入姓名) 时，
+    子串词对 (NAME→名称) 不再生效——正确译文「输入姓名」不得被误判
+    glossary_mismatch（force-reboot 实证：AgentMemory 独立词对
+    (NAME→名称) 子串命中 ENTER NAME 原文 → 正确译文判失败）。"""
+    entry = _entry("ENTER NAME")
+    ok = validate_translation_quality(
+        entry, "输入姓名",
+        glossary=[("ENTER NAME", "输入姓名"), ("NAME", "名称")])
+    assert ok.passed is True
+
+    # 精确词对仍是权威：译文不含其 target 照常判失败
+    fail = validate_translation_quality(
+        entry, "输入昵称",
+        glossary=[("ENTER NAME", "输入姓名"), ("NAME", "名称")])
+    assert "glossary_mismatch" in fail.reasons
 
 
 def test_glossary_verb_usage_exempted():
@@ -467,6 +486,26 @@ def test_camel_echo_of_source_absent_word_still_fails():
     assert "untranslated_text" in result.reasons
 
 
+def test_format_template_echo_is_not_untranslated():
+    """日期/数字格式模板回显（yyyy-MM-dd HH:mm:ss、{0:F2}）→ 格式串是
+    string.Format/ToString 参数非显示语义，回显是正确行为（0.26 地毯式
+    实证：force-reboot 3 条 PlayFab 日期格式回显被误判 untranslated_text）。"""
+    for fmt in ["yyyy-MM-dd HH:mm:ss.FFFF",
+                "{0:F2}, {1:F3}",
+                "yyyy-MM-ddTHH:mm:ss.FFFZ"]:
+        entry = _entry(fmt, role="display")
+        result = validate_translation_quality(entry, fmt)
+        assert result.passed is True, (fmt, result.reasons)
+
+
+def test_format_template_not_matching_plain_words():
+    """格式模板判定不误伤普通文本（含字母词/句子）。"""
+    assert not _is_format_template("help")
+    assert not _is_format_template("Time: {0}")
+    assert not _is_format_template("Hello there world")
+    assert not _is_format_template("value={0}")
+
+
 def test_service_phrase_brand_echo_is_not_untranslated():
     """'Youtube Music' 品牌短语大小写修正回显 → 合理保留（YouTube 服务名）。"""
     entry = _entry("Youtube Music", role="display")
@@ -591,3 +630,73 @@ def test_has_independent_lower_word_version_template_letter_exempt():
     assert has_independent_lower_word("hello world") is True
     assert has_independent_lower_word("Jump During Playtime's Jumprope") is False
     assert has_independent_lower_word("MEGA CORP") is False
+
+
+def test_key_name_mistranslated_rejected():
+    """fix-27 键名强制保留：原文含物理键名（Shift/RMB/Esc…）译文把键名
+    译成中文（RMB→人民币）→ 判失败（force-reboot 实证被记忆沉淀污染）。
+    正确保留键名的译文通过（goodmorning 实证）。"""
+    # RMB 译成「人民币」→ 失败
+    bad = validate_translation_quality(
+        _entry("RMB to scope"), "人民币 给 范围")
+    assert "key_name_mistranslated" in bad.reasons
+    # Shift 译成「移位」→ 失败
+    bad2 = validate_translation_quality(
+        _entry("Camera Control - Shift + RMB"),
+        "相机控制 - 移位 + 人民币")
+    assert "key_name_mistranslated" in bad2.reasons
+    # 保留键名的正确译文 → 通过
+    ok = validate_translation_quality(
+        _entry("Camera Control - Shift + RMB"),
+        "相机控制 - Shift + RMB")
+    assert ok.passed is True
+    # 有中文通称的键不强制（回车/空格是标准译法；非交互提示语境，
+    # 交互提示的 input_token 保留检查由另一条链负责）
+    ok2 = validate_translation_quality(
+        _entry("Enter"), "回车")
+    assert ok2.passed is True
+    # 原文含键名但译文无中文（纯回显）→ 由 untranslated_text 管，本检查不判
+    echo = validate_translation_quality(
+        _entry("SHIFT"), "SHIFT")
+    assert "key_name_mistranslated" not in echo.reasons
+
+
+def test_glossary_key_pair_exempted():
+    """fix-27 键名词对豁免：词对 source 是键名（RMB→人民币、SHIFT→移位）
+    是错误沉淀——检查跳过，正确译文保留键名不判 glossary_mismatch
+    （goodmorning 实证：'Camera Control - Shift + RMB' 被污染词对误杀）。"""
+    entry = _entry("Camera Control - Shift + RMB")
+    ok = validate_translation_quality(
+        entry, "相机控制 - Shift + RMB",
+        glossary=[("RMB", "人民币"), ("SHIFT", "移位")])
+    assert ok.passed is True
+    # 非键名词对不受影响（Moon Key 照常检查）
+    drift = validate_translation_quality(
+        _entry("Use Moon Key to open the basement"),
+        "使用月之钥匙打开地下室", glossary=[("Moon Key", "月光钥匙")])
+    assert "glossary_mismatch" in drift.reasons
+
+
+def test_single_token_pair_substring_skips_natural_sentence():
+    """fix-28 单 token 词对子串命中仅标签语境检查：TIME→时间 词对
+    子串命中自然句 'time to take on'（前后都是字母词）→ 词对不适用，
+    意译译文「是时候」不判 glossary_mismatch（goodmorning 实证完美
+    译文被误杀）。标签语境（'miss: 999' 右邻冒号、'TIME' 单独行）
+    照常检查。"""
+    # 自然句：TIME 词对不适用 → 意译不再被 glossary_mismatch 误杀
+    # （换行结构差异由 batch_translator line_merge 兜底放行）
+    ok = validate_translation_quality(
+        _entry("you're all ready -\ntime to take on the day!"),
+        "你们都准备好了——是时候开始这一天了！",
+        glossary=[("TIME", "时间")])
+    assert "glossary_mismatch" not in ok.reasons
+    # 标签语境：miss 右邻冒号 → 词对适用 → 回显判失败
+    label = _entry("miss: 999")
+    fail = validate_translation_quality(
+        label, "miss: 999", glossary=[("miss", "未命中")])
+    assert "glossary_mismatch" in fail.reasons
+    # 多词短语词对子串命中不受影响（固定表达照常检查）
+    drift = validate_translation_quality(
+        _entry("ENTER NAME please"), "请填写名字",
+        glossary=[("ENTER NAME", "输入姓名")])
+    assert "glossary_mismatch" in drift.reasons

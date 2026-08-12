@@ -1,0 +1,79 @@
+游戏：headache
+导出时间：2026-08-12 23:13:29
+翻译模型：Hy-MT2-1.8B-Q6_K
+失败文本：5 条
+
+────────────────────────────────────────────────────────────────
+[1] 失败文本
+来源：level0
+键位：asset#level0#1117/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=1117）
+原文：PRESS E TO INTERACT.
+译文：按交互。
+置信度：high
+原因：interaction_prompt
+角色：display
+质量评分：input_token_mismatch（passed=False）
+翻译评价：input_token_mismatch
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[2] 失败文本
+来源：level0
+键位：asset#level0#1119/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=1119）
+原文：VOLUME:
+译文：VOLUME：音量
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：target_script_mismatch（passed=False）
+翻译评价：target_script_mismatch
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[3] 失败文本
+来源：level0
+键位：asset#level0#1137/str/2
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=1137）
+原文：RMB TO PICK UP THE HAMMER
+译文：拿起锤子
+置信度：medium
+原因：natural_language_in_code_object
+角色：display
+质量评分：key_name_mistranslated（passed=False）
+翻译评价：key_name_mistranslated
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[4] 失败文本
+来源：level0
+键位：asset#level0#1137/str/3
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=1137）
+原文：RMB TO THROW THE HAMMER AT THE GLASS
+译文：用锤子敲打玻璃
+置信度：medium
+原因：natural_language_in_code_object
+角色：display
+质量评分：key_name_mistranslated（passed=False）
+翻译评价：key_name_mistranslated
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[5] 失败文本
+来源：level2
+键位：asset#level2#1199/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=1199）
+原文：PRESS E TO INTERACT.
+译文：按交互。
+置信度：high
+原因：interaction_prompt
+角色：display
+质量评分：input_token_mismatch（passed=False）
+翻译评价：input_token_mismatch
+需要优化：否（审核通过或未审核）
+写回：—

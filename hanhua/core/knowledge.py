@@ -394,6 +394,9 @@ _ACTION_VERB_ZH = {
     "retry": "重试", "connect": "连接", "disconnect": "断开",
     "import": "导入", "export": "导出", "download": "下载",
     "upload": "上传", "install": "安装", "uninstall": "卸载",
+    # 设置项缩写/技术词（0.26 地毯式实证：force-reboot 设置页
+    # VSYNC/Vsync 模型稳定回显不翻——learn 单词沉淀需要词表命中）
+    "vsync": "垂直同步",
 }
 # 大写动作短语中常见名词（TOSS TRASH 的 TRASH），补动作词的语义完整
 _COMMON_NOUN_ZH = {
@@ -409,6 +412,26 @@ _ACTION_SKIP_WORDS = frozenset("""
 the a an up down off on in out into onto to of with and from for at by
 it its my your our their this that these those me you we they
 """.split())
+
+
+# 单设置词 token（JUMP/Vsync/jump：纯字母数字词，无空格/标点）
+_SINGLE_WORD_TOKEN = re.compile(r"^[A-Za-z][A-Za-z0-9']{1,39}$")
+
+
+def _is_single_lexicon_word(text: str) -> bool:
+    """单个词且命中动作/名词词表 → 单词机械直译候选（JUMP → 跳跃）。
+
+    0.26 地毯式实证：force-reboot 设置页 JUMP/VSYNC/Vsync 全大写/TitleCase
+    键名模型稳定回显——_is_uppercase_action 要求 2-5 词短语，单词形态不
+    沉淀译例，重试耗尽恒败。词表词（动作动词/设置名词）是跨游戏通用
+    语义，单个词回显即「该翻未翻」，learn 沉淀译例后 native 降级
+    references 带出（"JUMP translates to 跳跃"）模型照做。
+    """
+    stripped = str(text).strip()
+    if not _SINGLE_WORD_TOKEN.match(stripped):
+        return False
+    table = {**_ACTION_VERB_ZH, **_COMMON_NOUN_ZH}
+    return stripped.casefold() in table
 
 
 def translate_uppercase_action(text: str) -> str | None:
@@ -828,6 +851,19 @@ class KnowledgeBase:
                     note="自动学习：其他语言源文本回显（含假名/重音字母）",
                     source="auto", game=source_game)
                 hits += 1
+            elif _is_single_lexicon_word(original):
+                # 单词词表机械直译（JUMP/Vsync → 跳跃/垂直同步）：词表命中
+                # 的单设置词回显，map_to 由词表生成——重试降级 references
+                # 带出译例（force-reboot 实证：全大写键名 1.8B 稳定回显）
+                zh = ({**_ACTION_VERB_ZH, **_COMMON_NOUN_ZH}
+                      .get(original.casefold(), ""))
+                if zh:
+                    learned += self.store.upsert(
+                        "text", "single_lexicon_word", original,
+                        action="translate", map_to=zh,
+                        note="自动学习：单词词表命中回显",
+                        source="auto", game=source_game)
+                    hits += 1
         return learned, hits
 
     def format_reference_pairs(self) -> list[tuple[str, str]]:

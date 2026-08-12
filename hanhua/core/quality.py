@@ -4,6 +4,7 @@ from __future__ import annotations
 from collections import Counter
 from dataclasses import dataclass
 import re
+from string import punctuation
 from typing import Iterable, Literal
 
 from hanhua.core.engine_strings import (PHYSICAL_KEY_NAMES_CASEFOLD,
@@ -378,6 +379,41 @@ def source_term_applies(term: str, source_text: str) -> bool:
     return term.casefold() in source_text.casefold()
 
 
+def _label_context_match(term: str, source_text: str) -> bool:
+    """单 token 词对子串命中处是否为标签语境：命中处左/右邻是标点、
+    数字、行首或行尾（'miss: 999' 的 miss 右邻冒号是 HUD 计数标签；
+    'TIME' 单独一行是计时器 UI 标签）→ 词对适用。命中处前后都是
+    字母词（'time to take on' 的 time 左邻行首右邻字母）是自然句
+    普通词 → 词对不适用——译文意译（是时候/工夫）不该被词对
+    （TIME→时间）误杀（goodmorning 实证：'you're all ready -'
+    'time to take on the day!' 完美译文被 (TIME→时间) 子串误判
+    glossary_mismatch）。"""
+    term_cf = term.casefold()
+    lower = source_text.casefold()
+    start = 0
+    while True:
+        m = re.search(rf"(?<![A-Za-z0-9_]){re.escape(term_cf)}(?![A-Za-z0-9_])",
+                      lower[start:], re.I)
+        if not m:
+            return False
+        i = start + m.start()
+        j = start + m.end()
+        if source_text[i:i + 1].isupper():
+            return True  # TitleCase/全大写命中（'Open Settings menu' 的
+            # Settings 是 UI 菜单词形态，词对适用——漏译照常判失败；
+            # 'time to take' 的 time 小写是自然句功能词，不在此列）
+        before = source_text[i - 1] if i > 0 else ""
+        after = source_text[j] if j < len(source_text) else ""
+        if not before or not after:
+            return True  # 行首/行尾（'TIME' 单独一行是计时器标签）
+        if (before in punctuation or after in punctuation):
+            return True  # 标点邻接（'miss:' 的 miss 右邻冒号是 HUD 标签）
+        if (before.isdigit() or after.isdigit()):
+            return True  # 数字邻接（'Time 5' 类计数标签）
+        start = j
+    return False
+
+
 def _is_lyric_like(text: str) -> bool:
     """歌词文本特征：含假名/汉字（日文歌词）或括号音乐标记/重复结构
     （(Guh)/(Let it die)/Sha la la）。普通词术语在歌词中常被押韵词/
@@ -461,6 +497,66 @@ def _glossary_verb_usage(term: str, source_text: str) -> bool:
 
 _LOG_TEMPLATE_RE = re.compile(
     r"^[A-Z]{3,}:\s*[a-z]{2,}\s*=\s*\{[0-9]+\}")
+
+
+# 日期/数字格式模板（yyyy-MM-dd HH:mm:ss、{0:F2}、0123456789+-.eE）：
+# string.Format/ToString 的格式参数，不是显示语义文本——回显是正确
+# 行为（force-reboot 实证 3 条 PlayFab 日期格式回显被误判
+# untranslated_text）。字符类只含格式符（数字/冒号/连字符/斜杠/花括号/
+# 时间字母）——普通词含字母（Time: / value={0} 的 value）不匹配；
+# 纯字母串（help）不匹配。
+_FORMAT_TEMPLATE_RE = re.compile(
+    r"^(?:[0-9{}:\-./,_%#+TZzHhMmSsFfKkyd ]{1,})+$")
+
+
+def _is_format_template(text: str) -> bool:
+    stripped = str(text).strip()
+    if not stripped or stripped.isalpha():
+        return False
+    return bool(_FORMAT_TEMPLATE_RE.match(stripped))
+
+
+# 键名强制保留表（casefold）：输入提示里这些键位是字面量，译文必须保留
+# 键名原文——译成中文（RMB→「人民币」force-reboot 实证）玩家找不到键。
+# 两类排除：
+# ① 有可靠中文通称的键（回车/空格/退格/删除是标准译法）；
+# ② 兼作普通英语词的键名（control/pause/return/break/insert/home/end/
+#    escape——escape=逃跑/逃脱 普通词义，'escape the room' 误杀风险；
+#    goodmorning 实证 Camera Control）——译文「控制」正确，强制保留
+#    会误杀。只保留专有键名形态（Esc 的强制保留由按键序列检查
+#    input_token_mismatch + 中文通称豁免承接）。
+# RMB/LMB/MMB 保留原文最安全（「右键」与「人民币」无法可靠区分，
+# 宁可失败不写错——失败只留原文，写错是误导）。
+_KEY_LABEL_CASEFOLD = frozenset(
+    PHYSICAL_KEY_NAMES_CASEFOLD - {
+        "enter", "return", "space", "tab", "backspace", "delete",
+        "control", "pause", "break", "insert", "home", "end",
+        "escape",
+    })
+
+# 键名中文通称（headache 实证 2026-08-12）：'PRESS SPACE TO RESTART'
+# →「按空格键进行重启」、「PRESS ESCAPE TO GO BACK」→「按 ESC 键以
+# 返回」——按键名译成中文标准通称/简写是正确翻译（玩家能识别），
+# 按键字面量/键名保留检查却要求译文中含英文键名原文 → 误杀。
+# 本表只放「中文通称与键名一一对应」的键（空格=space、回车=enter），
+# 无歧义；普通词义（空间/移动）不含——'free space' 的「空间」不豁免
+# SPACE 字面量要求，shift 的「移动」同理（shift 不在本表）。
+_KEY_ZH_ALIASES: dict[str, tuple[str, ...]] = {
+    "space": ("空格",),
+    "escape": ("esc", "退出键"),
+    "esc": ("esc", "退出键"),
+    "rmb": ("右键", "鼠标右键", "右击"),
+    "lmb": ("左键", "鼠标左键", "左击"),
+    "mmb": ("中键", "鼠标中键"),
+    "enter": ("回车",),
+    "return": ("回车",),
+    "backspace": ("退格",),
+    "delete": ("删除键",),
+    "del": ("删除键",),
+    "control": ("ctrl", "控制键"),
+    "ctrl": ("ctrl", "控制键"),
+    "tab": ("制表键",),
+}
 
 
 def is_log_template(text: str) -> bool:
@@ -609,6 +705,12 @@ def validate_translation_quality(
     target_input_events = _input_token_events(normalized, input_tokens)
     pos = 0
     for token in source_input_events:
+        # 键名中文通称豁免（headache 实证 2026-08-12）：'PRESS SPACE'→
+        # 「按空格键」、'PRESS ESCAPE'→「按 ESC 键」——按键名译成中文
+        # 标准通称/简写是正确翻译，字面量序列检查要求英文键名原文而误杀。
+        if any(alias in normalized.casefold()
+               for alias in _KEY_ZH_ALIASES.get(token, ())):
+            continue
         while pos < len(target_input_events) and target_input_events[pos] != token:
             pos += 1
         if pos == len(target_input_events):
@@ -664,14 +766,39 @@ def validate_translation_quality(
     # 知识库规则：大写动作指令的译文不得残留原动作动词——"TOSS 垃圾" 是
     # 半翻译（TOSS 是动作动词，必须译成中文"丢"）。回显（无中文）已被
     # untranslated_text 拦截；此检查补充「有中文但残留动作动词」的场景。
-    # 判失败触发重试：native 降级路径带 knowledge 译例后模型输出"丢垃圾"
+    # 判失败触发重试：native 降级路径带 knowledge 译例后模型输出"丢垃圾"。
+    # 引号豁免与 untranslated_text 对齐（headache 实证：'PRESS E TO
+    # INTERACT' 译「点击"PRESS E"以进行互动」——引号内是模型引用 UI 提示
+    # 原文（按钮字面量），不算动作残留）：剥离引号内容后检查引号外是否
+    # 仍有裸露动作词——引号外双写残留（「点击"PRESS E"… PRESS」）仍拦。
     if special_action and _CJK.search(normalized):
+        quoted_stripped = _QUOTED_SPAN.sub(" ", normalized)
         for word in re.findall(r"[A-Z][A-Z0-9']{1,}", entry.original):
             if (word.casefold() in _UPPERCASE_ACTION_VERBS
                     and re.search(
                         rf"(?<![A-Za-z]){re.escape(word)}(?![A-Za-z])",
-                        normalized, re.I)):
+                        quoted_stripped, re.I)):
                 reasons.append("action_word_residue")
+                break
+    # 键名强制保留检查：原文含物理键名（Shift/RMB/Esc…）时译文必须保留
+    # 该键名——输入提示是键位字面量，译成中文（RMB→「人民币」force-reboot
+    # 实证 4 次且被记忆沉淀成词对）让玩家找不到键，且污染词对跨游戏误杀
+    # 正确译文（goodmorning 实证）。有中文通称的键（回车/空格/退格/删除）
+    # 不强制；RMB/LMB/MMB 保留原文最安全——「右键」与「人民币」无法可靠
+    # 区分，宁可判失败（失败只留原文，写错是误导）。纯回显（无中文）由
+    # untranslated_text 拦截，本检查只管「有中文但键名被译掉」。
+    if _CJK.search(normalized):
+        for key in _KEY_LABEL_CASEFOLD:
+            if (re.search(
+                    rf"(?<![A-Za-z0-9_]){re.escape(key)}(?![A-Za-z0-9_])",
+                    entry.original, re.I)
+                    and not re.search(
+                        rf"(?<![A-Za-z0-9_]){re.escape(key)}(?![A-Za-z0-9_])",
+                        _STRIP_RICH_TEXT.sub(" ", normalized), re.I)
+                    and not any(
+                        alias in normalized.casefold()
+                        for alias in _KEY_ZH_ALIASES.get(key, ()))):
+                reasons.append("key_name_mistranslated")
                 break
     # 全大写 ≤3 字母缩写回显（MAX/SFX/UI/OK）：单 token 缩写是界面
     # 标准术语，1.8B 模型稳定回显（count-my-coins 'SFX' 实证；proper_name
@@ -691,6 +818,7 @@ def validate_translation_quality(
             and not _glossary_keep_echo(entry.original, normalized, glossary)
             and not short_abbr_echo
             and not is_log_template(entry.original)
+            and not _is_format_template(entry.original)
             and (has_independent_lower_word(entry.original)
                  or special_action
                  or any(
@@ -703,7 +831,37 @@ def validate_translation_quality(
         #  词典 → 回显仍判失败；glossary keep 术语组成的原文（hiss pop
         #  collection）TitleCase 化回显是模型保留术语 → 豁免）
         reasons.append("untranslated_text")
-    for source, target in _glossary_pairs(glossary):
+    pairs = _glossary_pairs(glossary)
+    # 精确词对优先：原文精确匹配某词对 source 时，只查该词对——子串
+    # 词对会把正确译文误判 glossary_mismatch（force-reboot 实证：
+    # ENTER NAME→输入姓名 被独立词对 (NAME→名称) 子串命中判失败；
+    # (FOX→狐狸) 子串命中专名 FOXYPAW 同样误伤）。原文精确命中表示
+    # 该词对就是本条目的权威译名，其它子串词对语义不相关，跳过。
+    source_cf = entry.original.strip().casefold()
+    exact_pairs = [
+        (s, t) for s, t in pairs
+        if s.strip().casefold() == source_cf]
+    if exact_pairs:
+        pairs = exact_pairs
+    # 键名词对豁免：source 是物理键名（RMB→人民币、SHIFT→移位、
+    # SPACE→空间）→ 键名不该被翻译，该词对是错误沉淀（force-reboot
+    # 实证：RMB 译「人民币」通过质量门被记忆沉淀 active）——跳过检查，
+    # 正确译文保留键名不判失败（goodmorning 'Camera Control - Shift +
+    # RMB' 实证被误杀）。用全键名集而非强制表：space 因有中文通称被
+    # 排除出强制表，但 (SPACE→空间) 词对同样是污染（headache 实证：
+    # happy-cat-tavern 的 UI 词 Space→空间 learn 沉淀 → PRESS SPACE
+    # 译文「按空格键」被 glossary_mismatch 误杀）。
+    pairs = [
+        (s, t) for s, t in pairs
+        if s.strip().casefold() not in PHYSICAL_KEY_NAMES_CASEFOLD]
+    for source, target in pairs:
+        # 单 token 词对子串命中：仅标签语境检查——普通词词对（TIME→时间、
+        # NAME→名称）子串命中自然句必然误杀意译（goodmorning 'time to
+        # take on' 译文「是时候」实证）→ 非标签语境跳过；多词短语词对
+        # （ENTER NAME）与精确命中（fix-26 已收窄 pairs）不受影响。
+        if (" " not in source.strip()
+                and _label_context_match(source, entry.original) is False):
+            continue
         # 大小写不敏感：自动沉淀的专名保留映射（KRAPOS→KRAPOS）与模型
         # 回显的 TitleCase 变体（Krapos）是同一词形态变体——大小写敏感
         # 检查把合法专名回显误判 glossary_mismatch（count-my-coins

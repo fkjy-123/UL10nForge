@@ -1,0 +1,6005 @@
+游戏：foxhunt-chapter1
+导出时间：2026-08-12 20:59:55
+翻译模型：Hy-MT2-1.8B-Q6_K
+跳过文本：400 条
+
+────────────────────────────────────────────────────────────────
+[1] 跳过文本
+来源：FoxHunt_Data/app.info
+键位：plain/1
+对象：纯文本文件行
+原文：FoxHunt
+译文：（无）
+置信度：medium
+原因：—
+角色：—
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[2] 跳过文本
+来源：FoxHunt_Data/level1
+键位：asset#level1#378/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=378）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：prefilter_high_frequency
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[3] 跳过文本
+来源：FoxHunt_Data/level1
+键位：asset#level1#379/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=379）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：prefilter_high_frequency
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[4] 跳过文本
+来源：FoxHunt_Data/level1
+键位：asset#level1#380/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=380）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：prefilter_high_frequency
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[5] 跳过文本
+来源：FoxHunt_Data/level1
+键位：asset#level1#381/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=381）
+原文：EleventhClue
+译文：（无）
+置信度：low
+原因：prefilter_engine_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[6] 跳过文本
+来源：FoxHunt_Data/level1
+键位：asset#level1#382/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=382）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：prefilter_high_frequency
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[7] 跳过文本
+来源：FoxHunt_Data/level1
+键位：asset#level1#382/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=382）
+原文：ESC
+译文：（无）
+置信度：low
+原因：identifier_without_display_evidence
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[8] 跳过文本
+来源：FoxHunt_Data/level1
+键位：asset#level1#383/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=383）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：prefilter_high_frequency
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[9] 跳过文本
+来源：FoxHunt_Data/level1
+键位：asset#level1#384/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=384）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：prefilter_high_frequency
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[10] 跳过文本
+来源：FoxHunt_Data/level1
+键位：asset#level1#385/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=385）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：prefilter_high_frequency
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[11] 跳过文本
+来源：FoxHunt_Data/level1
+键位：asset#level1#386/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=386）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：prefilter_high_frequency
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[12] 跳过文本
+来源：FoxHunt_Data/level1
+键位：asset#level1#388/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=388）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：prefilter_high_frequency
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[13] 跳过文本
+来源：FoxHunt_Data/level1
+键位：asset#level1#389/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=389）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：prefilter_high_frequency
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[14] 跳过文本
+来源：FoxHunt_Data/level1
+键位：asset#level1#390/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=390）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：prefilter_high_frequency
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[15] 跳过文本
+来源：FoxHunt_Data/level1
+键位：asset#level1#390/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=390）
+原文：ABOUT
+译文：（无）
+置信度：low
+原因：identifier_without_display_evidence
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[16] 跳过文本
+来源：FoxHunt_Data/level1
+键位：asset#level1#391/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=391）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：prefilter_high_frequency
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[17] 跳过文本
+来源：FoxHunt_Data/level1
+键位：asset#level1#395/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=395）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：prefilter_high_frequency
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[18] 跳过文本
+来源：FoxHunt_Data/level1
+键位：asset#level1#396/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=396）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：prefilter_high_frequency
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[19] 跳过文本
+来源：FoxHunt_Data/level1
+键位：asset#level1#397/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=397）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：prefilter_high_frequency
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[20] 跳过文本
+来源：FoxHunt_Data/level1
+键位：asset#level1#397/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=397）
+原文：Shift
+译文：（无）
+置信度：low
+原因：identifier_without_display_evidence
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[21] 跳过文本
+来源：FoxHunt_Data/level1
+键位：asset#level1#398/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=398）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：prefilter_high_frequency
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[22] 跳过文本
+来源：FoxHunt_Data/level1
+键位：asset#level1#399/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=399）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：prefilter_high_frequency
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[23] 跳过文本
+来源：FoxHunt_Data/level1
+键位：asset#level1#400/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=400）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：prefilter_high_frequency
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[24] 跳过文本
+来源：FoxHunt_Data/level1
+键位：asset#level1#401/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=401）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：prefilter_high_frequency
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[25] 跳过文本
+来源：FoxHunt_Data/level1
+键位：asset#level1#402/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=402）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：prefilter_high_frequency
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[26] 跳过文本
+来源：FoxHunt_Data/level1
+键位：asset#level1#403/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=403）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：prefilter_high_frequency
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[27] 跳过文本
+来源：FoxHunt_Data/level1
+键位：asset#level1#404/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=404）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：prefilter_high_frequency
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[28] 跳过文本
+来源：FoxHunt_Data/level1
+键位：asset#level1#405/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=405）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：prefilter_high_frequency
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[29] 跳过文本
+来源：FoxHunt_Data/level1
+键位：asset#level1#406/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=406）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：prefilter_high_frequency
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[30] 跳过文本
+来源：FoxHunt_Data/level1
+键位：asset#level1#407/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=407）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：prefilter_high_frequency
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[31] 跳过文本
+来源：FoxHunt_Data/level1
+键位：asset#level1#408/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=408）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：prefilter_high_frequency
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[32] 跳过文本
+来源：FoxHunt_Data/level1
+键位：asset#level1#409/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=409）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：prefilter_high_frequency
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[33] 跳过文本
+来源：FoxHunt_Data/level1
+键位：asset#level1#410/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=410）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：prefilter_high_frequency
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[34] 跳过文本
+来源：FoxHunt_Data/level1
+键位：asset#level1#411/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=411）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：prefilter_high_frequency
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[35] 跳过文本
+来源：FoxHunt_Data/level1
+键位：asset#level1#413/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=413）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：prefilter_high_frequency
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[36] 跳过文本
+来源：FoxHunt_Data/level1
+键位：asset#level1#414/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=414）
+原文：EleventhClue
+译文：（无）
+置信度：low
+原因：prefilter_engine_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[37] 跳过文本
+来源：FoxHunt_Data/level1
+键位：asset#level1#415/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=415）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：prefilter_high_frequency
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[38] 跳过文本
+来源：FoxHunt_Data/level1
+键位：asset#level1#416/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=416）
+原文：Horizontal
+译文：（无）
+置信度：low
+原因：identifier_without_display_evidence
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[39] 跳过文本
+来源：FoxHunt_Data/level1
+键位：asset#level1#416/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=416）
+原文：Vertical
+译文：（无）
+置信度：low
+原因：identifier_without_display_evidence
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[40] 跳过文本
+来源：FoxHunt_Data/level1
+键位：asset#level1#416/str/2
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=416）
+原文：Submit
+译文：（无）
+置信度：low
+原因：identifier_without_display_evidence
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[41] 跳过文本
+来源：FoxHunt_Data/level1
+键位：asset#level1#416/str/3
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=416）
+原文：Cancel
+译文：（无）
+置信度：low
+原因：identifier_without_display_evidence
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[42] 跳过文本
+来源：FoxHunt_Data/level1
+键位：asset#level1#417/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=417）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：prefilter_high_frequency
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[43] 跳过文本
+来源：FoxHunt_Data/level1
+键位：asset#level1#418/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=418）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：prefilter_high_frequency
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[44] 跳过文本
+来源：FoxHunt_Data/level1
+键位：asset#level1#419/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=419）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：prefilter_high_frequency
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[45] 跳过文本
+来源：FoxHunt_Data/level1
+键位：asset#level1#420/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=420）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：prefilter_high_frequency
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[46] 跳过文本
+来源：FoxHunt_Data/level1
+键位：asset#level1#421/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=421）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：prefilter_high_frequency
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[47] 跳过文本
+来源：FoxHunt_Data/level1
+键位：asset#level1#422/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=422）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：prefilter_high_frequency
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[48] 跳过文本
+来源：FoxHunt_Data/level1
+键位：asset#level1#428/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=428）
+原文：click1
+译文：（无）
+置信度：low
+原因：prefilter_key_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[49] 跳过文本
+来源：FoxHunt_Data/level1
+键位：asset#level1#428/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=428）
+原文：click2
+译文：（无）
+置信度：low
+原因：prefilter_key_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[50] 跳过文本
+来源：FoxHunt_Data/level1
+键位：asset#level1#428/str/2
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=428）
+原文：metalOpen
+译文：（无）
+置信度：low
+原因：prefilter_engine_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[51] 跳过文本
+来源：FoxHunt_Data/level1
+键位：asset#level1#428/str/3
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=428）
+原文：metalClose
+译文：（无）
+置信度：low
+原因：prefilter_engine_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[52] 跳过文本
+来源：FoxHunt_Data/level1
+键位：asset#level1#428/str/4
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=428）
+原文：invUp
+译文：（无）
+置信度：low
+原因：prefilter_engine_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[53] 跳过文本
+来源：FoxHunt_Data/level1
+键位：asset#level1#428/str/5
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=428）
+原文：metalCreak
+译文：（无）
+置信度：low
+原因：prefilter_engine_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[54] 跳过文本
+来源：FoxHunt_Data/level1
+键位：asset#level1#428/str/6
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=428）
+原文：sunBuzz
+译文：（无）
+置信度：low
+原因：prefilter_engine_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[55] 跳过文本
+来源：FoxHunt_Data/level1
+键位：asset#level1#428/str/7
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=428）
+原文：fox1
+译文：（无）
+置信度：low
+原因：prefilter_key_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[56] 跳过文本
+来源：FoxHunt_Data/level1
+键位：asset#level1#428/str/8
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=428）
+原文：fox2
+译文：（无）
+置信度：low
+原因：prefilter_key_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[57] 跳过文本
+来源：FoxHunt_Data/level1
+键位：asset#level1#428/str/9
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=428）
+原文：fox3
+译文：（无）
+置信度：low
+原因：prefilter_key_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[58] 跳过文本
+来源：FoxHunt_Data/level1
+键位：asset#level1#428/str/10
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=428）
+原文：clue
+译文：（无）
+置信度：low
+原因：localization_key_list
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[59] 跳过文本
+来源：FoxHunt_Data/level1
+键位：asset#level1#428/str/11
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=428）
+原文：paper3
+译文：（无）
+置信度：low
+原因：prefilter_key_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[60] 跳过文本
+来源：FoxHunt_Data/level1
+键位：asset#level1#428/str/12
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=428）
+原文：paperFlip1
+译文：（无）
+置信度：low
+原因：prefilter_engine_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[61] 跳过文本
+来源：FoxHunt_Data/level1
+键位：asset#level1#428/str/13
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=428）
+原文：paperFlip2
+译文：（无）
+置信度：low
+原因：prefilter_engine_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[62] 跳过文本
+来源：FoxHunt_Data/level1
+键位：asset#level1#428/str/14
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=428）
+原文：paperFlip3
+译文：（无）
+置信度：low
+原因：prefilter_engine_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[63] 跳过文本
+来源：FoxHunt_Data/level1
+键位：asset#level1#428/str/15
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=428）
+原文：thunk1
+译文：（无）
+置信度：low
+原因：prefilter_key_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[64] 跳过文本
+来源：FoxHunt_Data/level1
+键位：asset#level1#428/str/16
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=428）
+原文：thunk2
+译文：（无）
+置信度：low
+原因：prefilter_key_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[65] 跳过文本
+来源：FoxHunt_Data/level1
+键位：asset#level1#428/str/17
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=428）
+原文：poof
+译文：（无）
+置信度：low
+原因：localization_key_list
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[66] 跳过文本
+来源：FoxHunt_Data/level1
+键位：asset#level1#428/str/18
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=428）
+原文：keyDrop
+译文：（无）
+置信度：low
+原因：prefilter_engine_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[67] 跳过文本
+来源：FoxHunt_Data/level1
+键位：asset#level1#428/str/19
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=428）
+原文：doorShake
+译文：（无）
+置信度：low
+原因：prefilter_engine_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[68] 跳过文本
+来源：FoxHunt_Data/level1
+键位：asset#level1#428/str/20
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=428）
+原文：shaker1
+译文：（无）
+置信度：low
+原因：prefilter_key_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[69] 跳过文本
+来源：FoxHunt_Data/level1
+键位：asset#level1#428/str/35
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=428）
+原文：wind
+译文：（无）
+置信度：low
+原因：localization_key_list
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[70] 跳过文本
+来源：FoxHunt_Data/level1
+键位：asset#level1#428/str/37
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=428）
+原文：fox1aa
+译文：（无）
+置信度：low
+原因：prefilter_key_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[71] 跳过文本
+来源：FoxHunt_Data/level1
+键位：asset#level1#429/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=429）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：prefilter_high_frequency
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[72] 跳过文本
+来源：FoxHunt_Data/level1
+键位：asset#level1#430/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=430）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：prefilter_high_frequency
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[73] 跳过文本
+来源：FoxHunt_Data/level1
+键位：asset#level1#431/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=431）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：prefilter_high_frequency
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[74] 跳过文本
+来源：FoxHunt_Data/level1
+键位：asset#level1#432/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=432）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：prefilter_high_frequency
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[75] 跳过文本
+来源：FoxHunt_Data/level1
+键位：asset#level1#433/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=433）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：prefilter_high_frequency
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[76] 跳过文本
+来源：FoxHunt_Data/level1
+键位：asset#level1#434/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=434）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：prefilter_high_frequency
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[77] 跳过文本
+来源：FoxHunt_Data/level1
+键位：asset#level1#435/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=435）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：prefilter_high_frequency
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[78] 跳过文本
+来源：FoxHunt_Data/level1
+键位：asset#level1#436/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=436）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：prefilter_high_frequency
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[79] 跳过文本
+来源：FoxHunt_Data/level1
+键位：asset#level1#437/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=437）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：prefilter_high_frequency
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[80] 跳过文本
+来源：FoxHunt_Data/level1
+键位：asset#level1#438/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=438）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：prefilter_high_frequency
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[81] 跳过文本
+来源：FoxHunt_Data/level1
+键位：asset#level1#439/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=439）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：prefilter_high_frequency
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[82] 跳过文本
+来源：FoxHunt_Data/level1
+键位：asset#level1#440/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=440）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：prefilter_high_frequency
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[83] 跳过文本
+来源：FoxHunt_Data/level1
+键位：asset#level1#442/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=442）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：prefilter_high_frequency
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[84] 跳过文本
+来源：FoxHunt_Data/level1
+键位：asset#level1#443/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=443）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：prefilter_high_frequency
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[85] 跳过文本
+来源：FoxHunt_Data/level1
+键位：asset#level1#444/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=444）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：prefilter_high_frequency
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[86] 跳过文本
+来源：FoxHunt_Data/level1
+键位：asset#level1#445/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=445）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：prefilter_high_frequency
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[87] 跳过文本
+来源：FoxHunt_Data/level1
+键位：asset#level1#446/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=446）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：prefilter_high_frequency
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[88] 跳过文本
+来源：FoxHunt_Data/level1
+键位：asset#level1#447/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=447）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：prefilter_high_frequency
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[89] 跳过文本
+来源：FoxHunt_Data/level1
+键位：asset#level1#448/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=448）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：prefilter_high_frequency
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[90] 跳过文本
+来源：FoxHunt_Data/level1
+键位：asset#level1#448/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=448）
+原文：No.
+译文：（无）
+置信度：low
+原因：prefilter_key_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[91] 跳过文本
+来源：FoxHunt_Data/level1
+键位：asset#level1#449/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=449）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：prefilter_high_frequency
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[92] 跳过文本
+来源：FoxHunt_Data/level1
+键位：asset#level1#451/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=451）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：prefilter_high_frequency
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[93] 跳过文本
+来源：FoxHunt_Data/level1
+键位：asset#level1#452/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=452）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：prefilter_high_frequency
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[94] 跳过文本
+来源：FoxHunt_Data/level1
+键位：asset#level1#453/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=453）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：prefilter_high_frequency
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[95] 跳过文本
+来源：FoxHunt_Data/level1
+键位：asset#level1#454/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=454）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：prefilter_high_frequency
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[96] 跳过文本
+来源：FoxHunt_Data/level1
+键位：asset#level1#455/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=455）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：prefilter_high_frequency
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[97] 跳过文本
+来源：FoxHunt_Data/level1
+键位：asset#level1#456/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=456）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：prefilter_high_frequency
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[98] 跳过文本
+来源：FoxHunt_Data/level1
+键位：asset#level1#458/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=458）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：prefilter_high_frequency
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[99] 跳过文本
+来源：FoxHunt_Data/level1
+键位：asset#level1#459/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=459）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：prefilter_high_frequency
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[100] 跳过文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#13691/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=13691）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：prefilter_high_frequency
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[101] 跳过文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#13693/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=13693）
+原文：Key
+译文：（无）
+置信度：low
+原因：identifier_without_display_evidence
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[102] 跳过文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#13693/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=13693）
+原文：keyDrop
+译文：（无）
+置信度：low
+原因：prefilter_engine_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[103] 跳过文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#13700/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=13700）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：prefilter_high_frequency
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[104] 跳过文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#13701/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=13701）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：prefilter_high_frequency
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[105] 跳过文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#13704/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=13704）
+原文：self
+译文：（无）
+置信度：low
+原因：prefilter_high_frequency
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[106] 跳过文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#13711/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=13711）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：prefilter_high_frequency
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[107] 跳过文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#13712/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=13712）
+原文：self
+译文：（无）
+置信度：low
+原因：prefilter_high_frequency
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[108] 跳过文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#13713/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=13713）
+原文：self
+译文：（无）
+置信度：low
+原因：prefilter_high_frequency
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[109] 跳过文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#13720/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=13720）
+原文：self
+译文：（无）
+置信度：low
+原因：prefilter_high_frequency
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[110] 跳过文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#13723/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=13723）
+原文：elevNoise
+译文：（无）
+置信度：low
+原因：prefilter_engine_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[111] 跳过文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#13723/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=13723）
+原文：elevNoise
+译文：（无）
+置信度：low
+原因：prefilter_engine_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[112] 跳过文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#13725/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=13725）
+原文：self
+译文：（无）
+置信度：low
+原因：prefilter_high_frequency
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[113] 跳过文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#13728/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=13728）
+原文：self
+译文：（无）
+置信度：low
+原因：prefilter_high_frequency
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[114] 跳过文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#13734/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=13734）
+原文：self
+译文：（无）
+置信度：low
+原因：prefilter_high_frequency
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[115] 跳过文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#13737/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=13737）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：prefilter_high_frequency
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[116] 跳过文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#13749/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=13749）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：prefilter_high_frequency
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[117] 跳过文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#13749/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=13749）
+原文：00:00
+译文：（无）
+置信度：low
+原因：prefilter_key_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[118] 跳过文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#13750/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=13750）
+原文：self
+译文：（无）
+置信度：low
+原因：prefilter_high_frequency
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[119] 跳过文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#13751/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=13751）
+原文：self
+译文：（无）
+置信度：low
+原因：prefilter_high_frequency
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[120] 跳过文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#13753/str/4
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=13753）
+原文：BasementUnlocked
+译文：（无）
+置信度：low
+原因：prefilter_engine_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[121] 跳过文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#13754/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=13754）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：prefilter_high_frequency
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[122] 跳过文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#13755/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=13755）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：prefilter_high_frequency
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[123] 跳过文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#13756/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=13756）
+原文：RedModeOn
+译文：（无）
+置信度：low
+原因：prefilter_engine_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[124] 跳过文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#13756/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=13756）
+原文：RedModeOff
+译文：（无）
+置信度：low
+原因：prefilter_engine_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[125] 跳过文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#13757/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=13757）
+原文：self
+译文：（无）
+置信度：low
+原因：prefilter_high_frequency
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[126] 跳过文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#13758/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=13758）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：prefilter_high_frequency
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[127] 跳过文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#13759/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=13759）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：prefilter_high_frequency
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[128] 跳过文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#13761/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=13761）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：prefilter_high_frequency
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[129] 跳过文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#13764/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=13764）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：prefilter_high_frequency
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[130] 跳过文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#13768/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=13768）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：prefilter_high_frequency
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[131] 跳过文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#13769/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=13769）
+原文：thunk1
+译文：（无）
+置信度：low
+原因：prefilter_key_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[132] 跳过文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#13771/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=13771）
+原文：shaker1
+译文：（无）
+置信度：low
+原因：prefilter_key_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[133] 跳过文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#13772/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=13772）
+原文：self
+译文：（无）
+置信度：low
+原因：prefilter_high_frequency
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[134] 跳过文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#13773/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=13773）
+原文：SunCubesGathered
+译文：（无）
+置信度：low
+原因：prefilter_engine_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[135] 跳过文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#13775/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=13775）
+原文：tableRaise
+译文：（无）
+置信度：low
+原因：prefilter_engine_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[136] 跳过文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#13779/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=13779）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：prefilter_high_frequency
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[137] 跳过文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#13780/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=13780）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：prefilter_high_frequency
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[138] 跳过文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#13781/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=13781）
+原文：TrigConsole
+译文：（无）
+置信度：low
+原因：prefilter_engine_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[139] 跳过文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#13782/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=13782）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：prefilter_high_frequency
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[140] 跳过文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#13783/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=13783）
+原文：Stone
+译文：（无）
+置信度：low
+原因：identifier_without_display_evidence
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[141] 跳过文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#13783/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=13783）
+原文：thunk1
+译文：（无）
+置信度：low
+原因：prefilter_key_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[142] 跳过文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#13784/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=13784）
+原文：shaker1
+译文：（无）
+置信度：low
+原因：prefilter_key_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[143] 跳过文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#13785/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=13785）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：prefilter_high_frequency
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[144] 跳过文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#13792/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=13792）
+原文：self
+译文：（无）
+置信度：low
+原因：prefilter_high_frequency
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[145] 跳过文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#13799/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=13799）
+原文：metalCreak
+译文：（无）
+置信度：low
+原因：prefilter_engine_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[146] 跳过文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#13802/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=13802）
+原文：self
+译文：（无）
+置信度：low
+原因：prefilter_high_frequency
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[147] 跳过文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#13804/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=13804）
+原文：TenthClue
+译文：（无）
+置信度：low
+原因：prefilter_engine_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[148] 跳过文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#13810/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=13810）
+原文：self
+译文：（无）
+置信度：low
+原因：prefilter_high_frequency
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[149] 跳过文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#13811/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=13811）
+原文：thunk1
+译文：（无）
+置信度：low
+原因：prefilter_key_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[150] 跳过文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#13813/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=13813）
+原文：shaker1
+译文：（无）
+置信度：low
+原因：prefilter_key_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[151] 跳过文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#13814/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=13814）
+原文：CaveCluePickedUp
+译文：（无）
+置信度：low
+原因：prefilter_engine_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[152] 跳过文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#13815/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=13815）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：prefilter_high_frequency
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[153] 跳过文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#13817/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=13817）
+原文：apseShutters
+译文：（无）
+置信度：low
+原因：prefilter_engine_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[154] 跳过文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#13817/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=13817）
+原文：apseShutters
+译文：（无）
+置信度：low
+原因：prefilter_engine_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[155] 跳过文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#13818/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=13818）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：prefilter_high_frequency
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[156] 跳过文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#13820/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=13820）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：prefilter_high_frequency
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[157] 跳过文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#13824/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=13824）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：prefilter_high_frequency
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[158] 跳过文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#13826/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=13826）
+原文：metalCreak
+译文：（无）
+置信度：low
+原因：prefilter_engine_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[159] 跳过文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#13830/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=13830）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：prefilter_high_frequency
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[160] 跳过文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#13831/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=13831）
+原文：self
+译文：（无）
+置信度：low
+原因：prefilter_high_frequency
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[161] 跳过文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#13833/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=13833）
+原文：doorShake
+译文：（无）
+置信度：low
+原因：prefilter_engine_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[162] 跳过文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#13833/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=13833）
+原文：heavyBoxFall
+译文：（无）
+置信度：low
+原因：prefilter_engine_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[163] 跳过文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#13834/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=13834）
+原文：metalOpen
+译文：（无）
+置信度：low
+原因：prefilter_engine_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[164] 跳过文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#13834/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=13834）
+原文：self
+译文：（无）
+置信度：low
+原因：prefilter_high_frequency
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[165] 跳过文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#13836/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=13836）
+原文：self
+译文：（无）
+置信度：low
+原因：prefilter_high_frequency
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[166] 跳过文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#13840/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=13840）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：prefilter_high_frequency
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[167] 跳过文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#13840/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=13840）
+原文：SAVED.
+译文：（无）
+置信度：low
+原因：prefilter_key_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[168] 跳过文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#13843/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=13843）
+原文：thunk1
+译文：（无）
+置信度：low
+原因：prefilter_key_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[169] 跳过文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#13845/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=13845）
+原文：shaker1
+译文：（无）
+置信度：low
+原因：prefilter_key_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[170] 跳过文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#13847/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=13847）
+原文：self
+译文：（无）
+置信度：low
+原因：prefilter_high_frequency
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[171] 跳过文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#13852/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=13852）
+原文：self
+译文：（无）
+置信度：low
+原因：prefilter_high_frequency
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[172] 跳过文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#13853/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=13853）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：prefilter_high_frequency
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[173] 跳过文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#13854/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=13854）
+原文：YellowModeOn
+译文：（无）
+置信度：low
+原因：prefilter_engine_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[174] 跳过文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#13854/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=13854）
+原文：YellowModeOff
+译文：（无）
+置信度：low
+原因：prefilter_engine_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[175] 跳过文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#13858/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=13858）
+原文：ApseActivated
+译文：（无）
+置信度：low
+原因：prefilter_engine_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[176] 跳过文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#13859/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=13859）
+原文：clickOpen
+译文：（无）
+置信度：low
+原因：prefilter_engine_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[177] 跳过文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#13859/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=13859）
+原文：click2
+译文：（无）
+置信度：low
+原因：prefilter_key_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[178] 跳过文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#13859/str/2
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=13859）
+原文：click2
+译文：（无）
+置信度：low
+原因：prefilter_key_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[179] 跳过文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#13860/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=13860）
+原文：Clue8Grabbed
+译文：（无）
+置信度：low
+原因：prefilter_key_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[180] 跳过文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#13861/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=13861）
+原文：shaker1
+译文：（无）
+置信度：low
+原因：prefilter_key_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[181] 跳过文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#13862/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=13862）
+原文：Stone
+译文：（无）
+置信度：low
+原因：identifier_without_display_evidence
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[182] 跳过文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#13862/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=13862）
+原文：thunk1
+译文：（无）
+置信度：low
+原因：prefilter_key_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[183] 跳过文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#13863/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=13863）
+原文：self
+译文：（无）
+置信度：low
+原因：prefilter_high_frequency
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[184] 跳过文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#13867/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=13867）
+原文：Plank
+译文：（无）
+置信度：low
+原因：identifier_without_display_evidence
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[185] 跳过文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#13867/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=13867）
+原文：thunk1
+译文：（无）
+置信度：low
+原因：prefilter_key_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[186] 跳过文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#13868/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=13868）
+原文：shaker1
+译文：（无）
+置信度：low
+原因：prefilter_key_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[187] 跳过文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#13870/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=13870）
+原文：self
+译文：（无）
+置信度：low
+原因：prefilter_high_frequency
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[188] 跳过文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#13874/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=13874）
+原文：consoleRaise
+译文：（无）
+置信度：low
+原因：prefilter_engine_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[189] 跳过文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#13875/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=13875）
+原文：RaiseTowerRec
+译文：（无）
+置信度：low
+原因：prefilter_engine_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[190] 跳过文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#13877/str/4
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=13877）
+原文：CubeTowerUnlocked
+译文：（无）
+置信度：low
+原因：prefilter_engine_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[191] 跳过文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#13877/str/5
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=13877）
+原文：CubeTowerRelocked
+译文：（无）
+置信度：low
+原因：prefilter_engine_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[192] 跳过文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#13878/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=13878）
+原文：metalCreak
+译文：（无）
+置信度：low
+原因：prefilter_engine_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[193] 跳过文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#13879/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=13879）
+原文：self
+译文：（无）
+置信度：low
+原因：prefilter_high_frequency
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[194] 跳过文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#13880/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=13880）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：prefilter_high_frequency
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[195] 跳过文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#13882/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=13882）
+原文：TrigStairs
+译文：（无）
+置信度：low
+原因：prefilter_engine_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[196] 跳过文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#13885/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=13885）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：prefilter_high_frequency
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[197] 跳过文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#13890/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=13890）
+原文：Horizontal
+译文：（无）
+置信度：low
+原因：identifier_without_display_evidence
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[198] 跳过文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#13890/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=13890）
+原文：Vertical
+译文：（无）
+置信度：low
+原因：identifier_without_display_evidence
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[199] 跳过文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#13890/str/2
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=13890）
+原文：Submit
+译文：（无）
+置信度：low
+原因：identifier_without_display_evidence
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[200] 跳过文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#13890/str/3
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=13890）
+原文：Cancel
+译文：（无）
+置信度：low
+原因：identifier_without_display_evidence
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[201] 跳过文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#13891/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=13891）
+原文：SecondClue
+译文：（无）
+置信度：low
+原因：prefilter_engine_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[202] 跳过文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#13895/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=13895）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：prefilter_high_frequency
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[203] 跳过文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#13899/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=13899）
+原文：self
+译文：（无）
+置信度：low
+原因：prefilter_high_frequency
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[204] 跳过文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#13907/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=13907）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：prefilter_high_frequency
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[205] 跳过文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#13908/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=13908）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：prefilter_high_frequency
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[206] 跳过文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#13909/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=13909）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：prefilter_high_frequency
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[207] 跳过文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#13911/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=13911）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：prefilter_high_frequency
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[208] 跳过文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#13912/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=13912）
+原文：LowerApseWhenDone
+译文：（无）
+置信度：low
+原因：prefilter_engine_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[209] 跳过文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#13913/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=13913）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：prefilter_high_frequency
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[210] 跳过文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#13917/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=13917）
+原文：GreenModeOn
+译文：（无）
+置信度：low
+原因：prefilter_engine_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[211] 跳过文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#13917/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=13917）
+原文：GreenModeOff
+译文：（无）
+置信度：low
+原因：prefilter_engine_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[212] 跳过文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#13919/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=13919）
+原文：GreenButtonPressed
+译文：（无）
+置信度：low
+原因：prefilter_engine_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[213] 跳过文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#13919/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=13919）
+原文：GreenModeOn
+译文：（无）
+置信度：low
+原因：prefilter_engine_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[214] 跳过文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#13919/str/2
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=13919）
+原文：self
+译文：（无）
+置信度：low
+原因：prefilter_high_frequency
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[215] 跳过文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#13920/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=13920）
+原文：doorShake
+译文：（无）
+置信度：low
+原因：prefilter_engine_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[216] 跳过文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#13920/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=13920）
+原文：drawerFallOpen
+译文：（无）
+置信度：low
+原因：prefilter_engine_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[217] 跳过文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#13922/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=13922）
+原文：shaker1
+译文：（无）
+置信度：low
+原因：prefilter_key_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[218] 跳过文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#13924/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=13924）
+原文：consoleRaise
+译文：（无）
+置信度：low
+原因：prefilter_engine_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[219] 跳过文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#13925/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=13925）
+原文：EndLeft
+译文：（无）
+置信度：low
+原因：prefilter_engine_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[220] 跳过文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#13928/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=13928）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：prefilter_high_frequency
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[221] 跳过文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#13932/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=13932）
+原文：self
+译文：（无）
+置信度：low
+原因：prefilter_high_frequency
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[222] 跳过文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#13933/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=13933）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：prefilter_high_frequency
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[223] 跳过文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#13935/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=13935）
+原文：metalCreak
+译文：（无）
+置信度：low
+原因：prefilter_engine_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[224] 跳过文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#13938/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=13938）
+原文：self
+译文：（无）
+置信度：low
+原因：prefilter_high_frequency
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[225] 跳过文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#13939/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=13939）
+原文：self
+译文：（无）
+置信度：low
+原因：prefilter_high_frequency
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[226] 跳过文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#13940/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=13940）
+原文：EndRight
+译文：（无）
+置信度：low
+原因：prefilter_engine_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[227] 跳过文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#13941/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=13941）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：prefilter_high_frequency
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[228] 跳过文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#13942/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=13942）
+原文：sheathOpen
+译文：（无）
+置信度：low
+原因：prefilter_engine_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[229] 跳过文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#13942/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=13942）
+原文：GreenModeOn
+译文：（无）
+置信度：low
+原因：prefilter_engine_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[230] 跳过文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#13942/str/2
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=13942）
+原文：self
+译文：（无）
+置信度：low
+原因：prefilter_high_frequency
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[231] 跳过文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#13943/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=13943）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：prefilter_high_frequency
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[232] 跳过文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#13944/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=13944）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：prefilter_high_frequency
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[233] 跳过文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#13947/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=13947）
+原文：BasementUnlocked
+译文：（无）
+置信度：low
+原因：prefilter_engine_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[234] 跳过文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#13948/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=13948）
+原文：doorShake
+译文：（无）
+置信度：low
+原因：prefilter_engine_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[235] 跳过文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#13948/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=13948）
+原文：hutDoorOpen
+译文：（无）
+置信度：low
+原因：prefilter_engine_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[236] 跳过文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#13953/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=13953）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：prefilter_high_frequency
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[237] 跳过文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#13953/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=13953）
+原文：ESC
+译文：（无）
+置信度：low
+原因：identifier_without_display_evidence
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[238] 跳过文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#13957/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=13957）
+原文：self
+译文：（无）
+置信度：low
+原因：prefilter_high_frequency
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[239] 跳过文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#13960/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=13960）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：prefilter_high_frequency
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[240] 跳过文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#13961/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=13961）
+原文：self
+译文：（无）
+置信度：low
+原因：prefilter_high_frequency
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[241] 跳过文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#13962/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=13962）
+原文：thunk1
+译文：（无）
+置信度：low
+原因：prefilter_key_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[242] 跳过文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#13963/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=13963）
+原文：AnchorLeverPushed
+译文：（无）
+置信度：low
+原因：prefilter_engine_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[243] 跳过文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#13963/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=13963）
+原文：metalClose
+译文：（无）
+置信度：low
+原因：prefilter_engine_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[244] 跳过文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#13963/str/2
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=13963）
+原文：self
+译文：（无）
+置信度：low
+原因：prefilter_high_frequency
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[245] 跳过文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#13964/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=13964）
+原文：CaveCluePickedUp
+译文：（无）
+置信度：low
+原因：prefilter_engine_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[246] 跳过文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#13965/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=13965）
+原文：self
+译文：（无）
+置信度：low
+原因：prefilter_high_frequency
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[247] 跳过文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#13970/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=13970）
+原文：self
+译文：（无）
+置信度：low
+原因：prefilter_high_frequency
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[248] 跳过文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#13973/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=13973）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：prefilter_high_frequency
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[249] 跳过文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#13974/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=13974）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：prefilter_high_frequency
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[250] 跳过文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#13975/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=13975）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：prefilter_high_frequency
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[251] 跳过文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#13978/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=13978）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：prefilter_high_frequency
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[252] 跳过文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#13979/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=13979）
+原文：self
+译文：（无）
+置信度：low
+原因：prefilter_high_frequency
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[253] 跳过文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#13986/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=13986）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：prefilter_high_frequency
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[254] 跳过文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#13988/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=13988）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：prefilter_high_frequency
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[255] 跳过文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#13996/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=13996）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：prefilter_high_frequency
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[256] 跳过文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#13996/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=13996）
+原文：Shift
+译文：（无）
+置信度：low
+原因：identifier_without_display_evidence
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[257] 跳过文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#13997/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=13997）
+原文：self
+译文：（无）
+置信度：low
+原因：prefilter_high_frequency
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[258] 跳过文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#14001/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=14001）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：prefilter_high_frequency
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[259] 跳过文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#14005/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=14005）
+原文：self
+译文：（无）
+置信度：low
+原因：prefilter_high_frequency
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[260] 跳过文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#14006/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=14006）
+原文：HatchTouch
+译文：（无）
+置信度：low
+原因：prefilter_engine_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[261] 跳过文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#14006/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=14006）
+原文：metalCreak
+译文：（无）
+置信度：low
+原因：prefilter_engine_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[262] 跳过文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#14007/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=14007）
+原文：self
+译文：（无）
+置信度：low
+原因：prefilter_high_frequency
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[263] 跳过文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#14008/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=14008）
+原文：self
+译文：（无）
+置信度：low
+原因：prefilter_high_frequency
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[264] 跳过文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#14015/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=14015）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：prefilter_high_frequency
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[265] 跳过文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#14017/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=14017）
+原文：self
+译文：（无）
+置信度：low
+原因：prefilter_high_frequency
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[266] 跳过文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#14018/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=14018）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：prefilter_high_frequency
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[267] 跳过文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#14027/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=14027）
+原文：self
+译文：（无）
+置信度：low
+原因：prefilter_high_frequency
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[268] 跳过文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#14030/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=14030）
+原文：doorShake
+译文：（无）
+置信度：low
+原因：prefilter_engine_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[269] 跳过文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#14030/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=14030）
+原文：metalOpen
+译文：（无）
+置信度：low
+原因：prefilter_engine_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[270] 跳过文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#14033/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=14033）
+原文：RaiseTowerRec
+译文：（无）
+置信度：low
+原因：prefilter_engine_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[271] 跳过文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#14033/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=14033）
+原文：self
+译文：（无）
+置信度：low
+原因：prefilter_high_frequency
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[272] 跳过文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#14039/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=14039）
+原文：self
+译文：（无）
+置信度：low
+原因：prefilter_high_frequency
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[273] 跳过文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#14041/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=14041）
+原文：self
+译文：（无）
+置信度：low
+原因：prefilter_high_frequency
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[274] 跳过文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#14043/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=14043）
+原文：keyDrop
+译文：（无）
+置信度：low
+原因：prefilter_engine_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[275] 跳过文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#14045/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=14045）
+原文：self
+译文：（无）
+置信度：low
+原因：prefilter_high_frequency
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[276] 跳过文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#14047/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=14047）
+原文：click1
+译文：（无）
+置信度：low
+原因：prefilter_key_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[277] 跳过文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#14047/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=14047）
+原文：click2
+译文：（无）
+置信度：low
+原因：prefilter_key_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[278] 跳过文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#14047/str/2
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=14047）
+原文：metalOpen
+译文：（无）
+置信度：low
+原因：prefilter_engine_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[279] 跳过文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#14047/str/3
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=14047）
+原文：metalClose
+译文：（无）
+置信度：low
+原因：prefilter_engine_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[280] 跳过文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#14047/str/4
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=14047）
+原文：invUp
+译文：（无）
+置信度：low
+原因：prefilter_engine_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[281] 跳过文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#14047/str/5
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=14047）
+原文：metalCreak
+译文：（无）
+置信度：low
+原因：prefilter_engine_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[282] 跳过文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#14047/str/6
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=14047）
+原文：sunBuzz
+译文：（无）
+置信度：low
+原因：prefilter_engine_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[283] 跳过文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#14047/str/7
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=14047）
+原文：fox1
+译文：（无）
+置信度：low
+原因：prefilter_key_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[284] 跳过文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#14047/str/8
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=14047）
+原文：fox2
+译文：（无）
+置信度：low
+原因：prefilter_key_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[285] 跳过文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#14047/str/9
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=14047）
+原文：fox3
+译文：（无）
+置信度：low
+原因：prefilter_key_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[286] 跳过文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#14047/str/10
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=14047）
+原文：clue
+译文：（无）
+置信度：low
+原因：localization_key_list
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[287] 跳过文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#14047/str/11
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=14047）
+原文：paper3
+译文：（无）
+置信度：low
+原因：prefilter_key_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[288] 跳过文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#14047/str/12
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=14047）
+原文：paperFlip1
+译文：（无）
+置信度：low
+原因：prefilter_engine_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[289] 跳过文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#14047/str/13
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=14047）
+原文：paperFlip2
+译文：（无）
+置信度：low
+原因：prefilter_engine_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[290] 跳过文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#14047/str/14
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=14047）
+原文：paperFlip3
+译文：（无）
+置信度：low
+原因：prefilter_engine_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[291] 跳过文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#14047/str/15
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=14047）
+原文：thunk1
+译文：（无）
+置信度：low
+原因：prefilter_key_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[292] 跳过文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#14047/str/16
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=14047）
+原文：thunk2
+译文：（无）
+置信度：low
+原因：prefilter_key_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[293] 跳过文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#14047/str/17
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=14047）
+原文：poof
+译文：（无）
+置信度：low
+原因：localization_key_list
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[294] 跳过文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#14047/str/18
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=14047）
+原文：keyDrop
+译文：（无）
+置信度：low
+原因：prefilter_engine_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[295] 跳过文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#14047/str/19
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=14047）
+原文：doorShake
+译文：（无）
+置信度：low
+原因：prefilter_engine_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[296] 跳过文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#14047/str/20
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=14047）
+原文：shaker1
+译文：（无）
+置信度：low
+原因：prefilter_key_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[297] 跳过文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#14047/str/35
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=14047）
+原文：wind
+译文：（无）
+置信度：low
+原因：localization_key_list
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[298] 跳过文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#14047/str/37
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=14047）
+原文：fox1aa
+译文：（无）
+置信度：low
+原因：prefilter_key_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[299] 跳过文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#14048/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=14048）
+原文：SunCube
+译文：（无）
+置信度：low
+原因：prefilter_engine_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[300] 跳过文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#14048/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=14048）
+原文：SunCube
+译文：（无）
+置信度：low
+原因：prefilter_engine_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[301] 跳过文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#14048/str/2
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=14048）
+原文：SunCube
+译文：（无）
+置信度：low
+原因：prefilter_engine_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[302] 跳过文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#14048/str/3
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=14048）
+原文：SunCube
+译文：（无）
+置信度：low
+原因：prefilter_engine_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[303] 跳过文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#14048/str/4
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=14048）
+原文：SunCubesGathered
+译文：（无）
+置信度：low
+原因：prefilter_engine_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[304] 跳过文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#14050/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=14050）
+原文：thunk1
+译文：（无）
+置信度：low
+原因：prefilter_key_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[305] 跳过文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#14052/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=14052）
+原文：shaker1
+译文：（无）
+置信度：low
+原因：prefilter_key_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[306] 跳过文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#14053/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=14053）
+原文：self
+译文：（无）
+置信度：low
+原因：prefilter_high_frequency
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[307] 跳过文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#14057/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=14057）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：prefilter_high_frequency
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[308] 跳过文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#14058/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=14058）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：prefilter_high_frequency
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[309] 跳过文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#14059/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=14059）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：prefilter_high_frequency
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[310] 跳过文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#14060/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=14060）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：prefilter_high_frequency
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[311] 跳过文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#14061/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=14061）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：prefilter_high_frequency
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[312] 跳过文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#14062/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=14062）
+原文：self
+译文：（无）
+置信度：low
+原因：prefilter_high_frequency
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[313] 跳过文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#14064/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=14064）
+原文：self
+译文：（无）
+置信度：low
+原因：prefilter_high_frequency
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[314] 跳过文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#14066/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=14066）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：prefilter_high_frequency
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[315] 跳过文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#14070/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=14070）
+原文：metalOpen
+译文：（无）
+置信度：low
+原因：prefilter_engine_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[316] 跳过文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#14071/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=14071）
+原文：RedModeOn
+译文：（无）
+置信度：low
+原因：prefilter_engine_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[317] 跳过文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#14077/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=14077）
+原文：BlueModeOn
+译文：（无）
+置信度：low
+原因：prefilter_engine_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[318] 跳过文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#14077/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=14077）
+原文：BlueModeOff
+译文：（无）
+置信度：low
+原因：prefilter_engine_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[319] 跳过文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#14079/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=14079）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：prefilter_high_frequency
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[320] 跳过文本
+来源：FoxHunt_Data/level2
+键位：asset#level2#14081/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=14081）
+原文：UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+译文：（无）
+置信度：low
+原因：prefilter_high_frequency
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[321] 跳过文本
+来源：FoxHunt_Data/Managed/Assembly-CSharp.dll
+键位：skip/us#2
+对象：DLL #US 字符串
+原文：_Intensity
+译文：（无）
+置信度：low
+原因：engine_core
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[322] 跳过文本
+来源：FoxHunt_Data/Managed/Assembly-CSharp.dll
+键位：skip/us#24
+对象：DLL #US 字符串
+原文：_Radius
+译文：（无）
+置信度：low
+原因：engine_core
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[323] 跳过文本
+来源：FoxHunt_Data/Managed/Assembly-CSharp.dll
+键位：skip/us#40
+对象：DLL #US 字符串
+原文：_FogParams
+译文：（无）
+置信度：low
+原因：engine_core
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[324] 跳过文本
+来源：FoxHunt_Data/Managed/Assembly-CSharp.dll
+键位：skip/us#62
+对象：DLL #US 字符串
+原文：_Downsample
+译文：（无）
+置信度：low
+原因：engine_core
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[325] 跳过文本
+来源：FoxHunt_Data/Managed/Assembly-CSharp.dll
+键位：skip/us#86
+对象：DLL #US 字符串
+原文：_SampleCount
+译文：（无）
+置信度：low
+原因：engine_core
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[326] 跳过文本
+来源：FoxHunt_Data/Managed/Assembly-CSharp.dll
+键位：skip/us#112
+对象：DLL #US 字符串
+原文：_OcclusionTexture1
+译文：（无）
+置信度：low
+原因：engine_core
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[327] 跳过文本
+来源：FoxHunt_Data/Managed/Assembly-CSharp.dll
+键位：skip/us#150
+对象：DLL #US 字符串
+原文：_OcclusionTexture2
+译文：（无）
+置信度：low
+原因：engine_core
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[328] 跳过文本
+来源：FoxHunt_Data/Managed/Assembly-CSharp.dll
+键位：skip/us#188
+对象：DLL #US 字符串
+原文：_OcclusionTexture
+译文：（无）
+置信度：low
+原因：engine_core
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[329] 跳过文本
+来源：FoxHunt_Data/Managed/Assembly-CSharp.dll
+键位：skip/us#224
+对象：DLL #US 字符串
+原文：_MainTex
+译文：（无）
+置信度：low
+原因：engine_core
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[330] 跳过文本
+来源：FoxHunt_Data/Managed/Assembly-CSharp.dll
+键位：skip/us#242
+对象：DLL #US 字符串
+原文：_TempRT
+译文：（无）
+置信度：low
+原因：engine_core
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[331] 跳过文本
+来源：FoxHunt_Data/Managed/Assembly-CSharp.dll
+键位：skip/us#400
+对象：DLL #US 字符串
+原文：FOG_LINEAR
+译文：（无）
+置信度：low
+原因：code_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[332] 跳过文本
+来源：FoxHunt_Data/Managed/Assembly-CSharp.dll
+键位：skip/us#422
+对象：DLL #US 字符串
+原文：FOG_EXP
+译文：（无）
+置信度：low
+原因：code_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[333] 跳过文本
+来源：FoxHunt_Data/Managed/Assembly-CSharp.dll
+键位：skip/us#438
+对象：DLL #US 字符串
+原文：FOG_EXP2
+译文：（无）
+置信度：low
+原因：code_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[334] 跳过文本
+来源：FoxHunt_Data/Managed/Assembly-CSharp.dll
+键位：skip/us#456
+对象：DLL #US 字符串
+原文：FOG_OFF
+译文：（无）
+置信度：low
+原因：code_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[335] 跳过文本
+来源：FoxHunt_Data/Managed/Assembly-CSharp.dll
+键位：skip/us#776
+对象：DLL #US 字符串
+原文：ANTI_FLICKER
+译文：（无）
+置信度：low
+原因：code_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[336] 跳过文本
+来源：FoxHunt_Data/Managed/Assembly-CSharp.dll
+键位：skip/us#802
+对象：DLL #US 字符串
+原文：FactoryTempTexture
+译文：（无）
+置信度：low
+原因：code_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[337] 跳过文本
+来源：FoxHunt_Data/Managed/Assembly-CSharp.dll
+键位：skip/us#840
+对象：DLL #US 字符串
+原文：BLOOM_LENS_DIRT
+译文：（无）
+置信度：low
+原因：code_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[338] 跳过文本
+来源：FoxHunt_Data/Managed/Assembly-CSharp.dll
+键位：us#980
+对象：DLL #US 字符串（record_offset=157087）
+原文：Builtin Debug Views
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[339] 跳过文本
+来源：FoxHunt_Data/Managed/Assembly-CSharp.dll
+键位：skip/us#1090
+对象：DLL #US 字符串
+原文：SOURCE_GBUFFER
+译文：（无）
+置信度：low
+原因：code_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[340] 跳过文本
+来源：FoxHunt_Data/Managed/Assembly-CSharp.dll
+键位：us#1236
+对象：DLL #US 字符串（record_offset=157343）
+原文：Chromatic Aberration Spectrum Lookup
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[341] 跳过文本
+来源：FoxHunt_Data/Managed/Assembly-CSharp.dll
+键位：skip/us#1310
+对象：DLL #US 字符串
+原文：CHROMATIC_ABERRATION
+译文：（无）
+置信度：low
+原因：code_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[342] 跳过文本
+来源：FoxHunt_Data/Managed/Assembly-CSharp.dll
+键位：us#1842
+对象：DLL #US 字符串（record_offset=157949）
+原文：Internal Curves Texture
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[343] 跳过文本
+来源：FoxHunt_Data/Managed/Assembly-CSharp.dll
+键位：us#1890
+对象：DLL #US 字符串（record_offset=157997）
+原文：Color Grading Log LUT
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[344] 跳过文本
+来源：FoxHunt_Data/Managed/Assembly-CSharp.dll
+键位：skip/us#1992
+对象：DLL #US 字符串
+原文：TONEMAPPING_NEUTRAL
+译文：（无）
+置信度：low
+原因：code_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[345] 跳过文本
+来源：FoxHunt_Data/Managed/Assembly-CSharp.dll
+键位：us#2598
+对象：DLL #US 字符串（record_offset=158705）
+原文：Bluenoise64/LDR_LLL1_
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[346] 跳过文本
+来源：FoxHunt_Data/Managed/Assembly-CSharp.dll
+键位：us#2792
+对象：DLL #US 字符串（record_offset=158899）
+原文：Shaders/EyeHistogram
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[347] 跳过文本
+来源：FoxHunt_Data/Managed/Assembly-CSharp.dll
+键位：us#3312
+对象：DLL #US 字符串（record_offset=159419）
+原文：Grain Lookup Texture
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[348] 跳过文本
+来源：FoxHunt_Data/Managed/Assembly-CSharp.dll
+键位：us#4132
+对象：DLL #US 字符串（record_offset=160239）
+原文：Motion Blur
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[349] 跳过文本
+来源：FoxHunt_Data/Managed/Assembly-CSharp.dll
+键位：us#5660
+对象：DLL #US 字符串（record_offset=161767）
+原文：Screen Space Reflection
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[350] 跳过文本
+来源：FoxHunt_Data/Managed/Assembly-CSharp.dll
+键位：us#5984
+对象：DLL #US 字符串（record_offset=162091）
+原文：TAA History
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[351] 跳过文本
+来源：FoxHunt_Data/Managed/Assembly-CSharp.dll
+键位：us#6412
+对象：DLL #US 字符串（record_offset=162519）
+原文：Shader not found ({0})
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[352] 跳过文本
+来源：FoxHunt_Data/Managed/Assembly-CSharp.dll
+键位：us#6458
+对象：DLL #US 字符串（record_offset=162565）
+原文：PostFX - {0}
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[353] 跳过文本
+来源：FoxHunt_Data/Managed/Assembly-CSharp.dll
+键位：skip/us#6484
+对象：DLL #US 字符串
+原文：/
+译文：（无）
+置信度：low
+原因：hard_structural
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[354] 跳过文本
+来源：FoxHunt_Data/Managed/Assembly-CSharp.dll
+键位：us#6489
+对象：DLL #US 字符串（record_offset=162595）
+原文：Attempting to remove a RenderTexture that was not allocated: {0}
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[355] 跳过文本
+来源：FoxHunt_Data/Managed/Assembly-CSharp.dll
+键位：us#6967
+对象：DLL #US 字符串（record_offset=163074）
+原文： wasn't found.
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[356] 跳过文本
+来源：FoxHunt_Data/Managed/Assembly-CSharp.dll
+键位：us#7457
+对象：DLL #US 字符串（record_offset=163564）
+原文：You dropped the
+
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[357] 跳过文本
+来源：FoxHunt_Data/Managed/Assembly-CSharp.dll
+键位：skip/us#7503
+对象：DLL #US 字符串
+原文：w
+译文：（无）
+置信度：low
+原因：hard_structural
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[358] 跳过文本
+来源：FoxHunt_Data/Managed/Assembly-CSharp.dll
+键位：skip/us#7519
+对象：DLL #US 字符串
+原文：b
+译文：（无）
+置信度：low
+原因：hard_structural
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[359] 跳过文本
+来源：FoxHunt_Data/Managed/Assembly-CSharp.dll
+键位：skip/us#7545
+对象：DLL #US 字符串
+原文：none
+译文：（无）
+置信度：low
+原因：hard_structural
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[360] 跳过文本
+来源：FoxHunt_Data/Managed/Assembly-CSharp.dll
+键位：us#7555
+对象：DLL #US 字符串（record_offset=163662）
+原文：Time: 
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[361] 跳过文本
+来源：FoxHunt_Data/Managed/Assembly-CSharp.dll
+键位：skip/us#7609
+对象：DLL #US 字符串
+原文：None
+译文：（无）
+置信度：low
+原因：hard_structural
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[362] 跳过文本
+来源：FoxHunt_Data/Managed/Assembly-CSharp.dll
+键位：us#7771
+对象：DLL #US 字符串（record_offset=163878）
+原文：SG
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[363] 跳过文本
+来源：FoxHunt_Data/Managed/Assembly-CSharp.dll
+键位：us#7869
+对象：DLL #US 字符串（record_offset=163976）
+原文：MenuGRP/Buttons
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[364] 跳过文本
+来源：FoxHunt_Data/Managed/Assembly-CSharp.dll
+键位：us#7935
+对象：DLL #US 字符串（record_offset=164042）
+原文：NO
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[365] 跳过文本
+来源：FoxHunt_Data/Managed/Assembly-CSharp.dll
+键位：us#8095
+对象：DLL #US 字符串（record_offset=164202）
+原文：ON
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[366] 跳过文本
+来源：FoxHunt_Data/Managed/Assembly-CSharp.dll
+键位：skip/us#8183
+对象：DLL #US 字符串
+原文：NONE
+译文：（无）
+置信度：low
+原因：hard_structural
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[367] 跳过文本
+来源：FoxHunt_Data/Managed/Assembly-CSharp.dll
+键位：skip/us#8607
+对象：DLL #US 字符串
+原文：Y
+译文：（无）
+置信度：low
+原因：hard_structural
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[368] 跳过文本
+来源：FoxHunt_Data/Managed/Assembly-CSharp.dll
+键位：skip/us#8611
+对象：DLL #US 字符串
+原文：G
+译文：（无）
+置信度：low
+原因：hard_structural
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[369] 跳过文本
+来源：FoxHunt_Data/Managed/Assembly-CSharp.dll
+键位：skip/us#8615
+对象：DLL #US 字符串
+原文：R
+译文：（无）
+置信度：low
+原因：hard_structural
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[370] 跳过文本
+来源：FoxHunt_Data/Managed/Assembly-CSharp.dll
+键位：skip/us#8619
+对象：DLL #US 字符串
+原文：B
+译文：（无）
+置信度：low
+原因：hard_structural
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[371] 跳过文本
+来源：FoxHunt_Data/Managed/Assembly-CSharp.dll
+键位：us#8623
+对象：DLL #US 字符串（record_offset=164730）
+原文：YB
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[372] 跳过文本
+来源：FoxHunt_Data/Managed/Assembly-CSharp.dll
+键位：us#9083
+对象：DLL #US 字符串（record_offset=165190）
+原文：pp load: 
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[373] 跳过文本
+来源：FoxHunt_Data/Managed/Assembly-CSharp.dll
+键位：us#9111
+对象：DLL #US 字符串（record_offset=165218）
+原文：uh oh...
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[374] 跳过文本
+来源：FoxHunt_Data/Managed/Assembly-CSharp.dll
+键位：us#9129
+对象：DLL #US 字符串（record_offset=165236）
+原文： doesn't have a master within range
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[375] 跳过文本
+来源：FoxHunt_Data/Managed/Assembly-CSharp.dll
+键位：us#9318
+对象：DLL #US 字符串（record_offset=165424）
+原文：...the hole manipulable needs a designated holeLoc or a default child(0) loc node.
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[376] 跳过文本
+来源：FoxHunt_Data/Managed/Assembly-CSharp.dll
+键位：us#9506
+对象：DLL #US 字符串（record_offset=165613）
+原文：...this hole needs a receptacle above it.
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[377] 跳过文本
+来源：FoxHunt_Data/Managed/Assembly-CSharp.dll
+键位：us#9764
+对象：DLL #US 字符串（record_offset=165871）
+原文： has no shaker.
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[378] 跳过文本
+来源：FoxHunt_Data/Managed/Assembly-CSharp.dll
+键位：us#9796
+对象：DLL #US 字符串（record_offset=165903）
+原文：Nogo successful
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[379] 跳过文本
+来源：FoxHunt_Data/Managed/Assembly-CSharp.dll
+键位：us#9828
+对象：DLL #US 字符串（record_offset=165935）
+原文：Loading, 
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[380] 跳过文本
+来源：FoxHunt_Data/Managed/Assembly-CSharp.dll
+键位：us#9874
+对象：DLL #US 字符串（record_offset=165981）
+原文：setting timer: 
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[381] 跳过文本
+来源：FoxHunt_Data/Managed/Assembly-CSharp.dll
+键位：us#9906
+对象：DLL #US 字符串（record_offset=166013）
+原文：cubes active and in Niches
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[382] 跳过文本
+来源：FoxHunt_Data/Managed/Assembly-CSharp.dll
+键位：us#9960
+对象：DLL #US 字符串（record_offset=166067）
+原文：Activated Green SunCube
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[383] 跳过文本
+来源：FoxHunt_Data/Managed/Assembly-CSharp.dll
+键位：us#10008
+对象：DLL #US 字符串（record_offset=166115）
+原文：Activated Blue SunCube
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[384] 跳过文本
+来源：FoxHunt_Data/Managed/Assembly-CSharp.dll
+键位：us#10054
+对象：DLL #US 字符串（record_offset=166161）
+原文：Activated Yellow SunCube
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[385] 跳过文本
+来源：FoxHunt_Data/Managed/Assembly-CSharp.dll
+键位：us#10104
+对象：DLL #US 字符串（record_offset=166211）
+原文：Activated Red SunCube
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[386] 跳过文本
+来源：FoxHunt_Data/Managed/Assembly-CSharp.dll
+键位：us#10148
+对象：DLL #US 字符串（record_offset=166255）
+原文：cubes in Base Rec
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[387] 跳过文本
+来源：FoxHunt_Data/Managed/Assembly-CSharp.dll
+键位：us#10184
+对象：DLL #US 字符串（record_offset=166291）
+原文：cubes in Tower Rec
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[388] 跳过文本
+来源：FoxHunt_Data/Managed/Assembly-CSharp.dll
+键位：us#10222
+对象：DLL #US 字符串（record_offset=166329）
+原文：Now turning on all...
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[389] 跳过文本
+来源：FoxHunt_Data/Managed/Assembly-CSharp.dll
+键位：us#10292
+对象：DLL #US 字符串（record_offset=166399）
+原文：dropping grabbed
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[390] 跳过文本
+来源：FoxHunt_Data/Managed/Assembly-CSharp.dll
+键位：us#10352
+对象：DLL #US 字符串（record_offset=166459）
+原文：slipped to something else..?
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[391] 跳过文本
+来源：FoxHunt_Data/Managed/Assembly-CSharp.dll
+键位：us#10410
+对象：DLL #US 字符串（record_offset=166517）
+原文：mouse slipped off, aborting
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[392] 跳过文本
+来源：FoxHunt_Data/Managed/Assembly-CSharp.dll
+键位：us#10466
+对象：DLL #US 字符串（record_offset=166573）
+原文：Uh oh... cannot find a switcher node for 
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[393] 跳过文本
+来源：FoxHunt_Data/Managed/Assembly-CSharp.dll
+键位：us#10550
+对象：DLL #US 字符串（record_offset=166657）
+原文：Mouse ScrollWheel
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[394] 跳过文本
+来源：FoxHunt_Data/Managed/Assembly-CSharp.dll
+键位：us#10616
+对象：DLL #US 字符串（record_offset=166723）
+原文：Mouse X
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[395] 跳过文本
+来源：FoxHunt_Data/Managed/Assembly-CSharp.dll
+键位：us#10632
+对象：DLL #US 字符串（record_offset=166739）
+原文：Mouse Y
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[396] 跳过文本
+来源：FoxHunt_Data/Managed/Assembly-CSharp.dll
+键位：us#10710
+对象：DLL #US 字符串（record_offset=166817）
+原文：clue abort..
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[397] 跳过文本
+来源：FoxHunt_Data/Managed/Assembly-CSharp.dll
+键位：us#10782
+对象：DLL #US 字符串（record_offset=166889）
+原文：Got one
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[398] 跳过文本
+来源：FoxHunt_Data/Managed/Assembly-CSharp.dll
+键位：us#10826
+对象：DLL #US 字符串（record_offset=166933）
+原文：got 'em all. Now turn off the thing...
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[399] 跳过文本
+来源：FoxHunt_Data/Managed/Assembly-CSharp.dll
+键位：us#10904
+对象：DLL #US 字符串（record_offset=167011）
+原文：Saved: 
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[400] 跳过文本
+来源：FoxHunt_Data/Managed/Assembly-CSharp.dll
+键位：us#10994
+对象：DLL #US 字符串（record_offset=167101）
+原文：Can't find a stateSwitcher on 
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—

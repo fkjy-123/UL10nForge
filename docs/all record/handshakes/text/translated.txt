@@ -1,0 +1,2897 @@
+游戏：handshakes
+导出时间：2026-08-12 22:18:07
+翻译模型：Hy-MT2-1.8B-Q6_K
+成功文本：191 条
+
+────────────────────────────────────────────────────────────────
+[1] 成功文本
+来源：Handshakes_Data/app.info
+键位：plain/0
+对象：纯文本文件行
+原文：Pet Pumpkin, Damaskino, Trumpetguy
+译文：宠物南瓜、达马斯基诺、特朗普贝吉
+置信度：medium
+原因：—
+角色：—
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[2] 成功文本
+来源：Handshakes_Data/app.info
+键位：plain/1
+对象：纯文本文件行
+原文：Handshakes
+译文：握手
+置信度：medium
+原因：—
+角色：—
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[3] 成功文本
+来源：Handshakes_Data/level0
+键位：asset#level0#1226/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=1226）
+原文：restart
+译文：重启
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[4] 成功文本
+来源：Handshakes_Data/level0
+键位：asset#level0#1227/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=1227）
+原文：Let us know in the comments on itch.io what you'd like to see in the full game!
+译文：请在 itch.io 的评论区告诉我们，您希望在完整游戏中看到什么内容！
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[5] 成功文本
+来源：Handshakes_Data/level0
+键位：asset#level0#1228/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=1228）
+原文：delete save data
+译文：删除保存的数据
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[6] 成功文本
+来源：Handshakes_Data/level0
+键位：asset#level0#1229/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=1229）
+原文：Pet Pumpkin
+译文：宠物南瓜
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[7] 成功文本
+来源：Handshakes_Data/level0
+键位：asset#level0#1230/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=1230）
+原文：Damaskino
+译文：达马斯基诺
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[8] 成功文本
+来源：Handshakes_Data/level0
+键位：asset#level0#1232/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=1232）
+原文：Trumpetguy
+译文：Trumpetguy
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：回显保留原文（未实际翻译）
+需要优化：是（回显未翻译）
+写回：未执行（回显——译文与原文相同，无需写回）
+
+────────────────────────────────────────────────────────────────
+[9] 成功文本
+来源：Handshakes_Data/level0
+键位：asset#level0#1233/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=1233）
+原文：speedrun mode
+<size=13>(deletes<br> save data)
+译文：速通模式
+<size=13>（删除<br>保存数据）
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[10] 成功文本
+来源：Handshakes_Data/level0
+键位：asset#level0#1234/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=1234）
+原文：audio
+译文：音频
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[11] 成功文本
+来源：Handshakes_Data/level0
+键位：asset#level0#1235/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=1235）
+原文：Trumpetguy
+译文：Trumpetguy
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：回显保留原文（未实际翻译）
+需要优化：是（回显未翻译）
+写回：未执行（回显——译文与原文相同，无需写回）
+
+────────────────────────────────────────────────────────────────
+[12] 成功文本
+来源：Handshakes_Data/level0
+键位：asset#level0#1236/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=1236）
+原文：SPACE
+译文：空间
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[13] 成功文本
+来源：Handshakes_Data/level0
+键位：asset#level0#1238/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=1238）
+原文：speedrun mode
+<size=13>(deletes<br> save data)
+译文：速通模式
+<size=13>（删除<br>保存数据）
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[14] 成功文本
+来源：Handshakes_Data/level0
+键位：asset#level0#1239/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=1239）
+原文：code
+译文：代码
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[15] 成功文本
+来源：Handshakes_Data/level0
+键位：asset#level0#1240/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=1240）
+原文：art
+译文：艺术
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[16] 成功文本
+来源：Handshakes_Data/level0
+键位：asset#level0#1241/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=1241）
+原文：hide
+controls
+译文：隐藏
+控制
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[17] 成功文本
+来源：Handshakes_Data/level0
+键位：asset#level0#1242/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=1242）
+原文：Damaskino
+译文：达马斯基诺
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[18] 成功文本
+来源：Handshakes_Data/level0
+键位：asset#level0#1243/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=1243）
+原文：quit
+译文：退出
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[19] 成功文本
+来源：Handshakes_Data/level0
+键位：asset#level0#1244/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=1244）
+原文：audio
+译文：音频
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[20] 成功文本
+来源：Handshakes_Data/level0
+键位：asset#level0#1246/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=1246）
+原文：progress not saved 
+in speedrun mode
+译文：进度未保存
+处于速通模式
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[21] 成功文本
+来源：Handshakes_Data/level0
+键位：asset#level0#1247/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=1247）
+原文：skip
+level
+译文：跳过
+级别
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[22] 成功文本
+来源：Handshakes_Data/level0
+键位：asset#level0#1248/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=1248）
+原文：a full version of handshakes is in development!
+译文：完整版的手势识别功能正在开发中！
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[23] 成功文本
+来源：Handshakes_Data/level0
+键位：asset#level0#1249/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=1249）
+原文：level complete
+译文：完成级别
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[24] 成功文本
+来源：Handshakes_Data/level0
+键位：asset#level0#1250/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=1250）
+原文：to start next level
+译文：开始下一阶段
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[25] 成功文本
+来源：Handshakes_Data/level0
+键位：asset#level0#1251/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=1251）
+原文：enable
+fullscreen
+译文：启用
+全屏
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[26] 成功文本
+来源：Handshakes_Data/level0
+键位：asset#level0#1252/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=1252）
+原文：Left Hand
+译文：左侧手
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[27] 成功文本
+来源：Handshakes_Data/level0
+键位：asset#level0#1254/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=1254）
+原文：Start Game
+译文：开始游戏
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[28] 成功文本
+来源：Handshakes_Data/level0
+键位：asset#level0#1255/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=1255）
+原文：quit
+译文：退出
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[29] 成功文本
+来源：Handshakes_Data/level0
+键位：asset#level0#1257/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=1257）
+原文：Let us know in the comments what you'd like to see in the full game :)
+译文：请在评论中告诉我，你希望在完整游戏中看到什么内容吧 :)
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[30] 成功文本
+来源：Handshakes_Data/level0
+键位：asset#level0#1258/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=1258）
+原文：skip
+level
+译文：跳过
+级别
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[31] 成功文本
+来源：Handshakes_Data/level0
+键位：asset#level0#1260/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=1260）
+原文：delete save data
+译文：删除保存的数据
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[32] 成功文本
+来源：Handshakes_Data/level0
+键位：asset#level0#1261/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=1261）
+原文：code
+译文：代码
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[33] 成功文本
+来源：Handshakes_Data/level0
+键位：asset#level0#1263/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=1263）
+原文：art
+译文：艺术
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[34] 成功文本
+来源：Handshakes_Data/level0
+键位：asset#level0#1264/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=1264）
+原文：made for the Lost Relic Game Jam
+10.06.22 - 19.06.22
+译文：专为“Lost Relic Game Jam”活动而制作
+2022年6月10日 – 2022年6月19日
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[35] 成功文本
+来源：Handshakes_Data/level0
+键位：asset#level0#1265/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=1265）
+原文：right hand:
+译文：对手：
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[36] 成功文本
+来源：Handshakes_Data/level0
+键位：asset#level0#1266/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=1266）
+原文：options:
+译文：选项：
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[37] 成功文本
+来源：Handshakes_Data/level0
+键位：asset#level0#1267/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=1267）
+原文：made for the Lost Relic Game Jam
+10.06.22 - 19.06.22
+译文：专为“Lost Relic Game Jam”活动而制作
+2022年6月10日 – 2022年6月19日
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[38] 成功文本
+来源：Handshakes_Data/level0
+键位：asset#level0#1268/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=1268）
+原文：Get The Full Game
+译文：获取完整游戏
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[39] 成功文本
+来源：Handshakes_Data/level0
+键位：asset#level0#1270/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=1270）
+原文：Level 000 
+译文：等级 000
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[40] 成功文本
+来源：Handshakes_Data/level0
+键位：asset#level0#1271/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=1271）
+原文：Pet Pumpkin
+译文：宠物南瓜
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[41] 成功文本
+来源：Handshakes_Data/level0
+键位：asset#level0#1272/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=1272）
+原文：a game by
+译文：一款由……开发的游戏
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[42] 成功文本
+来源：Handshakes_Data/level0
+键位：asset#level0#1273/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=1273）
+原文：a game by
+译文：一款由……开发的游戏
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[43] 成功文本
+来源：Handshakes_Data/level0
+键位：asset#level0#1274/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=1274）
+原文：Credits
+译文：致谢
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[44] 成功文本
+来源：Handshakes_Data/level0
+键位：asset#level0#1275/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=1275）
+原文：press H on the keyboard to open itch.io
+译文：按键盘上的 H 键可以打开 itch.io。
+置信度：high
+原因：interaction_prompt
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[45] 成功文本
+来源：Handshakes_Data/level0
+键位：asset#level0#1277/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=1277）
+原文：Close Menu:
+译文：关闭菜单：
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[46] 成功文本
+来源：Handshakes_Data/level0
+键位：asset#level0#1278/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=1278）
+原文：undo
+译文：撤销
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[47] 成功文本
+来源：Handshakes_Data/level0
+键位：asset#level0#1279/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=1279）
+原文：arrow
+keys
+译文：箭头
+键
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[48] 成功文本
+来源：Handshakes_Data/level0
+键位：asset#level0#1281/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=1281）
+原文：left hand
+译文：左侧手
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[49] 成功文本
+来源：Handshakes_Data/level0
+键位：asset#level0#1307/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=1307）
+原文：Waiting for Input...
+译文：正在等待输入……
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[50] 成功文本
+来源：Handshakes_Data/level0
+键位：asset#level0#1308/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=1308）
+原文：Keyboard
+译文：键盘
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[51] 成功文本
+来源：Handshakes_Data/level0
+键位：asset#level0#1309/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=1309）
+原文：Keyboard
+译文：键盘
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[52] 成功文本
+来源：Handshakes_Data/level0
+键位：asset#level0#1310/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=1310）
+原文：Keyboard
+译文：键盘
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[53] 成功文本
+来源：Handshakes_Data/level0
+键位：asset#level0#1311/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=1311）
+原文：Keyboard
+译文：键盘
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[54] 成功文本
+来源：Handshakes_Data/level0
+键位：asset#level0#1312/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=1312）
+原文：Keyboard
+译文：键盘
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[55] 成功文本
+来源：Handshakes_Data/level0
+键位：asset#level0#1313/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=1313）
+原文：Keyboard
+译文：键盘
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[56] 成功文本
+来源：Handshakes_Data/level0
+键位：asset#level0#1314/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=1314）
+原文：Keyboard
+译文：键盘
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[57] 成功文本
+来源：Handshakes_Data/level0
+键位：asset#level0#1315/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=1315）
+原文：enable
+fullscreen
+译文：启用
+全屏
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[58] 成功文本
+来源：Handshakes_Data/level0
+键位：asset#level0#1316/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=1316）
+原文：Done
+译文：完成
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[59] 成功文本
+来源：Handshakes_Data/level0
+键位：asset#level0#1317/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=1317）
+原文：Keyboard
+译文：键盘
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[60] 成功文本
+来源：Handshakes_Data/level0
+键位：asset#level0#1318/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=1318）
+原文：Gamepad
+译文：游戏手柄
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[61] 成功文本
+来源：Handshakes_Data/level0
+键位：asset#level0#1319/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=1319）
+原文：Gamepad
+译文：游戏手柄
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[62] 成功文本
+来源：Handshakes_Data/level0
+键位：asset#level0#1320/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=1320）
+原文：Gamepad
+译文：游戏手柄
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[63] 成功文本
+来源：Handshakes_Data/level0
+键位：asset#level0#1321/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=1321）
+原文：Gamepad
+译文：游戏手柄
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[64] 成功文本
+来源：Handshakes_Data/level0
+键位：asset#level0#1322/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=1322）
+原文：Gamepad
+译文：游戏手柄
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[65] 成功文本
+来源：Handshakes_Data/level0
+键位：asset#level0#1323/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=1323）
+原文：Gamepad
+译文：游戏手柄
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[66] 成功文本
+来源：Handshakes_Data/level0
+键位：asset#level0#1324/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=1324）
+原文：Gamepad
+译文：游戏手柄
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[67] 成功文本
+来源：Handshakes_Data/level0
+键位：asset#level0#1354/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=1354）
+原文：Options
+译文：选项
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[68] 成功文本
+来源：Handshakes_Data/level0
+键位：asset#level0#1355/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=1355）
+原文：Gamepad
+译文：游戏手柄
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[69] 成功文本
+来源：Handshakes_Data/level0
+键位：asset#level0#1356/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=1356）
+原文：Master
+译文：大师
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[70] 成功文本
+来源：Handshakes_Data/level0
+键位：asset#level0#1357/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=1357）
+原文：Music
+译文：音乐
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[71] 成功文本
+来源：Handshakes_Data/level0
+键位：asset#level0#1358/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=1358）
+原文：SFX
+译文：SFX
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：回显保留原文（未实际翻译）
+需要优化：是（回显未翻译）
+写回：未执行（回显——译文与原文相同，无需写回）
+
+────────────────────────────────────────────────────────────────
+[72] 成功文本
+来源：Handshakes_Data/level0
+键位：asset#level0#1359/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=1359）
+原文：Music
+译文：音乐
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[73] 成功文本
+来源：Handshakes_Data/level0
+键位：asset#level0#1360/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=1360）
+原文：Move Down
+译文：向下移动
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[74] 成功文本
+来源：Handshakes_Data/level0
+键位：asset#level0#1361/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=1361）
+原文：Move Right
+译文：移动对
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[75] 成功文本
+来源：Handshakes_Data/level0
+键位：asset#level0#1362/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=1362）
+原文：Move Left
+译文：移动左侧
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[76] 成功文本
+来源：Handshakes_Data/level0
+键位：asset#level0#1363/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=1363）
+原文：Move Right
+译文：移动对
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[77] 成功文本
+来源：Handshakes_Data/level0
+键位：asset#level0#1364/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=1364）
+原文：Move Up
+译文：向上移动
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[78] 成功文本
+来源：Handshakes_Data/level0
+键位：asset#level0#1365/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=1365）
+原文：Move Left
+译文：移动左侧
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[79] 成功文本
+来源：Handshakes_Data/level0
+键位：asset#level0#1366/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=1366）
+原文：Move Down
+译文：向下移动
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[80] 成功文本
+来源：Handshakes_Data/level0
+键位：asset#level0#1374/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=1374）
+原文：Left Hand
+译文：左侧手
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[81] 成功文本
+来源：Handshakes_Data/level0
+键位：asset#level0#1375/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=1375）
+原文：Key Bindings
+
+译文：关键绑定
+
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[82] 成功文本
+来源：Handshakes_Data/level0
+键位：asset#level0#1376/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=1376）
+原文：hide
+controls
+译文：隐藏
+控制
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[83] 成功文本
+来源：Handshakes_Data/level0
+键位：asset#level0#1378/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=1378）
+原文：Move Up
+译文：向上移动
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[84] 成功文本
+来源：Handshakes_Data/level0
+键位：asset#level0#1379/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=1379）
+原文：SFX
+译文：SFX
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：回显保留原文（未实际翻译）
+需要优化：是（回显未翻译）
+写回：未执行（回显——译文与原文相同，无需写回）
+
+────────────────────────────────────────────────────────────────
+[85] 成功文本
+来源：Handshakes_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#1735/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=1735）
+原文：Button
+译文：按钮
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[86] 成功文本
+来源：Handshakes_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#1740/str/3
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=1740）
+原文：Arcade Alternate
+译文：Arcade Alternate
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：回显保留原文（未实际翻译）
+需要优化：是（回显未翻译）
+写回：未执行（回显——译文与原文相同，无需写回）
+
+────────────────────────────────────────────────────────────────
+[87] 成功文本
+来源：Handshakes_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#1741/str/4
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=1741）
+原文：Medium
+译文：中等
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[88] 成功文本
+来源：Handshakes_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#1913/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=1913）
+原文：closey doors
+译文：关闭的门
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[89] 成功文本
+来源：Handshakes_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#1914/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=1914）
+原文：put the thing on the thing
+译文：把那个东西放到那个东西上面。
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[90] 成功文本
+来源：Handshakes_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#1915/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=1915）
+原文：see saw
+译文：锯子
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[91] 成功文本
+来源：Handshakes_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#1916/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=1916）
+原文：the first baby
+译文：第一个宝宝
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[92] 成功文本
+来源：Handshakes_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#1917/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=1917）
+原文：use and discard
+译文：使用并丢弃
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[93] 成功文本
+来源：Handshakes_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#1918/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=1918）
+原文：reach around
+译文：四处探索/寻找
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[94] 成功文本
+来源：Handshakes_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#1919/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=1919）
+原文：just short
+译文：只是简短而已
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[95] 成功文本
+来源：Handshakes_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#1920/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=1920）
+原文：thanks for playing!
+译文：谢谢你的参与！
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[96] 成功文本
+来源：Handshakes_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#1921/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=1921）
+原文：down and up
+译文：向下和向上
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[97] 成功文本
+来源：Handshakes_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#1922/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=1922）
+原文：always pushing me around
+译文：总是把我推来推去
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[98] 成功文本
+来源：Handshakes_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#1923/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=1923）
+原文：first steps
+译文：第一步
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[99] 成功文本
+来源：Handshakes_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#1924/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=1924）
+原文：purple buttons
+译文：紫色按钮
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[100] 成功文本
+来源：Handshakes_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#1925/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=1925）
+原文：green buttons
+译文：绿色按钮
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[101] 成功文本
+来源：Handshakes_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#1927/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=1927）
+原文：removal service
+译文：移除服务
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[102] 成功文本
+来源：Handshakes_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#1928/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=1928）
+原文：it kinda looks like a horse
+译文：它看起来有点像一匹马。
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[103] 成功文本
+来源：Handshakes_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#1929/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=1929）
+原文：boxing match
+译文：拳击比赛
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[104] 成功文本
+来源：Handshakes_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#1930/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=1930）
+原文：three times the fun
+译文：三倍乐趣
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[105] 成功文本
+来源：Handshakes_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#1933/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=1933）
+原文：sharing is caring
+译文：分享就是关爱。
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[106] 成功文本
+来源：Handshakes_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#1934/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=1934）
+原文：push push shake
+译文：推 推 摇晃
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[107] 成功文本
+来源：Handshakes_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#1935/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=1935）
+原文：straight 
+译文：直接
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[108] 成功文本
+来源：Handshakes_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#1936/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=1936）
+原文：not what it seems
+译文：并非看起来那样
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[109] 成功文本
+来源：Handshakes_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#1937/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=1937）
+原文：there's a box in the way
+译文：有箱子挡住了路。
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[110] 成功文本
+来源：Handshakes_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#1938/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=1938）
+原文：you push my back i push yours
+译文：你推我的返回我推你的那个。
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[111] 成功文本
+来源：Handshakes_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#1939/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=1939）
+原文：preparation is key
+译文：准备是关键
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[112] 成功文本
+来源：Handshakes_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#1940/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=1940）
+原文：that had to hurt
+译文：那肯定很疼吧
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[113] 成功文本
+来源：Handshakes_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#1941/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=1941）
+原文：lift me up
+译文：把我举起来
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[114] 成功文本
+来源：Handshakes_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#1942/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=1942）
+原文：no pain no gain
+译文：没有付出就没有收获
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[115] 成功文本
+来源：Handshakes_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#2004/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=2004）
+原文：move left hand with
+译文：移动左侧手与
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[116] 成功文本
+来源：Handshakes_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#2005/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=2005）
+原文：move left hand with
+译文：移动左侧手与
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[117] 成功文本
+来源：Handshakes_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#2006/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=2006）
+原文：move left hand with
+译文：移动左侧手与
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[118] 成功文本
+来源：Handshakes_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#2007/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=2007）
+原文：move left hand with
+译文：移动左侧手与
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[119] 成功文本
+来源：Handshakes_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#2008/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=2008）
+原文：move left hand with
+译文：移动左侧手与
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[120] 成功文本
+来源：Handshakes_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#2009/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=2009）
+原文：move left hand with
+译文：移动左侧手与
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[121] 成功文本
+来源：Handshakes_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#2010/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=2010）
+原文：move left hand with
+译文：移动左侧手与
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[122] 成功文本
+来源：Handshakes_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#2011/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=2011）
+原文：move left hand with
+译文：移动左侧手与
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[123] 成功文本
+来源：Handshakes_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#2012/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=2012）
+原文：move left hand with
+译文：移动左侧手与
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[124] 成功文本
+来源：Handshakes_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#2013/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=2013）
+原文：move left hand with
+译文：移动左侧手与
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[125] 成功文本
+来源：Handshakes_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#2014/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=2014）
+原文：move left hand with
+译文：移动左侧手与
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[126] 成功文本
+来源：Handshakes_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#2015/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=2015）
+原文：move left hand with
+译文：移动左侧手与
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[127] 成功文本
+来源：Handshakes_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#2016/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=2016）
+原文：move left hand with
+译文：移动左侧手与
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[128] 成功文本
+来源：Handshakes_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#2017/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=2017）
+原文：move left hand with
+译文：移动左侧手与
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[129] 成功文本
+来源：Handshakes_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#2018/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=2018）
+原文：move left hand with
+译文：移动左侧手与
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[130] 成功文本
+来源：Handshakes_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#2019/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=2019）
+原文：move left hand with
+译文：移动左侧手与
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[131] 成功文本
+来源：Handshakes_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#2020/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=2020）
+原文：move left hand with
+译文：移动左侧手与
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[132] 成功文本
+来源：Handshakes_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#2021/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=2021）
+原文：move left hand with
+译文：移动左侧手与
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[133] 成功文本
+来源：Handshakes_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#2022/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=2022）
+原文：move left hand with
+译文：移动左侧手与
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[134] 成功文本
+来源：Handshakes_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#2023/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=2023）
+原文：move left hand with
+译文：移动左侧手与
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[135] 成功文本
+来源：Handshakes_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#2024/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=2024）
+原文：move left hand with
+译文：移动左侧手与
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[136] 成功文本
+来源：Handshakes_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#2025/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=2025）
+原文：move left hand with
+译文：移动左侧手与
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[137] 成功文本
+来源：Handshakes_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#2026/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=2026）
+原文：move left hand with
+译文：移动左侧手与
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[138] 成功文本
+来源：Handshakes_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#2027/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=2027）
+原文：move left hand with
+译文：移动左侧手与
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[139] 成功文本
+来源：Handshakes_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#2028/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=2028）
+原文：move left hand with
+译文：移动左侧手与
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[140] 成功文本
+来源：Handshakes_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#2029/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=2029）
+原文：move left hand with
+译文：移动左侧手与
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[141] 成功文本
+来源：Handshakes_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#2030/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=2030）
+原文：move left hand with
+译文：移动左侧手与
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[142] 成功文本
+来源：Handshakes_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#2031/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=2031）
+原文：move left hand with
+译文：移动左侧手与
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[143] 成功文本
+来源：Handshakes_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#2032/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=2032）
+原文：move left hand with
+译文：移动左侧手与
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[144] 成功文本
+来源：Handshakes_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#2033/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=2033）
+原文：move left hand with
+译文：移动左侧手与
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[145] 成功文本
+来源：Handshakes_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#2216/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=2216）
+原文：move right hand with
+译文：移动对手与
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[146] 成功文本
+来源：Handshakes_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#2217/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=2217）
+原文：move right hand with
+译文：移动对手与
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[147] 成功文本
+来源：Handshakes_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#2218/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=2218）
+原文：move right hand with
+译文：移动对手与
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[148] 成功文本
+来源：Handshakes_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#2219/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=2219）
+原文：move right hand with
+译文：移动对手与
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[149] 成功文本
+来源：Handshakes_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#2220/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=2220）
+原文：move right hand with
+译文：移动对手与
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[150] 成功文本
+来源：Handshakes_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#2221/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=2221）
+原文：move right hand with
+译文：移动对手与
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[151] 成功文本
+来源：Handshakes_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#2222/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=2222）
+原文：move right hand with
+译文：移动对手与
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[152] 成功文本
+来源：Handshakes_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#2223/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=2223）
+原文：move right hand with
+译文：移动对手与
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[153] 成功文本
+来源：Handshakes_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#2224/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=2224）
+原文：move right hand with
+译文：移动对手与
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[154] 成功文本
+来源：Handshakes_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#2225/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=2225）
+原文：move right hand with
+译文：移动对手与
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[155] 成功文本
+来源：Handshakes_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#2226/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=2226）
+原文：move right hand with
+译文：移动对手与
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[156] 成功文本
+来源：Handshakes_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#2227/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=2227）
+原文：move right hand with
+译文：移动对手与
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[157] 成功文本
+来源：Handshakes_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#2228/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=2228）
+原文：move right hand with
+译文：移动对手与
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[158] 成功文本
+来源：Handshakes_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#2229/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=2229）
+原文：move right hand with
+译文：移动对手与
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[159] 成功文本
+来源：Handshakes_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#2230/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=2230）
+原文：move right hand with
+译文：移动对手与
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[160] 成功文本
+来源：Handshakes_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#2231/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=2231）
+原文：move right hand with
+译文：移动对手与
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[161] 成功文本
+来源：Handshakes_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#2232/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=2232）
+原文：move right hand with
+译文：移动对手与
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[162] 成功文本
+来源：Handshakes_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#2233/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=2233）
+原文：move right hand with
+译文：移动对手与
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[163] 成功文本
+来源：Handshakes_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#2234/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=2234）
+原文：move right hand with
+译文：移动对手与
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[164] 成功文本
+来源：Handshakes_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#2235/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=2235）
+原文：move right hand with
+译文：移动对手与
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[165] 成功文本
+来源：Handshakes_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#2236/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=2236）
+原文：move right hand with
+译文：移动对手与
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[166] 成功文本
+来源：Handshakes_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#2237/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=2237）
+原文：move right hand with
+译文：移动对手与
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[167] 成功文本
+来源：Handshakes_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#2238/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=2238）
+原文：move right hand with
+译文：移动对手与
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[168] 成功文本
+来源：Handshakes_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#2239/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=2239）
+原文：move right hand with
+译文：移动对手与
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[169] 成功文本
+来源：Handshakes_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#2240/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=2240）
+原文：move right hand with
+译文：移动对手与
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[170] 成功文本
+来源：Handshakes_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#2241/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=2241）
+原文：move right hand with
+译文：移动对手与
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[171] 成功文本
+来源：Handshakes_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#2242/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=2242）
+原文：move right hand with
+译文：移动对手与
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[172] 成功文本
+来源：Handshakes_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#2243/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=2243）
+原文：move right hand with
+译文：移动对手与
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[173] 成功文本
+来源：Handshakes_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#2244/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=2244）
+原文：move right hand with
+译文：移动对手与
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[174] 成功文本
+来源：Handshakes_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#2245/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=2245）
+原文：move right hand with
+译文：移动对手与
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[175] 成功文本
+来源：Handshakes_Data/Managed/Assembly-CSharp.dll
+键位：us#290
+对象：DLL #US 字符串（record_offset=52009）
+原文：unmute: M
+译文：取消静音：M
+置信度：high
+原因：mono_ui_setter
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[176] 成功文本
+来源：Handshakes_Data/Managed/Assembly-CSharp.dll
+键位：us#342
+对象：DLL #US 字符串（record_offset=52061）
+原文：press M to unmute
+译文：按 M 键以取消静音
+置信度：high
+原因：mono_ui_setter
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[177] 成功文本
+来源：Handshakes_Data/Managed/Assembly-CSharp.dll
+键位：us#128377
+对象：DLL #US 字符串（record_offset=180096）
+原文：Fullscreen Mode
+译文：全屏模式
+置信度：high
+原因：mono_ui_setter
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[178] 成功文本
+来源：Handshakes_Data/Managed/Assembly-CSharp.dll
+键位：us#128409
+对象：DLL #US 字符串（record_offset=180128）
+原文：to start game
+译文：开始游戏
+置信度：high
+原因：mono_ui_setter
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[179] 成功文本
+来源：Handshakes_Data/Managed/Assembly-CSharp.dll
+键位：us#128499
+对象：DLL #US 字符串（record_offset=180218）
+原文：Show Controls
+译文：显示控制项
+置信度：high
+原因：mono_ui_setter
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[180] 成功文本
+来源：Handshakes_Data/Managed/Assembly-CSharp.dll
+键位：us#128527
+对象：DLL #US 字符串（record_offset=180246）
+原文：Hide Controls
+译文：隐藏控制项
+置信度：high
+原因：mono_ui_setter
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[181] 成功文本
+来源：Handshakes_Data/Managed/Assembly-CSharp.dll
+键位：us#128599
+对象：DLL #US 字符串（record_offset=180318）
+原文：thanks for playing!
+译文：谢谢你的参与！
+置信度：high
+原因：mono_ui_setter
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[182] 成功文本
+来源：Handshakes_Data/Managed/Assembly-CSharp.dll
+键位：us#128699
+对象：DLL #US 字符串（record_offset=180418）
+原文：to replay game
+译文：重新播放游戏
+置信度：high
+原因：mono_ui_setter
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[183] 成功文本
+来源：Handshakes_Data/Managed/Assembly-CSharp.dll
+键位：us#128753
+对象：DLL #US 字符串（record_offset=180472）
+原文：to start next level
+译文：开始下一阶段
+置信度：high
+原因：mono_ui_setter
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[184] 成功文本
+来源：Handshakes_Data/Managed/Assembly-CSharp.dll
+键位：us#128901
+对象：DLL #US 字符串（record_offset=180620）
+原文：exit speedrun mode
+译文：退出速通模式
+置信度：high
+原因：mono_ui_setter
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[185] 成功文本
+来源：Handshakes_Data/Managed/Assembly-CSharp.dll
+键位：us#128939
+对象：DLL #US 字符串（record_offset=180658）
+原文：progress not saved 
+ in speedrun mode
+译文：进度未保存
+处于速通模式
+置信度：high
+原因：mono_ui_setter
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[186] 成功文本
+来源：Handshakes_Data/Managed/DOTweenPro.Scripts.dll
+键位：us#148
+对象：DLL #US 字符串（record_offset=14354）
+原文：{0} :: This DOTweenAnimation's target is NULL, because the animation was created with a DOTween Pro version older than 0.9.255. To fix this, exit Play mode then simply select this object, and it will update automatically
+译文：{0} :: 该 DOTweenAnimation 的目标为 NULL，因为该动画是使用版本低于 0.9.255 的 DOTween Pro 版本创建的。 为了解决这个问题，请先退出播放模式，然后选择该对象，它就会自动更新。
+置信度：medium
+原因：user_string_uppercase_ui
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[187] 成功文本
+来源：Handshakes_Data/Managed/DOTweenPro.Scripts.dll
+键位：us#772
+对象：DLL #US 字符串（record_offset=14978）
+原文：{0} :: This tween's TO target is NULL, a Vector3 of (0,0,0) will be used instead
+译文：{0} :: 此动画的目标值为 NULL，将使用 (0,0,0) 的 VECTOR3 作为目标值。
+置信度：medium
+原因：user_string_uppercase_ui
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[188] 成功文本
+来源：Handshakes_Data/Managed/PetPumpkin.dll
+键位：us#2
+对象：DLL #US 字符串（record_offset=9409）
+原文：Waiting for Input...
+译文：正在等待输入……
+置信度：high
+原因：mono_ui_setter
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[189] 成功文本
+来源：Handshakes_Data/Managed/PetPumpkin.dll
+键位：us#44
+对象：DLL #US 字符串（record_offset=9451）
+原文：Input in use, try another button
+译文：Input正在使用，请尝试其他按钮。
+置信度：high
+原因：mono_ui_setter
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[190] 成功文本
+来源：Handshakes_Data/Managed/Unity.2D.Animation.Triangle.Runtime.dll
+键位：us#3009
+对象：DLL #US 字符串（record_offset=170200）
+原文：Unable to locate PSLG vertex in triangulation.
+译文：无法在三角剖分中找到 PSLG 顶点。
+置信度：medium
+原因：user_string_uppercase_ui
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[191] 成功文本
+来源：Handshakes_Data/Managed/Unity.Services.Analytics.dll
+键位：us#3430
+对象：DLL #US 字符串（record_offset=55212）
+原文：Failed to deserialize JSON for currency conversion, no conversions will be performed
+译文：无法反序列化用于货币转换的 JSON 数据，因此将不会进行任何转换。
+置信度：medium
+原因：user_string_uppercase_ui
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入

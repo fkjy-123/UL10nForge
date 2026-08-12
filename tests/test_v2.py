@@ -932,6 +932,77 @@ def test_textasset_short_code_chunk_kept_for_manual_review():
     assert entries[0].original == "Hello there"
 
 
+def test_textasset_lexicon_list_produces_no_entries():
+    """词库型 TextAsset（0.26 地毯式实证：force-reboot data.unity3d#obj268
+    脏话检测黑名单——1100+ 行全英文短词被当显示文本全翻译写回、游戏过滤
+    逻辑失效）：单词行占比 ≥90% 且 ≥30 行 → 整文件结构跳过（黑名单/词典
+    /名单是比对数据非显示文本）。"""
+    raw = ("arrse\naskhole\nassbag\nassmunch\nbigmuffpi\nboff\nbutsex\n"
+           "buttfuck\nbuttmunch\ncabron\nchank\ncheesedick\nchinc\nchoad\n"
+           "chode\ncipa\ncok\ncoksucka\ncoochie\ncumstain\ncumtart\n"
+           "dabitch\ndiaf\nepeen\nepenis\nfacking\nfaggit\nfaghag\nfckers\n"
+           "fcuker\nfelch\nfelched\nfelches\nfelching\nfeltch\nfook\n"
+           "fooker\nfubar\nfucka\nfudgepacker\nfukkin\nfukwhit\nfuq\n"
+           "fuqed\nfux\ngoatse\ngoddam\ngspot\ngubb\ngyfs\n").encode()
+    skipped: dict[str, int] = {}
+    assert _textasset_entries("f1", 100, raw, skipped=skipped) == []
+    assert skipped == {"textasset_lexicon": 1}
+
+
+def test_textasset_lexicon_not_confused_by_dialogue():
+    """反例：对话/字幕文本（句行含空格）占比高 → 不判词库，正常提取。"""
+    raw = ("Oh no, the lever broke!\n"
+           "We need to find another way through.\n"
+           "The guard is still watching the door.\n"
+           "Maybe there is a key in the kitchen?\n"
+           "I should check under the rug.\n"
+           "Alright, let's move quickly then!\n"
+           "This place gives me the creeps.\n"
+           "I hear something behind us...\n"
+           "Run for the exit right now!\n"
+           "We made it, we are safe here.\n"
+           "What a relief that was!\n"
+           "Let's rest a moment before moving on.\n"
+           "The stairs are creaking again.\n"
+           "Did you hear that noise too?\n"
+           "Someone must be upstairs still.\n"
+           "We should split up and search.\n"
+           "No way, I am not going alone.\n"
+           "Fine, then we search together.\n"
+           "Stay close and keep quiet.\n"
+           "The basement is locked for now.\n"
+           "Check the old desk for clues.\n"
+           "There is a note under the lamp.\n"
+           "It says the vault is hidden.\n"
+           "Behind the painting on the wall.\n"
+           "How sneaky, but smart!\n"
+           "Let's open it together now.\n"
+           "Almost there, just a bit more!\n"
+           "I can't believe we pulled it off.\n"
+           "Yes! The door is finally open.\n"
+           "Let's get out of here for good.\n"
+           "What an adventure this was.\n").encode()
+    skipped: dict[str, int] = {}
+    entries = _textasset_entries("f1", 100, raw, skipped=skipped)
+    assert len(entries) == len(raw.decode().splitlines())
+    assert skipped == {}
+
+
+def test_textasset_short_wordlist_kept():
+    """反例：<30 行的短名单不做词库判定（防误伤），按正常行处理。"""
+    raw = ("sword\nshield\npotion\nmap\n").encode()
+    entries = _textasset_entries("f1", 100, raw)
+    assert len(entries) == 4
+
+
+def test_textasset_lexicon_survives_mixed_assignment_rows():
+    """反例：含 = 的字典行（missions=Missioni）不匹配单词行——词库判定
+    只在纯词表文件触发，字典/映射文件不受影响。"""
+    raw = ("missions=Missioni\nfreeplay=Gioco gratuito\n"
+           "settings=Impostazioni\nexit=Uscita\n").encode()
+    assert len(_textasset_entries("f1", 100, raw)) == 4
+
+
 def test_textasset_line_skips_record_reasons():
     """识别 C4：文本行路径的引擎串/键标识符/代码行跳过全部留档
     （skipped_count 聚合），不再静默 continue——「纯文本行跳过、判定

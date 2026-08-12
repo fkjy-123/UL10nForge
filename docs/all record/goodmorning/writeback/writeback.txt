@@ -1,0 +1,80 @@
+游戏：goodmorning
+写回时间：2026-08-12 22:27:54
+输出目录：D:\游戏\goodmorning_汉化
+
+文件清单：10 个
+
+- good morning_Data/app.info（2 条）
+- good morning_Data/level1（28 条）
+- good morning_Data/level2（32 条）
+- good morning_Data/level3（28 条）
+- good morning_Data/level4（101 条）
+- good morning_Data/level5（16 条）
+- good morning_Data/level6（18 条）
+- good morning_Data/level7（26 条）
+- good morning_Data/resources.assets（145 条）
+- good morning_Data/Managed/Assembly-CSharp.dll（280 条）
+
+────────────────────────────────────────────────────────────────
+写回结果
+文本文件：1
+输入保护：True
+重开验证：True
+变更文件：36
+写入译文：175
+总体闸门：PASS
+字体层级：runtime_verified
+清单：.hanhua-manifest.json
+备份：None
+
+四态闸门明细
+  file=N/A
+  container=PASS
+  object=PASS
+  runtime=PASS
+
+────────────────────────────────────────────────────────────────
+知识库案例转规则：5 条已启用（writeback_case → 可执行检测）
+
+- [fit_bytes_nul_padding] 固定容量池截短译文后字符串尾部带 NUL 导致逻辑判定失灵（实现：writer._fit_bytes（pad 模式容量对齐）+ 译文长度头自证（logic_audit.verify_string_l）
+- [placeholder_preserve] 写回截断把 {0} 占位符切开导致 string.Format 崩溃（实现：writer._restore_placeholders / _placeholders_intact（截断不得破坏占位符，缺失补末）
+- [textasset_encoding_preserve] TextAsset 非 UTF-8 内容被 decode-repla（实现：writer 写回按源编码/严格校验，不把非 UTF-8 当 UTF-8 重写）
+- [unityevent_binding_preserve] 替换 prefab/资源后 UnityEvent 事件绑定断裂按钮无（实现：extractor._UNITYEVENT_SIGNALS 对象信号 → structural 跳过+ logic_audit.lo）
+- [logic_key_compare] 代码把显示文本当逻辑键（按钮文字/物品名比较分发）（实现：logic_audit.LOGIC_COMPARE_WORDS 比较词表 + 代码对象联合判定（写回自动回退））
+
+────────────────────────────────────────────────────────────────
+逻辑层审计（写回逻辑敏感形态 / 扩容 / 语义回退 / 重开验证）
+
+rawstr 扩容写入：23 条（译文 UTF-8 字节 > 原文）
+
+- by cnnmon → 由 CNNMON 提供（9 → 17 字节，+8）
+- OK! → 好的！（3 → 9 字节，+6）
+- wake up! → 醒来吧！（8 → 12 字节，+4）
+- make tea! → 泡茶吧！（9 → 12 字节，+3）
+- BEGIN with this. → 从这一点开始。（16 → 21 字节，+5）
+- which outfit for today? → 今天穿哪套衣服呢？（23 → 27 字节，+4）
+- Write here... → 在这里写下……（13 → 21 字节，+8）
+- IF this happens.. → 如果这种情况发生的话……（17 → 36 字节，+19）
+- IF enough is poured into the cup → 如果往杯子里倒入足够的液体（32 → 39 字节，+7）
+- make waffles! → 制作华夫饼！（13 → 18 字节，+5）
+- IF mouse is moved enough → 如果鼠标移动得足够多（24 → 30 字节，+6）
+- THEN this
+happens! → 然后就是这个了。
+发生了！（18 → 37 字节，+19）
+- work on a project! → 开始处理这个项目吧！（18 → 30 字节，+12）
+- kettle starts pouring. → 水壶开始倒水了。（22 → 24 字节，+2）
+- THEN make button to go to next scene → 然后，让“进入下一场景”的按钮出现。（43 → 54 字节，+11）
+- IF characters inputted increase past → 如果输入的字符数量超过 50 个（39 → 40 字节，+1）
+- Table → 表格（5 → 6 字节，+1）
+- notebook has a place to input text. → 该笔记本拥有……地点输入文本。（35 → 45 字节，+10）
+- what to bring? → 需要带什么吗？（14 → 21 字节，+7）
+- you're all ready -
+time to take on t → 你们都准备好了——
+是时候开始这一天了！（43 → 58 字节，+15）
+…（其余 3 条）
+
+回显跳过（译文==原文，未写入）：2 条
+
+- good morning_Data/Managed/Assembly-CSharp.dll:us#12743：ON UPDATE VAL
+- good morning_Data/Managed/Assembly-CSharp.dll:us#14549：SCALED ENDING POSITION
+

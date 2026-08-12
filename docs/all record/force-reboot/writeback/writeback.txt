@@ -1,0 +1,141 @@
+游戏：force-reboot
+写回时间：2026-08-12 22:05:35
+输出目录：D:\游戏\force-reboot_汉化
+
+文件清单：6 个
+
+- Force Reboot_Data/app.info（2 条）
+- Force Reboot_Data/Plugins/x86_64/lib_burst_generated.txt（304 条）
+- Force Reboot_Data/data.unity3d（2647 条）
+- Force Reboot_Data/Managed/Assembly-CSharp.dll（172 条）
+- Force Reboot_Data/Managed/PlayFab.dll（60 条）
+- Force Reboot_Data/Managed/Unity.ProBuilder.dll（987 条）
+
+────────────────────────────────────────────────────────────────
+写回结果
+文本文件：2
+输入保护：True
+重开验证：True
+变更文件：32
+写入译文：375
+总体闸门：WARN
+字体层级：runtime_verified
+清单：.hanhua-manifest.json
+备份：None
+
+四态闸门明细
+  file=PASS
+  container=PASS
+  object=WARN
+  runtime=PASS
+
+────────────────────────────────────────────────────────────────
+知识库案例转规则：5 条已启用（writeback_case → 可执行检测）
+
+- [fit_bytes_nul_padding] 固定容量池截短译文后字符串尾部带 NUL 导致逻辑判定失灵（实现：writer._fit_bytes（pad 模式容量对齐）+ 译文长度头自证（logic_audit.verify_string_l）
+- [placeholder_preserve] 写回截断把 {0} 占位符切开导致 string.Format 崩溃（实现：writer._restore_placeholders / _placeholders_intact（截断不得破坏占位符，缺失补末）
+- [textasset_encoding_preserve] TextAsset 非 UTF-8 内容被 decode-repla（实现：writer 写回按源编码/严格校验，不把非 UTF-8 当 UTF-8 重写）
+- [unityevent_binding_preserve] 替换 prefab/资源后 UnityEvent 事件绑定断裂按钮无（实现：extractor._UNITYEVENT_SIGNALS 对象信号 → structural 跳过+ logic_audit.lo）
+- [logic_key_compare] 代码把显示文本当逻辑键（按钮文字/物品名比较分发）（实现：logic_audit.LOGIC_COMPARE_WORDS 比较词表 + 代码对象联合判定（写回自动回退））
+
+────────────────────────────────────────────────────────────────
+逻辑层审计（写回逻辑敏感形态 / 扩容 / 语义回退 / 重开验证）
+
+疑似逻辑键（report，已写回需复核）：59 条
+
+- [logic_compare_word] EXIT → 退出（asset#level0#2877/str/0）
+- [logic_compare_word] START → 开始（asset#level0#2879/str/0）
+- [logic_compare_word] SETTINGS → 设置（asset#level0#2881/str/0）
+- [short_code_word] buff → 增益/强化（asset#level0#2886/str/0）
+- [logic_compare_word] MENU → 菜单（asset#level0#2889/str/0）
+- [short_code_word] buff → 增益/强化（asset#level0#2911/str/0）
+- [short_code_word] buff → 增益/强化（asset#level0#2913/str/0）
+- [logic_compare_word] QUIT → 退出（asset#level0#2915/str/0）
+- [short_code_word] buff → 增益/强化（asset#level0#2919/str/0）
+- [logic_compare_word] SETTINGS → 设置（asset#level0#2922/str/0）
+- [logic_compare_word] CLOSE → 关闭（asset#level0#2944/str/0）
+- [logic_compare_word] Settings → 设置（asset#level0#2979/str/6）
+- [logic_compare_word] Back → 返回（asset#level0#3092/str/6）
+- [logic_compare_word] Restart → 重启（asset#level0#3155/str/6）
+- [logic_compare_word] Back → 返回（asset#level0#3177/str/6）
+- [logic_compare_word] Back → 返回（asset#level0#3288/str/6）
+- [logic_compare_word] Settings → 设置（asset#level0#3340/str/6）
+- [logic_compare_word] Restart → 重启（asset#level0#3391/str/6）
+- [logic_compare_word] BACK → 返回（asset#level0#3408/str/0）
+- [logic_compare_word] BACK → 返回（asset#level0#3428/str/0）
+- [logic_compare_word] BACK → 返回（asset#level0#3457/str/0）
+- [logic_compare_word] Restart → 重启（asset#level0#3477/str/6）
+- [logic_compare_word] Restart → 重启（asset#level0#3614/str/6）
+- [short_code_word] buff → 增益/强化（asset#level1#3097/str/0）
+- [logic_compare_word] MENU → 菜单（asset#level1#3100/str/0）
+- [short_code_word] buff → 增益/强化（asset#level1#3122/str/0）
+- [short_code_word] buff → 增益/强化（asset#level1#3124/str/0）
+- [logic_compare_word] QUIT → 退出（asset#level1#3126/str/0）
+- [short_code_word] buff → 增益/强化（asset#level1#3130/str/0）
+- [logic_compare_word] SETTINGS → 设置（asset#level1#3133/str/0）
+…（其余 29 条）
+
+短词/常见按钮文本（note，正常可译）：25 条（抽样：['lunchds', 'buff', 'debuff', 'debuff', 'debuff', 'debuff', 'buff', 'buff']）
+
+rawstr 扩容写入：210 条（译文 UTF-8 字节 > 原文）
+
+- Lunchtime Doubly So → 午餐时间加倍享受（19 → 24 字节，+5）
+- LEADERBOARD → 排行榜/成绩显示板（11 → 25 字节，+14）
+- EXIT → 退出（4 → 6 字节，+2）
+- START → 开始（5 → 6 字节，+1）
+- buff → 增益/强化（4 → 13 字节，+9）
+- debuff → 减益效果（6 → 12 字节，+6）
+- MENU → 菜单（4 → 6 字节，+2）
+- debuff → 减益效果（6 → 12 字节，+6）
+- debuff → 减益效果（6 → 12 字节，+6）
+- REBOOT → 重新启动（6 → 12 字节，+6）
+- debuff → 减益效果（6 → 12 字节，+6）
+- buff → 增益/强化（4 → 13 字节，+9）
+- buff → 增益/强化（4 → 13 字节，+9）
+- QUIT → 退出（4 → 6 字节，+2）
+- buff → 增益/强化（4 → 13 字节，+9）
+- Checking for updates... → 正在检查更新信息……（23 → 30 字节，+7）
+- FOLLOW ON TWITTER → 在 Twitter 上继续关注吧。（17 → 33 字节，+16）
+- PLACE → 地点（5 → 6 字节，+1）
+- WISHLIST ON STEAM → Steam上的愿望清单（17 → 23 字节，+6）
+- CLOSE → 关闭（5 → 6 字节，+1）
+…（其余 190 条）
+
+截断条目：1 条（容量内部分翻译已写入）
+
+- 「Cut 50% HP」→「削减 50% 的生命值」
+
+回显跳过（译文==原文，未写入）：26 条
+
+- Force Reboot_Data/Plugins/x86_64/lib_burst_generated.txt:kv/--platform/1：Windows
+- Force Reboot_Data/Plugins/x86_64/lib_burst_generated.txt:kv/--format/6：Coff
+- Force Reboot_Data/Plugins/x86_64/lib_burst_generated.txt:kv/--platform/152：Windows
+- Force Reboot_Data/Plugins/x86_64/lib_burst_generated.txt:kv/--format/157：Coff
+- Force Reboot_Data/data.unity3d:asset#sharedassets0.assets#889/str/0：GUY
+- Force Reboot_Data/data.unity3d:asset#level0#2926/str/0：OST
+- Force Reboot_Data/data.unity3d:asset#level0#3111/str/0：DASH
+- Force Reboot_Data/data.unity3d:asset#level0#3116/str/0：DASH
+- Force Reboot_Data/data.unity3d:asset#level0#3134/str/0：LMB
+- Force Reboot_Data/data.unity3d:asset#level0#3141/str/0：LMB
+- Force Reboot_Data/data.unity3d:asset#level0#3313/str/0：PSX
+- Force Reboot_Data/data.unity3d:asset#level0#3333/str/0：PSX
+- Force Reboot_Data/data.unity3d:asset#level1#3269/str/0：DASH
+- Force Reboot_Data/data.unity3d:asset#level1#3283/str/0：LMB
+- Force Reboot_Data/data.unity3d:asset#level1#3444/str/0：PSX
+- Force Reboot_Data/data.unity3d:asset#sharedassets2.assets#22256/str/0：DASH
+- Force Reboot_Data/data.unity3d:asset#sharedassets2.assets#22293/str/0：LMB
+- Force Reboot_Data/data.unity3d:asset#sharedassets2.assets#22712/str/0：PSX
+- Force Reboot_Data/data.unity3d:asset#resources.assets#920/str/2：Bloo Goo
+- Force Reboot_Data/Managed/Assembly-CSharp.dll:us#3440：SMG
+- Force Reboot_Data/Managed/Assembly-CSharp.dll:us#3448：+20%
+HP
+- Force Reboot_Data/Managed/PlayFab.dll:us#23406：yyyy-MM-dd HH:mm:ss.FFFFFF
+- Force Reboot_Data/Managed/PlayFab.dll:us#23460：yyyy-MM-dd HH:mm:ss.FFFF
+- Force Reboot_Data/Managed/PlayFab.dll:us#23644：yyyy-MM-dd HH:mm.ss.FFFF
+- Force Reboot_Data/Managed/Unity.ProBuilder.dll:us#28965：UCLA Blue
+- Force Reboot_Data/Managed/Unity.ProBuilder.dll:us#28985：UCLA Gold
+
+
+警告：1 条
+
+- 截断 1 条（容量内部分翻译已写入）：「Cut 50% HP」→「削减 50% 的生命值」

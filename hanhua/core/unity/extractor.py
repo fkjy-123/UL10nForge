@@ -1094,6 +1094,36 @@ def _raw_string_entries(file_id: str, obj_path_id: int, raw: bytes,
     }
     is_core_menu_control = len(control_states) >= 3
     is_single_visible = len(scanned) == 1 and len(entries) == 1
+    # 词表/字典对象判定（happy-cat-tavern 实证 2026-08-12）：打字游戏
+    # 单词库对象——字符串几乎全部是单 token 单词且数量大（level1#1311
+    # 1700 条 100% 单词）。此类对象中白名单常见词（play/time/gold…）
+    # 被 direct_code_signal/ui_control_signal 误放行进池翻译，写回后
+    # 玩家无法按英文打字（打字玩法破坏）。大型全单词数组是确定性词表
+    # 结构证据，优先于形态性猜测（证据分层）；正常 UI 对象含句式/描述
+    # 文本且条目数少（设置菜单 <50 条），不触发。
+    _stripped_pool = [s.strip() for s in non_engine if s.strip()]
+    is_word_table = (
+        len(_stripped_pool) >= 50
+        and sum(1 for s in _stripped_pool if _WORD_TOKEN_RE.match(s))
+        / len(_stripped_pool) >= 0.95
+    )
+    # TMP 资产对象判定（headache 实证 2026-08-12）：TextMeshPro 字体/
+    # 精灵资产序列化对象——m_AssetVersion 值 '1.1.0' + 字体名含独立
+    # token 'sdf'（'BaiJamjuree-Medium SDF'）或精灵资产名 'sprite
+    # asset'（'Default Sprite Asset'）。资产名是 <font>/<sprite
+    # name=...> 按名引用键（Winkle/Smiley/Bai Jamjuree Medium），
+    # 翻译断引用——写回后 Sprite 变体/表情/字体全部丢失。资产对象
+    # 字符串是资产元数据（名字+GUID+版本），非可译 UI 文本，对象级
+    # 判定整体跳过。'1.1.0' 词边界防普通文本 "v1.1.0" 误伤。
+    # 检测用完整 scanned 池（含引擎串）：资产名本身被引擎串过滤拦截
+    # （不进 non_engine），但同对象其余串（精灵名 Smiley/Wink、布局
+    # 参数 Character/Line Spacing）进池——资产名是判定证据必须可见。
+    _pool_lower = " ".join(s.strip().casefold() for _, _, s in scanned)
+    is_tmp_asset_object = (
+        _re.search(r"\b1\.1\.0\b", _pool_lower) is not None
+        and (_re.search(r"\bsdf\b", _pool_lower) is not None
+             or "sprite asset" in _pool_lower)
+    )
     for entry in entries:
         # R5：预过滤留档条目（prefilter_*）的 reason/role 已由
         # _prefilter_entry 定稿，不再走分类链（否则会被
@@ -1102,7 +1132,20 @@ def _raw_string_entries(file_id: str, obj_path_id: int, raw: bytes,
             continue
         reason = entry.meta.pop("structural_reason", None)
         stripped = entry.original.strip()
-        if reason:
+        if is_word_table:
+            # 词表对象条目：整体跳过（含白名单词——词表词翻译破坏
+            # 打字玩法；白名单显示词证据只在真实 UI 组件对象生效）
+            entry.status = STATUS_SKIPPED
+            entry.meta["obj_is_key_list"] = True
+            reason = "word_table_object"
+            confidence, role = "low", "structural"
+        elif is_tmp_asset_object:
+            # TMP 字体/精灵资产序列化对象：资产名是 <font>/<sprite>
+            # 引用键（翻译断引用→Sprite 变体/表情丢失），对象整体跳过
+            entry.status = STATUS_SKIPPED
+            reason = "tmp_asset_object"
+            confidence, role = "low", "structural"
+        elif reason:
             entry.status = STATUS_SKIPPED
             if reason == "input_binding":
                 entry.meta["obj_is_key_list"] = True
@@ -1269,6 +1312,20 @@ def _raw_string_entries(file_id: str, obj_path_id: int, raw: bytes,
     return entries
 
 
+# 词库型 TextAsset 判定（0.26 地毯式实证：force-reboot 脏话检测黑名单）。
+# 单词行 = 无空格纯 ASCII 词（字母/数字/常见词内符号，≤40 字符）。
+_LEXICON_WORD_RE = _re.compile(r"^[A-Za-z0-9][A-Za-z0-9'_.-]{0,39}$")
+# 词表对象单词 token（happy-cat-tavern 实证 2026-08-12：打字游戏单词库
+# 条目形态——纯字母单词，无空格/符号/数字）。
+_WORD_TOKEN_RE = _re.compile(r"^[A-Za-z]+$")
+_LEXICON_MIN_LINES = 30        # 少于 30 行不做词库判定（防误伤短名单/词典）
+_LEXICON_MIN_RATIO = 0.90      # 单词行占比阈值（对话/字幕句行必含空格）
+
+
+def _is_lexicon_word(s: str) -> bool:
+    return bool(s and _LEXICON_WORD_RE.match(s))
+
+
 def _textasset_entries(file_id: str, obj_path_id: int, raw: bytes,
                        asset_file_name: str = "",
                        skipped: dict[str, int] | None = None) -> list[TextEntry]:
@@ -1374,6 +1431,19 @@ def _textasset_entries(file_id: str, obj_path_id: int, raw: bytes,
             if sum(c.isalpha() for c in ln) / max(1, len(ln)) >= 0.5)
         if alpha / len(all_lines) < 0.5:
             _skip("textasset_low_alpha_density")
+            return []
+    # 词库型 TextAsset（0.26 地毯式实证：force-reboot data.unity3d#obj268
+    # 是脏话检测黑名单——1100+ 行全英文短词，被当显示文本 974 条全翻译
+    # 写回，游戏过滤逻辑失效）：单词行（无空格纯词）占比 ≥90% 且 ≥30 行
+    # 的纯词表是比对数据（黑名单/词典/名单），非显示文本——对话/字幕必
+    # 有句子结构（空格/标点），占比远低于阈值；短名单（<30 行）不判定防
+    # 误伤，且正常短名单（missions=Missioni 等含 = 的行）不匹配单词行。
+    if (_LEXICON_MIN_LINES
+            and len(all_lines) >= _LEXICON_MIN_LINES):
+        lexicon_lines = sum(
+            1 for ln in all_lines if _is_lexicon_word(ln.strip()))
+        if lexicon_lines / len(all_lines) >= _LEXICON_MIN_RATIO:
+            _skip("textasset_lexicon")
             return []
     lines: list[TextEntry] = []
     for i, line in enumerate(all_lines):

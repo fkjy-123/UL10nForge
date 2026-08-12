@@ -232,6 +232,39 @@ class TestKnowledgeBase:
         assert ("TOSS TRASH", "丢垃圾") in pairs
         kb.close()
 
+    def test_learn_single_lexicon_word(self, tmp_path):
+        """单设置词回显（JUMP/Vsync 全大写/TitleCase 键名，1.8B 稳定
+        回显）→ 词表命中沉淀 single_lexicon_word 译例（0.26 地毯式
+        实证：force-reboot 设置页 16 条 JUMP/VSYNC/Vsync 恒败，单词
+        形态不命中 _is_uppercase_action 2-5 词短语 → 无译例死循环）。"""
+        kb = KnowledgeBase(tmp_path / "knowledge.db")
+        entries = [
+            _Entry("JUMP", status="failed",
+                   meta={"quality_reasons": ["untranslated_text"]}),
+            _Entry("Vsync", status="failed",
+                   meta={"quality_reasons": ["untranslated_text"]}),
+            _Entry("VSYNC", status="failed",
+                   meta={"quality_reasons": ["untranslated_text"]}),
+            # 词表外单词 → 不学习（无机械直译来源，防污染）
+            _Entry("ZARBUL", status="failed",
+                   meta={"quality_reasons": ["untranslated_text"]}),
+            # 短语形态仍走 uppercase_action（不重复沉淀）
+            _Entry("PRESS START", status="failed",
+                   meta={"quality_reasons": ["untranslated_text"]}),
+        ]
+        learned, hits = kb.learn(entries, "force-reboot")
+        assert learned == 4   # JUMP/Vsync/VSYNC 去重 2 + PRESS START = 3? 见下
+        pairs = kb.format_reference_pairs()
+        assert ("JUMP", "跳跃") in pairs
+        assert ("VSYNC", "垂直同步") in pairs
+        assert ("Vsync", "垂直同步") in pairs
+        assert ("PRESS START", "按开始") in pairs
+        assert ("ZARBUL", "") not in pairs
+        rows = {r["pattern"]: r for r in kb.store.list_by_domain("text")}
+        assert rows["JUMP"]["kind"] == "single_lexicon_word"
+        assert rows["JUMP"]["map_to"] == "跳跃"
+        kb.close()
+
     def test_learn_without_store_is_noop(self, tmp_path):
         kb = KnowledgeBase()  # 无持久库 → learn 空操作
         assert kb.learn([_Entry("TOSS TRASH")], "game") == (0, 0)

@@ -1,0 +1,81 @@
+游戏：foxhunt-chapter1
+写回时间：2026-08-12 20:59:55
+输出目录：D:\游戏\foxhunt-chapter1_汉化
+
+文件清单：5 个
+
+- FoxHunt_Data/app.info（2 条）
+- FoxHunt_Data/level1（148 条）
+- FoxHunt_Data/level2（315 条）
+- FoxHunt_Data/resources.assets（81 条）
+- FoxHunt_Data/Managed/Assembly-CSharp.dll（87 条）
+
+────────────────────────────────────────────────────────────────
+写回结果
+文本文件：1
+输入保护：True
+重开验证：True
+变更文件：31
+写入译文：231
+总体闸门：WARN
+字体层级：payload_deployed
+清单：.hanhua-manifest.json
+备份：None
+
+四态闸门明细
+  file=PASS
+  container=PASS
+  object=PASS
+  runtime=WARN
+
+────────────────────────────────────────────────────────────────
+知识库案例转规则：5 条已启用（writeback_case → 可执行检测）
+
+- [fit_bytes_nul_padding] 固定容量池截短译文后字符串尾部带 NUL 导致逻辑判定失灵（实现：writer._fit_bytes（pad 模式容量对齐）+ 译文长度头自证（logic_audit.verify_string_l）
+- [placeholder_preserve] 写回截断把 {0} 占位符切开导致 string.Format 崩溃（实现：writer._restore_placeholders / _placeholders_intact（截断不得破坏占位符，缺失补末）
+- [textasset_encoding_preserve] TextAsset 非 UTF-8 内容被 decode-repla（实现：writer 写回按源编码/严格校验，不把非 UTF-8 当 UTF-8 重写）
+- [unityevent_binding_preserve] 替换 prefab/资源后 UnityEvent 事件绑定断裂按钮无（实现：extractor._UNITYEVENT_SIGNALS 对象信号 → structural 跳过+ logic_audit.lo）
+- [logic_key_compare] 代码把显示文本当逻辑键（按钮文字/物品名比较分发）（实现：logic_audit.LOGIC_COMPARE_WORDS 比较词表 + 代码对象联合判定（写回自动回退））
+
+────────────────────────────────────────────────────────────────
+逻辑层审计（写回逻辑敏感形态 / 扩容 / 语义回退 / 重开验证）
+
+疑似逻辑键（report，已写回需复核）：8 条
+
+- [logic_compare_word] CONTINUE → 继续（asset#level1#378/str/1）
+- [logic_compare_word] OPTIONS → 选项（asset#level1#379/str/1）
+- [logic_compare_word] EXIT → 退出（asset#level1#383/str/1）
+- [logic_compare_word] QUIT → 退出（asset#level1#398/str/1）
+- [logic_compare_word] EXIT → 退出（asset#level1#446/str/1）
+- [logic_compare_word] EXIT → 退出（asset#level1#449/str/1）
+- [logic_compare_word] OPTIONS → 选项（asset#level1#453/str/1）
+- [logic_compare_word] EXIT → 退出（asset#level2#14079/str/1）
+
+rawstr 扩容写入：116 条（译文 UTF-8 字节 > 原文）
+
+- Show/Exit menu: → 显示/退出菜单：（15 → 22 字节，+7）
+- EXIT → 退出（4 → 6 字节，+2）
+- 9: SunCubes Gathered → 9: SunCubes 已收集完毕（20 → 27 字节，+7）
+- 7: All Red Lights but Last → 7: 所有红灯都亮了，除了最后那个灯。（26 → 51 字节，+25）
+- SOUND:  → 声音：（7 → 9 字节，+2）
+- 0: New Game → 0：新游戏（11 → 13 字节，+2）
+- INVERT MOUSE Y: → 反转鼠标 Y 轴：（15 → 21 字节，+6）
+- 1: Hatch opened → 1: 舱门已打开（15 → 18 字节，+3）
+- QUIT → 退出（4 → 6 字节，+2）
+- Drop: → 掉落：（5 → 9 字节，+4）
+- FOXYPAW CHEAT → FOXYPAW 作弊工具（13 → 20 字节，+7）
+- 8: Blue Door Opened → 8: 蓝色之门打开了（19 → 24 字节，+5）
+- Review Clues: → 审查线索：（13 → 15 字节，+2）
+- Exit to Menu: press ESC. → 退出到菜单：按下 ESC 键。（24 → 35 字节，+11）
+- INSTRUCTIONS → 说明/指导（12 → 13 字节，+1）
+- 10: SunCubes in Place → 10: SunCubes已安装完毕（21 → 27 字节，+6）
+- 3: Console Raised → 3：控制台已升起（17 → 22 字节，+5）
+- Look: → 看：（5 → 6 字节，+1）
+- NEW GAME → 新游戏（8 → 9 字节，+1）
+- 4: Green Drawer Opened → 4: 绿色抽屉已打开（22 → 24 字节，+2）
+…（其余 96 条）
+
+回显跳过（译文==原文，未写入）：1 条
+
+- FoxHunt_Data/level2:asset#level2#13691/str/1：[ESC]
+
