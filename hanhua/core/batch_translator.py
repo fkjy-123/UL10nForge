@@ -9,8 +9,7 @@ from dataclasses import replace
 from typing import Callable
 
 from hanhua.core.agent_memory import context_key_of
-from hanhua.core.engine_strings import (PHYSICAL_KEY_NAMES_CASEFOLD,
-                                        interaction_input_events,
+from hanhua.core.engine_strings import (interaction_input_events,
                                         interaction_input_tokens)
 from hanhua.core.knowledge import (_ACTION_VERB_ZH, _JAPANESE_KANA_RE,
                                    _is_language_name, _is_multilingual_source,
@@ -387,7 +386,9 @@ class BatchTranslator:
                  memory=None, model: str = "", lang: str = "→zh-CN",
                  system_prompt: str = "", placeholder_check: bool = True,
                  glossary=(), cancellation_event=None,
-                 agent_memory=None, agent_game: str = ""):
+                 agent_memory=None, agent_game: str = "",
+                 context_store=None, context_game: str = "",
+                 vector_recall=None):
         self.client = client
         self.batch_size = max(1, batch_size)
         self.concurrency = max(1, concurrency)
@@ -402,6 +403,14 @@ class BatchTranslator:
         # 质量门通过译文沉淀证据。agent_game 用于记忆溯源（来源游戏）。
         self.agent_memory = agent_memory
         self.agent_game = agent_game
+        # 游戏语境库（翻译 C6，阶段 2）：同游戏同指纹精确命中直填 +
+        # 跨游戏相似语境注入 prompt 参考（多义词消歧 Resume=继续）。
+        # context_game 是当前翻译项目的游戏名（语境库按游戏隔离）。
+        self.context_store = context_store
+        self.context_game = context_game or agent_game
+        # 向量检索（阶段 4）：相似去重（≥0.95 复用译文）+ 相似召回
+        # （≥0.8 注入参考）。服务不可用由 VectorRecall 内部降级为空。
+        self.vector_recall = vector_recall
         self.references = merge_translation_references(self.glossary)
         # Q1 语义门对照表。三条件：
         # 1) source 必须内置于参考表（_BUILTIN_UI_EXACT）——用户自定义术语
@@ -600,6 +609,87 @@ class BatchTranslator:
                     e.original,
                     context_key_of(str(e.meta.get("role", ""))),
                     accepted=good)
+                changed.append(e)
+            flush()
+            if progress_cb:
+                progress_cb(replace(stats))
+
+        # 1a) 向量相似去重（阶段 4 T4-3）：同游戏向量命中 ≥0.95 →
+        # 复用历史译文（质量门复查，拒绝走模型链）。精确命中（hits）
+        # 优先——向量只补精确路径覆盖不到的相似变体。
+        if self.vector_recall is not None:
+            prev_direct = direct if self.agent_memory is not None else {}
+            pending = [e for e in entries if _auto_translatable(e)]
+            originals = [e.original for e in pending
+                         if e.original not in hits
+                         and e.original not in prev_direct]
+            vector_hits = self.vector_recall.dedupe(
+                originals, exclude=tuple(hits))
+            for e in pending:
+                if e.original not in vector_hits:
+                    continue
+                good = self._apply_quality(e, vector_hits[e.original])
+                if good:
+                    e.status = STATUS_TRANSLATED
+                    stats.done += 1
+                    stats.from_memory += 1
+                else:
+                    e.translation = ""
+                    e.quality_reasons = ()
+                    e.meta.pop("quality_passed", None)
+                    e.meta.pop("quality_reasons", None)
+                    e.meta["vector_fill_rejected"] = list(e.quality_reasons)
+                    e.status = (
+                        STATUS_FAILED if _attempt_exhausted(e)
+                        else "pending")
+                changed.append(e)
+            flush()
+            if progress_cb:
+                progress_cb(replace(stats))
+
+        # 1c) 语境库直填（翻译 C6，阶段 2）：同游戏同指纹精确命中 →
+        # 直填（译文仍过质量门复查，拒绝则清除命中记录防再次污染）。
+        # 多义词（Resume 主菜单=继续 vs 简历）靠语境指纹区分，未命中的
+        # 走模型链（prompt 注入跨游戏参考）。
+        if self.context_store is not None:
+            from hanhua.core.context_library import collect_window
+            # direct 仅在 agent_memory 存在时定义（1b 段内），此处兜底
+            agent_direct = direct if self.agent_memory is not None else {}
+            pending = [e for e in entries if _auto_translatable(e)]
+            for e in pending:
+                if e.original in hits or e.original in agent_direct \
+                        or e.status == STATUS_TRANSLATED:
+                    continue
+                before, after = collect_window(e.meta)
+                match = self.context_store.match_exact(
+                    self.context_game, e.original,
+                    scene=str(e.meta.get("scene", "")),
+                    ui_position=str(e.meta.get("role", "")),
+                    text_type=str(e.meta.get("kind", "")),
+                    ctx_before=before, ctx_after=after)
+                if match is None:
+                    continue
+                candidate = match.recommended_translation.strip()
+                if not candidate:
+                    continue
+                good = self._apply_quality(e, candidate)
+                if good:
+                    e.status = STATUS_TRANSLATED
+                    stats.done += 1
+                    stats.from_memory += 1
+                else:
+                    # 语境记录被质量门拒绝 → 存疑标记（阶段 3 防污染）
+                    if match.id is not None:
+                        self.context_store.mark_suspicious(match.id)
+                    e.translation = ""
+                    e.quality_reasons = ()
+                    e.meta.pop("quality_passed", None)
+                    e.meta.pop("quality_reasons", None)
+                    e.meta["context_fill_rejected"] = list(
+                        e.quality_reasons)
+                    e.status = (
+                        STATUS_FAILED if _attempt_exhausted(e)
+                        else "pending")
                 changed.append(e)
             flush()
             if progress_cb:
@@ -1329,6 +1419,47 @@ class BatchTranslator:
         return (role == "ui" or disposition == "translate"
                 or entry.original.strip().casefold() in BUILTIN_UI_SOURCE_TERMS)
 
+    def retranslate_with_feedback(self, entry: TextEntry, feedback: str,
+                                  round_no: int = 1) -> tuple[bool, str]:
+        """T1-4 反馈式重译：深审闭环专用（带审核理由的单条重译）。
+
+        prompt 在常规单条翻译基础上追加 [审核反馈] 段（上次译文 +
+        问题 + 建议译文），单条调用翻译模型 → 过质量门复查
+        （_apply_quality，通过即落盘 entry.translation）。
+
+        预算：重译经 _record_failure_attempt 计入 attempt_count，与
+        现有失败链共享类别预算（默认 2 次），防死循环（实施计划
+        T1-4）。round_no 供再审收敛标记（T1-5 上限 2 轮）。
+
+        返回 (是否通过质量门, 最终译文)；请求失败返回 (False, "")。
+        """
+        user = self._build_chat_user_prompt([
+            self._build_item([entry], 0, 0, single=True)])
+        user += (
+            "\n\n[审核反馈] 上次译文：{0}；问题：{1}。"
+            "请针对上述问题修正译文，只输出修正后的译文，不要解释。"
+            .format(entry.translation or "（无）", feedback))
+        try:
+            content, usage = self.client.chat(
+                self.system_prompt, [{"role": "user", "content": user}])
+        except Exception as exc:  # noqa: BLE001 - 重译失败由调用方记 blocked
+            self._record_usage(None)
+            self._mark_request_failed(entry, exc)
+            return False, ""
+        self._record_usage(usage)
+        if self._is_cancelled():
+            return False, ""
+        candidate = (content or "").strip()
+        if not candidate:
+            _record_failure_attempt(entry, "model_behavior")
+            return False, ""
+        entry.meta = dict(entry.meta)
+        entry.meta["review_round"] = int(round_no)
+        good = self._apply_quality(entry, candidate)
+        if not good:
+            _record_failure_attempt(entry, "model_behavior")
+        return good, candidate
+
     def _build_chat_user_prompt(self, items: list[dict]) -> str:
         # P1：术语按命中注入——references 段只保留内置 UI 术语（恒定小
         # 集合，跨批一致性锚点）+ 批内命中的用户术语；未命中术语不注入
@@ -1343,7 +1474,63 @@ class BatchTranslator:
             if (str(source).casefold() in builtin_sources_cf
                 or source_term_applies(str(source), batch_sources))
         )
+        # 翻译 C6（阶段 2）：跨游戏相似语境参考注入——本批文本命中语境库
+        # 相似指纹（多义词不同词义），注入参考行（参考不强制，防跨游戏
+        # 污染；单批 Top-3 封顶，注入量不随库增长）。
+        context_lines = self._context_reference_lines(items)
+        if context_lines:
+            reference_lines.append("")
+            reference_lines.extend(context_lines)
         return "\n".join(reference_lines) + "\n\n" + build_batch_user_prompt(items)
+
+    def _context_reference_lines(self, items: list[dict]) -> list[str]:
+        """参考行注入：语境库跨游戏相似（阶段 2）+ 向量相似召回
+        （阶段 4 T4-4，≥0.8），合并取 Top-3（注入量封顶）。
+
+        与直填通道互补：直填只在同游戏同指纹命中时发生；这里覆盖跨游戏
+        或同原文异语境——模型参考后自行消歧（Resume 主菜单=继续、
+        Save the game. → Load the game. 相似召回）。
+        """
+        if self.context_store is None and self.vector_recall is None:
+            return []
+        lines: list[str] = []
+        seen: set[tuple[str, str]] = set()
+
+        def add(text: str, translation: str) -> bool:
+            key = (text, translation)
+            if key in seen or not translation:
+                return False
+            seen.add(key)
+            return True
+
+        texts = [str(item.get("text", "")).strip()
+                 for item in items if str(item.get("text", "")).strip()]
+        if self.vector_recall is not None and texts:
+            for ref in self.vector_recall.recall(texts, limit=3):
+                if add(ref["text"], ref["translation"]):
+                    lines.append(f"相似参考：{ref['text']} → "
+                                 f"{ref['translation']}")
+                    if len(lines) >= 3:
+                        return lines
+        if self.context_store is not None:
+            for item in items:
+                text = str(item.get("text", ""))
+                if not text.strip():
+                    continue
+                before = [str(x) for x in item.get("ctx_before", [])]
+                after = [str(x) for x in item.get("ctx_after", [])]
+                for entry in self.context_store.match_similar(
+                        self.context_game, text,
+                        scene="", ui_position=str(item.get("role", "")),
+                        text_type="", ctx_before=before, ctx_after=after,
+                        limit=4):
+                    if add(entry.source_text,
+                           entry.recommended_translation):
+                        lines.append(f"语境参考："
+                                     f"{self.context_store.format_reference(entry)}")
+                        if len(lines) >= 3:
+                            return lines
+        return lines
 
     def _repair_multiline_chat_translation(
             self, entry: TextEntry) -> tuple[TextEntry, str, bool]:
@@ -1975,7 +2162,9 @@ class BatchTranslator:
                 "context": " | ".join(ctx_parts) if ctx_parts else "",
                 "short": len(e.original) <= 12, "budget": budget,
                 "input_tokens": list(interaction_input_tokens(e.original)),
-                "glossary_hits": glossary_hits}
+                "glossary_hits": glossary_hits,
+                "ctx_before": list(e.meta.get("ctx_before", [])),
+                "ctx_after": list(e.meta.get("ctx_after", []))}
 
     def _validate(self, batch: list[TextEntry], arr: list[dict]
                   ) -> list[tuple[TextEntry, str, bool]]:

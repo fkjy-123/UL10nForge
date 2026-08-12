@@ -925,7 +925,6 @@ def write_back_v2(store: ProjectStore, game_dir: Path, out_dir: Path,
         if not entries:
             result.warnings.append(f"无译文条目：{f['rel_path']}")
             continue
-        src = resolve_relative_under(game_dir, f["rel_path"])
         dst = resolve_relative_under(out_dir, f["rel_path"])
         if not dst.exists():
             result.warnings.append(f"副本中缺失：{f['rel_path']}")

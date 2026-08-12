@@ -132,6 +132,23 @@ def discover_model(explicit: str | Path, app_dir: str | Path) -> Path:
         "model_not_found", f"models 目录中没有找到 GGUF 模型：{model_dir}")
 
 
+def _planned_gpu_layers(app_dir: str | Path, kind: str) -> int | None:
+    """硬件智能分配（任务三接通）：静态档位规划输出 GPU 层数。
+
+    档位逻辑（hardware_planner）：无 GPU/显存 <4GB → CPU；4~6GB 档
+    4B 审核拿唯一 GPU 名额、1.8B 翻译走 CPU（防 OOM 超卖）；高显存档
+    全层。探测失败返回 None（调用方回退用户配置 + 运行时回退链）。
+    仅当用户未显式指定（-1）时覆盖。
+    """
+    try:
+        from hanhua.core.hardware_planner import plan_allocation, probe_hardware
+        from hanhua.core.model_registry import ModelRegistry
+        return plan_allocation(
+            probe_hardware(), ModelRegistry(app_dir))[kind].gpu_layers
+    except Exception:  # noqa: BLE001 - 探测失败不阻断启动
+        return None
+
+
 def _validate_gguf(path: Path) -> Path:
     try:
         size = path.stat().st_size
@@ -340,6 +357,10 @@ class LocalModelManager:
                 if self._probe(base, str(state.get("api_key", "")),
                                model.stem):
                     requested_layers = int(config.local_gpu_layers)
+                    if requested_layers == -1:
+                        plan_layers = _planned_gpu_layers(self.app_dir, "translate")
+                        if plan_layers is not None:
+                            requested_layers = plan_layers
                     parallel = resolve_local_parallel(
                         config, "cpu" if requested_layers == 0 else "gpu")
                     with self._lock:
@@ -353,6 +374,13 @@ class LocalModelManager:
                         self._signature = signature
                     return self._runtime
             requested_layers = int(config.local_gpu_layers)
+            if requested_layers == -1:
+                # 硬件智能分配（任务三接通）：静态档位规划在启动前定
+                # GPU 层数（4~6GB 档 4B 拿唯一名额、1.8B CPU 防 OOM）；
+                # 失败回退 -1 全层 + 下方运行时回退链兜底
+                plan_layers = _planned_gpu_layers(self.app_dir, "translate")
+                if plan_layers is not None:
+                    requested_layers = plan_layers
             cuda_missing = validate_runtime_manifest(server.parent, cuda=True)
             layers_to_try = [
                 0 if requested_layers != 0 and cuda_missing else requested_layers

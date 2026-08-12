@@ -18,7 +18,12 @@ _CONFLICT_NORM = re.compile(r"[^a-z0-9一-鿿]+")
 _HIGH_FREQUENCY_WORD_PAIRS = frozenset(
     "miss right left up down play stop save load charge exit enter open "
     "close start end back next ok yes no on off run jump attack hit "
-    "throw use talk buy sell pick drop eat drink rest savegame resume".split()
+    "throw use talk buy sell pick drop eat drink rest savegame resume "
+    "health unit damage speed power".split()
+    # health 2026-08-13 实证：force-reboot 沉淀 HEALTH→健康 active，
+    # incremental-rts 'Increase unit HP by {health}' 译文「生命值」被
+    # 误杀——health 在游戏语境变体多（健康/生命值/血量），单 token
+    # 全局强制必误杀。unit/damage/speed/power 同族高频游戏词一并列入
 )
 
 
@@ -42,27 +47,43 @@ class GlossaryStore:
             );""")
             # 翻译 C5：审核沉淀语境保护——候选桶（candidate 只参考不强制）、
             # 沉淀游戏列表（跨游戏复现升级）、原文例句（语境留档）。
+            # 翻译 C6（阶段 2 术语库升级）：forbidden_translation（禁止
+            # 译法——审核检出错误译法）、part_of_speech（词性）、
+            # game_specific_meaning（游戏特指义）、usage_example（用法例句，
+            # format_for_prompt 附带语境提示）。
             # 老库迁移：缺列则 ALTER TABLE 补上。
             columns = {row["name"] for row in self.conn.execute(
                 "PRAGMA table_info(glossary)")}
             for column, ddl in (
                     ("status", "TEXT DEFAULT 'active'"),
                     ("games", "TEXT DEFAULT ''"),
-                    ("context", "TEXT DEFAULT ''")):
+                    ("context", "TEXT DEFAULT ''"),
+                    ("forbidden_translation", "TEXT DEFAULT ''"),
+                    ("part_of_speech", "TEXT DEFAULT ''"),
+                    ("game_specific_meaning", "TEXT DEFAULT ''"),
+                    ("usage_example", "TEXT DEFAULT ''")):
                 if column not in columns:
                     self.conn.execute(
                         f"ALTER TABLE glossary ADD COLUMN {column} {ddl}")
             self.conn.commit()
 
-    def add(self, term, translation, category="术语", note=""):
+    def add(self, term, translation, category="术语", note="",
+            forbidden_translation="", part_of_speech="",
+            game_specific_meaning="", usage_example=""):
+        """入库（翻译 C6 字段升级）：扩展字段可空，向后兼容旧调用。"""
         with self._lock:
             self.conn.execute(
-                "INSERT OR REPLACE INTO glossary(term, translation, category, note) VALUES (?,?,?,?)",
-                (term, translation, category, note))
+                "INSERT OR REPLACE INTO glossary"
+                "(term, translation, category, note, forbidden_translation,"
+                " part_of_speech, game_specific_meaning, usage_example)"
+                " VALUES (?,?,?,?,?,?,?,?)",
+                (term, translation, category, note, forbidden_translation,
+                 part_of_speech, game_specific_meaning, usage_example))
             self.conn.commit()
 
     def add_reviewed(self, term, translation, context: str = "",
-                     game: str = "") -> str:
+                     game: str = "", forbidden_translation: str = ""
+                     ) -> str:
         """审核沉淀专用门禁（翻译 C5）：带语境保护的词对沉淀。
 
         F22-4 三连杀实证：审核沉淀 (miss,未命中)/(encore,安可)/(Right,右拨片)
@@ -107,20 +128,30 @@ class GlossaryStore:
                 status = row["status"] or "active"
                 if status != "active" and (is_combo or len(merged) >= 2):
                     status = "active"
-                self.conn.execute(
-                    "UPDATE glossary SET translation=?, note=?, games=?,"
-                    " status=?, context=? WHERE id=?",
-                    (trans_s, note, ",".join(merged), status, context,
-                     row["id"]))
+                # forbidden_translation 只在传入时刷新（空值不抹已有禁止译法）
+                if forbidden_translation:
+                    self.conn.execute(
+                        "UPDATE glossary SET translation=?, note=?, games=?,"
+                        " status=?, context=?, forbidden_translation=?"
+                        " WHERE id=?",
+                        (trans_s, note, ",".join(merged), status, context,
+                         forbidden_translation, row["id"]))
+                else:
+                    self.conn.execute(
+                        "UPDATE glossary SET translation=?, note=?, games=?,"
+                        " status=?, context=? WHERE id=?",
+                        (trans_s, note, ",".join(merged), status, context,
+                         row["id"]))
                 self.conn.commit()
                 return "" if status == "active" else ""
             status = "active" if is_combo else "candidate"
             self.conn.execute(
                 "INSERT OR REPLACE INTO glossary"
-                "(term, translation, category, note, status, games, context)"
-                " VALUES (?,?,?,?,?,?,?)",
+                "(term, translation, category, note, status, games, context,"
+                " forbidden_translation)"
+                " VALUES (?,?,?,?,?,?,?,?)",
                 (term_s, trans_s, "审核术语", note, status,
-                 ",".join(games), context))
+                 ",".join(games), context, forbidden_translation))
             self.conn.commit()
             return ""
 
@@ -157,7 +188,15 @@ class GlossaryStore:
             # 全局术语库跨游戏持续积累后可能很大；注入 prompt 只取最新 limit 条
             # （ID 单调递增，最新学习的最贴近当前需求）。
             rows = rows[-limit:]
-        return "\n".join(f"{r['term']} → {r['translation']}（{r['category']}）" for r in rows)
+        # 翻译 C6：usage_example 存在时附带用法例句（消歧提示，仅提示不
+        # 强制——model 参考词义而非复制句子）。
+        lines = []
+        for r in rows:
+            line = f"{r['term']} → {r['translation']}（{r['category']}）"
+            if r.get("usage_example"):
+                line += f" 例：{r['usage_example'][:60]}"
+            lines.append(line)
+        return "\n".join(lines)
 
     def known_names_for(self, collected: list[str] | None = None) -> list[str]:
         """专名注入清单：当前游戏收集的专名优先，全局术语库专名兜底。

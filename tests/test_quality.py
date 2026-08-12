@@ -691,12 +691,211 @@ def test_single_token_pair_substring_skips_natural_sentence():
         glossary=[("TIME", "时间")])
     assert "glossary_mismatch" not in ok.reasons
     # 标签语境：miss 右邻冒号 → 词对适用 → 回显判失败
+    # （C5 拒绝表只管审核沉淀端；quality 强制保留——按钮/标签词
+    #  漏翻拦截有价值）
     label = _entry("miss: 999")
     fail = validate_translation_quality(
         label, "miss: 999", glossary=[("miss", "未命中")])
     assert "glossary_mismatch" in fail.reasons
+    # 句首大写 + 右邻小写词 = 英文句子首词大写规则，不是标签：
+    # 'Time for some science!' 意译「是时候」不判失败（inch-by-inch 实证）
+    sentence = validate_translation_quality(
+        _entry("Time for some science!"),
+        "是时候进行一些科学研究了！",
+        glossary=[("Time", "时间"), ("TIME", "时间")])
+    assert "glossary_mismatch" not in sentence.reasons
+    # 句尾标点不是标签标记：'...at this size!' 的 size 右邻感叹号是
+    # 句子句尾，意译「这种规模」不判失败（inch-by-inch 实证）
+    tail = validate_translation_quality(
+        _entry("If I can't finish the antidote at this size!"),
+        "如果我没法完成这种规模的解毒剂！",
+        glossary=[("size", "大小")])
+    assert "glossary_mismatch" not in tail.reasons
+    # 句中 TitleCase 仍是 UI 菜单词形态：Settings 词对照常适用，
+    # 漏翻（回显 Settings）判失败
+    ui_word = validate_translation_quality(
+        _entry("Open Settings menu"), "打开 Settings 菜单",
+        glossary=[("Settings", "设置")])
+    assert "glossary_mismatch" in ui_word.reasons
+    # 正确翻译（Settings→设置）不受影响
+    ui_ok = validate_translation_quality(
+        _entry("Open Settings menu"), "打开设置菜单",
+        glossary=[("Settings", "设置")])
+    assert "glossary_mismatch" not in ui_ok.reasons
     # 多词短语词对子串命中不受影响（固定表达照常检查）
     drift = validate_translation_quality(
         _entry("ENTER NAME please"), "请填写名字",
         glossary=[("ENTER NAME", "输入姓名")])
     assert "glossary_mismatch" in drift.reasons
+    # F10：功能词词对（on/off/in…）不做强制——'Analytics is ON.'
+    # 的 ON 是句子强调，译文「已开启」不被 (ON→关于) 误杀
+    # （incremental-rts 实证；功能词是句子功能成分，强制必误杀）
+    emphasis = validate_translation_quality(
+        _entry("<b>Analytics is ON.</b> Turn this off to opt out."),
+        '<b>分析功能已开启。</b>若要关闭此功能，请选择“关闭”。',
+        glossary=[("ON", "关于"), ("on", "在")])
+    assert "glossary_mismatch" not in emphasis.reasons
+    # 非功能词词对不受影响：'Click Save.' 漏翻（残留 Save）仍判失败
+    # （Save 非功能词，句中大写 + 右邻句号 → 词对照常适用）
+    save_leak = validate_translation_quality(
+        _entry("Click Save."), "点击 Save。",
+        glossary=[("Save", "保存")])
+    assert "glossary_mismatch" in save_leak.reasons
+    # 正确翻译（Save→保存）不受影响
+    save_ok = validate_translation_quality(
+        _entry("Click Save."), "点击保存。",
+        glossary=[("Save", "保存")])
+    assert "glossary_mismatch" not in save_ok.reasons
+    # 句中大写 + 右邻冒号仍是 UI 标签形态：词对照常适用
+    colon = validate_translation_quality(
+        _entry("Set Time: 60"), "设置 Time：60",
+        glossary=[("Time", "时间")])
+    assert "glossary_mismatch" in colon.reasons
+    # 占位符花括号边界豁免（F10）：'{health}' 内词是变量不是可翻译
+    # 语义文本——'Increase unit HP by {health}' 译文「生命值」不被
+    # (HEALTH→健康) 误杀（incremental-rts 实证）
+    hp = validate_translation_quality(
+        _entry("Upgraded hull alloy shrugs off fire. Increase unit HP by {health}"),
+        "升级后的船体合金能抵御火焰攻击。该单位的生命值将增加 {health}。",
+        glossary=[("HEALTH", "健康")])
+    assert "glossary_mismatch" not in hp.reasons
+    # F10d：支持页链接行（系统名 + URL）模型保留 URL 是正确行为——
+    # SAFE_KEEPERS 完整 URL 段剥离后「Windows: 」无小写普通词，
+    # 回显不再误判 untranslated_text（incremental-rts 实证三条）
+    url_echo = validate_translation_quality(
+        _entry("Windows: https://support.microsoft.com/en-us/help/314960"
+               "/how-to-install-fonts-in-windows"),
+        "Windows：https://support.microsoft.com/en-us/help/314960"
+        "/how-to-install-fonts-in-windows",
+        glossary=[("on", "在")])
+    assert "untranslated_text" not in url_echo.reasons
+    assert "glossary_mismatch" not in url_echo.reasons
+    # URL 内独立 token（.../font+on+gnu%2Blinux 的 on）不再被介词词对
+    # 误杀（URL 段整体剥离）
+    url_token = validate_translation_quality(
+        _entry("Linux: https://www.google.com/search?q=how+to+install"
+               "+a+font+on+gnu%2Blinux"),
+        "Linux: https://www.google.com/search?q=how+to+install"
+        "+a+font+on+gnu%2Blinux",
+        glossary=[("on", "在")])
+    assert "glossary_mismatch" not in url_token.reasons
+
+
+def test_f11_non_translatable_segments_exempt_from_pairs():
+    """F11（incremental-rts 实证）：非可翻译文本段继续豁免词对——
+    富文本标签属性/标签名、文件名段、方向词单字对、标签透明化的
+    句首判定。均与 F10b 花括号占位符同类：标记语言与标识符不是
+    可翻译语义文本。"""
+    # 富文本标签内部 token：'<size=120%>' 的 size / '</size>' 是标签
+    # 属性/标签名，译文「武器：」不被 (size→大小) 误杀
+    tag = validate_translation_quality(
+        _entry("<size=120%><b>Weapon:</b></size>"),
+        "<size=120%><b>武器：</b></size>",
+        glossary=[("size", "大小"), ("Weapon", "武器")])
+    assert "glossary_mismatch" not in tag.reasons
+    # 标签内 token 漏翻不受影响：'<b>HP</b>' 的 HP 在标签内容（非标签
+    # 内）→ 词对仍适用（回显判失败）
+    leak = validate_translation_quality(
+        _entry("<b>Weapon:</b>"), "<b>Weapon：</b>",
+        glossary=[("Weapon", "武器")])
+    assert "glossary_mismatch" in leak.reasons
+    # 标签透明化句首：'<b>Full version on Steam</b>' 的 Full 语义上是
+    # 句子首词（左邻标签是装饰层）→ 右邻小写 version → 自然句豁免，
+    # 意译「全版本」不被 (full→完整的) 误杀（VICTORY 实证）
+    full = validate_translation_quality(
+        _entry("<bounce>VICTORY!</bounce>\n<color=#FFD700>You've reached "
+               "Level %s!</color>\n\n<b>Full version on Steam</b>"),
+        "<bounce>胜利了！</bounce>\n<color=#FFD700>您已达到 %s级！</color>"
+        "\n\n<b>Steam全版本版</b>",
+        glossary=[("full", "完整的")])
+    assert "glossary_mismatch" not in full.reasons
+    # 句中标签内词不是句首：'the <b>full version</b>' 的 full 左邻
+    # the（词）→ UI 词形态照常 → 漏翻仍判失败
+    mid = validate_translation_quality(
+        _entry("Buy the <b>full version</b> on Steam"),
+        "在 Steam 上购买 <b>full version</b>",
+        glossary=[("full", "完整的")])
+    assert "glossary_mismatch" in mid.reasons
+    # 文件名段：'player-diagnostics.txt' 的 Player 是文件名一部分，
+    # 译文保留文件名不被 (Player→玩家) 误杀
+    fname = validate_translation_quality(
+        _entry("Export player-diagnostics.txt with recent logs, device info, "
+               "and current game state."),
+        "导出包含最新日志、设备信息以及当前游戏状态的 "
+        "player-diagnostics.txt 文件。",
+        glossary=[("Player", "玩家")])
+    assert "glossary_mismatch" not in fname.reasons
+    # 方向词单字对不做全局强制：'(buy factories on the right)' 译文
+    # 「右侧」不被 (RIGHT→对) 误杀（方向词在普通文本自由译，方向
+    # 语义由输入绑定语境专用检查负责）
+    dir_word = validate_translation_quality(
+        _entry("Factories produce units automatically. Only one unit type "
+               "is available but you will unlock more soon! "
+               "(buy factories on the right)"),
+        "工厂可以自动生产产品。目前只有一种产品类型可供使用，但未来会"
+        "提供更多类型！（请在右侧购买工厂）",
+        glossary=[("RIGHT", "对"), ("right", "对"), ("Right", "对")])
+    assert "glossary_mismatch" not in dir_word.reasons
+    # 方向词词对豁免后漏翻方向词仍被输入绑定检查拦截：
+    # 'Hat Right' 是输入绑定语境（设备词 Hat）→ 译文缺「右」判失败
+    dir_leak = validate_translation_quality(
+        _entry("Hat Right"), "帽子正确",
+        glossary=[("Right", "对")])
+    assert "direction_mismatch" in dir_leak.reasons
+
+
+def test_f13_dialogue_script_exempts_single_token_pairs():
+    """F13（interdream/DELTATRAVELER 实证）：Undertale 系对话脚本
+    （行首 "* " 对话符 / "^NN" 计时码 / 全大写喊话）是叙事自由语义
+    文本——单 token 普通词词对强制必然误杀意译：'* They fled the
+    place' 译文「那个地方」被 (PLACE→地点) 误杀；'WHAT'S YOUR NAME?'
+    译文「你叫什么名字？」被 (NAME→名称) 误杀；'enjoy your time'
+    译文「时光」被 (Time→时间) 误杀；'PLAY UNO' 译文「玩 UNO」被
+    (Play→播放) 误杀；'Oh shoot' 感叹词被 (SHOOT→射击) 误杀。"""
+    # 行首 "* " 对话符 + 计时码：意译不受词对影响
+    place = validate_translation_quality(
+        _entry("* They fled the place,^05 taking\n  the chair with them!"),
+        "* 他们逃离了那个地方，^05还带走了椅子！",
+        glossary=[("PLACE", "地点")])
+    assert "glossary_mismatch" not in place.reasons
+    # 全大写喊话（无 "* " 无计时码）：'WHAT'S YOUR NAME?' 系统提示
+    name = validate_translation_quality(
+        _entry("WHAT'S YOUR NAME?"), "你叫什么名字？",
+        glossary=[("NAME", "名称")])
+    assert "glossary_mismatch" not in name.reasons
+    # 全大写多词喊话 + 句子标点：'WOULD YOU THREE LIKE TO PLAY UNO?'
+    play = validate_translation_quality(
+        _entry("WOULD YOU THREE \nLIKE TO PLAY UNO?"),
+        "你们三个愿意玩 UNO 吗？",
+        glossary=[("Play", "播放")])
+    assert "glossary_mismatch" not in play.reasons
+    # 字面 "\n"（C# 转义）分隔的全大写喊话同样豁免
+    play_literal = validate_translation_quality(
+        _entry("WOULD YOU THREE \\nLIKE TO PLAY UNO?"),
+        "你们三个愿意玩 UNO 吗？",
+        glossary=[("Play", "播放")])
+    assert "glossary_mismatch" not in play_literal.reasons
+    # "* " 对话符 + 感叹词：'Oh shoot' 是感叹不是射击
+    shoot = validate_translation_quality(
+        _entry("* Oh shoot,^05 Kris!\n^05* A knife!"),
+        "* 哦，天哪，^05克里斯！\n^05* 一把刀！",
+        glossary=[("SHOOT", "射击")])
+    assert "glossary_mismatch" not in shoot.reasons
+    # 对话文本中漏翻普通词仍不被词对豁免掩盖——由其它检查兜底：
+    # 这里验证 keep 型与多词短语词对在对话中仍强制
+    multi = validate_translation_quality(
+        _entry("* You hear using 'F4' can make you have a 'full screen.'"),
+        "* 我听说使用 F4 可以全屏。",
+        glossary=[("FULL SCREEN", "全屏显示")])
+    assert "glossary_mismatch" in multi.reasons
+    # 非对话文本不受影响：UI 标签语境词对照常强制（'Enter your NAME'
+    # 译文丢「名称」语义仍判失败——注意 NAME 命中处是普通 UI 文本）
+    ui = validate_translation_quality(
+        _entry("Enter your NAME below."), "在下方输入你的名字。",
+        glossary=[("NAME", "名称")])
+    assert "glossary_mismatch" in ui.reasons
+    # markdown 列表（小写开头）不是对话脚本：不豁免
+    md = validate_translation_quality(
+        _entry("* item one\n* item two"), "* 项目一\n* 项目二",
+        glossary=[("ITEM", "条目")])
+    assert "glossary_mismatch" not in md.reasons

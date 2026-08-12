@@ -119,7 +119,6 @@ def _extract_atlas_bytes(env, atlas_tex, bundle: Path, atlas_tree: dict | None =
     优先从 bundle 的 ``CAB-xxx.resS`` 子文件按 m_StreamData 区间读取（保真无损）；
     无 resS 子文件/无流时回退 ``image_data``。
     """
-    cab = str(atlas_tex.assets_file.name)  # CAB-xxxxxxxx
     bundle_file = None
     for item in env.files.values():
         if type(item).__name__ == "BundleFile":
@@ -398,8 +397,8 @@ _CJK_MIN_TOTAL = 2000  # 字符表 CJK 码点数门槛（覆盖样本外生僻�
 def _tmp_chars(tree: dict) -> list[int]:
     """从 TMP 字符表提取 unicode 码点（tmp1/tmp2 兼容）。"""
     chars: list[int] = []
-    for field in ("m_CharacterTable", "m_characterTable"):
-        table = tree.get(field)
+    for key in ("m_CharacterTable", "m_characterTable"):
+        table = tree.get(key)
         if isinstance(table, list):
             for item in table:
                 if isinstance(item, dict):

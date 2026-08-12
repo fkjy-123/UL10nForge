@@ -6,6 +6,22 @@ import re
 from hanhua.core.engine_strings import (interaction_input_events,
                                         is_interaction_prompt)
 
+# 单 token 英文功能词（介词/连词/助动词/高频副词）——全局强制词对
+# 过滤表（2026-08-13 F10）：功能词做强制词对必然误杀自然文本
+# （honorplusplus 自动沉淀 ON→关于/on→在/off→关闭 后，incremental-rts
+# 'Analytics is ON.'、URL 行 '...on+gnu%2Blinux'、inch-by-inch
+# 'Start Ingredients' 全被 glossary_mismatch 误杀——单 token 污染
+# 词对教训）。共享定义：agent_memory（沉淀端：功能词不晋升 active）
+# 与 quality（检查端：功能词词对不强制）共用，防漂移。
+FUNCTION_WORDS = frozenset({
+    "a", "an", "and", "are", "as", "at", "be", "been", "but", "by",
+    "can", "could", "did", "do", "does", "down", "for", "from", "had",
+    "has", "have", "if", "in", "into", "is", "it", "its", "may", "might",
+    "no", "nor", "not", "of", "off", "on", "or", "out", "over", "than",
+    "the", "then", "this", "to", "too", "under", "up", "very", "was",
+    "were", "will", "with", "would", "yes",
+})
+
 BB_TAG_PATTERN = re.compile(
     r"\[/?(?:b|i|u|s|color|size|font|url|sprite)(?:=[^\]\r\n]+)?\]",
     re.I,
@@ -25,10 +41,17 @@ PLACEHOLDER_PATTERNS: list[tuple[str, re.Pattern[str]]] = [
     ("bb",      BB_TAG_PATTERN),                              # [b] [color=#fff]
     ("newline", re.compile(r"\\n")),                       # 字面 \n
     # Undertale 系对话脚本标记：行首 "* " 对话符（模型常整段丢弃，DELTATRAVELER
-    # 真实样本）→ 逐字保护；"* (选项)" 的括号是可选样式（既有行为允许去括号）
-    ("undertale_bullet", re.compile(r"(?m)^\* ")),
-    # 行尾计时码（"…)^05" 等，多行对话逐行收尾）→ 模型常丢 "^NN" → 保护
-    ("undertale_timing", re.compile(r"\)\^[0-9]{1,2}")),
+    # 真实样本）→ 逐字保护；"* (选项)" 的括号是可选样式（既有行为允许去括号）。
+    # F13（2026-08-13 interdream 实证）：DELTATRAVELER 文本资源里换行是
+    # C# 转义字面 "\n"（两个字符）而非真换行——(?m)^ 只匹配真行首，字面
+    # "\n" 后的行首 "* " 漏保（'* ...^10\n* ...' 第二个 '*' 被模型丢弃
+    # 未被拦截）。(?:^|\\n) 同时覆盖真行首与字面转义行首。
+    ("undertale_bullet", re.compile(r"(?m)(?:^|\\n)\* ")),
+    # 计时码 "^NN"（多行对话逐行收尾）→ 模型常丢 "^NN" → 保护。F13：
+    # 原模式只匹配 ")^05" 括号形式，interdream 实证形式多样（",^05"、
+    # ".^05"、"…^05"、"^05* " 行首接对话符、"?" 后）。前邻非字母数字
+    # （逗号/句点/问号/行首）即匹配——"x^10" 数学幂（前邻字母）不受影响。
+    ("undertale_timing", re.compile(r"(?<![A-Za-z0-9_])\^[0-9]{1,2}")),
 ]
 
 _DEV_TEMPLATE_PLACEHOLDER = re.compile(
@@ -144,7 +167,12 @@ _COMBINING_MARKS = re.compile(
 # （deepest-sword 实证）。lookahead 只排除 ASCII 词字符继续拼接（comedy
 # 的 com 后接字母仍不剥），中文/标点/空白照常构成边界。
 SAFE_KEEPERS = re.compile(
-    r"[A-Za-z0-9_]+(?:/[A-Za-z0-9_]+){2,}"
+    r"https?://[^\s<>'\"]+"
+    # 完整 URL（MacOS: https://support.apple.com/... 支持页链接行，
+    # incremental-rts 实证：域名分支剥不掉 https 协议段与查询参数，
+    # https/en/us 等残留被判小写普通词 → 整行回显误判 untranslated_text）。
+    # 支持页链接行模型保留 URL 是正确行为（URL 非可翻译语义文本）。
+    r"|[A-Za-z0-9_]+(?:/[A-Za-z0-9_]+){2,}"
     r"|[A-Za-z0-9-]+(?:\.[A-Za-z0-9-]+)*\.(?:com|net|org|io|gg|dev|me|it|ru|de|jp)(?![A-Za-z0-9])"
     # 完整 email 地址（contact@undertowgames.com：@ 前本地部分也要剥，
     # 否则 'contact' 残留被判小写普通词——containment 实证：模型保留
@@ -728,7 +756,28 @@ def validate_translation(original: str, translation: str) -> tuple[bool, list[st
         if extra_counts[placeholder] > 0:
             extra.append(placeholder)
             extra_counts[placeholder] -= 1
-    return src == dst, missing, extra
+    # F12（2026-08-13 incremental-rts 实证 row207）：模型把 {health}
+    # 本地化成中文变量名（{伤害}/{速度惩罚}）并在尾部重复原文占位符
+    # 堆叠（{health}{damage}...）——brace 模式只匹配 ASCII，中文
+    # 花括号段逃过提取 → Counter 恰好相等。译文所有 {..} 花括号段
+    # 必须都是原文占位符（变量名是代码标识符，本地化破坏运行时替换，
+    # 变量名不属于可翻译语义文本——与 F10b/F11 同族：非语义段）；
+    # 孤立花括号（'健康} HP' 的 '}'——{health} 被拆碎）是占位符
+    # 破碎信号。
+    brace_dst = re.findall(r"\{[^{}\r\n]*\}", translation)
+    brace_src = set(re.findall(r"\{[^{}\r\n]*\}", original))
+    # 只补非 ASCII 段：ASCII 花括号段已被 brace 模式提取进 extra_counts
+    # （'拿起{item}物品' 的 {item}——避免重复计）。中文段（{伤害}）
+    # brace 模式漏提——变量名本地化破坏运行时替换。
+    cjk_brace_extra = [
+        b for b in brace_dst
+        if b not in brace_src and not b.isascii()]
+    if cjk_brace_extra:
+        extra += cjk_brace_extra
+    if src and translation.count("{") != translation.count("}"):
+        missing.append("<lone-brace>")  # 占位符破碎（健康} HP）
+    return (src == dst and not cjk_brace_extra and not (
+        src and translation.count("{") != translation.count("}"))), missing, extra
 
 
 def is_credit_like(text: str) -> bool:

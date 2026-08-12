@@ -45,7 +45,25 @@ def test_validate_extra():
     assert not ok and extra == ["{item}"]
 
 
-def test_extract_renpy_wavetime_tag():
+def test_validate_cjk_localized_placeholder_and_lone_brace():
+    """F12（incremental-rts row207 实证）：模型把 {health} 本地化成中文
+    变量名（{伤害}/{速度惩罚}）并在尾部重复原文占位符堆叠——brace
+    模式只匹配 ASCII，中文花括号段逃过提取 → Counter 恰好相等。
+    中文占位符（变量名本地化破坏运行时替换）与孤立花括号（'健康}'
+    的 '}'——{health} 被拆碎）必须判失败。"""
+    ok, missing, extra = validate_translation(
+        "Thunderstorms spawn {health} HP, {damage} damage",
+        "雷暴拥有健康} HP、{伤害}，尾部堆叠{health}{damage}")
+    assert not ok
+    assert missing == ["<lone-brace>"]
+    assert "{伤害}" in extra
+    # 正常保留不受影响
+    ok2, missing2, extra2 = validate_translation(
+        "HP {health}", "生命值 {health}")
+    assert ok2 and not missing2 and not extra2
+    # 原文无占位符时对话里的花括号（文本内容）不拦截
+    ok3, _, _ = validate_translation("他说这是{}", "他说这是{}")
+    assert ok3
     # Ren'Py 样式 {w=秒} 等号值标记必须识别为占位符（a-catfiends 真实漏检）
     assert extract_placeholders("HELLO.{w=3}{x}") == ["{w=3}", "{x}"]
 
@@ -459,6 +477,53 @@ def test_regular_text_bullet_lines_keep_leading_star():
 
     ok, _, _ = validate_translation("* Item one", "项目一")
     assert ok is False
+
+
+def test_undertale_bullet_literal_escaped_newline_lines_protected():
+    """F13（interdream/DELTATRAVELER 实证）：文本资源里换行是 C# 转义
+    字面 "\\n"（两个字符）而非真换行——字面 "\\n" 后的行首 "* " 也须
+    保护（原模式 (?m)^ 只匹配真行首，字面转义后行首漏保：'* ...^10
+    \\n* ...' 第二个 '*' 被模型丢弃未被拦截）。"""
+    # 字面 \n（repr 中 \\n）分隔的多行对话：三个 "* " 全部提取
+    original = "* ...^10\n* ...^10\n* ..."
+    dropped_mid = "...^10\n...^10\n..."
+    ok, _, _ = validate_translation(original, dropped_mid)
+    assert ok is False
+
+    kept = "* ...^10\n* ...^10\n* ..."
+    ok, _, _ = validate_translation(original, kept)
+    assert ok is True
+
+    # 真换行场景不回归：第一行丢 "* " 仍拦截
+    ok, _, _ = validate_translation("* Item one\n* Item two", "项目一\n* 项目二")
+    assert ok is False
+
+
+def test_undertale_timing_bare_code_is_protected():
+    """F13（interdream 实证）：计时码 "^NN" 形式多样（",^05" 逗号后、
+    ".^05" 句点后、"^05* " 行首接对话符）→ 均须保护。数学幂 "x^10"
+    （前邻字母）不受影响。"""
+    # 逗号后计时码：',^05' 模型丢弃 → 拦截
+    original = "* They fled the place,^05 taking the chair with them!"
+    ok, _, _ = validate_translation(original, "* 他们逃离了那个地方，带着椅子！")
+    assert ok is False
+
+    kept = "* 他们逃离了那个地方，^05带着椅子！"
+    ok, _, _ = validate_translation(original, kept)
+    assert ok is True
+
+    # 行首计时码 + 对话符：'^05* ' 须保留
+    original2 = "* Oh shoot,^05 Kris!\n^05* A knife!"
+    ok, _, _ = validate_translation(original2, "* 哦，天哪，^05克里斯！\n^05* 一把刀！")
+    assert ok is True
+
+    ok, _, _ = validate_translation(original2, "* 哦，天哪，^05克里斯！\n* 一把刀！")
+    assert ok is False
+
+    # 数学幂前邻字母 → 不提取 → 模型丢不拦截（无占位符要求）
+    ok, _, _ = validate_translation("The value of 2^10 is 1024.",
+                                    "2^10 的值是 1024。")
+    assert ok is True
 
 
 # ── baldis 修复：// 注释行 / 混合符号 token ──

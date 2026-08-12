@@ -35,6 +35,8 @@ import sqlite3
 import threading
 from pathlib import Path
 
+from hanhua.core.placeholders import FUNCTION_WORDS
+
 # ── 阈值（记忆生命周期） ─────────────────────────────────────────────
 ACTIVE_MIN_EVIDENCE = 2    # pending → active 的证据门槛（参与注入）
 DIRECT_APPLY_MIN_EVIDENCE = 3  # 直接应用的最低证据（多游戏验证级别）
@@ -42,6 +44,14 @@ RETIRE_MAX_REJECTS = 2     # 被质量门拒绝 N 次 → 退休（不可信）
 TERM_MAX_WORDS = 1         # 单字词（Resume/miss/Save）绝不全自动应用——
                            # 语境依赖最强、术语污染源（ffs 事故），只注入
 REPORT_TOP = 5             # 报告里展示的 TOP 记忆数
+# 单 token 英文功能词（介词/连词/助动词/高频副词）——绝不晋升 active：
+# 做全局强制词对必然误杀自然文本（honorplusplus 实证：ON→关于/on→在/
+# off→关闭 沉淀 active 后，incremental-rts 的 'Analytics is ON.'、
+# URL 行 '...on+gnu%2Blinux'、inch-by-inch 的 'Start Ingredients' 全被
+# 误杀）。与审核沉淀 C5 门禁（高频普通词单 token 不入全局库）对齐：
+# 翻译端自动沉淀同样有功能词污染缺口（2026-08-13 补）。keep pending
+# 可人工复核，不删除记录。共享定义在 placeholders.FUNCTION_WORDS
+# （quality 检查端同表过滤，防漂移）。
 
 
 def context_key_of(role: str = "", morph: str = "") -> str:
@@ -169,9 +179,22 @@ class AgentMemory:
                 status = row["status"]
                 if status == "pending" and evidence >= ACTIVE_MIN_EVIDENCE \
                         and int(row["rejects"]) == 0:
-                    status = "active"
-                    self._session["confirmed"] = \
-                        self._session.get("confirmed", 0) + 1
+                    if key.casefold() in FUNCTION_WORDS:
+                        # 功能词晋升拦截（2026-08-13）：保持 pending——
+                        # 不进 reference_pairs，不参与质量强制；记录
+                        # 计数（报告可见），保留记录可人工复核。
+                        # 功能词（on/off）做参考/强制均无价值且必误杀
+                        # 自然文本（incremental-rts 'Analytics is ON.'
+                        # 实证）。高频普通词（miss/health）不在此拦：
+                        # 它们做参考注入有语境价值（test_term_never_
+                        # direct_applied 固化 miss 只注入参考），强制
+                        # 过滤在 quality 检查端（F10）
+                        self._session["blocked_function_words"] = \
+                            self._session.get("blocked_function_words", 0) + 1
+                    else:
+                        status = "active"
+                        self._session["confirmed"] = \
+                            self._session.get("confirmed", 0) + 1
                 self.conn.execute(
                     "UPDATE memories SET evidence_count=?, games=?, status=?,"
                     " updated_at=? WHERE id=?",
@@ -350,7 +373,8 @@ class AgentMemory:
         with self._lock:
             counts = {s: self._session.get(s, 0) for s in (
                 "proposed", "evidence_added", "confirmed", "conflicts",
-                "direct_applied", "accepted", "rejected", "retired")}
+                "direct_applied", "accepted", "rejected", "retired",
+                "blocked_function_words")}
             rows = self.conn.execute(
                 "SELECT type, status, COUNT(*) c FROM memories"
                 " GROUP BY type, status ORDER BY type, status").fetchall()

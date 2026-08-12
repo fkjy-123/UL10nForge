@@ -1,0 +1,306 @@
+"""审核模型（Qwen3.5-4B）本地服务管理（任务一阶段 1 T1-2 基础）。
+
+背景：LocalModelManager 是「单模型」管理器（model_runtime.json 只
+记录一个签名，翻译/审核是不同模型文件，交替 ensure_running 会互杀）。
+阶段 0 的多实例方案下，审核服务需要自己的独立 runtime 状态文件
+review_runtime.json——复用同一套「跨实例探测复用 + 按需启动」机制，
+但互不干扰：翻译实例的启停不碰审核实例。
+
+服务特征（ModelSpec review）：
+- 端口 8081（DEFAULT_PORTS）
+- ctx 8192（DEFAULT_CTX）
+- `--reasoning off`（thinking 模型：默认把输出预算耗在 reasoning_content，
+  冒烟实证 content 空串 + finish=length；关闭后稳定输出合法 JSON）
+- keep-alive -1 常驻（审核穿插在排查各环节，常驻避免反复读 3GB）
+"""
+from __future__ import annotations
+
+import json
+import secrets
+import subprocess
+import sys
+import threading
+import time
+from pathlib import Path
+
+import httpx
+
+from .local_model import build_server_command, discover_server
+from .model_registry import ModelRegistry, ModelSpec
+
+_RUNTIME_STATE_FILENAME = "review_runtime.json"
+
+
+def _spawn(cmd: list[str], log_path: Path) -> subprocess.Popen:
+    """启动 llama-server 进程（Windows 无窗口标志）。"""
+    creationflags = 0
+    if sys.platform == "win32":
+        creationflags = (getattr(subprocess, "CREATE_NO_WINDOW", 0)
+                         | getattr(subprocess, "CREATE_NEW_PROCESS_GROUP", 0))
+    handle = log_path.open("a", encoding="utf-8", errors="replace")
+    return subprocess.Popen(
+        cmd, cwd=str(Path(cmd[0]).parent), stdout=handle,
+        stderr=subprocess.STDOUT, text=True, encoding="utf-8",
+        errors="replace", creationflags=creationflags)
+
+
+class ReviewModelService:
+    """审核模型本地服务：跨实例复用 + 按需启动 + 失败告警。
+
+    用法（SemanticReviewer 内部调用）：
+        svc = ReviewModelService(app_dir)
+        info = svc.ensure_running()   # {"base_url": ".../v1", "api_key": ...}
+        result = svc.chat(prompt)     # 直接对话（内部走 /v1/chat/completions）
+        svc.release()                 # 不杀进程：保留给后续实例复用
+
+    ensure_running 成功启动的服务不随实例销毁（与 LocalModelManager
+    的「需要哪个留哪个」一致），状态写 review_runtime.json 供复用。
+    """
+
+    def __init__(self, app_dir: str | Path, *,
+                 process_factory=None, probe=None, sleep=None,
+                 token_factory=None, startup_timeout: float = 180.0):
+        self.app_dir = Path(app_dir).resolve()
+        self._process_factory = process_factory or subprocess.Popen
+        self._probe = probe or self._http_probe
+        self._sleep = sleep or time.sleep
+        self._token_factory = token_factory or (
+            lambda: secrets.token_urlsafe(24))
+        self.startup_timeout = max(10.0, float(startup_timeout))
+        self._process: subprocess.Popen | None = None
+        self._log_handle = None
+        self._runtime: dict | None = None      # {"base_url", "api_key"}
+        self._lock = threading.RLock()
+
+    # ── 跨实例运行时状态（review_runtime.json，独立于翻译实例） ────
+    @property
+    def _state_file(self) -> Path:
+        return self.app_dir / _RUNTIME_STATE_FILENAME
+
+    def _save_state(self, port: int, api_key: str, model: str,
+                    signature: tuple) -> None:
+        try:
+            self._state_file.write_text(
+                json.dumps({
+                    "port": int(port), "api_key": api_key,
+                    "model": str(model),
+                    "signature": [str(item) for item in signature],
+                }, ensure_ascii=False), encoding="utf-8")
+        except OSError:
+            pass  # 状态文件只是加速复用，失败不影响启动
+
+    def _load_state(self) -> dict | None:
+        try:
+            if not self._state_file.is_file():
+                return None
+            data = json.loads(self._state_file.read_text(encoding="utf-8"))
+            if not isinstance(data, dict) or not isinstance(data.get("port"), int):
+                return None
+            return data
+        except (OSError, ValueError):
+            return None
+
+    @staticmethod
+    def _http_probe(base: str, api_key: str, expected_model: str) -> bool:
+        """探测审核实例：/health 200 且 /v1/models 含目标模型。
+
+        必须携带 Authorization 头（2026-08-13 hickory 实证：不带 key
+        的探测对带鉴权的 llama-server 返回 401 → 误判「实例不可用」→
+        并行 runner 各自重复启动 4B；Windows llama-server SO_REUSEADDR
+        多实例绑同一端口，连接被最新实例接收，复用者拿旧 key 请求 →
+        Invalid API Key → 审核静默 0 判定）。
+        """
+        headers = {"Authorization": f"Bearer {api_key}"}
+        try:
+            health = httpx.get(base + "/health", timeout=2)
+            if health.status_code != 200:
+                return False
+            models = httpx.get(base + "/v1/models", timeout=2,
+                               headers=headers)
+            if models.status_code != 200:
+                return False
+            ids = [str(m.get("id", ""))
+                   for m in models.json().get("data", [])]
+            return any(expected_model.casefold() in i.casefold()
+                       for i in ids)
+        except httpx.HTTPError:
+            return False
+
+    def _spec(self) -> ModelSpec:
+        return ModelRegistry(self.app_dir).by_kind("review")
+
+    # ── 主入口 ────────────────────────────────────────────────────
+    def ensure_running(self, cancellation_event=None,
+                       context_size: int | None = None) -> dict:
+        """确保审核服务就绪，返回 {"base_url": ".../v1", "api_key": ...}。
+
+        - 本实例已启动同签名服务 → 直接复用
+        - review_runtime.json 记录同签名服务 → 探测通过则复用
+        - 否则启动新实例（build_server_command + --reasoning off）
+        """
+        spec = self._spec()
+        if not spec.is_available:
+            raise RuntimeError(
+                f"审核模型缺失：{spec.path}（models/ 目录无 Qwen3.5-4B GGUF）")
+        # 硬件智能分配（任务三接通）：静态档位规划覆盖模板 ctx 与 GPU
+        # 层数（4~6GB 档 4B 上 GPU / 显存紧张降 4096 / 无 GPU 全 CPU）；
+        # 探测失败回退模板默认值（ctx 模板 + gpu_layers=-1 全层）
+        plan = None
+        try:
+            from hanhua.core.hardware_planner import (
+                plan_allocation, probe_hardware)
+            plan = plan_allocation(
+                probe_hardware(), ModelRegistry(self.app_dir)).get("review")
+        except Exception:  # noqa: BLE001 - 探测失败不阻断启动
+            plan = None
+        server = discover_server("", self.app_dir)
+        ctx = context_size or (plan.ctx if plan else spec.default_ctx)
+        gpu_layers = plan.gpu_layers if plan else -1
+        signature = (server, spec.path, spec.port, ctx, gpu_layers, 1)
+        with self._lock:
+            if (self._process is not None
+                    and self._process.poll() is None
+                    and self._runtime is not None):
+                return dict(self._runtime)
+        # 跨实例复用
+        state = self._load_state()
+        if state is not None and tuple(state.get("signature", ())) == tuple(
+                str(item) for item in signature):
+            base = f"http://127.0.0.1:{int(state['port'])}"
+            if self._probe(base, str(state.get("api_key", "")),
+                           spec.path.stem):
+                with self._lock:
+                    self._runtime = {
+                        "base_url": base + "/v1",
+                        "api_key": str(state.get("api_key", "")),
+                        "port": int(state["port"]),
+                    }
+                    return dict(self._runtime)
+        # 启动新实例前清场（hickory 实证 2026-08-13）：Windows 下
+        # llama-server 多实例可用 SO_REUSEADDR 绑同一端口，新连接由内核
+        # 随机分发给任一实例——8081 上残留实例（崩溃 runner 的 4B、手动
+        # 测试实例）与本实例并存时，复用者拿 runtime key 请求会被其他
+        # 实例 401 拒（「审核 0 判定」静默失败）。启动前若 8081 已被
+        # 其他 llama-server 占用（key 与 runtime 不匹配才走到这里），
+        # 先杀占用者再启动，保证端口上永远只有本实例。
+        if cancellation_event is not None and cancellation_event.is_set():
+            raise RuntimeError("审核服务启动已取消")
+        self._clear_stale_review_port(spec.port)
+        api_key = self._token_factory()
+        cmd = build_server_command(
+            server, spec.path, port=spec.port, api_key=api_key,
+            context_size=ctx, gpu_layers=gpu_layers, parallel=1,
+            cache_reuse=512)
+        cmd.extend(spec.server_args)   # ("--reasoning", "off")
+        self._stop_locked()
+        log_path = self.app_dir / "logs" / "review-server.log"
+        log_path.parent.mkdir(parents=True, exist_ok=True)
+        try:
+            proc = self._process_factory(
+                cmd, cwd=str(Path(cmd[0]).parent), stdout=log_path.open(
+                    "a", encoding="utf-8", errors="replace"),
+                stderr=subprocess.STDOUT, text=True, encoding="utf-8",
+                errors="replace", creationflags=(
+                    getattr(subprocess, "CREATE_NO_WINDOW", 0)
+                    | getattr(subprocess, "CREATE_NEW_PROCESS_GROUP", 0))
+                if sys.platform == "win32" else 0)
+        except OSError as exc:
+            raise RuntimeError(f"审核服务启动失败：{exc}") from exc
+        with self._lock:
+            self._process = proc
+        deadline = time.monotonic() + self.startup_timeout
+        base = f"http://127.0.0.1:{spec.port}"
+        while time.monotonic() < deadline:
+            if proc.poll() is not None:
+                tail = self._log_tail(log_path)
+                raise RuntimeError(f"审核服务异常退出（{proc.returncode}）："
+                                   f"{tail[-400:]}")
+            if cancellation_event is not None and cancellation_event.is_set():
+                raise RuntimeError("审核服务启动已取消")
+            if self._probe(base, api_key, spec.path.stem):
+                self._save_state(spec.port, api_key, spec.path, signature)
+                with self._lock:
+                    self._runtime = {
+                        "base_url": base + "/v1", "api_key": api_key,
+                        "port": spec.port,
+                    }
+                    return dict(self._runtime)
+            self._sleep(2.0)
+        tail = self._log_tail(log_path)
+        raise RuntimeError(f"审核服务启动超时（{self.startup_timeout}s）："
+                           f"{tail[-400:]}")
+
+    @staticmethod
+    def _clear_stale_review_port(port: int) -> None:
+        """杀掉占用审核端口的残留 llama-server（确保端口上唯一实例）。
+
+        Windows: netstat -ano 列出 LISTENING 该端口的 PID → taskkill /F。
+        只杀端口占用者（并行 runner 的翻译实例在不同端口，不受影响）；
+        杀不掉的（权限/已消失）静默继续——启动失败由现有超时/退出
+        检测兜底。
+        """
+        try:
+            out = subprocess.run(
+                ["netstat", "-ano"], capture_output=True, text=True,
+                timeout=10).stdout
+        except (OSError, subprocess.TimeoutExpired):
+            return
+        pids: set[str] = set()
+        for line in out.splitlines():
+            parts = line.split()
+            if len(parts) >= 5 and parts[0] == "TCP" and \
+                    parts[1].endswith(f":{port}") and \
+                    parts[3] == "LISTENING":
+                pids.add(parts[4])
+        for pid in pids:
+            try:
+                subprocess.run(["taskkill", "/F", "/PID", pid],
+                               capture_output=True, timeout=10)
+            except (OSError, subprocess.TimeoutExpired):
+                continue
+
+    @staticmethod
+    def _log_tail(path: Path, limit: int = 2000) -> str:
+        try:
+            return path.read_text(encoding="utf-8", errors="replace")[-limit:]
+        except OSError:
+            return "（无日志）"
+
+    def _stop_locked(self) -> None:
+        """终止本实例启动的进程（跨实例复用的外部实例不动）。"""
+        with self._lock:
+            proc = self._process
+            self._process = None
+            self._runtime = None
+        if proc is not None and proc.poll() is None:
+            proc.terminate()
+            try:
+                proc.wait(timeout=10)
+            except subprocess.TimeoutExpired:
+                proc.kill()
+
+    # ── 对话 ─────────────────────────────────────────────────────
+    def chat(self, prompt: str, *, max_tokens: int = 1024,
+             temperature: float = 0.1, timeout: float = 120.0) -> str:
+        """本地审核模型单轮对话，返回 content 文本（无 reasoning）。"""
+        info = self.ensure_running()
+        resp = httpx.post(
+            info["base_url"] + "/chat/completions",
+            headers={"Authorization": f"Bearer {info['api_key']}"},
+            json={"model": "local",
+                  "messages": [{"role": "user", "content": prompt}],
+                  "temperature": temperature, "max_tokens": max_tokens},
+            timeout=timeout,
+        )
+        resp.raise_for_status()
+        return resp.json()["choices"][0]["message"]["content"]
+
+    def release(self) -> None:
+        """保留服务供后续复用（幂等，不杀外部实例）。"""
+        with self._lock:
+            self._process = None
+            self._runtime = None
+
+    def stop(self) -> None:
+        """终止本实例启动的审核服务进程（清理场景用）。"""
+        self._stop_locked()

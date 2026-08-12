@@ -511,11 +511,18 @@ def _detect_mono_architecture(game_dir: Path) -> str:
     )
     if not executables:
         raise FontInstallError("游戏根目录中未找到 Unity 游戏可执行文件")
+    # 标准 *_Data/Managed 与扁平布局并存支持：老 Unity standalone/
+    # WebGL 导出的 Data 内容直接散根目录（hotel-paradise 实证：
+    # 「HotelParadise v1.1 WIN.exe」+ 根目录 Managed/Mono/），
+    # 无同名 *_Data 宿主目录。
     unity_executables = [
         executable
         for executable in executables
-        if _mono_managed_core(
-            game_dir / f"{executable.stem}_Data" / "Managed")
+        if (
+            _mono_managed_core(
+                game_dir / f"{executable.stem}_Data" / "Managed")
+            or _mono_managed_core(game_dir / "Managed")
+        )
     ]
     if not unity_executables:
         raise FontInstallError(

@@ -533,7 +533,7 @@ def _write_summary(project, out_dir: Path, profile, *,
         f"# {name} 手动汉化记录", "",
         f"- 游戏目录：{project.game_dir}",
         f"- 时间：{_now()}",
-        f"- 记录类型：GUI 手动汉化写回后自动生成（数据快照 + 待办清单）",
+        "- 记录类型：GUI 手动汉化写回后自动生成（数据快照 + 待办清单）",
         "",
         "## 1 识别",
         f"- 文件：{len(files)}（文本 {text_files} · 二进制 "
@@ -814,7 +814,7 @@ def _write_auto_docs(project, out_dir: Path, profile, *,
         f"- 输出目录：{project.out_dir}",
         "- 生成方式：GUI 手动汉化写回后自动导出；实质分析由后续会话补充",
         "", "## 1 流程结果",
-        f"- 识别 → 翻译 → 写回：完成" if not error_title
+        "- 识别 → 翻译 → 写回：完成" if not error_title
         else "- 识别 → 翻译 → 写回：写回中断",
         f"- 最终结论：{verdict}",
         f"- 翻译：完成 {counts.get('translated', 0)} · "

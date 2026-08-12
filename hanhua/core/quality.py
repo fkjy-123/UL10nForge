@@ -13,8 +13,8 @@ from hanhua.core.engine_strings import (PHYSICAL_KEY_NAMES_CASEFOLD,
                                         is_interaction_prompt)
 from hanhua.core.models import TextEntry
 from hanhua.core.placeholders import (DISPLAY_WORDS, FORMAT_TAG_PATTERN,
-                                      SAFE_KEEPERS, _STRIP_RICH_TEXT,
-                                      is_hipster_ipsum,
+                                      FUNCTION_WORDS, SAFE_KEEPERS,
+                                      _STRIP_RICH_TEXT, is_hipster_ipsum,
                                       validate_translation)
 from hanhua.core.knowledge import (_UPPERCASE_ACTION_VERBS,
                                    _is_spaced_action,
@@ -284,7 +284,13 @@ _EXPLANATORY_PATTERN = re.compile(
     r"以下是(?:可能的)?(?:解释|翻译)[:：]?"
     r"|参考以下翻译[:：]?"
     r"|该文本看起来像是|这个文本看起来像是|看起来像是随机"
-    r"|没有明确的含义", re.I)
+    r"|没有明确的含义"
+    # 中置「X 翻译为 Y」解释句式（honorplusplus 实证：'f={0} DEBUG 翻译为
+    # DEBUG {1}'——模型对全大写保留词输出解释而非译文；此前只拦前缀/
+    # 特定解释短语，中置句式漏网→首译垃圾直接过质量门→写回截断丢占位符
+    # 才被拒）。20 字符门槛（调用处）已防短文本误伤；正常译文句子中
+    # 不会出现「翻译为」这个翻译动作的元描述词。
+    r"|\w+\s*翻译为\s*\S+", re.I)
 
 
 def _has_illegal_controls(value: str) -> bool:
@@ -379,6 +385,42 @@ def source_term_applies(term: str, source_text: str) -> bool:
     return term.casefold() in source_text.casefold()
 
 
+def _in_filename_segment(term: str, source_text: str) -> bool:
+    """词对 source 是否命中文件名/路径段（player-diagnostics.txt 的
+    Player）→ 文件名是标识符不是可翻译语义文本，词对不适用。
+    incremental-rts 实证：'Export player-diagnostics.txt with recent
+    logs...' 译文「导出包含最新日志…的 player-diagnostics.txt 文件」
+    保留文件名被 (Player→玩家) 词对误杀 glossary_mismatch。检测：
+    token 所在连续词段（[A-Za-z0-9_.-]+）含 '-' 或 '_' 且以
+    '.'+扩展名（1-8 字母）结尾——'player-diagnostics.txt' 段含连
+    字符 + .txt 扩展名。防误伤：普通短语（fight-or-flight 不以 .ext
+    结尾）不受影响。"""
+    lower = source_text.casefold()
+    term_cf = term.casefold()
+    start = 0
+    while True:
+        m = re.search(rf"(?<![A-Za-z0-9_]){re.escape(term_cf)}(?![A-Za-z0-9_])",
+                      lower[start:], re.I)
+        if not m:
+            return False
+        i = start + m.start()
+        j = start + m.end()
+        seg_start, seg_end = i, j
+        while seg_start > 0 and (
+                source_text[seg_start - 1].isalnum()
+                or source_text[seg_start - 1] in "._-"):
+            seg_start -= 1
+        while seg_end < len(source_text) and (
+                source_text[seg_end].isalnum()
+                or source_text[seg_end] in "._-"):
+            seg_end += 1
+        seg = source_text[seg_start:seg_end]
+        if re.search(r"\.\w{1,8}$", seg) \
+                and ("-" in seg or "_" in seg or seg_start > 0):
+            return True
+        start = j
+
+
 def _label_context_match(term: str, source_text: str) -> bool:
     """单 token 词对子串命中处是否为标签语境：命中处左/右邻是标点、
     数字、行首或行尾（'miss: 999' 的 miss 右邻冒号是 HUD 计数标签；
@@ -398,15 +440,71 @@ def _label_context_match(term: str, source_text: str) -> bool:
             return False
         i = start + m.start()
         j = start + m.end()
+        # 富文本标签内部（<size=120%> 的 size / </size>）：标签属性与
+        # 标签名是标记语言不是可翻译文本（incremental-rts '<size=120%>
+        # <b>Weapon:</b></size>' 实证：(size→大小) 词对命中标签内
+        # size 误杀译文「武器：」——与 F10b 花括号占位符同类：非语义
+        # 文本段豁免词对）。判据：token 前最近的 '<' 到 token 之间
+        # 无 '>'（未闭合标签段内），且右侧有 '>' 闭合——'<b>Weapon:'
+        # 的 Weapon 在标签内容里（前有 '>' 闭合 <b>），照常适用词对。
+        lt = source_text.rfind("<", 0, i)
+        gt = source_text.find(">", j)
+        if (lt != -1 and gt != -1 and lt < i
+                and ">" not in source_text[lt:i]):
+            return False  # 富文本标签内部（标记语言，非可翻译文本）
         if source_text[i:i + 1].isupper():
-            return True  # TitleCase/全大写命中（'Open Settings menu' 的
-            # Settings 是 UI 菜单词形态，词对适用——漏译照常判失败；
-            # 'time to take' 的 time 小写是自然句功能词，不在此列）
+            # 大写命中分两种（inch-by-inch 实证）：非句子首词大写
+            # （'Open Settings menu' 的 Settings 左邻有词 Open）是 UI
+            # 菜单词形态 → 词对适用；句子首词大写（'Time for some
+            # science!' 的 Time 在行首）只是英文句子首词大写规则 →
+            # 右邻（跳空白）是小写字母词则豁免（自然句），右邻标点/
+            # 行尾/数字才适用（'TIME' 单行计时器标签 / 'Time:' /
+            # 'Time 5' 计数）。
+            # 富文本标签透明化（2026-08-13 F11）：'<b>Full version on
+            # Steam</b>' 的 Full 语义上是句子首词，但左邻是 '>'（标签
+            # 结束）→ 当前扫描判为非句首 → 词对 (full→完整的) 误杀
+            # 译文「全版本」。句子首词判定应跳过标签段（'>' 回跳最近
+            # '<'）——标签是装饰层，不影响语境判定（VICTORY 实证）。
+            left = source_text[:i]
+            k = i - 1
+            while k >= 0:
+                c = left[k]
+                if c.isspace():
+                    k -= 1
+                    continue
+                if c == ">":
+                    # 富文本标签结尾：跳过整个标签段（</b>、<size=120%>）
+                    lt2 = left.rfind("<", 0, k)
+                    if lt2 != -1:
+                        k = lt2 - 1
+                        continue
+                break
+            sentence_head = (k < 0) or (left[k] in ".!?。！？…")
+            if not sentence_head:
+                return True  # 左邻有词：句中 TitleCase（UI 菜单词形态）
+            # 右邻跳过空白取首个字符（'Time for' 的 Time 后是空格）
+            after = source_text[j:].lstrip(" \t\r\n")[:1] \
+                if j < len(source_text) else ""
+            if after and after.isalpha() and after.islower():
+                return False  # 句子首词大写 + 右邻小写词 = 自然句
+            return True  # 句首 + 右邻标点/行尾/数字 = 标签
         before = source_text[i - 1] if i > 0 else ""
         after = source_text[j] if j < len(source_text) else ""
         if not before or not after:
             return True  # 行首/行尾（'TIME' 单独一行是计时器标签）
         if (before in punctuation or after in punctuation):
+            # 标点邻接——但句尾标点（!.?）是句子正常结束不是标签标记
+            # （'...at this size!' 的 size 右邻感叹号是自然句句尾，
+            #  词对 (size→大小) 误杀译文「这种规模」——inch-by-inch
+            #  实证）；占位符花括号（{health}）是变量边界不是标签
+            # 标记（incremental-rts 'Increase unit HP by {health}'
+            #  译文「生命值」被 (HEALTH→健康) 误杀——占位符内词
+            #  不是可翻译语义文本）；冒号/逗号/括号等才是 HUD 标签
+            # 标记（'miss: 999'）。
+            if after in ".!?。！？":
+                return False
+            if before in "{}" or after in "{}":
+                return False  # 占位符边界
             return True  # 标点邻接（'miss:' 的 miss 右邻冒号是 HUD 标签）
         if (before.isdigit() or after.isdigit()):
             return True  # 数字邻接（'Time 5' 类计数标签）
@@ -424,6 +522,32 @@ def _is_lyric_like(text: str) -> bool:
     if re.search(r"[぀-ヿ一-鿿]", text):
         return True
     return bool(re.search(r"\((?:[A-Za-z ,'!?]{2,20})\)", text))
+
+
+def _dialogue_script_like(text: str) -> bool:
+    """Undertale 系对话脚本特征（interdream/DELTATRAVELER 实证）：
+    行首 "* " 对话符（后续为括号或大写字母——markdown 列表 "* item"
+    小写开头不受影响）、"^NN" 计时码、全大写喊话（≥3 词 + 句子标点，
+    'WHAT'S YOUR NAME?' / 'WOULD YOU THREE LIKE TO PLAY UNO?'——
+    Undertale 系统提示/喊话风格，无 "* " 前缀也无计时码）。
+    对话文本是叙事自由语义语言，普通词词对强制必然误杀意译——
+    (PLACE→地点) 杀「那个地方」、(NAME→名称) 杀「你叫什么名字？」、
+    (Time→时间) 杀「时光/时机」、(Play→播放) 杀「玩 UNO」、
+    (SHOOT→射击) 杀感叹词「哦，天哪」（全部 interdream 实证）。
+    与 _is_lyric_like 同族：自由语义文本豁免普通词术语检查。
+    keep 型（target==source 保留映射）与多词短语词对（语义确定性
+    高）不受影响。"""
+    if re.search(r"(?<![A-Za-z0-9_])\^[0-9]{1,2}", text):
+        return True
+    for line in text.splitlines():
+        if re.match(r"^\* [A-Z(]", line):
+            return True
+    # 字面 "\n"（C# 转义）也当词分隔——'WOULD YOU THREE \nLIKE TO PLAY
+    # UNO?' 的 '\nLIKE' 若不替换会因小写 n 使 isupper() 判 False
+    stripped = re.sub(r"\\n", " ", text.strip())
+    return bool(stripped and len(stripped.split()) >= 3
+                and stripped.isupper()
+                and re.search(r"[?!。！？]", stripped))
 
 
 def _glossary_proper_phrase(term: str, source_text: str) -> bool:
@@ -854,7 +978,52 @@ def validate_translation_quality(
     pairs = [
         (s, t) for s, t in pairs
         if s.strip().casefold() not in PHYSICAL_KEY_NAMES_CASEFOLD]
+    # 功能词/单字母词对豁免（2026-08-13 F10）：功能词（on/off/in…）
+    # 是句子功能成分，做全局强制必然误杀自然文本（incremental-rts
+    # 'Analytics is ON.' → 译文「已开启」被 (ON→关于) 误杀；URL 内
+    # on token 同样误杀）——与沉淀端（agent_memory 功能词不晋升
+    # active）对齐：功能词词对一律不做强制（沉淀端已挡新入库，
+    # 本处兜底存量数据）。单字母 ASCII 词对（'<b>' 标签的 b 被审核
+    # 错误提取成词对 → 整句译文当词对翻译）同样无强制价值，跳过。
+    # 高频普通词（miss/health）不在此过滤：按钮动词（save/play）与
+    # 语境变体词（miss/health）同在 C5 审核拒绝表，但 quality 端
+    # 强制有价值（漏翻拦截）——语境误杀由 _label_context_match
+    # 与占位符边界豁免处理（'miss: 999' 标签强制保留、
+    # '{health}' 占位符内豁免）。
+    pairs = [
+        (s, t) for s, t in pairs
+        if s.strip().casefold() not in FUNCTION_WORDS
+        and not (len(s.strip()) == 1 and s.strip().isascii()
+                 and s.strip().isalpha())]
+    # 方向词单 token 词对（F11，2026-08-13）：left/right/up/down 做
+    # 全局强制必然误杀自然副词（incremental-rts '(buy factories on
+    # the right)' 译文「请在右侧购买工厂」被 (RIGHT→对) 误杀——
+    # force-reboot 沉淀的方向词单字对，正是「方向/设备词单字对是
+    # 污染源」教训的落实缺口：方向词在普通文本可自由译（正确的/
+    # 右侧/上面），方向语义由 _input_binding_context 专用检查负责
+    # （输入绑定语境强制查方向字），词对层不做全局强制。
+    pairs = [
+        (s, t) for s, t in pairs
+        if s.strip().casefold() not in _DIRECTION_WORD_ZH]
     for source, target in pairs:
+        # 对话脚本豁免（F13，2026-08-13 interdream 实证）：Undertale 系
+        # 对话（行首 "* " / "^NN" 计时码 / 全大写喊话）是叙事自由语义
+        # 文本——(PLACE→地点) 杀「那个地方」、(NAME→名称) 杀「你叫
+        # 什么名字？」、(Time→时间) 杀「时光/时机」、(Play→播放) 杀
+        # 「玩 UNO」、(SHOOT→射击) 杀感叹「哦，天哪」。单 token 普通
+        # 词词对强制必然误杀意译——keep 型（target==source 保留映射）
+        # 与多词短语词对（语义确定性高）仍强制。
+        if (" " not in source.strip()
+                and target.strip().casefold() != source.strip().casefold()
+                and _dialogue_script_like(entry.original)):
+            continue
+        # 文件名/路径段豁免（F11）：player-diagnostics.txt 的 Player
+        # 是文件名的一部分（incremental-rts 实证：'Export player-
+        # diagnostics.txt...' 译文保留文件名被 (Player→玩家) 误杀
+        # glossary_mismatch——文件名是标识符不是可翻译语义文本）。
+        # 检测：token 所在连续段含 '-'/'_' 且以 .+扩展名结尾。
+        if _in_filename_segment(source, entry.original):
+            continue
         # 单 token 词对子串命中：仅标签语境检查——普通词词对（TIME→时间、
         # NAME→名称）子串命中自然句必然误杀意译（goodmorning 'time to
         # take on' 译文「是时候」实证）→ 非标签语境跳过；多词短语词对

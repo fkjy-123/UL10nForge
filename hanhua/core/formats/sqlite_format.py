@@ -116,7 +116,6 @@ def apply_sqlite(src_path: Path, entries: list[TextEntry]) -> bytes:
         conn = sqlite3.connect(tmp_name)
         try:
             for (table, col), updates in by_target.items():
-                placeholders = ", ".join("?" for _ in next(iter(updates))[0])
                 where = " AND ".join(f'"{k}" = ?' for k in next(iter(updates))[0])
                 sql = f'UPDATE "{table}" SET "{col}" = ? WHERE {where}'
                 for pk_map, translation in updates:

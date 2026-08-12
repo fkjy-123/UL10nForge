@@ -70,11 +70,13 @@ class ApiConfig:
     local_model_path: str = ""
     local_server_path: str = ""
     local_gpu_layers: int = -1    # -1 = 尽可能全部卸载到 GPU，0 = CPU
-    local_context_size: int = 6144
+    local_context_size: int = 8192
     local_port: int = 0           # 0 = 自动选择环回空闲端口
     local_keep_alive: bool = True
     local_concurrency: int = 0  # 0 = GPU 4 / CPU 1 automatic default
     local_batch_size: int = 8   # persistence/progress chunk, not nested workers
+    ai_review_enabled: bool = True        # 翻译后自动语义审核（§68 开关）
+    ai_review_strategy: str = "balanced"  # fast / balanced / strict → 送审率
 
 
 @dataclass
