@@ -34,13 +34,16 @@ def _state(tmp_path: Path) -> AppState:
     return AppState(tmp_path, settings)
 
 
-def test_workbench_tokens_night_flight_palette():
-    """夜航工作台：薄荷青主色、柠檬黄提示、珊瑚红错误，既有 token 全部保留。"""
-    assert TOKENS.primary == "#58F0C6"
-    assert TOKENS.warning == "#FFD166"
-    assert TOKENS.error == "#FF6F7D"
-    assert TOKENS.background == "#0C1424"
-    assert TOKENS.gradient_end == "#65A8FF"
+def test_workbench_tokens_v2_palette():
+    """token v2（UI-UX 重构规范）：青绿主色 #48E6C1、琥珀警告、珊瑚红错误、
+    暗色中性底，既有 token 字段全部保留。"""
+    assert TOKENS.primary == "#48E6C1"
+    assert TOKENS.warning == "#F5B84B"
+    assert TOKENS.error == "#F06A78"
+    assert TOKENS.background == "#080D18"
+    assert TOKENS.gradient_end == "#4FB0FF"
+    assert TOKENS.ai_primary == "#A78BFA"      # §6.2 紫色=AI
+    assert TOKENS.ai_secondary == "#7C5CFC"
     for name in (
             "background", "panel", "surface", "surface_hover", "border",
             "border_strong", "primary", "primary_hover", "primary_pressed",
@@ -51,7 +54,9 @@ def test_workbench_tokens_night_flight_palette():
             "focus_width", "space_1", "space_2", "space_3", "space_4",
             "space_6", "space_8",
             "status_idle", "status_locked", "surface_raised", "logger_bg",
-            "overlay_scrim", "shadow_key"):
+            "overlay_scrim", "shadow_key",
+            "ai_primary", "ai_secondary", "ai_muted",
+            "radius_md", "radius_panel", "radius_dialog"):
         assert hasattr(TOKENS, name), f"token 缺失: {name}"
 
 
@@ -70,9 +75,9 @@ def test_font_settings_ui_removed_and_default_config_intact(
     state = _state(tmp_path)
     page = SettingsPage(state, _Window())
 
-    assert page.tabs.count() == 3
-    assert [page.tabs.tabText(i) for i in range(3)] == [
-        "翻译后端", "高级设置", "术语表"]
+    assert page.tabs.count() == 5
+    assert [page.tabs.tabText(i) for i in range(5)] == [
+        "翻译后端", "高级设置", "术语表", "AI 审核", "关于"]
     assert not hasattr(page, "font_enabled")
     assert not hasattr(page, "font_save_btn")
 
@@ -91,9 +96,9 @@ def test_advanced_local_settings_visible_only_in_local_mode_and_refresh_vram(
     assert page.tabs.indexOf(page.advanced_tab) == 1
     assert page.local_concurrency.isEnabled() is False
     assert not page.advanced_mode_hint.isHidden()   # API 模式显示"仅本地生效"提示
-    # 初始值来自配置（默认 local_concurrency=0 自动 / 6144 / 8）
+    # 初始值来自配置（默认 local_concurrency=0 自动 / 8192 / 8）
     assert page.local_concurrency.currentData() == 0
-    assert page.local_ctx.currentData() == 6144
+    assert page.local_ctx.currentData() == 8192
     assert page.local_batch.currentData() == 8
     # 只能点选预设档位，不能直接输入（QComboBox 不可编辑）
     assert page.local_concurrency.isEditable() is False
@@ -113,7 +118,7 @@ def test_advanced_local_settings_visible_only_in_local_mode_and_refresh_vram(
     )
     monkeypatch.setattr(
         "hanhua.ui.pages.settings_page.estimate_vram",
-        lambda _model, context_size=6144, slots=1: SimpleNamespace(
+        lambda _model, context_size=8192, slots=1: SimpleNamespace(
             model_gb=1.5, kv_gb=0.28 * slots, kv_per_slot_gb=0.28,
             compute_gb=1.0, total_gb=1.5 + 0.28 * slots + 1.0),
     )
@@ -138,7 +143,7 @@ def test_advanced_local_settings_visible_only_in_local_mode_and_refresh_vram(
     loaded = SettingsStore(tmp_path / "settings.json")
     loaded.load()
     assert loaded.api.local_concurrency == 4
-    assert loaded.api.local_context_size == 6144
+    assert loaded.api.local_context_size == 8192
 
 
 def test_settings_can_select_and_persist_local_backend_without_api_key(

@@ -105,7 +105,8 @@ def test_review_entries_skips_echo_and_non_translated():
         property(lambda self: True))
     monkeypatch.setattr(
         "hanhua.core.reviewer.SemanticReviewer.review_batch", capture)
-    summary = review_entries(_entries(), fake, game_name="G")
+    summary = review_entries(_entries(), fake, game_name="G",
+                      max_send_rate=1.0)
     monkeypatch.undo()
 
     assert summary["used"] is True
@@ -124,7 +125,8 @@ def test_review_entries_all_pass_no_pairs():
         "e1": ReviewResult("e1", verdict="pass"),
         "e2": ReviewResult("e2", verdict="pass"),
     })
-    summary = review_entries(_entries(), fake, game_name="G")
+    summary = review_entries(_entries(), fake, game_name="G",
+                      max_send_rate=1.0)
     monkeypatch.undo()
 
     assert summary["reviewed"] == 3
@@ -174,7 +176,8 @@ def test_review_entries_sediments_pairs_through_gate():
     })
     notes: list[str] = []
     summary = review_entries(
-        _entries(), fake, game_name="G", on_note=notes.append)
+        _entries(), fake, game_name="G", on_note=notes.append,
+        max_send_rate=1.0)
     monkeypatch.undo()
 
     assert summary["used"] is True
@@ -188,7 +191,7 @@ def test_review_entries_sediments_pairs_through_gate():
     assert fake.calls[1][2] == "Left Paddle"
     assert fake.calls[1][3] == "G"
     # 审核开始日志（GUI 与 runner 同源）
-    assert any("开始语义审核 3 条" in n for n in notes)
+    assert any("送审 3" in n for n in notes)
 
 
 def test_review_entries_pairs_survive_pure_chinese_suggestion():
@@ -201,7 +204,8 @@ def test_review_entries_pairs_survive_pure_chinese_suggestion():
                            reason="按钮语境",
                            suggestion="建议译为 继续"),
     })
-    summary = review_entries(_entries(), fake, game_name="G")
+    summary = review_entries(_entries(), fake, game_name="G",
+                      max_send_rate=1.0)
     monkeypatch.undo()
     assert summary["pairs_added"] == 1
     assert fake.calls[0][:2] == ("Resume", "继续")

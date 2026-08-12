@@ -1,120 +1,122 @@
-"""语义审核器（reviewer.py）测试。
+"""语义审核器（reviewer.py）测试（2026-08-13 本地四级化后重写）。
 
-覆盖：批次 prompt 构造、无凭据降级、JSON 解析容错、
-术语词对提取（知识库沉淀输入）。
+覆盖：本地 4B 逐条审核调用、JSON 解析容错、无服务失败降级、
+四级构造兼容（旧二值 verdict 映射）、术语词对提取（沉淀输入）。
+
+注：原测试测云端 API（requests.post 到 api.deepseek.com）——云端
+审核已按执行指令从代码删除，测试同步改为本地 llama.cpp 服务语义
+（服务实例注入 fake，不真实启动）。
 """
 
-from unittest.mock import patch
-
-from hanhua.core.reviewer import (ReviewConfig, ReviewItem, ReviewResult,
-                                  SemanticReviewer, _build_batch_prompt,
-                                  extract_term_pairs)
+from hanhua.core.reviewer import (ReviewItem, ReviewResult, SemanticReviewer,
+                                  _build_item_prompt, extract_term_pairs)
 
 
-def _make_reviewer(api_key="sk-test"):
-    return SemanticReviewer(ReviewConfig(
-        base_url="https://api.deepseek.com/anthropic",
-        api_key=api_key,
-        model="deepseek-v4-flash",
-    ))
+class _FakeService:
+    """假的本地审核服务：按输入返回预设 content。"""
+
+    def __init__(self, outputs=None, error=None):
+        self.outputs = list(outputs or [])
+        self.error = error
+        self.prompts = []
+
+    def chat(self, prompt, *, max_tokens=1024, temperature=0.1,
+             timeout=120.0):
+        self.prompts.append(prompt)
+        if self.error is not None:
+            raise self.error
+        return self.outputs.pop(0) if len(self.outputs) > 1 \
+            else self.outputs[0]
+
+    @property
+    def usable(self) -> bool:
+        return True
 
 
-def test_reviewer_unusable_without_credentials():
-    """无凭据 → 审核不可用，review_batch 返回空（调用方按全部 pass）。"""
-    reviewer = _make_reviewer(api_key="")
-    assert reviewer.usable is False
-    items = [ReviewItem(entry_id="1", original="Resume", translation="简历")]
-    assert reviewer.review_batch(items) == {}
+def _make_reviewer(service=None):
+    return SemanticReviewer(service=service or _FakeService(
+        outputs=['{"level": "PASS", "reason": "正确"}']))
 
 
-def test_build_batch_prompt_contains_all_fields():
-    """批次 prompt 包含 id/类型/原文/译文，且 JSON 输出要求明确。"""
-    items = [
-        ReviewItem(entry_id="a1", original="Resume", translation="继续",
-                   text_type="按钮"),
-        ReviewItem(entry_id="b2", original="Hello", translation="你好"),
-    ]
-    prompt = _build_batch_prompt(items)
-    assert "[id: a1]" in prompt
+def test_reviewer_usable_with_service():
+    reviewer = _make_reviewer()
+    assert reviewer.usable is True
+
+
+def test_build_item_prompt_contains_all_fields():
+    """单条 prompt 包含类型/原文/译文与四级定义与 JSON 要求。"""
+    item = ReviewItem(entry_id="a1", original="Resume", translation="继续",
+                      text_type="按钮")
+    prompt = _build_item_prompt(item)
     assert "类型：按钮" in prompt
     assert "原文：Resume" in prompt
     assert "译文：继续" in prompt
-    assert "[id: b2]" in prompt
-    assert "输出 JSON 数组" in prompt
-    assert "verdict" in prompt
+    assert "PASS|MINOR|MAJOR|CRITICAL" in prompt
+    assert "resume" in prompt.casefold()
 
 
 def test_review_result_needs_optimization():
-    """flag → needs_optimization=True；pass → False。"""
+    """flag（旧二值）→ needs_optimization=True（映射 MAJOR）；pass → False。"""
     assert ReviewResult("1", verdict="flag").needs_optimization is True
+    assert ReviewResult("1", verdict="flag").level == "MAJOR"
     assert ReviewResult("2").needs_optimization is False
+    assert ReviewResult("3", level="CRITICAL").needs_optimization is True
+    assert ReviewResult("4", level="MINOR").needs_optimization is False
 
 
-def test_review_batch_parses_json_array():
-    """API 返回 JSON 数组 → 解析为 ReviewResult 字典，未覆盖条目保守 pass。"""
-    reviewer = _make_reviewer()
+def test_review_batch_parses_level_json():
+    """本地服务返回四级 JSON → 解析为 ReviewResult；未覆盖条目保守缺失。"""
+    service = _FakeService(outputs=[
+        '{"level": "CRITICAL", "reason": "Resume 在 UI 语境是继续", '
+        '"issues": [{"type": "术语错误", "detail": "简历误译", '
+        '"suggestion": "继续"}]}',
+        '{"level": "PASS", "reason": "正确"}',
+    ])
+    reviewer = _make_reviewer(service)
     items = [
         ReviewItem(entry_id="1", original="Resume", translation="简历",
                    text_type="按钮"),
         ReviewItem(entry_id="2", original="Start Game", translation="开始游戏",
                    text_type="按钮"),
-        ReviewItem(entry_id="3", original="Hello", translation="你好"),
     ]
-    fake_json = (
-        '[{"id": "1", "verdict": "flag", "issue": "术语错误", '
-        '"reason": "Resume 在 UI 语境是继续", "suggestion": "Resume→继续"},'
-        '{"id": "2", "verdict": "pass", "issue": null, "reason": null, '
-        '"suggestion": null}]'
-    )
-    with patch("requests.post") as mock_post:
-        mock_post.return_value.status_code = 200
-        mock_post.return_value.raise_for_status.return_value = None
-        mock_post.return_value.json.return_value = {
-            "content": [{"type": "text", "text": fake_json}]}
-        results = reviewer.review_batch(items)
-
+    results = reviewer.review_batch(items)
     assert len(results) == 2
-    assert results["1"].verdict == "flag"
+    assert results["1"].level == "CRITICAL"
     assert results["1"].issue == "术语错误"
-    assert results["1"].suggestion == "Resume→继续"
+    assert results["1"].suggestion == "继续"
     assert results["1"].needs_optimization is True
-    assert results["2"].verdict == "pass"
-    # 未覆盖条目（id=3）不在结果里——调用方按 pass 处理
-    assert "3" not in results
+    assert results["2"].level == "PASS"
+    assert results["2"].needs_optimization is False
+    assert service.prompts[0].startswith("你是游戏本地化质量审核员")
 
 
-def test_review_batch_handles_api_failure():
-    """API 异常 → 返回空 dict（调用方按全部 pass 并告警，不阻断写回）。"""
-    reviewer = _make_reviewer()
+def test_review_batch_handles_service_failure():
+    """服务异常 → 返回空 dict（调用方按全部 pass 并告警，不阻断写回）。"""
+    reviewer = _make_reviewer(_FakeService(error=RuntimeError("网络故障")))
     items = [ReviewItem(entry_id="1", original="Hi", translation="你好")]
-    with patch("requests.post", side_effect=Exception("network down")):
-        assert reviewer.review_batch(items) == {}
+    assert reviewer.review_batch(items) == {}
 
 
-def test_review_batch_respects_batch_size():
-    """条目数超过 batch_size 时自动分批请求。"""
-    reviewer = _make_reviewer()
-    items = [ReviewItem(entry_id=str(i), original=f"word {i}",
-                        translation=f"词 {i}") for i in range(5)]
-    with patch("requests.post") as mock_post:
-        mock_post.return_value.status_code = 200
-        mock_post.return_value.raise_for_status.return_value = None
-        mock_post.return_value.json.return_value = {"content": []}
-        reviewer.config.batch_size = 3
-        reviewer.review_batch(items)
-        assert mock_post.call_count == 2
+def test_review_batch_handles_non_json_output():
+    """服务返回非 JSON → 兜底 PASS（reviewed=False，reason 留原文备查）。"""
+    reviewer = _make_reviewer(_FakeService(outputs=["一段普通文本"]))
+    items = [ReviewItem(entry_id="1", original="Hi", translation="你好")]
+    results = reviewer.review_batch(items)
+    assert len(results) == 1
+    assert results["1"].level == "PASS"
+    assert results["1"].reviewed is False
 
 
 def test_extract_term_pairs():
     """术语类 flag + 建议含英文原词与中文 → 提取词对（知识库沉淀）。"""
     results = [
-        ReviewResult("1", verdict="flag", issue="术语错误",
+        ReviewResult("1", level="MAJOR", issue="术语错误",
                      suggestion="Resume→继续"),
-        ReviewResult("2", verdict="flag", issue="术语错误",
+        ReviewResult("2", level="CRITICAL", issue="术语错误",
                      suggestion="Resume→继续"),
-        ReviewResult("3", verdict="flag", issue="语境不当",
+        ReviewResult("3", level="MAJOR", issue="语境不当",
                      suggestion="你好呀"),
-        ReviewResult("4", verdict="pass"),
+        ReviewResult("4", level="PASS"),
     ]
     pairs = extract_term_pairs(results)
     assert ("Resume", "继续") in pairs

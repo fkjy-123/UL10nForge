@@ -54,6 +54,24 @@ def test_two_consistent_evidences_promote_to_active(tmp_path):
     assert mem.reference_pairs() == [("Press Start", "按开始")]
 
 
+def test_function_word_single_token_never_promotes(tmp_path):
+    """F10c：单 token 英文功能词（on/off 类高频介词副词）证据充足也
+    绝不晋升 active——做全局强制词对必然误杀自然文本（incremental-rts
+    实证 'Analytics is ON.' / URL 内 on）。保持 pending（可人工复核），
+    session 计数 blocked_function_words。"""
+    mem = _mem(tmp_path)
+    _grow(mem, "on", "在", ["game-a", "game-b", "game-c"])
+    row = mem.list_all()[0]
+    assert row["status"] == "pending"      # 功能词永不晋升
+    assert mem.reference_pairs() == []
+    report = mem.session_report(game="g")
+    assert report["session"]["blocked_function_words"] >= 1
+    # 对照：非功能词单 token 照常晋升（TIME 按钮词；高频普通词
+    # miss/health 参考注入同样保留——强制过滤在 quality 检查端）
+    _grow(mem, "TIME", "时间", ["game-a", "game-b"])
+    assert mem.reference_pairs() == [("TIME", "时间")]
+
+
 def test_same_context_diff_value_is_conflict_not_overwrite(tmp_path):
     """同语境同 key 不同译文 → 不覆盖、不积累证据，conflicts+1。"""
     mem = _mem(tmp_path)

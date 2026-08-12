@@ -15,6 +15,21 @@ from hanhua.core.local_model import (build_server_command, discover_model,
                                      validate_runtime_manifest)
 
 
+@pytest.fixture(autouse=True)
+def _pin_hardware_planning(monkeypatch):
+    """把硬件档位规划固定为「探测失败」，与真实显存环境解耦。
+
+    背景（2026-08-13）：_planned_gpu_layers 对真实硬件探测
+    （probe_hardware），地毯式排查并行跑 llama-server 占显存时，档位会
+    落入 4~6GB CPU 档 → backend 断言（'gpu'）、parallel cap（4→2）、
+    GPU→CPU fallback 链全部随环境抖动（6 测试失败实证）。返回 None =
+    模拟探测失败，回退「用户默认 -1 全层」路径，与 planner 接入前的
+    测试语义一致。
+    """
+    monkeypatch.setattr(
+        "hanhua.core.local_model._planned_gpu_layers", lambda *a, **k: None)
+
+
 def test_local_parallel_defaults_and_hardware_caps():
     automatic = ApiConfig(local_concurrency=0)
     excessive = ApiConfig(local_concurrency=99)

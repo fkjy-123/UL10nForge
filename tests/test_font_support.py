@@ -516,6 +516,36 @@ def _make_dual_arch_assets(root: Path) -> FontRuntimeAssets:
     )
 
 
+def test_flat_layout_mono_install_without_data_dir(tmp_path: Path) -> None:
+    """扁平布局（老 Unity standalone/WebGL 导出：Data 内容散根目录、
+    无 *_Data 宿主——hotel-paradise 实证「HotelParadise v1.1 WIN.exe」
+    + 根目录 Managed/）同样识别为 Mono 游戏并可安装字体载荷。"""
+    game_dir = tmp_path / "game"
+    game_dir.mkdir()
+    _write_fake_pe(
+        game_dir / "HotelParadise v1.1 WIN.exe", 0x8664,
+        optional_magic=0x020B)
+    (game_dir / "Managed").mkdir()
+    (game_dir / "Managed" / "UnityEngine.CoreModule.dll").write_bytes(b"core")
+    out_dir = tmp_path / "output"
+    assets = _make_assets(tmp_path / "assets")
+
+    result = install_font_override(
+        game_dir,
+        out_dir,
+        FontConfig(
+            enabled=True, filename="SimplifiedChinese/SourceHanSansSC-Regular.otf"),
+        assets=assets,
+    )
+
+    assert result.installed is True
+    assert result.payload_deployed is True
+    assert result.architecture == "x64"
+    assert result.provider_id == "bepinex5_mono_x64"
+    assert (out_dir / "winhttp.dll").read_bytes() == b"doorstop"
+    assert (out_dir / "BepInEx" / "core" / "BepInEx.dll").read_bytes() == b"bepinex"
+
+
 def test_installs_font_runtime_into_mono_x64_copy(tmp_path: Path) -> None:
     game_dir = _make_mono_game(tmp_path / "game")
     out_dir = tmp_path / "output"
