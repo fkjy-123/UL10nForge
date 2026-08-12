@@ -306,6 +306,37 @@ class ProjectStore:
             )
             self.conn.commit()
 
+    def update_entry_metas(self, rows: list[tuple[str, str, dict]]) -> int:
+        """批量合并条目 meta（保留既有字段，逐条 merge 后单次提交）。
+
+        rows: [(file_id, key_path, fields)]——翻译 C6 语义审核结论
+        （review_issue/review_suggestion）落 store 用；审校页可据此
+        筛选「需要优化」条目。返回实际更新的条数。
+        """
+        if not rows:
+            return 0
+        with self._lock:
+            updated = 0
+            for file_id, key_path, fields in rows:
+                row = self.conn.execute(
+                    "SELECT meta FROM entries WHERE file_id=? AND key_path=?",
+                    (file_id, key_path),
+                ).fetchone()
+                if row is None:
+                    continue
+                try:
+                    meta = json.loads(row["meta"] or "{}")
+                except (json.JSONDecodeError, TypeError):
+                    meta = {}
+                meta.update(fields or {})
+                self.conn.execute(
+                    "UPDATE entries SET meta=? WHERE file_id=? AND key_path=?",
+                    (json.dumps(meta, ensure_ascii=False),
+                     file_id, key_path))
+                updated += 1
+            self.conn.commit()
+            return updated
+
     def set_status(self, file_id, key_path, status):
         with self._lock:
             self.conn.execute("UPDATE entries SET status=? WHERE file_id=? AND key_path=?",

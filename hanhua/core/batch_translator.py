@@ -1,4 +1,5 @@
 from __future__ import annotations
+import hashlib
 import json
 import re
 import threading
@@ -277,13 +278,60 @@ def _auto_translatable(entry: TextEntry) -> bool:
 #   失败状态不再重试，报告按类别可见「该翻未翻」而非每轮重复烧 token；
 # - content_inherent：条目内容不可译——单次验证即放弃。
 # 质量门 reason（quality.py 全部）默认归 model_behavior；只有显式列出的
-# 才归其他类别。
+# 才归其他类别。content_inherent 无直接 reason 映射——由
+# _record_failure_attempt 按原文内容判定赋值（Q3 C1 死代码修复）。
 FAILURE_CATEGORIES = {
     "request_error": "request",
     "content_inherent": "content_inherent",
 }
 # 每类别 attempt 预算（meta["attempt_count"] 跨轮累计，store 持久化）
 _MAX_ATTEMPTS = {"request": 3, "model_behavior": 2, "content_inherent": 1}
+
+# C2 规则版本戳：attempt 预算与「规则修复→重跑」工作流的协调。
+# 预算耗尽条目永久不进 run_scope，而历史上 F22 类豁免修复恰恰依赖跨轮
+# 重跑验证（faerie run1→run2 35 条转成功、doog 4 条转成功）——预算无
+# 版本戳时，规则升级不会重置，被旧规则误判锁死的条目无法自我验证修复。
+# 版本从质量门/修复链核心函数字节码自动派生：函数体变化 → co_code/
+# co_consts 变化 → 版本变化 → 预算自动清零；注释/文档字符串变化不触发
+# （不反映行为）。_attempt_exhausted 见版本不符即放行，等价于「规则
+# 修复后定向重跑自动生效」。
+_RULES_VERSION_CACHE: int | None = None
+
+
+def _rules_version() -> int:
+    global _RULES_VERSION_CACHE
+    if _RULES_VERSION_CACHE is None:
+        digest = hashlib.sha256()
+        for fn in (_inherent_untranslatable, _auto_translatable,
+                   BatchTranslator._apply_quality,
+                   validate_translation_quality):
+            code = fn.__code__
+            digest.update(code.co_code)
+            digest.update(repr(code.co_consts).encode("utf-8"))
+        # 预算/分类常量变化同样属于规则升级
+        digest.update(repr(_MAX_ATTEMPTS).encode("utf-8"))
+        digest.update(repr(FAILURE_CATEGORIES).encode("utf-8"))
+        _RULES_VERSION_CACHE = int.from_bytes(digest.digest()[:4], "little")
+    return _RULES_VERSION_CACHE
+
+
+def _inherent_untranslatable(text: str) -> bool:
+    """内容不可译判定：原文无任何自然语言内容（英文词/汉字/日文假名）。
+
+    Q3 C1 死代码修复的赋值路径——FAILURE_CATEGORIES/_MAX_ATTEMPTS 声明
+    了 content_inherent 类别但 16 个失败 reason 无一会映射到它，类别
+    从上线起永不触发。字幕分隔线 '-----'、纯装饰符号串、纯数字/版本号
+    等条目（提取侧 role=display 放行）失败后任何重试都不会产出有意义
+    译文，白烧 token → 首次失败即归此类、单次验证后不再重试。
+    保守边界：带 3+ 字母词（'https://…'、'© 2024 Game Studio'）视为
+    有可译内容，归 model_behavior 重试——宁可多试一次，不可误判可译
+    文本为不可译。
+    """
+    if not text:
+        return False
+    return not (_ENGLISH_WORD.search(text)
+                or _CJK.search(text)
+                or _JAPANESE_KANA_RE.search(text))
 
 
 def _record_failure_attempt(entry: TextEntry, reason: str) -> None:
@@ -300,14 +348,25 @@ def _record_failure_attempt(entry: TextEntry, reason: str) -> None:
     meta["_attempt_mark"] = current
     attempts = int(meta.get("attempt_count", 0)) + 1
     meta["attempt_count"] = attempts
-    meta["failure_category"] = FAILURE_CATEGORIES.get(
-        reason, "model_behavior")
+    category = FAILURE_CATEGORIES.get(reason, "model_behavior")
+    if category == "model_behavior" and _inherent_untranslatable(entry.original):
+        # 内容不可译：原文无自然语言（纯符号/数字/URL 等），重试必复败
+        category = "content_inherent"
+    meta["failure_category"] = category
+    # C2：记账时挂当前规则版本——规则升级后旧预算自动失效
+    meta["_rules_version"] = _rules_version()
     entry.meta = meta
 
 
 def _attempt_exhausted(entry: TextEntry) -> bool:
-    """Q3 预算判定：attempt_count 达到类别上限 → 不再进入翻译链。"""
+    """Q3 预算判定：attempt_count 达到类别上限 → 不再进入翻译链。
+
+    C2：预算挂规则版本戳——meta 中版本与当前规则版本不符（规则已升级）
+    视为未耗尽，旧预算自动清零失效（「规则修复→定向重跑」自动生效）。
+    """
     meta = entry.meta
+    if meta.get("_rules_version") != _rules_version():
+        return False
     attempts = int(meta.get("attempt_count", 0))
     category = meta.get("failure_category", "model_behavior")
     return attempts >= _MAX_ATTEMPTS.get(category, 2)
@@ -394,7 +453,8 @@ class BatchTranslator:
                     and self.cancellation_event.is_set()))
 
     def run(self, entries: list[TextEntry], progress_cb: Callable | None = None,
-            context_window: int = 1) -> TranslateStats:
+            context_window: int = 1,
+            force_retry_exhausted: bool = False) -> TranslateStats:
         self._stop.clear()
         cancelled = self.cancellation_event
         with self._metrics_lock:
@@ -406,8 +466,13 @@ class BatchTranslator:
         # Q3 attempt 预算：失败条目跨轮累计 attempt_count，预算耗尽不再
         # 重跑同一条链（保留失败状态供报告审计）——消灭「每轮全量重跑
         # 同一条链」的反复失败。
+        # C2：预算挂规则版本戳（规则升级自动清零）；force_retry_exhausted
+        # 是显式「修复后定向重跑」开关——任何修复（即使规则未变）后
+        # 用户确认强制重跑预算耗尽条目。
         run_scope = [entry for entry in entries
-                     if _auto_translatable(entry) and not _attempt_exhausted(entry)]
+                     if _auto_translatable(entry)
+                     and (force_retry_exhausted
+                          or not _attempt_exhausted(entry))]
         stats = TranslateStats(total=len(run_scope))
         started_at = time.perf_counter()
 
@@ -431,8 +496,11 @@ class BatchTranslator:
             stats.done = sum(
                 1 for entry in run_scope
                 if entry.status == STATUS_TRANSLATED)
+            # C4：failed 按 entries 全量统计——预算耗尽的条目不在 run_scope
+            # （本轮不再尝试），但记忆拒绝置 failed 后必须统计可见，
+            # 否则又是「该翻未翻」的黑洞（只算进 pending/失败计数之外）。
             stats.failed = sum(
-                1 for entry in run_scope if entry.status == STATUS_FAILED)
+                1 for entry in entries if entry.status == STATUS_FAILED)
             with self._metrics_lock:
                 stats.requests = self._requests
                 stats.input_tokens = self._input_tokens
@@ -457,11 +525,17 @@ class BatchTranslator:
                         rejected = list(e.quality_reasons)
                         self.memory.remove_memory(e.original, self.model, self.lang)
                         e.translation = ""
-                        e.status = "pending"
                         e.quality_reasons = ()
                         e.meta["memory_rejected_reasons"] = rejected
                         e.meta.pop("quality_passed", None)
                         e.meta.pop("quality_reasons", None)
+                        # C4：预算已耗尽的条目不落 pending 黑洞——它已不在
+                        # run_scope，永久 pending 不 fail 不 translated，
+                        # 统计不可见（只算进 pending 计数）；直接置 failed
+                        # 保留拒绝原因供报告审计。
+                        e.status = (
+                            STATUS_FAILED if _attempt_exhausted(e)
+                            else "pending")
                     changed.append(e)
             flush()
             if progress_cb:
@@ -489,11 +563,14 @@ class BatchTranslator:
                 else:
                     rejected = list(e.quality_reasons)
                     e.translation = ""
-                    e.status = "pending"
                     e.quality_reasons = ()
                     e.meta["agent_memory_rejected_reasons"] = rejected
                     e.meta.pop("quality_passed", None)
                     e.meta.pop("quality_reasons", None)
+                    # C4：预算耗尽的拒绝条目直接置 failed（见工作记忆路径）
+                    e.status = (
+                        STATUS_FAILED if _attempt_exhausted(e)
+                        else "pending")
                 self.agent_memory.apply_feedback(
                     e.original,
                     context_key_of(str(e.meta.get("role", ""))),
@@ -503,8 +580,14 @@ class BatchTranslator:
             if progress_cb:
                 progress_cb(replace(stats))
 
-        # 2) 分批并发翻译
-        pending = [e for e in entries if _auto_translatable(e)]
+        # 2) 分批并发翻译。Q3 预算必须在这里生效（run_scope 只算统计
+        # 数；若无此过滤，耗尽条目每轮仍全量重跑同一条链——「预算闸」
+        # 就成了摆设）。记忆命中（1/1b）不调模型，不受预算约束；且命中
+        # 后条目 status 已变，这里必须重新过滤（而非复用 run_scope）。
+        pending = [entry for entry in entries
+                   if _auto_translatable(entry)
+                   and (force_retry_exhausted
+                        or not _attempt_exhausted(entry))]
         grouped: dict[tuple[str, str], list[TextEntry]] = {}
         for entry in pending:
             key = (entry.original, str(entry.meta.get("role", "display")))
@@ -542,13 +625,17 @@ class BatchTranslator:
                         member.status = STATUS_FAILED
                         stats.failed += 1
                     changed.append(member)
+                # C3：语言保持（原文已是目标语言，译文=原文）与回显一样
+                # 排除出记忆——「原文→原文」沉淀会毒化（后续直接复用
+                # 不翻译），工作记忆与经验记忆双门一致
                 if good and en.translation and self.memory:
-                    if not en.meta.get("echo_exempt"):
+                    if not en.meta.get("echo_exempt") and not en.meta.get("language_source_kept"):
                         new_memory.append(
                             (en.original, en.translation, self.model, self.lang))
-                # 经验记忆沉淀（native 路径）：质量门通过 + 非回显 → 提案
+                # 经验记忆沉淀（native 路径）：质量门通过 + 非回显/非语言
+                # 保持 → 提案
                 if good and en.translation and self.agent_memory:
-                    if not en.meta.get("echo_exempt"):
+                    if not en.meta.get("echo_exempt") and not en.meta.get("language_source_kept"):
                         self.agent_memory.propose_deferred(
                             en.original, en.translation, self.agent_game,
                             role=str(en.meta.get("role", "")))
@@ -621,14 +708,15 @@ class BatchTranslator:
                                 member.status = STATUS_FAILED
                                 stats.failed += 1
                             changed.append(member)
+                        # C3：语言保持（译文=原文）与回显一样排除出记忆
                         if good and en.translation and self.memory:
-                            if not en.meta.get("echo_exempt"):
+                            if not en.meta.get("echo_exempt") and not en.meta.get("language_source_kept"):
                                 new_memory.append(
                                     (en.original, en.translation,
                                      self.model, self.lang))
                         # 经验记忆沉淀（线程池路径）：同上
                         if good and en.translation and self.agent_memory:
-                            if not en.meta.get("echo_exempt"):
+                            if not en.meta.get("echo_exempt") and not en.meta.get("language_source_kept"):
                                 self.agent_memory.propose_deferred(
                                     en.original, en.translation,
                                     self.agent_game,
@@ -729,10 +817,46 @@ class BatchTranslator:
                 and {"target_script_mismatch", "untranslated_text"} & reasons)
         )
 
+    def _maybe_keep_source_language(self, e: TextEntry) -> bool:
+        """中文原文直接放行判定（批/逐条两路径统一入口）。
+
+        游戏自带中文语言包（Language/CH/*.subs、*.jsonc 等）条目原文即中文，
+        模型按目标语 zh-CN 处理反而回译成英文/乱码判 target_script_mismatch
+        （containment 实证：'警卫' → guard、'折纸' → origami）→ 原样保留 +
+        meta 标记 language_source_kept 供人工校对筛选。判定收紧：CJK ≥ 2 且
+        占字母 ≥ 50%（deadbeat 实证：歌词含单日文汉字『戦争』被误判中文源
+        → 1719 字符英文原样放行）——日文原文（含假名）由
+        _is_multilingual_source 兜底。返回 True = 已直填（不送模型）。
+        """
+        if not (is_chinese_source(e.original)
+                and not _JAPANESE_KANA_RE.search(e.original)):
+            return False
+        e.translation = e.original
+        e.status = "translated"
+        e.quality_reasons = ()
+        e.meta = dict(e.meta)
+        e.meta["quality_passed"] = True
+        e.meta["quality_reasons"] = []
+        e.meta["language_source_kept"] = True
+        return True
+
     def _chat_batch(self, batch: list[TextEntry], context_window: int
                     ) -> list[tuple[TextEntry, str, bool]]:
         if self._is_cancelled():
             return []
+        # C3：中文源直填在批路径同样生效（判定抽为 _maybe_keep_source_language
+        # 统一入口）——此前只在逐条 _chat_each 路径，批路径中文源被模型回译
+        # 成英文/乱码且无 language_source_kept 标记（记忆毒化来源之一）
+        kept: list[tuple[TextEntry, str, bool]] = []
+        active: list[TextEntry] = []
+        for e in batch:
+            if self._maybe_keep_source_language(e):
+                kept.append((e, e.original, True))
+            else:
+                active.append(e)
+        if not active:
+            return kept
+        batch = active
         items = [self._build_item(batch, i, context_window) for i in range(len(batch))]
         user = self._build_chat_user_prompt(items)
         try:
@@ -743,13 +867,13 @@ class BatchTranslator:
             raise
         self._record_usage(usage)
         if self._is_cancelled():
-            return []
+            return kept
         arr = self._response_array(content, batch[0] if len(batch) == 1 else None)
         if arr is None:
             for entry in batch:
                 self._mark_failed(entry, "invalid_response", raw_output=content)
-            return [(e, "", False) for e in batch]
-        return self._validate(batch, arr)
+            return kept + [(e, "", False) for e in batch]
+        return kept + self._validate(batch, arr)
 
     @staticmethod
     def _obj_key(entry: TextEntry) -> str:
@@ -818,23 +942,8 @@ class BatchTranslator:
                 (e.translation, e.status, e.quality_reasons, e.meta) = original_state
             if self._is_cancelled():
                 return e, "", False
-            # 中文原文直接放行：游戏自带中文语言包（Language/CH/*.subs、
-            # *.jsonc 等）条目原文即中文，模型按目标语 zh-CN 处理反而
-            # 回译成英文/乱码判 target_script_mismatch（containment 实证：
-            # '警卫' → guard、'折纸' → origami）→ 原样保留 + meta 标记
-            # language_source_kept 供人工校对筛选。判定收紧：CJK ≥ 2 且
-            # 占字母 ≥ 50%（deadbeat 实证：歌词含单日文汉字『戦争』被误判
-            # 中文源 → 1719 字符英文原样放行）——日文原文（含假名）由
-            # _is_multilingual_source 兜底。
-            if (is_chinese_source(e.original)
-                    and not _JAPANESE_KANA_RE.search(e.original)):
-                e.translation = e.original
-                e.status = "translated"
-                e.quality_reasons = ()
-                e.meta = dict(e.meta)
-                e.meta["quality_passed"] = True
-                e.meta["quality_reasons"] = []
-                e.meta["language_source_kept"] = True
+            # 中文原文直接放行（判定抽为统一入口，批路径同用）
+            if self._maybe_keep_source_language(e):
                 return e, e.original, True
             # 语言选项标签确定性直填（Language: ENGLISH → 语言：英语）：
             # 标签 + 语言名是封闭集合，1.8B 对选项文本乱译（doog 实证

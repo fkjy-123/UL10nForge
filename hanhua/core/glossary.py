@@ -11,6 +11,16 @@ from pathlib import Path
 # （同一原文在 prompt 里出现两个译法 → 一致性破坏）。
 _CONFLICT_NORM = re.compile(r"[^a-z0-9一-鿿]+")
 
+# 翻译 C5：高频普通词单 token 黑名单——这些词在游戏文本里动词/名词/
+# 方向/介词用法混杂（miss=未命中/想念/错过、right=右边/正确/右拨片），
+# 审核沉淀若无语境强制全局，后续游戏同一词的其他语境会被改写（F22-4
+# 三连杀实证：miss/encore/Right 各自杀死 100+ 条正常翻译）。
+_HIGH_FREQUENCY_WORD_PAIRS = frozenset(
+    "miss right left up down play stop save load charge exit enter open "
+    "close start end back next ok yes no on off run jump attack hit "
+    "throw use talk buy sell pick drop eat drink rest savegame resume".split()
+)
+
 
 class GlossaryStore:
     """全局术语表（SQLite，跨项目共享）。"""
@@ -30,6 +40,18 @@ class GlossaryStore:
                 term TEXT UNIQUE, translation TEXT, category TEXT DEFAULT '术语',
                 note TEXT DEFAULT ''
             );""")
+            # 翻译 C5：审核沉淀语境保护——候选桶（candidate 只参考不强制）、
+            # 沉淀游戏列表（跨游戏复现升级）、原文例句（语境留档）。
+            # 老库迁移：缺列则 ALTER TABLE 补上。
+            columns = {row["name"] for row in self.conn.execute(
+                "PRAGMA table_info(glossary)")}
+            for column, ddl in (
+                    ("status", "TEXT DEFAULT 'active'"),
+                    ("games", "TEXT DEFAULT ''"),
+                    ("context", "TEXT DEFAULT ''")):
+                if column not in columns:
+                    self.conn.execute(
+                        f"ALTER TABLE glossary ADD COLUMN {column} {ddl}")
             self.conn.commit()
 
     def add(self, term, translation, category="术语", note=""):
@@ -38,6 +60,69 @@ class GlossaryStore:
                 "INSERT OR REPLACE INTO glossary(term, translation, category, note) VALUES (?,?,?,?)",
                 (term, translation, category, note))
             self.conn.commit()
+
+    def add_reviewed(self, term, translation, context: str = "",
+                     game: str = "") -> str:
+        """审核沉淀专用门禁（翻译 C5）：带语境保护的词对沉淀。
+
+        F22-4 三连杀实证：审核沉淀 (miss,未命中)/(encore,安可)/(Right,右拨片)
+        无门禁直写全局术语库，后续游戏强制约束把正常动词用法/外语语境
+        全部改写（deadbeat 杀 doubleshake 动词用法 → 杀 faerie miss=想念；
+        encore 杀法语；Right 杀 'pick the right door' 2083 条失败）——
+        事后靠 quality.py 豁免补丁而非沉淀端预防。
+
+        门禁规则（只作用于审核沉淀路径，人工/专名路径不受影响）：
+        - 高频普通词单 token 词对（miss/right/play/…）：拒绝全局强制，
+          返回拒绝原因（污染源——无语境可区分动词/名词/方向用法）；
+        - 其他单 token 词对：进 candidate 桶（参考不强制），跨游戏复现
+          （第二次审核沉淀）才升级 active；
+        - 组合词对（含空格）：语境充分，直接 active；
+        - 全部条目 note 载入语境（原文例句+来源游戏+分类），不再只写
+          「来源 X」。
+
+        返回 "" 表示已沉淀/激活，否则为拒绝原因（调用方记入报告）。
+        """
+        term_s = str(term).strip()
+        trans_s = str(translation).strip()
+        if not term_s or not trans_s:
+            return "空词对"
+        if (" " not in term_s
+                and term_s.casefold() in _HIGH_FREQUENCY_WORD_PAIRS):
+            return (f"拒绝沉淀：{term_s!r} 是高频普通词单 token 词对"
+                    f"（无语境可区分动词/名词/方向用法，全局强制会误杀"
+                    f"其他语境——F22-4 三连杀实证）")
+        games = [g for g in re.split(r"[,，]", game or "") if g]
+        is_combo = " " in term_s
+        note = f"来源 {game or '?'}"
+        if context:
+            note += f" · 例句: {context[:120]}"
+        with self._lock:
+            row = self.conn.execute(
+                "SELECT id, translation, status, games FROM glossary"
+                " WHERE term=?", (term_s,)).fetchone()
+            if row is not None:
+                existing_games = [g for g in re.split(r"[,，]", row["games"] or "")
+                                  if g]
+                merged = list(dict.fromkeys(existing_games + games))
+                status = row["status"] or "active"
+                if status != "active" and (is_combo or len(merged) >= 2):
+                    status = "active"
+                self.conn.execute(
+                    "UPDATE glossary SET translation=?, note=?, games=?,"
+                    " status=?, context=? WHERE id=?",
+                    (trans_s, note, ",".join(merged), status, context,
+                     row["id"]))
+                self.conn.commit()
+                return "" if status == "active" else ""
+            status = "active" if is_combo else "candidate"
+            self.conn.execute(
+                "INSERT OR REPLACE INTO glossary"
+                "(term, translation, category, note, status, games, context)"
+                " VALUES (?,?,?,?,?,?,?)",
+                (term_s, trans_s, "审核术语", note, status,
+                 ",".join(games), context))
+            self.conn.commit()
+            return ""
 
     def update(self, term, translation, category, note=""):
         with self._lock:
@@ -63,6 +148,11 @@ class GlossaryStore:
         rows = self.list_all()
         if not rows:
             return ""
+        # 翻译 C5：只注入 active 条目——candidate 桶（审核沉淀未跨游戏
+        # 复现的词对）仅参考不强制：候选可能在当前游戏恰好是错误语境
+        # （如 miss=未命中 沉淀自音游，却在剧情游戏里是 想念），注入为
+        # 强制约束会误杀；active 条目已跨游戏复现或为组合词对，语境充分。
+        rows = [r for r in rows if r.get("status", "active") == "active"]
         if limit > 0:
             # 全局术语库跨游戏持续积累后可能很大；注入 prompt 只取最新 limit 条
             # （ID 单调递增，最新学习的最贴近当前需求）。

@@ -2048,6 +2048,42 @@ def test_bad_memory_is_evicted_and_falls_back_to_model_in_same_run():
     }
 
 
+def test_memory_rejected_with_exhausted_budget_marks_failed():
+    """Q3 C4：记忆命中拒绝且 attempt 预算已耗尽 → 直接置 failed（带
+    memory_rejected_reasons），不落 pending 黑洞——预算耗尽条目已不在
+    run_scope，若置 pending 将永远 pending 不 fail 不 translated，
+    统计不可见。"""
+    from hanhua.core.batch_translator import _record_failure_attempt
+    store = ProjectStore(Path(tempfile.mkdtemp()) / "c4.db")
+    store.init_schema()
+    store.upsert_entries([{
+        "file_id": "ui", "key_path": "menu/open", "original": "Open Door",
+        "status": "failed", "meta": {"role": "ui", "max_chars": 12},
+    }])
+    store.add_memory("Open Door", "Open Door", "m", "en→zh-CN")  # 回显=坏记忆
+    entry = _to_model([{
+        "file_id": "ui", "key_path": "menu/open", "original": "Open Door",
+        "meta": {"role": "ui", "max_chars": 12},
+    }])[0]
+    # 跨轮累计失败至 model_behavior 预算耗尽（2 次）
+    for _ in range(2):
+        entry = _to_model([{
+            "file_id": "ui", "key_path": "menu/open", "original": "Open Door",
+            "meta": dict(entry.meta),
+        }])[0]
+        _record_failure_attempt(entry, "untranslated_text")
+
+    client = FakeClient({"Open Door": "打开门"})
+    stats = BatchTranslator(
+        client, memory=store, model="m", lang="en→zh-CN",
+    ).run([entry])
+
+    assert client.calls == 0                      # 预算耗尽不再请求模型
+    assert entry.status == "failed"               # 不落 pending 黑洞
+    assert "memory_rejected_reasons" in entry.meta
+    assert stats.failed == 1                      # 统计可见
+
+
 def test_locked_entries_skipped():
     bt = BatchTranslator(FakeClient(), batch_size=25, concurrency=1)
     rows = _entries(3)
@@ -3563,6 +3599,101 @@ def test_request_category_has_higher_budget():
     assert _attempt_exhausted(e)
 
 
+def test_content_inherent_assigned_for_symbol_only_text():
+    """Q3 C1：content_inherent 赋值路径——原文无自然语言（纯符号装饰行/
+    纯数字/版本串），失败即归此类，单次验证后不再重试（不白烧 token）。"""
+    from hanhua.core.batch_translator import (
+        _record_failure_attempt, _attempt_exhausted)
+    from hanhua.core.models import TextEntry
+    for text in ("-----", "***", "♪ ♪ ♪", "12345", "v1.2.3", "…———…"):
+        e = TextEntry(file_id="f", key_path="k", original=text,
+                      status="failed", meta={})
+        _record_failure_attempt(e, "untranslated_text")
+        assert e.meta["failure_category"] == "content_inherent", text
+        # content_inherent 预算 1：首次失败即耗尽
+        assert _attempt_exhausted(e), text
+
+
+def test_content_inherent_not_assigned_for_natural_language():
+    """Q3 C1 保守边界：带自然语言内容的原文（英文/汉字/假名/URL）不归
+    content_inherent——宁可重试，不可误判可译文本为不可译。"""
+    from hanhua.core.batch_translator import _record_failure_attempt
+    from hanhua.core.models import TextEntry
+    for text in ("Hello world", "继续游戏", "こんにちは", "戦争",
+                 "https://example.com/", "© 2024 Game Studio"):
+        e = TextEntry(file_id="f", key_path="k", original=text,
+                      status="failed", meta={})
+        _record_failure_attempt(e, "untranslated_text")
+        assert e.meta["failure_category"] == "model_behavior", text
+
+
+def test_attempt_budget_resets_when_rules_version_changes(monkeypatch):
+    """Q3 C2：预算挂规则版本戳——版本变化（规则升级）后旧预算自动清零，
+    耗尽条目重新进入翻译链（「规则修复→定向重跑」自动生效）。"""
+    from hanhua.core.batch_translator import (
+        _record_failure_attempt, _attempt_exhausted, _rules_version)
+    from hanhua.core.models import TextEntry
+    e = TextEntry(file_id="f", key_path="k", original="Hello world",
+                  status="failed", meta={})
+    _record_failure_attempt(e, "untranslated_text")
+    assert e.meta["attempt_count"] == 1
+    assert e.meta["_rules_version"] == _rules_version()
+    # 版本不一致（规则已升级）→ 旧预算失效，放行重跑
+    e.meta["_rules_version"] = _rules_version() - 1
+    assert not _attempt_exhausted(e)
+    # 版本一致 → 预算照常生效（attempt_count=2 达 model_behavior 上限）
+    e.meta["_rules_version"] = _rules_version()
+    e.meta["attempt_count"] = 2
+    assert _attempt_exhausted(e)
+    # 存量条目无版本戳（升级前记账）→ 同样放行重跑，再记账补版本
+    e2 = TextEntry(file_id="f", key_path="k", original="Hello world",
+                   status="failed", meta={"attempt_count": 9})
+    assert not _attempt_exhausted(e2)
+    _record_failure_attempt(e2, "untranslated_text")
+    assert e2.meta["attempt_count"] == 10
+    assert e2.meta["_rules_version"] == _rules_version()
+
+
+def test_rules_version_changes_with_rule_implementation(monkeypatch):
+    """Q3 C2：版本从规则函数字节码派生——规则实现变化（模拟升级）→ 版本变化。"""
+    import hanhua.core.batch_translator as bt
+    v1 = bt._rules_version()
+    monkeypatch.setattr(bt, "_RULES_VERSION_CACHE", None)
+    monkeypatch.setattr(bt, "_inherent_untranslatable", lambda text: False)
+    v2 = bt._rules_version()
+    assert v1 != v2
+
+
+def test_force_retry_exhausted_overrides_budget():
+    """Q3 C2：force_retry_exhausted 显式开关——预算耗尽条目也强制重跑
+    （修复后定向重跑，不依赖规则版本变化）。"""
+    from hanhua.core.batch_translator import (
+        BatchTranslator, _record_failure_attempt)
+    from hanhua.core.models import TextEntry
+    entry = TextEntry(
+        "f", "k", "Hello, my name is Mitch.", status="failed", meta={
+            "role": "display", "disposition": "translate", "confidence": "high",
+        })
+    _record_failure_attempt(entry, "untranslated_text")
+    # 跨轮重跑：store 重新加载 → 新对象 → attempt 继续累计
+    entry = TextEntry("f", "k", "Hello, my name is Mitch.",
+                      status="failed", meta=dict(entry.meta))
+    _record_failure_attempt(entry, "untranslated_text")
+
+    client = FakeClient(mapping={"Hello, my name is Mitch.": "你好，我叫米奇。"})
+    bt = BatchTranslator(client, batch_size=1, concurrency=1, lang="en→zh-CN")
+    stats = bt.run([entry])
+    assert client.calls == 0          # 预算耗尽：默认不进 run_scope
+    assert stats.total == 0
+
+    entry2 = TextEntry(
+        "f", "k", "Hello, my name is Mitch.", status="failed", meta=dict(entry.meta))
+    stats = bt.run([entry2], force_retry_exhausted=True)
+    assert client.calls == 1          # 强制开关：预算耗尽也重跑
+    assert stats.done == 1
+    assert entry2.status == "translated"
+
+
 # ── Q1 语义门（BUILTIN_UI_REFERENCES 进质量门）+ Q2 记忆毒化防护 ──
 def test_builtin_ui_wrong_translation_rejected():
     """Q1：'Resume'→'简历'（形式门全过：有中文/占位符齐）被语义门拦截——
@@ -3703,3 +3834,52 @@ def test_agent_memory_skips_echo_exempt_entries(tmp_path):
     ).run([entry])
     assert entry.status == "translated"
     assert mem.count() == 0
+
+
+def test_agent_memory_skips_language_source_kept_entries(tmp_path):
+    """C3：语言保持条目（原文已是目标语言，译文=原文）不进经验记忆——
+    「原文→原文」沉淀毒化，后续命中直接复用不翻译。"""
+    mem = _mem_store(tmp_path)
+    entry = TextEntry("f", "k", "继续游戏", meta={
+        "role": "display", "disposition": "translate", "confidence": "high",
+        "language_source_kept": True})
+    client = FakeClient(mapping={"继续游戏": "继续游戏"})
+    BatchTranslator(
+        client, batch_size=1, concurrency=1, memory=None,
+        agent_memory=mem, agent_game="demo-game",
+    ).run([entry])
+    assert entry.status == "translated"
+    assert mem.count() == 0
+
+
+def test_language_source_kept_not_added_to_working_memory():
+    """C3：语言保持条目不进工作记忆（ProjectStore.memory）——与经验
+    记忆双门一致，防「原文→原文」污染跨游戏一致性锚定。"""
+    import tempfile
+    store = ProjectStore(Path(tempfile.mkdtemp()) / "kept.db")
+    store.init_schema()
+    kept_entry = _to_model([{
+        "file_id": "ui", "key_path": "title/1",
+        "original": "游戏设置",
+        "meta": {"role": "display", "disposition": "translate"},
+    }])[0]
+    normal_entry = _to_model([{
+        "file_id": "ui", "key_path": "menu/2",
+        "original": "Open Door",
+        "meta": {"role": "display", "disposition": "translate"},
+    }])[0]
+    client = FakeClient({
+        "游戏设置": "游戏设置",          # 语言保持（原文已是中文）
+        "Open Door": "打开门",
+    })
+    BatchTranslator(
+        client, memory=store, model="m", lang="en→zh-CN",
+        batch_size=1, concurrency=1,
+    ).run([kept_entry, normal_entry])
+
+    assert kept_entry.meta.get("language_source_kept") is True
+    assert "游戏设置" not in store.get_memory_hits(
+        ["游戏设置"], "m", "en→zh-CN")
+    assert store.get_memory_hits(["Open Door"], "m", "en→zh-CN") == {
+        "Open Door": "打开门",
+    }

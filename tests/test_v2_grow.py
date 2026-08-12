@@ -9,6 +9,7 @@ import pytest
 from hanhua.core.unity.writer import (
     WriteResult,
     _apply_localization_translations,
+    _assert_asset_diff_whitelist,
     _dispose_environment,
     _patch_asset,
     _patch_serialized_string,
@@ -59,6 +60,39 @@ def test_patch_serialized_string_preserves_following_serialized_string():
     second_length_offset = 4 + first_len
     second_len = int.from_bytes(raw[second_length_offset:second_length_offset + 4], "little")
     assert raw[second_length_offset + 4:second_length_offset + 4 + second_len].decode("utf-8") == "选项"
+
+
+# ── C2 差异白名单：补丁只允许改目标串区，其余字节零变动 ──
+def test_diff_whitelist_in_place_diff_must_stay_in_span():
+    """原位补丁（new_end == old_end）：diff 必须严格落在目标 span 内——
+    改动任何 span 外字节（相邻字段/长度头之外）都拒绝。"""
+    raw = _serialized("NEW GAME") + _serialized("SETTINGS")
+    patched = bytearray(raw)
+    _old_end, new_end = _patch_serialized_string(patched, 4, "设置")
+    assert new_end == 12        # 6 字节 + 对齐，原位（old_end == 12）
+    _assert_asset_diff_whitelist(
+        raw, bytes(patched), [(0, 12, new_end)], "test")   # 不抛
+    tampered = bytearray(patched)
+    tampered[12] ^= 0xFF                                   # 篡改相邻字段
+    with pytest.raises(ValueError, match="越出目标串区"):
+        _assert_asset_diff_whitelist(
+            raw, bytes(tampered), [(0, 12, new_end)], "test")
+
+
+def test_diff_whitelist_growth_preserves_following_segments():
+    """变长补丁：后续区段被推挤（内容不变仅位置移动）允许；后续区段
+    内容被意外改动（子串缺失）拒绝。"""
+    raw = _serialized("NEW GAME") + _serialized("SETTINGS")
+    patched = bytearray(raw)
+    old_end, new_end = _patch_serialized_string(patched, 4, "开始游戏")
+    assert new_end > old_end    # 变长：SETTINGS 整体右移 4 字节
+    spans = [(0, old_end, new_end)]
+    _assert_asset_diff_whitelist(raw, bytes(patched), spans, "test")
+    tampered = bytearray(patched)
+    tampered[-1] ^= 0xFF                                   # 破坏 SETTINGS 内容
+    with pytest.raises(ValueError, match="内容丢失|被改动"):
+        _assert_asset_diff_whitelist(
+            raw, bytes(tampered), spans, "test")
 
 
 def test_apply_localization_translation_uses_entry_id():

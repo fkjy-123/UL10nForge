@@ -37,14 +37,17 @@ def _fake_v2(files=0, entries=0):
 
 def _gates(project: Project, *, v2=None, font=None, rejected=(), truncated=0,
            text_files=1, text_verified=1, allow_partial=False, ready_text=1,
-           font_enabled=False):
+           font_enabled=False, written_total=0,
+           logic_mismatch_count=0, logic_reverted=0):
     return project._evaluate_writeback_gates(
         text_files=text_files, v2=v2 if v2 is not None else _fake_v2(files=1, entries=1),
         text_verified=text_verified,
         font=font if font is not None else _fake_font(),
         font_level="disabled", active_font_config=FontConfig(enabled=font_enabled),
         rejected=list(rejected), truncated=truncated,
-        allow_partial=allow_partial, ready_text_translations=ready_text)
+        allow_partial=allow_partial, ready_text_translations=ready_text,
+        written_total=written_total, logic_mismatch_count=logic_mismatch_count,
+        logic_reverted=logic_reverted)
 
 
 # ── P0-1：四态闸门评估 ──
@@ -81,6 +84,67 @@ def test_gates_truncated_warns_but_does_not_block_default_publish(tmp_path):
     gates = _gates(proj, truncated=3)
     assert gates["object"]["status"] == "WARN"
     assert gates["overall"]["status"] == "WARN"
+
+
+# ── 写回 C6b：批量截断闸门联动 ──
+
+def test_gates_bulk_truncated_blocks_default_publish(tmp_path):
+    """C6b：批量截断（≥5 条且占待写 ≥10%）是语义残缺成片信号——
+    默认 BLOCKED，不再无条件 WARN 照写。"""
+    proj = Project.open_game_dir(_make_tree(), tmp_path / "app")
+    gates = _gates(proj, truncated=6, written_total=30)
+    assert gates["object"]["status"] == "BLOCKED"
+    assert gates["overall"]["status"] == "BLOCKED"
+    assert "占待写" in gates["object"]["detail"]
+
+
+def test_gates_bulk_truncated_warns_with_allow_partial(tmp_path):
+    """C6b：批量截断经 allow_partial 确认后放行为 WARN（与 rejected 同级）。"""
+    proj = Project.open_game_dir(_make_tree(), tmp_path / "app")
+    gates = _gates(proj, truncated=6, written_total=30, allow_partial=True)
+    assert gates["object"]["status"] == "WARN"
+    assert gates["overall"]["status"] == "WARN"
+
+
+def test_gates_sparse_truncated_below_threshold_still_warns(tmp_path):
+    """C6b：少量截断（<5 条）保持 WARN 不阻断（taxes 单条超长译文实证）。"""
+    proj = Project.open_game_dir(_make_tree(), tmp_path / "app")
+    gates = _gates(proj, truncated=4, written_total=100)
+    assert gates["object"]["status"] == "WARN"
+
+
+def test_gates_low_ratio_truncated_not_bulk(tmp_path):
+    """C6b：截断条数够多但占比 <10%（如整表容量小范围超限）不升级 BLOCKED。"""
+    proj = Project.open_game_dir(_make_tree(), tmp_path / "app")
+    gates = _gates(proj, truncated=6, written_total=200)
+    assert gates["object"]["status"] == "WARN"
+
+
+# ── 写回 C6c：逻辑审计计数闸门联动 ──
+
+def test_gates_logic_mismatch_blocks_even_without_rejected(tmp_path):
+    """C6c：重开逻辑验证失败（字符串边界不一致）是写坏信号——即使异常
+    路径被外层吞掉，闸门兜底 BLOCKED，绝不发布。"""
+    proj = Project.open_game_dir(_make_tree(), tmp_path / "app")
+    gates = _gates(proj, logic_mismatch_count=1, allow_partial=True)
+    assert gates["object"]["status"] == "BLOCKED"
+    assert "逻辑验证失败" in gates["object"]["detail"]
+
+
+def test_gates_bulk_logic_reverted_warns(tmp_path):
+    """C6c：逻辑审计自动回退 ≥30% 待写条目 → WARN 提示输入绑定区域
+    疑似大范围受损（回退本身安全，但该翻的键翻不了需人工关注）。"""
+    proj = Project.open_game_dir(_make_tree(), tmp_path / "app")
+    gates = _gates(proj, logic_reverted=10, written_total=20)
+    assert gates["object"]["status"] == "WARN"
+    assert "自动回退" in gates["object"]["detail"]
+
+
+def test_gates_small_logic_reverted_passes(tmp_path):
+    """C6c：少量自动回退（<30%）是正常防护动作，不升级闸门。"""
+    proj = Project.open_game_dir(_make_tree(), tmp_path / "app")
+    gates = _gates(proj, logic_reverted=2, written_total=20)
+    assert gates["object"]["status"] == "PASS"
 
 
 def test_gates_runtime_warn_when_unverified_payload(tmp_path):
@@ -208,6 +272,52 @@ def test_write_all_publishes_with_warn_on_truncated_entries(tmp_path, monkeypatc
     assert len(result["verification"]["truncated_entries"]) == 1
     assert result["verification"]["writer_outcome"]["truncated"] == 2
     assert any("截断" in line for line in result["verification"]["warnings"])
+
+
+def test_write_all_persists_reverted_locators_to_store(
+        tmp_path, monkeypatch):
+    """写回 C10：逻辑审计回退条目发布成功后持久化到 store（GUI 状态
+    与游戏实际状态同步，不再显示 translated 与实际脱节）。"""
+    _install_fake_raw_asset_environment(monkeypatch)
+    proj = _make_write_ready_project(tmp_path, monkeypatch)
+    entry = next(row for row in proj.store.get_entries()
+                 if row["status"] == "translated")
+    locator = f"{entry['file_id']}:{entry['key_path']}"
+    fake_outcome = WriteResult(
+        files=1, entries=1, attempted=1,
+        reverted_locators={locator})
+
+    def capture_v2(store, game_dir, staging):
+        return fake_outcome
+
+    monkeypatch.setattr("hanhua.core.project.write_back_v2", capture_v2)
+
+    result = proj.write_all()
+
+    assert result["verification"]["reverted_persisted"] == 1
+    row = proj.store.get_entries()
+    updated = next(r for r in row if r["file_id"] == entry["file_id"]
+                   and r["key_path"] == entry["key_path"])
+    assert updated["status"] == "skipped"
+    # 发布失败（闸门 BLOCKED）时不得持久化——游戏实际状态未变
+    proj2 = _make_write_ready_project(tmp_path, monkeypatch)
+    entry2 = next(r for r in proj2.store.get_entries()
+                  if r["status"] == "translated")
+    blocked_outcome = WriteResult(
+        files=1, entries=1, attempted=2,
+        rejected=[WriteRejection("fake:key", "test_reject")],
+        reverted_locators={f"{entry2['file_id']}:{entry2['key_path']}"})
+
+    def capture_blocked(store, game_dir, staging):
+        return blocked_outcome
+
+    monkeypatch.setattr("hanhua.core.project.write_back_v2", capture_blocked)
+    with pytest.raises(RuntimeError, match="阻断默认发布"):
+        proj2.write_all()
+    row2 = proj2.store.get_entries()
+    still = next(r for r in row2 if r["file_id"] == entry2["file_id"]
+                 and r["key_path"] == entry2["key_path"])
+    assert still["status"] == "translated"
 
 
 def test_write_all_publishes_with_warn_when_allow_partial(

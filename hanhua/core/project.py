@@ -12,7 +12,7 @@ import tempfile
 import threading
 import time
 import uuid
-from dataclasses import dataclass, replace
+from dataclasses import dataclass, field, replace
 from pathlib import Path
 from typing import Callable
 
@@ -50,7 +50,8 @@ from hanhua.core.unity import il2cpp as il2cpp_extractor
 from hanhua.core.unity.il2cpp import SUPPORTED_LITERAL_RECORD_SIZES
 from hanhua.core.unity import mono_dll as mono_extractor
 from hanhua.core.unity.writer import (_should_write_entry, copy_game_dir,
-                                      write_back_v2)
+                                      write_back_v2,
+                                      _update_addressables_catalogs)
 from hanhua.core.writer import write_back as write_back_text
 
 
@@ -429,6 +430,9 @@ class AnalysisReport:
     # 形态覆盖统计：(形态名, 文件数, 条目数)——形态注册表见
     # hanhua/core/tooling/morphology.py（显式清单 + 文本先验）
     morphology_stats: tuple[tuple[str, int, int], ...] = ()
+    # R5 提取侧静默跳过留档：{跳过形态: 计数}——continue 不产生条目的
+    # 串聚合可见（哑识别可观测，召回率审查数据源）
+    skipped_reasons: dict[str, int] = field(default_factory=dict)
 
 
 class Project:
@@ -474,6 +478,8 @@ class Project:
         self._last_analysis_report: AnalysisReport | None = None
         self._last_scan_morphology: tuple[tuple[str, int, int], ...] = ()
         self._last_scan_morph_warnings: tuple[str, ...] = ()
+        # R5：提取侧静默跳过聚合（scan + scan_v2 合并；scan_all 开始时清零）
+        self._last_scan_skipped: dict[str, int] = {}
         self._last_il2cpp_input_hashes: tuple[str, str] | None = None
         self._last_source_manifest: dict[str, str] | None = None
         # 文本阶段 standalone 扫描时的全树快照：scan_v2 绑定前要求文本
@@ -660,6 +666,7 @@ class Project:
              f"{base.fingerprint.runtime} · Unity {base.fingerprint.unity_version}")
 
         self._scan_all_active = True
+        self._last_scan_skipped = {}   # R5：扫描前清零，scan+scan_v2 聚合
         try:
             text_files = self.scan()
             emit("text_scan", "succeeded", f"结构化文本文件 {text_files} 个")
@@ -789,6 +796,7 @@ class Project:
             completable=completable,
             warnings=tuple(warnings),
             morphology_stats=self._last_scan_morphology,
+            skipped_reasons=dict(self._last_scan_skipped),
         )
         self._last_analysis_report = report
         if report.input_protected and report.unblocked:
@@ -856,6 +864,10 @@ class Project:
             pf = parse_file(f, file_id=rel)
             if pf.noise:
                 continue      # 整文件为运行时噪音，不入库
+            # R5：提取侧静默跳过聚合（哑识别可见化）
+            for morph, count in pf.skipped_reasons.items():
+                self._last_scan_skipped[morph] = (
+                    self._last_scan_skipped.get(morph, 0) + count)
             found_ids.add(rel)
             self.store.add_file(pf.file_id, rel, pf.format, pf.encoding, pf.eol, pf.meta)
             self.store.upsert_entries([
@@ -944,6 +956,10 @@ class Project:
             pf = fn(f, file_id=rel)
             if pf.noise:
                 continue
+            # R5：提取侧静默跳过聚合（哑识别可见化）
+            for morph, count in pf.skipped_reasons.items():
+                self._last_scan_skipped[morph] = (
+                    self._last_scan_skipped.get(morph, 0) + count)
             found_ids.add(rel)
             if morph is not None:
                 morph_entries[morph] = (
@@ -1154,9 +1170,18 @@ class Project:
             *, text_files: int, v2, text_verified: int,
             font, font_level: str, active_font_config: FontConfig,
             rejected: list, truncated: int, allow_partial: bool,
-            ready_text_translations: int) -> dict:
+            ready_text_translations: int,
+            written_total: int = 0,
+            logic_mismatch_count: int = 0,
+            logic_reverted: int = 0) -> dict:
         """写回安全闸门 P0-1：把“写回成功”拆成文件/容器/对象/运行时
-        四态，禁止单一 succeeded 掩盖后续失败。"""
+        四态，禁止单一 succeeded 掩盖后续失败。
+
+        写回 C6b/c：截断与逻辑审计计数闸门联动——truncated 不再是
+        无条件的 WARN 照写，批量截断（语义残缺成片）升级为与 rejected
+        同级（默认 BLOCKED）；logic_mismatches（重开逻辑验证失败）即使
+        异常路径被吞也要兜底拦截；logic_reverted 大面积自动回退（输入
+        绑定区域疑似受损、该翻的键翻不了）升级 WARN 提示。"""
         def gate(status: str, detail: str = "") -> dict:
             return {"status": status, "detail": detail}
 
@@ -1180,10 +1205,29 @@ class Project:
         # 部分翻译（译文主体 + 省略号已写入，容量限制下最优解），只进
         # 报告 WARN 不阻断——阻断会让 1 条超长译文拖垮整场写回
         # （taxes 'I did ' 实证：短串中文译文必然超 ASCII 容量）。
+        #
+        # 写回 C6b：truncated 不无条件 WARN 照写——批量截断（≥5 条且
+        # 占待写条目 ≥10%）是「语义残缺成片」信号（如整表容量腰斩），
+        # 与 rejected 同级：默认 BLOCKED、allow_partial 确认才放行。
+        attempted = written_total + truncated
+        bulk_truncated = (truncated >= 5 and attempted > 0
+                          and truncated / attempted >= 0.1)
+        detail_parts: list[str] = []
         if rejected:
-            detail_parts = [f"拒绝 {len(rejected)}"]
-            if truncated:
-                detail_parts.append(f"截断 {truncated}")
+            detail_parts.append(f"拒绝 {len(rejected)}")
+        if truncated:
+            detail_parts.append(f"截断 {truncated}"
+                                + (f"（占待写 {attempted} 条的"
+                                   f"{truncated * 100 // attempted}%）"
+                                   if attempted else ""))
+        # 写回 C6c：重开逻辑验证失败（字符串边界不一致）是写坏信号，
+        # 即使异常路径被外层吞掉，闸门也必须兜底拦截，绝不发布
+        if logic_mismatch_count:
+            detail_parts.append(f"逻辑验证失败 {logic_mismatch_count}")
+            object_gate = gate(
+                "BLOCKED",
+                "存在重开逻辑验证失败（写坏风险），已拒绝发布副本")
+        elif rejected or bulk_truncated:
             if allow_partial:
                 object_gate = gate(
                     "WARN",
@@ -1198,6 +1242,16 @@ class Project:
             object_gate = gate(
                 "WARN",
                 f"截断 {truncated} 条（容量内部分翻译已写入，含省略号提示）")
+        elif logic_reverted and attempted > 0 \
+                and logic_reverted / attempted >= 0.3:
+            # 写回 C6c：逻辑审计计数联动——自动回退（译文→原文防断链）
+            # 是安全行为，但大面积回退（≥30% 待写条目）说明输入绑定区域
+            # 疑似整片受损、该翻的键翻不了，升级 WARN 提示人工关注
+            object_gate = gate(
+                "WARN",
+                f"逻辑审计自动回退 {logic_reverted} 条（占待写 "
+                f"{attempted} 条的 {logic_reverted * 100 // attempted}%），"
+                "输入绑定区域疑似大范围受损，建议人工检查")
         else:
             object_gate = gate("PASS", "全部条目完整写入")
 
@@ -1323,6 +1377,7 @@ class Project:
         staging: Path | None = Path(tempfile.mkdtemp(
             prefix=f".{self.out_dir.name}.staging-", dir=parent))
         backup: Path | None = None
+        published = False
         try:
             ensure_trusted_root(staging)
             _emit_writeback_stage(stage_cb, "copying", "正在复制原游戏")
@@ -1348,7 +1403,12 @@ class Project:
             # W3 运行时排除表：静态写回被回退（保留原文防断链）的逻辑键
             # 原文——插件翻译表必须剔除，否则游戏运行时被插件换成中文 →
             # 按名比较断链（按键失灵反复出现的机制之一）。
-            reverted_sources = set(v2.logic_reverted_sources)
+            # C4：写回侧拒绝的条目静态层同样保留原文（写不进的对象里往往
+            # 是键清单/类型描述等结构串），原文同样并入排除表——拒绝本身
+            # 仍走 rejected 闸门阻断默认发布，这里只补插件侧防断链。
+            reverted_sources = (
+                set(v2.logic_reverted_sources)
+                | set(getattr(v2, "rejected_sources", ()) or ()))
             if progress_cb:
                 progress_cb(copy_total + 2, progress_total)
             _emit_writeback_stage(stage_cb, "runtime_payload", "正在部署中文字体")
@@ -1363,6 +1423,15 @@ class Project:
                     [f"字体替换跳过: {skip}" for skip in static.skipped]
                     + list(static.warnings))
                 if static.replaced:
+                    # C5：静态字体替换整容器重建了 bundle（os.replace），
+                    # 其 content CRC 与 write_back_v2 更新 catalog.bin 时
+                    # 不一致 → 二次同步，否则 Addressables 运行时 CRC
+                    # Mismatch 拒载。失败语义与 write_back_v2 末尾一致：
+                    # catalog 是运行时必需，更新失败必须阻断发布。
+                    _update_addressables_catalogs(
+                        self.game_dir, staging,
+                        [{"rel_path": path}
+                         for path in static.replaced_paths])
                     font = FontInstallResult(
                         installed=True,
                         filename=active_font_config.filename,
@@ -1554,7 +1623,12 @@ class Project:
                 rejected=rejected_entries, truncated=len(truncated_items),
                 allow_partial=allow_partial,
                 ready_text_translations=_count_write_ready_translations(
-                    self.store, text_only=True))
+                    self.store, text_only=True),
+                # 写回 C6b/c：截断/逻辑审计计数闸门联动（见闸门内注释）
+                written_total=text_verified + int(getattr(v2, "entries", 0)
+                                                  or 0),
+                logic_mismatch_count=len(logic_mismatches),
+                logic_reverted=logic_reverted)
             overall = gates["overall"]["status"]
             verification["gates"] = gates
             verification["overall"] = overall
@@ -1598,23 +1672,44 @@ class Project:
             if _tree_hashes(self.game_dir) != source_hashes:
                 raise RuntimeError("发布前检测到原游戏输入发生变化，已拒绝替换旧输出")
             _emit_writeback_stage(stage_cb, "publishing", "正在原子发布汉化游戏")
+            backup_name = None
             if self.out_dir.exists():
                 backup = parent / f".{self.out_dir.name}.backup-{uuid.uuid4().hex}"
                 _replace_directory(self.out_dir, backup)
-            _replace_directory(staging, self.out_dir)
-            staging = None
-            # P0-3：发布后生成 source/target manifest（全量文件 hash，
-            # 含未修改文件），写入已发布目录；同时记录发布前版本备份
-            # 路径与恢复步骤（一键回滚凭据）
-            backup_name = backup.name if backup is not None else None
+                backup_name = backup.name
+            # P0-3（写回 C7 修复）：source/target manifest（回滚凭据）
+            # 先写入 staging，随 rename 原子落位——原实现 rename 后才写
+            # manifest，rename 与写清单之间存在崩溃窗口：新版本已发布、
+            # 旧备份凭据却未落盘，一旦异常 finally 还会删掉备份，回滚
+            # 彻底不可达（指南 §3.2「删除或保留供诊断」只实现删除半）。
             manifest_name = self._write_publish_manifest(
-                self.out_dir, source_hashes, output_hashes, fingerprint,
+                staging, source_hashes, output_hashes, fingerprint,
                 gates, allow_partial, backup_name)
-            verification["manifest"] = manifest_name
-            verification["backup"] = backup_name
             if manifest_name is None:
                 warnings.append("发布清单写入失败（.hanhua-manifest.json）")
-                verification["warnings"] = warnings
+            # rename 是发布流程的最后一步写操作：此后不再有磁盘变更，
+            # 崩溃窗口归零
+            _replace_directory(staging, self.out_dir)
+            staging = None
+            published = True
+            verification["manifest"] = manifest_name
+            verification["backup"] = backup_name
+            verification["warnings"] = warnings
+            # 写回 C10：回退决策持久化——逻辑审计自动回退（保留原文防
+            # 断链）的条目，store 状态同步 skipped。发布成功后才持久化
+            # （失败时游戏实际状态未变）；GUI 不再显示 translated 与
+            # 游戏实际状态脱节（评估 C10 P2）。
+            reverted_locators = getattr(
+                v2, "reverted_locators", set()) or set()
+            persisted = 0
+            for locator in reverted_locators:
+                file_id, sep, key_path = str(locator).partition(":")
+                if not sep:
+                    continue
+                self.store.set_status(file_id, key_path, "skipped")
+                persisted += 1
+            if persisted:
+                verification["reverted_persisted"] = persisted
             self._last_analysis_report = final_report
             if progress_cb:
                 progress_cb(progress_total, progress_total)
@@ -1646,9 +1741,23 @@ class Project:
             raise
         finally:
             if staging is not None and staging.exists():
-                shutil.rmtree(staging, ignore_errors=True)
-            if backup is not None and backup.exists() and self.out_dir.exists():
-                shutil.rmtree(backup, ignore_errors=True)
+                # 写回 C7：staging 失败时保留供诊断（改名 .diagnostic-*），
+                # 不再直接删除——修复失败的根因排查需要现场（指南 §3.2
+                # 「删除或保留供诊断」只实现删除半）
+                try:
+                    staging.replace(
+                        parent / f".{self.out_dir.name}.diagnostic-"
+                        f"{uuid.uuid4().hex}")
+                except OSError:
+                    shutil.rmtree(staging, ignore_errors=True)
+            if (backup is not None and backup.exists()
+                    and not published and not self.out_dir.exists()):
+                # 写回 C7：发布未成功时备份是唯一回滚凭据，保留不删；
+                # 发布成功后备份已交给 _schedule_backup_cleanup（保留本次
+                # 备份、只清理更早遗留）——不再有 finally 无脑删除路径
+                _emit_writeback_stage(
+                    stage_cb, "cleanup_warning",
+                    f"发布失败，旧版本备份已保留供回滚/诊断：{backup}")
 
     # ── 项目级游戏档案（每个游戏独立） ──
     @property

@@ -27,6 +27,13 @@ def _row_meta(row: dict) -> dict:
     return value if isinstance(value, dict) else {}
 
 
+def _is_sample_row(row: dict) -> bool:
+    """留档样本行（识别 L1/R5）：meta 含 skipped_count（提取器限量
+    样本标志，回写后仍保留）。样本无 file_offset/定位键，写回永远
+    失败；人工翻译还会污染跳过统计与导出——审校页禁止编辑。"""
+    return "skipped_count" in _row_meta(row)
+
+
 class StatusDelegate(QStyledItemDelegate):
     """状态列：6px 语义色圆点 + 文字。"""
 
@@ -145,6 +152,9 @@ class EntryTableModel(QAbstractTableModel):
         row = self._rows[index.row()]
         col = index.column()
         if role == Qt.EditRole and col == 3:
+            # 留档样本行禁止人工翻译（无定位键写回失败 + 污染跳过统计）
+            if _is_sample_row(row):
+                return False
             text = str(value).strip()
             if text == row["translation"]:
                 return False
@@ -171,7 +181,10 @@ class EntryTableModel(QAbstractTableModel):
     def flags(self, index):
         f = Qt.ItemIsEnabled | Qt.ItemIsSelectable
         if index.column() == 3:
-            f |= Qt.ItemIsEditable
+            # 留档样本行（meta 含 skipped_count）不可编辑：无定位键写回
+            # 永远失败，人工翻译污染跳过统计与导出
+            if not _is_sample_row(self._rows[index.row()]):
+                f |= Qt.ItemIsEditable
         if index.column() == 5:
             f |= Qt.ItemIsUserCheckable
         return f
@@ -199,7 +212,12 @@ class EntryFilterProxy(QSortFilterProxyModel):
         if self.search and self.search not in r["original"].lower() \
                 and self.search not in (r["translation"] or "").lower():
             return False
-        if self.status and r["status"] != self.status:
+        if self.status == "needs_review":
+            # 翻译 C6：语义审核不合格条目（meta 有 review_issue）按
+            # 「需要优化」筛选，与 store 状态无关
+            if not _row_meta(r).get("review_issue"):
+                return False
+        elif self.status and r["status"] != self.status:
             return False
         if self.file_id and r["file_id"] != self.file_id:
             return False
@@ -236,7 +254,8 @@ class ReviewPage(QWidget):
         self.search_box.setPlaceholderText("搜索原文或译文…（Ctrl+F）")
         self.search_box.setClearButtonEnabled(True)
         self.status_combo = QComboBox()
-        self.status_combo.addItems(["全部状态", "待翻译", "已翻译", "失败", "跳过"])
+        self.status_combo.addItems(
+            ["全部状态", "待翻译", "已翻译", "失败", "跳过", "需要优化"])
         self.status_combo.setFixedWidth(110)
         self.file_combo = QComboBox()
         self.file_combo.setMinimumWidth(200)
@@ -312,7 +331,8 @@ class ReviewPage(QWidget):
         if self._loading:
             return
         status = self.status_combo.currentText()
-        mapping = {"待翻译": "pending", "已翻译": "translated", "失败": "failed", "跳过": "skipped"}
+        mapping = {"待翻译": "pending", "已翻译": "translated", "失败": "failed",
+                   "跳过": "skipped", "需要优化": "needs_review"}
         file_id = "" if self.file_combo.currentIndex() <= 0 else self.file_combo.currentData()
         self.proxy.setFilters(
             search=self.search_box.text(),
@@ -415,11 +435,15 @@ class ReviewPage(QWidget):
                    else f"已解锁 {len(rows)} 条")
 
     def _mark_pending(self, rows: list[dict]):
-        for row in rows:
+        targets = [row for row in rows if not _is_sample_row(row)]
+        if not targets:
+            Toast.show(self, "留档样本行仅审计用，不可标记翻译")
+            return
+        for row in targets:
             self.state.project.store.set_status(
                 row["file_id"], row["key_path"], "pending")
         self.state.entriesChanged.emit()
-        Toast.show(self, f"已标记 {len(rows)} 条为待翻译")
+        Toast.show(self, f"已标记 {len(targets)} 条为待翻译")
 
     def _copy(self, text: str):
         from PySide6.QtWidgets import QApplication

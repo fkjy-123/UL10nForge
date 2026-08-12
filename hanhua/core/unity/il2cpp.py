@@ -7,6 +7,8 @@ from typing import Callable
 
 from hanhua.core.extractor import ParsedFile, looks_like_noise_file
 from hanhua.core.models import STATUS_SKIPPED, TextEntry
+from hanhua.core.unity.extractor import (
+    _finalize_skipped_counts, _skipped_sample_entry)
 from hanhua.core.placeholders import is_code_identifier, should_skip
 from hanhua.core.engine_strings import (
     is_engine_string as _is_engine_string,
@@ -39,6 +41,15 @@ _IL2CPP_FORMAT_PLACEHOLDER = re.compile(r"\{[0-9][^}]*\}")
 # 控制符/≥2 空白开头 = 调试输出（'\ndepth: '、'  .locals '、字符表片段）
 _IL2CPP_LEADING_WS = re.compile(r"^[\t\r\n]|^[ \t]{2,}")
 _MIN_LITERAL_LEN = 3
+# 识别 L3：metadata 字符串区（header 0x18/0x1C，Il2CppDumper 跨
+# v24-v31 交叉验证的稳定布局）= 类型名/方法名/namespace/字段名全集。
+# 字面量与字符串区成员相等是「反射/代码引用键」的确定性证据（typeof/
+# GetMethod 参数等运行时按名查找），证据强度高于 is_code_identifier 的
+# 形态正则——所以判跳过时细分 reason，且优先于 engine_morph 的长度猜测。
+# v39（Unity 6）字符串区偏移未验证（Il2CppDumper 6.7.46 不支持），
+# 不启用——待真实样本校准（评估报告 L3 同款措辞）。
+_STRING_POOL_VERSION_OK = frozenset({24, 27, 29, 31})
+_MAX_POOL_ENTRIES = 2_000_000  # 防畸形区段死循环的上限（正常池远小于此）
 
 # 兼容引用：保留名称，值 = 各版本记录字节数。
 SUPPORTED_LITERAL_RECORD_SIZES = {v: cfg[4] for v, cfg in _LAYOUTS.items()}
@@ -136,6 +147,42 @@ def parse_string_literals(raw: bytes) -> list[tuple[int, int, int]]:
             continue
         valid.append((data_index, length, data_pos))
     return valid
+
+
+def _metadata_string_pool(raw: bytes) -> frozenset[str]:
+    """字符串区标识符全集（识别 L3）；布局非法/版本未验证 → 空集。
+
+    解析失败一律降级为空集——分类链保持现状，解析失败不改变既有判定
+    （与 L6 `_script_class_of` 同模式）。自校验：偏移/大小在界内、
+    逐条 NUL 终结、strict UTF-8 可解码、总数有上限。
+    """
+    if len(raw) < _MIN_METADATA_HEADER_SIZE:
+        return frozenset()
+    magic, version = struct.unpack_from("<II", raw, 0)
+    if magic != METADATA_MAGIC or version not in _STRING_POOL_VERSION_OK:
+        return frozenset()
+    str_off, str_size = struct.unpack_from("<II", raw, 0x18)
+    if not str_size or str_off < _MIN_METADATA_HEADER_SIZE:
+        return frozenset()
+    if str_off + str_size > len(raw):
+        return frozenset()
+    blob = raw[str_off:str_off + str_size]
+    names: set[str] = set()
+    cursor = 0
+    for _ in range(_MAX_POOL_ENTRIES):
+        if cursor >= str_size:
+            break
+        end = blob.find(b"\x00", cursor)
+        if end < 0:
+            return frozenset()   # 区段尾部无 NUL → 不是字符串数组布局
+        try:
+            names.add(blob[cursor:end].decode("utf-8"))
+        except UnicodeDecodeError:
+            return frozenset()
+        cursor = end + 1
+    else:
+        return frozenset()       # 超上限 → 畸形区段，不启用
+    return frozenset(names)
 
 
 def _independent_pool_records(raw: bytes) -> list[tuple[int, int, int]] | None:
@@ -408,17 +455,53 @@ def extract_metadata_strings(path: str | Path, file_id: str | None = None,
     fid = file_id or str(p).replace("\\", "/")
     raw = p.read_bytes()
     entries: list[TextEntry] = []
+    skipped: dict[str, int] = {}  # R5 静默跳过留档（哑识别可见化）
+    # 识别 L3：字符串区标识符全集（类型名/方法名/namespace 名）——
+    # 字面量与它相等是反射/代码引用键的确定性证据；解析失败 → 空集
+    # 降级（分类链保持现状）
+    metadata_strings = _metadata_string_pool(raw)
     for data_index, length, data_pos in parse_string_literals(raw):
         if data_pos + length > len(raw):
+            # R5：记录越界（池损坏/解析器边界）静默跳过留档
+            skipped["literal_oob"] = skipped.get("literal_oob", 0) + 1
             continue
         try:
             s = raw[data_pos:data_pos + length].decode("utf-8")
         except UnicodeDecodeError:
+            skipped["decode_failed"] = skipped.get("decode_failed", 0) + 1
             continue
         if _has_illegal_controls(s):
+            # R5/L1：非法控制字符静默跳过留档（计数 + 限量样本）
+            skipped["illegal_controls"] = skipped.get("illegal_controls", 0) + 1
+            sample = _skipped_sample_entry(
+                fid, f"skip/meta#{data_index}", s, kind="il2cpp",
+                reason="illegal_controls",
+                count=skipped["illegal_controls"])
+            if sample:
+                entries.append(sample)
             continue
         # 代码池严格键检测：无空格标识符是枚举名/绑定名，绝不翻译
         if should_skip(s) or is_code_identifier(s) or _is_engine_string(s):
+            # R5/L1：代码标识符/引擎串静默跳过留档（计数 + 限量样本）
+            skipped["code_identifier"] = skipped.get("code_identifier", 0) + 1
+            sample = _skipped_sample_entry(
+                fid, f"skip/meta#{data_index}", s, kind="il2cpp",
+                reason="code_identifier",
+                count=skipped["code_identifier"])
+            if sample:
+                entries.append(sample)
+            continue
+        # 识别 L3：确定性反射键——字面量 == metadata 字符串区成员（类型名/
+        # 方法名/namespace/字段名）。is_code_identifier 是形态正则猜测，这里
+        # 是集合命中的事实证据（typeof/GetMethod 参数等运行时按名查找键），
+        # 优先于 engine_morph 的长度猜测（证据分层：确定性 > 形态）。
+        if s in metadata_strings:
+            skipped["reflection_key"] = skipped.get("reflection_key", 0) + 1
+            sample = _skipped_sample_entry(
+                fid, f"skip/meta#{data_index}", s, kind="il2cpp",
+                reason="reflection_key", count=skipped["reflection_key"])
+            if sample:
+                entries.append(sample)
             continue
         # 引擎/调试形态：格式模板、反汇编/日志输出、字符表 → 不产生条目
         # （真实样本 16541 条中 65% 属此类，minato/seijunDROP v24 池）
@@ -426,6 +509,13 @@ def extract_metadata_strings(path: str | Path, file_id: str | None = None,
                 or _IL2CPP_LEADING_WS.match(s)
                 or len(s) < _MIN_LITERAL_LEN
                 or not any(ch.isalpha() for ch in s)):
+            # R5/L1：引擎/调试形态静默跳过留档（计数 + 限量样本）
+            skipped["engine_morph"] = skipped.get("engine_morph", 0) + 1
+            sample = _skipped_sample_entry(
+                fid, f"skip/meta#{data_index}", s, kind="il2cpp",
+                reason="engine_morph", count=skipped["engine_morph"])
+            if sample:
+                entries.append(sample)
             continue
         # 剩余字面量分类。真实样本验证（minato/seijunDROP 老版池）：
         # 池内容几乎全是引擎字符串（异常消息/属性名/系统库字符表），游戏
@@ -459,6 +549,9 @@ def extract_metadata_strings(path: str | Path, file_id: str | None = None,
     for e in entries:
         if e.status == "pending" and (should_skip(e.original) or is_code_identifier(e.original)):
             e.status = STATUS_SKIPPED
+    # 样本计数回写：限量样本的 skipped_count 是累计值，报告聚合需
+    # 真实总数（消费端按 (file_id, reason, obj) 取 max）
+    _finalize_skipped_counts(entries, skipped)
     noise = looks_like_noise_file(entries)
     return ParsedFile(fid, str(p), "v2_il2cpp", entries, "utf-8", "\n",
-                      {"kind": "il2cpp"}, noise)
+                      {"kind": "il2cpp"}, noise, skipped)

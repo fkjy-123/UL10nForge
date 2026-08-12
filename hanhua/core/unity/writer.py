@@ -119,6 +119,33 @@ def _collect_immutable_values(
     return collected
 
 
+def _snapshot_typetree_surroundings(
+        tree: dict, exclude_paths: set[tuple]) -> list[tuple[list[str | int], object]]:
+    """C2：收集 typetree 全部非目标叶子路径 + 值（写回前快照）。
+
+    save_typetree 完整重建会重写整个对象——非目标字段（数值标量/数组
+    长度/类型名/邻字段）只靠 _IMMUTABLE_FIELD_NAMES 覆盖不足：immutable
+    清单之外 UnityPy 序列化缺陷静默改动某字段，重开验证（补丁后字节自证）
+    发现不了。快照全部非目标叶子，重开后逐值比对——任何非目标字段被
+    save_typetree 改动都会在此拒绝（含 float 精度、数组 m_Size、类型名）。
+    exclude_paths：本次补丁的目标叶子路径（有意改动，跳过）。
+    """
+    collected: list[tuple[list[str | int], object]] = []
+
+    def walk(node, path: list):
+        if isinstance(node, dict):
+            for key, value in node.items():
+                walk(value, path + [key])
+        elif isinstance(node, list):
+            for index, value in enumerate(node):
+                walk(value, path + [index])
+        elif tuple(path) not in exclude_paths:
+            collected.append((list(path), node))
+
+    walk(tree, [])
+    return collected
+
+
 @dataclass
 class WriteResult:
     files: int = 0
@@ -136,9 +163,17 @@ class WriteResult:
     logic_mismatches: list[str] = field(default_factory=list)  # 重开逻辑验证失败（字符串边界）
     logic_reverted: int = 0        # 反向语义审计自动回退条目数（译文→原文，防逻辑键断链）
     logic_reverted_items: list[str] = field(default_factory=list)  # 回退摘要（最多 30 条）
+    # C10：完整回退 locator 集合（file_id:key_path，全量不截断）——发布
+    # 成功后由调用方持久化到 store（GUI 状态与游戏实际状态同步）
+    reverted_locators: set[str] = field(default_factory=set)
     # W3：被回退（保留原文防断链）的原文完整集合——运行时插件翻译表必须
     # 排除这些串（插件把静态回退的原文再翻译成中文 → 按名比较断链）。
     logic_reverted_sources: set[str] = field(default_factory=set)
+    # C4：被写回侧拒绝（尝试写但失败）的条目原文——静态层同样保留原文，
+    # 插件运行时翻译同样断链（写不进的对象里往往是键清单/类型描述等结构
+    # 串）。与 logic_reverted_sources 一起进运行时排除表；拒绝本身仍走
+    # rejected 闸门（P0-2 阻断默认发布），这里只补排除语义。
+    rejected_sources: set[str] = field(default_factory=set)
 
     def __post_init__(self):
         if self.entries and not self.attempted:
@@ -161,7 +196,8 @@ class WriteResult:
     @property
     def outcome(self) -> WriteOutcome:
         return WriteOutcome(
-            self.attempted, self.written, tuple(self.rejected), self.truncated)
+            self.attempted, self.written, tuple(self.rejected),
+            self.truncated, self.logic_reverted)
 
     def note_attempt(self, entry: dict) -> str:
         locator = self._locator(entry)
@@ -181,6 +217,9 @@ class WriteResult:
         if locator not in self._resolved_locators:
             self._resolved_locators.add(locator)
             self.rejected.append(WriteRejection(locator, reason))
+        original = str(entry.get("original") or "")
+        if original:
+            self.rejected_sources.add(original)
 
     def is_resolved(self, entry: dict) -> bool:
         return self._locator(entry) in self._resolved_locators
@@ -193,8 +232,20 @@ class WriteResult:
 
     def note_logic_reverted(self, entry: dict, reason: str) -> None:
         """逻辑键自动回退记录：主动不写译文（保留原文）——与 rejected
-        （尝试写但失败）语义不同，不触发对象闸门阻断。"""
+        （尝试写但失败）语义不同，不触发对象闸门阻断。
+
+        必须同步标记 resolved：write_back_v2 尾部循环对未 resolve 的
+        候选统一 note_rejected——若漏标记，被回退的条目会同时记 rejected
+        （「防线越生效、发布越被误阻」），且原文进 rejected 的 object
+        闸门统计造成发布误判。
+        """
         locator = self.note_attempt(entry)
+        if locator not in self._resolved_locators:
+            self._resolved_locators.add(locator)
+        # 写回 C10：完整回退 locator 集合（区别于摘要 logic_reverted_items
+        # 最多 30 条）——发布成功后由调用方持久化到 store（GUI 状态与
+        # 游戏实际状态同步，不再显示 translated）
+        self.reverted_locators.add(locator)
         self.logic_reverted += 1
         original = str(entry.get("original") or "")
         if original:
@@ -243,7 +294,15 @@ def _fit_bytes(translation: str, capacity: int, encoding: str,
     return data, True
 
 
-_FORMAT_PLACEHOLDER = re.compile(r"\{[0-9][^}]*\}")
+# 写回 C8：占位符防线只认 {数字开头} 是盲区——SmartFormat 命名占位符
+# {name}、格式说明 {1:0.00}/{0,-10:N2}、Ren'Py 等号值 {w=1.5}、结束标签
+# {/i} 全部不匹配，截断把 {name 砍成 {name 后照写不拦。扩展为任意非空
+# 花括号内容；前后 lookahead 排除 string.Format 转义 {{literal}}/{{0}}
+# （渲染为字面 {literal}/{0}，不是占位符——{0}} 形态同样拦掉）。
+# 机械恢复补末尾对索引占位（string.Format 按索引取参）与命名占位
+# （SmartFormat 按名取参）都安全；等号值/结束标签补末尾是「比丢失好」
+# 的最优解（位置敏感，但截断已经破坏了原文，恢复缺失标记优先）。
+_FORMAT_PLACEHOLDER = re.compile(r"(?<!\{)\{[^{}\r\n]+\}(?!\})")
 
 
 def _restore_placeholders(original: str, translation: str) -> str:
@@ -506,12 +565,16 @@ def _align(value: int, boundary: int = 4) -> int:
     return value + (-value % boundary)
 
 
-def _patch_serialized_string(raw: bytearray, data_offset: int, translation: str) -> bytearray:
+def _patch_serialized_string(raw: bytearray, data_offset: int, translation: str
+                             ) -> tuple[int, int]:
     """替换 Unity 序列化的 UTF-8 string 字段，并保留字段后的内容。
 
     Unity string 的长度头只记录实际文本字节数；字段末尾的零字节仅是为了让
     下一个字段落在 4 字节边界。替换范围必须以旧字段结束位置为界，不能以新
     长度计算，否则变长译文会覆盖紧随字符串的序列化字段。
+
+    返回 (old_end, new_end)：本补丁的旧/新字段结束位置（含对齐零），供
+    C2 差异白名单记录 span——old_end 与 new_end 之差是后续内容的位移量。
     """
     length_offset = data_offset - 4
     if length_offset < 0 or data_offset > len(raw):
@@ -528,7 +591,58 @@ def _patch_serialized_string(raw: bytearray, data_offset: int, translation: str)
         + payload
         + b"\x00" * (new_end - data_offset - len(payload))
     )
-    return raw
+    return old_end, new_end
+
+
+def _assert_asset_diff_whitelist(raw: bytes, patched: bytes,
+                                 spans: list[tuple[int, int, int]],
+                                 desc: str) -> None:
+    """资产侧字节差异白名单（C2，镜像 IL2CPP `_assert_diff_whitelist`）。
+
+    补丁前后逐字节 diff 必须全部落在目标串区（长度头 + 内容 + 对齐零），
+    其余字节零变动——独立于「重开 vs 补丁后字节」自证的第二道防线：
+    自证只证明保存保真，不证明补丁逻辑没越界；白名单直接对原始字节
+    验证「只改了该改的」（扫描误判 / 补丁偏移 bug 在此拦截）。
+
+    spans：(length_offset, old_end, new_end)，按 length_offset 升序。
+    原位补丁（new_end == old_end 全部）：diff 必须严格落在 span 并集内。
+    变长补丁（任一 new_end != old_end）：后续内容整体位移（rawstr 扩容/
+    压缩推挤），逐字节 diff 会蔓延——此时验证「非目标区段内容逐字节保留、
+    仅允许位置移动」：非目标区段以子串顺序保留检查（与绝对位置无关），
+    UnityPy 序列化/补丁逻辑对非目标字段的任何改动（数值/长度头/相邻串）
+    都会使子串缺失而拒绝。
+    """
+    if all(new_end == old_end for _s, old_end, new_end in spans):
+        allowed: set[int] = set()
+        for s, _old_end, new_end in spans:
+            allowed.update(range(s, new_end))
+        bad = [i for i in range(len(raw))
+               if raw[i] != patched[i] and i not in allowed]
+        if bad:
+            raise ValueError(
+                f"{desc} 写回差异越出目标串区 {len(bad)} 处"
+                f"（首例 0x{bad[0]:x}），非目标字节被改动，拒绝")
+        return
+    # 变长补丁：非目标区段 = 原始坐标上补丁 span 之间的空隙
+    segments: list[tuple[int, int]] = []
+    prev = 0
+    for s, old_end, _new_end in sorted(spans):
+        if s > prev:
+            segments.append((prev, s))
+        prev = max(prev, old_end)
+    if prev < len(raw):
+        segments.append((prev, len(raw)))
+    cursor = 0
+    for a, b in segments:
+        segment = raw[a:b]
+        if not segment:
+            continue
+        idx = patched.find(segment, cursor)
+        if idx == -1:
+            raise ValueError(
+                f"{desc} 变长补丁后非目标区段 0x{a:x}..0x{b:x} 内容丢失或被"
+                "改动（子串顺序保留检查失败），拒绝")
+        cursor = idx + len(segment)
 
 
 def _apply_localization_translations(tree: dict,
@@ -589,6 +703,8 @@ def _verify_saved_bundle(
             tuple[str, int], list[tuple[list[str | int], object]]] | None = None,
         expected_string_sequences: dict[
             tuple[str, int], tuple[list[str], dict[str, str]]] | None = None,
+        expected_surrounding_values: dict[
+            tuple[str, int], list[tuple[list[str | int], object]]] | None = None,
 ) -> None:
     """重开临时容器，确认目标对象正确且未目标对象字节不变。
 
@@ -601,6 +717,11 @@ def _verify_saved_bundle(
     扫描规则重新扫描，数量与逐项内容必须一致。扩容插入若破坏字符串长度
     头边界，序列必然变化——这是「字节自证」验证发现不了的结构破坏
     （游戏加载该对象失败 → 按钮无响应/卡住）。
+
+    expected_surrounding_values（C2）：save_typetree 完整重建对象的全部
+    非目标叶子快照——immutable 清单之外的字段（数值标量/数组长度/类型名
+    /邻字段）任何被重建改动都在此拒绝。与 expected_typetree_values 共用
+    一次 read_typetree。
     """
     from UnityPy import Environment
 
@@ -635,28 +756,29 @@ def _verify_saved_bundle(
                 if raw is None or len(raw) != size or hashlib.sha256(raw).digest() != digest:
                     if key not in mismatched:
                         mismatched.append(key)
-        for key, path_values in (expected_typetree_values or {}).items():
+        for key in (set((expected_typetree_values or {}))
+                    | set((expected_immutable_values or {}))
+                    | set((expected_surrounding_values or {}))):
             obj = actual_objects.get(key)
             if obj is None:
                 missing.append(key)
                 continue
             try:
+                # 每对象至多 read_typetree 一次（大对象避免重复解析），
+                # 三类快照（目标字段 / 不可变字段 / C2 非目标叶子）共用
                 tree = obj.read_typetree()
-                for field_path, expected_value in path_values:
+                for field_path, expected_value in (expected_typetree_values
+                                                   or {}).get(key, ()):
                     if _typetree_value_at_path(tree, field_path) != expected_value:
                         mismatched.append((key, field_path))
-            except (KeyError, TypeError, ValueError, AttributeError):
-                mismatched.append(key)
-        for key, field_values in (expected_immutable_values or {}).items():
-            obj = actual_objects.get(key)
-            if obj is None:
-                missing.append(key)
-                continue
-            try:
-                tree = obj.read_typetree()
-                for field_path, expected_value in field_values:
+                for field_path, expected_value in (expected_immutable_values
+                                                   or {}).get(key, ()):
                     if _typetree_value_at_path(tree, field_path) != expected_value:
                         mismatched.append((key, field_path))
+                for field_path, expected_value in (expected_surrounding_values
+                                                   or {}).get(key, ()):
+                    if _typetree_value_at_path(tree, field_path) != expected_value:
+                        mismatched.append((key, ("surrounding", field_path)))
             except (KeyError, TypeError, ValueError, AttributeError):
                 mismatched.append(key)
         # 逻辑层验证：rawstr 改动对象字符串序列一致性（边界未破坏）
@@ -844,6 +966,9 @@ def _patch_asset(path: Path, entries: list[dict], result: WriteResult):
         tuple[str, int], list[tuple[list[str | int], str]]] = {}
     expected_immutable_values: dict[
         tuple[str, int], list[tuple[list[str | int], object]]] = {}
+    # C2：save_typetree 完整重建对象的全部非目标叶子快照
+    expected_surrounding_values: dict[
+        tuple[str, int], list[tuple[list[str | int], object]]] = {}
     # 逻辑层审计：rawstr 改动对象的字符串序列快照（重开验证用）
     expected_string_sequences: dict[
         tuple[str, int], tuple[list[str], dict[str, str]]] = {}
@@ -953,6 +1078,11 @@ def _patch_asset(path: Path, entries: list[dict], result: WriteResult):
                         tree, exclude={"m_Script"})
                     if immutable:
                         expected_immutable_values[object_key] = immutable
+                    # C2：非目标叶子快照（m_Script 内容字段有意修改，排除）
+                    surroundings = _snapshot_typetree_surroundings(
+                        tree, {("m_Script",)})
+                    if surroundings:
+                        expected_surrounding_values[object_key] = surroundings
                 except Exception:  # noqa: BLE001 typeless bundle：字节级验证兜底
                     pass
             else:
@@ -988,6 +1118,14 @@ def _patch_asset(path: Path, entries: list[dict], result: WriteResult):
                     immutable = _collect_immutable_values(tree)
                     if immutable:
                         expected_immutable_values[object_key] = immutable
+                    # C2：非目标叶子快照——m_Localized 是目标字段，按精确
+                    # 路径排除（TableData 每行的 m_Localized 叶子）
+                    exclude = {("m_TableData", i, "m_Localized")
+                               for i, row in enumerate(tree.get("m_TableData") or [])
+                               if isinstance(row, dict)}
+                    surroundings = _snapshot_typetree_surroundings(tree, exclude)
+                    if surroundings:
+                        expected_surrounding_values[object_key] = surroundings
                     continue
                 typetree_items = _select_write_items(
                     items, result, "typetree")
@@ -1082,6 +1220,17 @@ def _patch_asset(path: Path, entries: list[dict], result: WriteResult):
                         immutable = _collect_immutable_values(tree)
                         if immutable:
                             expected_immutable_values[object_key] = immutable
+                        # C2：非目标叶子快照——save_typetree 完整重建重写
+                        # 整个对象，immutable 清单之外的字段（数值标量/数组
+                        # 长度/类型名/邻字段）被序列化缺陷静默改动时，重开
+                        # 验证（补丁后字节自证）发现不了；此处快照全部非
+                        # 目标叶子，重开后逐值比对拒绝。
+                        exclude = {
+                            tuple(fp) for fp, _ in changed_paths}
+                        surroundings = _snapshot_typetree_surroundings(
+                            tree, exclude)
+                        if surroundings:
+                            expected_surrounding_values[object_key] = surroundings
                         continue
                     # F4：typetree 不可用（无内嵌 typetree 的 typeless
                     # bundle），禁止 save_typetree 空模板序列化（UnityPy
@@ -1126,7 +1275,12 @@ def _patch_asset(path: Path, entries: list[dict], result: WriteResult):
                 # 互斥一致性：同对象同原文多处出现（doog 实证 Splash ×6）——
                 # 任一位置是结构跳过（键身份）或各处译文不一致（模型波动），
                 # 全组保留原文，防「译文+原文」混排断链（代码按字典查原文）。
-                consistency = audit_repeat_consistency(raw_items)
+                consistency = audit_repeat_consistency(
+                    raw_items,
+                    # 一致性回退是主动决策：进逻辑回退记账（resolved +
+                    # 排除表），否则尾部兜底循环把它误记 rejected（闸门
+                    # 误阻），且保留原文不排除时插件运行时再翻译 → 断链
+                    on_revert=lambda e, r: result.note_logic_reverted(e, r))
                 for rec in consistency:
                     result.logic_audit.append({**rec, "stage": "consistency"})
                 # 反向语义审计（知识库案例「UnityEvent 绑定断裂」「显示文本
@@ -1169,13 +1323,22 @@ def _patch_asset(path: Path, entries: list[dict], result: WriteResult):
                 for e, meta in write_items:
                     string_translations[e["original"]] = e["translation"]
                 changed = False
-                # 从后向前处理：较高偏移处的扩容不会影响尚未处理的较低偏移。
+                # C2：差异白名单（写回前预演）——补丁链起始原始字节 + 每个
+                # 补丁的 (长度头偏移, 旧结束, 新结束)。从后向前处理：较高
+                # 偏移处的扩容不会影响尚未处理的较低偏移。
+                raw_original = bytes(raw)
+                patch_spans: list[tuple[int, int, int]] = []
                 for e, meta in sorted(write_items, key=lambda x: -x[1].get("offset", 0)):
-                    _patch_serialized_string(raw, meta["offset"], e["translation"])
+                    old_end, new_end = _patch_serialized_string(
+                        raw, meta["offset"], e["translation"])
+                    patch_spans.append((meta["offset"] - 4, old_end, new_end))
                     changed = True
                     patched_entries.append(e)
                 if changed:
                     expected = bytes(raw)
+                    _assert_asset_diff_whitelist(
+                        raw_original, expected, patch_spans,
+                        f"{path}:{object_key}")
                     obj.set_raw_data(expected)
                     expected_raw_by_path_id[object_key] = expected
                     expected_string_sequences[object_key] = (
@@ -1214,7 +1377,7 @@ def _patch_asset(path: Path, entries: list[dict], result: WriteResult):
                 _verify_saved_bundle(
                     saved, expected_raw_by_path_id, baseline_hashes,
                     expected_typetree_values, expected_immutable_values,
-                    expected_string_sequences)
+                    expected_string_sequences, expected_surrounding_values)
             except ValueError as exc:
                 # 逻辑层验证失败（含字符串序列不一致）——记录审计详情后
                 # 重新抛出：整体拒绝写回，副本保持原样，绝不落地坏产物
@@ -1290,6 +1453,51 @@ def _patch_textasset(script: bytes, items: list[tuple[dict, dict]],
             return script
         for e, _ in structured_items:
             result.note_written(e)
+        # 写回 C9：行级/结构化混合场景——同一对象既有结构化条目又有
+        # 行级条目（老库条目与结构化条目聚合）。结构化重建后行号会
+        # 移位（序列化格式变化），行级条目按「原文行内容」在重建文本
+        # 中匹配替换（行结构保持时生效）：唯一匹配 → 写；重复/缺失 →
+        # 显式 rejected（带原因），不再静默跳过被尾部循环笼统记账成
+        # BLOCKED（安全但误伤面不可审计）。
+        line_items = [
+            (entry, meta) for entry, meta in
+            _select_write_items(items, result, "textasset")
+            if "line" in meta]
+        if line_items:
+            original_lines = script.decode(
+                "utf-8-sig", errors="replace").splitlines(keepends=True)
+            target_lines = text.splitlines(keepends=True)
+            by_line = {
+                int(meta["line"]): entry
+                for entry, meta in line_items if "line" in meta}
+            for lineno, entry in sorted(by_line.items()):
+                if not (0 <= lineno < len(original_lines)):
+                    result.note_rejected(
+                        entry, "textasset_line_out_of_range")
+                    continue
+                orig_content = original_lines[lineno].strip()
+                if not orig_content:
+                    result.note_rejected(
+                        entry, "textasset_structured_line_blank")
+                    continue
+                matched: int | None = None
+                for i, ln in enumerate(target_lines):
+                    if ln.strip() == orig_content:
+                        if matched is not None:
+                            matched = None      # 重复匹配 → 放弃（改错行）
+                            break
+                        matched = i
+                if matched is None:
+                    # 结构化重建改变了行布局（重序列化格式不同）→ 无法
+                    # 安全定位，保留原文（显式 rejected 供审计/确认）
+                    result.note_rejected(
+                        entry, "textasset_structured_line_shifted")
+                    continue
+                eol = target_lines[matched][
+                    len(target_lines[matched].rstrip("\r\n")):]
+                target_lines[matched] = entry["translation"] + eol
+                result.note_written(entry)
+            text = "".join(target_lines)
         data = text.encode("utf-8")
         if bom:
             data = b"\xef\xbb\xbf" + data
@@ -1426,12 +1634,6 @@ def _patch_metadata(path: Path, entries: list[dict], result: WriteResult):
     data_off, data_size, record_mode = layout
     changes: dict[int, bytes] = {}
     expected: list[tuple[int, bytes, dict]] = []
-    # v39 重建会链式更新全部 dataIndex，但记录顺序与数量不变——重开验证
-    # 用「顺序配对」：旧顺序第 i 条 ↔ 重建后第 i 条。
-    index_order = {
-        data_index: i
-        for i, (data_index, _, _) in enumerate(il2cpp.parse_string_literals(raw))
-    }
     # F7：写回前记录存在性预检——独立读取器硬读记录区（不做重叠防御/
     # 过滤），验证每条 meta 声称的 (data_index, length) 有真实记录支撑，
     # 防偏移错位写坏（交叉验证兜底池子自洽，这里补「meta ↔ 文件」一致）。
@@ -1489,19 +1691,37 @@ def _patch_metadata(path: Path, entries: list[dict], result: WriteResult):
     except ValueError as exc:
         raise ValueError(f"IL2CPP metadata 写回失败：{exc}") from exc
     _atomic_write_bytes(path, patched)
-    # 重开验证：重新解析池（与提取同一解析器），按顺序配对逐条比对记录
-    # 长度与数据字节——绝不 rstrip 掩盖尾部 NUL（F1 回归防线，补齐闭环
-    # 测试盲区；v39 的 dataIndex 已链式更新，故按顺序而非索引配对）。
+    # 重开验证（C3 全池比对）：重新解析池（与提取同一解析器），与原始
+    # 全记录逐条比对——不只检查被补丁记录，未补丁记录的内容/长度也必须
+    # 逐字节一致（紧凑重建在末条之后的错误——空洞清零越界、游标偏差——
+    # 若仍保持合法 UTF-8 与结构，此前只查被改记录会静默通过）。顺序配对：
+    # 重建保持记录顺序（v39 dataIndex 链式更新，explicit 不重排）。
     reopened = path.read_bytes()
+    all_records = il2cpp.parse_string_literals(raw)
     verify = il2cpp.parse_string_literals(reopened)
-    for data_index, payload, entry in expected:
-        order = index_order.get(data_index)
-        if order is None or order >= len(verify):
-            raise ValueError(
-                f"IL2CPP 译文重开验证失败：data_index={data_index} 记录缺失")
+    if len(verify) != len(all_records):
+        raise ValueError(
+            f"IL2CPP 译文重开验证失败：记录数 {len(all_records)} -> {len(verify)}"
+            "（紧凑重建增删了记录，拒绝）")
+    for order, (old_index, old_len, old_pos) in enumerate(all_records):
         _new_index, length, data_pos = verify[order]
-        if length != len(payload) or reopened[data_pos:data_pos + length] != payload:
-            raise ValueError(
-                f"IL2CPP 译文重开验证失败：data_index={data_index}, "
-                f"length={length}, expected_length={len(payload)}")
-        result.note_written(entry)
+        if old_index in changes:
+            payload = changes[old_index]
+            if (length != len(payload)
+                    or reopened[data_pos:data_pos + length] != payload):
+                raise ValueError(
+                    f"IL2CPP 译文重开验证失败：data_index={old_index}, "
+                    f"length={length}, expected_length={len(payload)}")
+        else:
+            # 未补丁记录：内容必须与原始字节逐字节一致（顺序配对下
+            # 位置无关——新 dataIndex 是链式重建产物，内容不变才是关键）
+            if (length != old_len
+                    or reopened[data_pos:data_pos + length]
+                    != raw[old_pos:old_pos + old_len]):
+                raise ValueError(
+                    f"IL2CPP 译文重开验证失败：未补丁记录 "
+                    f"data_index={old_index} 内容被重建改动")
+    # 全部比对通过后记账（顺序无关，但确保所有补丁条目都验证过）
+    for data_index, _payload, entry in expected:
+        if data_index in changes:
+            result.note_written(entry)

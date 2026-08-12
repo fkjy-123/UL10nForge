@@ -932,6 +932,46 @@ def test_textasset_short_code_chunk_kept_for_manual_review():
     assert entries[0].original == "Hello there"
 
 
+def test_textasset_line_skips_record_reasons():
+    """识别 C4：文本行路径的引擎串/键标识符/代码行跳过全部留档
+    （skipped_count 聚合），不再静默 continue——「纯文本行跳过、判定
+    规律未定位到代码层」（222am 实证）的排查入口。"""
+    raw = (
+        "MENU_PLAY\n"               # 键标识符（should_skip）
+        "local x = 1\n"             # 代码行
+        "GetComponent\n"            # 引擎串
+        "Hello there\n"             # 真实文本保留
+    ).encode()
+    skipped: dict[str, int] = {}
+    entries = _textasset_entries("f1", 100, raw, skipped=skipped)
+    assert [e.original for e in entries] == ["Hello there"]
+    assert skipped == {
+        "textasset_key_identifier": 1,
+        "textasset_code_line": 1,
+        "textasset_engine_string": 1,
+    }
+
+
+def test_typetree_candidate_cap_truncation_is_recorded():
+    """识别 C5：候选层 200 上限不再静默截断——超限叶子按 reason 聚合
+    计数留档（skipped_count 语义），报告可见「该对象候选超限 N」。"""
+    from hanhua.core.unity.extractor import (
+        _MAX_CANDIDATES_PER_OBJECT, _typetree_string_entries)
+    tree = {f"slot{i}": "randomvalue" for i in range(_MAX_CANDIDATES_PER_OBJECT + 5)}
+    skipped: dict[str, int] = {}
+    display, candidates = _typetree_string_entries("f1", 100, tree,
+                                                   skipped=skipped)
+    assert len(candidates) == _MAX_CANDIDATES_PER_OBJECT
+    assert skipped == {"typetree_candidate_truncated": 5}
+    assert display == []
+    # 未超限时不产生截断计数
+    small_skipped: dict[str, int] = {}
+    _typetree_string_entries("f1", 100, {f"slot{i}": "randomvalue"
+                                         for i in range(10)},
+                             skipped=small_skipped)
+    assert small_skipped == {}
+
+
 def test_extract_asset_file_deduplicates_wrapper_aliases_by_stable_identity(
         tmp_path, monkeypatch):
     import UnityPy
@@ -1614,8 +1654,51 @@ def test_raw_string_entries_freq_filter():
     assert len(entries) == 2
     assert all(e.status == "skipped" for e in entries)
     assert all(e.meta["reason"].startswith("prefilter_") for e in entries)
-    # skipped_count 是对象内同 reason 的累计跳过数（首条 1，后续递增）
-    assert {e.meta["skipped_count"] for e in entries} == {1, 2}
+    # skipped_count 已回写为对象内同 reason 的最终跳过数（聚合语义修正：
+    # 累计计数 1..10 被消费端求和会失真，提取器末尾统一回写最终值）
+    assert {e.meta["skipped_count"] for e in entries} == {2}
+
+
+# ── 识别 L8：高频串阈值相对化（硬编码 40 → 相对阈值）──────────
+
+def test_high_freq_threshold_scales_with_total():
+    """相对阈值 = max(绝对下限 15, min(旧阈值 40, 总出现次数 × 0.2%))：
+    小游戏回落到绝对下限（旧 40 不可达——该跳未跳），
+    大游戏封顶 40（保持升级前判定——全面复盘审查钉死：>20k 规模相对
+    放大有未验证回归面，doubleshake 噪音全跳行为不回归）。"""
+    from hanhua.core.unity.extractor import _high_freq_threshold
+    assert _high_freq_threshold({}) == 15                      # 无规模 → 下限
+    assert _high_freq_threshold({"X": 50}) == 15               # 小游戏 → 下限
+    assert _high_freq_threshold({"X": 2000, "Y": 8000}) == 20  # 万次出现 → 20
+    assert _high_freq_threshold({"X": 90_000, "Y": 10_000}) == 40  # 大游戏封顶
+
+
+def test_raw_string_entries_small_game_relative_threshold():
+    """小游戏：freq 16 次即命中高频（旧 40 到不了——该跳未跳修复）。"""
+    raw = _with_len("common")
+    entries = _raw_string_entries("f1", 5, raw, {"common": 16},
+                                  "sharedassets0.assets")
+    hit = next(e for e in entries if e.original == "common")
+    assert hit.status == "skipped"
+    assert hit.meta["reason"] == "prefilter_high_frequency"
+
+
+def test_raw_string_entries_relative_threshold_waives_below():
+    """大游戏：总出现万次时阈值 20，freq 19 不命中、21 命中——
+    噪音串相对化收紧（doubleshake 实证方向）。"""
+    from hanhua.core.unity.extractor import _high_freq_threshold
+    below = _raw_string_entries(
+        "f1", 5, _with_len("noise"), {"noise": 19, "rest": 9981},
+        "sharedassets0.assets", _high_freq_threshold({"noise": 19, "rest": 9981}))
+    # 阈值下不命中高频拦截：按正常分类链处理（此处单串对象 → pending）
+    assert [e for e in below if e.original == "noise"
+            and e.meta.get("reason") == "prefilter_high_frequency"] == []
+    above = _raw_string_entries(
+        "f1", 5, _with_len("noise"), {"noise": 21, "rest": 9979},
+        "sharedassets0.assets", _high_freq_threshold({"noise": 21, "rest": 9979}))
+    hit = next(e for e in above if e.original == "noise")
+    assert hit.status == "skipped"
+    assert hit.meta["reason"] == "prefilter_high_frequency"
 
 
 # ── #US 堆 ──
@@ -1824,7 +1907,9 @@ def test_mono_strong_interaction_promotes_without_setter(
     monkeypatch.setattr(dnfile, "dnPE", lambda _path: fake_pe)
 
     parsed = extract_dll_user_strings(tmp_path / "Assembly-CSharp.dll")
-    by_original = {entry.original: entry for entry in parsed.entries}
+    # skip/ 前缀条目是识别 L1 审计样本（skipped 留档），真实条目断言不含它们
+    by_original = {entry.original: entry for entry in parsed.entries
+                   if not entry.key_path.startswith("skip/")}
 
     for text in prompts:
         entry = by_original[text]
@@ -2170,7 +2255,9 @@ def test_dll_only_promotes_verified_ldstr_to_ui_setter(tmp_path, monkeypatch):
     monkeypatch.setattr(dnfile, "dnPE", lambda _path: fake_pe)
 
     parsed = extract_dll_user_strings(tmp_path / "Custom.Game.dll")
-    by_original = {entry.original: entry for entry in parsed.entries}
+    # skip/ 前缀条目是识别 L1 审计样本（skipped 留档），真实条目断言不含它们
+    by_original = {entry.original: entry for entry in parsed.entries
+                   if not entry.key_path.startswith("skip/")}
 
     for text in visible:
         assert by_original[text].status == "pending"
@@ -2188,7 +2275,8 @@ def test_dll_only_promotes_verified_ldstr_to_ui_setter(tmp_path, monkeypatch):
     assert by_original[unrelated_below_format].status == "skipped"
     assert by_original[unrelated_below_format].meta["reason"] == (
         "unverified_user_string")
-    assert [entry.original for entry in parsed.entries].count(
+    assert [entry.original for entry in parsed.entries
+            if not entry.key_path.startswith("skip/")].count(
         unverified_identifier) == 1
     assert not set(hard_structural) & by_original.keys()
     assert by_original[conservative].status == "skipped"
@@ -2466,7 +2554,9 @@ def test_il2cpp_extract_filters_engine_noise_and_classifies():
 
     parsed = extract_metadata_strings(path, "meta.dat")
 
-    by_orig = {e.original: e for e in parsed.entries}
+    # skip/ 前缀条目是识别 L1 审计样本（skipped 留档），真实条目断言不含它们
+    by_orig = {e.original: e for e in parsed.entries
+               if not e.key_path.startswith("skip/")}
     assert set(by_orig) == {"Press E to interact", "A buffer must be provided"}
     prompt = by_orig["Press E to interact"]
     assert (prompt.status, prompt.meta["confidence"], prompt.meta["role"]) == (
@@ -2935,8 +3025,10 @@ def test_prefilter_samples_are_limited_per_object():
     prefilters = [e for e in entries if e.meta.get("prefilter") == "engine_string"]
     assert len(prefilters) == _PREFILTER_SAMPLE_LIMIT
     assert all(e.status == "skipped" for e in prefilters)
+    # 回写后全部样本承载最终计数（13 条），不再是累计 1..10——
+    # 报告聚合（按单元取 max）即真实总数
     counts = sorted(e.meta["skipped_count"] for e in prefilters)
-    assert counts == list(range(1, _PREFILTER_SAMPLE_LIMIT + 1))
+    assert counts == [13] * _PREFILTER_SAMPLE_LIMIT
 
 
 def test_prefilter_does_not_poison_object_value_evidence():

@@ -1,6 +1,7 @@
 from __future__ import annotations
 import gzip
 import io
+import zlib
 import re
 from dataclasses import dataclass, field
 from pathlib import Path
@@ -25,6 +26,9 @@ class ParsedFile:
     eol: str = "\n"
     meta: dict = field(default_factory=dict)
     noise: bool = False      # True = 整个文件被判定为运行时噪音，不入库
+    # R5 提取侧静默跳过留档：{跳过形态: 计数}——静默 continue 不产生条目
+    # 也不留痕（哑识别源头），聚合后进分析报告供形态清单/召回率审查
+    skipped_reasons: dict[str, int] = field(default_factory=dict)
 
 
 # 无空格标识符风格（如 NavMeshLink、UnityEngine、Assembly-CSharp）——大概率不是显示文本
@@ -159,7 +163,9 @@ def _parse_compressed(raw: bytes, p: Path, fid: str):
     """GZip 内容：解压（≤100MB）后按内容路由；二进制解压产物降级为空。"""
     try:
         data = gzip.decompress(raw)
-    except (OSError, EOFError):
+    except (OSError, EOFError, zlib.error):
+        # D6 路由测试实证：损坏 gz 抛 zlib.error（不是 OSError）——
+        # 不捕获会崩整条提取管线（畸形输入降级 txt 空结果）
         return [], "txt", {}
     if len(data) > 100 * 1024 * 1024:
         return [], "txt", {}
@@ -170,7 +176,7 @@ def _parse_by_content(raw: bytes, p: Path, fid: str):
     """内容路由：文本 → JSON/XML/TXT；容器 → ZIP/SQLite；其余为空。"""
     kind = probe_head_kind(raw[:8192])
     if kind == "zip":
-        entries, meta = zip_format.extract_zip(io.BytesIO(raw), fid)
+        entries, meta = _extract_zip_bytes(raw, p, fid)
         return entries, "zip", meta
     if kind == "sqlite":
         return _extract_sqlite_bytes(raw, p, fid)
@@ -193,7 +199,7 @@ def _parse_by_content(raw: bytes, p: Path, fid: str):
     return [], "txt", {}
 
 
-def _extract_sqlite_bytes(raw: bytes, p: Path, fid: str):
+def _extract_sqlite_bytes(raw: bytes, _p: Path, fid: str):
     import tempfile
     import os
     handle = None
@@ -207,10 +213,40 @@ def _extract_sqlite_bytes(raw: bytes, p: Path, fid: str):
         return [], "sqlite", {}
     finally:
         if handle is not None:
-            try:
-                os.unlink(handle.name)
-            except OSError:
-                pass
+            _unlink_temp(handle)
+
+
+def _extract_zip_bytes(raw: bytes, _p: Path, fid: str):
+    """zip 内容路由（伪装扩展名容器）：extract_zip 只接受路径——
+    BytesIO 直传会 TypeError 崩（D6 路由测试发现的真实缺陷）。"""
+    import tempfile
+    import os
+    handle = None
+    try:
+        handle = tempfile.NamedTemporaryFile(prefix="hanhua_zip_",
+                                             suffix=".zip", delete=False)
+        handle.write(raw)
+        handle.close()
+        return zip_format.extract_zip(handle.name, fid)
+    except Exception:  # noqa: BLE001
+        return [], {}
+    finally:
+        if handle is not None:
+            _unlink_temp(handle)
+
+
+def _unlink_temp(handle) -> None:
+    """临时文件清理：写入中途失败时句柄未关闭，Windows 对未关闭句柄
+    unlink 抛 PermissionError 被吞 → 临时文件永久泄漏——先关句柄再删。"""
+    import os
+    try:
+        handle.close()
+    except Exception:  # noqa: BLE001
+        pass
+    try:
+        os.unlink(handle.name)
+    except OSError:
+        pass
 
 
 def _decode_text(raw: bytes) -> str:

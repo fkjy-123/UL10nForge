@@ -1075,3 +1075,183 @@ def test_write_result_tracks_reverted_sources_complete():
     assert len(result.logic_reverted_sources) == 50     # 完整集合
     assert "Key0" in result.logic_reverted_sources
     assert "Key49" in result.logic_reverted_sources
+
+
+def test_reverted_entry_not_double_rejected_by_tail_loop():
+    """C1 回归：note_logic_reverted 必须标记 resolved——write_back_v2
+    尾部兜底循环（未 resolve 候选统一 note_rejected）不会把主动回退的
+    条目再记 rejected。此前漏标记：语义回退条目同时进 rejected，
+    「防线越生效、发布越被误阻」（object 闸门按 rejected 阻断）。"""
+    from hanhua.core.unity.writer import WriteResult
+    result = WriteResult()
+    entry = {"original": "Key0", "translation": "键0",
+             "meta": json.dumps(
+                 {"kind": "us", "file_offset": 4, "disposition": "translate"})}
+    # 反向语义审计回退：主动不写（保留原文，进 W3 排除表）
+    result.note_logic_reverted(entry, "logic_key_in_code_object")
+    # 模拟 write_back_v2 尾部兜底循环：未 resolve 的候选统一 rejected
+    for e in [entry]:
+        if not result.is_resolved(e):
+            result.note_rejected(e, "locator_not_found_or_unchanged")
+    assert result.outcome.rejected == ()        # 回退条目绝不进 rejected
+    assert result.logic_reverted == 1
+    assert result.attempted == 1 and result.written == 0
+    assert "Key0" in result.logic_reverted_sources
+
+
+def test_snapshot_typetree_surroundings_excludes_target_paths():
+    """C2：非目标叶子快照——save_typetree 完整重建的字段级保护。目标
+    叶子（本次补丁的 m_Localized）排除，其余叶子（m_Id/m_Size/m_Name/
+    邻字段）全部入快照供重开比对。"""
+    from hanhua.core.unity.writer import _snapshot_typetree_surroundings
+    tree = {
+        "m_Name": "UITable",
+        "m_Size": 4,
+        "m_TableData": [
+            {"m_Id": 1, "m_Localized": "VOLUME"},
+            {"m_Id": 2, "m_Localized": "FULLSCREEN"},
+        ],
+        "m_Complex": {"nested": {"value": 7}},
+    }
+    exclude = {("m_TableData", 0, "m_Localized"),
+               ("m_TableData", 1, "m_Localized")}
+    snap = _snapshot_typetree_surroundings(tree, exclude)
+    values = {tuple(path): value for path, value in snap}
+    assert ("m_TableData", 0, "m_Localized") not in values
+    assert ("m_TableData", 1, "m_Localized") not in values
+    assert values[("m_TableData", 0, "m_Id")] == 1
+    assert values[("m_TableData", 1, "m_Id")] == 2
+    assert values[("m_Size",)] == 4
+    assert values[("m_Name",)] == "UITable"
+    assert values[("m_Complex", "nested", "value")] == 7
+    # 空排除 = 全量叶子快照
+    full = _snapshot_typetree_surroundings(tree, set())
+    assert len(full) == len(snap) + 2
+
+
+def test_consistency_revert_enters_reverted_sources_and_avoids_rejection():
+    """C1 同族：audit_repeat_consistency 全组回退（键身份/译文不一致）
+    经 on_revert 回调进逻辑回退记账——保留原文进 W3 排除表（插件运行
+    时不得再翻译，防断链），且尾部循环不把它误记 rejected。"""
+    from hanhua.core.unity.logic_audit import audit_repeat_consistency
+    from hanhua.core.unity.writer import WriteResult
+    result = WriteResult()
+    items = [
+        ({"original": "Splash", "translation": "画面"},
+         {"obj": 7, "offset": 100, "role": "display"}),
+        ({"original": "Splash", "translation": "Splash"},
+         {"obj": 7, "offset": 140, "role": "structural", "reason": "code_line"}),
+    ]
+    audit_repeat_consistency(
+        items, on_revert=lambda e, r: result.note_logic_reverted(e, r))
+    # 模拟 write_back_v2 尾部兜底循环
+    for e, _ in items:
+        if not result.is_resolved(e):
+            result.note_rejected(e, "locator_not_found_or_unchanged")
+    assert result.outcome.rejected == ()
+    assert result.logic_reverted == 1            # 只记被回退的翻译条目
+    assert "Splash" in result.logic_reverted_sources
+    assert items[0][0]["translation"] == "Splash"  # 译文撤销回原文
+
+
+def test_note_rejected_tracks_rejected_sources():
+    """C4：note_rejected 记录条目原文（插件排除表数据源）——被拒条目
+    静态层保留原文，插件运行时翻译同样按名断链（写不进的对象里往往是
+    键清单/类型描述等结构串）。"""
+    from hanhua.core.unity.writer import WriteResult
+    result = WriteResult()
+    result.note_rejected(
+        {"original": "Settings", "translation": "设置", "meta": "{}"},
+        "immutable_field_protected")
+    assert result.rejected_sources == {"Settings"}
+    assert result.outcome.rejected[0].reason == "immutable_field_protected"
+    # 与逻辑回退原文分池统计（排除表最终合并，但语义各归各）
+    assert result.logic_reverted_sources == set()
+
+
+def test_write_all_merges_rejected_sources_into_exclude(monkeypatch):
+    """C4 集成：写回侧拒绝的条目原文并入运行时排除表——与逻辑回退原文
+    合并传给插件（静态保留原文 + 插件翻译 → 按名断链）。"""
+    game_dir = _make_tree()
+    proj = Project.open_game_dir(game_dir, Path(tempfile.mkdtemp()) / "app")
+    proj.scan()
+    runtime_entry = next(row for row in proj.store.get_entries()
+                         if row["status"] == "pending")
+    runtime_meta = json.loads(runtime_entry["meta"] or "{}")
+    runtime_meta["disposition"] = "translate"
+    proj.store.upsert_entries([{
+        "file_id": runtime_entry["file_id"],
+        "key_path": runtime_entry["key_path"],
+        "original": runtime_entry["original"],
+        "meta": runtime_meta,
+    }])
+    proj.store.set_manual(
+        runtime_entry["file_id"], runtime_entry["key_path"], "已翻译")
+
+    v2_result = WriteResult(files=0, entries=0)
+    v2_result.logic_reverted_sources.add("moveForward")   # 语义回退
+    v2_result.note_rejected(
+        {"original": "Settings", "translation": "设置", "meta": "{}"},
+        "immutable_field_protected")                       # 写回侧拒绝
+
+    def capture_v2(store, game_dir, staging):
+        return v2_result
+
+    seen_exclude = None
+    font_result = FontInstallResult(
+        installed=True, filename="test-font.ttf")
+
+    def install(game, staging, config, *, translations, exclude):
+        nonlocal seen_exclude
+        seen_exclude = set(exclude)
+        return font_result
+
+    monkeypatch.setattr("hanhua.core.project.write_back_v2", capture_v2)
+    monkeypatch.setattr("hanhua.core.project.install_font_override", install)
+
+    proj.write_all(allow_partial=True)   # 拒绝条目走 P0-2 闸门：确认后放行
+
+    assert seen_exclude == {"moveForward", "Settings"}
+
+
+# ── 写回 C8：占位符防线覆盖命名占位符 {name} ──────────────────────
+
+def test_format_placeholder_intact_named_placeholder(tmp_path):
+    """C8：{name} 命名占位符截断丢失 → _placeholders_intact 必须拦截
+    （原防线只认 {数字开头}，{name 被砍后照写不拦）。"""
+    from hanhua.core.unity.writer import _placeholders_intact
+    assert _placeholders_intact(
+        "Hello {name}, welcome!", "你好 {name}，欢迎") is True
+    assert _placeholders_intact("Hello {name}!", "你好，欢迎") is False
+    assert _placeholders_intact("Hello {name}!", "你好，欢迎 {name") is False
+
+
+def test_format_placeholder_intact_format_spec_and_equals(tmp_path):
+    """C8：格式说明 {1:0.00}/{0,-10:N2} 与 Ren'Py 等号值 {w=1.5} 都纳入
+    防线（原防线只认数字开头 → {1:0.00} 匹配但 {name} 系全漏）。"""
+    from hanhua.core.unity.writer import _placeholders_intact
+    assert _placeholders_intact(
+        "HP {0}/{1:0.00}", "血量 {0}/{1:0.00}") is True
+    assert _placeholders_intact("HP {0}/{1:0.00}", "血量 {0}") is False
+    assert _placeholders_intact("Wait {w=1.5}", "等待 {w=1.5}") is True
+    assert _placeholders_intact("Wait {w=1.5}", "等待") is False
+    assert _placeholders_intact("{/i}bold{/b}", "{/i}粗体") is False
+
+
+def test_restore_placeholders_restores_named_and_format(tmp_path):
+    """C8：机械恢复补末尾覆盖命名/格式说明/等号值占位符（按名取参或
+    补末尾均不破坏语义——丢失是更坏的结果）。"""
+    from hanhua.core.unity.writer import _restore_placeholders
+    assert _restore_placeholders(
+        "Hello {name}!", "你好，欢迎") == "你好，欢迎{name}"
+    assert _restore_placeholders(
+        "HP {0}/{1:0.00}", "血量 {0}") == "血量 {0}{1:0.00}"
+    assert _restore_placeholders(
+        "Wait {w=1.5}", "等待") == "等待{w=1.5}"
+
+
+def test_format_placeholder_escaped_braces_not_matched(tmp_path):
+    """C8：string.Format 转义 {{/}} 不得误匹配（纯转义文本无占位符）。"""
+    from hanhua.core.unity.writer import _placeholders_intact, _restore_placeholders
+    assert _placeholders_intact("{{literal}}", "{{字面}}") is True
+    assert _restore_placeholders("{{literal}}", "{{字面}}") == "{{字面}}"

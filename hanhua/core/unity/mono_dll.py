@@ -6,6 +6,8 @@ from typing import Callable
 
 from hanhua.core.extractor import ParsedFile, looks_like_noise_file
 from hanhua.core.models import STATUS_SKIPPED, TextEntry
+from hanhua.core.unity.extractor import (
+    _finalize_skipped_counts, _skipped_sample_entry)
 from hanhua.core.paths import (UnsafeRelativePathError, ensure_trusted_root,
                                resolve_relative_under)
 from hanhua.core.placeholders import is_code_identifier, is_hard_structural
@@ -542,6 +544,7 @@ def extract_dll_user_strings(path: str | Path, file_id: str | None = None,
     is_unityscript_asm = p.name.casefold().startswith("assembly-unityscript")
     fid = file_id or str(p).replace("\\", "/")
     pe = dnfile.dnPE(str(p))
+    skipped: dict[str, int] = {}  # R5 静默跳过留档（哑识别可见化）
     try:
         us = pe.net.user_strings
         if us is None:
@@ -560,6 +563,8 @@ def extract_dll_user_strings(path: str | Path, file_id: str | None = None,
             try:
                 s = raw.decode("utf-16-le")
             except UnicodeDecodeError:
+                # R5：解码失败静默跳过（极少见——#US 记录本身是 UTF-16）
+                skipped["us_decode_failed"] = skipped.get("us_decode_failed", 0) + 1
                 continue
             # 无 provenance 的 Bold/WASD/Move 等标识符按枚举名/绑定名保守排除。
             is_ui_text = token_offset in verified_ui_tokens
@@ -571,6 +576,15 @@ def extract_dll_user_strings(path: str | Path, file_id: str | None = None,
             uppercase_ui = (
                 " " in s and bool(_UI_UPPERCASE_WORD.search(s)))
             if is_hard_structural(s):
+                # R5/L1：结构形态（JSON/URL/路径/GUID/纯数字）静默跳过
+                # 留档（计数 + 限量样本——内容可审计，样本 ≤10 条/原因）
+                skipped["hard_structural"] = skipped.get("hard_structural", 0) + 1
+                sample = _skipped_sample_entry(
+                    fid, f"skip/us#{offset}", s, kind="us",
+                    reason="hard_structural",
+                    count=skipped["hard_structural"])
+                if sample:
+                    entries.append(sample)
                 continue
             # 确定性引擎串（Shader 路径/输入绑定/哈希/枚举名等强形态，
             # is_engine_string_core 无编程命名猜测）优先于 uppercase_ui 猜测
@@ -578,10 +592,24 @@ def extract_dll_user_strings(path: str | Path, file_id: str | None = None,
             # 触发 uppercase_ui 误判为 UI 文本，翻译后 Shader.Find 失败
             # → 渲染崩溃启动卡死。引擎查找键永不翻译，不论 UI 证据。
             if is_engine_string_core(s):
+                skipped["engine_core"] = skipped.get("engine_core", 0) + 1
+                sample = _skipped_sample_entry(
+                    fid, f"skip/us#{offset}", s, kind="us",
+                    reason="engine_core", count=skipped["engine_core"])
+                if sample:
+                    entries.append(sample)
                 continue
             if (not is_ui_text and not interaction_prompt and not uppercase_ui
                     and (is_code_identifier(s) or _is_engine_string(s)
                          or is_engine_string_gated(s))):
+                # R5/L1：代码标识符/引擎串形态静默跳过留档（无 UI 证据时）
+                skipped["code_identifier"] = skipped.get("code_identifier", 0) + 1
+                sample = _skipped_sample_entry(
+                    fid, f"skip/us#{offset}", s, kind="us",
+                    reason="code_identifier",
+                    count=skipped["code_identifier"])
+                if sample:
+                    entries.append(sample)
                 continue
             # 内部诊断/日志/错误消息：即使命中 uppercase_ui 也判代码文本
             # （ProBuilder/Poly2Tri 实证：FAILED:/[FLIP]/CNOT 是开发诊断，
@@ -634,8 +662,12 @@ def extract_dll_user_strings(path: str | Path, file_id: str | None = None,
         for e in entries:
             if e.status == "pending" and is_hard_structural(e.original):
                 e.status = STATUS_SKIPPED
+        # 样本计数回写：限量样本的 skipped_count 是累计值，报告聚合需
+        # 真实总数（消费端按 (file_id, reason, obj) 取 max）
+        _finalize_skipped_counts(entries, skipped)
         noise = looks_like_noise_file(entries)
         return ParsedFile(
-            fid, str(p), "v2_mono", entries, "utf-8", "\n", {"kind": "mono"}, noise)
+            fid, str(p), "v2_mono", entries, "utf-8", "\n", {"kind": "mono"},
+            noise, skipped)
     finally:
         pe.close()

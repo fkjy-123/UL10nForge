@@ -276,6 +276,110 @@ _STOP_WORDS = {"and", "the", "of", "to", "in", "on", "for", "you", "your",
                "with", "from", "this", "that", "not", "are", "was", "were"}
 
 
+def text_type_for(meta: dict) -> str:
+    """从条目 meta 推断文本类型（供审核模型语境判断，runner 与 GUI 共用）。"""
+    kind = meta.get("kind") or ""
+    if kind == "us":
+        return "DLL 字符串"
+    if kind == "il2cpp":
+        return "IL2CPP 字符串"
+    if kind == "textasset":
+        return "文本脚本"
+    if kind == "plain":
+        return "纯文本"
+    role = str(meta.get("role") or "")
+    if "button" in role or role == "display" and len(role) < 12:
+        return "UI 显示文本"
+    if "log" in role or "debug" in role:
+        return "调试日志"
+    return "游戏文本"
+
+
+def review_entries(entries, glossary, *, game_name: str = "",
+                   on_note=None) -> dict:
+    """翻译后语义审核核心（runner 与 GUI 主路径共用，翻译 C6 闭口）。
+
+    对 status == translated 且非回显的条目做五维语义审核（术语/语境/
+    专名/语义/风格）；flag 条目的术语词对经 C5 门禁沉淀全局术语库
+    （add_reviewed——高频普通词单 token 拒绝，组合词对/语境支撑词对
+    才入库）。审核服务不可用/无凭据/无条目时返回 used=False（不阻断
+    调用方，on_note 可告警）。
+
+    返回 summary：
+      used          审核请求是否已发出（True 且 flagged 为空 = 全过）
+      reviewed      模型返回的判定条数
+      results       {eid: ReviewResult} 全量判定（含 pass，报告存档用）
+      flagged       list[ReviewResult]（verdict == flag 的条目）
+      pairs_added   经 C5 门禁沉淀的词对数
+      pairs_rejected {term: 拒绝原因}
+      originals     {eid: 原文}（词对提取/报告用）
+      locators      {eid: "file_id:key_path"}
+    """
+    summary: dict = {"used": False, "reviewed": 0, "results": {},
+                     "flagged": [], "pairs_added": 0, "pairs_rejected": {},
+                     "originals": {}, "locators": {}}
+    if not entries:
+        return summary
+    reviewer = SemanticReviewer()
+    if not reviewer.usable:
+        if on_note:
+            on_note("语义审核跳过：未配置审核凭据（~/.claude/settings.json）")
+        return summary
+    items: list[ReviewItem] = []
+    for e in entries:
+        if e.status != "translated" or not e.translation:
+            continue
+        if str(e.translation) == str(e.original):
+            continue                       # 回显跳过非审核对象
+        eid = f"e{len(items)}"
+        items.append(ReviewItem(
+            entry_id=eid,
+            original=str(e.original)[:600],
+            translation=str(e.translation)[:600],
+            text_type=text_type_for(e.meta),
+        ))
+        summary["originals"][eid] = str(e.original)
+        summary["locators"][eid] = f"{e.file_id}:{e.key_path}"
+    if not items:
+        return summary
+    summary["used"] = True
+    if on_note:
+        on_note(f"开始语义审核 {len(items)} 条（{reviewer.config.model}）…")
+    results = reviewer.review_batch(items)
+    summary["reviewed"] = len(results)
+    summary["results"] = results
+    flagged = [r for r in results.values() if r.verdict == "flag"]
+    summary["flagged"] = flagged
+    if not flagged:
+        return summary
+    # 术语词对沉淀：审核发现术语/专名错误 → 建议词对 → 全局术语库
+    # （后续游戏翻译 prompt 注入按词对约束模型输出，质量逐游戏上升）
+    pairs = extract_term_pairs(flagged, summary["originals"])
+    # 翻译 C5 语境保护：为每个词对收集首个原文例句（term 在原文中出现
+    # 的那条），随词对沉淀——单 token 高频普通词靠例句才能区分语境，
+    # 语境留档也便于日后人工回查沉淀决策。
+    contexts: dict[str, str] = {}
+    for r in flagged:
+        orig = (summary["originals"].get(r.entry_id, "") or "").strip()
+        for term, _trans in pairs:
+            if term and term in orig and term not in contexts:
+                contexts[term] = orig[:120]
+    for term, trans in pairs:
+        try:
+            # C5 门禁：单 token 高频普通词拒绝全局强制（返回拒绝原因），
+            # 其他词对进 candidate 桶参考不强制、跨游戏复现升级 active
+            reason = glossary.add_reviewed(
+                term, trans, context=contexts.get(term, ""),
+                game=game_name)
+            if reason:
+                summary["pairs_rejected"][term] = reason
+            else:
+                summary["pairs_added"] += 1
+        except Exception:  # noqa: BLE001 - 词对沉淀失败不阻断审核主流程
+            pass
+    return summary
+
+
 def extract_term_pairs(results: list[ReviewResult],
                        originals: dict[str, str] | None = None) -> list[tuple[str, str]]:
     """从 flag 结果中提取术语词对（英文原词→建议译法）。

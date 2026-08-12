@@ -131,6 +131,20 @@ def test_extract_metadata_strings_v39(tmp_path):
     assert by_key == {"meta#0": 0x200, "meta#12": 0x20C, "meta#31": 0x21F}
 
 
+def test_extract_metadata_strings_tracks_skipped_reasons(tmp_path):
+    """R5：静默 continue 留档——代码标识符/引擎形态的跳过聚合可见
+    （哑识别可观测；真实池 65% 字面量属静默过滤形态）。"""
+    raw = _build(39, ["Hello player", "BackupManager", "OK", "Press Start"])
+    p = tmp_path / "global-metadata.dat"
+    p.write_bytes(raw)
+    pf = extract_metadata_strings(p, "m.dat")
+    assert pf.skipped_reasons.get("code_identifier", 0) == 1   # BackupManager
+    assert pf.skipped_reasons.get("engine_morph", 0) == 1      # OK（短词无字母分布）
+    # 留档不改变既有行为：显示文本照常提取
+    assert {e.original for e in pf.entries
+            if e.status == "pending"} == {"Hello player", "Press Start"}
+
+
 def test_fake_metadata_rejects_wrong_magic():
     raw = bytearray(_build(39, ["Hello"]))
     struct.pack_into("<I", raw, 0, 0xDEADBEEF)

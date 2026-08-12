@@ -355,6 +355,51 @@ def test_patch_metadata_no_write_entries_leaves_file_untouched(tmp_path):
     assert result.written == 0
 
 
+def test_patch_metadata_reopen_verifies_unpatched_records(tmp_path, monkeypatch):
+    """C3：重开验证全池比对——紧凑重建若静默损坏未补丁记录（内容被改但
+    仍合法 UTF-8/结构），此前只查被改记录会静默通过，现在拒绝。"""
+    raw = _build(39, ["Alpha", "Beta", "Gamma"])
+    path = tmp_path / "global-metadata.dat"
+    path.write_bytes(raw)
+    real_patch = il2cpp.patch_metadata_strings
+
+    def corrupting_patch(raw_bytes, changes):
+        out = bytearray(real_patch(raw_bytes, changes))
+        # 破坏未补丁记录 Beta（重建后前移到 0x201..0x205）——内容仍合法
+        # ASCII/UTF-8，结构完整，旧验证（只查被改记录）无法发现
+        assert out[0x201:0x205] == b"Beta"
+        out[0x201:0x205] = b"Zzzz"
+        return bytes(out)
+
+    monkeypatch.setattr(il2cpp, "patch_metadata_strings", corrupting_patch)
+    with pytest.raises(ValueError, match="未补丁记录"):
+        _patch_metadata(path, [_meta_entry(0x200, 5, "Alpha", "A")],
+                        WriteResult())
+
+
+def test_patch_metadata_reopen_rejects_record_count_change(tmp_path, monkeypatch):
+    """C3：重建增删记录（末条之后游标偏差/空洞清零越界）→ 记录数变化
+    必须拒绝——未补丁记录逐条比对的前提是数量一致。"""
+    raw = _build(39, ["Alpha", "Beta", "Gamma"])
+    path = tmp_path / "global-metadata.dat"
+    path.write_bytes(raw)
+    real_patch = il2cpp.patch_metadata_strings
+
+    def dropping_patch(raw_bytes, changes):
+        out = bytearray(real_patch(raw_bytes, changes))
+        # 删除末条记录（Gamma 0x205..0x20A）并收缩 header 记录数/数据声明：
+        # 模拟重建游标偏差——文件仍合法但记录数减少
+        out[0x205:0x20A] = b""
+        struct.pack_into("<I", out, 0x10, 2)
+        struct.pack_into("<I", out, 0x18, len(out) - 0x200)
+        return bytes(out)
+
+    monkeypatch.setattr(il2cpp, "patch_metadata_strings", dropping_patch)
+    with pytest.raises(ValueError, match="记录数"):
+        _patch_metadata(path, [_meta_entry(0x200, 5, "Alpha", "A")],
+                        WriteResult())
+
+
 # --------------------------------------------------------------------------
 # _patch_dll 集成：#US 三处联动 + 重开验证
 # --------------------------------------------------------------------------

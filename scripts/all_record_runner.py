@@ -37,8 +37,8 @@ from hanhua.core.glossary import GlossaryStore  # noqa: E402
 from hanhua.core.knowledge import KnowledgeBase  # noqa: E402
 from hanhua.core.local_model import LocalModelManager  # noqa: E402
 from hanhua.core.models import TextEntry  # noqa: E402
-from hanhua.core.reviewer import (ReviewItem, ReviewResult,  # noqa: E402
-                                  SemanticReviewer, extract_term_pairs)
+from hanhua.core.reviewer import (ReviewResult,  # noqa: E402
+                                  SemanticReviewer, review_entries)
 from hanhua.core.project import Project  # noqa: E402
 from hanhua.core.prompts import (build_system_prompt,  # noqa: E402
                                  collect_known_names)
@@ -512,25 +512,6 @@ def _register_writeback(kb: KnowledgeBase, game_name: str,
         source="auto", game=game_name)
 
 
-def _text_type_for(meta: dict) -> str:
-    """从 meta 推断文本类型（供审核模型语境判断）。"""
-    kind = meta.get("kind") or ""
-    if kind == "us":
-        return "DLL 字符串"
-    if kind == "il2cpp":
-        return "IL2CPP 字符串"
-    if kind == "textasset":
-        return "文本脚本"
-    if kind == "plain":
-        return "纯文本"
-    role = str(meta.get("role") or "")
-    if "button" in role or role == "display" and len(role) < 12:
-        return "UI 显示文本"
-    if "log" in role or "debug" in role:
-        return "调试日志"
-    return "游戏文本"
-
-
 def _run_semantic_review(project, entries, out_dir: Path, game_name: str,
                          glossary: GlossaryStore,
                          skip: bool = False) -> tuple[dict[str, ReviewResult], dict]:
@@ -542,6 +523,8 @@ def _run_semantic_review(project, entries, out_dir: Path, game_name: str,
 
     返回 (review_results: {locator: ReviewResult}, summary)。
     审核服务不可用/失败 → 返回空结果（不阻断写回，控制台告警）。
+    条目构建/审核/词对沉淀复用 hanhua.core.reviewer.review_entries
+    （GUI 主路径同源，翻译 C6 闭口——两入口行为一致）。
     """
     summary = {"reviewed": 0, "flagged": 0, "pairs": 0, "skipped": skip}
     if skip:
@@ -550,49 +533,28 @@ def _run_semantic_review(project, entries, out_dir: Path, game_name: str,
     if not reviewer.usable:
         print("  [审核] 跳过：未配置审核凭据（~/.claude/settings.json）")
         return {}, summary
-    items: list[ReviewItem] = []
-    originals: dict[str, str] = {}
-    locators: dict[str, str] = {}
-    for e in entries:
-        if e.status != "translated" or not e.translation:
-            continue
-        if str(e.translation) == str(e.original):
-            continue                       # 回显跳过非审核对象
-        locator = f"{e.file_id}:{e.key_path}"
-        eid = f"e{len(items)}"
-        items.append(ReviewItem(
-            entry_id=eid,
-            original=str(e.original)[:600],
-            translation=str(e.translation)[:600],
-            text_type=_text_type_for(e.meta),
-        ))
-        originals[eid] = str(e.original)
-        locators[eid] = locator
-    if not items:
+    core = review_entries(
+        entries, glossary, game_name=game_name,
+        on_note=lambda s: print(f"  [审核] {s}"))
+    if not core["used"]:
         print("  [审核] 无可审核条目（0 条已翻译）")
         return {}, summary
-    print(f"  [审核] 语义审核 {len(items)} 条（"
-          f"{reviewer.config.model}）…")
-    results = reviewer.review_batch(items)
-    summary["reviewed"] = len(results)
-    flagged = [r for r in results.values() if r.verdict == "flag"]
+    flagged = core["flagged"]
+    results = core["results"]
+    summary["reviewed"] = core["reviewed"]
     summary["flagged"] = len(flagged)
-    # 术语词对沉淀：审核发现术语/专名错误 → 建议词对 → 全局术语库
-    # （后续游戏翻译 prompt 注入按词对约束模型输出，质量逐游戏上升）
-    pairs = extract_term_pairs(flagged, originals)
-    added = 0
-    for term, trans in pairs:
-        try:
-            glossary.add(term, trans, category="审核术语",
-                         note=f"来源 {game_name} 语义审核")
-            added += 1
-        except Exception:  # noqa: BLE001
-            pass
+    added = core["pairs_added"]
+    rejected = core["pairs_rejected"]
     summary["pairs"] = added
     if added:
         print(f"  [审核] 术语沉淀 {added} 条词对 → 全局术语库"
               f"（后续游戏自动按词对约束翻译）")
+    if rejected:
+        print(f"  [审核] C5 门禁拒绝 {len(rejected)} 条污染风险词对"
+              f"（高频普通词单 token，无语境区分）→ 不写入全局术语库")
     # 审核报告
+    originals = core["originals"]
+    locators = core["locators"]
     review_dir = out_dir / "review"
     review_dir.mkdir(parents=True, exist_ok=True)
     by_issue: dict[str, int] = {}
@@ -603,9 +565,16 @@ def _run_semantic_review(project, entries, out_dir: Path, game_name: str,
         "\n".join([
             f"# {game_name} 语义审核报告", "",
             f"- 审核模型：{reviewer.config.model}",
-            f"- 审核条数：{len(results)}（跳过回显/未翻译）",
+            f"- 审核条数：{summary['reviewed']}（跳过回显/未翻译）",
             f"- 不合格：{len(flagged)} 条（{issue_text}）",
-            f"- 术语沉淀：{added} 条词对 → 全局术语库", "",
+            f"- 术语沉淀：{added} 条词对 → 全局术语库"
+            f"（C5 门禁拒绝 {len(rejected)} 条污染风险词对）", "",
+            "## C5 门禁拒绝清单（高频普通词单 token，无语境强制会误杀"
+            "其他语境，不入全局库）", "",
+        ] + [
+            f"- `{term}`：{reason}"
+            for term, reason in sorted(rejected.items())
+        ] + [""] + [
             "## 不合格清单", "",
         ] + [
             f"[{r.entry_id}] {locators.get(r.entry_id, r.entry_id)}\n"
@@ -625,10 +594,10 @@ def _run_semantic_review(project, entries, out_dir: Path, game_name: str,
             encoding="utf-8")
     except Exception:  # noqa: BLE001
         pass
-    # 映射回 locator
+    # 映射回 locator（导出标注用）
     mapped: dict[str, ReviewResult] = {}
-    for eid, r in results.items():
-        mapped[locators.get(eid, eid)] = r
+    for r in flagged:
+        mapped[locators.get(r.entry_id, r.entry_id)] = r
     return mapped, summary
 
 

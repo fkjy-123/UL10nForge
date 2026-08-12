@@ -37,6 +37,10 @@ class FontReplaceResult:
     replaced: int = 0
     skipped: list[str] = field(default_factory=list)
     warnings: list[str] = field(default_factory=list)
+    # C5：被整容器重建（os.replace）的文件相对路径——Addressables 管线
+    # 下 bundle CRC 已变，catalog.bin 中的 CRC 必须二次同步，否则运行时
+    # CRC Mismatch 拒载（write_back_v2 末尾的 catalog 更新早于字体替换）。
+    replaced_paths: list[str] = field(default_factory=list)
 
 
 @dataclass(frozen=True)
@@ -685,6 +689,9 @@ def install_static_fonts(
                 continue
             result.replaced += replaced
             result.skipped.extend(skipped)
+            if replaced:
+                result.replaced_paths.append(
+                    asset.relative_to(out_dir).as_posix())
     # TMP 路径
     bundle = select_tmp_bundle(unity_version)
     if bundle is not None and config.enabled:
@@ -703,4 +710,7 @@ def install_static_fonts(
                     continue
                 result.replaced += replaced
                 result.skipped.extend(skipped)
+                if replaced:
+                    result.replaced_paths.append(
+                        str(asset.relative_to(out_dir)))
     return result

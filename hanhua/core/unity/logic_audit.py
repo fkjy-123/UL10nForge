@@ -24,6 +24,7 @@
 from __future__ import annotations
 
 import re
+from collections.abc import Callable
 
 # ── 逻辑敏感形态清单 ────────────────────────────────────────────────
 # 命中这些形态的原文，即使 disposition=translate 也是「疑似逻辑字符串」。
@@ -204,7 +205,9 @@ def typetree_logic_key_evidence(
     return None
 
 
-def audit_repeat_consistency(items: list[tuple[dict, dict]]) -> list[dict]:
+def audit_repeat_consistency(
+        items: list[tuple[dict, dict]],
+        on_revert: Callable[[dict, str], None] | None = None) -> list[dict]:
     """同原文互斥一致性（同一对象内同原文多处出现的处理一致性）。
 
     风险：Unity 对象内同原文多处出现（doog 实证 Splash ×6/SHELLS ×3），
@@ -212,6 +215,12 @@ def audit_repeat_consistency(items: list[tuple[dict, dict]]) -> list[dict]:
     （模型波动），写回后对象内「译文+原文」混排——代码按字典查原文时
     行为不一致。规则：组内任一 entry 是结构跳过（键身份）→ 全组视为
     键（翻译的改跳过）；译文不一致 → 全组跳过。返回一致性审计记录。
+
+    on_revert：每个被回退（译文撤销回原文）的 entry 通知回调，签名
+    (entry, reason)。写回方用它在逻辑审计记账（logic_reverted + 排除
+    表）——回退是主动决策不是写失败，否则尾部兜底循环把回退条目误记
+    rejected（闸门误阻），且原文不进运行时排除表（插件把保留原文再
+    翻译 → 键断链）。
     """
     groups: dict[str, list[tuple[dict, dict]]] = {}
     for e, meta in items:
@@ -235,26 +244,32 @@ def audit_repeat_consistency(items: list[tuple[dict, dict]]) -> list[dict]:
             if str(e.get("translation") or "") != str(e.get("original") or ""))
         if structural_skip and pending_count:
             # 键身份优先：全组视为键，翻译条目改回跳过
+            reason = ("同对象同原文存在结构跳过（键身份）——全组保留原文")
             for e, _ in group:
                 if e.get("translation") != original:
                     e["translation"] = original
                     e["status"] = "skipped"
+                    if on_revert:
+                        on_revert(e, f"consistency_structural_skip:{reason}")
             records.append({
                 "obj": obj, "original": original, "count": len(group),
                 "action": "all_reverted",
-                "reason": "同对象同原文存在结构跳过（键身份）——全组保留原文",
+                "reason": reason,
             })
         elif len(translations) > 1:
             # 译文不一致（模型波动）——宁可不翻，防混排
+            reason = "同对象同原文译文不一致（模型波动）——全组保留原文"
             for e, _ in group:
                 if e.get("translation") != original:
                     e["translation"] = original
                     e["status"] = "skipped"
+                    if on_revert:
+                        on_revert(e, f"consistency_translation_variance:{reason}")
             records.append({
                 "obj": obj, "original": original, "count": len(group),
                 "translations": sorted(translations),
                 "action": "all_reverted",
-                "reason": "同对象同原文译文不一致（模型波动）——全组保留原文",
+                "reason": reason,
             })
     return records
 

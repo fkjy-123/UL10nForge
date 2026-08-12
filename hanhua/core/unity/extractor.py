@@ -1,6 +1,8 @@
 """v2 资源提取：UnityPy 解析 .assets / AssetBundle。
 TextAsset 整文本 + MonoBehaviour 序列化原始字节字符串扫描（typetree 不可用时兜底）。"""
 from __future__ import annotations
+
+import dataclasses
 from collections.abc import Iterable
 from pathlib import Path
 from typing import Callable
@@ -321,18 +323,51 @@ def _localization_entries_from_tree(file_id: str, obj_path_id: int,
     return entries
 
 
-# 指南 §3.2「所有 SerializedFile 对象的字符串字段」显示白名单：
-# 常见 UI / 对话 / 本地化字段名（已 casefold）。"name" 有意排除——m_Name
-# 是每个对象的标识名（inspector 标签/查找键），翻译会淹没真实文本。
-_TYPETREE_DISPLAY_FIELDS = frozenset({
-    "text", "label", "title", "description", "displayname",
-    "dialogue", "line", "lines", "subtitle", "tooltip", "hint", "prompt",
-    "message", "messages", "content", "caption", "question", "answer",
-    "choice", "choices", "objective", "lore", "bio", "error", "format",
-    "template", "prefix", "suffix", "singular", "plural", "header", "body",
-    "details", "summary", "footer", "greeting", "farewell", "notice",
-    "warning", "help", "placeholder", "heading", "questiontext", "dialoguetext",
-})
+# 显示字段白名单登记制（识别 L7）：每字段带出处分组——新增字段必须
+# 登记来源（指南 §3.2「所有 SerializedFile 对象的字符串字段」或游戏
+# 实证锚点），防止无依据滥加。表单通用名（text/label）是双刃剑：误
+# 放行键名会淹没真实文本；出处让每次新增可审计（0.14.1 证据分层）。
+@dataclasses.dataclass(frozen=True)
+class _DisplayField:
+    name: str       # casefold 字段名（m_ 前缀由 _normalized_field_name 剥离）
+    group: str      # 出处分组：ui / dialogue / locale / misc
+
+
+_TYPETREE_DISPLAY_FIELD_ROWS: tuple[_DisplayField, ...] = (
+    # ui：常见 UI 标签/提示字段（指南 §3.2）
+    _DisplayField("text", "ui"), _DisplayField("label", "ui"),
+    _DisplayField("title", "ui"), _DisplayField("description", "ui"),
+    _DisplayField("displayname", "ui"),
+    _DisplayField("tooltip", "ui"), _DisplayField("hint", "ui"),
+    _DisplayField("prompt", "ui"), _DisplayField("placeholder", "ui"),
+    _DisplayField("heading", "ui"), _DisplayField("header", "ui"),
+    _DisplayField("footer", "ui"),
+    # dialogue：对话/字幕/选项字段（指南 §3.2；Fungus/对话系统实证）
+    _DisplayField("dialogue", "dialogue"), _DisplayField("line", "dialogue"),
+    _DisplayField("lines", "dialogue"), _DisplayField("subtitle", "dialogue"),
+    _DisplayField("message", "dialogue"), _DisplayField("messages", "dialogue"),
+    _DisplayField("content", "dialogue"), _DisplayField("caption", "dialogue"),
+    _DisplayField("question", "dialogue"), _DisplayField("answer", "dialogue"),
+    _DisplayField("choice", "dialogue"), _DisplayField("choices", "dialogue"),
+    _DisplayField("dialoguetext", "dialogue"),
+    _DisplayField("questiontext", "dialogue"),
+    # locale：本地化表字段（指南 §3.2；Localization 表实证）
+    _DisplayField("singular", "locale"), _DisplayField("plural", "locale"),
+    _DisplayField("format", "locale"), _DisplayField("template", "locale"),
+    _DisplayField("prefix", "locale"), _DisplayField("suffix", "locale"),
+    # misc：叙事/提示杂项（指南 §3.2）
+    _DisplayField("objective", "misc"), _DisplayField("lore", "misc"),
+    _DisplayField("bio", "misc"), _DisplayField("error", "misc"),
+    _DisplayField("body", "misc"), _DisplayField("details", "misc"),
+    _DisplayField("summary", "misc"), _DisplayField("greeting", "misc"),
+    _DisplayField("farewell", "misc"), _DisplayField("notice", "misc"),
+    _DisplayField("warning", "misc"), _DisplayField("help", "misc"),
+)
+# 派生 frozenset 保持既有接口（大小写归一后成员判定）。"name" 有意
+# 排除——m_Name 是每个对象的标识名（inspector 标签/查找键），翻译会
+# 淹没真实文本。
+_TYPETREE_DISPLAY_FIELDS = frozenset(
+    f.name for f in _TYPETREE_DISPLAY_FIELD_ROWS)
 _TYPETREE_STRUCTURAL_FIELDS = frozenset(
     {"key", "keys", "id", "method", "binding", "path", "property", "code"})
 # Unity 惯例不可变字段（镜像 writer._IMMUTABLE_FIELD_NAMES，casefold 化以
@@ -407,7 +442,9 @@ def _looks_like_type_descriptor(text: str) -> bool:
 
 def _typetree_string_entries(
         file_id: str, obj_path_id: int, tree: dict,
-        asset_file_name: str = "") -> tuple[list[TextEntry], list[TextEntry]]:
+        asset_file_name: str = "",
+        skipped: dict[str, int] | None = None
+) -> tuple[list[TextEntry], list[TextEntry]]:
     """全叶子字符串分类：返回 (display 条目, 低置信候选条目)。
 
     display 层（可翻译）：
@@ -493,8 +530,10 @@ def _typetree_string_entries(
             prefilter = ("key_identifier" if should_skip(text)
                          else "hard_structural" if is_hard_structural(text)
                          else "type_descriptor")
-            count = prefilter_counts[prefilter] = \
-                prefilter_counts.get(prefilter, 0) + 1
+            # 计数键带 prefilter_ 前缀 = 样本 meta 的 reason（回写同形）
+            key = f"prefilter_{prefilter}"
+            count = prefilter_counts[key] = \
+                prefilter_counts.get(key, 0) + 1
             if count <= _PREFILTER_SAMPLE_LIMIT:
                 append("typetree_prefilter", path, text,
                        f"prefilter_{prefilter}", "low", STATUS_SKIPPED,
@@ -507,6 +546,15 @@ def _typetree_string_entries(
         elif len(candidates) < _MAX_CANDIDATES_PER_OBJECT:
             append("typetree_candidate", path, text, "typetree_candidate",
                    "low", STATUS_SKIPPED, "candidate")
+        elif skipped is not None:
+            # 识别 C5：候选层 200 上限不再静默截断——超限叶子无条目也无
+            # 聚合计数时，整类截断在报告里不可见（与 R5「样本+skipped_
+            # count」语义不一致）。按 reason 聚合计数留档，报告可见
+            # 「该对象候选超限 N」。
+            skipped["typetree_candidate_truncated"] = \
+                skipped.get("typetree_candidate_truncated", 0) + 1
+    _finalize_skipped_counts(display, prefilter_counts)
+    _finalize_skipped_counts(candidates, prefilter_counts)
     return display, candidates
 
 
@@ -683,14 +731,40 @@ def _has_sentence_shape(text: str) -> bool:
 _PREFILTER_SAMPLE_LIMIT = 10
 
 
+def _skipped_sample_entry(file_id: str, key_path: str, text: str, *,
+                          kind: str, reason: str, count: int,
+                          extra_meta: dict | None = None) -> TextEntry | None:
+    """静默跳过限量样本（识别 L1：mono/il2cpp/text 提取器统一留档）。
+
+    rawstr/typetree 路径 R5 已用 _prefilter_entry 留档；mono/il2cpp
+    此前只有计数（skipped_reasons 聚合）——被跳过的具体内容不可见，
+    用户无法区分「确为该跳」与「该翻未翻」。本工具为计数叠加限量
+    样本条目（status=skipped，role=structural，skipped_count 承载
+    真实总数）：内容可审计、报告聚合可得真数。超过样本上限返回
+    None（防条目爆炸——样本数 ≠ 总数）。count 是累计值，提取函数
+    末尾由 _finalize_skipped_counts 统一回写为该单元最终计数。"""
+    if count > _PREFILTER_SAMPLE_LIMIT:
+        return None
+    meta = {
+        "kind": kind, "confidence": "low", "role": "structural",
+        "disposition": "structural", "reason": reason,
+        "skipped_count": count,
+    }
+    if extra_meta:
+        meta.update(extra_meta)
+    return TextEntry(file_id=file_id, key_path=key_path, original=text,
+                     status=STATUS_SKIPPED, meta=meta)
+
+
 def _prefilter_entry(file_id: str, obj_path_id: int, idx: int, offset: int,
                      text: str, prefilter: str, count: int,
                      asset_file_name: str = "") -> TextEntry:
     """预过滤留档条目（审计 R5）：被引擎串/键标识符/高频串过滤的字符串
     不再静默丢弃，产生限量样本（status=skipped，role=structural）供审计。
 
-    count = 该对象内同 prefilter 原因的累计跳过数；首条样本携带
-    skipped_count，报告按 reason 聚合即得真实总数（样本数不等于总数）。
+    count = 该对象内同 prefilter 原因的累计跳过数；提取函数末尾统一
+    回写为最终计数（_finalize_skipped_counts），报告按单元取 max 聚合
+    即真实总数（样本数不等于总数）。
     """
     prefix = (f"asset#{asset_file_name}#{obj_path_id}"
               if asset_file_name else f"asset#{obj_path_id}")
@@ -708,6 +782,25 @@ def _prefilter_entry(file_id: str, obj_path_id: int, idx: int, offset: int,
                      original=text, status=STATUS_SKIPPED, meta=meta)
 
 
+def _finalize_skipped_counts(entries: list[TextEntry],
+                             *count_sources: dict[str, int]) -> None:
+    """样本计数回写（聚合语义修正）：限量样本的 skipped_count 是累计
+    计数（1..10），报告聚合需真实总数——提取函数末尾用最终计数统一
+    回写（同 reason 的样本最终值相同），消费端按 (file_id, reason, obj)
+    去重取 max 即真数。样本条目标识 = meta 含 skipped_count（真实行无
+    此键）；count_sources 按样本 meta 的 reason 键查最终值（typetree/
+    rawstr 的 prefilter 计数键带 prefilter_ 前缀，与样本 reason 同形）。"""
+    for e in entries:
+        if "skipped_count" not in e.meta:
+            continue
+        reason = e.meta.get("reason") or ""
+        for src in count_sources:
+            final = src.get(reason)
+            if isinstance(final, int) and final > 0:
+                e.meta["skipped_count"] = final
+                break
+
+
 def _is_scriptable_object_shape(raw: bytes) -> bool:
     """MonoBehaviour 头部 m_GameObject 引用为空 → ScriptableObject 形态。
 
@@ -720,8 +813,64 @@ def _is_scriptable_object_shape(raw: bytes) -> bool:
     return len(raw) >= 12 and raw[:12] == b"\x00" * 12
 
 
+# 识别 L8：高频串阈值相对化——硬编码 40 对小游戏不可达（该跳未跳、
+# doubleshake 实证大游戏噪音串全跳）。相对阈值 = max(绝对下限,
+# min(旧绝对阈值 40, 总出现次数 × 比例))：小游戏 ≥15 次即判高频
+# （修复该跳未跳），大游戏封顶 40（保持升级前判定，噪音串全跳行为
+# 不回归——全面复盘审查钉死：>20k 规模相对阈值放大有未验证回归面）。
+_HIGH_FREQ_ABS_MIN = 15     # 绝对下限（对象重复/小游戏也适用）
+_HIGH_FREQ_RATIO = 0.002    # 占总出现次数比例（小游戏相对收紧）
+_HIGH_FREQ_CAP = 40         # 旧硬编码阈值（大游戏封顶，不改变既有判定）
+
+# 识别 L6：确定性脚本类名（PPtr m_Script 解析）——包内脚本（DLL 编译）
+# 的 MonoScript 对象在同类文件里，FileID=0 可解析；内建类型（FileID≠0）
+# 解析不到，靠串池信号兜底。类名是确定性证据，优先于串池猜类。
+_INPUT_SYSTEM_SCRIPT_CLASSES = frozenset({
+    "InputActionAsset", "InputActionMap", "PlayerInput",
+    "InputActionReference", "InputControlScheme",
+})
+_TIMELINE_SCRIPT_CLASSES = frozenset({
+    "TimelineAsset", "PlayableDirector",
+})
+
+
+def _script_class_of(tree: dict, obj) -> str:
+    """确定性脚本类名（识别 L6）：typetree m_Script PPtr（FileID=0）
+    指向同文件 MonoScript → m_Name。解析失败返回 ""（串池信号兜底，
+    不因解析失败改变既有判定）。"""
+    pptr = tree.get("m_Script")
+    if not isinstance(pptr, dict) or pptr.get("m_FileID") != 0:
+        return ""
+    assets_file = getattr(obj, "assets_file", None)
+    objects = getattr(assets_file, "objects", None)
+    if not isinstance(objects, dict):
+        return ""
+    mono = objects.get(pptr.get("m_PathID"))
+    if mono is None:
+        return ""
+    if str(getattr(getattr(mono, "type", None), "name", "")) != "MonoScript":
+        return ""
+    try:
+        st = mono.read_typetree()
+    except Exception:  # noqa: BLE001
+        return ""
+    name = st.get("m_Name") if isinstance(st, dict) else None
+    return str(name) if isinstance(name, str) else ""
+
+
+def _high_freq_threshold(freq: dict[str, int]) -> int:
+    """高频串相对阈值（识别 L8）：基于全文件 raw 串出现总次数缩放，
+    封顶 _HIGH_FREQ_CAP——大游戏（total>20k 时相对值超 40）保持升级前
+    判定，小游戏相对收紧。"""
+    total = sum(freq.values())
+    return max(_HIGH_FREQ_ABS_MIN,
+               min(_HIGH_FREQ_CAP, int(total * _HIGH_FREQ_RATIO)))
+
+
 def _raw_string_entries(file_id: str, obj_path_id: int, raw: bytes,
-                        freq: dict[str, int], asset_file_name: str = "") -> list[TextEntry]:
+                        freq: dict[str, int], asset_file_name: str = "",
+                        freq_threshold: int | None = None,
+                        script_class: str = "") -> list[TextEntry]:
     """MonoBehaviour 原始字节扫描 + 智能过滤。
 
     关键规则（多层防线，防止把键名当文本翻译）：
@@ -747,6 +896,8 @@ def _raw_string_entries(file_id: str, obj_path_id: int, raw: bytes,
         + [(offset, text, "unaligned") for offset, text in recovered],
         key=lambda item: item[0],
     )
+    if freq_threshold is None:
+        freq_threshold = _high_freq_threshold(freq)
     scanned = [(idx, offset, s) for idx, (offset, s, _) in enumerate(scanned_with_mode)]
     scan_modes = {offset: mode for offset, _, mode in scanned_with_mode}
     # 每个字符串在对象内的出现次数
@@ -784,13 +935,16 @@ def _raw_string_entries(file_id: str, obj_path_id: int, raw: bytes,
             non_engine.append(s)
             if should_skip(s) and structural_reason is None:
                 prefilter = "key_identifier"
-            elif freq.get(s, 0) >= 40 and not strong_display_evidence:
+            elif (freq.get(s, 0) >= freq_threshold
+                  and not strong_display_evidence):
                 prefilter = "high_frequency"
             else:
                 prefilter = None
         if prefilter is not None:
-            count = prefilter_counts[prefilter] = \
-                prefilter_counts.get(prefilter, 0) + 1
+            # 计数键带 prefilter_ 前缀 = 样本 meta 的 reason（回写同形）
+            key = f"prefilter_{prefilter}"
+            count = prefilter_counts[key] = \
+                prefilter_counts.get(key, 0) + 1
             if count <= _PREFILTER_SAMPLE_LIMIT:
                 entries.append(_prefilter_entry(
                     file_id, obj_path_id, idx, offset, s,
@@ -812,6 +966,8 @@ def _raw_string_entries(file_id: str, obj_path_id: int, raw: bytes,
                 "scan_mode": scan_modes[offset]}
         if structural_reason:
             meta["structural_reason"] = structural_reason
+        if script_class:
+            meta["script_class"] = script_class
         if asset_file_name:
             meta["asset_file"] = asset_file_name
         entries.append(TextEntry(
@@ -824,13 +980,16 @@ def _raw_string_entries(file_id: str, obj_path_id: int, raw: bytes,
         _has_sentence_shape(s) and _structural_reason(s) is None
         for s in non_engine)
 
-    # InputSystem 对象信号：action map 名（GameActions 等）或绑定路径（<Keyboard>/z）
-    # 或 interactions 串（Press(behavior=2)）或 InputSystem 程序集串出现 → 该对象是
-    # 输入配置，对象内 action 名等全是运行时按名查找的键。翻译必然破坏按键交互
-    # （morfosigame 实证：默认模板 map 名 'Normal' 不在名单里，Proceed/SkipCutscene
-    # 动作名全被翻译 → 点击对话/F 跳过全部无反应；deadbeat obj 717 同理）。
+    # InputSystem 对象信号：确定性脚本类名（识别 L6：PPtr m_Script 解析，
+    # morfosigame/deadbeat 输入配置对象的类名证据优先于串池猜类）或
+    # action map 名（GameActions 等）/绑定路径（<Keyboard>/z）/interactions
+    # 串（Press(behavior=2)）/InputSystem 程序集串 → 该对象是输入配置，
+    # 对象内 action 名等全是运行时按名查找的键。翻译必然破坏按键交互
+    # （morfosigame 实证：默认模板 map 名 'Normal' 不在名单里，
+    # Proceed/SkipCutscene 动作名全被翻译 → 点击对话/F 跳过全部无反应）。
     is_input_system_object = (
-        any(
+        script_class in _INPUT_SYSTEM_SCRIPT_CLASSES
+        or any(
             s.strip().casefold() in _INPUTSYSTEM_MAP_NAMES
             or bool(_INPUT_BINDING_PATH.match(s.strip()))
             or bool(_INPUTSYSTEM_INTERACTION.match(s.strip()))
@@ -839,12 +998,14 @@ def _raw_string_entries(file_id: str, obj_path_id: int, raw: bytes,
             sig in s for s in (s for _, _, s in scanned)
             for sig in _INPUTSYSTEM_ASSEMBLY_SIGNALS))
 
-    # Timeline 对象信号：轨道名（Animation Track (1) 带编号形式）或 Markers 标记或
-    # Timeline/Playables 程序集串 → 轨道名/剪辑名/动画状态名按名查找，翻译破坏演出
-    # （morfosigame 实证：'Animation Track (1)' 被拆成 '动画轨道'+' (1)'，字符串
-    # 计数 2→4 结构错乱，Timeline 反序列化失败）。
+    # Timeline 对象信号：确定性脚本类名（识别 L6）或轨道名（Animation
+    # Track (1) 带编号形式）/Markers 标记/Timeline/Playables 程序集串 →
+    # 轨道名/剪辑名/动画状态名按名查找，翻译破坏演出（morfosigame 实证：
+    # 'Animation Track (1)' 被拆成 '动画轨道'+' (1)'，字符串计数 2→4
+    # 结构错乱，Timeline 反序列化失败）。
     is_timeline_object = (
-        any(
+        script_class in _TIMELINE_SCRIPT_CLASSES
+        or any(
             bool(_TIMELINE_TRACK.match(s.strip()))
             or s.strip().casefold() in _TIMELINE_MARKER_NAMES
             for _, _, s in scanned)
@@ -1104,11 +1265,13 @@ def _raw_string_entries(file_id: str, obj_path_id: int, raw: bytes,
         })
     for e in entries:
         e.meta["obj_has_values"] = has_value_evidence
+    _finalize_skipped_counts(entries, prefilter_counts)
     return entries
 
 
 def _textasset_entries(file_id: str, obj_path_id: int, raw: bytes,
-                       asset_file_name: str = "") -> list[TextEntry]:
+                       asset_file_name: str = "",
+                       skipped: dict[str, int] | None = None) -> list[TextEntry]:
     """TextAsset 内容：嵌套格式探测（JSON → XML → YAML → CSV），否则按行拆分。
 
     结构化条目 meta 带 "textasset_format"（写回用 apply_format_text 整体重建，
@@ -1137,7 +1300,12 @@ def _textasset_entries(file_id: str, obj_path_id: int, raw: bytes,
     # 非可打印字节（\x00-\x1f 除 \t\r\n）占比 >5% → 音频/网格/压缩等
     # 二进制内容（调查实证：electric-trains fp_level_*、2.1G 字符的
     # project-arrhythmia 巨型 TextAsset 中混有二进制），不做条目。
+    def _skip(morph: str) -> None:
+        if skipped is not None:
+            skipped[morph] = skipped.get(morph, 0) + 1
+
     if raw and sum(1 for b in raw if b < 0x20 and b not in (0x09, 0x0a, 0x0d)) / len(raw) > 0.05:
+        _skip("textasset_binary")
         return []
     try:
         text = raw.decode("utf-8-sig")
@@ -1146,6 +1314,7 @@ def _textasset_entries(file_id: str, obj_path_id: int, raw: bytes,
         # 会把非法字节变成 U+FFFD，提取出的条目是 mojibake，翻译写回
         # 必然损坏原始字节——整文件不产生条目（过滤不是删除，写回侧
         # 同样 strict 拒绝，闭环安全）。
+        _skip("textasset_decode_failed")
         return []
     # 双重 BOM 处理（a-catfiends obj70 实证）：UnityPy 读出的 str 已含
     # U+FEFF，调用方 encode("utf-8-sig") 又加一个 → decode 只移除一个，
@@ -1160,7 +1329,10 @@ def _textasset_entries(file_id: str, obj_path_id: int, raw: bytes,
         # .NET 类型注册表（registerTypes 数组）里的类型全名经 JSON 提取后
         # 无引号、会被句子形状规则放行（a-catfiends obj71 实证 8 条失败）。
         # 真实对话 JSON（字典/字幕）不受影响（模式为确定性代码特征）。
-        out = [e for e in out if not _is_script_code_line(e.original)]
+        kept = [e for e in out if not _is_script_code_line(e.original)]
+        if len(kept) != len(out):
+            _skip(f"structured_code_line_{fmt}")
+        out = kept
         for e in out:
             inner = e.key_path
             e.key_path = f"{prefix}/{fmt}/{inner}"
@@ -1201,19 +1373,32 @@ def _textasset_entries(file_id: str, obj_path_id: int, raw: bytes,
             1 for ln in all_lines
             if sum(c.isalpha() for c in ln) / max(1, len(ln)) >= 0.5)
         if alpha / len(all_lines) < 0.5:
+            _skip("textasset_low_alpha_density")
             return []
     lines: list[TextEntry] = []
     for i, line in enumerate(all_lines):
         content = line.strip()
-        if content and not _is_engine_string(content) and not should_skip(content):
-            # 整文件未达代码阈值（<8 行或占比不足）时的行级代码兜底：
-            # 短 Lua 块/单行调用仍按代码跳过（_is_script_code_line 强特征）
-            if _is_script_code_line(content):
-                continue
-            lines.append(TextEntry(
-                file_id=file_id, key_path=f"{prefix}/line/{i}",
-                original=content,
-                meta={**base_meta, "kind": "textasset", "line": i}))
+        if not content:
+            continue
+        # C4 识别侧留档：行级跳过的每一类都记 skipped_count（引擎串/键
+        # 标识符/代码行），不再静默 continue——「纯文本行跳过、判定规律
+        # 未定位到代码层」（222am 实证）的排查入口：报告按 reason 聚合
+        # 即得各类真实总数，哑识别可见化。
+        if _is_engine_string(content):
+            _skip("textasset_engine_string")
+            continue
+        if should_skip(content):
+            _skip("textasset_key_identifier")
+            continue
+        # 整文件未达代码阈值（<8 行或占比不足）时的行级代码兜底：
+        # 短 Lua 块/单行调用仍按代码跳过（_is_script_code_line 强特征）
+        if _is_script_code_line(content):
+            _skip("textasset_code_line")
+            continue
+        lines.append(TextEntry(
+            file_id=file_id, key_path=f"{prefix}/line/{i}",
+            original=content,
+            meta={**base_meta, "kind": "textasset", "line": i}))
     return lines
 
 
@@ -1393,17 +1578,22 @@ def extract_asset_file(path: str | Path, file_id: str | None = None,
     fid = file_id or str(p).replace("\\", "/")
     env = Environment()
     entries: list[TextEntry] = []
-    raw_items: list[tuple[str, int, bytes, set[str]]] = []
+    raw_items: list[tuple[str, int, bytes, set[str], str]] = []
     freq: dict[str, int] = {}
     deferred_candidates: list[tuple[str, int, list[TextEntry]]] = []
     seen_objects: set[tuple[str, int]] = set()
+    skipped: dict[str, int] = {}  # R5 静默跳过留档（哑识别可见化）
+    # 识别 L7：typetree 覆盖率持续度量——每容器记录成功/失败对象数，
+    # 失败靠 raw scan 兜底（Unity 6000 264/268 失败实证）但必须可量化
+    typetree_ok = 0
+    typetree_failed = 0
     try:
         try:
             env.load([str(p)])
         except Exception:  # noqa: BLE001
             # 无法解析的容器（未知魔数/截断/加密）→ 空结果，交给文本侧处理
             return ParsedFile(fid, str(p), "v2_asset", [], "utf-8", "\n",
-                              {"kind": "asset"}, False)
+                              {"kind": "asset"}, False, skipped)
         for obj in env.objects:
             object_key = _object_identity(obj)
             if object_key in seen_objects:
@@ -1425,17 +1615,27 @@ def extract_asset_file(path: str | Path, file_id: str | None = None,
                         script = script.encode(
                             "utf-8-sig", errors="surrogateescape")
                     entries.extend(_textasset_entries(
-                        fid, obj.path_id, script or b"", asset_name))
+                        fid, obj.path_id, script or b"", asset_name, skipped))
                 except Exception:  # noqa: BLE001
                     continue
             elif (tname in ("MonoBehaviour", "ScriptableObject")
                   or tname in _NATIVE_TEXT_TYPES):
                 tree = None
+                script_class = ""
                 try:
                     tree = obj.read_typetree()
+                    typetree_ok += 1
                 except Exception:  # noqa: BLE001
-                    pass
+                    # 识别 L7：typetree 失败率留档（覆盖率指标数据源）——
+                    # 失败对象靠 raw scan 兜底（Unity 6000 实证），但失败
+                    # 率必须可量化：逐容器记录 + skipped 原因聚合
+                    typetree_failed += 1
+                    skipped["typetree_failed"] = (
+                        skipped.get("typetree_failed", 0) + 1)
                 if isinstance(tree, dict):
+                    # 识别 L6：确定性脚本类名（m_Script PPtr → MonoScript）
+                    # 优先于串池信号，对象级判定直接使用
+                    script_class = _script_class_of(tree, obj)
                     if _is_string_table_tree(tree):
                         entries.extend(_localization_entries_from_tree(
                             fid, obj.path_id, tree, asset_name))
@@ -1445,7 +1645,7 @@ def extract_asset_file(path: str | Path, file_id: str | None = None,
                             isinstance(row, dict) and "m_Key" in row for row in shared_rows):
                         continue
                     display, candidates = _typetree_string_entries(
-                        fid, obj.path_id, tree, asset_name)
+                        fid, obj.path_id, tree, asset_name, skipped)
                     entries.extend(display)
                     if display:
                         # typetree 已覆盖全部叶子，display 存在时不跑 raw scan；
@@ -1465,17 +1665,23 @@ def extract_asset_file(path: str | Path, file_id: str | None = None,
                     if raw and len(raw) < 8_000_000:
                         raw_strings = {s for _, s in scan_strings(raw)}
                         raw_items.append(
-                            (asset_name, int(obj.path_id), raw, raw_strings))
+                            (asset_name, int(obj.path_id), raw, raw_strings,
+                             script_class))
                         for s in raw_strings:
                             freq[s] = freq.get(s, 0) + 1
     finally:
         from hanhua.core.unity.writer import _dispose_environment
         _dispose_environment(env)
-    for asset_name, path_id, raw, _ in raw_items:
-        entries.extend(_raw_string_entries(fid, path_id, raw, freq, asset_name))
+    # 识别 L8：高频串阈值按全文件规模算一次，所有对象共用（避免每对象
+    # 重复 sum(freq.values())——对象上千时 O(N×M)）
+    freq_threshold = _high_freq_threshold(freq)
+    for asset_name, path_id, raw, _, script_class in raw_items:
+        entries.extend(_raw_string_entries(
+            fid, path_id, raw, freq, asset_name, freq_threshold,
+            script_class))
     # 候选补集：raw scan 已发现的原文以 raw 分类为准，候选只补漏网证据
     covered_by_raw = {(name, pid): strings
-                      for name, pid, _, strings in raw_items}
+                      for name, pid, _, strings, _ in raw_items}
     for asset_name, path_id, candidates in deferred_candidates:
         covered = covered_by_raw.get((asset_name, path_id), set())
         entries.extend(
@@ -1484,4 +1690,12 @@ def extract_asset_file(path: str | Path, file_id: str | None = None,
         if _should_downgrade_pending(e):
             e.status = STATUS_SKIPPED
     noise = looks_like_noise_file(entries)
-    return ParsedFile(fid, str(p), "v2_asset", entries, "utf-8", "\n", {"kind": "asset"}, noise)
+    meta: dict = {"kind": "asset"}
+    # 识别 L7：typetree 覆盖率入容器 meta（每容器可用率可查）——
+    # 低覆盖率容器是「字段证据缺失、靠 raw 兜底」的量化信号
+    if typetree_ok or typetree_failed:
+        meta["typetree_coverage"] = typetree_ok / (
+            typetree_ok + typetree_failed)
+        meta["typetree_objects"] = typetree_ok + typetree_failed
+    return ParsedFile(fid, str(p), "v2_asset", entries, "utf-8", "\n",
+                      meta, noise, skipped)

@@ -21,6 +21,7 @@ from hanhua.core.models import (GameProfile, TextEntry,
                                 is_actionable_translation)
 from hanhua.core.prompts import build_system_prompt, collect_known_names
 from hanhua.core.quality import is_write_ready
+from hanhua.core.reviewer import review_entries
 from hanhua.core.translator import create_client
 from hanhua.ui.app_state import AppState
 from hanhua.ui.widgets import MetricStrip, PageHeader, Toast, Worker
@@ -481,10 +482,50 @@ class TranslatePage(QWidget):
                 learn_g.init_schema()
                 learned = learn_g.learn_proper_names(
                     entries, collected_names, str(profile.game_name or ""))
-                learn_g.close()
                 if learned:
                     on_log(f"术语库学习：新增 {learned} 条专名"
                            f"（跨游戏复用）")
+                # 翻译 C6：语义审核 + C5 门禁沉淀（与 runner 同源核心）。
+                # GUI 主路径此前无语义审核——Resume→简历 类术语错误检测
+                # 不到，审核词对也不反哺全局术语库；此处闭口：审核结论
+                # 写 store meta（审校页「需要优化」筛选），术语词对经
+                # add_reviewed 门禁沉淀（跨游戏复用）。审核失败不阻断
+                # 翻译结果（按全部通过保守处理，日志告警）。
+                try:
+                    review_summary = review_entries(
+                        entries, learn_g,
+                        game_name=str(profile.game_name or ""),
+                        on_note=on_log)
+                    if review_summary["used"]:
+                        flagged = review_summary["flagged"]
+                        if flagged:
+                            meta_rows = []
+                            for r in flagged:
+                                loc = review_summary["locators"].get(
+                                    r.entry_id, "")
+                                if ":" in loc:
+                                    f_id, k_path = loc.split(":", 1)
+                                    meta_rows.append((f_id, k_path, {
+                                        "review_issue": r.issue or "其他",
+                                        "review_reason":
+                                            (r.reason or "")[:200],
+                                        "review_suggestion": r.suggestion
+                                        or "",
+                                    }))
+                            if meta_rows:
+                                store.update_entry_metas(meta_rows)
+                        added = review_summary["pairs_added"]
+                        rejected_n = len(review_summary["pairs_rejected"])
+                        line = (f"语义审核：不合格 {len(flagged)} 条"
+                                f"（已标「需要优化」，审校页可筛选）")
+                        if added:
+                            line += f" · 术语沉淀 {added} 条词对"
+                        if rejected_n:
+                            line += f" · C5 门禁拒绝 {rejected_n} 条"
+                        on_log(line)
+                except Exception as exc:  # noqa: BLE001
+                    on_log(f"语义审核失败：{exc}")
+                learn_g.close()
                 # 知识库学习：从「该翻未翻」回显条目沉淀特殊情况模式
                 learn_kb = KnowledgeBase(self.state.app_dir / "knowledge.db")
                 learned_kb, hits_kb = learn_kb.learn(

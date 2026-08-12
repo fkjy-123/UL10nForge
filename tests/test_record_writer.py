@@ -6,9 +6,16 @@
 """
 import json
 
+from hanhua.core.batch_translator import _rules_version
 from hanhua.core.memory import ProjectStore
 from hanhua.core.record_writer import (
-    _exemption_sentinels, _skipped_by_reason)
+    _budget_exhausted_of, _exemption_sentinels, _morphology_stats,
+    _skipped_by_reason)
+
+# 形态分类测试路径（classify_morphology 的 rel 语义）
+_UNITYSCRIPT_DLL = "Game_Data/Managed/Assembly-UnityScript.dll"   # dense
+_ASSET = "Game_Data/level1"                                       # mixed
+_META = "Game_Data/il2cpp_data/Metadata/global-metadata.dat"      # mixed
 
 
 def _store(tmp_path, rows: list[dict]) -> ProjectStore:
@@ -42,7 +49,7 @@ def test_no_warnings_on_balanced_store(tmp_path):
 
 def test_skip_rate_warning_fires_over_threshold(tmp_path):
     """跳过率 >70% 且 ≥30 条 → 显式告警（含跳过率与处置指引）。"""
-    rows = [("Hello player",) for _ in range(20)]
+    rows = [("Hello player",) for _ in range(10)]
     rows += [("skipped one",
               {"reason": "prefilter_engine_string", "skipped_count": 40},
               None, "skipped") for _ in range(3)]
@@ -102,12 +109,19 @@ def test_dominant_reason_no_warning_when_mixed(tmp_path):
 
 
 def test_skipped_by_reason_aggregates_prefilter_samples_and_plain():
-    """分布聚合：skipped_count 承载真实总数（样本留档），普通条目计 1。"""
+    """分布聚合：skipped_count 承载真实总数（样本留档，回写为单元最终
+    计数），普通条目计 1。不同单元（file_id）各自聚合后求和；同单元
+    多条样本（回写后值相同）只取一次（max 语义——累计计数 1..10 被
+    求和的 55 失真修复）。"""
     rows = [
-        {"meta": {"reason": "prefilter_engine_string", "skipped_count": 40}},
-        {"meta": {"reason": "prefilter_engine_string", "skipped_count": 12}},
-        {"meta": {"reason": "code_line"}},
-        {"meta": {}},
+        {"file_id": "a", "status": "skipped",
+         "meta": {"reason": "prefilter_engine_string", "skipped_count": 40}},
+        {"file_id": "b", "status": "skipped",
+         "meta": {"reason": "prefilter_engine_string", "skipped_count": 12}},
+        {"file_id": "a", "status": "skipped",
+         "meta": {"reason": "prefilter_engine_string", "skipped_count": 40}},
+        {"status": "skipped", "meta": {"reason": "code_line"}},
+        {"status": "skipped", "meta": {}},
     ]
     dist = _skipped_by_reason(rows)
     assert dist["prefilter_engine_string"] == 52
@@ -136,6 +150,85 @@ def test_sentinel_meta_handles_stringified_json(tmp_path):
     assert any("回显豁免" in w for w in warnings)
 
 
+# ── 翻译 C7：翻译质量哨兵（失败率/语言源保留率/预算耗尽率）────────
+
+def test_fail_rate_warning_fires_over_threshold(tmp_path):
+    """失败率 >40% 且 ≥15 条 → 告警（该翻未翻集中出现的可见性）。"""
+    rows = [("Translated", {}, "译文", "translated") for _ in range(20)]
+    rows += [("Failed", {"reason": "request_timeout"}, None, "failed")
+             for _ in range(15)]
+    warnings = _exemption_sentinels(_store(tmp_path, rows))
+    assert any("失败率" in w and "异常高" in w for w in warnings)
+
+
+def test_fail_rate_no_warning_below_minimum(tmp_path):
+    """失败条数少（<15）→ 不告警（个别失败正常）。"""
+    rows = [("Translated", {}, "译文", "translated") for _ in range(5)]
+    rows += [("Failed", {"reason": "request_timeout"}, None, "failed")
+             for _ in range(3)]
+    assert _exemption_sentinels(_store(tmp_path, rows)) == []
+
+
+def test_language_source_kept_warning_fires_over_threshold(tmp_path):
+    """语言源保留 >30% 且 ≥10 条 → 提示多语言游戏（中文包可选用）。"""
+    rows = [("中文原文", {"language_source_kept": True}, "中文原文",
+             "translated") for _ in range(12)]
+    for _ in range(18):
+        rows.append(("Translated", {}, "译文", "translated"))
+    warnings = _exemption_sentinels(_store(tmp_path, rows))
+    assert any("语言源保留" in w and "多语言游戏" in w for w in warnings)
+
+
+def test_language_source_kept_no_warning_below_threshold(tmp_path):
+    """语言源保留占比低 → 不提示。"""
+    rows = [("中文原文", {"language_source_kept": True}, "中文原文",
+             "translated") for _ in range(2)]
+    for _ in range(18):
+        rows.append(("Translated", {}, "译文", "translated"))
+    assert _exemption_sentinels(_store(tmp_path, rows)) == []
+
+
+def test_budget_exhausted_warning_fires_over_threshold(tmp_path):
+    """预算耗尽占失败 >60% 且 ≥20 条 → 告警（失败被大量放弃无痕）。"""
+    v = _rules_version()
+    rows = []
+    for _ in range(20):
+        rows.append(("Failed", {"_rules_version": v, "attempt_count": 3,
+                                "failure_category": "request"},
+                     None, "failed"))
+    for _ in range(10):
+        rows.append(("Failed", {"reason": "request_timeout"}, None, "failed"))
+    warnings = _exemption_sentinels(_store(tmp_path, rows))
+    assert any("预算耗尽" in w and "放弃" in w for w in warnings)
+
+
+def test_budget_exhausted_no_warning_when_version_stale(tmp_path):
+    """旧规则版本戳的 attempt 计数不算耗尽（C2：规则升级自动重置）——
+    失败率低于阈值时预算哨兵不触发。"""
+    rows = [("Translated", {}, "译文", "translated") for _ in range(60)]
+    rows += [("Failed", {"_rules_version": -1, "attempt_count": 99,
+                         "failure_category": "request"},
+              None, "failed") for _ in range(25)]
+    assert _exemption_sentinels(_store(tmp_path, rows)) == []
+
+
+def test_budget_exhausted_of_matches_translator_semantics(tmp_path):
+    """_budget_exhausted_of 与 batch_translator 同源：request 上限 3、
+    model_behavior 上限 2、content_inherent 上限 1。"""
+    v = _rules_version()
+    base = {"_rules_version": v, "attempt_count": 3,
+            "failure_category": "request"}
+    assert _budget_exhausted_of({"meta": base}) is True
+    base2 = dict(base, attempt_count=2)
+    assert _budget_exhausted_of({"meta": base2}) is False
+    mb = {"_rules_version": v, "attempt_count": 2,
+          "failure_category": "model_behavior"}
+    assert _budget_exhausted_of({"meta": mb}) is True
+    inh = {"_rules_version": v, "attempt_count": 1,
+           "failure_category": "content_inherent"}
+    assert _budget_exhausted_of({"meta": inh}) is True
+
+
 def test_summary_includes_sentinel_section(tmp_path, monkeypatch):
     """哨兵告警写入 summary.md（用户第一眼可见），不依赖具体数据场景。"""
     from hanhua.core.record_writer import export_records
@@ -158,3 +251,151 @@ def test_summary_includes_sentinel_section(tmp_path, monkeypatch):
     summary = (rec_dir / "summary.md").read_text(encoding="utf-8")
     assert "哨兵告警" in summary
     assert "跳过率 90% 异常高" in summary
+
+
+def test_summary_memory_reject_rate_warning(tmp_path, monkeypatch):
+    """记忆拒绝率 >50% 且应用 ≥10 次 → summary 记忆节显式告警
+    （记忆毒化复发信号：应用被质量门拒绝比例大）。"""
+    from hanhua.core.record_writer import export_records
+    from tests.test_scanner import _make_tree
+    from hanhua.core.project import Project
+
+    game_dir = _make_tree()
+    proj = Project.open_game_dir(game_dir, tmp_path / "app")
+    proj.scan()
+    monkeypatch.setattr(
+        "hanhua.core.record_writer._exemption_sentinels",
+        lambda store: [])
+    out_root = tmp_path / "records"
+    export_records(proj, out_root, agent_report={
+        "session": {"proposed": 5, "evidence_added": 2, "confirmed": 1,
+                    "direct_applied": 10, "accepted": 3, "rejected": 7,
+                    "retired": 0, "conflicts": 0},
+        "library": {}, "game": "t", "top_memories": [], "conflicts": [],
+    })
+    summary = (out_root / proj.game_dir.name / "summary.md").read_text(
+        encoding="utf-8")
+    assert "记忆拒绝率" in summary and "异常高" in summary
+
+
+# ── 识别 L2：形态×reason 矩阵哨兵 ─────────────────────────────
+
+def _store_morph(tmp_path, rows: list[tuple[str, str, dict, str, str]]) -> ProjectStore:
+    """rows：(file_id(rel 路径), original, meta, status, translation?)。"""
+    store = ProjectStore(tmp_path / "project.db")
+    store.init_schema()
+    seen: dict[str, str] = {}
+    for i, (fid, original, meta, status, *rest) in enumerate(rows):
+        if fid not in seen:
+            store.add_file(fid, fid, "txt", "utf-8", "")
+            seen[fid] = fid
+        entry = {"file_id": fid, "key_path": f"k{i}", "original": original,
+                 "meta": meta, "status": status}
+        if rest:
+            entry["translation"] = rest[0]
+        store.upsert_entries([entry])
+    return store
+
+
+def test_morphology_stats_aggregates_samples_and_plain(tmp_path):
+    """形态聚合：dense 形态样本 skipped_count 承载真实总数、普通行计 1，
+    按 file_id 分类；未注册形态归 unknown。"""
+    store = _store_morph(tmp_path, [
+        (_UNITYSCRIPT_DLL, "对话一", {"reason": "mono_diagnostic",
+                                      "skipped_count": 30}, "skipped"),
+        (_UNITYSCRIPT_DLL, "对话二", {}, "pending"),
+        (_ASSET, "Text", {}, "translated", "译文"),
+        ("Game_Data/Managed/SomeNew.dll", "x", {}, "pending"),
+    ])
+    stats = _morphology_stats(store.get_entries())
+    us = stats["mono_unityscript"]
+    assert us["skipped"] == 30            # 样本聚合真实总数
+    assert us["pending"] == 1
+    assert stats["asset_unity"]["translated"] == 1
+    assert stats["mono_other"]["pending"] == 1  # 非标准前缀 DLL 归 mono_other
+
+
+def test_dense_sentinel_fires_over_threshold(tmp_path):
+    """dense 形态（UnityScript 程序集）跳过过半且 ≥20 条 → 告警
+    （整形态遗漏信号：lilys-day-off 825 条教训的自动化）。"""
+    store = _store_morph(tmp_path, [
+        (_UNITYSCRIPT_DLL, "对话", {"reason": "mono_diagnostic",
+                                    "skipped_count": 40}, "skipped"),
+    ] + [(_UNITYSCRIPT_DLL, f"对话{i}", {}, "pending") for i in range(10)])
+    warnings = _exemption_sentinels(store)
+    assert any("dense 形态 mono_unityscript" in w
+               and "整形态遗漏" in w for w in warnings)
+
+
+def test_dense_sentinel_no_warning_below_minimum(tmp_path):
+    """dense 形态跳过但样本小（<20）→ 不告警。"""
+    store = _store_morph(tmp_path, [
+        (_UNITYSCRIPT_DLL, "对话", {"reason": "mono_diagnostic",
+                                    "skipped_count": 5}, "skipped"),
+    ] + [(_UNITYSCRIPT_DLL, f"对话{i}", {}, "pending") for i in range(3)])
+    warnings = _exemption_sentinels(store)
+    assert not any("dense 形态" in w for w in warnings)
+
+
+def test_dense_sentinel_no_warning_for_mixed_prior(tmp_path):
+    """mixed 形态（资产/IL2CPP）全跳过不触发 dense 哨兵——跳过是
+    mixed 形态的正常主体，只有先验声明 dense 才可校验。"""
+    store = _store_morph(tmp_path, [
+        (_ASSET, f"v{i}", {"reason": "typetree_prefilter",
+                           "skipped_count": 60}, "skipped")
+        for i in range(3)] + [
+        (_META, f"v{i}", {"reason": "engine_morph"}, "skipped")
+        for i in range(25)])
+    warnings = _exemption_sentinels(store)
+    assert not any("dense 形态" in w for w in warnings)
+
+
+def test_summary_includes_morphology_matrix(tmp_path, monkeypatch):
+    """summary 含形态分布矩阵：每形态一行（先验/文件/条目/主导跳过
+    原因），形态清单从审计清单变为可对照的运行分布。"""
+    from hanhua.core.record_writer import export_records
+    from tests.test_scanner import _make_tree
+    from hanhua.core.project import Project
+
+    game_dir = _make_tree()
+    proj = Project.open_game_dir(game_dir, tmp_path / "app")
+    proj.scan()
+    row = next(r for r in proj.store.get_entries()
+               if r["status"] == "pending")
+    proj.store.set_manual(row["file_id"], row["key_path"], "已翻译")
+
+    monkeypatch.setattr(
+        "hanhua.core.record_writer._exemption_sentinels",
+        lambda store: [])
+    out_root = tmp_path / "records"
+    export_records(proj, out_root)
+    summary = (out_root / proj.game_dir.name / "summary.md").read_text(
+        encoding="utf-8")
+    assert "形态分布（识别 L2）" in summary
+    assert any(line.startswith("  - ") and "条目" in line
+               for line in summary.splitlines())
+
+
+def test_summary_memory_reject_rate_no_warning_when_healthy(
+        tmp_path, monkeypatch):
+    """拒绝占比低/样本小 → 不告警。"""
+    from hanhua.core.record_writer import export_records
+    from tests.test_scanner import _make_tree
+    from hanhua.core.project import Project
+
+    game_dir = _make_tree()
+    proj = Project.open_game_dir(game_dir, tmp_path / "app")
+    proj.scan()
+    monkeypatch.setattr(
+        "hanhua.core.record_writer._exemption_sentinels",
+        lambda store: [])
+    out_root = tmp_path / "records"
+    export_records(proj, out_root, agent_report={
+        "session": {"proposed": 5, "evidence_added": 2, "confirmed": 1,
+                    "direct_applied": 8, "accepted": 7, "rejected": 1,
+                    "retired": 0, "conflicts": 0},
+        "library": {}, "game": "t", "top_memories": [], "conflicts": [],
+    })
+    summary = (out_root / proj.game_dir.name / "summary.md").read_text(
+        encoding="utf-8")
+    assert "记忆拒绝率" not in summary

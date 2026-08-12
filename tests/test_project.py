@@ -1,3 +1,4 @@
+import json
 import tempfile
 from pathlib import Path
 import hashlib
@@ -98,6 +99,29 @@ def test_project_scan():
     assert proj.scan() == 3
     assert proj.store.count("pending") == 3   # 1 json + 1 csv + 1 txt
     assert proj.out_dir == d.parent / (d.name + "_汉化")
+
+
+def test_scan_aggregates_extractor_skipped_reasons(monkeypatch):
+    """R5：提取侧静默跳过聚合进扫描状态（哑识别可见化）——
+    静默 continue 不产生条目也不留痕，聚合后进分析报告供审查。"""
+    from hanhua.core.extractor import ParsedFile
+    d = _make_tree()
+    app_dir = Path(tempfile.mkdtemp()) / "app"
+    proj = Project.open_game_dir(d, app_dir)
+
+    def fake_parse_file(path, file_id=None):
+        pf = ParsedFile(
+            file_id or str(path), str(path), "txt", [],
+            "utf-8", "\n", {}, False)
+        pf.skipped_reasons["code_identifier"] = 42
+        pf.skipped_reasons["engine_morph"] = 7
+        return pf
+
+    monkeypatch.setattr("hanhua.core.project.parse_file", fake_parse_file)
+    kept = proj.scan()
+    # _make_tree 有 kept 个文件，计数逐文件聚合
+    assert proj._last_scan_skipped == {"code_identifier": 42 * kept,
+                                       "engine_morph": 7 * kept}
 
 
 def _write_valid_pe(path: Path, *, cli: bool = False) -> None:
@@ -352,6 +376,251 @@ def test_selected_nested_player_writeback_preserves_source_and_sibling(
     assert project_module._tree_hashes(source / "B") == sibling_manifest
     assert result["verification"]["reopen_verified"] is True
     assert font_roots == [(source / "A").resolve()]
+
+
+def test_write_all_resyncs_catalog_crc_after_static_font_replace(
+        tmp_path, monkeypatch):
+    """C5：静态字体替换整容器重建 bundle 后，catalog.bin 的 CRC 必须
+    二次同步（write_back_v2 末尾更新过一次，替换后又变了）。"""
+    import UnityPy
+
+    source = _make_nested_mono_players(tmp_path)
+    asset = source / "A/A_Data/sharedassets0.assets"
+    asset_text = b"Settings"
+    asset.write_bytes(len(asset_text).to_bytes(4, "little") + asset_text + b"\0" * 3)
+
+    class FakeObject:
+        def __init__(self, raw):
+            self.path_id = 7
+            self.assets_file = type("AssetFile", (), {"name": asset.name})()
+            self.type = type("ObjectType", (), {"name": "MonoBehaviour"})()
+            self.raw = raw
+
+        def get_raw_data(self):
+            return self.raw
+
+        def set_raw_data(self, raw):
+            self.raw = bytes(raw)
+
+    class SerializedFile:
+        def __init__(self, environment):
+            self.environment = environment
+            self.reader = None
+
+        def save(self):
+            return self.environment.objects[0].get_raw_data()
+
+    class FakeEnvironment:
+        def __init__(self):
+            self.objects = []
+            self.files = {}
+
+        def load(self, paths):
+            path = paths[0] if isinstance(paths, (list, tuple)) else paths
+            self.objects = [FakeObject(Path(path).read_bytes())]
+            self.files = {"main": SerializedFile(self)}
+
+    monkeypatch.setattr(UnityPy, "Environment", FakeEnvironment)
+    project = Project.open_game_dir(
+        source, tmp_path / "app",
+        player_root=Path("A"), player_executable=Path("A/A.exe"),
+    )
+    monkeypatch.setattr(
+        project_module.mono_extractor, "extract_dll_user_strings",
+        lambda *_args, **_kwargs: SimpleNamespace(noise=True))
+
+    from hanhua.core.unity.font_replace import FontReplaceResult
+    replaced_paths = ["A/A_Data/StreamingAssets/aa/fonts.bundle"]
+    monkeypatch.setattr(
+        project_module, "install_static_fonts",
+        lambda *_args, **_kwargs: FontReplaceResult(
+            replaced=1, replaced_paths=list(replaced_paths)))
+    monkeypatch.setattr(
+        project_module, "install_font_override",
+        lambda *_args, **_kwargs: None)
+    catalog_syncs = []
+    monkeypatch.setattr(
+        project_module, "_update_addressables_catalogs",
+        lambda *_args: catalog_syncs.append(_args) or [])
+
+    assert project.scan_all().unblocked is True
+    project.store.set_manual("A/Localization/en.json", "title", "玩家甲")
+    asset_file_id = "A/A_Data/sharedassets0.assets"
+    asset_entry = next(
+        row for row in project.store.get_entries()
+        if row["file_id"] == asset_file_id and row["original"] == "Settings")
+    project.store.set_manual(asset_file_id, asset_entry["key_path"], "设置")
+
+    project.write_all(font_config=FontConfig(enabled=True))
+
+    # 字体替换后必须以被重建的 bundle 相对路径二次同步 catalog CRC
+    assert len(catalog_syncs) == 1
+    game_dir, staging, file_infos = catalog_syncs[0]
+    assert Path(game_dir).resolve() == source.resolve()
+    assert Path(staging).name.startswith(".Player Package_汉化.staging-")
+    assert [info["rel_path"] for info in file_infos] == replaced_paths
+
+
+def _make_publish_ready_project(tmp_path, monkeypatch):
+    """写回 C7 测试装置：造出能一路走到发布段的 project。
+
+    返回 (project, source)：source 内含 A/Localization/en.json +
+    sharedassets0.assets（Settings 字符串），一条手动译文 + 一条
+    asset 译文，scan_all 后 write_all 可完整发布。
+    """
+    import UnityPy
+
+    source = _make_nested_mono_players(tmp_path)
+    asset = source / "A/A_Data/sharedassets0.assets"
+    asset_text = b"Settings"
+    asset.write_bytes(
+        len(asset_text).to_bytes(4, "little") + asset_text + b"\0" * 3)
+
+    class FakeObject:
+        def __init__(self, raw):
+            self.path_id = 7
+            self.assets_file = type("AssetFile", (), {"name": asset.name})()
+            self.type = type("ObjectType", (), {"name": "MonoBehaviour"})()
+            self.raw = raw
+
+        def get_raw_data(self):
+            return self.raw
+
+        def set_raw_data(self, raw):
+            self.raw = bytes(raw)
+
+    class SerializedFile:
+        def __init__(self, environment):
+            self.environment = environment
+            self.reader = None
+
+        def save(self):
+            return self.environment.objects[0].get_raw_data()
+
+    class FakeEnvironment:
+        def __init__(self):
+            self.objects = []
+            self.files = {}
+
+        def load(self, paths):
+            path = paths[0] if isinstance(paths, (list, tuple)) else paths
+            self.objects = [FakeObject(Path(path).read_bytes())]
+            self.files = {"main": SerializedFile(self)}
+
+    monkeypatch.setattr(UnityPy, "Environment", FakeEnvironment)
+    project = Project.open_game_dir(
+        source, tmp_path / "app",
+        player_root=Path("A"), player_executable=Path("A/A.exe"),
+    )
+    monkeypatch.setattr(
+        project_module.mono_extractor, "extract_dll_user_strings",
+        lambda *_args, **_kwargs: SimpleNamespace(noise=True))
+    project.scan_all()
+    project.store.set_manual("A/Localization/en.json", "title", "玩家甲")
+    asset_entry = next(
+        row for row in project.store.get_entries()
+        if row["file_id"] == "A/A_Data/sharedassets0.assets")
+    project.store.set_manual(
+        asset_entry["file_id"], asset_entry["key_path"], "设置")
+    return project, source
+
+
+def test_write_all_manifest_written_into_staging_before_rename(
+        tmp_path, monkeypatch):
+    """C7：manifest（回滚凭据）先写入 staging，随 rename 原子落位——
+    消除 rename→写 manifest 之间的崩溃窗口（新版本已发布、凭据却未
+    落盘）。第二次发布必须记录 backup 恢复路径。"""
+    project, _source = _make_publish_ready_project(tmp_path, monkeypatch)
+    project.write_all()  # 第一次发布：产生旧输出
+
+    captured: list[Path] = []
+    real_manifest = project._write_publish_manifest  # 绑定方法（monkeypatch 前）
+
+    def scoped_manifest(self, out_dir, *args, **kwargs):
+        captured.append(Path(out_dir))
+        return real_manifest(out_dir, *args, **kwargs)
+
+    monkeypatch.setattr(Project, "_write_publish_manifest", scoped_manifest)
+    project.write_all()  # 第二次发布：backup 路径存在
+
+    # manifest 的目标必须是 staging（rename 前），而不是发布后的 out_dir
+    assert captured, "第二次发布必须调用 _write_publish_manifest"
+    assert captured[0].name.startswith(".Player Package_汉化.staging-")
+    # 发布后 manifest 随 rename 落位 + 记录 backup 回滚凭据
+    manifest_path = project.out_dir / ".hanhua-manifest.json"
+    assert manifest_path.exists()
+    manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+    assert ".backup-" in manifest["backup"]["path"]
+    assert "改名为" in manifest["backup"]["restore"]
+    # 备份目录确实在磁盘（回滚凭据真实可用）
+    backups = list(project.out_dir.parent.glob(
+        f".{project.out_dir.name}.backup-*"))
+    assert len(backups) == 1
+
+
+def test_write_all_post_publish_failure_keeps_backup_and_manifest(
+        tmp_path, monkeypatch):
+    """C7：发布 rename 成功后若后续异常，backup 不再被 finally 无脑
+    删除（原实现 rmtree backup 丢回滚凭据）；manifest 已在 out_dir，
+    回滚凭据完整。"""
+    project, _source = _make_publish_ready_project(tmp_path, monkeypatch)
+    project.write_all()  # 第一次发布：产生旧输出
+    assert (project.out_dir / ".hanhua-manifest.json").exists()
+
+    real_cleanup = project_module._schedule_backup_cleanup
+
+    def boom_cleanup(*args, **kwargs):
+        raise RuntimeError("清理线程启动失败（模拟 rename 后异常）")
+
+    monkeypatch.setattr(project_module, "_schedule_backup_cleanup",
+                        boom_cleanup)
+    with pytest.raises(RuntimeError, match="清理线程启动失败"):
+        project.write_all()
+
+    # rename 已成功：新版本在 out_dir、manifest 落位
+    assert (project.out_dir / ".hanhua-manifest.json").exists()
+    # backup 保留在磁盘（回滚凭据未丢）
+    backups = list(project.out_dir.parent.glob(
+        f".{project.out_dir.name}.backup-*"))
+    assert len(backups) == 1
+    # 备份内容 = 发布前版本（含 manifest 与英文原文）
+    assert (backups[0] / ".hanhua-manifest.json").exists()
+
+
+def test_write_all_publish_rename_failure_keeps_diagnostic_staging(
+        tmp_path, monkeypatch):
+    """C7：rename 失败时 staging 改名 .diagnostic-* 保留供诊断（原
+    实现 finally 直接删除，修复失败的根因排查无现场）；旧版本恢复
+    回 out_dir，backup 内容不丢失。"""
+    project, _source = _make_publish_ready_project(tmp_path, monkeypatch)
+    project.write_all()  # 第一次发布：产生旧输出
+
+    real_replace = project_module._replace_directory
+    failures = []
+
+    def failing_replace(source, target):
+        if (Path(source).name.startswith(".Player Package_汉化.staging-")
+                and Path(target) == project.out_dir):
+            if not failures:
+                failures.append("boom")
+                raise PermissionError("模拟 staging→out_dir rename 失败")
+        return real_replace(source, target)
+
+    monkeypatch.setattr(project_module, "_replace_directory",
+                        failing_replace)
+    with pytest.raises(PermissionError, match="模拟 staging"):
+        project.write_all()
+
+    # staging 改名保留供诊断
+    diagnostics = list(project.out_dir.parent.glob(
+        f".{project.out_dir.name}.diagnostic-*"))
+    assert len(diagnostics) == 1
+    # 旧版本已恢复回 out_dir（except 恢复路径），内容完整
+    assert (project.out_dir / "A/Localization/en.json").exists()
+    # 无 backup 残留（恢复路径已把内容还回 out_dir）
+    backups = list(project.out_dir.parent.glob(
+        f".{project.out_dir.name}.backup-*"))
+    assert backups == []
 
 
 def test_same_root_player_selection_isolates_scan_database_and_writeback(

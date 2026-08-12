@@ -173,3 +173,83 @@ def test_truncation_ellipsis_switchable(monkeypatch):
 def test_truncation_ellipsis_default():
     data, truncated = _fit_bytes("超长译文内容", 12, "utf-8", pad=False)
     assert truncated and data.decode("utf-8").endswith(TRUNCATION_ELLIPSIS)
+
+
+# --------------------------------------------------------------------------
+# 写回 C9：TextAsset 行级/结构化混合——不再静默跳过
+# --------------------------------------------------------------------------
+
+def test_textasset_mixed_structured_and_line_entries_both_written(tmp_path):
+    """C9：同一 TextAsset 既有结构化条目（xml）又有行级条目（行结构在
+    重建后保持）→ 两者都写入，行级条目按原文行内容匹配替换。"""
+    script = "<root>\n<text>Hello</text>\nplain line\n</root>".encode("utf-8")
+    result = WriteResult()
+    structured = ({
+        "file_id": "ta", "key_path": "/root/text",
+        "original": "Hello", "translation": "你好",
+        "status": "pending",
+    }, {"kind": "textasset", "textasset_format": "xml",
+        "inner_path": "/root/text"})
+    line_entry = ({
+        "file_id": "ta", "key_path": "asset#0/line/2",
+        "original": "plain line", "translation": "普通行",
+        "status": "pending",
+    }, {"kind": "textasset", "line": 2})
+    patched = _patch_textasset(
+        script, [line_entry], [structured], result)
+    out = patched.decode("utf-8")
+    assert "你好" in out
+    assert "普通行" in out
+    assert result.rejected == []
+
+
+def test_textasset_mixed_line_shifted_rejected_explicitly(tmp_path):
+    """C9：结构化重建改变行内容 → 行级条目无法安全定位，显式 rejected
+    （带原因），不再静默跳过被尾部循环笼统记账成 BLOCKED。"""
+    script = ("<root>\n<text>Hello</text>\n"
+              "<legacy>plain line</legacy>\n</root>").encode("utf-8")
+    result = WriteResult()
+    # 结构化条目同时翻译了行级条目原文所在的行（重建后该行内容消失）
+    structured = [
+        ({"file_id": "ta", "key_path": "/root/text",
+          "original": "Hello", "translation": "你好",
+          "status": "pending"},
+         {"kind": "textasset", "textasset_format": "xml",
+          "inner_path": "/root/text"}),
+        ({"file_id": "ta", "key_path": "/root/legacy",
+          "original": "plain line", "translation": "旧内容",
+          "status": "pending"},
+         {"kind": "textasset", "textasset_format": "xml",
+          "inner_path": "/root/legacy"}),
+    ]
+    line_entry = ({
+        "file_id": "ta", "key_path": "asset#0/line/2",
+        "original": "plain line", "translation": "消失的行",
+        "status": "pending",
+    }, {"kind": "textasset", "line": 2})
+    patched = _patch_textasset(
+        script, [line_entry], structured, result)
+    reasons = [r.reason for r in result.rejected]
+    assert any("shifted" in reason for reason in reasons)
+    # 结构化条目正常写入，行级条目保留原文（不写坏）
+    assert "你好" in patched.decode("utf-8")
+
+
+# --------------------------------------------------------------------------
+# 写回 C10：回退 locator 全量收集（GUI 状态持久化凭据）
+# --------------------------------------------------------------------------
+
+def test_note_logic_reverted_collects_full_locators(tmp_path):
+    """C10：note_logic_reverted 收集完整 locator 集合（不截断到 30 条
+    摘要）——发布成功后持久化到 store 的依据。"""
+    result = WriteResult()
+    for i in range(35):
+        result.note_logic_reverted({
+            "file_id": "a.assets", "key_path": f"obj/{i}",
+            "original": f"key{i}", "translation": f"键{i}",
+        }, "logic_key_evidence")
+    assert len(result.reverted_locators) == 35
+    assert "a.assets:obj/0" in result.reverted_locators
+    assert "a.assets:obj/34" in result.reverted_locators
+    # 摘要仍受 30 条上限保护（报告用），完整集合不受限（持久化用）
+    assert len(result.logic_reverted_items) == 30

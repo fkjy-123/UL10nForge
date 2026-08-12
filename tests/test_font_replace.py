@@ -321,3 +321,28 @@ def test_install_static_fonts_disabled_tmp(tmp_path):
     # enabled=False 时 TMP 路径不执行，legacy 仍按 TTF 替换
     result = install_static_fonts(tmp_path, FontConfig(enabled=False))
     assert result.replaced == 0
+
+
+def test_install_static_fonts_collects_replaced_paths(
+        tmp_path, monkeypatch):
+    """C5：整容器重建的 bundle 必须记下相对路径，供 catalog CRC 二次同步。"""
+    ttf = tmp_path / "f.otf"
+    ttf.write_bytes(_make_font_ttf())
+    bundle = tmp_path / "StreamingAssets" / "aa" / "fonts.bundle"
+    bundle.parent.mkdir(parents=True)
+    bundle.write_bytes(b"bundle")
+
+    monkeypatch.setattr(
+        "hanhua.core.unity.font_replace._font_ttf_candidate",
+        lambda _cfg: ttf)
+    monkeypatch.setattr(
+        "hanhua.core.unity.font_replace._asset_candidates",
+        lambda _out_dir: [bundle])
+    monkeypatch.setattr(
+        "hanhua.core.unity.font_replace.replace_legacy_fonts_in_container",
+        lambda _asset, _ttf_bytes: (2, []))
+
+    result = install_static_fonts(tmp_path, FontConfig(enabled=True))
+
+    assert result.replaced == 2
+    assert result.replaced_paths == ["StreamingAssets/aa/fonts.bundle"]

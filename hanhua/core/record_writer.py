@@ -21,6 +21,8 @@ import datetime
 import json
 from pathlib import Path
 
+from hanhua.core.tooling.morphology import REGISTRY, classify_morphology
+
 _SEPARATOR = "─" * 64
 _MAX_FAILED_DETAILS = 200  # fix-record 明细上限（防超长文档）
 
@@ -33,6 +35,26 @@ _SENTINEL_ECHO_RATE = 0.3    # 回显豁免占翻译比例超此值 → 告警
 _SENTINEL_ECHO_MIN = 10      # 告警所需最少回显条数
 _SENTINEL_REASON_RATE = 0.9  # 单一跳过原因占比超此值 → 提示复核
 _SENTINEL_REASON_MIN = 30    # 提示所需最少跳过条数
+
+# ── 翻译 C7：翻译质量哨兵（评估报告 C7，根因 C 扩展）────────────────
+# 原哨兵只覆盖跳过/回显/单原因；失败（该翻未翻）、语言源保留（多语言
+# 游戏）、预算耗尽（放弃无痕）、记忆拒绝（毒化复发）都是哑信号——
+# 异常比例落盘告警，用户第一眼可见，不等实测发现问题。
+_SENTINEL_FAIL_RATE = 0.4    # 失败占已处理条目（translated+failed）比例超此值 → 告警
+_SENTINEL_FAIL_MIN = 15      # 告警所需最少失败条数
+_SENTINEL_KEPT_RATE = 0.3    # language_source_kept 占翻译比例超此值 → 提示多语言游戏
+_SENTINEL_KEPT_MIN = 10      # 提示所需最少保留条数
+_SENTINEL_BUDGET_RATE = 0.6  # 预算耗尽占失败比例超此值 → 告警大面积放弃
+_SENTINEL_BUDGET_MIN = 20    # 告警所需最少耗尽条数
+_SENTINEL_MEMORY_REJECT_RATE = 0.5  # 记忆应用被拒占应用总数比例超此值 → 告警毒化
+_SENTINEL_MEMORY_REJECT_MIN = 10    # 告警所需最少应用次数
+
+# ── 识别 L2：dense 形态跳过哨兵（形态注册表接入运行时信号）──────────
+# REGISTRY 声明 dense 先验（字面量几乎全是显示文本：UnityScript/Boo
+# 程序集）的形态若跳过过半，即「整形态大遗漏」信号——lilys-day-off
+# 825 条对话/结局文本全被跳过事件的自动化形态（先验 → 可校验）。
+_SENTINEL_DENSE_SKIP_RATE = 0.5  # dense 形态跳过占比超此值 → 告警
+_SENTINEL_DENSE_SKIP_MIN = 20    # 告警所需最少跳过条数
 
 
 def _meta_of(row: dict) -> dict:
@@ -94,16 +116,39 @@ def _status_counts(store) -> dict[str, int]:
             for status in ("pending", "translated", "failed", "skipped")}
 
 
-def _skipped_by_reason(rows: list[dict]) -> dict[str, int]:
-    """跳过原因分布（真实总数）：预过滤留档条目的 skipped_count 承载
-    （样本 ≤10 条/对象/原因），非留档条目计 1。"""
-    by_reason: dict[str, int] = {}
+def _skipped_totals(rows: list[dict]) -> dict[tuple[str, str, object], int]:
+    """(file_id, reason, obj) → 跳过真实总数（聚合语义修正）。
+
+    留档样本（≤10 条/单元/原因，meta 含 skipped_count）的计数已由提取器
+    回写为该单元最终计数（同单元多条样本值相同）——取 max 去重（求和
+    会把 10 条样本算成 1+2+…+10=55，真实 15）；非留档条目逐行计 1。
+    样本行与普通行同 key 共存时（防御，现实中样本已覆盖全部跳过）以
+    样本值为准（它是该单元的真实总数）。"""
+    sample: dict[tuple[str, str, object], int] = {}
+    plain: dict[tuple[str, str, object], int] = {}
     for row in rows:
+        if row.get("status") != "skipped":
+            continue
         meta = _meta_of(row)
-        reason = meta.get("reason") or "unknown"
+        key = (str(row.get("file_id") or ""),
+               meta.get("reason") or "unknown",
+               meta.get("obj"))
         count = meta.get("skipped_count")
-        by_reason[reason] = (
-            by_reason.get(reason, 0) + (count if isinstance(count, int) else 1))
+        if isinstance(count, int):
+            sample[key] = max(sample.get(key, 0), count)
+        else:
+            plain[key] = plain.get(key, 0) + 1
+    totals = dict(plain)
+    for key, val in sample.items():
+        totals[key] = val
+    return totals
+
+
+def _skipped_by_reason(rows: list[dict]) -> dict[str, int]:
+    """跳过原因分布（真实总数）：_skipped_totals 后按 reason 汇总。"""
+    by_reason: dict[str, int] = {}
+    for (_, reason, _), total in _skipped_totals(rows).items():
+        by_reason[reason] = by_reason.get(reason, 0) + total
     return by_reason
 
 
@@ -147,7 +192,106 @@ def _exemption_sentinels(store) -> list[str]:
             warnings.append(
                 f"跳过集中于单一原因 {dominant[0]}（{dominant[1]}/{skipped}）"
                 f"——确认该形态确为该跳；若是显示文本则对应识别规则有漏洞")
+    # 翻译 C7：失败率（该翻未翻可见性）——失败占已处理条目比例过高
+    # 说明翻译链大范围不可用（模型/词表/格式问题），不是个别条目问题
+    failed = counts.get("failed", 0)
+    processed = translated + failed
+    if failed >= _SENTINEL_FAIL_MIN and processed \
+            and failed / processed > _SENTINEL_FAIL_RATE:
+        warnings.append(
+            f"失败率 {failed / processed:.0%}（{failed}/{processed}）异常高"
+            f"——该翻未翻集中出现，检查模型配置/词表覆盖/格式支持；"
+            f"同类问题应系统彻查而非逐条修")
+    # 翻译 C7：语言源保留率（多语言游戏提示）——原文已是目标语言被
+    # 保留是正确行为，但占比高说明游戏自带中文语言包：后续版本可跳过
+    # 该语言文件或提示用户选用内置中文，避免误以为翻译无效
+    kept = sum(
+        1 for row in rows if _meta_of(row).get("language_source_kept"))
+    if kept >= _SENTINEL_KEPT_MIN and translated \
+            and kept / translated > _SENTINEL_KEPT_RATE:
+        warnings.append(
+            f"语言源保留 {kept} 条（占翻译 {kept / translated:.0%}）"
+            f"——原文已是中文被原样保留（多语言游戏），检查是否有自带"
+            f"中文语言包可选用")
+    # 翻译 C7：预算耗尽率（放弃无痕可见性）——attempt 预算耗尽条目
+    # 不再进入翻译链且保持 failed，占失败比例高说明翻译链大面积放弃，
+    # 规则/模型问题没修透（预算挂规则版本戳，升级规则可自动重置）
+    exhausted = sum(
+        1 for row in rows if _budget_exhausted_of(row))
+    if exhausted >= _SENTINEL_BUDGET_MIN and failed \
+            and exhausted / failed > _SENTINEL_BUDGET_RATE:
+        warnings.append(
+            f"预算耗尽 {exhausted} 条（占失败 {exhausted / failed:.0%}）"
+            f"——失败条目大量放弃不再重试，规则/模型问题未修透；"
+            f"升级规则后预算版本戳自动重置可重跑验证")
+    # 识别 L2：dense 先验形态跳过哨兵（形态注册表接入运行时信号）——
+    # REGISTRY 声明 dense（字面量几乎全是显示文本）的形态跳过过半即
+    # 整形态遗漏：lilys-day-off 825 条对话/结局文本全跳过的自动化形态
+    morph_stats = _morphology_stats(rows)
+    dense_names = {m.name for m in REGISTRY if m.prior == "dense"}
+    for name in sorted(dense_names & morph_stats.keys()):
+        st = morph_stats[name]
+        total_m = sum(st.values())
+        if st["skipped"] >= _SENTINEL_DENSE_SKIP_MIN and total_m \
+                and st["skipped"] / total_m > _SENTINEL_DENSE_SKIP_RATE:
+            warnings.append(
+                f"dense 形态 {name} 跳过率 {st['skipped'] / total_m:.0%}"
+                f"（{st['skipped']}/{total_m}）异常——该形态字面量先验"
+                f"几乎全为显示文本，跳过过半是整形态遗漏信号，检查该"
+                f"形态提取器验证链（0.14.0 UnityScript 825 条教训）")
     return warnings
+
+
+def _morphology_stats(rows: list[dict]) -> dict[str, dict[str, int]]:
+    """形态×状态矩阵（识别 L2）：按 file_id → classify_morphology 聚合。
+
+    skipped 用真实总数（样本条目 skipped_count 已回写最终计数、按
+    (file_id, reason, obj) 取 max；普通行逐行计 1——与 _skipped_by_reason
+    同语义）；"unknown" 键 = 未注册形态（扫描已告警，矩阵可见是最后防线）。
+    """
+    totals = _skipped_totals(rows)
+    stats: dict[str, dict[str, int]] = {}
+    for (fid, _reason, _obj), val in totals.items():
+        morph = classify_morphology(fid)
+        st = stats.setdefault(morph or "unknown",
+                              {"skipped": 0, "pending": 0,
+                               "translated": 0, "failed": 0})
+        st["skipped"] += val
+    for row in rows:
+        status = row.get("status")
+        if status == "skipped":
+            continue  # 已在 _skipped_totals 计数（样本 max + 普通行逐行）
+        morph = classify_morphology(str(row.get("file_id") or ""))
+        st = stats.setdefault(morph or "unknown",
+                              {"skipped": 0, "pending": 0,
+                               "translated": 0, "failed": 0})
+        if status in st:
+            st[status] += 1
+    return stats
+
+
+def _morphology_files(files: list[dict]) -> dict[str, int]:
+    """形态文件数（扫描统计 _last_scan_morphology 的文档化版本）。"""
+    by_morph: dict[str, int] = {}
+    for f in files:
+        morph = classify_morphology(str(f.get("id") or ""))
+        by_morph[morph or "unknown"] = by_morph.get(morph or "unknown", 0) + 1
+    return by_morph
+
+
+def _budget_exhausted_of(row: dict) -> bool:
+    """Q3 attempt 预算耗尽判定（与 batch_translator._attempt_exhausted
+    同源——预算/分类常量从该模块继承，避免双份漂移）。
+    """
+    from hanhua.core.batch_translator import (
+        _MAX_ATTEMPTS, _rules_version,
+    )
+    meta = _meta_of(row)
+    if meta.get("_rules_version") != _rules_version():
+        return False
+    attempts = int(meta.get("attempt_count", 0))
+    category = meta.get("failure_category", "model_behavior")
+    return attempts >= _MAX_ATTEMPTS.get(category, 2)
 
 
 def _confidence_counts(store) -> dict[str, int]:
@@ -409,6 +553,36 @@ def _write_summary(project, out_dir: Path, profile, *,
         blocks += ["- ⚠️ 哨兵告警："]
         blocks += [f"  - {w}" for w in sentinels]
         blocks += [""]
+    # 识别 L2：形态×reason 矩阵（形态级召回可测）——每形态一行
+    # 文件/条目/状态分布 + 主导跳过原因；dense 先验标注供对照
+    # （REGISTRY 声明先验 → 实际分布对照，形态清单不再只是审计清单）
+    rows_all = store.get_entries()
+    morph_stats = _morphology_stats(rows_all)
+    if morph_stats:
+        prior_of = {m.name: m.prior for m in REGISTRY}
+        files_by_morph = _morphology_files(store.get_files())
+        blocks += ["- 形态分布（识别 L2）："]
+        for name in sorted(morph_stats):
+            st = morph_stats[name]
+            total_m = sum(st.values())
+            prior = prior_of.get(name, "—")
+            present = [f"{k} {v}" for k, v in (
+                ("skipped", st["skipped"]), ("pending", st["pending"]),
+                ("translated", st["translated"]), ("failed", st["failed"]))
+                if v]
+            reasons = _skipped_by_reason([
+                r for r in rows_all
+                if r["status"] == "skipped"
+                and (classify_morphology(str(r.get("file_id") or ""))
+                     or "unknown") == name])
+            dominant = max(reasons.items(), key=lambda kv: kv[1],
+                           default=None)
+            blocks.append(
+                f"  - {name}（{prior}）文件 {files_by_morph.get(name, 0)} · "
+                f"条目 {total_m} · {'/'.join(present) or '—'}"
+                + (f" · 主导跳过原因 {dominant[0]} ({dominant[1]})"
+                   if dominant else ""))
+        blocks += [""]
     # 经验记忆（AgentMemory，2026-08-12 记忆模块）：本次会话记忆活动
     # 摘要——用户第一眼可见记忆在如何成长（沉淀/运用/降级），完整版
     # 见 memory-report.md
@@ -428,6 +602,18 @@ def _write_summary(project, out_dir: Path, profile, *,
                 f"- ⚠️ 同语境译文冲突 {s.get('conflicts')} 次——"
                 "同一原文在相同语境出现不同译文，记忆未覆盖、"
                 "需人工复核（详见 memory-report.md）")
+        # 翻译 C7：记忆拒绝率哨兵（毒化复发信号）——应用被质量门拒绝
+        # 比例高说明记忆混入不可信内容（回显/错误译文），异常告警
+        rej_n = s.get("rejected", 0)
+        acc_n = s.get("accepted", 0)
+        applied_n = rej_n + acc_n
+        if (applied_n >= _SENTINEL_MEMORY_REJECT_MIN and acc_n
+                and rej_n / applied_n > _SENTINEL_MEMORY_REJECT_RATE):
+            blocks.append(
+                f"- ⚠️ 记忆拒绝率 {rej_n / applied_n:.0%}"
+                f"（{rej_n}/{applied_n}）异常高——记忆应用被质量门拒绝"
+                "比例大（记忆毒化复发信号），检查记忆来源是否混入"
+                "回显/错误译文（详见 memory-report.md）")
         blocks.append(
             f"- 记忆库总量：{sum(n for t in (agent_report.get('library') or {}) for n in t.values())} 条"
             "（详见 memory-report.md）")
@@ -522,6 +708,12 @@ def _write_auto_docs(project, out_dir: Path, profile, *,
         blocks += [f"  - {cat}：{n}" for cat, n in categories]
     else:
         blocks.append("  - —")
+    # R5：提取侧静默跳过留档（哑识别可见化——跳过是哑信号，聚合后供
+    # 形态清单/召回率审查；有跳过量的形态是下次排查的候选）
+    report = getattr(project, "_last_analysis_report", None)
+    skipped_reasons = (
+        dict(getattr(report, "skipped_reasons", {}) or {})
+        if report is not None else {})
     blocks += ["", "## 3 写回快照",
     ]
     if error_title:
@@ -541,7 +733,11 @@ def _write_auto_docs(project, out_dir: Path, profile, *,
     blocked = _route_blocked_steps(result)
     if blocked:
         blocks += ["- 阻断步骤：", *[f"  - {b}" for b in blocked]]
-    blocks += ["", "## 4 待办分析（后续会话补充）",
+    if skipped_reasons:
+        blocks += ["", "## 4 提取侧静默跳过（识别哑信号留档）"]
+        blocks += [f"- {morph}：{n}" for morph, n in sorted(skipped_reasons.items())]
+        blocks.append("- 跳过量大/异常分布 → 形态清单补登记或召回率排查候选")
+    blocks += ["", "## 5 待办分析（后续会话补充）",
                "- [ ] 成功文本质量抽检（译文是否得当/是否无关文本）",
                "- [ ] 失败文本根因系统彻查（同类问题全解）",
                "- [ ] 跳过文本逐条判定（该翻→识别修复；不该翻→记录判定）",

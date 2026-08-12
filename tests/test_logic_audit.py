@@ -272,6 +272,23 @@ class TestRepeatConsistency:
         ]
         assert audit_repeat_consistency(items) == []
 
+    def test_all_reverted_notifies_on_revert_once_per_entry(self):
+        """C1：全组回退必须逐条通知 on_revert（写回方记账进排除表）——
+        否则保留原文不进 W3 运行时排除表，插件把键身份原文再翻译 → 断链。"""
+        from hanhua.core.unity.logic_audit import audit_repeat_consistency
+        items = [
+            self._entry("Splash", "画面", 100),                  # 要翻译 → 被回退
+            self._entry("Splash", "水花", 120),                  # 译文不一致 → 被回退
+            self._entry("Splash", "Splash", 140,
+                        role="structural", reason="code_line"),  # 键身份（原文→原文不通知）
+        ]
+        notified: list[tuple[str, str]] = []
+        audit_repeat_consistency(
+            items, on_revert=lambda e, r: notified.append((e["original"], r)))
+        assert len(notified) == 2                       # 只通知实际被回退的条目
+        assert all(orig == "Splash" for orig, _ in notified)
+        assert all("consistency" in r for _, r in notified)
+
 
 class TestStringLengthHeaders:
     """译文长度头自证（扩容插入后长度头同步检查）。"""

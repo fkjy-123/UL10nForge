@@ -127,10 +127,14 @@ class WriteOutcome:
     written: int
     rejected: tuple[WriteRejection, ...] = ()
     truncated: int = 0          # 写入成功但被固定容量截断的条目数
+    logic_reverted: int = 0     # 逻辑审计主动回退（保留原文防断链）——
+                                # 终态之一，不是写失败：不触发对象闸门阻断
 
     def __post_init__(self):
-        if self.attempted != self.written + len(self.rejected):
-            raise ValueError("writer outcome must satisfy attempted = written + rejected")
+        if self.attempted != self.written + len(self.rejected) + self.logic_reverted:
+            raise ValueError(
+                "writer outcome must satisfy attempted = written + rejected"
+                " + logic_reverted")
         if self.truncated < 0 or self.truncated > self.written:
             raise ValueError(
                 "writer outcome truncated must be within [0, written]")
