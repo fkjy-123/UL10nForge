@@ -1,0 +1,7672 @@
+游戏：hunt
+导出时间：2026-08-13 04:59:48
+翻译模型：Hy-MT2-1.8B-Q6_K
+跳过文本：511 条
+
+────────────────────────────────────────────────────────────────
+[1] 跳过文本
+来源：HUNT_Data/app.info
+键位：plain/0
+对象：纯文本文件行
+原文：DefaultCompany
+译文：（无）
+置信度：medium
+原因：—
+角色：—
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[2] 跳过文本
+来源：HUNT_Data/level0
+键位：asset#level0#1146/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=1146）
+原文：settings.json
+译文：（无）
+置信度：low
+原因：prefilter_key_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[3] 跳过文本
+来源：HUNT_Data/level0
+键位：asset#level0#1185/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=1185）
+原文：PreGame
+译文：（无）
+置信度：low
+原因：prefilter_engine_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[4] 跳过文本
+来源：HUNT_Data/level1
+键位：asset#level1#24/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=24）
+原文：Game1
+译文：（无）
+置信度：low
+原因：prefilter_key_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[5] 跳过文本
+来源：HUNT_Data/level2
+键位：asset#level2#1129/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=1129）
+原文：0/5
+译文：（无）
+置信度：low
+原因：prefilter_key_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[6] 跳过文本
+来源：HUNT_Data/level2
+键位：asset#level2#1229/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=1229）
+原文：{0}/{1}
+译文：（无）
+置信度：low
+原因：prefilter_key_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[7] 跳过文本
+来源：HUNT_Data/level2
+键位：asset#level2#1229/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=1229）
+原文：Game2
+译文：（无）
+置信度：low
+原因：prefilter_key_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[8] 跳过文本
+来源：HUNT_Data/level2
+键位：asset#level2#1280/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=1280）
+原文：settings.json
+译文：（无）
+置信度：low
+原因：prefilter_key_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[9] 跳过文本
+来源：HUNT_Data/level3
+键位：asset#level3#1217/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level3、obj=1217）
+原文：0/8
+译文：（无）
+置信度：low
+原因：prefilter_key_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[10] 跳过文本
+来源：HUNT_Data/level3
+键位：asset#level3#1320/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level3、obj=1320）
+原文：{0}/{1}
+译文：（无）
+置信度：low
+原因：prefilter_key_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[11] 跳过文本
+来源：HUNT_Data/level3
+键位：asset#level3#1320/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level3、obj=1320）
+原文：Game3
+译文：（无）
+置信度：low
+原因：prefilter_key_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[12] 跳过文本
+来源：HUNT_Data/level3
+键位：asset#level3#1380/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level3、obj=1380）
+原文：settings.json
+译文：（无）
+置信度：low
+原因：prefilter_key_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[13] 跳过文本
+来源：HUNT_Data/level4
+键位：asset#level4#1314/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level4、obj=1314）
+原文：0/8
+译文：（无）
+置信度：low
+原因：prefilter_key_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[14] 跳过文本
+来源：HUNT_Data/level4
+键位：asset#level4#1421/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level4、obj=1421）
+原文：{0}/{1}
+译文：（无）
+置信度：low
+原因：prefilter_key_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[15] 跳过文本
+来源：HUNT_Data/level4
+键位：asset#level4#1421/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level4、obj=1421）
+原文：Game4
+译文：（无）
+置信度：low
+原因：prefilter_key_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[16] 跳过文本
+来源：HUNT_Data/level4
+键位：asset#level4#1484/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level4、obj=1484）
+原文：settings.json
+译文：（无）
+置信度：low
+原因：prefilter_key_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[17] 跳过文本
+来源：HUNT_Data/level5
+键位：asset#level5#1382/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level5、obj=1382）
+原文：0/8
+译文：（无）
+置信度：low
+原因：prefilter_key_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[18] 跳过文本
+来源：HUNT_Data/level5
+键位：asset#level5#1492/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level5、obj=1492）
+原文：{0}/{1}
+译文：（无）
+置信度：low
+原因：prefilter_key_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[19] 跳过文本
+来源：HUNT_Data/level5
+键位：asset#level5#1492/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level5、obj=1492）
+原文：Game5
+译文：（无）
+置信度：low
+原因：prefilter_key_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[20] 跳过文本
+来源：HUNT_Data/level5
+键位：asset#level5#1552/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level5、obj=1552）
+原文：settings.json
+译文：（无）
+置信度：low
+原因：prefilter_key_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[21] 跳过文本
+来源：HUNT_Data/level6
+键位：asset#level6#1082/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level6、obj=1082）
+原文：0/8
+译文：（无）
+置信度：low
+原因：prefilter_key_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[22] 跳过文本
+来源：HUNT_Data/level6
+键位：asset#level6#1181/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level6、obj=1181）
+原文：{0}/{1}
+译文：（无）
+置信度：low
+原因：prefilter_key_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[23] 跳过文本
+来源：HUNT_Data/level6
+键位：asset#level6#1181/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level6、obj=1181）
+原文：Game6
+译文：（无）
+置信度：low
+原因：prefilter_key_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[24] 跳过文本
+来源：HUNT_Data/level6
+键位：asset#level6#1233/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level6、obj=1233）
+原文：settings.json
+译文：（无）
+置信度：low
+原因：prefilter_key_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[25] 跳过文本
+来源：HUNT_Data/level7
+键位：asset#level7#1091/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level7、obj=1091）
+原文：0/8
+译文：（无）
+置信度：low
+原因：prefilter_key_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[26] 跳过文本
+来源：HUNT_Data/level7
+键位：asset#level7#1192/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level7、obj=1192）
+原文：Game7
+译文：（无）
+置信度：low
+原因：prefilter_key_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[27] 跳过文本
+来源：HUNT_Data/level7
+键位：asset#level7#1243/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level7、obj=1243）
+原文：settings.json
+译文：（无）
+置信度：low
+原因：prefilter_key_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[28] 跳过文本
+来源：HUNT_Data/level8
+键位：asset#level8#1070/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level8、obj=1070）
+原文：0/8
+译文：（无）
+置信度：low
+原因：prefilter_key_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[29] 跳过文本
+来源：HUNT_Data/level8
+键位：asset#level8#1222/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level8、obj=1222）
+原文：settings.json
+译文：（无）
+置信度：low
+原因：prefilter_key_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[30] 跳过文本
+来源：HUNT_Data/level8
+键位：asset#level8#1292/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level8、obj=1292）
+原文：_Menu
+译文：（无）
+置信度：low
+原因：prefilter_engine_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[31] 跳过文本
+来源：HUNT_Data/resources.assets
+键位：asset#resources.assets#72/json/TestSuite
+对象：—（asset_file=resources.assets、obj=72）
+原文：
+译文：（无）
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[32] 跳过文本
+来源：HUNT_Data/resources.assets
+键位：asset#resources.assets#72/json/Player/Platform
+对象：—（asset_file=resources.assets、obj=72）
+原文：
+译文：（无）
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[33] 跳过文本
+来源：HUNT_Data/resources.assets
+键位：asset#resources.assets#72/json/Player/ColorSpace
+对象：—（asset_file=resources.assets、obj=72）
+原文：
+译文：（无）
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[34] 跳过文本
+来源：HUNT_Data/resources.assets
+键位：asset#resources.assets#72/json/Player/AnisotropicFiltering
+对象：—（asset_file=resources.assets、obj=72）
+原文：
+译文：（无）
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[35] 跳过文本
+来源：HUNT_Data/resources.assets
+键位：asset#resources.assets#72/json/Player/BlendWeights
+对象：—（asset_file=resources.assets、obj=72）
+原文：
+译文：（无）
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[36] 跳过文本
+来源：HUNT_Data/resources.assets
+键位：asset#resources.assets#72/json/Player/GraphicsApi
+对象：—（asset_file=resources.assets、obj=72）
+原文：
+译文：（无）
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[37] 跳过文本
+来源：HUNT_Data/resources.assets
+键位：asset#resources.assets#72/json/Player/ScriptingBackend
+对象：—（asset_file=resources.assets、obj=72）
+原文：Mono2x
+译文：（无）
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[38] 跳过文本
+来源：HUNT_Data/resources.assets
+键位：asset#resources.assets#72/json/Player/AndroidTargetSdkVersion
+对象：—（asset_file=resources.assets、obj=72）
+原文：AndroidApiLevelAuto
+译文：（无）
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[39] 跳过文本
+来源：HUNT_Data/resources.assets
+键位：asset#resources.assets#72/json/Player/BuildTarget
+对象：—（asset_file=resources.assets、obj=72）
+原文：StandaloneWindows64
+译文：（无）
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[40] 跳过文本
+来源：HUNT_Data/resources.assets
+键位：asset#resources.assets#72/json/Player/StereoRenderingPath
+对象：—（asset_file=resources.assets、obj=72）
+原文：MultiPass
+译文：（无）
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[41] 跳过文本
+来源：HUNT_Data/resources.assets
+键位：asset#resources.assets#72/json/Hardware/OperatingSystem
+对象：—（asset_file=resources.assets、obj=72）
+原文：
+译文：（无）
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[42] 跳过文本
+来源：HUNT_Data/resources.assets
+键位：asset#resources.assets#72/json/Hardware/DeviceModel
+对象：—（asset_file=resources.assets、obj=72）
+原文：
+译文：（无）
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[43] 跳过文本
+来源：HUNT_Data/resources.assets
+键位：asset#resources.assets#72/json/Hardware/DeviceName
+对象：—（asset_file=resources.assets、obj=72）
+原文：
+译文：（无）
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[44] 跳过文本
+来源：HUNT_Data/resources.assets
+键位：asset#resources.assets#72/json/Hardware/ProcessorType
+对象：—（asset_file=resources.assets、obj=72）
+原文：
+译文：（无）
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[45] 跳过文本
+来源：HUNT_Data/resources.assets
+键位：asset#resources.assets#72/json/Hardware/GraphicsDeviceName
+对象：—（asset_file=resources.assets、obj=72）
+原文：
+译文：（无）
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[46] 跳过文本
+来源：HUNT_Data/resources.assets
+键位：asset#resources.assets#72/json/Editor/Version
+对象：—（asset_file=resources.assets、obj=72）
+原文：6000.5.3f1
+译文：（无）
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[47] 跳过文本
+来源：HUNT_Data/resources.assets
+键位：asset#resources.assets#72/json/Editor/Changeset
+对象：—（asset_file=resources.assets、obj=72）
+原文：c2eb47b3a2a9
+译文：（无）
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[48] 跳过文本
+来源：HUNT_Data/resources.assets
+键位：asset#resources.assets#72/json/Dependencies/0
+对象：—（asset_file=resources.assets、obj=72）
+原文：com.unity.ai.navigation@2.0.13
+译文：（无）
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[49] 跳过文本
+来源：HUNT_Data/resources.assets
+键位：asset#resources.assets#72/json/Dependencies/1
+对象：—（asset_file=resources.assets、obj=72）
+原文：com.unity.burst@1.8.29
+译文：（无）
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[50] 跳过文本
+来源：HUNT_Data/resources.assets
+键位：asset#resources.assets#72/json/Dependencies/2
+对象：—（asset_file=resources.assets、obj=72）
+原文：com.unity.collab-proxy@2.12.4
+译文：（无）
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[51] 跳过文本
+来源：HUNT_Data/resources.assets
+键位：asset#resources.assets#72/json/Dependencies/3
+对象：—（asset_file=resources.assets、obj=72）
+原文：com.unity.collections@6.5.0
+译文：（无）
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[52] 跳过文本
+来源：HUNT_Data/resources.assets
+键位：asset#resources.assets#72/json/Dependencies/4
+对象：—（asset_file=resources.assets、obj=72）
+原文：com.unity.ext.nunit@2.1.0
+译文：（无）
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[53] 跳过文本
+来源：HUNT_Data/resources.assets
+键位：asset#resources.assets#72/json/Dependencies/5
+对象：—（asset_file=resources.assets、obj=72）
+原文：com.unity.ide.rider@3.0.38
+译文：（无）
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[54] 跳过文本
+来源：HUNT_Data/resources.assets
+键位：asset#resources.assets#72/json/Dependencies/6
+对象：—（asset_file=resources.assets、obj=72）
+原文：com.unity.ide.visualstudio@2.0.26
+译文：（无）
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[55] 跳过文本
+来源：HUNT_Data/resources.assets
+键位：asset#resources.assets#72/json/Dependencies/7
+对象：—（asset_file=resources.assets、obj=72）
+原文：com.unity.inputsystem@1.19.0
+译文：（无）
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[56] 跳过文本
+来源：HUNT_Data/resources.assets
+键位：asset#resources.assets#72/json/Dependencies/8
+对象：—（asset_file=resources.assets、obj=72）
+原文：com.unity.mathematics@1.4.0
+译文：（无）
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[57] 跳过文本
+来源：HUNT_Data/resources.assets
+键位：asset#resources.assets#72/json/Dependencies/9
+对象：—（asset_file=resources.assets、obj=72）
+原文：com.unity.modules.accessibility@1.0.0
+译文：（无）
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[58] 跳过文本
+来源：HUNT_Data/resources.assets
+键位：asset#resources.assets#72/json/Dependencies/10
+对象：—（asset_file=resources.assets、obj=72）
+原文：com.unity.modules.adaptiveperformance@1.0.0
+译文：（无）
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[59] 跳过文本
+来源：HUNT_Data/resources.assets
+键位：asset#resources.assets#72/json/Dependencies/11
+对象：—（asset_file=resources.assets、obj=72）
+原文：com.unity.modules.ai@1.0.0
+译文：（无）
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[60] 跳过文本
+来源：HUNT_Data/resources.assets
+键位：asset#resources.assets#72/json/Dependencies/12
+对象：—（asset_file=resources.assets、obj=72）
+原文：com.unity.modules.androidjni@1.0.0
+译文：（无）
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[61] 跳过文本
+来源：HUNT_Data/resources.assets
+键位：asset#resources.assets#72/json/Dependencies/13
+对象：—（asset_file=resources.assets、obj=72）
+原文：com.unity.modules.animation@1.0.0
+译文：（无）
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[62] 跳过文本
+来源：HUNT_Data/resources.assets
+键位：asset#resources.assets#72/json/Dependencies/14
+对象：—（asset_file=resources.assets、obj=72）
+原文：com.unity.modules.assetbundle@1.0.0
+译文：（无）
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[63] 跳过文本
+来源：HUNT_Data/resources.assets
+键位：asset#resources.assets#72/json/Dependencies/15
+对象：—（asset_file=resources.assets、obj=72）
+原文：com.unity.modules.audio@1.0.0
+译文：（无）
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[64] 跳过文本
+来源：HUNT_Data/resources.assets
+键位：asset#resources.assets#72/json/Dependencies/16
+对象：—（asset_file=resources.assets、obj=72）
+原文：com.unity.modules.cloth@1.0.0
+译文：（无）
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[65] 跳过文本
+来源：HUNT_Data/resources.assets
+键位：asset#resources.assets#72/json/Dependencies/17
+对象：—（asset_file=resources.assets、obj=72）
+原文：com.unity.modules.director@1.0.0
+译文：（无）
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[66] 跳过文本
+来源：HUNT_Data/resources.assets
+键位：asset#resources.assets#72/json/Dependencies/18
+对象：—（asset_file=resources.assets、obj=72）
+原文：com.unity.modules.hierarchycore@1.0.0
+译文：（无）
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[67] 跳过文本
+来源：HUNT_Data/resources.assets
+键位：asset#resources.assets#72/json/Dependencies/19
+对象：—（asset_file=resources.assets、obj=72）
+原文：com.unity.modules.imageconversion@1.0.0
+译文：（无）
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[68] 跳过文本
+来源：HUNT_Data/resources.assets
+键位：asset#resources.assets#72/json/Dependencies/20
+对象：—（asset_file=resources.assets、obj=72）
+原文：com.unity.modules.imgui@1.0.0
+译文：（无）
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[69] 跳过文本
+来源：HUNT_Data/resources.assets
+键位：asset#resources.assets#72/json/Dependencies/21
+对象：—（asset_file=resources.assets、obj=72）
+原文：com.unity.modules.jsonserialize@1.0.0
+译文：（无）
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[70] 跳过文本
+来源：HUNT_Data/resources.assets
+键位：asset#resources.assets#72/json/Dependencies/22
+对象：—（asset_file=resources.assets、obj=72）
+原文：com.unity.modules.particlesystem@1.0.0
+译文：（无）
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[71] 跳过文本
+来源：HUNT_Data/resources.assets
+键位：asset#resources.assets#72/json/Dependencies/23
+对象：—（asset_file=resources.assets、obj=72）
+原文：com.unity.modules.physics@1.0.0
+译文：（无）
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[72] 跳过文本
+来源：HUNT_Data/resources.assets
+键位：asset#resources.assets#72/json/Dependencies/24
+对象：—（asset_file=resources.assets、obj=72）
+原文：com.unity.modules.physics2d@1.0.0
+译文：（无）
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[73] 跳过文本
+来源：HUNT_Data/resources.assets
+键位：asset#resources.assets#72/json/Dependencies/25
+对象：—（asset_file=resources.assets、obj=72）
+原文：com.unity.modules.physicscore2d@1.0.0
+译文：（无）
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[74] 跳过文本
+来源：HUNT_Data/resources.assets
+键位：asset#resources.assets#72/json/Dependencies/26
+对象：—（asset_file=resources.assets、obj=72）
+原文：com.unity.modules.screencapture@1.0.0
+译文：（无）
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[75] 跳过文本
+来源：HUNT_Data/resources.assets
+键位：asset#resources.assets#72/json/Dependencies/27
+对象：—（asset_file=resources.assets、obj=72）
+原文：com.unity.modules.subsystems@1.0.0
+译文：（无）
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[76] 跳过文本
+来源：HUNT_Data/resources.assets
+键位：asset#resources.assets#72/json/Dependencies/28
+对象：—（asset_file=resources.assets、obj=72）
+原文：com.unity.modules.terrain@1.0.0
+译文：（无）
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[77] 跳过文本
+来源：HUNT_Data/resources.assets
+键位：asset#resources.assets#72/json/Dependencies/29
+对象：—（asset_file=resources.assets、obj=72）
+原文：com.unity.modules.terrainphysics@1.0.0
+译文：（无）
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[78] 跳过文本
+来源：HUNT_Data/resources.assets
+键位：asset#resources.assets#72/json/Dependencies/30
+对象：—（asset_file=resources.assets、obj=72）
+原文：com.unity.modules.tilemap@1.0.0
+译文：（无）
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[79] 跳过文本
+来源：HUNT_Data/resources.assets
+键位：asset#resources.assets#72/json/Dependencies/31
+对象：—（asset_file=resources.assets、obj=72）
+原文：com.unity.modules.ui@1.0.0
+译文：（无）
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[80] 跳过文本
+来源：HUNT_Data/resources.assets
+键位：asset#resources.assets#72/json/Dependencies/32
+对象：—（asset_file=resources.assets、obj=72）
+原文：com.unity.modules.uielements@1.0.0
+译文：（无）
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[81] 跳过文本
+来源：HUNT_Data/resources.assets
+键位：asset#resources.assets#72/json/Dependencies/33
+对象：—（asset_file=resources.assets、obj=72）
+原文：com.unity.modules.umbra@1.0.0
+译文：（无）
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[82] 跳过文本
+来源：HUNT_Data/resources.assets
+键位：asset#resources.assets#72/json/Dependencies/34
+对象：—（asset_file=resources.assets、obj=72）
+原文：com.unity.modules.unityanalytics@1.0.0
+译文：（无）
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[83] 跳过文本
+来源：HUNT_Data/resources.assets
+键位：asset#resources.assets#72/json/Dependencies/35
+对象：—（asset_file=resources.assets、obj=72）
+原文：com.unity.modules.unitywebrequest@1.0.0
+译文：（无）
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[84] 跳过文本
+来源：HUNT_Data/resources.assets
+键位：asset#resources.assets#72/json/Dependencies/36
+对象：—（asset_file=resources.assets、obj=72）
+原文：com.unity.modules.unitywebrequestassetbundle@1.0.0
+译文：（无）
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[85] 跳过文本
+来源：HUNT_Data/resources.assets
+键位：asset#resources.assets#72/json/Dependencies/37
+对象：—（asset_file=resources.assets、obj=72）
+原文：com.unity.modules.unitywebrequestaudio@1.0.0
+译文：（无）
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[86] 跳过文本
+来源：HUNT_Data/resources.assets
+键位：asset#resources.assets#72/json/Dependencies/38
+对象：—（asset_file=resources.assets、obj=72）
+原文：com.unity.modules.unitywebrequesttexture@1.0.0
+译文：（无）
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[87] 跳过文本
+来源：HUNT_Data/resources.assets
+键位：asset#resources.assets#72/json/Dependencies/39
+对象：—（asset_file=resources.assets、obj=72）
+原文：com.unity.modules.unitywebrequestwww@1.0.0
+译文：（无）
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[88] 跳过文本
+来源：HUNT_Data/resources.assets
+键位：asset#resources.assets#72/json/Dependencies/40
+对象：—（asset_file=resources.assets、obj=72）
+原文：com.unity.modules.vectorgraphics@1.0.0
+译文：（无）
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[89] 跳过文本
+来源：HUNT_Data/resources.assets
+键位：asset#resources.assets#72/json/Dependencies/41
+对象：—（asset_file=resources.assets、obj=72）
+原文：com.unity.modules.vehicles@1.0.0
+译文：（无）
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[90] 跳过文本
+来源：HUNT_Data/resources.assets
+键位：asset#resources.assets#72/json/Dependencies/42
+对象：—（asset_file=resources.assets、obj=72）
+原文：com.unity.modules.video@1.0.0
+译文：（无）
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[91] 跳过文本
+来源：HUNT_Data/resources.assets
+键位：asset#resources.assets#72/json/Dependencies/43
+对象：—（asset_file=resources.assets、obj=72）
+原文：com.unity.modules.wind@1.0.0
+译文：（无）
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[92] 跳过文本
+来源：HUNT_Data/resources.assets
+键位：asset#resources.assets#72/json/Dependencies/44
+对象：—（asset_file=resources.assets、obj=72）
+原文：com.unity.modules.xr@1.0.0
+译文：（无）
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[93] 跳过文本
+来源：HUNT_Data/resources.assets
+键位：asset#resources.assets#72/json/Dependencies/45
+对象：—（asset_file=resources.assets、obj=72）
+原文：com.unity.multiplayer.center@1.0.1
+译文：（无）
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[94] 跳过文本
+来源：HUNT_Data/resources.assets
+键位：asset#resources.assets#72/json/Dependencies/46
+对象：—（asset_file=resources.assets、obj=72）
+原文：com.unity.nuget.mono-cecil@1.11.6
+译文：（无）
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[95] 跳过文本
+来源：HUNT_Data/resources.assets
+键位：asset#resources.assets#72/json/Dependencies/47
+对象：—（asset_file=resources.assets、obj=72）
+原文：com.unity.render-pipelines.core@17.5.0
+译文：（无）
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[96] 跳过文本
+来源：HUNT_Data/resources.assets
+键位：asset#resources.assets#72/json/Dependencies/48
+对象：—（asset_file=resources.assets、obj=72）
+原文：com.unity.render-pipelines.universal@17.5.0
+译文：（无）
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[97] 跳过文本
+来源：HUNT_Data/resources.assets
+键位：asset#resources.assets#72/json/Dependencies/49
+对象：—（asset_file=resources.assets、obj=72）
+原文：com.unity.render-pipelines.universal-config@17.5.0
+译文：（无）
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[98] 跳过文本
+来源：HUNT_Data/resources.assets
+键位：asset#resources.assets#72/json/Dependencies/50
+对象：—（asset_file=resources.assets、obj=72）
+原文：com.unity.searcher@4.9.4
+译文：（无）
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[99] 跳过文本
+来源：HUNT_Data/resources.assets
+键位：asset#resources.assets#72/json/Dependencies/51
+对象：—（asset_file=resources.assets、obj=72）
+原文：com.unity.shadergraph@17.5.0
+译文：（无）
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[100] 跳过文本
+来源：HUNT_Data/resources.assets
+键位：asset#resources.assets#72/json/Dependencies/52
+对象：—（asset_file=resources.assets、obj=72）
+原文：com.unity.test-framework.performance@3.5.0
+译文：（无）
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[101] 跳过文本
+来源：HUNT_Data/resources.assets
+键位：asset#resources.assets#72/json/Dependencies/53
+对象：—（asset_file=resources.assets、obj=72）
+原文：com.unity.test-framework@1.7.0
+译文：（无）
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[102] 跳过文本
+来源：HUNT_Data/resources.assets
+键位：asset#resources.assets#72/json/Dependencies/54
+对象：—（asset_file=resources.assets、obj=72）
+原文：com.unity.timeline@1.8.12
+译文：（无）
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[103] 跳过文本
+来源：HUNT_Data/resources.assets
+键位：asset#resources.assets#72/json/Dependencies/55
+对象：—（asset_file=resources.assets、obj=72）
+原文：com.unity.ugui@2.5.0
+译文：（无）
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[104] 跳过文本
+来源：HUNT_Data/resources.assets
+键位：asset#resources.assets#72/json/Dependencies/56
+对象：—（asset_file=resources.assets、obj=72）
+原文：com.unity.visualscripting@1.9.11
+译文：（无）
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[105] 跳过文本
+来源：HUNT_Data/resources.assets
+键位：asset#resources.assets#80/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=resources.assets、obj=80）
+原文：Blue to Purple - Vertical
+译文：（无）
+置信度：low
+原因：prefilter_engine_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[106] 跳过文本
+来源：HUNT_Data/resources.assets
+键位：asset#resources.assets#81/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=resources.assets、obj=81）
+原文：Dark to Light Green - Vertical
+译文：（无）
+置信度：low
+原因：prefilter_engine_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[107] 跳过文本
+来源：HUNT_Data/resources.assets
+键位：asset#resources.assets#82/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=resources.assets、obj=82）
+原文：Light to Dark Green - Vertical
+译文：（无）
+置信度：low
+原因：prefilter_engine_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[108] 跳过文本
+来源：HUNT_Data/resources.assets
+键位：asset#resources.assets#83/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=resources.assets、obj=83）
+原文：Yellow to Orange - Vertical
+译文：（无）
+置信度：low
+原因：prefilter_engine_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[109] 跳过文本
+来源：HUNT_Data/resources.assets
+键位：asset#resources.assets#84/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=resources.assets、obj=84）
+原文：Anton SDF
+译文：（无）
+置信度：low
+原因：prefilter_engine_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[110] 跳过文本
+来源：HUNT_Data/resources.assets
+键位：asset#resources.assets#84/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=resources.assets、obj=84）
+原文：1.1.0
+译文：（无）
+置信度：low
+原因：prefilter_key_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[111] 跳过文本
+来源：HUNT_Data/resources.assets
+键位：asset#resources.assets#84/str/2
+对象：MonoBehaviour rawstr 数组（asset_file=resources.assets、obj=84）
+原文：Anton
+译文：（无）
+置信度：low
+原因：prefilter_engine_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[112] 跳过文本
+来源：HUNT_Data/resources.assets
+键位：asset#resources.assets#84/str/3
+对象：MonoBehaviour rawstr 数组（asset_file=resources.assets、obj=84）
+原文：Regular
+译文：（无）
+置信度：low
+原因：tmp_asset_object
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[113] 跳过文本
+来源：HUNT_Data/resources.assets
+键位：asset#resources.assets#84/str/4
+对象：MonoBehaviour rawstr 数组（asset_file=resources.assets、obj=84）
+原文：997a43b767814dd0a7642ec9b78cba41
+译文：（无）
+置信度：low
+原因：prefilter_engine_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[114] 跳过文本
+来源：HUNT_Data/resources.assets
+键位：asset#resources.assets#84/str/5
+对象：MonoBehaviour rawstr 数组（asset_file=resources.assets、obj=84）
+原文：997a43b767814dd0a7642ec9b78cba41
+译文：（无）
+置信度：low
+原因：prefilter_engine_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[115] 跳过文本
+来源：HUNT_Data/resources.assets
+键位：asset#resources.assets#84/str/6
+对象：MonoBehaviour rawstr 数组（asset_file=resources.assets、obj=84）
+原文：8a89fa14b10d46a99122fd4f73fca9a2
+译文：（无）
+置信度：low
+原因：prefilter_engine_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[116] 跳过文本
+来源：HUNT_Data/resources.assets
+键位：asset#resources.assets#84/str/7
+对象：MonoBehaviour rawstr 数组（asset_file=resources.assets、obj=84）
+原文：Anton
+译文：（无）
+置信度：low
+原因：prefilter_engine_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[117] 跳过文本
+来源：HUNT_Data/resources.assets
+键位：asset#resources.assets#85/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=resources.assets、obj=85）
+原文：Bangers SDF
+译文：（无）
+置信度：low
+原因：prefilter_engine_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[118] 跳过文本
+来源：HUNT_Data/resources.assets
+键位：asset#resources.assets#85/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=resources.assets、obj=85）
+原文：1.1.0
+译文：（无）
+置信度：low
+原因：prefilter_key_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[119] 跳过文本
+来源：HUNT_Data/resources.assets
+键位：asset#resources.assets#85/str/2
+对象：MonoBehaviour rawstr 数组（asset_file=resources.assets、obj=85）
+原文：Bangers
+译文：（无）
+置信度：low
+原因：prefilter_engine_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[120] 跳过文本
+来源：HUNT_Data/resources.assets
+键位：asset#resources.assets#85/str/3
+对象：MonoBehaviour rawstr 数组（asset_file=resources.assets、obj=85）
+原文：Regular
+译文：（无）
+置信度：low
+原因：tmp_asset_object
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[121] 跳过文本
+来源：HUNT_Data/resources.assets
+键位：asset#resources.assets#85/str/4
+对象：MonoBehaviour rawstr 数组（asset_file=resources.assets、obj=85）
+原文：5dd49b3eacc540408c98eee0de38e0f1
+译文：（无）
+置信度：low
+原因：prefilter_engine_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[122] 跳过文本
+来源：HUNT_Data/resources.assets
+键位：asset#resources.assets#85/str/5
+对象：MonoBehaviour rawstr 数组（asset_file=resources.assets、obj=85）
+原文：5dd49b3eacc540408c98eee0de38e0f1
+译文：（无）
+置信度：low
+原因：prefilter_engine_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[123] 跳过文本
+来源：HUNT_Data/resources.assets
+键位：asset#resources.assets#85/str/6
+对象：MonoBehaviour rawstr 数组（asset_file=resources.assets、obj=85）
+原文：125cb55b44b24c4393181402bc6200e6
+译文：（无）
+置信度：low
+原因：prefilter_engine_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[124] 跳过文本
+来源：HUNT_Data/resources.assets
+键位：asset#resources.assets#85/str/7
+对象：MonoBehaviour rawstr 数组（asset_file=resources.assets、obj=85）
+原文：Bangers
+译文：（无）
+置信度：low
+原因：prefilter_engine_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[125] 跳过文本
+来源：HUNT_Data/resources.assets
+键位：asset#resources.assets#86/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=resources.assets、obj=86）
+原文：Electronic Highway Sign SDF
+译文：（无）
+置信度：low
+原因：prefilter_engine_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[126] 跳过文本
+来源：HUNT_Data/resources.assets
+键位：asset#resources.assets#86/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=resources.assets、obj=86）
+原文：1.1.0
+译文：（无）
+置信度：low
+原因：prefilter_key_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[127] 跳过文本
+来源：HUNT_Data/resources.assets
+键位：asset#resources.assets#86/str/2
+对象：MonoBehaviour rawstr 数组（asset_file=resources.assets、obj=86）
+原文：Electronic Highway Sign
+译文：（无）
+置信度：low
+原因：prefilter_engine_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[128] 跳过文本
+来源：HUNT_Data/resources.assets
+键位：asset#resources.assets#86/str/3
+对象：MonoBehaviour rawstr 数组（asset_file=resources.assets、obj=86）
+原文：Regular
+译文：（无）
+置信度：low
+原因：tmp_asset_object
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[129] 跳过文本
+来源：HUNT_Data/resources.assets
+键位：asset#resources.assets#86/str/4
+对象：MonoBehaviour rawstr 数组（asset_file=resources.assets、obj=86）
+原文：8a2b9e2a607dd2143b58c44bc32410b4
+译文：（无）
+置信度：low
+原因：prefilter_engine_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[130] 跳过文本
+来源：HUNT_Data/resources.assets
+键位：asset#resources.assets#86/str/5
+对象：MonoBehaviour rawstr 数组（asset_file=resources.assets、obj=86）
+原文：8a2b9e2a607dd2143b58c44bc32410b4
+译文：（无）
+置信度：low
+原因：prefilter_engine_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[131] 跳过文本
+来源：HUNT_Data/resources.assets
+键位：asset#resources.assets#86/str/6
+对象：MonoBehaviour rawstr 数组（asset_file=resources.assets、obj=86）
+原文：8f586378b4e144a9851e7b34d9b748ee
+译文：（无）
+置信度：low
+原因：prefilter_engine_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[132] 跳过文本
+来源：HUNT_Data/resources.assets
+键位：asset#resources.assets#86/str/7
+对象：MonoBehaviour rawstr 数组（asset_file=resources.assets、obj=86）
+原文：Electronic Highway Sign
+译文：（无）
+置信度：low
+原因：prefilter_engine_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[133] 跳过文本
+来源：HUNT_Data/resources.assets
+键位：asset#resources.assets#87/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=resources.assets、obj=87）
+原文：Oswald Bold SDF
+译文：（无）
+置信度：low
+原因：prefilter_engine_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[134] 跳过文本
+来源：HUNT_Data/resources.assets
+键位：asset#resources.assets#87/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=resources.assets、obj=87）
+原文：1.1.0
+译文：（无）
+置信度：low
+原因：prefilter_key_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[135] 跳过文本
+来源：HUNT_Data/resources.assets
+键位：asset#resources.assets#87/str/2
+对象：MonoBehaviour rawstr 数组（asset_file=resources.assets、obj=87）
+原文：Oswald
+译文：（无）
+置信度：low
+原因：prefilter_engine_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[136] 跳过文本
+来源：HUNT_Data/resources.assets
+键位：asset#resources.assets#87/str/3
+对象：MonoBehaviour rawstr 数组（asset_file=resources.assets、obj=87）
+原文：Bold
+译文：（无）
+置信度：low
+原因：tmp_asset_object
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[137] 跳过文本
+来源：HUNT_Data/resources.assets
+键位：asset#resources.assets#87/str/4
+对象：MonoBehaviour rawstr 数组（asset_file=resources.assets、obj=87）
+原文：c9f6d0e7bc8541498c9a4799ba184ede
+译文：（无）
+置信度：low
+原因：prefilter_engine_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[138] 跳过文本
+来源：HUNT_Data/resources.assets
+键位：asset#resources.assets#87/str/5
+对象：MonoBehaviour rawstr 数组（asset_file=resources.assets、obj=87）
+原文：c9f6d0e7bc8541498c9a4799ba184ede
+译文：（无）
+置信度：low
+原因：prefilter_engine_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[139] 跳过文本
+来源：HUNT_Data/resources.assets
+键位：asset#resources.assets#87/str/6
+对象：MonoBehaviour rawstr 数组（asset_file=resources.assets、obj=87）
+原文：20-7E,A0,2026
+译文：（无）
+置信度：low
+原因：prefilter_engine_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[140] 跳过文本
+来源：HUNT_Data/resources.assets
+键位：asset#resources.assets#87/str/7
+对象：MonoBehaviour rawstr 数组（asset_file=resources.assets、obj=87）
+原文：0161d805a3764c089bef00bfe00793f5
+译文：（无）
+置信度：low
+原因：prefilter_engine_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[141] 跳过文本
+来源：HUNT_Data/resources.assets
+键位：asset#resources.assets#87/str/8
+对象：MonoBehaviour rawstr 数组（asset_file=resources.assets、obj=87）
+原文：Oswald
+译文：（无）
+置信度：low
+原因：prefilter_engine_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[142] 跳过文本
+来源：HUNT_Data/resources.assets
+键位：asset#resources.assets#88/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=resources.assets、obj=88）
+原文：Roboto-Bold SDF
+译文：（无）
+置信度：low
+原因：prefilter_engine_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[143] 跳过文本
+来源：HUNT_Data/resources.assets
+键位：asset#resources.assets#88/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=resources.assets、obj=88）
+原文：1.1.0
+译文：（无）
+置信度：low
+原因：prefilter_key_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[144] 跳过文本
+来源：HUNT_Data/resources.assets
+键位：asset#resources.assets#88/str/2
+对象：MonoBehaviour rawstr 数组（asset_file=resources.assets、obj=88）
+原文：Roboto
+译文：（无）
+置信度：low
+原因：prefilter_engine_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[145] 跳过文本
+来源：HUNT_Data/resources.assets
+键位：asset#resources.assets#88/str/3
+对象：MonoBehaviour rawstr 数组（asset_file=resources.assets、obj=88）
+原文：Bold
+译文：（无）
+置信度：low
+原因：tmp_asset_object
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[146] 跳过文本
+来源：HUNT_Data/resources.assets
+键位：asset#resources.assets#88/str/4
+对象：MonoBehaviour rawstr 数组（asset_file=resources.assets、obj=88）
+原文：4beb055f07aaff244873dec698d0363e
+译文：（无）
+置信度：low
+原因：prefilter_engine_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[147] 跳过文本
+来源：HUNT_Data/resources.assets
+键位：asset#resources.assets#88/str/5
+对象：MonoBehaviour rawstr 数组（asset_file=resources.assets、obj=88）
+原文：4beb055f07aaff244873dec698d0363e
+译文：（无）
+置信度：low
+原因：prefilter_engine_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[148] 跳过文本
+来源：HUNT_Data/resources.assets
+键位：asset#resources.assets#88/str/6
+对象：MonoBehaviour rawstr 数组（asset_file=resources.assets、obj=88）
+原文：20-7E,A0,200B,2026
+译文：（无）
+置信度：low
+原因：prefilter_engine_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[149] 跳过文本
+来源：HUNT_Data/resources.assets
+键位：asset#resources.assets#88/str/7
+对象：MonoBehaviour rawstr 数组（asset_file=resources.assets、obj=88）
+原文：5302535af1044152a457ed104f1f4b91
+译文：（无）
+置信度：low
+原因：prefilter_engine_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[150] 跳过文本
+来源：HUNT_Data/resources.assets
+键位：asset#resources.assets#88/str/8
+对象：MonoBehaviour rawstr 数组（asset_file=resources.assets、obj=88）
+原文：Roboto
+译文：（无）
+置信度：low
+原因：prefilter_engine_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[151] 跳过文本
+来源：HUNT_Data/resources.assets
+键位：asset#resources.assets#89/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=resources.assets、obj=89）
+原文：Unity SDF
+译文：（无）
+置信度：low
+原因：prefilter_engine_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[152] 跳过文本
+来源：HUNT_Data/resources.assets
+键位：asset#resources.assets#89/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=resources.assets、obj=89）
+原文：1.1.0
+译文：（无）
+置信度：low
+原因：prefilter_key_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[153] 跳过文本
+来源：HUNT_Data/resources.assets
+键位：asset#resources.assets#89/str/2
+对象：MonoBehaviour rawstr 数组（asset_file=resources.assets、obj=89）
+原文：Unity
+译文：（无）
+置信度：low
+原因：tmp_asset_object
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[154] 跳过文本
+来源：HUNT_Data/resources.assets
+键位：asset#resources.assets#89/str/3
+对象：MonoBehaviour rawstr 数组（asset_file=resources.assets、obj=89）
+原文：Regular
+译文：（无）
+置信度：low
+原因：tmp_asset_object
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[155] 跳过文本
+来源：HUNT_Data/resources.assets
+键位：asset#resources.assets#89/str/4
+对象：MonoBehaviour rawstr 数组（asset_file=resources.assets、obj=89）
+原文：f4eec857a4fdf2f43be0e9f3d1a984e7
+译文：（无）
+置信度：low
+原因：prefilter_engine_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[156] 跳过文本
+来源：HUNT_Data/resources.assets
+键位：asset#resources.assets#89/str/5
+对象：MonoBehaviour rawstr 数组（asset_file=resources.assets、obj=89）
+原文：f4eec857a4fdf2f43be0e9f3d1a984e7
+译文：（无）
+置信度：low
+原因：prefilter_engine_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[157] 跳过文本
+来源：HUNT_Data/resources.assets
+键位：asset#resources.assets#90/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=resources.assets、obj=90）
+原文：Default Sprite Asset
+译文：（无）
+置信度：low
+原因：prefilter_engine_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[158] 跳过文本
+来源：HUNT_Data/resources.assets
+键位：asset#resources.assets#90/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=resources.assets、obj=90）
+原文：1.1.0
+译文：（无）
+置信度：low
+原因：prefilter_key_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[159] 跳过文本
+来源：HUNT_Data/resources.assets
+键位：asset#resources.assets#90/str/2
+对象：MonoBehaviour rawstr 数组（asset_file=resources.assets、obj=90）
+原文：Smiley
+译文：（无）
+置信度：low
+原因：tmp_asset_object
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[160] 跳过文本
+来源：HUNT_Data/resources.assets
+键位：asset#resources.assets#90/str/3
+对象：MonoBehaviour rawstr 数组（asset_file=resources.assets、obj=90）
+原文：Default Sprite Asset_1
+译文：（无）
+置信度：low
+原因：prefilter_engine_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[161] 跳过文本
+来源：HUNT_Data/resources.assets
+键位：asset#resources.assets#90/str/4
+对象：MonoBehaviour rawstr 数组（asset_file=resources.assets、obj=90）
+原文：Wink
+译文：（无）
+置信度：low
+原因：tmp_asset_object
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[162] 跳过文本
+来源：HUNT_Data/resources.assets
+键位：asset#resources.assets#90/str/5
+对象：MonoBehaviour rawstr 数组（asset_file=resources.assets、obj=90）
+原文：Default Sprite Asset_3
+译文：（无）
+置信度：low
+原因：prefilter_engine_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[163] 跳过文本
+来源：HUNT_Data/resources.assets
+键位：asset#resources.assets#90/str/6
+对象：MonoBehaviour rawstr 数组（asset_file=resources.assets、obj=90）
+原文：Whaaat!
+译文：（无）
+置信度：low
+原因：tmp_asset_object
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[164] 跳过文本
+来源：HUNT_Data/resources.assets
+键位：asset#resources.assets#90/str/7
+对象：MonoBehaviour rawstr 数组（asset_file=resources.assets、obj=90）
+原文：Default Sprite Asset_5
+译文：（无）
+置信度：low
+原因：prefilter_engine_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[165] 跳过文本
+来源：HUNT_Data/resources.assets
+键位：asset#resources.assets#90/str/8
+对象：MonoBehaviour rawstr 数组（asset_file=resources.assets、obj=90）
+原文：Default Sprite Asset_6
+译文：（无）
+置信度：low
+原因：prefilter_engine_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[166] 跳过文本
+来源：HUNT_Data/resources.assets
+键位：asset#resources.assets#90/str/9
+对象：MonoBehaviour rawstr 数组（asset_file=resources.assets、obj=90）
+原文：Default Sprite Asset_7
+译文：（无）
+置信度：low
+原因：prefilter_engine_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[167] 跳过文本
+来源：HUNT_Data/resources.assets
+键位：asset#resources.assets#90/str/10
+对象：MonoBehaviour rawstr 数组（asset_file=resources.assets、obj=90）
+原文：Default Sprite Asset_8
+译文：（无）
+置信度：low
+原因：prefilter_engine_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[168] 跳过文本
+来源：HUNT_Data/resources.assets
+键位：asset#resources.assets#90/str/11
+对象：MonoBehaviour rawstr 数组（asset_file=resources.assets、obj=90）
+原文：Unity Logo
+译文：（无）
+置信度：low
+原因：prefilter_engine_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[169] 跳过文本
+来源：HUNT_Data/resources.assets
+键位：asset#resources.assets#90/str/12
+对象：MonoBehaviour rawstr 数组（asset_file=resources.assets、obj=90）
+原文：Default Sprite Asset_12
+译文：（无）
+置信度：low
+原因：prefilter_engine_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[170] 跳过文本
+来源：HUNT_Data/resources.assets
+键位：asset#resources.assets#90/str/13
+对象：MonoBehaviour rawstr 数组（asset_file=resources.assets、obj=90）
+原文：Default Sprite Asset_13
+译文：（无）
+置信度：low
+原因：prefilter_engine_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[171] 跳过文本
+来源：HUNT_Data/resources.assets
+键位：asset#resources.assets#91/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=resources.assets、obj=91）
+原文：DropCap Numbers
+译文：（无）
+置信度：low
+原因：prefilter_engine_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[172] 跳过文本
+来源：HUNT_Data/resources.assets
+键位：asset#resources.assets#91/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=resources.assets、obj=91）
+原文：1.1.0
+译文：（无）
+置信度：low
+原因：prefilter_key_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[173] 跳过文本
+来源：HUNT_Data/resources.assets
+键位：asset#resources.assets#91/str/2
+对象：MonoBehaviour rawstr 数组（asset_file=resources.assets、obj=91）
+原文：Zero
+译文：（无）
+置信度：low
+原因：identifier_without_display_evidence
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[174] 跳过文本
+来源：HUNT_Data/resources.assets
+键位：asset#resources.assets#91/str/3
+对象：MonoBehaviour rawstr 数组（asset_file=resources.assets、obj=91）
+原文：One
+译文：（无）
+置信度：low
+原因：identifier_without_display_evidence
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[175] 跳过文本
+来源：HUNT_Data/resources.assets
+键位：asset#resources.assets#91/str/4
+对象：MonoBehaviour rawstr 数组（asset_file=resources.assets、obj=91）
+原文：Two
+译文：（无）
+置信度：low
+原因：identifier_without_display_evidence
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[176] 跳过文本
+来源：HUNT_Data/resources.assets
+键位：asset#resources.assets#91/str/5
+对象：MonoBehaviour rawstr 数组（asset_file=resources.assets、obj=91）
+原文：Three
+译文：（无）
+置信度：low
+原因：identifier_without_display_evidence
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[177] 跳过文本
+来源：HUNT_Data/resources.assets
+键位：asset#resources.assets#91/str/6
+对象：MonoBehaviour rawstr 数组（asset_file=resources.assets、obj=91）
+原文：Four
+译文：（无）
+置信度：low
+原因：identifier_without_display_evidence
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[178] 跳过文本
+来源：HUNT_Data/resources.assets
+键位：asset#resources.assets#91/str/7
+对象：MonoBehaviour rawstr 数组（asset_file=resources.assets、obj=91）
+原文：Five
+译文：（无）
+置信度：low
+原因：identifier_without_display_evidence
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[179] 跳过文本
+来源：HUNT_Data/resources.assets
+键位：asset#resources.assets#91/str/8
+对象：MonoBehaviour rawstr 数组（asset_file=resources.assets、obj=91）
+原文：Six
+译文：（无）
+置信度：low
+原因：identifier_without_display_evidence
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[180] 跳过文本
+来源：HUNT_Data/resources.assets
+键位：asset#resources.assets#91/str/9
+对象：MonoBehaviour rawstr 数组（asset_file=resources.assets、obj=91）
+原文：Seven
+译文：（无）
+置信度：low
+原因：identifier_without_display_evidence
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[181] 跳过文本
+来源：HUNT_Data/resources.assets
+键位：asset#resources.assets#91/str/10
+对象：MonoBehaviour rawstr 数组（asset_file=resources.assets、obj=91）
+原文：Eight
+译文：（无）
+置信度：low
+原因：identifier_without_display_evidence
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[182] 跳过文本
+来源：HUNT_Data/resources.assets
+键位：asset#resources.assets#91/str/11
+对象：MonoBehaviour rawstr 数组（asset_file=resources.assets、obj=91）
+原文：Nine
+译文：（无）
+置信度：low
+原因：identifier_without_display_evidence
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[183] 跳过文本
+来源：HUNT_Data/resources.assets
+键位：asset#resources.assets#91/str/12
+对象：MonoBehaviour rawstr 数组（asset_file=resources.assets、obj=91）
+原文：0-Large
+译文：（无）
+置信度：low
+原因：prefilter_key_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[184] 跳过文本
+来源：HUNT_Data/resources.assets
+键位：asset#resources.assets#91/str/13
+对象：MonoBehaviour rawstr 数组（asset_file=resources.assets、obj=91）
+原文：1-Large
+译文：（无）
+置信度：low
+原因：prefilter_key_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[185] 跳过文本
+来源：HUNT_Data/resources.assets
+键位：asset#resources.assets#91/str/14
+对象：MonoBehaviour rawstr 数组（asset_file=resources.assets、obj=91）
+原文：2-Large
+译文：（无）
+置信度：low
+原因：prefilter_key_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[186] 跳过文本
+来源：HUNT_Data/resources.assets
+键位：asset#resources.assets#91/str/15
+对象：MonoBehaviour rawstr 数组（asset_file=resources.assets、obj=91）
+原文：3-Large
+译文：（无）
+置信度：low
+原因：prefilter_key_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[187] 跳过文本
+来源：HUNT_Data/resources.assets
+键位：asset#resources.assets#92/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=resources.assets、obj=92）
+原文：LiberationSans SDF - Fallback
+译文：（无）
+置信度：low
+原因：prefilter_engine_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[188] 跳过文本
+来源：HUNT_Data/resources.assets
+键位：asset#resources.assets#92/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=resources.assets、obj=92）
+原文：1.1.0
+译文：（无）
+置信度：low
+原因：prefilter_key_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[189] 跳过文本
+来源：HUNT_Data/resources.assets
+键位：asset#resources.assets#92/str/2
+对象：MonoBehaviour rawstr 数组（asset_file=resources.assets、obj=92）
+原文：Liberation Sans
+译文：（无）
+置信度：low
+原因：prefilter_engine_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[190] 跳过文本
+来源：HUNT_Data/resources.assets
+键位：asset#resources.assets#92/str/3
+对象：MonoBehaviour rawstr 数组（asset_file=resources.assets、obj=92）
+原文：Regular
+译文：（无）
+置信度：low
+原因：tmp_asset_object
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[191] 跳过文本
+来源：HUNT_Data/resources.assets
+键位：asset#resources.assets#92/str/4
+对象：MonoBehaviour rawstr 数组（asset_file=resources.assets、obj=92）
+原文：e3265ab4bf004d28a9537516768c1c75
+译文：（无）
+置信度：low
+原因：prefilter_engine_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[192] 跳过文本
+来源：HUNT_Data/resources.assets
+键位：asset#resources.assets#92/str/5
+对象：MonoBehaviour rawstr 数组（asset_file=resources.assets、obj=92）
+原文：e3265ab4bf004d28a9537516768c1c75
+译文：（无）
+置信度：low
+原因：prefilter_engine_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[193] 跳过文本
+来源：HUNT_Data/resources.assets
+键位：asset#resources.assets#92/str/6
+对象：MonoBehaviour rawstr 数组（asset_file=resources.assets、obj=92）
+原文：32 - 126, 160 - 255, 8192 - 8303, 8364, 8482, 9633
+译文：（无）
+置信度：low
+原因：prefilter_engine_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[194] 跳过文本
+来源：HUNT_Data/resources.assets
+键位：asset#resources.assets#92/str/7
+对象：MonoBehaviour rawstr 数组（asset_file=resources.assets、obj=92）
+原文：8f586378b4e144a9851e7b34d9b748ee
+译文：（无）
+置信度：low
+原因：prefilter_engine_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[195] 跳过文本
+来源：HUNT_Data/resources.assets
+键位：asset#resources.assets#92/str/8
+对象：MonoBehaviour rawstr 数组（asset_file=resources.assets、obj=92）
+原文：Liberation Sans
+译文：（无）
+置信度：low
+原因：prefilter_engine_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[196] 跳过文本
+来源：HUNT_Data/resources.assets
+键位：asset#resources.assets#93/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=resources.assets、obj=93）
+原文：LiberationSans SDF
+译文：（无）
+置信度：low
+原因：prefilter_engine_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[197] 跳过文本
+来源：HUNT_Data/resources.assets
+键位：asset#resources.assets#93/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=resources.assets、obj=93）
+原文：1.1.0
+译文：（无）
+置信度：low
+原因：prefilter_key_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[198] 跳过文本
+来源：HUNT_Data/resources.assets
+键位：asset#resources.assets#93/str/2
+对象：MonoBehaviour rawstr 数组（asset_file=resources.assets、obj=93）
+原文：Liberation Sans
+译文：（无）
+置信度：low
+原因：prefilter_engine_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[199] 跳过文本
+来源：HUNT_Data/resources.assets
+键位：asset#resources.assets#93/str/3
+对象：MonoBehaviour rawstr 数组（asset_file=resources.assets、obj=93）
+原文：Regular
+译文：（无）
+置信度：low
+原因：tmp_asset_object
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[200] 跳过文本
+来源：HUNT_Data/resources.assets
+键位：asset#resources.assets#93/str/4
+对象：MonoBehaviour rawstr 数组（asset_file=resources.assets、obj=93）
+原文：e3265ab4bf004d28a9537516768c1c75
+译文：（无）
+置信度：low
+原因：prefilter_engine_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[201] 跳过文本
+来源：HUNT_Data/resources.assets
+键位：asset#resources.assets#93/str/5
+对象：MonoBehaviour rawstr 数组（asset_file=resources.assets、obj=93）
+原文：e3265ab4bf004d28a9537516768c1c75
+译文：（无）
+置信度：low
+原因：prefilter_engine_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[202] 跳过文本
+来源：HUNT_Data/resources.assets
+键位：asset#resources.assets#93/str/6
+对象：MonoBehaviour rawstr 数组（asset_file=resources.assets、obj=93）
+原文：32 - 126, 160 - 255, 8192 - 8303, 8364, 8482, 9633
+译文：（无）
+置信度：low
+原因：prefilter_engine_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[203] 跳过文本
+来源：HUNT_Data/resources.assets
+键位：asset#resources.assets#93/str/7
+对象：MonoBehaviour rawstr 数组（asset_file=resources.assets、obj=93）
+原文：8f586378b4e144a9851e7b34d9b748ee
+译文：（无）
+置信度：low
+原因：prefilter_engine_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[204] 跳过文本
+来源：HUNT_Data/resources.assets
+键位：asset#resources.assets#93/str/8
+对象：MonoBehaviour rawstr 数组（asset_file=resources.assets、obj=93）
+原文：Liberation Sans
+译文：（无）
+置信度：low
+原因：prefilter_engine_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[205] 跳过文本
+来源：HUNT_Data/resources.assets
+键位：asset#resources.assets#94/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=resources.assets、obj=94）
+原文：Default Style Sheet
+译文：（无）
+置信度：low
+原因：prefilter_engine_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[206] 跳过文本
+来源：HUNT_Data/resources.assets
+键位：asset#resources.assets#94/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=resources.assets、obj=94）
+原文：Normal
+译文：（无）
+置信度：low
+原因：identifier_without_display_evidence
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[207] 跳过文本
+来源：HUNT_Data/resources.assets
+键位：asset#resources.assets#94/str/2
+对象：MonoBehaviour rawstr 数组（asset_file=resources.assets、obj=94）
+原文：<size=2em><b><#40ff80>*
+译文：（无）
+置信度：low
+原因：prefilter_engine_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[208] 跳过文本
+来源：HUNT_Data/resources.assets
+键位：asset#resources.assets#94/str/3
+对象：MonoBehaviour rawstr 数组（asset_file=resources.assets、obj=94）
+原文：*</size></b></color>
+译文：（无）
+置信度：low
+原因：prefilter_key_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[209] 跳过文本
+来源：HUNT_Data/resources.assets
+键位：asset#resources.assets#94/str/4
+对象：MonoBehaviour rawstr 数组（asset_file=resources.assets、obj=94）
+原文：Quote
+译文：（无）
+置信度：low
+原因：identifier_without_display_evidence
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[210] 跳过文本
+来源：HUNT_Data/resources.assets
+键位：asset#resources.assets#94/str/5
+对象：MonoBehaviour rawstr 数组（asset_file=resources.assets、obj=94）
+原文：<i><size=75%><margin=10%>
+译文：（无）
+置信度：low
+原因：prefilter_engine_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[211] 跳过文本
+来源：HUNT_Data/resources.assets
+键位：asset#resources.assets#94/str/6
+对象：MonoBehaviour rawstr 数组（asset_file=resources.assets、obj=94）
+原文：</i></size></width></margin>
+译文：（无）
+置信度：low
+原因：prefilter_engine_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[212] 跳过文本
+来源：HUNT_Data/resources.assets
+键位：asset#resources.assets#94/str/7
+对象：MonoBehaviour rawstr 数组（asset_file=resources.assets、obj=94）
+原文：<color=#40a0ff><u>
+译文：（无）
+置信度：low
+原因：prefilter_engine_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[213] 跳过文本
+来源：HUNT_Data/resources.assets
+键位：asset#resources.assets#94/str/8
+对象：MonoBehaviour rawstr 数组（asset_file=resources.assets、obj=94）
+原文：</u></color>
+译文：（无）
+置信度：low
+原因：prefilter_engine_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[214] 跳过文本
+来源：HUNT_Data/resources.assets
+键位：asset#resources.assets#94/str/9
+对象：MonoBehaviour rawstr 数组（asset_file=resources.assets、obj=94）
+原文：Link
+译文：（无）
+置信度：low
+原因：identifier_without_display_evidence
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[215] 跳过文本
+来源：HUNT_Data/resources.assets
+键位：asset#resources.assets#94/str/10
+对象：MonoBehaviour rawstr 数组（asset_file=resources.assets、obj=94）
+原文：<u><#40a0ff><link="ID_01">
+译文：（无）
+置信度：low
+原因：prefilter_engine_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[216] 跳过文本
+来源：HUNT_Data/resources.assets
+键位：asset#resources.assets#94/str/11
+对象：MonoBehaviour rawstr 数组（asset_file=resources.assets、obj=94）
+原文：</u></color></link>
+译文：（无）
+置信度：low
+原因：prefilter_engine_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[217] 跳过文本
+来源：HUNT_Data/resources.assets
+键位：asset#resources.assets#94/str/12
+对象：MonoBehaviour rawstr 数组（asset_file=resources.assets、obj=94）
+原文：Title
+译文：（无）
+置信度：low
+原因：identifier_without_display_evidence
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[218] 跳过文本
+来源：HUNT_Data/resources.assets
+键位：asset#resources.assets#94/str/13
+对象：MonoBehaviour rawstr 数组（asset_file=resources.assets、obj=94）
+原文：<size=125%><b><align=center>
+译文：（无）
+置信度：low
+原因：prefilter_engine_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[219] 跳过文本
+来源：HUNT_Data/resources.assets
+键位：asset#resources.assets#94/str/14
+对象：MonoBehaviour rawstr 数组（asset_file=resources.assets、obj=94）
+原文：</size></b></align>
+译文：（无）
+置信度：low
+原因：prefilter_engine_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[220] 跳过文本
+来源：HUNT_Data/resources.assets
+键位：asset#resources.assets#95/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=resources.assets、obj=95）
+原文：TMP Settings
+译文：（无）
+置信度：low
+原因：prefilter_engine_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[221] 跳过文本
+来源：HUNT_Data/resources.assets
+键位：asset#resources.assets#95/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=resources.assets、obj=95）
+原文：Fonts & Materials/
+译文：（无）
+置信度：low
+原因：prefilter_key_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[222] 跳过文本
+来源：HUNT_Data/resources.assets
+键位：asset#resources.assets#95/str/2
+对象：MonoBehaviour rawstr 数组（asset_file=resources.assets、obj=95）
+原文：Sprite Assets/
+译文：（无）
+置信度：low
+原因：prefilter_key_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[223] 跳过文本
+来源：HUNT_Data/resources.assets
+键位：asset#resources.assets#95/str/3
+对象：MonoBehaviour rawstr 数组（asset_file=resources.assets、obj=95）
+原文：Color Gradient Presets/
+译文：（无）
+置信度：low
+原因：prefilter_key_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[224] 跳过文本
+来源：HUNT_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#31/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=31）
+原文：UI/Navigate
+译文：（无）
+置信度：low
+原因：input_action_path
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[225] 跳过文本
+来源：HUNT_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#31/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=31）
+原文：c95b2375-e6d9-4b88-9c4c-c5e76515df4b
+译文：（无）
+置信度：low
+原因：prefilter_engine_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[226] 跳过文本
+来源：HUNT_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#32/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=32）
+原文：UI/RightClick
+译文：（无）
+置信度：low
+原因：input_action_path
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[227] 跳过文本
+来源：HUNT_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#32/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=32）
+原文：44b200b1-1557-4083-816c-b22cbdf77ddf
+译文：（无）
+置信度：low
+原因：prefilter_engine_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[228] 跳过文本
+来源：HUNT_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#33/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=33）
+原文：UI/MiddleClick
+译文：（无）
+置信度：low
+原因：input_action_path
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[229] 跳过文本
+来源：HUNT_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#33/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=33）
+原文：dad70c86-b58c-4b17-88ad-f5e53adf419e
+译文：（无）
+置信度：low
+原因：prefilter_engine_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[230] 跳过文本
+来源：HUNT_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#34/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=34）
+原文：UI/Point
+译文：（无）
+置信度：low
+原因：input_action_path
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[231] 跳过文本
+来源：HUNT_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#34/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=34）
+原文：32b35790-4ed0-4e9a-aa41-69ac6d629449
+译文：（无）
+置信度：low
+原因：prefilter_engine_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[232] 跳过文本
+来源：HUNT_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#35/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=35）
+原文：DefaultInputActions
+译文：（无）
+置信度：low
+原因：prefilter_engine_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[233] 跳过文本
+来源：HUNT_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#35/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=35）
+原文：Player
+译文：（无）
+置信度：low
+原因：input_system_object
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[234] 跳过文本
+来源：HUNT_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#35/str/2
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=35）
+原文：df70fa95-8a34-4494-b137-73ab6b9c7d37
+译文：（无）
+置信度：low
+原因：prefilter_engine_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[235] 跳过文本
+来源：HUNT_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#35/str/3
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=35）
+原文：Move
+译文：（无）
+置信度：low
+原因：input_binding
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[236] 跳过文本
+来源：HUNT_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#35/str/4
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=35）
+原文：Vector2
+译文：（无）
+置信度：low
+原因：prefilter_engine_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[237] 跳过文本
+来源：HUNT_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#35/str/5
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=35）
+原文：351f2ccd-1f9f-44bf-9bec-d62ac5c5f408
+译文：（无）
+置信度：low
+原因：prefilter_engine_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[238] 跳过文本
+来源：HUNT_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#35/str/6
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=35）
+原文：Look
+译文：（无）
+置信度：low
+原因：input_binding
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[239] 跳过文本
+来源：HUNT_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#35/str/7
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=35）
+原文：Vector2
+译文：（无）
+置信度：low
+原因：prefilter_engine_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[240] 跳过文本
+来源：HUNT_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#35/str/8
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=35）
+原文：6b444451-8a00-4d00-a97e-f47457f736a8
+译文：（无）
+置信度：low
+原因：prefilter_engine_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[241] 跳过文本
+来源：HUNT_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#35/str/9
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=35）
+原文：Fire
+译文：（无）
+置信度：low
+原因：input_binding
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[242] 跳过文本
+来源：HUNT_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#35/str/10
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=35）
+原文：Button
+译文：（无）
+置信度：low
+原因：input_system_object
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[243] 跳过文本
+来源：HUNT_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#35/str/11
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=35）
+原文：6c2ab1b8-8984-453a-af3d-a3c78ae1679a
+译文：（无）
+置信度：low
+原因：prefilter_engine_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[244] 跳过文本
+来源：HUNT_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#35/str/12
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=35）
+原文：978bfe49-cc26-4a3d-ab7b-7d7a29327403
+译文：（无）
+置信度：low
+原因：prefilter_engine_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[245] 跳过文本
+来源：HUNT_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#35/str/13
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=35）
+原文：<Gamepad>/leftStick
+译文：（无）
+置信度：low
+原因：input_binding
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[246] 跳过文本
+来源：HUNT_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#35/str/14
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=35）
+原文：;Gamepad
+译文：（无）
+置信度：low
+原因：prefilter_engine_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[247] 跳过文本
+来源：HUNT_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#35/str/15
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=35）
+原文：Move
+译文：（无）
+置信度：low
+原因：input_binding
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[248] 跳过文本
+来源：HUNT_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#35/str/16
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=35）
+原文：WASD
+译文：（无）
+置信度：low
+原因：input_binding
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[249] 跳过文本
+来源：HUNT_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#35/str/17
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=35）
+原文：00ca640b-d935-4593-8157-c05846ea39b3
+译文：（无）
+置信度：low
+原因：prefilter_engine_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[250] 跳过文本
+来源：HUNT_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#35/str/18
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=35）
+原文：Dpad
+译文：（无）
+置信度：low
+原因：input_binding
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[251] 跳过文本
+来源：HUNT_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#35/str/19
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=35）
+原文：Move
+译文：（无）
+置信度：low
+原因：input_binding
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[252] 跳过文本
+来源：HUNT_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#35/str/21
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=35）
+原文：<Keyboard>/w
+译文：（无）
+置信度：low
+原因：input_binding
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[253] 跳过文本
+来源：HUNT_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#35/str/23
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=35）
+原文：Move
+译文：（无）
+置信度：low
+原因：input_binding
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[254] 跳过文本
+来源：HUNT_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#35/str/25
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=35）
+原文：<Keyboard>/upArrow
+译文：（无）
+置信度：low
+原因：input_binding
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[255] 跳过文本
+来源：HUNT_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#35/str/27
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=35）
+原文：Move
+译文：（无）
+置信度：low
+原因：input_binding
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[256] 跳过文本
+来源：HUNT_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#35/str/28
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=35）
+原文：down
+译文：（无）
+置信度：low
+原因：input_system_object
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[257] 跳过文本
+来源：HUNT_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#35/str/30
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=35）
+原文：<Keyboard>/s
+译文：（无）
+置信度：low
+原因：input_binding
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[258] 跳过文本
+来源：HUNT_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#35/str/32
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=35）
+原文：Move
+译文：（无）
+置信度：low
+原因：input_binding
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[259] 跳过文本
+来源：HUNT_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#35/str/33
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=35）
+原文：down
+译文：（无）
+置信度：low
+原因：input_system_object
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[260] 跳过文本
+来源：HUNT_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#35/str/35
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=35）
+原文：<Keyboard>/downArrow
+译文：（无）
+置信度：low
+原因：input_binding
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[261] 跳过文本
+来源：HUNT_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#35/str/37
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=35）
+原文：Move
+译文：（无）
+置信度：low
+原因：input_binding
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[262] 跳过文本
+来源：HUNT_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#35/str/38
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=35）
+原文：left
+译文：（无）
+置信度：low
+原因：input_system_object
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[263] 跳过文本
+来源：HUNT_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#35/str/40
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=35）
+原文：<Keyboard>/a
+译文：（无）
+置信度：low
+原因：input_binding
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[264] 跳过文本
+来源：HUNT_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#35/str/42
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=35）
+原文：Move
+译文：（无）
+置信度：low
+原因：input_binding
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[265] 跳过文本
+来源：HUNT_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#35/str/43
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=35）
+原文：left
+译文：（无）
+置信度：low
+原因：input_system_object
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[266] 跳过文本
+来源：HUNT_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#35/str/45
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=35）
+原文：<Keyboard>/leftArrow
+译文：（无）
+置信度：low
+原因：input_binding
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[267] 跳过文本
+来源：HUNT_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#35/str/47
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=35）
+原文：Move
+译文：（无）
+置信度：low
+原因：input_binding
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[268] 跳过文本
+来源：HUNT_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#35/str/48
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=35）
+原文：right
+译文：（无）
+置信度：low
+原因：input_system_object
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[269] 跳过文本
+来源：HUNT_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#35/str/50
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=35）
+原文：<Keyboard>/d
+译文：（无）
+置信度：low
+原因：input_binding
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[270] 跳过文本
+来源：HUNT_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#35/str/52
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=35）
+原文：Move
+译文：（无）
+置信度：low
+原因：input_binding
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[271] 跳过文本
+来源：HUNT_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#35/str/53
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=35）
+原文：right
+译文：（无）
+置信度：low
+原因：input_system_object
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[272] 跳过文本
+来源：HUNT_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#35/str/55
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=35）
+原文：<Keyboard>/rightArrow
+译文：（无）
+置信度：low
+原因：input_binding
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[273] 跳过文本
+来源：HUNT_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#35/str/57
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=35）
+原文：Move
+译文：（无）
+置信度：low
+原因：input_binding
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[274] 跳过文本
+来源：HUNT_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#35/str/59
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=35）
+原文：<XRController>/{Primary2DAxis}
+译文：（无）
+置信度：low
+原因：prefilter_key_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[275] 跳过文本
+来源：HUNT_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#35/str/60
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=35）
+原文：Move
+译文：（无）
+置信度：low
+原因：input_binding
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[276] 跳过文本
+来源：HUNT_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#35/str/62
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=35）
+原文：<Joystick>/stick
+译文：（无）
+置信度：low
+原因：input_binding
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[277] 跳过文本
+来源：HUNT_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#35/str/63
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=35）
+原文：Joystick
+译文：（无）
+置信度：low
+原因：input_system_object
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[278] 跳过文本
+来源：HUNT_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#35/str/64
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=35）
+原文：Move
+译文：（无）
+置信度：low
+原因：input_binding
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[279] 跳过文本
+来源：HUNT_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#35/str/66
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=35）
+原文：<Gamepad>/rightStick
+译文：（无）
+置信度：low
+原因：input_binding
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[280] 跳过文本
+来源：HUNT_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#35/str/68
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=35）
+原文：Look
+译文：（无）
+置信度：low
+原因：input_binding
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[281] 跳过文本
+来源：HUNT_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#35/str/70
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=35）
+原文：<Pointer>/delta
+译文：（无）
+置信度：low
+原因：input_binding
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[282] 跳过文本
+来源：HUNT_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#35/str/72
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=35）
+原文：Look
+译文：（无）
+置信度：low
+原因：input_binding
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[283] 跳过文本
+来源：HUNT_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#35/str/74
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=35）
+原文：<Joystick>/{Hatswitch}
+译文：（无）
+置信度：low
+原因：prefilter_key_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[284] 跳过文本
+来源：HUNT_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#35/str/75
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=35）
+原文：Joystick
+译文：（无）
+置信度：low
+原因：input_system_object
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[285] 跳过文本
+来源：HUNT_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#35/str/76
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=35）
+原文：Look
+译文：（无）
+置信度：low
+原因：input_binding
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[286] 跳过文本
+来源：HUNT_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#35/str/78
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=35）
+原文：<Gamepad>/rightTrigger
+译文：（无）
+置信度：low
+原因：input_binding
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[287] 跳过文本
+来源：HUNT_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#35/str/80
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=35）
+原文：Fire
+译文：（无）
+置信度：low
+原因：input_binding
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[288] 跳过文本
+来源：HUNT_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#35/str/82
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=35）
+原文：<Mouse>/leftButton
+译文：（无）
+置信度：low
+原因：input_binding
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[289] 跳过文本
+来源：HUNT_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#35/str/84
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=35）
+原文：Fire
+译文：（无）
+置信度：low
+原因：input_binding
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[290] 跳过文本
+来源：HUNT_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#35/str/86
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=35）
+原文：<Touchscreen>/primaryTouch/tap
+译文：（无）
+置信度：low
+原因：input_binding
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[291] 跳过文本
+来源：HUNT_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#35/str/88
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=35）
+原文：Fire
+译文：（无）
+置信度：low
+原因：input_binding
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[292] 跳过文本
+来源：HUNT_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#35/str/90
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=35）
+原文：<Joystick>/trigger
+译文：（无）
+置信度：low
+原因：input_binding
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[293] 跳过文本
+来源：HUNT_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#35/str/91
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=35）
+原文：Joystick
+译文：（无）
+置信度：low
+原因：input_system_object
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[294] 跳过文本
+来源：HUNT_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#35/str/92
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=35）
+原文：Fire
+译文：（无）
+置信度：low
+原因：input_binding
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[295] 跳过文本
+来源：HUNT_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#35/str/94
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=35）
+原文：<XRController>/{PrimaryAction}
+译文：（无）
+置信度：low
+原因：prefilter_key_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[296] 跳过文本
+来源：HUNT_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#35/str/95
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=35）
+原文：Fire
+译文：（无）
+置信度：low
+原因：input_binding
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[297] 跳过文本
+来源：HUNT_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#35/str/97
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=35）
+原文：Navigate
+译文：（无）
+置信度：low
+原因：input_system_object
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[298] 跳过文本
+来源：HUNT_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#35/str/100
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=35）
+原文：Submit
+译文：（无）
+置信度：low
+原因：input_system_object
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[299] 跳过文本
+来源：HUNT_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#35/str/101
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=35）
+原文：Button
+译文：（无）
+置信度：low
+原因：input_system_object
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[300] 跳过文本
+来源：HUNT_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#35/str/103
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=35）
+原文：Cancel
+译文：（无）
+置信度：low
+原因：input_system_object
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[301] 跳过文本
+来源：HUNT_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#35/str/104
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=35）
+原文：Button
+译文：（无）
+置信度：low
+原因：input_system_object
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[302] 跳过文本
+来源：HUNT_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#35/str/106
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=35）
+原文：Point
+译文：（无）
+置信度：low
+原因：input_system_object
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[303] 跳过文本
+来源：HUNT_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#35/str/109
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=35）
+原文：Click
+译文：（无）
+置信度：low
+原因：input_system_object
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[304] 跳过文本
+来源：HUNT_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#35/str/110
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=35）
+原文：Button
+译文：（无）
+置信度：low
+原因：input_system_object
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[305] 跳过文本
+来源：HUNT_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#35/str/116
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=35）
+原文：Button
+译文：（无）
+置信度：low
+原因：input_system_object
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[306] 跳过文本
+来源：HUNT_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#35/str/119
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=35）
+原文：Button
+译文：（无）
+置信度：low
+原因：input_system_object
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[307] 跳过文本
+来源：HUNT_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#35/str/127
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=35）
+原文：Gamepad
+译文：（无）
+置信度：low
+原因：input_system_object
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[308] 跳过文本
+来源：HUNT_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#35/str/130
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=35）
+原文：Navigate
+译文：（无）
+置信度：low
+原因：input_system_object
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[309] 跳过文本
+来源：HUNT_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#35/str/132
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=35）
+原文：<Gamepad>/leftStick/up
+译文：（无）
+置信度：low
+原因：input_binding
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[310] 跳过文本
+来源：HUNT_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#35/str/134
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=35）
+原文：Navigate
+译文：（无）
+置信度：low
+原因：input_system_object
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[311] 跳过文本
+来源：HUNT_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#35/str/136
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=35）
+原文：<Gamepad>/rightStick/up
+译文：（无）
+置信度：low
+原因：input_binding
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[312] 跳过文本
+来源：HUNT_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#35/str/138
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=35）
+原文：Navigate
+译文：（无）
+置信度：low
+原因：input_system_object
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[313] 跳过文本
+来源：HUNT_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#35/str/139
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=35）
+原文：down
+译文：（无）
+置信度：low
+原因：input_system_object
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[314] 跳过文本
+来源：HUNT_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#35/str/141
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=35）
+原文：<Gamepad>/leftStick/down
+译文：（无）
+置信度：low
+原因：input_binding
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[315] 跳过文本
+来源：HUNT_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#35/str/143
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=35）
+原文：Navigate
+译文：（无）
+置信度：low
+原因：input_system_object
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[316] 跳过文本
+来源：HUNT_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#35/str/144
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=35）
+原文：down
+译文：（无）
+置信度：low
+原因：input_system_object
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[317] 跳过文本
+来源：HUNT_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#35/str/146
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=35）
+原文：<Gamepad>/rightStick/down
+译文：（无）
+置信度：low
+原因：input_binding
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[318] 跳过文本
+来源：HUNT_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#35/str/148
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=35）
+原文：Navigate
+译文：（无）
+置信度：low
+原因：input_system_object
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[319] 跳过文本
+来源：HUNT_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#35/str/149
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=35）
+原文：left
+译文：（无）
+置信度：low
+原因：input_system_object
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[320] 跳过文本
+来源：HUNT_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#35/str/151
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=35）
+原文：<Gamepad>/leftStick/left
+译文：（无）
+置信度：low
+原因：input_binding
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[321] 跳过文本
+来源：HUNT_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#35/str/153
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=35）
+原文：Navigate
+译文：（无）
+置信度：low
+原因：input_system_object
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[322] 跳过文本
+来源：HUNT_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#35/str/154
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=35）
+原文：left
+译文：（无）
+置信度：low
+原因：input_system_object
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[323] 跳过文本
+来源：HUNT_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#35/str/156
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=35）
+原文：<Gamepad>/rightStick/left
+译文：（无）
+置信度：low
+原因：input_binding
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[324] 跳过文本
+来源：HUNT_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#35/str/158
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=35）
+原文：Navigate
+译文：（无）
+置信度：low
+原因：input_system_object
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[325] 跳过文本
+来源：HUNT_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#35/str/159
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=35）
+原文：right
+译文：（无）
+置信度：low
+原因：input_system_object
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[326] 跳过文本
+来源：HUNT_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#35/str/161
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=35）
+原文：<Gamepad>/leftStick/right
+译文：（无）
+置信度：low
+原因：input_binding
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[327] 跳过文本
+来源：HUNT_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#35/str/163
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=35）
+原文：Navigate
+译文：（无）
+置信度：low
+原因：input_system_object
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[328] 跳过文本
+来源：HUNT_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#35/str/164
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=35）
+原文：right
+译文：（无）
+置信度：low
+原因：input_system_object
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[329] 跳过文本
+来源：HUNT_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#35/str/166
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=35）
+原文：<Gamepad>/rightStick/right
+译文：（无）
+置信度：low
+原因：input_binding
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[330] 跳过文本
+来源：HUNT_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#35/str/168
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=35）
+原文：Navigate
+译文：（无）
+置信度：low
+原因：input_system_object
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[331] 跳过文本
+来源：HUNT_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#35/str/170
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=35）
+原文：<Gamepad>/dpad
+译文：（无）
+置信度：low
+原因：input_binding
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[332] 跳过文本
+来源：HUNT_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#35/str/172
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=35）
+原文：Navigate
+译文：（无）
+置信度：low
+原因：input_system_object
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[333] 跳过文本
+来源：HUNT_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#35/str/173
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=35）
+原文：Joystick
+译文：（无）
+置信度：low
+原因：input_system_object
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[334] 跳过文本
+来源：HUNT_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#35/str/176
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=35）
+原文：Navigate
+译文：（无）
+置信度：low
+原因：input_system_object
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[335] 跳过文本
+来源：HUNT_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#35/str/178
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=35）
+原文：<Joystick>/stick/up
+译文：（无）
+置信度：low
+原因：input_binding
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[336] 跳过文本
+来源：HUNT_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#35/str/179
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=35）
+原文：Joystick
+译文：（无）
+置信度：low
+原因：input_system_object
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[337] 跳过文本
+来源：HUNT_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#35/str/180
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=35）
+原文：Navigate
+译文：（无）
+置信度：low
+原因：input_system_object
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[338] 跳过文本
+来源：HUNT_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#35/str/181
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=35）
+原文：down
+译文：（无）
+置信度：low
+原因：input_system_object
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[339] 跳过文本
+来源：HUNT_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#35/str/183
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=35）
+原文：<Joystick>/stick/down
+译文：（无）
+置信度：low
+原因：input_binding
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[340] 跳过文本
+来源：HUNT_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#35/str/184
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=35）
+原文：Joystick
+译文：（无）
+置信度：low
+原因：input_system_object
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[341] 跳过文本
+来源：HUNT_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#35/str/185
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=35）
+原文：Navigate
+译文：（无）
+置信度：low
+原因：input_system_object
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[342] 跳过文本
+来源：HUNT_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#35/str/186
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=35）
+原文：left
+译文：（无）
+置信度：low
+原因：input_system_object
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[343] 跳过文本
+来源：HUNT_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#35/str/188
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=35）
+原文：<Joystick>/stick/left
+译文：（无）
+置信度：low
+原因：input_binding
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[344] 跳过文本
+来源：HUNT_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#35/str/189
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=35）
+原文：Joystick
+译文：（无）
+置信度：low
+原因：input_system_object
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[345] 跳过文本
+来源：HUNT_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#35/str/190
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=35）
+原文：Navigate
+译文：（无）
+置信度：low
+原因：input_system_object
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[346] 跳过文本
+来源：HUNT_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#35/str/191
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=35）
+原文：right
+译文：（无）
+置信度：low
+原因：input_system_object
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[347] 跳过文本
+来源：HUNT_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#35/str/193
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=35）
+原文：<Joystick>/stick/right
+译文：（无）
+置信度：low
+原因：input_binding
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[348] 跳过文本
+来源：HUNT_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#35/str/194
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=35）
+原文：Joystick
+译文：（无）
+置信度：low
+原因：input_system_object
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[349] 跳过文本
+来源：HUNT_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#35/str/195
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=35）
+原文：Navigate
+译文：（无）
+置信度：low
+原因：input_system_object
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[350] 跳过文本
+来源：HUNT_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#35/str/196
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=35）
+原文：Keyboard
+译文：（无）
+置信度：low
+原因：input_system_object
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[351] 跳过文本
+来源：HUNT_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#35/str/199
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=35）
+原文：Navigate
+译文：（无）
+置信度：low
+原因：input_system_object
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[352] 跳过文本
+来源：HUNT_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#35/str/201
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=35）
+原文：<Keyboard>/w
+译文：（无）
+置信度：low
+原因：input_binding
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[353] 跳过文本
+来源：HUNT_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#35/str/203
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=35）
+原文：Navigate
+译文：（无）
+置信度：low
+原因：input_system_object
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[354] 跳过文本
+来源：HUNT_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#35/str/205
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=35）
+原文：<Keyboard>/upArrow
+译文：（无）
+置信度：low
+原因：input_binding
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[355] 跳过文本
+来源：HUNT_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#35/str/207
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=35）
+原文：Navigate
+译文：（无）
+置信度：low
+原因：input_system_object
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[356] 跳过文本
+来源：HUNT_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#35/str/208
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=35）
+原文：down
+译文：（无）
+置信度：low
+原因：input_system_object
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[357] 跳过文本
+来源：HUNT_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#35/str/210
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=35）
+原文：<Keyboard>/s
+译文：（无）
+置信度：low
+原因：input_binding
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[358] 跳过文本
+来源：HUNT_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#35/str/212
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=35）
+原文：Navigate
+译文：（无）
+置信度：low
+原因：input_system_object
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[359] 跳过文本
+来源：HUNT_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#35/str/213
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=35）
+原文：down
+译文：（无）
+置信度：low
+原因：input_system_object
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[360] 跳过文本
+来源：HUNT_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#35/str/215
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=35）
+原文：<Keyboard>/downArrow
+译文：（无）
+置信度：low
+原因：input_binding
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[361] 跳过文本
+来源：HUNT_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#35/str/217
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=35）
+原文：Navigate
+译文：（无）
+置信度：low
+原因：input_system_object
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[362] 跳过文本
+来源：HUNT_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#35/str/218
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=35）
+原文：left
+译文：（无）
+置信度：low
+原因：input_system_object
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[363] 跳过文本
+来源：HUNT_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#35/str/220
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=35）
+原文：<Keyboard>/a
+译文：（无）
+置信度：low
+原因：input_binding
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[364] 跳过文本
+来源：HUNT_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#35/str/222
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=35）
+原文：Navigate
+译文：（无）
+置信度：low
+原因：input_system_object
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[365] 跳过文本
+来源：HUNT_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#35/str/223
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=35）
+原文：left
+译文：（无）
+置信度：low
+原因：input_system_object
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[366] 跳过文本
+来源：HUNT_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#35/str/225
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=35）
+原文：<Keyboard>/leftArrow
+译文：（无）
+置信度：low
+原因：input_binding
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[367] 跳过文本
+来源：HUNT_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#35/str/227
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=35）
+原文：Navigate
+译文：（无）
+置信度：low
+原因：input_system_object
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[368] 跳过文本
+来源：HUNT_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#35/str/228
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=35）
+原文：right
+译文：（无）
+置信度：low
+原因：input_system_object
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[369] 跳过文本
+来源：HUNT_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#35/str/230
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=35）
+原文：<Keyboard>/d
+译文：（无）
+置信度：low
+原因：input_binding
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[370] 跳过文本
+来源：HUNT_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#35/str/232
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=35）
+原文：Navigate
+译文：（无）
+置信度：low
+原因：input_system_object
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[371] 跳过文本
+来源：HUNT_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#35/str/233
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=35）
+原文：right
+译文：（无）
+置信度：low
+原因：input_system_object
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[372] 跳过文本
+来源：HUNT_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#35/str/235
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=35）
+原文：<Keyboard>/rightArrow
+译文：（无）
+置信度：low
+原因：input_binding
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[373] 跳过文本
+来源：HUNT_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#35/str/237
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=35）
+原文：Navigate
+译文：（无）
+置信度：low
+原因：input_system_object
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[374] 跳过文本
+来源：HUNT_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#35/str/239
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=35）
+原文：*/{Submit}
+译文：（无）
+置信度：low
+原因：prefilter_key_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[375] 跳过文本
+来源：HUNT_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#35/str/241
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=35）
+原文：Submit
+译文：（无）
+置信度：low
+原因：input_system_object
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[376] 跳过文本
+来源：HUNT_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#35/str/243
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=35）
+原文：*/{Cancel}
+译文：（无）
+置信度：low
+原因：prefilter_key_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[377] 跳过文本
+来源：HUNT_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#35/str/245
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=35）
+原文：Cancel
+译文：（无）
+置信度：low
+原因：input_system_object
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[378] 跳过文本
+来源：HUNT_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#35/str/247
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=35）
+原文：<Mouse>/position
+译文：（无）
+置信度：low
+原因：input_binding
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[379] 跳过文本
+来源：HUNT_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#35/str/249
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=35）
+原文：Point
+译文：（无）
+置信度：low
+原因：input_system_object
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[380] 跳过文本
+来源：HUNT_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#35/str/251
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=35）
+原文：<Pen>/position
+译文：（无）
+置信度：low
+原因：input_binding
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[381] 跳过文本
+来源：HUNT_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#35/str/253
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=35）
+原文：Point
+译文：（无）
+置信度：low
+原因：input_system_object
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[382] 跳过文本
+来源：HUNT_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#35/str/255
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=35）
+原文：<Touchscreen>/touch*/position
+译文：（无）
+置信度：low
+原因：prefilter_key_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[383] 跳过文本
+来源：HUNT_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#35/str/256
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=35）
+原文：Touch
+译文：（无）
+置信度：low
+原因：input_system_object
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[384] 跳过文本
+来源：HUNT_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#35/str/257
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=35）
+原文：Point
+译文：（无）
+置信度：low
+原因：input_system_object
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[385] 跳过文本
+来源：HUNT_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#35/str/259
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=35）
+原文：<Mouse>/leftButton
+译文：（无）
+置信度：low
+原因：input_binding
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[386] 跳过文本
+来源：HUNT_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#35/str/261
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=35）
+原文：Click
+译文：（无）
+置信度：low
+原因：input_system_object
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[387] 跳过文本
+来源：HUNT_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#35/str/263
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=35）
+原文：<Pen>/tip
+译文：（无）
+置信度：low
+原因：input_binding
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[388] 跳过文本
+来源：HUNT_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#35/str/265
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=35）
+原文：Click
+译文：（无）
+置信度：low
+原因：input_system_object
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[389] 跳过文本
+来源：HUNT_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#35/str/267
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=35）
+原文：<Touchscreen>/touch*/press
+译文：（无）
+置信度：low
+原因：prefilter_key_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[390] 跳过文本
+来源：HUNT_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#35/str/268
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=35）
+原文：Touch
+译文：（无）
+置信度：low
+原因：input_system_object
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[391] 跳过文本
+来源：HUNT_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#35/str/269
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=35）
+原文：Click
+译文：（无）
+置信度：low
+原因：input_system_object
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[392] 跳过文本
+来源：HUNT_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#35/str/271
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=35）
+原文：<XRController>/trigger
+译文：（无）
+置信度：low
+原因：input_binding
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[393] 跳过文本
+来源：HUNT_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#35/str/272
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=35）
+原文：Click
+译文：（无）
+置信度：low
+原因：input_system_object
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[394] 跳过文本
+来源：HUNT_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#35/str/274
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=35）
+原文：<Mouse>/scroll
+译文：（无）
+置信度：low
+原因：input_binding
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[395] 跳过文本
+来源：HUNT_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#35/str/278
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=35）
+原文：<Mouse>/middleButton
+译文：（无）
+置信度：low
+原因：input_binding
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[396] 跳过文本
+来源：HUNT_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#35/str/282
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=35）
+原文：<Mouse>/rightButton
+译文：（无）
+置信度：low
+原因：input_binding
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[397] 跳过文本
+来源：HUNT_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#35/str/286
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=35）
+原文：<XRController>/devicePosition
+译文：（无）
+置信度：low
+原因：input_binding
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[398] 跳过文本
+来源：HUNT_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#35/str/289
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=35）
+原文：<XRController>/deviceRotation
+译文：（无）
+置信度：low
+原因：input_binding
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[399] 跳过文本
+来源：HUNT_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#35/str/295
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=35）
+原文：Gamepad
+译文：（无）
+置信度：low
+原因：input_system_object
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[400] 跳过文本
+来源：HUNT_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#35/str/296
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=35）
+原文：Gamepad
+译文：（无）
+置信度：low
+原因：input_system_object
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[401] 跳过文本
+来源：HUNT_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#35/str/298
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=35）
+原文：Touch
+译文：（无）
+置信度：low
+原因：input_system_object
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[402] 跳过文本
+来源：HUNT_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#35/str/299
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=35）
+原文：Touch
+译文：（无）
+置信度：low
+原因：input_system_object
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[403] 跳过文本
+来源：HUNT_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#35/str/301
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=35）
+原文：Joystick
+译文：（无）
+置信度：low
+原因：input_system_object
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[404] 跳过文本
+来源：HUNT_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#35/str/302
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=35）
+原文：Joystick
+译文：（无）
+置信度：low
+原因：input_system_object
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[405] 跳过文本
+来源：HUNT_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#36/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=36）
+原文：VCR_OSD_MONO_1
+译文：（无）
+置信度：low
+原因：prefilter_key_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[406] 跳过文本
+来源：HUNT_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#36/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=36）
+原文：1.1.0
+译文：（无）
+置信度：low
+原因：prefilter_key_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[407] 跳过文本
+来源：HUNT_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#36/str/4
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=36）
+原文：fe3bd943332a18f46bdca4bd9f8b6e94
+译文：（无）
+置信度：low
+原因：prefilter_engine_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[408] 跳过文本
+来源：HUNT_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#36/str/5
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=36）
+原文：fe3bd943332a18f46bdca4bd9f8b6e94
+译文：（无）
+置信度：low
+原因：prefilter_engine_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[409] 跳过文本
+来源：HUNT_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#36/str/6
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=36）
+原文：32 - 126, 160, 8203, 8230, 9633
+译文：（无）
+置信度：low
+原因：prefilter_engine_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[410] 跳过文本
+来源：HUNT_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#37/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=37）
+原文：UI/Submit
+译文：（无）
+置信度：low
+原因：input_action_path
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[411] 跳过文本
+来源：HUNT_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#37/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=37）
+原文：7607c7b6-cd76-4816-beef-bd0341cfe950
+译文：（无）
+置信度：low
+原因：prefilter_engine_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[412] 跳过文本
+来源：HUNT_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#38/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=38）
+原文：UI/Click
+译文：（无）
+置信度：low
+原因：input_action_path
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[413] 跳过文本
+来源：HUNT_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#38/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=38）
+原文：3c7022bf-7922-4f7c-a998-c437916075ad
+译文：（无）
+置信度：low
+原因：prefilter_engine_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[414] 跳过文本
+来源：HUNT_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#39/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=39）
+原文：UI/ScrollWheel
+译文：（无）
+置信度：low
+原因：input_action_path
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[415] 跳过文本
+来源：HUNT_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#39/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=39）
+原文：0489e84a-4833-4c40-bfae-cea84b696689
+译文：（无）
+置信度：low
+原因：prefilter_engine_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[416] 跳过文本
+来源：HUNT_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#40/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=40）
+原文：UI/TrackedDevicePosition
+译文：（无）
+置信度：low
+原因：input_action_path
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[417] 跳过文本
+来源：HUNT_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#40/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=40）
+原文：24908448-c609-4bc3-a128-ea258674378a
+译文：（无）
+置信度：low
+原因：prefilter_engine_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[418] 跳过文本
+来源：HUNT_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#41/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=41）
+原文：UI/Cancel
+译文：（无）
+置信度：low
+原因：input_action_path
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[419] 跳过文本
+来源：HUNT_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#41/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=41）
+原文：15cef263-9014-4fd5-94d9-4e4a6234a6ef
+译文：（无）
+置信度：low
+原因：prefilter_engine_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[420] 跳过文本
+来源：HUNT_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#42/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=42）
+原文：UI/TrackedDeviceOrientation
+译文：（无）
+置信度：low
+原因：input_action_path
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[421] 跳过文本
+来源：HUNT_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#42/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=42）
+原文：9caa3d8a-6b2f-4e8e-8bad-6ede561bd9be
+译文：（无）
+置信度：low
+原因：prefilter_engine_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[422] 跳过文本
+来源：HUNT_Data/Managed/Assembly-CSharp.dll
+键位：us#2
+对象：DLL #US 字符串（record_offset=76409）
+原文：Границы движения: X[{0}, {1}], Z[{2}, {3}]
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[423] 跳过文本
+来源：HUNT_Data/Managed/Assembly-CSharp.dll
+键位：us#88
+对象：DLL #US 字符串（record_offset=76495）
+原文：Новая цель: {0}
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[424] 跳过文本
+来源：HUNT_Data/Managed/Assembly-CSharp.dll
+键位：us#120
+对象：DLL #US 字符串（record_offset=76527）
+原文： начал убегать!
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[425] 跳过文本
+来源：HUNT_Data/Managed/Assembly-CSharp.dll
+键位：us#152
+对象：DLL #US 字符串（record_offset=76559）
+原文： перестал убегать!
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[426] 跳过文本
+来源：HUNT_Data/Managed/Assembly-CSharp.dll
+键位：skip/us#190
+对象：DLL #US 字符串
+原文：Zone
+译文：（无）
+置信度：low
+原因：code_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[427] 跳过文本
+来源：HUNT_Data/Managed/Assembly-CSharp.dll
+键位：us#200
+对象：DLL #US 字符串（record_offset=76607）
+原文：Mouse X
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[428] 跳过文本
+来源：HUNT_Data/Managed/Assembly-CSharp.dll
+键位：us#216
+对象：DLL #US 字符串（record_offset=76623）
+原文：Mouse Y
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[429] 跳过文本
+来源：HUNT_Data/Managed/Assembly-CSharp.dll
+键位：us#232
+对象：DLL #US 字符串（record_offset=76639）
+原文：Чувствительность камеры изменена на: {0}
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[430] 跳过文本
+来源：HUNT_Data/Managed/Assembly-CSharp.dll
+键位：us#314
+对象：DLL #US 字符串（record_offset=76721）
+原文：Применена чувствительность из SettingManager: {0}
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[431] 跳过文本
+来源：HUNT_Data/Managed/Assembly-CSharp.dll
+键位：us#414
+对象：DLL #US 字符串（record_offset=76821）
+原文：Camera.main не найден!
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[432] 跳过文本
+来源：HUNT_Data/Managed/Assembly-CSharp.dll
+键位：skip/us#460
+对象：DLL #US 字符串
+原文：Horizontal
+译文：（无）
+置信度：low
+原因：code_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[433] 跳过文本
+来源：HUNT_Data/Managed/Assembly-CSharp.dll
+键位：skip/us#482
+对象：DLL #US 字符串
+原文：Vertical
+译文：（无）
+置信度：low
+原因：code_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[434] 跳过文本
+来源：HUNT_Data/Managed/Assembly-CSharp.dll
+键位：skip/us#500
+对象：DLL #US 字符串
+原文：Jump
+译文：（无）
+置信度：low
+原因：code_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[435] 跳过文本
+来源：HUNT_Data/Managed/Assembly-CSharp.dll
+键位：skip/us#510
+对象：DLL #US 字符串
+原文：Game3
+译文：（无）
+置信度：low
+原因：code_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[436] 跳过文本
+来源：HUNT_Data/Managed/Assembly-CSharp.dll
+键位：us#522
+对象：DLL #US 字符串（record_offset=76929）
+原文：Лиса 
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[437] 跳过文本
+来源：HUNT_Data/Managed/Assembly-CSharp.dll
+键位：us#534
+对象：DLL #US 字符串（record_offset=76941）
+原文： убита!
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[438] 跳过文本
+来源：HUNT_Data/Managed/Assembly-CSharp.dll
+键位：us#550
+对象：DLL #US 字符串（record_offset=76957）
+原文： воскрешена!
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[439] 跳过文本
+来源：HUNT_Data/Managed/Assembly-CSharp.dll
+键位：us#576
+对象：DLL #US 字符串（record_offset=76983）
+原文：Выстрел в объект, не являющийся целью
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[440] 跳过文本
+来源：HUNT_Data/Managed/Assembly-CSharp.dll
+键位：us#652
+对象：DLL #US 字符串（record_offset=77059）
+原文：Промах!
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[441] 跳过文本
+来源：HUNT_Data/Managed/Assembly-CSharp.dll
+键位：us#668
+对象：DLL #US 字符串（record_offset=77075）
+原文：Все цели уничтожены!
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[442] 跳过文本
+来源：HUNT_Data/Managed/Assembly-CSharp.dll
+键位：skip/us#710
+对象：DLL #US 字符串
+原文：{0}/{1}
+译文：（无）
+置信度：low
+原因：hard_structural
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[443] 跳过文本
+来源：HUNT_Data/Managed/Assembly-CSharp.dll
+键位：skip/us#726
+对象：DLL #US 字符串
+原文：Game2
+译文：（无）
+置信度：low
+原因：code_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[444] 跳过文本
+来源：HUNT_Data/Managed/Assembly-CSharp.dll
+键位：skip/us#738
+对象：DLL #US 字符串
+原文：Game1
+译文：（无）
+置信度：low
+原因：code_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[445] 跳过文本
+来源：HUNT_Data/Managed/Assembly-CSharp.dll
+键位：us#750
+对象：DLL #US 字符串（record_offset=77157）
+原文：Кролик 
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[446] 跳过文本
+来源：HUNT_Data/Managed/Assembly-CSharp.dll
+键位：us#766
+对象：DLL #US 字符串（record_offset=77173）
+原文： убит!
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[447] 跳过文本
+来源：HUNT_Data/Managed/Assembly-CSharp.dll
+键位：us#780
+对象：DLL #US 字符串（record_offset=77187）
+原文： воскрешен!
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[448] 跳过文本
+来源：HUNT_Data/Managed/Assembly-CSharp.dll
+键位：skip/us#804
+对象：DLL #US 字符串
+原文：StartAnimation
+译文：（无）
+置信度：low
+原因：code_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[449] 跳过文本
+来源：HUNT_Data/Managed/Assembly-CSharp.dll
+键位：us#834
+对象：DLL #US 字符串（record_offset=77241）
+原文：Анимация уже выполняется
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[450] 跳过文本
+来源：HUNT_Data/Managed/Assembly-CSharp.dll
+键位：us#884
+对象：DLL #US 字符串（record_offset=77291）
+原文：Target Text не назначен!
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[451] 跳过文本
+来源：HUNT_Data/Managed/Assembly-CSharp.dll
+键位：us#934
+对象：DLL #US 字符串（record_offset=77341）
+原文：AudioSource не назначен
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[452] 跳过文本
+来源：HUNT_Data/Managed/Assembly-CSharp.dll
+键位：us#982
+对象：DLL #US 字符串（record_offset=77389）
+原文：AudioClip не назначен
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[453] 跳过文本
+来源：HUNT_Data/Managed/Assembly-CSharp.dll
+键位：skip/us#1026
+对象：DLL #US 字符串
+原文：SettingManager
+译文：（无）
+置信度：low
+原因：code_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[454] 跳过文本
+来源：HUNT_Data/Managed/Assembly-CSharp.dll
+键位：us#1056
+对象：DLL #US 字符串（record_offset=77463）
+原文：Настройки загружены из 
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[455] 跳过文本
+来源：HUNT_Data/Managed/Assembly-CSharp.dll
+键位：us#1104
+对象：DLL #US 字符串（record_offset=77511）
+原文：Sensitivity: {0}
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[456] 跳过文本
+来源：HUNT_Data/Managed/Assembly-CSharp.dll
+键位：us#1138
+对象：DLL #US 字符串（record_offset=77545）
+原文：Ошибка загрузки настроек: 
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[457] 跳过文本
+来源：HUNT_Data/Managed/Assembly-CSharp.dll
+键位：us#1192
+对象：DLL #US 字符串（record_offset=77599）
+原文：Файл настроек не найден. Создаем новый по пути: 
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[458] 跳过文本
+来源：HUNT_Data/Managed/Assembly-CSharp.dll
+键位：us#1290
+对象：DLL #US 字符串（record_offset=77697）
+原文：Настройки сохранены в 
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[459] 跳过文本
+来源：HUNT_Data/Managed/Assembly-CSharp.dll
+键位：us#1336
+对象：DLL #US 字符串（record_offset=77743）
+原文：Ошибка сохранения настроек: 
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[460] 跳过文本
+来源：HUNT_Data/Managed/Assembly-CSharp.dll
+键位：skip/us#1394
+对象：DLL #US 字符串
+原文：sensitivity
+译文：（无）
+置信度：low
+原因：code_identifier
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[461] 跳过文本
+来源：HUNT_Data/Managed/Assembly-CSharp.dll
+键位：us#1418
+对象：DLL #US 字符串（record_offset=77825）
+原文：Применена чувствительность камеры: {0}
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[462] 跳过文本
+来源：HUNT_Data/Managed/Assembly-CSharp.dll
+键位：us#1497
+对象：DLL #US 字符串（record_offset=77903）
+原文：Поле sensitivity не найдено в BoomerCamera. Возможно, оно изменилось.
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[463] 跳过文本
+来源：HUNT_Data/Managed/Assembly-CSharp.dll
+键位：us#1637
+对象：DLL #US 字符串（record_offset=78044）
+原文：BoomerCamera не найдена, попробуем найти позже...
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[464] 跳过文本
+来源：HUNT_Data/Managed/Assembly-CSharp.dll
+键位：skip/us#1737
+对象：DLL #US 字符串
+原文：settings.json
+译文：（无）
+置信度：low
+原因：hard_structural
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[465] 跳过文本
+来源：HUNT_Data/Managed/Assembly-CSharp.dll
+键位：us#1765
+对象：DLL #US 字符串（record_offset=78172）
+原文：Все лисы заспавнены!
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[466] 跳过文本
+来源：HUNT_Data/Managed/Assembly-CSharp.dll
+键位：us#1807
+对象：DLL #US 字符串（record_offset=78214）
+原文：Лиса {0} активирована!
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[467] 跳过文本
+来源：HUNT_Data/Managed/Assembly-CSharp.dll
+键位：skip/us#1853
+对象：DLL #US 字符串
+原文：[<#FFFF80>
+译文：（无）
+置信度：low
+原因：hard_structural
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[468] 跳过文本
+来源：HUNT_Data/Managed/Assembly-CSharp.dll
+键位：skip/us#1875
+对象：DLL #US 字符串
+原文：d2
+译文：（无）
+置信度：low
+原因：engine_core
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[469] 跳过文本
+来源：HUNT_Data/Managed/Assembly-CSharp.dll
+键位：skip/us#1881
+对象：DLL #US 字符串
+原文：:
+译文：（无）
+置信度：low
+原因：hard_structural
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[470] 跳过文本
+来源：HUNT_Data/Managed/Assembly-CSharp.dll
+键位：skip/us#1885
+对象：DLL #US 字符串
+原文：</color>] 
+译文：（无）
+置信度：low
+原因：hard_structural
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[471] 跳过文本
+来源：HUNT_Data/Managed/Assembly-CSharp.dll
+键位：skip/us#1907
+对象：DLL #US 字符串
+原文：
+
+译文：（无）
+置信度：low
+原因：hard_structural
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[472] 跳过文本
+来源：HUNT_Data/Managed/Assembly-CSharp.dll
+键位：us#1911
+对象：DLL #US 字符串（record_offset=78318）
+原文：Error: Please make a selection
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[473] 跳过文本
+来源：HUNT_Data/Managed/Assembly-CSharp.dll
+键位：us#1973
+对象：DLL #US 字符串（record_offset=78380）
+原文：Selected values:
+
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[474] 跳过文本
+来源：HUNT_Data/Managed/Assembly-CSharp.dll
+键位：skip/us#2009
+对象：DLL #US 字符串
+原文： - 
+译文：（无）
+置信度：low
+原因：hard_structural
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[475] 跳过文本
+来源：HUNT_Data/Managed/Assembly-CSharp.dll
+键位：us#2017
+对象：DLL #US 字符串（record_offset=78424）
+原文：Trying to validate...
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[476] 跳过文本
+来源：HUNT_Data/Managed/Assembly-CSharp.dll
+键位：skip/us#2061
+对象：DLL #US 字符串
+原文：(
+译文：（无）
+置信度：low
+原因：hard_structural
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[477] 跳过文本
+来源：HUNT_Data/Managed/Assembly-CSharp.dll
+键位：skip/us#2065
+对象：DLL #US 字符串
+原文：) 
+译文：（无）
+置信度：low
+原因：hard_structural
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[478] 跳过文本
+来源：HUNT_Data/Managed/Assembly-CSharp.dll
+键位：skip/us#2071
+对象：DLL #US 字符串
+原文： 
+译文：（无）
+置信度：low
+原因：hard_structural
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[479] 跳过文本
+来源：HUNT_Data/Managed/Assembly-CSharp.dll
+键位：us#2083
+对象：DLL #US 字符串（record_offset=78490）
+原文：Fonts/ARIAL
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[480] 跳过文本
+来源：HUNT_Data/Managed/Assembly-CSharp.dll
+键位：skip/us#2107
+对象：DLL #US 字符串
+原文：TextMeshPro/Mobile/Distance Field SSD
+译文：（无）
+置信度：low
+原因：engine_core
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[481] 跳过文本
+来源：HUNT_Data/Managed/Assembly-CSharp.dll
+键位：skip/us#2241
+对象：DLL #US 字符串
+原文：Text - 
+译文：（无）
+置信度：low
+原因：engine_core
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[482] 跳过文本
+来源：HUNT_Data/Managed/Assembly-CSharp.dll
+键位：skip/us#2267
+对象：DLL #US 字符串
+原文： pts - Lorem ipsum dolor sit...
+译文：（无）
+置信度：low
+原因：engine_core
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[483] 跳过文本
+来源：HUNT_Data/Managed/Assembly-CSharp.dll
+键位：us#2331
+对象：DLL #US 字符串（record_offset=78738）
+原文：Camera Target
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[484] 跳过文本
+来源：HUNT_Data/Managed/Assembly-CSharp.dll
+键位：us#2359
+对象：DLL #US 字符串（record_offset=78766）
+原文：Mouse ScrollWheel
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[485] 跳过文本
+来源：HUNT_Data/Managed/Assembly-CSharp.dll
+键位：us#2395
+对象：DLL #US 字符串（record_offset=78802）
+原文：The <#0050FF>count is: </color>{0:2}
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[486] 跳过文本
+来源：HUNT_Data/Managed/Assembly-CSharp.dll
+键位：us#2689
+对象：DLL #US 字符串（record_offset=79096）
+原文：The count is <#0080ff>{0}</color>
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[487] 跳过文本
+来源：HUNT_Data/Managed/Assembly-CSharp.dll
+键位：us#2757
+对象：DLL #US 字符串（record_offset=79164）
+原文：Frame Counter
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[488] 跳过文本
+来源：HUNT_Data/Managed/Assembly-CSharp.dll
+键位：us#3035
+对象：DLL #US 字符串（record_offset=79442）
+原文：{0:2}</color> <#8080ff>FPS 
+<#FF8000>{1:2} <#8080ff>MS
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[489] 跳过文本
+来源：HUNT_Data/Managed/Assembly-CSharp.dll
+键位：us#3145
+对象：DLL #US 字符串（record_offset=79552）
+原文：Character [
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[490] 跳过文本
+来源：HUNT_Data/Managed/Assembly-CSharp.dll
+键位：us#3169
+对象：DLL #US 字符串（record_offset=79576）
+原文：] at Index: 
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[491] 跳过文本
+来源：HUNT_Data/Managed/Assembly-CSharp.dll
+键位：us#3195
+对象：DLL #US 字符串（record_offset=79602）
+原文： has been selected.
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[492] 跳过文本
+来源：HUNT_Data/Managed/Assembly-CSharp.dll
+键位：us#3235
+对象：DLL #US 字符串（record_offset=79642）
+原文：Sprite [
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[493] 跳过文本
+来源：HUNT_Data/Managed/Assembly-CSharp.dll
+键位：us#3253
+对象：DLL #US 字符串（record_offset=79660）
+原文：Word [
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[494] 跳过文本
+来源：HUNT_Data/Managed/Assembly-CSharp.dll
+键位：us#3267
+对象：DLL #US 字符串（record_offset=79674）
+原文：] with first character index of 
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[495] 跳过文本
+来源：HUNT_Data/Managed/Assembly-CSharp.dll
+键位：us#3365
+对象：DLL #US 字符串（record_offset=79772）
+原文：Line [
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[496] 跳过文本
+来源：HUNT_Data/Managed/Assembly-CSharp.dll
+键位：us#3379
+对象：DLL #US 字符串（record_offset=79786）
+原文：Link Index: 
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[497] 跳过文本
+来源：HUNT_Data/Managed/Assembly-CSharp.dll
+键位：us#3405
+对象：DLL #US 字符串（record_offset=79812）
+原文： with ID [
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[498] 跳过文本
+来源：HUNT_Data/Managed/Assembly-CSharp.dll
+键位：us#3427
+对象：DLL #US 字符串（record_offset=79834）
+原文：] and Text "
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[499] 跳过文本
+来源：HUNT_Data/Managed/Assembly-CSharp.dll
+键位：us#3453
+对象：DLL #US 字符串（record_offset=79860）
+原文：" has been selected.
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[500] 跳过文本
+来源：HUNT_Data/Managed/Assembly-CSharp.dll
+键位：us#3519
+对象：DLL #US 字符串（record_offset=79926）
+原文：OnPointerEnter()
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[501] 跳过文本
+来源：HUNT_Data/Managed/Assembly-CSharp.dll
+键位：us#3553
+对象：DLL #US 字符串（record_offset=79960）
+原文：OnPointerExit()
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[502] 跳过文本
+来源：HUNT_Data/Managed/Assembly-CSharp.dll
+键位：us#3893
+对象：DLL #US 字符串（record_offset=80299）
+原文：Example <sprite=2> of using <sprite=7> <#ffa000>Graphics Inline</color> <sprite=5> with Text in <font="Bangers SDF" material="Bangers SDF - Drop Shadow">TextMesh<#40a0ff>Pro</color></font><sprite=0> and Unity<sprite=1>
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[503] 跳过文本
+来源：HUNT_Data/Managed/Assembly-CSharp.dll
+键位：us#4332
+对象：DLL #US 字符串（record_offset=80738）
+原文：Example <sprite=2> of using <sprite=7> <#ffa000>Graphics Inline</color> <sprite=5> with Text in <font="Bangers SDF" material="Bangers SDF - Drop Shadow">TextMesh<#40a0ff>Pro</color></font><sprite=0> and Unity<sprite=2>
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[504] 跳过文本
+来源：HUNT_Data/Managed/Assembly-CSharp.dll
+键位：us#4770
+对象：DLL #US 字符串（record_offset=81177）
+原文： floating text
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[505] 跳过文本
+来源：HUNT_Data/Managed/Assembly-CSharp.dll
+键位：us#4800
+对象：DLL #US 字符串（record_offset=81207）
+原文：Объект биты активирован!
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[506] 跳过文本
+来源：HUNT_Data/Managed/Assembly-CSharp.dll
+键位：us#4850
+对象：DLL #US 字符串（record_offset=81257）
+原文：Воспроизведение звука биты!
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[507] 跳过文本
+来源：HUNT_Data/Managed/Assembly-CSharp.dll
+键位：skip/us#4906
+对象：DLL #US 字符串
+原文：_EnvMatrix
+译文：（无）
+置信度：low
+原因：engine_core
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[508] 跳过文本
+来源：HUNT_Data/Managed/Assembly-CSharp.dll
+键位：us#4928
+对象：DLL #US 字符串（record_offset=81335）
+原文：Fonts & Materials/LiberationSans SDF - Drop Shadow
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[509] 跳过文本
+来源：HUNT_Data/Managed/Assembly-CSharp.dll
+键位：us#5030
+对象：DLL #US 字符串（record_offset=81437）
+原文：The <#0050FF>count is: </color>{0}
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[510] 跳过文本
+来源：HUNT_Data/Managed/Assembly-CSharp.dll
+键位：us#5100
+对象：DLL #US 字符串（record_offset=81507）
+原文：The <color=#0050FF>count is: </color>
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[511] 跳过文本
+来源：HUNT_Data/Managed/Assembly-CSharp.dll
+键位：us#5266
+对象：DLL #US 字符串（record_offset=81673）
+原文：The <#0050FF>count is: </color>
+译文：（无）
+置信度：low
+原因：unverified_user_string
+角色：structural
+质量评分：—（passed=None）
+翻译评价：—
+需要优化：否（审核通过或未审核）
+写回：—

@@ -1,0 +1,488 @@
+游戏：honorplusplus
+导出时间：2026-08-13 04:51:32
+翻译模型：Hy-MT2-1.8B-Q6_K
+失败文本：30 条
+
+────────────────────────────────────────────────────────────────
+[1] 失败文本
+来源：Honor++_Data/level1
+键位：asset#level1#7070/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=7070）
+原文：logout
+译文：Logout
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：untranslated_text（passed=False）
+翻译评价：untranslated_text
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[2] 失败文本
+来源：Honor++_Data/level1
+键位：asset#level1#7081/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=7081）
+原文： honor++
+译文：honor++
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：untranslated_text（passed=False）
+翻译评价：untranslated_text
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[3] 失败文本
+来源：Honor++_Data/level1
+键位：asset#level1#7096/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=7096）
+原文：VSYNC COUNT
+译文：VSYNC计数
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：glossary_mismatch（passed=False）
+翻译评价：glossary_mismatch
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[4] 失败文本
+来源：Honor++_Data/level1
+键位：asset#level1#7435/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=7435）
+原文：HUD SIZE
+译文：HUD SIZE
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：glossary_mismatch（passed=False）
+翻译评价：glossary_mismatch
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[5] 失败文本
+来源：Honor++_Data/level2
+键位：asset#level2#1537/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=1537）
+原文：ragdolls
+译文：ragdolls
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：untranslated_text（passed=False）
+翻译评价：untranslated_text
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[6] 失败文本
+来源：Honor++_Data/level2
+键位：asset#level2#1616/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=1616）
+原文：resume
+译文：简历
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：builtin_ui_mismatch（passed=False）
+翻译评价：builtin_ui_mismatch
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[7] 失败文本
+来源：Honor++_Data/level2
+键位：asset#level2#1678/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=1678）
+原文：TextTimedShowUI, Game
+译文：TextTimedShowUI, Game
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：glossary_mismatch（passed=False）
+翻译评价：glossary_mismatch
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[8] 失败文本
+来源：Honor++_Data/level2
+键位：asset#level2#2068/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=2068）
+原文：TextTimedShowUI, Game
+译文：TextTimedShowUI, Game
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：glossary_mismatch（passed=False）
+翻译评价：glossary_mismatch
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[9] 失败文本
+来源：Honor++_Data/level2
+键位：asset#level2#2096/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=2096）
+原文：TextTimedShowUI, Game
+译文：TextTimedShowUI, Game
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：glossary_mismatch（passed=False）
+翻译评价：glossary_mismatch
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[10] 失败文本
+来源：Honor++_Data/level2
+键位：asset#level2#2159/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=2159）
+原文：TextTimedShowUI, Game
+译文：TextTimedShowUI, Game
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：glossary_mismatch（passed=False）
+翻译评价：glossary_mismatch
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[11] 失败文本
+来源：Honor++_Data/level2
+键位：asset#level2#2234/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=2234）
+原文：TextTimedShowUI, Game
+译文：TextTimedShowUI, Game
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：glossary_mismatch（passed=False）
+翻译评价：glossary_mismatch
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[12] 失败文本
+来源：Honor++_Data/sharedassets3.assets
+键位：asset#sharedassets3.assets#1883/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets3.assets、obj=1883）
+原文：TextTimedShowUI, Game
+译文：TextTimedShowUI, Game
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：glossary_mismatch（passed=False）
+翻译评价：glossary_mismatch
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[13] 失败文本
+来源：Honor++_Data/sharedassets3.assets
+键位：asset#sharedassets3.assets#1944/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets3.assets、obj=1944）
+原文：ragdolls
+译文：ragdolls
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：untranslated_text（passed=False）
+翻译评价：untranslated_text
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[14] 失败文本
+来源：Honor++_Data/sharedassets3.assets
+键位：asset#sharedassets3.assets#2359/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets3.assets、obj=2359）
+原文：resume
+译文：简历
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：builtin_ui_mismatch（passed=False）
+翻译评价：builtin_ui_mismatch
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[15] 失败文本
+来源：Honor++_Data/sharedassets3.assets
+键位：asset#sharedassets3.assets#2367/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets3.assets、obj=2367）
+原文：TextTimedShowUI, Game
+译文：TextTimedShowUI, Game
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：glossary_mismatch（passed=False）
+翻译评价：glossary_mismatch
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[16] 失败文本
+来源：Honor++_Data/sharedassets3.assets
+键位：asset#sharedassets3.assets#2398/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets3.assets、obj=2398）
+原文：TextTimedShowUI, Game
+译文：TextTimedShowUI, Game
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：glossary_mismatch（passed=False）
+翻译评价：glossary_mismatch
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[17] 失败文本
+来源：Honor++_Data/sharedassets3.assets
+键位：asset#sharedassets3.assets#2480/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets3.assets、obj=2480）
+原文：TextTimedShowUI, Game
+译文：TextTimedShowUI, Game
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：glossary_mismatch（passed=False）
+翻译评价：glossary_mismatch
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[18] 失败文本
+来源：Honor++_Data/sharedassets3.assets
+键位：asset#sharedassets3.assets#2573/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets3.assets、obj=2573）
+原文：TextTimedShowUI, Game
+译文：TextTimedShowUI, Game
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：glossary_mismatch（passed=False）
+翻译评价：glossary_mismatch
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[19] 失败文本
+来源：Honor++_Data/Managed/Assembly-CSharp-firstpass.dll
+键位：us#9810
+对象：DLL #US 字符串（record_offset=84496）
+原文：<b>WASD</b> to move
+<b>Space</b> to Jump
+<b>C</b> to crouch
+<b>Left Shift</b> to sprint
+译文：使用 <b>WASD</b> 进行移动
+使用 <b>Space</b> 进行跳跃
+使用 <b>C</b> 进行蹲伏
+使用 <b>Left Shift</b> 进行冲刺
+置信度：medium
+原因：user_string_uppercase_ui
+角色：display
+质量评分：glossary_mismatch（passed=False）
+翻译评价：glossary_mismatch
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[20] 失败文本
+来源：Honor++_Data/Managed/Assembly-CSharp-firstpass.dll
+键位：us#9987
+对象：DLL #US 字符串（record_offset=84673）
+原文：<b>WASD</b> to move
+<b>Mouse</b> to look around
+<b>Scrollbar wheel</b> to zoom in / out
+<b>Space</b> to Jump
+<b>C</b> to crouch
+<b>Left Shift</b> to sprint
+译文：使用 <b>WASD</b> 进行移动
+使用 <b>鼠标</b> 查看周围环境
+使用 <b>滚动条滚轮</b> 进行缩放
+按下 <b>空格键</b> 进行跳跃
+按下 <b>C</b> 键进行蹲伏
+同时按下 <b>左Shift键</b> 进行快速移动
+置信度：medium
+原因：user_string_uppercase_ui
+角色：display
+质量评分：glossary_mismatch（passed=False）
+翻译评价：glossary_mismatch
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[21] 失败文本
+来源：Honor++_Data/Managed/Assembly-CSharp-firstpass.dll
+键位：us#10300
+对象：DLL #US 字符串（record_offset=84986）
+原文：<b>WASD</b> to move
+<b>Mouse</b> to look around
+<b>Space</b> to Jump
+<b>C</b> to crouch
+<b>Left Shift</b> to sprint
+译文：使用 <b>WASD</b> 进行移动
+使用 <b>鼠标</b> 查看周围环境
+按下 <b>空格键</b> 进行跳跃
+按下 <b>C</b> 键进行蹲伏
+按下 <b>Left Shift</b> 键进行快速移动
+置信度：medium
+原因：user_string_uppercase_ui
+角色：display
+质量评分：glossary_mismatch（passed=False）
+翻译评价：glossary_mismatch
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[22] 失败文本
+来源：Honor++_Data/Managed/Assembly-CSharp-firstpass.dll
+键位：us#10533
+对象：DLL #US 字符串（record_offset=85219）
+原文：<b>WASD</b> to move
+<b>Mouse click</b> to move
+<b>Space</b> to Jump
+<b>C</b> to crouch
+<b>Left Shift</b> to sprint
+译文：使用 <b>WASD</b> 进行移动
+使用 <b>鼠标点击</b>进行移动
+按下 <b>Space</b> 键进行跳跃
+按下 <b>C</b> 键进行蹲伏
+同时按下 <b>Left Shift</b> 键进行快速移动
+置信度：medium
+原因：user_string_uppercase_ui
+角色：display
+质量评分：glossary_mismatch（passed=False）
+翻译评价：glossary_mismatch
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[23] 失败文本
+来源：Honor++_Data/Managed/FMODUnity.dll
+键位：us#15952
+对象：DLL #US 字符串（record_offset=198939）
+原文：VOLUME: RMS = {0:f2}db
+
+译文：VOLUME: RMS = {0:f2}db
+
+置信度：medium
+原因：user_string_uppercase_ui
+角色：display
+质量评分：untranslated_text、glossary_mismatch（passed=False）
+翻译评价：untranslated_text、glossary_mismatch
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[24] 失败文本
+来源：Honor++_Data/Managed/MeshBakerCore.dll
+键位：us#9281
+对象：DLL #US 字符串（record_offset=259732）
+原文：frm={0} DEBUG {1}
+译文：frm={0} DEBUG {1}
+置信度：medium
+原因：user_string_uppercase_ui
+角色：display
+质量评分：untranslated_text（passed=False）
+翻译评价：untranslated_text
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[25] 失败文本
+来源：Honor++_Data/Managed/MeshBakerCore.dll
+键位：us#9317
+对象：DLL #US 字符串（record_offset=259768）
+原文：frm={0} TRACE {1}
+译文：frm={0} TRACE {1}
+置信度：medium
+原因：user_string_uppercase_ui
+角色：display
+质量评分：untranslated_text（passed=False）
+翻译评价：untranslated_text
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[26] 失败文本
+来源：Honor++_Data/Managed/MeshBakerCore.dll
+键位：us#9445
+对象：DLL #US 字符串（record_offset=259896）
+原文：f={0} DEBUG {1}
+译文：f={0} DEBUG {1}
+置信度：medium
+原因：user_string_uppercase_ui
+角色：display
+质量评分：untranslated_text（passed=False）
+翻译评价：untranslated_text
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[27] 失败文本
+来源：Honor++_Data/Managed/MeshBakerCore.dll
+键位：us#9477
+对象：DLL #US 字符串（record_offset=259928）
+原文：f={0} TRACE {1}
+译文：f={0} TRACE {1}
+置信度：medium
+原因：user_string_uppercase_ui
+角色：display
+质量评分：untranslated_text（passed=False）
+翻译评价：untranslated_text
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[28] 失败文本
+来源：Honor++_Data/Managed/ProceduralWorlds.SceneOptimizer.Core.dll
+键位：us#48
+对象：DLL #US 字符串（record_offset=272571）
+原文：x[{0:F8},{1:F8}] y[{2:F8},{3:F8}] z[{4:F8},{5:F8}]
+译文：x[{0:F8},{1:F8}] y[{2:F8},{3:F8}] z[{4:F8},{5:F8}]
+置信度：high
+原因：mono_ui_setter
+角色：display
+质量评分：target_script_mismatch（passed=False）
+翻译评价：target_script_mismatch
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[29] 失败文本
+来源：Honor++_Data/Managed/ProceduralWorlds.SceneOptimizer.Core.dll
+键位：us#1249
+对象：DLL #US 字符串（record_offset=273772）
+原文：public
+译文：public
+置信度：high
+原因：mono_ui_setter
+角色：display
+质量评分：untranslated_text（passed=False）
+翻译评价：untranslated_text
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[30] 失败文本
+来源：Honor++_Data/Managed/ProceduralWorlds.SceneOptimizer.Core.dll
+键位：us#2103
+对象：DLL #US 字符串（record_offset=274626）
+原文：Max: {0:0}
+译文：Max: {0:0}
+置信度：high
+原因：mono_ui_setter
+角色：display
+质量评分：untranslated_text（passed=False）
+翻译评价：untranslated_text
+需要优化：否（审核通过或未审核）
+写回：—

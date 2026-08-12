@@ -1,0 +1,7769 @@
+游戏：honorplusplus
+导出时间：2026-08-13 04:51:32
+翻译模型：Hy-MT2-1.8B-Q6_K
+成功文本：499 条
+
+────────────────────────────────────────────────────────────────
+[1] 成功文本
+来源：Honor++_Data/app.info
+键位：plain/1
+对象：纯文本文件行
+原文：Honor++
+译文：Honor++
+置信度：medium
+原因：—
+角色：—
+质量评分：—（passed=True）
+翻译评价：回显保留原文（未实际翻译）
+需要优化：是（回显未翻译）
+写回：未执行（回显——译文与原文相同，无需写回）
+
+────────────────────────────────────────────────────────────────
+[2] 成功文本
+来源：Honor++_Data/level1
+键位：asset#level1#7020/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=7020）
+原文：join
+译文：加入
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[3] 成功文本
+来源：Honor++_Data/level1
+键位：asset#level1#7021/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=7021）
+原文：off
+译文：关闭
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[4] 成功文本
+来源：Honor++_Data/level1
+键位：asset#level1#7023/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=7023）
+原文：high
+译文：高
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[5] 成功文本
+来源：Honor++_Data/level1
+键位：asset#level1#7024/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=7024）
+原文：ragdoll count
+译文：ragdoll 计数
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[6] 成功文本
+来源：Honor++_Data/level1
+键位：asset#level1#7026/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=7026）
+原文：FULL SCREEN
+译文：全屏显示
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[7] 成功文本
+来源：Honor++_Data/level1
+键位：asset#level1#7029/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=7029）
+原文：NO sessions found
+译文：未找到相关会话。
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[8] 成功文本
+来源：Honor++_Data/level1
+键位：asset#level1#7030/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=7030）
+原文：host
+译文：主机
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[9] 成功文本
+来源：Honor++_Data/level1
+键位：asset#level1#7031/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=7031）
+原文：retry
+译文：重试
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[10] 成功文本
+来源：Honor++_Data/level1
+键位：asset#level1#7032/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=7032）
+原文：by time
+译文：随着时间的推移
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[11] 成功文本
+来源：Honor++_Data/level1
+键位：asset#level1#7033/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=7033）
+原文：max players
+译文：最大玩家数
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[12] 成功文本
+来源：Honor++_Data/level1
+键位：asset#level1#7038/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=7038）
+原文：kills
+译文：杀死
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[13] 成功文本
+来源：Honor++_Data/level1
+键位：asset#level1#7039/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=7039）
+原文：VOLUME
+译文：音量
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[14] 成功文本
+来源：Honor++_Data/level1
+键位：asset#level1#7042/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=7042）
+原文：Example
+译文：示例
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[15] 成功文本
+来源：Honor++_Data/level1
+键位：asset#level1#7043/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=7043）
+原文：QUALITY
+译文：质量
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[16] 成功文本
+来源：Honor++_Data/level1
+键位：asset#level1#7044/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=7044）
+原文：max health
+译文：最大值健康
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[17] 成功文本
+来源：Honor++_Data/level1
+键位：asset#level1#7046/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=7046）
+原文：username
+译文：用户名
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[18] 成功文本
+来源：Honor++_Data/level1
+键位：asset#level1#7047/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=7047）
+原文：settings
+译文：设置
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[19] 成功文本
+来源：Honor++_Data/level1
+键位：asset#level1#7050/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=7050）
+原文：map
+译文：地图
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[20] 成功文本
+来源：Honor++_Data/level1
+键位：asset#level1#7051/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=7051）
+原文：FULL SCREEN
+译文：全屏显示
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[21] 成功文本
+来源：Honor++_Data/level1
+键位：asset#level1#7052/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=7052）
+原文：Audio, Sound, SFX
+译文：音频、声音、音效
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[22] 成功文本
+来源：Honor++_Data/level1
+键位：asset#level1#7053/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=7053）
+原文：<u>Bug Fixes</u>
+
+-Fixed an issue where players could clip through walls
+
+-Resolved a bug causing incorrect hitbox registration for overhead strikes
+
+-Addressed desync issues in online multiplayer matches
+
+<u>Performance Improvements</u>
+
+-Optimized particle effects for better performance on lower-end systems
+
+-Reduced loading times for all maps by approximately 20%
+
+
+译文：<u>漏洞修复</u>
+
+-解决了玩家能够穿透墙壁的问题
+-解决了因上方攻击导致碰撞体注册错误的问题
+-解决了在线多人游戏中的同步问题
+
+<u>性能改进</u>
+
+-优化了粒子效果，使其在低配置系统中表现更好
+-所有地图的加载时间减少了约20%
+
+
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[23] 成功文本
+来源：Honor++_Data/level1
+键位：asset#level1#7055/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=7055）
+原文：character
+译文：字符
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[24] 成功文本
+来源：Honor++_Data/level1
+键位：asset#level1#7056/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=7056）
+原文：BRIGHTNESS
+译文：亮度
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[25] 成功文本
+来源：Honor++_Data/level1
+键位：asset#level1#7058/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=7058）
+原文：off
+译文：关闭
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[26] 成功文本
+来源：Honor++_Data/level1
+键位：asset#level1#7059/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=7059）
+原文：credits
+译文：致谢
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[27] 成功文本
+来源：Honor++_Data/level1
+键位：asset#level1#7060/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=7060）
+原文：Potato PC
+译文：土豆电脑
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[28] 成功文本
+来源：Honor++_Data/level1
+键位：asset#level1#7061/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=7061）
+原文：Resolution
+译文：分辨率
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[29] 成功文本
+来源：Honor++_Data/level1
+键位：asset#level1#7062/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=7062）
+原文：play
+译文：播放
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[30] 成功文本
+来源：Honor++_Data/level1
+键位：asset#level1#7065/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=7065）
+原文：host
+译文：主机
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[31] 成功文本
+来源：Honor++_Data/level1
+键位：asset#level1#7068/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=7068）
+原文：Booting up...
+Mounting system drive...
+Checking system resources...<waitfor=0.1>
+Loading configuration files...
+Initializing modules...
+Scanning for network devices...
+Status ERROR...<waitfor=0.2>
+Establishing connection...
+Calculating checksums...
+Synchronizing services...
+Status ERROR...<waitfor=0.2>
+Updating firmware...
+Status ERROR...
+Configuring peripherals...
+Mounting virtual drives...
+Initializing encryption...
+Establishing connection to the RYFT...<waitfor=0.2>
+Aligning the ley lines...
+Scanning for anomalies...
+Status ERROR...<waitfor=0.1>
+Decrypting the portal framework...
+Running diagnostics on the interdimensional gateway...
+Status ERROR...
+Aligning the quantum frequencies...
+Injecting the neural interface...
+Status ERROR...
+Activating the interstellar beacon...
+Probing the datastream...
+Status ERROR...
+Status ERROR...
+Status ERROR...<waitfor=0.2>
+Status OK...
+Loading UI...
+译文：正在启动中……
+正在挂载系统驱动器……
+正在检查系统资源……<waitfor=0.1>
+正在加载配置文件……
+正在初始化模块……
+正在扫描网络设备……
+状态：ERROR...<waitfor=0.2>
+建立连接中……
+正在计算校验和……
+同步服务中……
+状态：错误……<waitfor=0.2>
+正在更新固件……
+状态：错误……
+配置外围设备……
+正在挂载虚拟驱动器……
+正在初始化加密过程……
+建立与 RYFT 的连接……<waitfor=0.2>
+对齐那些地脉线……
+正在扫描异常情况……
+状态：错误...<waitfor=0.1>
+正在解密门户框架……
+正在对跨维度网关进行诊断……
+状态：错误...
+使量子频率保持一致……
+正在注入神经接口……
+状态：错误……
+激活星际信标……
+正在探测数据流……
+状态：错误……
+状态：错误……
+状态：错误...<waitfor=0.2>
+状态正常……
+加载中…
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：需优化（审核：信息完整性——译文严重偏离原文，大量增加原文不存在的步骤（如“注入神经接口”、“激活星际信标”等），导致游戏流程逻辑错误。）
+需要优化：是（审核：信息完整性——译文严重偏离原文，大量增加原文不存在的步骤（如“注入神经接口”、“激活星际信标”等），导致游戏流程逻辑错误。；建议：应严格对应原文，若原文截断，译文也应截断，不可自行续写新步骤。）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[32] 成功文本
+来源：Honor++_Data/level1
+键位：asset#level1#7069/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=7069）
+原文：offline
+译文：离线
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[33] 成功文本
+来源：Honor++_Data/level1
+键位：asset#level1#7072/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=7072）
+原文：settings
+译文：设置
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[34] 成功文本
+来源：Honor++_Data/level1
+键位：asset#level1#7074/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=7074）
+原文：Running...
+Status OK.
+Host Terminated Connection.
+Connection Lost.
+Reason 'KICKED'.
+译文：运行中...
+状态正常。
+主机已终止连接。
+连接丢失。
+原因：“被终止”。
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[35] 成功文本
+来源：Honor++_Data/level1
+键位：asset#level1#7075/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=7075）
+原文：off
+译文：关闭
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[36] 成功文本
+来源：Honor++_Data/level1
+键位：asset#level1#7076/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=7076）
+原文：update available
+译文：更新已可用
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[37] 成功文本
+来源：Honor++_Data/level1
+键位：asset#level1#7079/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=7079）
+原文：Streamer mode
+译文：流媒体模式
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[38] 成功文本
+来源：Honor++_Data/level1
+键位：asset#level1#7085/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=7085）
+原文：max dash
+
+译文：最大 Dash 值
+
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：需优化（审核：术语一致性——术语使用不规范，'Dash'作为游戏机制术语应统一为'闪避'或'闪避值'，而非保留英文或混用。）
+需要优化：是（审核：术语一致性——术语使用不规范，'Dash'作为游戏机制术语应统一为'闪避'或'闪避值'，而非保留英文或混用。；建议：最大闪避值）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[39] 成功文本
+来源：Honor++_Data/level1
+键位：asset#level1#7087/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=7087）
+原文：apply
+译文：应用
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[40] 成功文本
+来源：Honor++_Data/level1
+键位：asset#level1#7088/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=7088）
+原文：5 min
+译文：5分钟
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[41] 成功文本
+来源：Honor++_Data/level1
+键位：asset#level1#7090/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=7090）
+原文：off
+译文：关闭
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[42] 成功文本
+来源：Honor++_Data/level1
+键位：asset#level1#7093/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=7093）
+原文：Art Director, Art Lead, Character Designer, 
+Enviroment Design, Concept Art, Character Artist,
+Texture Artist, Lightning Artist, Enviroment Arist,
+Prop Artist, Character Animator, VFX Artist,
+Shader Artist, UI/UX Artist
+译文：艺术总监，艺术负责人，角色设计师，
+环境设计，概念艺术，角色艺术家，
+纹理艺术家，闪电艺术家，环境艺术家，
+道具艺术家，角色动画师，视觉特效艺术家，
+着色器艺术家，UI/UX设计师
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[43] 成功文本
+来源：Honor++_Data/level1
+键位：asset#level1#7094/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=7094）
+原文：look speed
+译文：查看速度
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[44] 成功文本
+来源：Honor++_Data/level1
+键位：asset#level1#7095/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=7095）
+原文：RESOLUTION
+译文：分辨率
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[45] 成功文本
+来源：Honor++_Data/level1
+键位：asset#level1#7098/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=7098）
+原文：graphics
+译文：图形处理
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[46] 成功文本
+来源：Honor++_Data/level1
+键位：asset#level1#7099/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=7099）
+原文：private
+译文：私有
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[47] 成功文本
+来源：Honor++_Data/level1
+键位：asset#level1#7103/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=7103）
+原文：offline
+译文：离线
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[48] 成功文本
+来源：Honor++_Data/level1
+键位：asset#level1#7104/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=7104）
+原文：GRUEL SCUM
+译文：GRUEL SCUM
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：回显保留原文（未实际翻译）
+需要优化：是（回显未翻译）
+写回：未执行（回显——译文与原文相同，无需写回）
+
+────────────────────────────────────────────────────────────────
+[49] 成功文本
+来源：Honor++_Data/level1
+键位：asset#level1#7105/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=7105）
+原文：connection error
+please try again
+译文：连接错误
+请再试一次
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[50] 成功文本
+来源：Honor++_Data/level1
+键位：asset#level1#7106/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=7106）
+原文：Thank you for playing
+译文：感谢您的参与
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[51] 成功文本
+来源：Honor++_Data/level1
+键位：asset#level1#7108/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=7108）
+原文：play
+译文：播放
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[52] 成功文本
+来源：Honor++_Data/level1
+键位：asset#level1#7109/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=7109）
+原文：GAME QUALITY
+译文：游戏质量
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[53] 成功文本
+来源：Honor++_Data/level1
+键位：asset#level1#7110/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=7110）
+原文：hide room code
+译文：隐藏房间代码
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[54] 成功文本
+来源：Honor++_Data/level1
+键位：asset#level1#7111/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=7111）
+原文：match time
+译文：匹配时间
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[55] 成功文本
+来源：Honor++_Data/level1
+键位：asset#level1#7112/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=7112）
+原文：Director,
+Game Designer, System Designer, Level Designer
+Multiplayer Designer, Lead Programmer, 
+Gameplay Programmer,Network Programmer,
+ Sound Designer, Composer,
+Build Engineer, Project Manager
+译文：主任，
+游戏设计师，系统设计师，关卡设计师
+多人游戏设计师，首席程序员，
+游戏玩法程序员，网络程序员，
+声音设计师，作曲家，
+构建工程师，项目经理
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[56] 成功文本
+来源：Honor++_Data/level1
+键位：asset#level1#7116/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=7116）
+原文：dash cooldown
+译文：冲刺冷却时间
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[57] 成功文本
+来源：Honor++_Data/level1
+键位：asset#level1#7118/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=7118）
+原文：graphics
+译文：图形处理
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[58] 成功文本
+来源：Honor++_Data/level1
+键位：asset#level1#7119/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=7119）
+原文：game by
+译文：由……制作的游戏
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[59] 成功文本
+来源：Honor++_Data/level1
+键位：asset#level1#7120/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=7120）
+原文：connect
+
+译文：连接
+
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[60] 成功文本
+来源：Honor++_Data/level1
+键位：asset#level1#7121/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=7121）
+原文：settings
+译文：设置
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[61] 成功文本
+来源：Honor++_Data/level1
+键位：asset#level1#7122/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=7122）
+原文：connect
+
+译文：连接
+
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[62] 成功文本
+来源：Honor++_Data/level1
+键位：asset#level1#7123/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=7123）
+原文：host
+译文：主机
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[63] 成功文本
+来源：Honor++_Data/level1
+键位：asset#level1#7124/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=7124）
+原文：select
+译文：选择
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[64] 成功文本
+来源：Honor++_Data/level1
+键位：asset#level1#7125/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=7125）
+原文：select
+译文：选择
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[65] 成功文本
+来源：Honor++_Data/level1
+键位：asset#level1#7126/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=7126）
+原文：select
+译文：选择
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[66] 成功文本
+来源：Honor++_Data/level1
+键位：asset#level1#7127/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=7127）
+原文：select
+译文：选择
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[67] 成功文本
+来源：Honor++_Data/level1
+键位：asset#level1#7128/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=7128）
+原文：select
+译文：选择
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[68] 成功文本
+来源：Honor++_Data/level1
+键位：asset#level1#7129/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=7129）
+原文：connect
+
+译文：连接
+
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[69] 成功文本
+来源：Honor++_Data/level1
+键位：asset#level1#7239/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=7239）
+原文：QUALITY
+译文：质量
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[70] 成功文本
+来源：Honor++_Data/level1
+键位：asset#level1#7242/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=7242）
+原文：SHADOW PROJECTION
+译文：阴影投影
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[71] 成功文本
+来源：Honor++_Data/level1
+键位：asset#level1#7245/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=7245）
+原文：REALTIME REFLECTION
+译文：实时反馈
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[72] 成功文本
+来源：Honor++_Data/level1
+键位：asset#level1#7259/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=7259）
+原文：SHADOW CASCADES
+译文：阴影彩妆
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[73] 成功文本
+来源：Honor++_Data/level1
+键位：asset#level1#7282/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=7282）
+原文：QUALITY
+译文：质量
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[74] 成功文本
+来源：Honor++_Data/level1
+键位：asset#level1#7296/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=7296）
+原文：PRESS A KEY FOR REPLACE OTHER KEY
+译文：媒体 A 用于替换其他键的键
+置信度：high
+原因：interaction_prompt
+角色：display
+质量评分：—（passed=True）
+翻译评价：需优化（审核：术语一致性——原文为游戏操作指令，译文误将游戏术语'KEY'（按键）翻译为'媒体'，且句式结构完全错误导致含义不通）
+需要优化：是（审核：术语一致性——原文为游戏操作指令，译文误将游戏术语'KEY'（按键）翻译为'媒体'，且句式结构完全错误导致含义不通；建议：按 A 键以替换其他键）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[75] 成功文本
+来源：Honor++_Data/level1
+键位：asset#level1#7298/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=7298）
+原文：QUALITY
+译文：质量
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[76] 成功文本
+来源：Honor++_Data/level1
+键位：asset#level1#7311/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=7311）
+原文：QUALITY
+译文：质量
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[77] 成功文本
+来源：Honor++_Data/level1
+键位：asset#level1#7325/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=7325）
+原文：Every 2nd
+译文：每两个
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[78] 成功文本
+来源：Honor++_Data/level1
+键位：asset#level1#7325/str/2
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=7325）
+原文：FULL RES
+译文：完整内容
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[79] 成功文本
+来源：Honor++_Data/level1
+键位：asset#level1#7325/str/3
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=7325）
+原文：HALF RES
+译文：一半的结果
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[80] 成功文本
+来源：Honor++_Data/level1
+键位：asset#level1#7325/str/4
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=7325）
+原文：QUARTER RES
+译文：季度报告
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[81] 成功文本
+来源：Honor++_Data/level1
+键位：asset#level1#7325/str/5
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=7325）
+原文：EIGHTH RES
+译文：第八条准则
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[82] 成功文本
+来源：Honor++_Data/level1
+键位：asset#level1#7325/str/6
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=7325）
+原文：NO CASCADES
+译文：无卡口
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[83] 成功文本
+来源：Honor++_Data/level1
+键位：asset#level1#7325/str/7
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=7325）
+原文：TWO CASCADES
+译文：两场灾难
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[84] 成功文本
+来源：Honor++_Data/level1
+键位：asset#level1#7325/str/8
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=7325）
+原文：FOUR CASCADES
+译文：四场风暴
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[85] 成功文本
+来源：Honor++_Data/level1
+键位：asset#level1#7359/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=7359）
+原文：FRAMES PER SECOND (FPS)
+译文：每秒帧数 (FPS)
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[86] 成功文本
+来源：Honor++_Data/level1
+键位：asset#level1#7364/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=7364）
+原文：AUDIO ENABLE
+译文：启用音频功能
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[87] 成功文本
+来源：Honor++_Data/level1
+键位：asset#level1#7366/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=7366）
+原文：QUALITY
+译文：质量
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[88] 成功文本
+来源：Honor++_Data/level1
+键位：asset#level1#7382/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=7382）
+原文：QUALITY
+译文：质量
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[89] 成功文本
+来源：Honor++_Data/level1
+键位：asset#level1#7392/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=7392）
+原文：QUALITY
+译文：质量
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[90] 成功文本
+来源：Honor++_Data/level1
+键位：asset#level1#7408/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=7408）
+原文：SHADOW DISTANCE
+译文：阴影距离
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[91] 成功文本
+来源：Honor++_Data/level1
+键位：asset#level1#7414/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=7414）
+原文：LOD BIAS
+译文：LOD Bias
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[92] 成功文本
+来源：Honor++_Data/level1
+键位：asset#level1#7417/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=7417）
+原文：SHADOW ENABLE
+译文：阴影启用
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[93] 成功文本
+来源：Honor++_Data/level1
+键位：asset#level1#7429/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=7429）
+原文：QUALITY
+译文：质量
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[94] 成功文本
+来源：Honor++_Data/level1
+键位：asset#level1#7441/str/5
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=7441）
+原文：Resolution
+译文：分辨率
+置信度：high
+原因：core_menu_control
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[95] 成功文本
+来源：Honor++_Data/level1
+键位：asset#level1#7449/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=7449）
+原文：FULL SCREEN
+译文：全屏显示
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[96] 成功文本
+来源：Honor++_Data/level1
+键位：asset#level1#7451/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=7451）
+原文：QUALITY
+译文：质量
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[97] 成功文本
+来源：Honor++_Data/level1
+键位：asset#level1#7458/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=7458）
+原文：ANISOTROPIC TEXTURES
+译文：非各向同性的组织结构
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[98] 成功文本
+来源：Honor++_Data/level1
+键位：asset#level1#7465/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=7465）
+原文：BLEND WEIGHTS
+译文：混合权重
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[99] 成功文本
+来源：Honor++_Data/level1
+键位：asset#level1#7473/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=7473）
+原文：ANTI ALIASING
+译文：反歧视
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[100] 成功文本
+来源：Honor++_Data/level1
+键位：asset#level1#7506/str/5
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=7506）
+原文：Resolution
+译文：分辨率
+置信度：high
+原因：core_menu_control
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[101] 成功文本
+来源：Honor++_Data/level1
+键位：asset#level1#7515/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=7515）
+原文：VOLUME
+译文：音量
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[102] 成功文本
+来源：Honor++_Data/level1
+键位：asset#level1#7518/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=7518）
+原文：CANCEL
+译文：取消
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[103] 成功文本
+来源：Honor++_Data/level1
+键位：asset#level1#7536/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=7536）
+原文：QUALITY
+译文：质量
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[104] 成功文本
+来源：Honor++_Data/level1
+键位：asset#level1#7695/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=7695）
+原文：GAME BY
+译文：由……制作的游戏
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[105] 成功文本
+来源：Honor++_Data/level1
+键位：asset#level1#7765/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=7765）
+原文：size
+译文：大小
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[106] 成功文本
+来源：Honor++_Data/level1
+键位：asset#level1#7777/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=7777）
+原文：size
+译文：大小
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[107] 成功文本
+来源：Honor++_Data/level1
+键位：asset#level1#7854/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=7854）
+原文：size
+译文：大小
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[108] 成功文本
+来源：Honor++_Data/level1
+键位：asset#level1#7889/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=7889）
+原文：size
+译文：大小
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[109] 成功文本
+来源：Honor++_Data/level1
+键位：asset#level1#7983/str/2
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=7983）
+原文：Booting up...
+Mounting system drive...
+Checking system resources...<waitfor=0.1>
+Loading configuration files...
+Initializing modules...
+Scanning for network devices...
+Status ERROR.<waitfor=0.2>
+Establishing connection...
+Calculating checksums...
+Synchronizing services...
+Status ERROR.<waitfor=0.2>
+Updating firmware...
+Status ERROR.
+Configuring peripherals...
+Mounting virtual drives...
+Initializing encryption...
+Establishing connection to the RYFT...<waitfor=0.2>
+Aligning the ley lines...
+Scanning for anomalies...
+Status ERROR.<waitfor=0.1>
+Decrypting the portal framework...
+Running diagnostics on the interdimensional gateway...
+Status ERROR.
+Aligning the quantum frequencies...
+Injecting the neural interface...
+Status ERROR.
+Activating the interstellar beacon...
+Probing the datastream...
+Status ERROR.
+Status ERROR.
+Status ERROR.<waitfor=0.2>
+Status OK.
+Loading UI...
+译文：正在启动中……
+正在挂载系统驱动器……
+正在检查系统资源……<waitfor=0.1>
+正在加载配置文件……
+正在初始化模块……
+正在扫描网络设备……
+状态：ERROR。<waitfor=0.2>
+建立连接中……
+正在计算校验和……
+同步服务中……
+状态：错误。<waitfor=0.2>
+正在更新固件……
+状态：错误。
+配置外围设备……
+正在挂载虚拟驱动器……
+正在初始化加密过程……
+建立与 RYFT 的连接……<waitfor=0.2>
+对齐那些地脉线……
+正在扫描异常情况……
+状态：错误。<waitfor=0.1>
+正在解密门户框架……
+正在对跨维度网关进行诊断……
+状态：错误。
+使量子频率保持一致……
+正在注入神经接口……
+状态：错误。
+激活星际信标……
+正在探测数据流……
+状态：错误。
+状态：错误。
+状态：错误。<waitfor=0.2>
+状态正常。
+加载用户界面中……
+置信度：medium
+原因：natural_language
+角色：display
+质量评分：—（passed=True）
+翻译评价：需优化（审核：信息完整性——译文严重偏离原文，不仅大量增删信息导致语义完全错误，还错误添加了原文不存在的后续步骤，且将原文末尾截断的文本强行补全为无关内容。）
+需要优化：是（审核：信息完整性——译文严重偏离原文，不仅大量增删信息导致语义完全错误，还错误添加了原文不存在的后续步骤，且将原文末尾截断的文本强行补全为无关内容。；建议：应保留原文截断状态，或根据上下文合理补全为'正在解密门户框架……'，严禁臆造原文未有的步骤。）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[110] 成功文本
+来源：Honor++_Data/level1
+键位：asset#level1#7983/str/3
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=7983）
+原文：Reconnecting.
+Status ERROR.
+Status ERROR.
+Status ERROR.
+Status ERROR.
+Status ERROR.
+Status OK.
+Loading UI...
+译文：正在重新连接。
+状态：ERROR。
+状态：ERROR。
+状态：ERROR。
+状态：ERROR。
+状态：ERROR。
+状态：OK。
+正在加载用户界面……
+置信度：medium
+原因：natural_language
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[111] 成功文本
+来源：Honor++_Data/level2
+键位：asset#level2#1526/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=1526）
+原文：message
+译文：消息
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[112] 成功文本
+来源：Honor++_Data/level2
+键位：asset#level2#1527/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=1527）
+原文：ROOM:
+译文：房间：
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[113] 成功文本
+来源：Honor++_Data/level2
+键位：asset#level2#1528/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=1528）
+原文：Private
+译文：私人
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[114] 成功文本
+来源：Honor++_Data/level2
+键位：asset#level2#1529/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=1529）
+原文：CHAT
+
+译文：聊天
+
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[115] 成功文本
+来源：Honor++_Data/level2
+键位：asset#level2#1534/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=1534）
+原文：message
+译文：消息
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[116] 成功文本
+来源：Honor++_Data/level2
+键位：asset#level2#1539/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=1539）
+原文：kills
+译文：杀死
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[117] 成功文本
+来源：Honor++_Data/level2
+键位：asset#level2#1544/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=1544）
+原文：message
+译文：消息
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[118] 成功文本
+来源：Honor++_Data/level2
+键位：asset#level2#1546/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=1546）
+原文：VOLUME
+译文：音量
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[119] 成功文本
+来源：Honor++_Data/level2
+键位：asset#level2#1548/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=1548）
+原文：look speed
+译文：查看速度
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[120] 成功文本
+来源：Honor++_Data/level2
+键位：asset#level2#1554/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=1554）
+原文：message
+译文：消息
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[121] 成功文本
+来源：Honor++_Data/level2
+键位：asset#level2#1555/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=1555）
+原文：map
+
+译文：地图
+
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[122] 成功文本
+来源：Honor++_Data/level2
+键位：asset#level2#1558/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=1558）
+原文：streak
+译文：条纹
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[123] 成功文本
+来源：Honor++_Data/level2
+键位：asset#level2#1562/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=1562）
+原文：Change character
+译文：更改字符
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[124] 成功文本
+来源：Honor++_Data/level2
+键位：asset#level2#1565/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=1565）
+原文：message
+译文：消息
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[125] 成功文本
+来源：Honor++_Data/level2
+键位：asset#level2#1568/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=1568）
+原文：Applyed on restart
+译文：在重启时应用
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[126] 成功文本
+来源：Honor++_Data/level2
+键位：asset#level2#1569/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=1569）
+原文：restart
+译文：重启
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[127] 成功文本
+来源：Honor++_Data/level2
+键位：asset#level2#1572/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=1572）
+原文：message
+译文：消息
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[128] 成功文本
+来源：Honor++_Data/level2
+键位：asset#level2#1574/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=1574）
+原文：kills
+译文：杀死
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[129] 成功文本
+来源：Honor++_Data/level2
+键位：asset#level2#1575/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=1575）
+原文：players
+译文：玩家
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[130] 成功文本
+来源：Honor++_Data/level2
+键位：asset#level2#1578/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=1578）
+原文：MORE
+
+译文：更多
+
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[131] 成功文本
+来源：Honor++_Data/level2
+键位：asset#level2#1581/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=1581）
+原文：off
+译文：关闭
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[132] 成功文本
+来源：Honor++_Data/level2
+键位：asset#level2#1582/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=1582）
+原文：FULL SCREEN
+译文：全屏显示
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[133] 成功文本
+来源：Honor++_Data/level2
+键位：asset#level2#1583/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=1583）
+原文：to menu
+译文：到菜单
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[134] 成功文本
+来源：Honor++_Data/level2
+键位：asset#level2#1592/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=1592）
+原文：off
+译文：关闭
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[135] 成功文本
+来源：Honor++_Data/level2
+键位：asset#level2#1593/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=1593）
+原文：ROOM:
+译文：房间：
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[136] 成功文本
+来源：Honor++_Data/level2
+键位：asset#level2#1595/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=1595）
+原文：emote
+译文：表情符号
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[137] 成功文本
+来源：Honor++_Data/level2
+键位：asset#level2#1597/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=1597）
+原文：error displaying information...
+译文：显示信息时出错……
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[138] 成功文本
+来源：Honor++_Data/level2
+键位：asset#level2#1598/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=1598）
+原文：honor
+
+译文：荣誉
+
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[139] 成功文本
+来源：Honor++_Data/level2
+键位：asset#level2#1600/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=1600）
+原文：off
+译文：关闭
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[140] 成功文本
+来源：Honor++_Data/level2
+键位：asset#level2#1602/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=1602）
+原文：Changes after death
+译文：死亡后的变化
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[141] 成功文本
+来源：Honor++_Data/level2
+键位：asset#level2#1604/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=1604）
+原文：- min
+译文：最小
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[142] 成功文本
+来源：Honor++_Data/level2
+键位：asset#level2#1605/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=1605）
+原文：WINNER
+译文：获胜者
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[143] 成功文本
+来源：Honor++_Data/level2
+键位：asset#level2#1611/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=1611）
+原文：emote
+译文：表情符号
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[144] 成功文本
+来源：Honor++_Data/level2
+键位：asset#level2#1612/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=1612）
+原文：Connected
+译文：已连接
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[145] 成功文本
+来源：Honor++_Data/level2
+键位：asset#level2#1614/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=1614）
+原文：message
+译文：消息
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[146] 成功文本
+来源：Honor++_Data/level2
+键位：asset#level2#1617/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=1617）
+原文：message
+译文：消息
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[147] 成功文本
+来源：Honor++_Data/level2
+键位：asset#level2#1618/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=1618）
+原文：restart
+译文：重启
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[148] 成功文本
+来源：Honor++_Data/level2
+键位：asset#level2#1619/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=1619）
+原文：Potato PC
+译文：土豆电脑
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[149] 成功文本
+来源：Honor++_Data/level2
+键位：asset#level2#1620/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=1620）
+原文：Dash
+译文：DASH
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[150] 成功文本
+来源：Honor++_Data/level2
+键位：asset#level2#1622/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=1622）
+原文：message
+译文：消息
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[151] 成功文本
+来源：Honor++_Data/level2
+键位：asset#level2#1623/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=1623）
+原文：Time
+译文：时间
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[152] 成功文本
+来源：Honor++_Data/level2
+键位：asset#level2#1625/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=1625）
+原文：to menu
+译文：到菜单
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[153] 成功文本
+来源：Honor++_Data/level2
+键位：asset#level2#1626/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=1626）
+原文：message
+译文：消息
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[154] 成功文本
+来源：Honor++_Data/level2
+键位：asset#level2#1630/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=1630）
+原文：DRAW
+译文：绘制
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[155] 成功文本
+来源：Honor++_Data/level2
+键位：asset#level2#1633/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=1633）
+原文：kill
+streak
+译文：杀死
+连续成功完成
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[156] 成功文本
+来源：Honor++_Data/level2
+键位：asset#level2#1635/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=1635）
+原文：loading level in x
+译文：X中的加载级别
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[157] 成功文本
+来源：Honor++_Data/level2
+键位：asset#level2#1646/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=1646）
+原文：Resolution
+译文：分辨率
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[158] 成功文本
+来源：Honor++_Data/level2
+键位：asset#level2#1648/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=1648）
+原文：settings
+译文：设置
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[159] 成功文本
+来源：Honor++_Data/level2
+键位：asset#level2#1649/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=1649）
+原文：Jow Blob
+
+译文：Jow Blob
+
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：回显保留原文（未实际翻译）
+需要优化：是（回显未翻译）
+写回：未执行（回显——译文与原文相同，无需写回）
+
+────────────────────────────────────────────────────────────────
+[160] 成功文本
+来源：Honor++_Data/level2
+键位：asset#level2#1652/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=1652）
+原文：waiting for players...
+译文：正在等待玩家……
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[161] 成功文本
+来源：Honor++_Data/level2
+键位：asset#level2#1658/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=1658）
+原文：deaths
+译文：死亡
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[162] 成功文本
+来源：Honor++_Data/level2
+键位：asset#level2#1750/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=1750）
+原文：RectSizeModifier, Game
+译文：RectSizeModifier, 游戏
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[163] 成功文本
+来源：Honor++_Data/level2
+键位：asset#level2#1786/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=1786）
+原文：RectSizeModifier, Game
+译文：RectSizeModifier, 游戏
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[164] 成功文本
+来源：Honor++_Data/level2
+键位：asset#level2#1824/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=1824）
+原文：RectSizeModifier, Game
+译文：RectSizeModifier, 游戏
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[165] 成功文本
+来源：Honor++_Data/level2
+键位：asset#level2#1836/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=1836）
+原文：RectSizeModifier, Game
+译文：RectSizeModifier, 游戏
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[166] 成功文本
+来源：Honor++_Data/level2
+键位：asset#level2#1846/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=1846）
+原文：Element A
+译文：元素A
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[167] 成功文本
+来源：Honor++_Data/level2
+键位：asset#level2#1849/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=1849）
+原文：Element D
+译文：元素D
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[168] 成功文本
+来源：Honor++_Data/level2
+键位：asset#level2#1850/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=1850）
+原文：Element B
+译文：元素B
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[169] 成功文本
+来源：Honor++_Data/level2
+键位：asset#level2#1853/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=1853）
+原文：Element C
+译文：元素C
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[170] 成功文本
+来源：Honor++_Data/level2
+键位：asset#level2#1874/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=1874）
+原文：size
+译文：大小
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[171] 成功文本
+来源：Honor++_Data/level2
+键位：asset#level2#1878/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=1878）
+原文：RectSizeModifier, Game
+译文：RectSizeModifier, 游戏
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[172] 成功文本
+来源：Honor++_Data/level2
+键位：asset#level2#1892/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=1892）
+原文：RectSizeModifier, Game
+译文：RectSizeModifier, 游戏
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[173] 成功文本
+来源：Honor++_Data/level2
+键位：asset#level2#1951/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=1951）
+原文：RectSizeModifier, Game
+译文：RectSizeModifier, 游戏
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[174] 成功文本
+来源：Honor++_Data/level2
+键位：asset#level2#1954/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=1954）
+原文：Every 2nd
+译文：每两个
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[175] 成功文本
+来源：Honor++_Data/level2
+键位：asset#level2#1954/str/2
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=1954）
+原文：FULL RES
+译文：完整内容
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[176] 成功文本
+来源：Honor++_Data/level2
+键位：asset#level2#1954/str/3
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=1954）
+原文：HALF RES
+译文：一半的结果
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[177] 成功文本
+来源：Honor++_Data/level2
+键位：asset#level2#1954/str/4
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=1954）
+原文：QUARTER RES
+译文：季度报告
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[178] 成功文本
+来源：Honor++_Data/level2
+键位：asset#level2#1954/str/5
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=1954）
+原文：EIGHTH RES
+译文：第八条准则
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[179] 成功文本
+来源：Honor++_Data/level2
+键位：asset#level2#1954/str/6
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=1954）
+原文：NO CASCADES
+译文：无卡口
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[180] 成功文本
+来源：Honor++_Data/level2
+键位：asset#level2#1954/str/7
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=1954）
+原文：TWO CASCADES
+译文：两场灾难
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[181] 成功文本
+来源：Honor++_Data/level2
+键位：asset#level2#1954/str/8
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=1954）
+原文：FOUR CASCADES
+译文：四场风暴
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[182] 成功文本
+来源：Honor++_Data/level2
+键位：asset#level2#2037/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=2037）
+原文：size
+译文：大小
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[183] 成功文本
+来源：Honor++_Data/level2
+键位：asset#level2#2063/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=2063）
+原文：size
+译文：大小
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[184] 成功文本
+来源：Honor++_Data/level2
+键位：asset#level2#2099/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=2099）
+原文：RectSizeModifier, Game
+译文：RectSizeModifier, 游戏
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[185] 成功文本
+来源：Honor++_Data/level2
+键位：asset#level2#2124/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=2124）
+原文：RectSizeModifier, Game
+译文：RectSizeModifier, 游戏
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[186] 成功文本
+来源：Honor++_Data/level2
+键位：asset#level2#2151/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=2151）
+原文：RectSizeModifier, Game
+译文：RectSizeModifier, 游戏
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[187] 成功文本
+来源：Honor++_Data/level2
+键位：asset#level2#2162/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=2162）
+原文：RectSizeModifier, Game
+译文：RectSizeModifier, 游戏
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[188] 成功文本
+来源：Honor++_Data/level3
+键位：asset#level3#11468/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level3、obj=11468）
+原文：MeshBaker (0)-mesh
+译文：MeshBaker (0) - 网格
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[189] 成功文本
+来源：Honor++_Data/level4
+键位：asset#level4#7155/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level4、obj=7155）
+原文：Text bubble top
+
+译文：文本气泡顶部
+
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[190] 成功文本
+来源：Honor++_Data/level4
+键位：asset#level4#7156/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level4、obj=7156）
+原文：Text bubble top
+译文：文本气泡顶部
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[191] 成功文本
+来源：Honor++_Data/level4
+键位：asset#level4#7325/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level4、obj=7325）
+原文：Player
+译文：玩家
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[192] 成功文本
+来源：Honor++_Data/resources.assets
+键位：asset#resources.assets#342/json/Player/AndroidBuildSystem
+对象：—（asset_file=resources.assets、obj=342）
+原文：Gradle
+译文：Gradle
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：—（passed=True）
+翻译评价：回显保留原文（未实际翻译）
+需要优化：是（回显未翻译）
+写回：未执行（回显——译文与原文相同，无需写回）
+
+────────────────────────────────────────────────────────────────
+[193] 成功文本
+来源：Honor++_Data/resources.assets
+键位：asset#resources.assets#346/line/0
+对象：TextAsset 脚本（asset_file=resources.assets、obj=346、line=0）
+原文：This file exists to maintain a .meta file that is used to locate this config folder.
+译文：此文件的存在是为了维护一个名为 .meta 的文件，该文件用于定位此配置文件夹。
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[194] 成功文本
+来源：Honor++_Data/resources.assets
+键位：asset#resources.assets#4195/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=resources.assets、obj=4195）
+原文：Attack
+译文：攻击
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[195] 成功文本
+来源：Honor++_Data/resources.assets
+键位：asset#resources.assets#4199/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=resources.assets、obj=4199）
+原文：Attack
+译文：攻击
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[196] 成功文本
+来源：Honor++_Data/resources.assets
+键位：asset#resources.assets#4210/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=resources.assets、obj=4210）
+原文：Attack
+译文：攻击
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[197] 成功文本
+来源：Honor++_Data/resources.assets
+键位：asset#resources.assets#4216/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=resources.assets、obj=4216）
+原文：Attack
+译文：攻击
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[198] 成功文本
+来源：Honor++_Data/resources.assets
+键位：asset#resources.assets#4235/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=resources.assets、obj=4235）
+原文：Jump
+译文：跳跃
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[199] 成功文本
+来源：Honor++_Data/resources.assets
+键位：asset#resources.assets#4236/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=resources.assets、obj=4236）
+原文：Attack
+译文：攻击
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[200] 成功文本
+来源：Honor++_Data/resources.assets
+键位：asset#resources.assets#4242/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=resources.assets、obj=4242）
+原文：Walk Forward
+译文：向前行走
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[201] 成功文本
+来源：Honor++_Data/resources.assets
+键位：asset#resources.assets#4242/str/3
+对象：MonoBehaviour rawstr 数组（asset_file=resources.assets、obj=4242）
+原文：Walk Backward
+译文：后退行走
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[202] 成功文本
+来源：Honor++_Data/resources.assets
+键位：asset#resources.assets#4242/str/5
+对象：MonoBehaviour rawstr 数组（asset_file=resources.assets、obj=4242）
+原文：Walk Left
+译文：步行左侧
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[203] 成功文本
+来源：Honor++_Data/resources.assets
+键位：asset#resources.assets#4242/str/7
+对象：MonoBehaviour rawstr 数组（asset_file=resources.assets、obj=4242）
+原文：Walk Right
+译文：步行对
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：需优化（审核：术语一致性——术语与语境严重不符，'Walk'在游戏UI中应译为'行走'而非'步行'，且'Right'译为'对'完全错误，应为'右'。）
+需要优化：是（审核：术语一致性——术语与语境严重不符，'Walk'在游戏UI中应译为'行走'而非'步行'，且'Right'译为'对'完全错误，应为'右'。；建议：行走右）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[204] 成功文本
+来源：Honor++_Data/resources.assets
+键位：asset#resources.assets#4243/str/4
+对象：MonoBehaviour rawstr 数组（asset_file=resources.assets、obj=4243）
+原文：Master
+译文：大师
+置信度：medium
+原因：object_has_display_evidence
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[205] 成功文本
+来源：Honor++_Data/resources.assets
+键位：asset#resources.assets#4243/str/5
+对象：MonoBehaviour rawstr 数组（asset_file=resources.assets、obj=4243）
+原文：Ambience
+译文：氛围/环境
+置信度：medium
+原因：object_has_display_evidence
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[206] 成功文本
+来源：Honor++_Data/resources.assets
+键位：asset#resources.assets#4243/str/6
+对象：MonoBehaviour rawstr 数组（asset_file=resources.assets、obj=4243）
+原文：Emotes
+译文：表情符号
+置信度：medium
+原因：object_has_display_evidence
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[207] 成功文本
+来源：Honor++_Data/resources.assets
+键位：asset#resources.assets#4243/str/7
+对象：MonoBehaviour rawstr 数组（asset_file=resources.assets、obj=4243）
+原文：Game
+译文：游戏
+置信度：medium
+原因：object_has_display_evidence
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[208] 成功文本
+来源：Honor++_Data/resources.assets
+键位：asset#resources.assets#4243/str/8
+对象：MonoBehaviour rawstr 数组（asset_file=resources.assets、obj=4243）
+原文：Music
+译文：音乐
+置信度：medium
+原因：object_has_display_evidence
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[209] 成功文本
+来源：Honor++_Data/resources.assets
+键位：asset#resources.assets#4243/str/9
+对象：MonoBehaviour rawstr 数组（asset_file=resources.assets、obj=4243）
+原文：SFX
+译文：SFX
+置信度：medium
+原因：object_has_display_evidence
+角色：display
+质量评分：—（passed=True）
+翻译评价：回显保留原文（未实际翻译）
+需要优化：是（回显未翻译）
+写回：未执行（回显——译文与原文相同，无需写回）
+
+────────────────────────────────────────────────────────────────
+[210] 成功文本
+来源：Honor++_Data/resources.assets
+键位：asset#resources.assets#4244/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=resources.assets、obj=4244）
+原文：Scene Optimizer
+译文：场景优化器
+置信度：medium
+原因：object_has_display_evidence
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[211] 成功文本
+来源：Honor++_Data/resources.assets
+键位：asset#resources.assets#4244/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=resources.assets、obj=4244）
+原文：Small Objects
+译文：小型物品
+置信度：medium
+原因：object_has_display_evidence
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[212] 成功文本
+来源：Honor++_Data/resources.assets
+键位：asset#resources.assets#4244/str/2
+对象：MonoBehaviour rawstr 数组（asset_file=resources.assets、obj=4244）
+原文：Medium Objects
+译文：中等对象
+置信度：medium
+原因：object_has_display_evidence
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[213] 成功文本
+来源：Honor++_Data/resources.assets
+键位：asset#resources.assets#4244/str/3
+对象：MonoBehaviour rawstr 数组（asset_file=resources.assets、obj=4244）
+原文：Large Objects
+译文：大型对象
+置信度：medium
+原因：object_has_display_evidence
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[214] 成功文本
+来源：Honor++_Data/resources.assets
+键位：asset#resources.assets#4244/str/4
+对象：MonoBehaviour rawstr 数组（asset_file=resources.assets、obj=4244）
+原文：Extra Large Objects
+译文：特大尺寸物体
+置信度：medium
+原因：natural_language
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[215] 成功文本
+来源：Honor++_Data/resources.assets
+键位：asset#resources.assets#4255/str/3
+对象：MonoBehaviour rawstr 数组（asset_file=resources.assets、obj=4255）
+原文：Medium
+译文：中等
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[216] 成功文本
+来源：Honor++_Data/resources.assets
+键位：asset#resources.assets#4256/str/2
+对象：MonoBehaviour rawstr 数组（asset_file=resources.assets、obj=4256）
+原文：My Font
+译文：我的字体
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[217] 成功文本
+来源：Honor++_Data/resources.assets
+键位：asset#resources.assets#4257/str/2
+对象：MonoBehaviour rawstr 数组（asset_file=resources.assets、obj=4257）
+原文：VCR OSD Mono
+译文：VCR OSD Mono
+置信度：medium
+原因：natural_language
+角色：display
+质量评分：—（passed=True）
+翻译评价：回显保留原文（未实际翻译）
+需要优化：是（回显未翻译）
+写回：未执行（回显——译文与原文相同，无需写回）
+
+────────────────────────────────────────────────────────────────
+[218] 成功文本
+来源：Honor++_Data/resources.assets
+键位：asset#resources.assets#4257/str/3
+对象：MonoBehaviour rawstr 数组（asset_file=resources.assets、obj=4257）
+原文：Regular
+译文：常规
+置信度：medium
+原因：object_has_display_evidence
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[219] 成功文本
+来源：Honor++_Data/resources.assets
+键位：asset#resources.assets#4278/str/2
+对象：MonoBehaviour rawstr 数组（asset_file=resources.assets、obj=4278）
+原文：Temple
+译文：寺庙
+置信度：medium
+原因：object_has_display_evidence
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[220] 成功文本
+来源：Honor++_Data/resources.assets
+键位：asset#resources.assets#4278/str/3
+对象：MonoBehaviour rawstr 数组（asset_file=resources.assets、obj=4278）
+原文：Citadel
+译文：城堡
+置信度：medium
+原因：object_has_display_evidence
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[221] 成功文本
+来源：Honor++_Data/resources.assets
+键位：asset#resources.assets#4282/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=resources.assets、obj=4282）
+原文：Attack
+译文：攻击
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[222] 成功文本
+来源：Honor++_Data/resources.assets
+键位：asset#resources.assets#4321/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=resources.assets、obj=4321）
+原文：Attack
+译文：攻击
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[223] 成功文本
+来源：Honor++_Data/resources.assets
+键位：asset#resources.assets#4402/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=resources.assets、obj=4402）
+原文：Text bubble top
+译文：文本气泡顶部
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[224] 成功文本
+来源：Honor++_Data/resources.assets
+键位：asset#resources.assets#4406/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=resources.assets、obj=4406）
+原文：Achievement Title
+译文：成就标题
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[225] 成功文本
+来源：Honor++_Data/resources.assets
+键位：asset#resources.assets#4408/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=resources.assets、obj=4408）
+原文：The achievement's description goes here ipsum dolor lorem sit amet ipsum dolor sit amet ipsum dolor sit amet
+译文：该成就的描述此处为空。
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[226] 成功文本
+来源：Honor++_Data/resources.assets
+键位：asset#resources.assets#4785/str/5
+对象：MonoBehaviour rawstr 数组（asset_file=resources.assets、obj=4785）
+原文：Toggle
+译文：切换
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[227] 成功文本
+来源：Honor++_Data/resources.assets
+键位：asset#resources.assets#4882/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=resources.assets、obj=4882）
+原文：Frames Gained: 0
+译文：获得的框架数量：0
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[228] 成功文本
+来源：Honor++_Data/resources.assets
+键位：asset#resources.assets#4884/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=resources.assets、obj=4884）
+原文：FPS: 0
+译文：FPS：0
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[229] 成功文本
+来源：Honor++_Data/resources.assets
+键位：asset#resources.assets#4891/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=resources.assets、obj=4891）
+原文：FPS: 0
+译文：FPS：0
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[230] 成功文本
+来源：Honor++_Data/resources.assets
+键位：asset#resources.assets#4896/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=resources.assets、obj=4896）
+原文：Maximum: 0
+译文：最大值：0
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[231] 成功文本
+来源：Honor++_Data/resources.assets
+键位：asset#resources.assets#4907/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=resources.assets、obj=4907）
+原文：Minimum: 0
+译文：Minimum: 0
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：回显保留原文（未实际翻译）
+需要优化：是（回显未翻译）
+写回：未执行（回显——译文与原文相同，无需写回）
+
+────────────────────────────────────────────────────────────────
+[232] 成功文本
+来源：Honor++_Data/resources.assets
+键位：asset#resources.assets#4914/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=resources.assets、obj=4914）
+原文：Improvement %: 0
+译文：改进百分比：0
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[233] 成功文本
+来源：Honor++_Data/resources.assets
+键位：asset#resources.assets#5026/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=resources.assets、obj=5026）
+原文：Text bubble top
+
+译文：文本气泡顶部
+
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[234] 成功文本
+来源：Honor++_Data/resources.assets
+键位：asset#resources.assets#5081/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=resources.assets、obj=5081）
+原文：restart
+译文：重启
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[235] 成功文本
+来源：Honor++_Data/resources.assets
+键位：asset#resources.assets#5166/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=resources.assets、obj=5166）
+原文：loading level in x
+译文：X中的加载级别
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[236] 成功文本
+来源：Honor++_Data/resources.assets
+键位：asset#resources.assets#5169/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=resources.assets、obj=5169）
+原文：#FFC400
+译文：#FFC400
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：回显保留原文（未实际翻译）
+需要优化：是（回显未翻译）
+写回：未执行（回显——译文与原文相同，无需写回）
+
+────────────────────────────────────────────────────────────────
+[237] 成功文本
+来源：Honor++_Data/resources.assets
+键位：asset#resources.assets#5224/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=resources.assets、obj=5224）
+原文：25,0,36 POSITION 
+78.02 SOMETHING 
+1564.879996 POSITION 
+译文：25,0,36 位置
+78.02 某物
+1564.879996 位置
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[238] 成功文本
+来源：Honor++_Data/sharedassets1.assets
+键位：asset#sharedassets1.assets#305/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets1.assets、obj=305）
+原文：Menu Camera Blends
+译文：菜单 相机融合
+置信度：medium
+原因：natural_language
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[239] 成功文本
+来源：Honor++_Data/sharedassets1.assets
+键位：asset#sharedassets1.assets#305/str/3
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets1.assets、obj=305）
+原文：**ANY CAMERA**
+译文：任何相机
+置信度：medium
+原因：object_has_display_evidence
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[240] 成功文本
+来源：Honor++_Data/sharedassets1.assets
+键位：asset#sharedassets1.assets#305/str/5
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets1.assets、obj=305）
+原文：**ANY CAMERA**
+译文：任何相机
+置信度：medium
+原因：object_has_display_evidence
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[241] 成功文本
+来源：Honor++_Data/sharedassets1.assets
+键位：asset#sharedassets1.assets#305/str/7
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets1.assets、obj=305）
+原文：**ANY CAMERA**
+译文：任何相机
+置信度：medium
+原因：object_has_display_evidence
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[242] 成功文本
+来源：Honor++_Data/sharedassets1.assets
+键位：asset#sharedassets1.assets#305/str/9
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets1.assets、obj=305）
+原文：**ANY CAMERA**
+译文：任何相机
+置信度：medium
+原因：object_has_display_evidence
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[243] 成功文本
+来源：Honor++_Data/sharedassets1.assets
+键位：asset#sharedassets1.assets#305/str/11
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets1.assets、obj=305）
+原文：**ANY CAMERA**
+译文：任何相机
+置信度：medium
+原因：object_has_display_evidence
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[244] 成功文本
+来源：Honor++_Data/sharedassets1.assets
+键位：asset#sharedassets1.assets#305/str/13
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets1.assets、obj=305）
+原文：**ANY CAMERA**
+译文：任何相机
+置信度：medium
+原因：object_has_display_evidence
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[245] 成功文本
+来源：Honor++_Data/sharedassets1.assets
+键位：asset#sharedassets1.assets#305/str/15
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets1.assets、obj=305）
+原文：**ANY CAMERA**
+译文：任何相机
+置信度：medium
+原因：object_has_display_evidence
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[246] 成功文本
+来源：Honor++_Data/sharedassets1.assets
+键位：asset#sharedassets1.assets#305/str/17
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets1.assets、obj=305）
+原文：**ANY CAMERA**
+译文：任何相机
+置信度：medium
+原因：object_has_display_evidence
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[247] 成功文本
+来源：Honor++_Data/sharedassets1.assets
+键位：asset#sharedassets1.assets#305/str/19
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets1.assets、obj=305）
+原文：**ANY CAMERA**
+译文：任何相机
+置信度：medium
+原因：object_has_display_evidence
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[248] 成功文本
+来源：Honor++_Data/sharedassets1.assets
+键位：asset#sharedassets1.assets#305/str/21
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets1.assets、obj=305）
+原文：**ANY CAMERA**
+译文：任何相机
+置信度：medium
+原因：object_has_display_evidence
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[249] 成功文本
+来源：Honor++_Data/sharedassets1.assets
+键位：asset#sharedassets1.assets#305/str/23
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets1.assets、obj=305）
+原文：**ANY CAMERA**
+译文：任何相机
+置信度：medium
+原因：object_has_display_evidence
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[250] 成功文本
+来源：Honor++_Data/sharedassets1.assets
+键位：asset#sharedassets1.assets#305/str/25
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets1.assets、obj=305）
+原文：**ANY CAMERA**
+译文：任何相机
+置信度：medium
+原因：object_has_display_evidence
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[251] 成功文本
+来源：Honor++_Data/sharedassets1.assets
+键位：asset#sharedassets1.assets#306/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets1.assets、obj=306）
+原文：MainMenu Volume Profile
+译文：主菜单 音量设置
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[252] 成功文本
+来源：Honor++_Data/sharedassets1.assets
+键位：asset#sharedassets1.assets#313/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets1.assets、obj=313）
+原文：GAME QUALITY
+译文：游戏质量
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[253] 成功文本
+来源：Honor++_Data/sharedassets1.assets
+键位：asset#sharedassets1.assets#322/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets1.assets、obj=322）
+原文：QUALITY
+译文：质量
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[254] 成功文本
+来源：Honor++_Data/sharedassets1.assets
+键位：asset#sharedassets1.assets#324/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets1.assets、obj=324）
+原文：5 min
+译文：5分钟
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[255] 成功文本
+来源：Honor++_Data/sharedassets1.assets
+键位：asset#sharedassets1.assets#329/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets1.assets、obj=329）
+原文：full
+译文：完整的
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[256] 成功文本
+来源：Honor++_Data/sharedassets1.assets
+键位：asset#sharedassets1.assets#338/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets1.assets、obj=338）
+原文：join
+译文：加入
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[257] 成功文本
+来源：Honor++_Data/sharedassets2.assets
+键位：asset#sharedassets2.assets#81/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets2.assets、obj=81）
+原文：Game Camera Blends
+译文：游戏相机融合
+置信度：medium
+原因：natural_language
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[258] 成功文本
+来源：Honor++_Data/sharedassets2.assets
+键位：asset#sharedassets2.assets#81/str/9
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets2.assets、obj=81）
+原文：**ANY CAMERA**
+译文：任何相机
+置信度：medium
+原因：object_has_display_evidence
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[259] 成功文本
+来源：Honor++_Data/sharedassets2.assets
+键位：asset#sharedassets2.assets#81/str/10
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets2.assets、obj=81）
+原文：**ANY CAMERA**
+译文：任何相机
+置信度：medium
+原因：object_has_display_evidence
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[260] 成功文本
+来源：Honor++_Data/sharedassets3.assets
+键位：asset#sharedassets3.assets#1854/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets3.assets、obj=1854）
+原文：High Quality PostProccessing
+译文：高质量后期处理
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[261] 成功文本
+来源：Honor++_Data/sharedassets3.assets
+键位：asset#sharedassets3.assets#1855/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets3.assets、obj=1855）
+原文：TempleGame PostProccessing
+译文：寺庙 游戏 处理过程
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[262] 成功文本
+来源：Honor++_Data/sharedassets3.assets
+键位：asset#sharedassets3.assets#1886/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets3.assets、obj=1886）
+原文：message
+译文：消息
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[263] 成功文本
+来源：Honor++_Data/sharedassets3.assets
+键位：asset#sharedassets3.assets#1895/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets3.assets、obj=1895）
+原文：ROOM:
+译文：房间：
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[264] 成功文本
+来源：Honor++_Data/sharedassets3.assets
+键位：asset#sharedassets3.assets#1900/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets3.assets、obj=1900）
+原文：Private
+译文：私人
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[265] 成功文本
+来源：Honor++_Data/sharedassets3.assets
+键位：asset#sharedassets3.assets#1903/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets3.assets、obj=1903）
+原文：CHAT
+
+译文：聊天
+
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[266] 成功文本
+来源：Honor++_Data/sharedassets3.assets
+键位：asset#sharedassets3.assets#1939/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets3.assets、obj=1939）
+原文：message
+译文：消息
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[267] 成功文本
+来源：Honor++_Data/sharedassets3.assets
+键位：asset#sharedassets3.assets#1952/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets3.assets、obj=1952）
+原文：kills
+译文：杀死
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[268] 成功文本
+来源：Honor++_Data/sharedassets3.assets
+键位：asset#sharedassets3.assets#1964/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets3.assets、obj=1964）
+原文：message
+译文：消息
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[269] 成功文本
+来源：Honor++_Data/sharedassets3.assets
+键位：asset#sharedassets3.assets#1970/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets3.assets、obj=1970）
+原文：VOLUME
+译文：音量
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[270] 成功文本
+来源：Honor++_Data/sharedassets3.assets
+键位：asset#sharedassets3.assets#1977/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets3.assets、obj=1977）
+原文：RectSizeModifier, Game
+译文：RectSizeModifier, 游戏
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[271] 成功文本
+来源：Honor++_Data/sharedassets3.assets
+键位：asset#sharedassets3.assets#1989/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets3.assets、obj=1989）
+原文：look speed
+译文：查看速度
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[272] 成功文本
+来源：Honor++_Data/sharedassets3.assets
+键位：asset#sharedassets3.assets#2007/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets3.assets、obj=2007）
+原文：message
+译文：消息
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[273] 成功文本
+来源：Honor++_Data/sharedassets3.assets
+键位：asset#sharedassets3.assets#2009/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets3.assets、obj=2009）
+原文：map
+
+译文：地图
+
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[274] 成功文本
+来源：Honor++_Data/sharedassets3.assets
+键位：asset#sharedassets3.assets#2024/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets3.assets、obj=2024）
+原文：RectSizeModifier, Game
+译文：RectSizeModifier, 游戏
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[275] 成功文本
+来源：Honor++_Data/sharedassets3.assets
+键位：asset#sharedassets3.assets#2031/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets3.assets、obj=2031）
+原文：streak
+译文：条纹
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[276] 成功文本
+来源：Honor++_Data/sharedassets3.assets
+键位：asset#sharedassets3.assets#2043/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets3.assets、obj=2043）
+原文：Change character
+译文：更改字符
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[277] 成功文本
+来源：Honor++_Data/sharedassets3.assets
+键位：asset#sharedassets3.assets#2069/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets3.assets、obj=2069）
+原文：RectSizeModifier, Game
+译文：RectSizeModifier, 游戏
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[278] 成功文本
+来源：Honor++_Data/sharedassets3.assets
+键位：asset#sharedassets3.assets#2073/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets3.assets、obj=2073）
+原文：message
+译文：消息
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[279] 成功文本
+来源：Honor++_Data/sharedassets3.assets
+键位：asset#sharedassets3.assets#2084/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets3.assets、obj=2084）
+原文：Applyed on restart
+译文：在重启时应用
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[280] 成功文本
+来源：Honor++_Data/sharedassets3.assets
+键位：asset#sharedassets3.assets#2086/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets3.assets、obj=2086）
+原文：RectSizeModifier, Game
+译文：RectSizeModifier, 游戏
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[281] 成功文本
+来源：Honor++_Data/sharedassets3.assets
+键位：asset#sharedassets3.assets#2092/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets3.assets、obj=2092）
+原文：restart
+译文：重启
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[282] 成功文本
+来源：Honor++_Data/sharedassets3.assets
+键位：asset#sharedassets3.assets#2103/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets3.assets、obj=2103）
+原文：Element C
+译文：元素C
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[283] 成功文本
+来源：Honor++_Data/sharedassets3.assets
+键位：asset#sharedassets3.assets#2104/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets3.assets、obj=2104）
+原文：Element A
+译文：元素A
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[284] 成功文本
+来源：Honor++_Data/sharedassets3.assets
+键位：asset#sharedassets3.assets#2106/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets3.assets、obj=2106）
+原文：Element B
+译文：元素B
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[285] 成功文本
+来源：Honor++_Data/sharedassets3.assets
+键位：asset#sharedassets3.assets#2109/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets3.assets、obj=2109）
+原文：Element D
+译文：元素D
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[286] 成功文本
+来源：Honor++_Data/sharedassets3.assets
+键位：asset#sharedassets3.assets#2116/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets3.assets、obj=2116）
+原文：message
+译文：消息
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[287] 成功文本
+来源：Honor++_Data/sharedassets3.assets
+键位：asset#sharedassets3.assets#2129/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets3.assets、obj=2129）
+原文：size
+译文：大小
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[288] 成功文本
+来源：Honor++_Data/sharedassets3.assets
+键位：asset#sharedassets3.assets#2133/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets3.assets、obj=2133）
+原文：kills
+译文：杀死
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[289] 成功文本
+来源：Honor++_Data/sharedassets3.assets
+键位：asset#sharedassets3.assets#2134/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets3.assets、obj=2134）
+原文：RectSizeModifier, Game
+译文：RectSizeModifier, 游戏
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[290] 成功文本
+来源：Honor++_Data/sharedassets3.assets
+键位：asset#sharedassets3.assets#2135/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets3.assets、obj=2135）
+原文：players
+译文：玩家
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[291] 成功文本
+来源：Honor++_Data/sharedassets3.assets
+键位：asset#sharedassets3.assets#2144/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets3.assets、obj=2144）
+原文：MORE
+
+译文：更多
+
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[292] 成功文本
+来源：Honor++_Data/sharedassets3.assets
+键位：asset#sharedassets3.assets#2152/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets3.assets、obj=2152）
+原文：RectSizeModifier, Game
+译文：RectSizeModifier, 游戏
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[293] 成功文本
+来源：Honor++_Data/sharedassets3.assets
+键位：asset#sharedassets3.assets#2173/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets3.assets、obj=2173）
+原文：off
+译文：关闭
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[294] 成功文本
+来源：Honor++_Data/sharedassets3.assets
+键位：asset#sharedassets3.assets#2174/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets3.assets、obj=2174）
+原文：FULL SCREEN
+译文：全屏显示
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[295] 成功文本
+来源：Honor++_Data/sharedassets3.assets
+键位：asset#sharedassets3.assets#2180/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets3.assets、obj=2180）
+原文：to menu
+译文：到菜单
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[296] 成功文本
+来源：Honor++_Data/sharedassets3.assets
+键位：asset#sharedassets3.assets#2223/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets3.assets、obj=2223）
+原文：RectSizeModifier, Game
+译文：RectSizeModifier, 游戏
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[297] 成功文本
+来源：Honor++_Data/sharedassets3.assets
+键位：asset#sharedassets3.assets#2226/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets3.assets、obj=2226）
+原文：Every 2nd
+译文：每两个
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[298] 成功文本
+来源：Honor++_Data/sharedassets3.assets
+键位：asset#sharedassets3.assets#2226/str/2
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets3.assets、obj=2226）
+原文：FULL RES
+译文：完整内容
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[299] 成功文本
+来源：Honor++_Data/sharedassets3.assets
+键位：asset#sharedassets3.assets#2226/str/3
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets3.assets、obj=2226）
+原文：HALF RES
+译文：一半的结果
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[300] 成功文本
+来源：Honor++_Data/sharedassets3.assets
+键位：asset#sharedassets3.assets#2226/str/4
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets3.assets、obj=2226）
+原文：QUARTER RES
+译文：季度报告
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[301] 成功文本
+来源：Honor++_Data/sharedassets3.assets
+键位：asset#sharedassets3.assets#2226/str/5
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets3.assets、obj=2226）
+原文：EIGHTH RES
+译文：第八条准则
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[302] 成功文本
+来源：Honor++_Data/sharedassets3.assets
+键位：asset#sharedassets3.assets#2226/str/6
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets3.assets、obj=2226）
+原文：NO CASCADES
+译文：无卡口
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[303] 成功文本
+来源：Honor++_Data/sharedassets3.assets
+键位：asset#sharedassets3.assets#2226/str/7
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets3.assets、obj=2226）
+原文：TWO CASCADES
+译文：两场灾难
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[304] 成功文本
+来源：Honor++_Data/sharedassets3.assets
+键位：asset#sharedassets3.assets#2226/str/8
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets3.assets、obj=2226）
+原文：FOUR CASCADES
+译文：四场风暴
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[305] 成功文本
+来源：Honor++_Data/sharedassets3.assets
+键位：asset#sharedassets3.assets#2233/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets3.assets、obj=2233）
+原文：off
+译文：关闭
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[306] 成功文本
+来源：Honor++_Data/sharedassets3.assets
+键位：asset#sharedassets3.assets#2242/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets3.assets、obj=2242）
+原文：ROOM:
+译文：房间：
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[307] 成功文本
+来源：Honor++_Data/sharedassets3.assets
+键位：asset#sharedassets3.assets#2256/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets3.assets、obj=2256）
+原文：emote
+译文：表情符号
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[308] 成功文本
+来源：Honor++_Data/sharedassets3.assets
+键位：asset#sharedassets3.assets#2261/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets3.assets、obj=2261）
+原文：error displaying information...
+译文：显示信息时出错……
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[309] 成功文本
+来源：Honor++_Data/sharedassets3.assets
+键位：asset#sharedassets3.assets#2262/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets3.assets、obj=2262）
+原文：honor
+
+译文：荣誉
+
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[310] 成功文本
+来源：Honor++_Data/sharedassets3.assets
+键位：asset#sharedassets3.assets#2274/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets3.assets、obj=2274）
+原文：off
+译文：关闭
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[311] 成功文本
+来源：Honor++_Data/sharedassets3.assets
+键位：asset#sharedassets3.assets#2285/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets3.assets、obj=2285）
+原文：Changes after death
+译文：死亡后的变化
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[312] 成功文本
+来源：Honor++_Data/sharedassets3.assets
+键位：asset#sharedassets3.assets#2301/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets3.assets、obj=2301）
+原文：- min
+译文：最小
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[313] 成功文本
+来源：Honor++_Data/sharedassets3.assets
+键位：asset#sharedassets3.assets#2305/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets3.assets、obj=2305）
+原文：WINNER
+译文：获胜者
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[314] 成功文本
+来源：Honor++_Data/sharedassets3.assets
+键位：asset#sharedassets3.assets#2323/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets3.assets、obj=2323）
+原文：size
+译文：大小
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[315] 成功文本
+来源：Honor++_Data/sharedassets3.assets
+键位：asset#sharedassets3.assets#2342/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets3.assets、obj=2342）
+原文：emote
+译文：表情符号
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[316] 成功文本
+来源：Honor++_Data/sharedassets3.assets
+键位：asset#sharedassets3.assets#2343/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets3.assets、obj=2343）
+原文：Connected
+译文：已连接
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[317] 成功文本
+来源：Honor++_Data/sharedassets3.assets
+键位：asset#sharedassets3.assets#2349/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets3.assets、obj=2349）
+原文：message
+译文：消息
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[318] 成功文本
+来源：Honor++_Data/sharedassets3.assets
+键位：asset#sharedassets3.assets#2360/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets3.assets、obj=2360）
+原文：size
+译文：大小
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[319] 成功文本
+来源：Honor++_Data/sharedassets3.assets
+键位：asset#sharedassets3.assets#2362/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets3.assets、obj=2362）
+原文：message
+译文：消息
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[320] 成功文本
+来源：Honor++_Data/sharedassets3.assets
+键位：asset#sharedassets3.assets#2366/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets3.assets、obj=2366）
+原文：restart
+译文：重启
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[321] 成功文本
+来源：Honor++_Data/sharedassets3.assets
+键位：asset#sharedassets3.assets#2378/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets3.assets、obj=2378）
+原文：Potato PC
+译文：土豆电脑
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[322] 成功文本
+来源：Honor++_Data/sharedassets3.assets
+键位：asset#sharedassets3.assets#2390/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets3.assets、obj=2390）
+原文：Dash
+译文：DASH
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[323] 成功文本
+来源：Honor++_Data/sharedassets3.assets
+键位：asset#sharedassets3.assets#2399/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets3.assets、obj=2399）
+原文：message
+译文：消息
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[324] 成功文本
+来源：Honor++_Data/sharedassets3.assets
+键位：asset#sharedassets3.assets#2402/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets3.assets、obj=2402）
+原文：RectSizeModifier, Game
+译文：RectSizeModifier, 游戏
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[325] 成功文本
+来源：Honor++_Data/sharedassets3.assets
+键位：asset#sharedassets3.assets#2406/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets3.assets、obj=2406）
+原文：Time
+译文：时间
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[326] 成功文本
+来源：Honor++_Data/sharedassets3.assets
+键位：asset#sharedassets3.assets#2412/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets3.assets、obj=2412）
+原文：to menu
+译文：到菜单
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[327] 成功文本
+来源：Honor++_Data/sharedassets3.assets
+键位：asset#sharedassets3.assets#2425/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets3.assets、obj=2425）
+原文：message
+译文：消息
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[328] 成功文本
+来源：Honor++_Data/sharedassets3.assets
+键位：asset#sharedassets3.assets#2434/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets3.assets、obj=2434）
+原文：RectSizeModifier, Game
+译文：RectSizeModifier, 游戏
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[329] 成功文本
+来源：Honor++_Data/sharedassets3.assets
+键位：asset#sharedassets3.assets#2440/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets3.assets、obj=2440）
+原文：DRAW
+译文：绘制
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[330] 成功文本
+来源：Honor++_Data/sharedassets3.assets
+键位：asset#sharedassets3.assets#2451/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets3.assets、obj=2451）
+原文：kill
+streak
+译文：杀死
+连续成功完成
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[331] 成功文本
+来源：Honor++_Data/sharedassets3.assets
+键位：asset#sharedassets3.assets#2458/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets3.assets、obj=2458）
+原文：loading level in x
+译文：X中的加载级别
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[332] 成功文本
+来源：Honor++_Data/sharedassets3.assets
+键位：asset#sharedassets3.assets#2471/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets3.assets、obj=2471）
+原文：RectSizeModifier, Game
+译文：RectSizeModifier, 游戏
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[333] 成功文本
+来源：Honor++_Data/sharedassets3.assets
+键位：asset#sharedassets3.assets#2484/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets3.assets、obj=2484）
+原文：RectSizeModifier, Game
+译文：RectSizeModifier, 游戏
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[334] 成功文本
+来源：Honor++_Data/sharedassets3.assets
+键位：asset#sharedassets3.assets#2526/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets3.assets、obj=2526）
+原文：Resolution
+译文：分辨率
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[335] 成功文本
+来源：Honor++_Data/sharedassets3.assets
+键位：asset#sharedassets3.assets#2532/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets3.assets、obj=2532）
+原文：settings
+译文：设置
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[336] 成功文本
+来源：Honor++_Data/sharedassets3.assets
+键位：asset#sharedassets3.assets#2539/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets3.assets、obj=2539）
+原文：Jow Blob
+
+译文：Jow Blob
+
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：回显保留原文（未实际翻译）
+需要优化：是（回显未翻译）
+写回：未执行（回显——译文与原文相同，无需写回）
+
+────────────────────────────────────────────────────────────────
+[337] 成功文本
+来源：Honor++_Data/sharedassets3.assets
+键位：asset#sharedassets3.assets#2550/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets3.assets、obj=2550）
+原文：waiting for players...
+译文：正在等待玩家……
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[338] 成功文本
+来源：Honor++_Data/sharedassets3.assets
+键位：asset#sharedassets3.assets#2587/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets3.assets、obj=2587）
+原文：deaths
+译文：死亡
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[339] 成功文本
+来源：Honor++_Data/sharedassets4.assets
+键位：asset#sharedassets4.assets#307/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets4.assets、obj=307）
+原文：CastleGame PostProccessing 1
+译文：城堡游戏处理 1
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[340] 成功文本
+来源：Honor++_Data/Managed/AnimatorEvent.dll
+键位：us#4
+对象：DLL #US 字符串（record_offset=25451）
+原文：Trying to evaluate a NULL delegate condition.
+译文：试图评估一个 NULL 委托条件。
+置信度：medium
+原因：user_string_uppercase_ui
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[341] 成功文本
+来源：Honor++_Data/Managed/AnimatorEvent.dll
+键位：us#1745
+对象：DLL #US 字符串（record_offset=27192）
+原文：NOT FOUND
+译文：未找到
+置信度：medium
+原因：user_string_uppercase_ui
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[342] 成功文本
+来源：Honor++_Data/Managed/Assembly-CSharp-firstpass.dll
+键位：us#60
+对象：DLL #US 字符串（record_offset=74747）
+原文：ON
+译文：关于
+置信度：high
+原因：mono_ui_setter
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[343] 成功文本
+来源：Honor++_Data/Managed/Assembly-CSharp-firstpass.dll
+键位：us#66
+对象：DLL #US 字符串（record_offset=74753）
+原文：OFF
+译文：关闭
+置信度：high
+原因：mono_ui_setter
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[344] 成功文本
+来源：Honor++_Data/Managed/Assembly-CSharp-firstpass.dll
+键位：us#130
+对象：DLL #US 字符串（record_offset=74817）
+原文：ENABLE
+译文：启用
+置信度：high
+原因：mono_ui_setter
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[345] 成功文本
+来源：Honor++_Data/Managed/Assembly-CSharp-firstpass.dll
+键位：us#670
+对象：DLL #US 字符串（record_offset=75357）
+原文：FULL RES
+译文：完整内容
+置信度：medium
+原因：user_string_uppercase_ui
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[346] 成功文本
+来源：Honor++_Data/Managed/Assembly-CSharp-firstpass.dll
+键位：us#688
+对象：DLL #US 字符串（record_offset=75375）
+原文：HALF RES
+译文：一半的结果
+置信度：medium
+原因：user_string_uppercase_ui
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[347] 成功文本
+来源：Honor++_Data/Managed/Assembly-CSharp-firstpass.dll
+键位：us#706
+对象：DLL #US 字符串（record_offset=75393）
+原文：QUARTER RES
+译文：季度报告
+置信度：medium
+原因：user_string_uppercase_ui
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[348] 成功文本
+来源：Honor++_Data/Managed/Assembly-CSharp-firstpass.dll
+键位：us#730
+对象：DLL #US 字符串（record_offset=75417）
+原文：EIGHTH RES
+译文：第八条准则
+置信度：medium
+原因：user_string_uppercase_ui
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[349] 成功文本
+来源：Honor++_Data/Managed/Assembly-CSharp-firstpass.dll
+键位：us#752
+对象：DLL #US 字符串（record_offset=75439）
+原文：NO CASCADES
+译文：无卡口
+置信度：medium
+原因：user_string_uppercase_ui
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[350] 成功文本
+来源：Honor++_Data/Managed/Assembly-CSharp-firstpass.dll
+键位：us#776
+对象：DLL #US 字符串（record_offset=75463）
+原文：TWO CASCADES
+译文：两场灾难
+置信度：medium
+原因：user_string_uppercase_ui
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[351] 成功文本
+来源：Honor++_Data/Managed/Assembly-CSharp-firstpass.dll
+键位：us#802
+对象：DLL #US 字符串（record_offset=75489）
+原文：FOUR CASCADES
+译文：四场风暴
+置信度：medium
+原因：user_string_uppercase_ui
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[352] 成功文本
+来源：Honor++_Data/Managed/Assembly-CSharp-firstpass.dll
+键位：us#1754
+对象：DLL #US 字符串（record_offset=76440）
+原文：KEY <b>'{0}'</b> IS ALREADY USE, 
+ PLEASE PRESS ANOTHER KEY FOR REPLACE <b>{1}</b>
+译文：关键词 <b>'{0}'</b> 已被使用。
+请按下一个键以替换 <b>{1}</b>。
+置信度：medium
+原因：user_string_uppercase_ui
+角色：display
+质量评分：—（passed=True）
+翻译评价：需优化（审核：信息完整性——原文包含明确的替代操作指令，译文缺失关键动作描述，导致信息不完整。）
+需要优化：是（审核：信息完整性——原文包含明确的替代操作指令，译文缺失关键动作描述，导致信息不完整。；建议：关键词 '{0}' 已被使用，请按下一个键进行替换：<b>{1}</b>）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[353] 成功文本
+来源：Honor++_Data/Managed/Assembly-CSharp-firstpass.dll
+键位：us#1920
+对象：DLL #US 字符串（record_offset=76607）
+原文：PRESS A KEY FOR REPLACE <b>{0}</b>
+译文：媒体 A 替换键 <b>{0}</b>
+置信度：medium
+原因：user_string_uppercase_ui
+角色：display
+质量评分：—（passed=True）
+翻译评价：需优化（审核：否定——否定词缺失导致语义完全相反，原文为'按 A 键替换'，译文变为'A 键替换媒体'，主宾关系颠倒且否定词丢失。）
+需要优化：是（审核：否定——否定词缺失导致语义完全相反，原文为'按 A 键替换'，译文变为'A 键替换媒体'，主宾关系颠倒且否定词丢失。；建议：按 A 键替换 <b>{0}</b>）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[354] 成功文本
+来源：Honor++_Data/Managed/Assembly-CSharp.dll
+键位：us#5048
+对象：DLL #US 字符串（record_offset=149955）
+原文：Select Previous Particle Effect
+译文：选择“Previous Particle Effect”
+置信度：high
+原因：mono_ui_setter
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[355] 成功文本
+来源：Honor++_Data/Managed/Assembly-CSharp.dll
+键位：us#5112
+对象：DLL #US 字符串（record_offset=150019）
+原文：Select Next Particle Effect
+译文：选择接下来粒子效果
+置信度：high
+原因：mono_ui_setter
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[356] 成功文本
+来源：Honor++_Data/Managed/ch.sycoforge.Unity.Runtime.dll
+键位：us#516
+对象：DLL #US 字符串（record_offset=78503）
+原文：RGBA({0:F3}, {1:F3}, {2:F3}, {3:F3})
+译文：RGBA({0:F3}, {1:F3}, {2:F3}, {3:F3})
+置信度：medium
+原因：user_string_uppercase_ui
+角色：display
+质量评分：—（passed=True）
+翻译评价：回显保留原文（未实际翻译）
+需要优化：是（回显未翻译）
+写回：未执行（回显——译文与原文相同，无需写回）
+
+────────────────────────────────────────────────────────────────
+[357] 成功文本
+来源：Honor++_Data/Managed/Cinemachine.dll
+键位：us#412
+对象：DLL #US 字符串（record_offset=236775）
+原文：SOLO 
+译文：SOLO
+置信度：medium
+原因：user_string_uppercase_ui
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[358] 成功文本
+来源：Honor++_Data/Managed/Cinemachine.dll
+键位：us#766
+对象：DLL #US 字符串（record_offset=237129）
+原文：**ANY CAMERA**
+译文：任何相机
+置信度：medium
+原因：user_string_uppercase_ui
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[359] 成功文本
+来源：Honor++_Data/Managed/FMODUnity.dll
+键位：us#3224
+对象：DLL #US 字符串（record_offset=186210）
+原文：There is a version mismatch between the FMOD header and either the FMOD Studio library or the FMOD Low Level library.
+译文：FMOD头文件与 FMOD Studio 库或 FMOD 低级库之间存在版本不匹配的问题。
+置信度：medium
+原因：user_string_uppercase_ui
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[360] 成功文本
+来源：Honor++_Data/Managed/FMODUnity.dll
+键位：us#3461
+对象：DLL #US 字符串（record_offset=186447）
+原文：A HTTP error occurred. This is a catch-all for HTTP errors not listed elsewhere.
+译文：发生了一个 HTTP 错误。这是一个用于汇总那些未在其他地方列出的 HTTP 错误的通用类别。
+置信度：medium
+原因：user_string_uppercase_ui
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[361] 成功文本
+来源：Honor++_Data/Managed/FMODUnity.dll
+键位：us#3886
+对象：DLL #US 字符串（record_offset=186873）
+原文：A HTTP server error occurred.
+译文：发生了一个 HTTP 服务器错误。
+置信度：medium
+原因：user_string_uppercase_ui
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[362] 成功文本
+来源：Honor++_Data/Managed/FMODUnity.dll
+键位：us#3946
+对象：DLL #US 字符串（record_offset=186933）
+原文：The HTTP request timed out.
+译文：HTTP请求已经超时。
+置信度：medium
+原因：user_string_uppercase_ui
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[363] 成功文本
+来源：Honor++_Data/Managed/FMODUnity.dll
+键位：us#4002
+对象：DLL #US 字符串（record_offset=186989）
+原文：FMOD was not initialized correctly to support this function.
+译文：FMOD未正确初始化，无法支持此功能。
+置信度：medium
+原因：user_string_uppercase_ui
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[364] 成功文本
+来源：Honor++_Data/Managed/FMODUnity.dll
+键位：us#7877
+对象：DLL #US 字符串（record_offset=190863）
+原文：A resource that the plugin requires cannot be allocated or found. (ie the DLS file for MIDI playback)
+译文：插件所需的资源无法分配或找到。（即用于MIDI播放的DLS文件）
+置信度：medium
+原因：user_string_uppercase_ui
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[365] 成功文本
+来源：Honor++_Data/Managed/FMODUnity.dll
+键位：us#10369
+对象：DLL #US 字符串（record_offset=193355）
+原文：Something in FMOD hasn't been implemented when it should be! contact support!
+译文：在FMOD中，有些功能应该已经实现，但实际上却还没有！请联系技术支持部门！
+置信度：medium
+原因：user_string_uppercase_ui
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[366] 成功文本
+来源：Honor++_Data/Managed/FMODUnity.dll
+键位：us#13368
+对象：DLL #US 字符串（record_offset=196354）
+原文：FMOD: {0} static plugins specified, but static plugins are only supported on the IL2CPP scripting backend
+译文：FMOD：指定了 {0} 个静态插件，但静态插件仅支持 IL2CPP 脚本后端。
+置信度：medium
+原因：user_string_uppercase_ui
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[367] 成功文本
+来源：Honor++_Data/Managed/FMODUnity.dll
+键位：us#13846
+对象：DLL #US 字符串（record_offset=196833）
+原文：[FMOD] {0} : {1}
+译文：[FMOD] {0} : {1}
+置信度：medium
+原因：user_string_uppercase_ui
+角色：display
+质量评分：—（passed=True）
+翻译评价：回显保留原文（未实际翻译）
+需要优化：是（回显未翻译）
+写回：未执行（回显——译文与原文相同，无需写回）
+
+────────────────────────────────────────────────────────────────
+[368] 成功文本
+来源：Honor++_Data/Managed/FMODUnity.dll
+键位：us#13942
+对象：DLL #US 字符串（record_offset=196929）
+原文：[FMOD] {0}({1}) returned {2} for {3} (0x{4}).
+译文：[FMOD] {0}({1}) 返回了 {2} 对于 {3}（0x{4}）。
+置信度：medium
+原因：user_string_uppercase_ui
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[369] 成功文本
+来源：Honor++_Data/Managed/FMODUnity.dll
+键位：us#14039
+对象：DLL #US 字符串（record_offset=197025）
+原文：[FMOD] RuntimeManager accessed outside of runtime. Do not use RuntimeManager for Editor-only functionality, create your own System objects instead.
+译文：[FMOD] RuntimeManager 在运行时之外被访问。请勿使用 RuntimeManager 来实现仅适用于编辑器的功能，应自行创建相应的 System 对象。
+置信度：medium
+原因：user_string_uppercase_ui
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[370] 成功文本
+来源：Honor++_Data/Managed/FMODUnity.dll
+键位：us#14409
+对象：DLL #US 字符串（record_offset=197396）
+原文：Output forced to NO SOUND mode
+译文：强制切换到无声音模式
+置信度：medium
+原因：user_string_uppercase_ui
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[371] 成功文本
+来源：Honor++_Data/Managed/FMODUnity.dll
+键位：us#15006
+对象：DLL #US 字符串（record_offset=197992）
+原文：[FMOD] Studio::System::initialize returned {0}, defaulting to no-sound mode.
+译文：[FMOD] Studio::System::initialize 返回了 {0}，因此默认设置为无声音模式。
+置信度：medium
+原因：user_string_uppercase_ui
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[372] 成功文本
+来源：Honor++_Data/Managed/FMODUnity.dll
+键位：us#15215
+对象：DLL #US 字符串（record_offset=198201）
+原文：[FMOD] Cannot open network port for Live Update (in-use), restarting with Live Update disabled.
+译文：[FMOD] 无法为正在使用的实时更新服务打开网络端口，因此将以禁用实时更新的状态进行重启。
+置信度：medium
+原因：user_string_uppercase_ui
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[373] 成功文本
+来源：Honor++_Data/Managed/FMODUnity.dll
+键位：us#15462
+对象：DLL #US 字符串（record_offset=198448）
+原文：[FMOD] Please add an 'FMOD Studio Listener' component to your camera in the scene for correct 3D positioning of sounds.
+译文：[FMOD] 请在场景中的摄像机中添加“FMOD Studio Listener”组件，以确保声音能够正确地进行3D定位。
+置信度：medium
+原因：user_string_uppercase_ui
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[374] 成功文本
+来源：Honor++_Data/Managed/FMODUnity.dll
+键位：us#15702
+对象：DLL #US 字符串（record_offset=198689）
+原文：FMOD Studio Debug
+译文：FMOD 工作室调试
+置信度：medium
+原因：user_string_uppercase_ui
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[375] 成功文本
+来源：Honor++_Data/Managed/FMODUnity.dll
+键位：us#15814
+对象：DLL #US 字符串（record_offset=198801）
+原文：MEMORY: cur = {0}MB, max = {1}MB
+
+译文：内存：cur = {0}MB，max = {1}MB
+
+置信度：medium
+原因：user_string_uppercase_ui
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[376] 成功文本
+来源：Honor++_Data/Managed/FMODUnity.dll
+键位：us#15882
+对象：DLL #US 字符串（record_offset=198869）
+原文：CHANNELS: real = {0}, total = {1}
+
+译文：CHANNELS: real = {0}, total = {1}
+
+置信度：medium
+原因：user_string_uppercase_ui
+角色：display
+质量评分：—（passed=True）
+翻译评价：回显保留原文（未实际翻译）
+需要优化：是（回显未翻译）
+写回：未执行（回显——译文与原文相同，无需写回）
+
+────────────────────────────────────────────────────────────────
+[377] 成功文本
+来源：Honor++_Data/Managed/FMODUnity.dll
+键位：us#16001
+对象：DLL #US 字符串（record_offset=198987）
+原文：[FMOD] Unable to load {0} - bank already loaded. This may occur when attempting to load another localized bank before the first is unloaded, or if a bank has been loaded via the API.
+译文：[FMOD] 无法加载 {0}——该资源库已经被加载过。这种情况可能发生在：在第一个资源库被卸载之前尝试加载另一个本地化资源库时，或者通过 API 加载了某个资源库时。
+置信度：medium
+原因：user_string_uppercase_ui
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[378] 成功文本
+来源：Honor++_Data/Managed/FMODUnity.dll
+键位：us#16551
+对象：DLL #US 字符串（record_offset=199538）
+原文：[FMOD] Event not found: '
+译文：[FMOD] 未找到事件：‘
+置信度：medium
+原因：user_string_uppercase_ui
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[379] 成功文本
+来源：Honor++_Data/Managed/FMODUnity.dll
+键位：us#16607
+对象：DLL #US 字符串（record_offset=199594）
+原文：[FMOD] Bus not found '
+译文：[FMOD] 未找到总线。
+置信度：medium
+原因：user_string_uppercase_ui
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[380] 成功文本
+来源：Honor++_Data/Managed/FMODUnity.dll
+键位：us#16653
+对象：DLL #US 字符串（record_offset=199640）
+原文：[FMOD] VCA not found '
+译文：[FMOD] 未找到 VCA
+置信度：medium
+原因：user_string_uppercase_ui
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[381] 成功文本
+来源：Honor++_Data/Managed/FMODUnity.dll
+键位：us#16699
+对象：DLL #US 字符串（record_offset=199686）
+原文：[FMOD] Could not load bank '{0}' : {1} : {2}
+译文：[FMOD] 无法加载文件“{0}”：{1} : {2}
+置信度：medium
+原因：user_string_uppercase_ui
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[382] 成功文本
+来源：Honor++_Data/Managed/FMODUnity.dll
+键位：us#16789
+对象：DLL #US 字符串（record_offset=199776）
+原文：[FMOD] Could not load bank '{0}' : {1}
+译文：[FMOD] 无法加载数据库“{0}”：{1}
+置信度：medium
+原因：user_string_uppercase_ui
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[383] 成功文本
+来源：Honor++_Data/Managed/FMODUnity.dll
+键位：us#16867
+对象：DLL #US 字符串（record_offset=199854）
+原文：[FMOD] Initialization failed : {2} : {0} : {1}
+译文：[FMOD] 初始化失败：{2} : {0} : {1}
+置信度：medium
+原因：user_string_uppercase_ui
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[384] 成功文本
+来源：Honor++_Data/Managed/FMODUnity.dll
+键位：us#16961
+对象：DLL #US 字符串（record_offset=199948）
+原文：[FMOD] Initialization failed
+译文：[FMOD] 初始化失败
+置信度：medium
+原因：user_string_uppercase_ui
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[385] 成功文本
+来源：Honor++_Data/Managed/FMODUnity.dll
+键位：us#17112
+对象：DLL #US 字符串（record_offset=200098）
+原文：[FMOD] Cannot find integration settings, creating default settings
+译文：[FMOD] 无法找到集成设置，将创建默认设置。
+置信度：medium
+原因：user_string_uppercase_ui
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[386] 成功文本
+来源：Honor++_Data/Managed/FMODUnity.dll
+键位：us#17246
+对象：DLL #US 字符串（record_offset=200233）
+原文：FMOD Studio Integration Settings
+译文：FMOD Studio集成设置
+置信度：medium
+原因：user_string_uppercase_ui
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[387] 成功文本
+来源：Honor++_Data/Managed/FMODUnity.dll
+键位：us#17407
+对象：DLL #US 字符串（record_offset=200393）
+原文：FMOD: Cleaning up duplicate platform: ID  = {0}, name = '{1}', type = {2}
+译文：FMOD：正在清理重复的平台信息。ID = {0}，名称 = '{1}'，类型 = {2}
+置信度：medium
+原因：user_string_uppercase_ui
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[388] 成功文本
+来源：Honor++_Data/Managed/FMODUnity.dll
+键位：us#17674
+对象：DLL #US 字符串（record_offset=200660）
+原文：[FMOD] StudioGlobalParameterTrigger failed to set parameter {0} : result = {1}
+译文：[FMOD] StudioGlobalParameterTrigger 未能设置参数 {0}：结果 = {1}
+置信度：medium
+原因：user_string_uppercase_ui
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[389] 成功文本
+来源：Honor++_Data/Managed/FMODUnity.dll
+键位：us#17832
+对象：DLL #US 字符串（record_offset=200819）
+原文：[FMOD] Listener has already been added at index {0}.
+译文：[FMOD] 监听器已添加到索引 {0}。
+置信度：medium
+原因：user_string_uppercase_ui
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[390] 成功文本
+来源：Honor++_Data/Managed/FMODUnity.dll
+键位：us#17938
+对象：DLL #US 字符串（record_offset=200925）
+原文：[FMOD] Max number of listeners reached : {0}.
+译文：[FMOD] 已达到最大监听者数量：{0}。
+置信度：medium
+原因：user_string_uppercase_ui
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[391] 成功文本
+来源：Honor++_Data/Managed/FMODUnityResonance.dll
+键位：us#2
+对象：DLL #US 字符串（record_offset=7505）
+原文： not found in the FMOD project.
+译文：在 FMOD 项目中未找到。
+置信度：medium
+原因：user_string_uppercase_ui
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[392] 成功文本
+来源：Honor++_Data/Managed/Fusion.Common.dll
+键位：us#678
+对象：DLL #US 字符串（record_offset=102089）
+原文：MAX_DEPTH EXCEEDED
+译文：最大深度已超过限制
+置信度：medium
+原因：user_string_uppercase_ui
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[393] 成功文本
+来源：Honor++_Data/Managed/Fusion.Common.dll
+键位：us#3491
+对象：DLL #US 字符串（record_offset=104902）
+原文：[DEBUG] 
+译文：[DEBUG]
+置信度：medium
+原因：user_string_uppercase_ui
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[394] 成功文本
+来源：Honor++_Data/Managed/Fusion.Common.dll
+键位：us#3509
+对象：DLL #US 字符串（record_offset=104920）
+原文：[TRACE] 
+译文：[TRACE]
+置信度：medium
+原因：user_string_uppercase_ui
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[395] 成功文本
+来源：Honor++_Data/Managed/Fusion.dll
+键位：us#242
+对象：DLL #US 字符串（record_offset=90169）
+原文：avg per Sample
+译文：每样本的平均值
+置信度：high
+原因：mono_ui_setter
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[396] 成功文本
+来源：Honor++_Data/Managed/Fusion.dll
+键位：us#1020
+对象：DLL #US 字符串（record_offset=90947）
+原文：SHOW
+译文：显示
+置信度：high
+原因：mono_ui_setter
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[397] 成功文本
+来源：Honor++_Data/Managed/Fusion.dll
+键位：us#1060
+对象：DLL #US 字符串（record_offset=90987）
+原文：NON STATE AUTH ONLY
+译文：仅非官方认证
+置信度：medium
+原因：user_string_uppercase_ui
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[398] 成功文本
+来源：Honor++_Data/Managed/Fusion.dll
+键位：us#1100
+对象：DLL #US 字符串（record_offset=91027）
+原文：CLIENT ONLY
+译文：仅限客户使用
+置信度：medium
+原因：user_string_uppercase_ui
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[399] 成功文本
+来源：Honor++_Data/Managed/Fusion.dll
+键位：us#1124
+对象：DLL #US 字符串（record_offset=91051）
+原文：EC MODE ONLY
+译文：仅支持 EC 模式
+置信度：medium
+原因：user_string_uppercase_ui
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[400] 成功文本
+来源：Honor++_Data/Managed/Fusion.dll
+键位：us#1320
+对象：DLL #US 字符串（record_offset=91247）
+原文：OBJECT ID
+译文：对象ID
+置信度：medium
+原因：user_string_uppercase_ui
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[401] 成功文本
+来源：Honor++_Data/Managed/Fusion.dll
+键位：us#4345
+对象：DLL #US 字符串（record_offset=94272）
+原文：[DEBUG] 
+译文：[DEBUG]
+置信度：medium
+原因：user_string_uppercase_ui
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[402] 成功文本
+来源：Honor++_Data/Managed/Fusion.dll
+键位：us#4363
+对象：DLL #US 字符串（record_offset=94290）
+原文：[TRACE] 
+译文：[TRACE]
+置信度：medium
+原因：user_string_uppercase_ui
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[403] 成功文本
+来源：Honor++_Data/Managed/Fusion.Runtime.dll
+键位：us#10064
+对象：DLL #US 字符串（record_offset=590883）
+原文：OrderSorter ERROR: 
+译文：OrderSorter 错误：
+置信度：medium
+原因：user_string_uppercase_ui
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[404] 成功文本
+来源：Honor++_Data/Managed/Fusion.Sockets.dll
+键位：us#4161
+对象：DLL #US 字符串（record_offset=99724）
+原文：[STUN] Unable to resolve Local Address
+译文：[STUN] 无法解析本地地址
+置信度：medium
+原因：user_string_uppercase_ui
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[405] 成功文本
+来源：Honor++_Data/Managed/Fusion.Sockets.dll
+键位：us#4240
+对象：DLL #US 字符串（record_offset=99802）
+原文：[STUN] Unable to find any valid STUN Server, aborting Reflexive Address query.
+译文：[STUN] 无法找到任何有效的 STUN 服务器，因此终止了 Reflexive Address 查询。
+置信度：medium
+原因：user_string_uppercase_ui
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[406] 成功文本
+来源：Honor++_Data/Managed/Fusion.Sockets.dll
+键位：us#4398
+对象：DLL #US 字符串（record_offset=99961）
+原文：[STUN] Only one STUN Server found, skip NAT Type Discovery.
+译文：[STUN] 只找到一台 STUN 服务器，因此跳过 NAT 类型检测步骤。
+置信度：medium
+原因：user_string_uppercase_ui
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[407] 成功文本
+来源：Honor++_Data/Managed/Game.dll
+键位：us#48737
+对象：DLL #US 字符串（record_offset=291196）
+原文：on
+译文：在
+置信度：high
+原因：mono_ui_setter
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[408] 成功文本
+来源：Honor++_Data/Managed/Game.dll
+键位：us#51204
+对象：DLL #US 字符串（record_offset=293663）
+原文：HOST MIGRATED: 
+译文：主持人已迁移：
+置信度：medium
+原因：user_string_uppercase_ui
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[409] 成功文本
+来源：Honor++_Data/Managed/Game.dll
+键位：us#56260
+对象：DLL #US 字符串（record_offset=298719）
+原文：<u>ERROR:</u>
+data not found
+译文：<u>错误：</u>
+数据未找到
+置信度：medium
+原因：user_string_uppercase_ui
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[410] 成功文本
+来源：Honor++_Data/Managed/Game.dll
+键位：us#56781
+对象：DLL #US 字符串（record_offset=299240）
+原文：Resetting...
+译文：正在重置……
+置信度：high
+原因：mono_ui_setter
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[411] 成功文本
+来源：Honor++_Data/Managed/Game.dll
+键位：us#56897
+对象：DLL #US 字符串（record_offset=299356）
+原文：NO TIMER SPAWNED
+译文：没有计时器生成
+置信度：medium
+原因：user_string_uppercase_ui
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[412] 成功文本
+来源：Honor++_Data/Managed/Game.dll
+键位：us#56951
+对象：DLL #US 字符串（record_offset=299410）
+原文：{0} min
+译文：{0} 分钟
+置信度：high
+原因：mono_ui_setter
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[413] 成功文本
+来源：Honor++_Data/Managed/Game.dll
+键位：us#57359
+对象：DLL #US 字符串（record_offset=299818）
+原文：no games
+译文：没有游戏
+置信度：high
+原因：mono_ui_setter
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[414] 成功文本
+来源：Honor++_Data/Managed/Game.dll
+键位：us#57377
+对象：DLL #US 字符串（record_offset=299836）
+原文：connecting
+译文：连接
+置信度：high
+原因：mono_ui_setter
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[415] 成功文本
+来源：Honor++_Data/Managed/JUFootPlacement.dll
+键位：us#654
+对象：DLL #US 字符串（record_offset=18813）
+原文：Left Foot BASE UP
+译文：左侧脚：放下
+置信度：medium
+原因：user_string_uppercase_ui
+角色：display
+质量评分：—（passed=True）
+翻译评价：需优化（审核：术语一致性——术语使用错误，'BASE UP'在格斗游戏语境下应译为'起身'或'站起'，而非'放下'，且未体现'BASE'作为基础状态的含义。）
+需要优化：是（审核：术语一致性——术语使用错误，'BASE UP'在格斗游戏语境下应译为'起身'或'站起'，而非'放下'，且未体现'BASE'作为基础状态的含义。；建议：左侧脚：起身）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[416] 成功文本
+来源：Honor++_Data/Managed/JUFootPlacement.dll
+键位：us#690
+对象：DLL #US 字符串（record_offset=18849）
+原文：Right Foot BASE UP
+译文：对脚：向下
+置信度：medium
+原因：user_string_uppercase_ui
+角色：display
+质量评分：—（passed=True）
+翻译评价：需优化（审核：否定——译文严重违背原文指令，将'向上'误译为'向下'，导致游戏操作逻辑完全相反。）
+需要优化：是（审核：否定——译文严重违背原文指令，将'向上'误译为'向下'，导致游戏操作逻辑完全相反。；建议：对脚：向上）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[417] 成功文本
+来源：Honor++_Data/Managed/Lofelt.NiceVibrations.Demo.dll
+键位：us#10
+对象：DLL #US 字符串（record_offset=43045）
+原文：Stop continuous haptic pattern
+译文：停止连续的触觉模式
+置信度：high
+原因：mono_ui_setter
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[418] 成功文本
+来源：Honor++_Data/Managed/Lofelt.NiceVibrations.Demo.dll
+键位：us#72
+对象：DLL #US 字符串（record_offset=43107）
+原文：Play continuous haptic pattern
+译文：播放连续的触觉模式
+置信度：high
+原因：mono_ui_setter
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[419] 成功文本
+来源：Honor++_Data/Managed/MagicaClothV2.dll
+键位：us#13515
+对象：DLL #US 字符串（record_offset=424982）
+原文：AABB Center:{0}, HalfExtents:{1}, Min:{2}, Max:{3}
+译文：AABB中心：{0}HalfExtents:{1}，最小值：{2}马克斯：{3}
+置信度：medium
+原因：user_string_uppercase_ui
+角色：display
+质量评分：—（passed=True）
+翻译评价：需优化（审核：术语一致性——译文存在术语不规范、标点缺失及专有名词翻译错误，不符合行业标准。）
+需要优化：是（审核：术语一致性——译文存在术语不规范、标点缺失及专有名词翻译错误，不符合行业标准。；建议：AABB 中心：{0}, HalfExtents:{1}, Min:{2}, Max:{3}）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[420] 成功文本
+来源：Honor++_Data/Managed/MagicaClothV2.dll
+键位：us#13617
+对象：DLL #US 字符串（record_offset=425084）
+原文：AABB({0}, {1})
+译文：AABB({0}, {1})
+置信度：medium
+原因：user_string_uppercase_ui
+角色：display
+质量评分：—（passed=True）
+翻译评价：回显保留原文（未实际翻译）
+需要优化：是（回显未翻译）
+写回：未执行（回显——译文与原文相同，无需写回）
+
+────────────────────────────────────────────────────────────────
+[421] 成功文本
+来源：Honor++_Data/Managed/MagicaClothV2.dll
+键位：us#13855
+对象：DLL #US 字符串（record_offset=425322）
+原文：[MC2 DEBUG] {0}
+译文：[MC2 DEBUG] {0}
+置信度：medium
+原因：user_string_uppercase_ui
+角色：display
+质量评分：—（passed=True）
+翻译评价：回显保留原文（未实际翻译）
+需要优化：是（回显未翻译）
+写回：未执行（回显——译文与原文相同，无需写回）
+
+────────────────────────────────────────────────────────────────
+[422] 成功文本
+来源：Honor++_Data/Managed/MeshBakerCore.dll
+键位：us#447
+对象：DLL #US 字符串（record_offset=250897）
+原文： Generated atlas was null. This can happen when using HDRP. Try using the Texture Packer 'Mesh Baker Texture Packer Fast V2' 
+译文：生成的图集为空。这种情况可能发生在使用 HDRP 时。尝试使用 Texture Packer 的“Mesh Baker Texture Packer Fast V2”插件。
+置信度：medium
+原因：user_string_uppercase_ui
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[423] 成功文本
+来源：Honor++_Data/Managed/MeshBakerCore.dll
+键位：us#9213
+对象：DLL #US 字符串（record_offset=259664）
+原文：frm={0} WARN {1}
+译文：frm={0} 警告：{1}
+置信度：medium
+原因：user_string_uppercase_ui
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[424] 成功文本
+来源：Honor++_Data/Managed/MeshBakerCore.dll
+键位：us#9247
+对象：DLL #US 字符串（record_offset=259698）
+原文：frm={0} INFO {1}
+译文：frm={0} 信息 {1}
+置信度：medium
+原因：user_string_uppercase_ui
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[425] 成功文本
+来源：Honor++_Data/Managed/MeshBakerCore.dll
+键位：us#9353
+对象：DLL #US 字符串（record_offset=259804）
+原文：f={0} ERROR {1}
+译文：f={0} 错误 {1}
+置信度：medium
+原因：user_string_uppercase_ui
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[426] 成功文本
+来源：Honor++_Data/Managed/MeshBakerCore.dll
+键位：us#9385
+对象：DLL #US 字符串（record_offset=259836）
+原文：f={0} WARN {1}
+译文：f={0} 警告 {1}
+置信度：medium
+原因：user_string_uppercase_ui
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[427] 成功文本
+来源：Honor++_Data/Managed/MeshBakerCore.dll
+键位：us#9415
+对象：DLL #US 字符串（record_offset=259866）
+原文：f={0} INFO {1}
+译文：f={0} 信息 {1}
+置信度：medium
+原因：user_string_uppercase_ui
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[428] 成功文本
+来源：Honor++_Data/Managed/MeshBakerCore.dll
+键位：us#34132
+对象：DLL #US 字符串（record_offset=284583）
+原文：==================== REDOING PACKING ================
+译文：==================== 重新包装 ================
+置信度：medium
+原因：user_string_uppercase_ui
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[429] 成功文本
+来源：Honor++_Data/Managed/MeshBakerCore.dll
+键位：us#40795
+对象：DLL #US 字符串（record_offset=291245）
+原文：====== There are possible problems with these meshes that may prevent them from combining well. TREATMENT SUGGESTIONS (copy and paste to text editor if too big) =====
+
+译文：这些网格可能存在一些问题，这些问题可能会妨碍它们之间的有效结合。处理建议：如果文本长度过长，请将其复制粘贴到文本编辑器中。
+
+置信度：medium
+原因：user_string_uppercase_ui
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[430] 成功文本
+来源：Honor++_Data/Managed/MeshBakerCore.dll
+键位：us#54874
+对象：DLL #US 字符串（record_offset=305325）
+原文：TODO smooth 
+译文：一切都很顺利
+置信度：medium
+原因：user_string_uppercase_ui
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[431] 成功文本
+来源：Honor++_Data/Managed/MeshBakerCore.dll
+键位：us#72522
+对象：DLL #US 字符串（record_offset=322972）
+原文：THERE MAY BE ERRORS IN THE CONSOLE ABOUT 'Rebuilding mipmaps ... not supported'. THESE ARE PROBABLY FALSE POSITIVES AND CAN BE IGNORED.
+译文：在控制台中可能会出现关于“Rebuilding mipmaps… not supported”的错误信息。这些很可能是误报，可以忽略它们。
+置信度：medium
+原因：user_string_uppercase_ui
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[432] 成功文本
+来源：Honor++_Data/Managed/MoreMountains.Feedbacks.dll
+键位：us#2003
+对象：DLL #US 字符串（record_offset=337630）
+原文：REQUESTED ts={0} time={1} lerp={2} speed={3} keep={4}
+译文：请求中的ts={0}，时间={1}，平滑过渡参数={2}，速度={3}，是否保留={4}
+置信度：medium
+原因：user_string_uppercase_ui
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[433] 成功文本
+来源：Honor++_Data/Managed/MoreMountains.Tools.dll
+键位：us#4014
+对象：DLL #US 字符串（record_offset=433941）
+原文：LIST OF COMMANDS
+译文：命令列表
+置信度：medium
+原因：user_string_uppercase_ui
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[434] 成功文本
+来源：Honor++_Data/Managed/MoreMountains.Tools.dll
+键位：us#6020
+对象：DLL #US 字符串（record_offset=435947）
+原文： - NODE
+译文：- NODE
+置信度：medium
+原因：user_string_uppercase_ui
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[435] 成功文本
+来源：Honor++_Data/Managed/MoreMountains.Tools.dll
+键位：us#6663
+对象：DLL #US 字符串（record_offset=436590）
+原文：SYSTEM INFO
+译文：系统信息
+置信度：medium
+原因：user_string_uppercase_ui
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[436] 成功文本
+来源：Honor++_Data/Managed/MoreMountains.Tools.dll
+键位：us#7143
+对象：DLL #US 字符串（record_offset=437070）
+原文：
+<color=#FFFFFF>Graphic Max Texture Size :</color> 
+译文：
+<color=#FFFFFF>图形最大纹理大小：</color>
+置信度：medium
+原因：user_string_uppercase_ui
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[437] 成功文本
+来源：Honor++_Data/Managed/MoreMountains.Tools.dll
+键位：us#7343
+对象：DLL #US 字符串（record_offset=437270）
+原文：
+<color=#FFFFFF>Compute Shader Support :</color> 
+译文：
+<color=#FFFFFF>计算着色器支持：</color>
+置信度：medium
+原因：user_string_uppercase_ui
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[438] 成功文本
+来源：Honor++_Data/Managed/MoreMountains.Tools.dll
+键位：us#8111
+对象：DLL #US 字符串（record_offset=438038）
+原文： NOT LOADED
+译文：未加载
+置信度：medium
+原因：user_string_uppercase_ui
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[439] 成功文本
+来源：Honor++_Data/Managed/Photon3Unity3D.dll
+键位：us#4967
+对象：DLL #US 字符串（record_offset=202738）
+原文：POST /?{0} HTTP/1.1
+Host: {1}
+Content-Length: {2}
+
+
+译文：POST /?{0} HTTP/1.1
+主持人：{1}
+Content-Length: {2}
+
+
+置信度：medium
+原因：user_string_uppercase_ui
+角色：display
+质量评分：—（passed=True）
+翻译评价：需优化（审核：术语一致性——将 HTTP 协议中的 Host 字段误译为中文“主持人”，导致语义完全错误且破坏程序逻辑。）
+需要优化：是（审核：术语一致性——将 HTTP 协议中的 Host 字段误译为中文“主持人”，导致语义完全错误且破坏程序逻辑。；建议：POST /?{0} HTTP/1.1\nHost: {1}\nContent-Length: {2}）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[440] 成功文本
+来源：Honor++_Data/Managed/PrimeTween.Demo.dll
+键位：us#33
+对象：DLL #US 字符串（record_offset=19827）
+原文：This text is <color=orange>animated</color> with <b>zero allocations</b>, see <i>'TypewriterAnimatorExample'</i> script for more details.
+
+PrimeTween rocks!
+译文：这段文字是 <color=orange>动画</color> 与 <b>零分配</b>，参见 <i>“TypewriterAnimatorExample”</i> 请查看脚本以获取更多详细信息。
+
+PrimeTween真棒！
+置信度：high
+原因：mono_ui_setter
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[441] 成功文本
+来源：Honor++_Data/Managed/PrimeTween.Runtime.dll
+键位：us#2306
+对象：DLL #US 字符串（record_offset=196137）
+原文：DEAD / id {0}
+译文：已死亡 / id {0}
+置信度：medium
+原因：user_string_uppercase_ui
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[442] 成功文本
+来源：Honor++_Data/Managed/ProceduralWorlds.SceneOptimizer.Core.dll
+键位：us#150
+对象：DLL #US 字符串（record_offset=272673）
+原文：Could not deserialize '
+译文：无法反序列化 ‘
+置信度：high
+原因：mono_ui_setter
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[443] 成功文本
+来源：Honor++_Data/Managed/ProceduralWorlds.SceneOptimizer.Core.dll
+键位：us#200
+对象：DLL #US 字符串（record_offset=272723）
+原文：[Log] 
+译文：[日志]
+置信度：high
+原因：mono_ui_setter
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[444] 成功文本
+来源：Honor++_Data/Managed/ProceduralWorlds.SceneOptimizer.Core.dll
+键位：us#228
+对象：DLL #US 字符串（record_offset=272751）
+原文：Processing Meshes
+译文：处理网格
+置信度：high
+原因：mono_ui_setter
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[445] 成功文本
+来源：Honor++_Data/Managed/ProceduralWorlds.SceneOptimizer.Core.dll
+键位：us#264
+对象：DLL #US 字符串（record_offset=272787）
+原文：Could not deserialize action method '
+译文：无法反序列化“action method”类型。
+置信度：high
+原因：mono_ui_setter
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[446] 成功文本
+来源：Honor++_Data/Managed/ProceduralWorlds.SceneOptimizer.Core.dll
+键位：us#346
+对象：DLL #US 字符串（record_offset=272869）
+原文：CR{0}
+译文：CR{0}
+置信度：high
+原因：mono_ui_setter
+角色：display
+质量评分：—（passed=True）
+翻译评价：回显保留原文（未实际翻译）
+需要优化：是（回显未翻译）
+写回：未执行（回显——译文与原文相同，无需写回）
+
+────────────────────────────────────────────────────────────────
+[447] 成功文本
+来源：Honor++_Data/Managed/ProceduralWorlds.SceneOptimizer.Core.dll
+键位：us#358
+对象：DLL #US 字符串（record_offset=272881）
+原文：Frames Gained: {0:0}
+译文：获得的帧数：{0:0}
+置信度：high
+原因：mono_ui_setter
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[448] 成功文本
+来源：Honor++_Data/Managed/ProceduralWorlds.SceneOptimizer.Core.dll
+键位：us#442
+对象：DLL #US 字符串（record_offset=272965）
+原文：M{0}_L{1}_{2}
+译文：M{0}_L{1}_{2}
+置信度：high
+原因：mono_ui_setter
+角色：display
+质量评分：—（passed=True）
+翻译评价：回显保留原文（未实际翻译）
+需要优化：是（回显未翻译）
+写回：未执行（回显——译文与原文相同，无需写回）
+
+────────────────────────────────────────────────────────────────
+[449] 成功文本
+来源：Honor++_Data/Managed/ProceduralWorlds.SceneOptimizer.Core.dll
+键位：us#470
+对象：DLL #US 字符串（record_offset=272993）
+原文：Now Optimizing...
+译文：现在正在优化中……
+置信度：high
+原因：mono_ui_setter
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[450] 成功文本
+来源：Honor++_Data/Managed/ProceduralWorlds.SceneOptimizer.Core.dll
+键位：us#625
+对象：DLL #US 字符串（record_offset=273147）
+原文：'. Please check that the LOD Group's Screen Size is within [0-1]
+译文：请确认 LOD 组的屏幕大小是否在 [0-1] 范围内。
+置信度：high
+原因：mono_ui_setter
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[451] 成功文本
+来源：Honor++_Data/Managed/ProceduralWorlds.SceneOptimizer.Core.dll
+键位：us#819
+对象：DLL #US 字符串（record_offset=273342）
+原文：Issue with LOD Group '
+译文：与 LOD 组相关的问题
+置信度：high
+原因：mono_ui_setter
+角色：display
+质量评分：—（passed=True）
+翻译评价：需优化（审核：信息完整性——译文将技术报错信息误译为自然语言描述，丢失了关键的技术实体（LOD Group）和语法结构，导致信息严重缺失且不符合游戏本地化规范。）
+需要优化：是（审核：信息完整性——译文将技术报错信息误译为自然语言描述，丢失了关键的技术实体（LOD Group）和语法结构，导致信息严重缺失且不符合游戏本地化规范。；建议：与 LOD 组相关的问题）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[452] 成功文本
+来源：Honor++_Data/Managed/ProceduralWorlds.SceneOptimizer.Core.dll
+键位：us#865
+对象：DLL #US 字符串（record_offset=273388）
+原文：Could not deserialize type '
+译文：无法反序列化类型‘
+置信度：high
+原因：mono_ui_setter
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[453] 成功文本
+来源：Honor++_Data/Managed/ProceduralWorlds.SceneOptimizer.Core.dll
+键位：us#923
+对象：DLL #US 字符串（record_offset=273446）
+原文：Couldn't find a matching serialized field for '
+译文：无法找到与“”匹配的序列化字段。
+置信度：high
+原因：mono_ui_setter
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[454] 成功文本
+来源：Honor++_Data/Managed/ProceduralWorlds.SceneOptimizer.Core.dll
+键位：us#1019
+对象：DLL #US 字符串（record_offset=273542）
+原文：Optimizing - Step {0} of {1}
+译文：优化过程 – 第 {0} 步，共 {1} 步
+置信度：high
+原因：mono_ui_setter
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[455] 成功文本
+来源：Honor++_Data/Managed/ProceduralWorlds.SceneOptimizer.Core.dll
+键位：us#1077
+对象：DLL #US 字符串（record_offset=273600）
+原文：private
+译文：私有
+置信度：high
+原因：mono_ui_setter
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[456] 成功文本
+来源：Honor++_Data/Managed/ProceduralWorlds.SceneOptimizer.Core.dll
+键位：us#1093
+对象：DLL #US 字符串（record_offset=273616）
+原文：Field length and serialized member length doesn't match (
+译文：字段长度与序列化后的成员长度不匹配。
+置信度：high
+原因：mono_ui_setter
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[457] 成功文本
+来源：Honor++_Data/Managed/ProceduralWorlds.SceneOptimizer.Core.dll
+键位：us#1209
+对象：DLL #US 字符串（record_offset=273732）
+原文：UnOptimized Objects
+译文：未优化对象
+置信度：high
+原因：mono_ui_setter
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[458] 成功文本
+来源：Honor++_Data/Managed/ProceduralWorlds.SceneOptimizer.Core.dll
+键位：us#1263
+对象：DLL #US 字符串（record_offset=273786）
+原文： static
+译文：静态
+置信度：high
+原因：mono_ui_setter
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[459] 成功文本
+来源：Honor++_Data/Managed/ProceduralWorlds.SceneOptimizer.Core.dll
+键位：us#1283
+对象：DLL #US 字符串（record_offset=273806）
+原文：' in declaring type '
+译文：在声明类型时
+置信度：high
+原因：mono_ui_setter
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[460] 成功文本
+来源：Honor++_Data/Managed/ProceduralWorlds.SceneOptimizer.Core.dll
+键位：us#1327
+对象：DLL #US 字符串（record_offset=273850）
+原文：Could not make generic-method definition '
+译文：无法定义通用方法。
+置信度：high
+原因：mono_ui_setter
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[461] 成功文本
+来源：Honor++_Data/Managed/ProceduralWorlds.SceneOptimizer.Core.dll
+键位：us#1413
+对象：DLL #US 字符串（record_offset=273936）
+原文：' generic!
+译文：通用！
+置信度：high
+原因：mono_ui_setter
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[462] 成功文本
+来源：Honor++_Data/Managed/ProceduralWorlds.SceneOptimizer.Core.dll
+键位：us#1435
+对象：DLL #US 字符串（record_offset=273958）
+原文：Gathering Meshes
+译文：收集网格
+置信度：high
+原因：mono_ui_setter
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[463] 成功文本
+来源：Honor++_Data/Managed/ProceduralWorlds.SceneOptimizer.Core.dll
+键位：us#1469
+对象：DLL #US 字符串（record_offset=273992）
+原文：SP
+译文：SP
+置信度：high
+原因：mono_ui_setter
+角色：display
+质量评分：—（passed=True）
+翻译评价：回显保留原文（未实际翻译）
+需要优化：是（回显未翻译）
+写回：未执行（回显——译文与原文相同，无需写回）
+
+────────────────────────────────────────────────────────────────
+[464] 成功文本
+来源：Honor++_Data/Managed/ProceduralWorlds.SceneOptimizer.Core.dll
+键位：us#1475
+对象：DLL #US 字符串（record_offset=273998）
+原文：Deserialized object type 
+译文：反序列化对象类型
+置信度：high
+原因：mono_ui_setter
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[465] 成功文本
+来源：Honor++_Data/Managed/ProceduralWorlds.SceneOptimizer.Core.dll
+键位：us#1535
+对象：DLL #US 字符串（record_offset=274058）
+原文：Sorting Groups
+译文：排序组
+置信度：high
+原因：mono_ui_setter
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[466] 成功文本
+来源：Honor++_Data/Managed/ProceduralWorlds.SceneOptimizer.Core.dll
+键位：us#1565
+对象：DLL #US 字符串（record_offset=274088）
+原文：RootObject
+译文：RootObject
+置信度：high
+原因：mono_ui_setter
+角色：display
+质量评分：—（passed=True）
+翻译评价：回显保留原文（未实际翻译）
+需要优化：是（回显未翻译）
+写回：未执行（回显——译文与原文相同，无需写回）
+
+────────────────────────────────────────────────────────────────
+[467] 成功文本
+来源：Honor++_Data/Managed/ProceduralWorlds.SceneOptimizer.Core.dll
+键位：us#1587
+对象：DLL #US 字符串（record_offset=274110）
+原文：Extra Large Objects
+译文：特大尺寸物体
+置信度：high
+原因：mono_ui_setter
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[468] 成功文本
+来源：Honor++_Data/Managed/ProceduralWorlds.SceneOptimizer.Core.dll
+键位：us#1627
+对象：DLL #US 字符串（record_offset=274150）
+原文：Min: {0:0}
+译文：最小值：{0:0}
+置信度：high
+原因：mono_ui_setter
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[469] 成功文本
+来源：Honor++_Data/Managed/ProceduralWorlds.SceneOptimizer.Core.dll
+键位：us#1657
+对象：DLL #US 字符串（record_offset=274180）
+原文：LG
+译文：LG
+置信度：high
+原因：mono_ui_setter
+角色：display
+质量评分：—（passed=True）
+翻译评价：回显保留原文（未实际翻译）
+需要优化：是（回显未翻译）
+写回：未执行（回显——译文与原文相同，无需写回）
+
+────────────────────────────────────────────────────────────────
+[470] 成功文本
+来源：Honor++_Data/Managed/ProceduralWorlds.SceneOptimizer.Core.dll
+键位：us#1663
+对象：DLL #US 字符串（record_offset=274186）
+原文：MainCamera
+译文：MainCamera
+置信度：high
+原因：mono_ui_setter
+角色：display
+质量评分：—（passed=True）
+翻译评价：回显保留原文（未实际翻译）
+需要优化：是（回显未翻译）
+写回：未执行（回显——译文与原文相同，无需写回）
+
+────────────────────────────────────────────────────────────────
+[471] 成功文本
+来源：Honor++_Data/Managed/ProceduralWorlds.SceneOptimizer.Core.dll
+键位：us#1685
+对象：DLL #US 字符串（record_offset=274208）
+原文：FPS: {0:0}
+译文：FPS: {0:0}
+置信度：high
+原因：mono_ui_setter
+角色：display
+质量评分：—（passed=True）
+翻译评价：回显保留原文（未实际翻译）
+需要优化：是（回显未翻译）
+写回：未执行（回显——译文与原文相同，无需写回）
+
+────────────────────────────────────────────────────────────────
+[472] 成功文本
+来源：Honor++_Data/Managed/ProceduralWorlds.SceneOptimizer.Core.dll
+键位：us#1707
+对象：DLL #US 字符串（record_offset=274230）
+原文：[Assert] 
+译文：[断言]
+置信度：high
+原因：mono_ui_setter
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[473] 成功文本
+来源：Honor++_Data/Managed/ProceduralWorlds.SceneOptimizer.Core.dll
+键位：us#1727
+对象：DLL #US 字符串（record_offset=274250）
+原文：[Warning] 
+译文：[警告]
+置信度：high
+原因：mono_ui_setter
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[474] 成功文本
+来源：Honor++_Data/Managed/ProceduralWorlds.SceneOptimizer.Core.dll
+键位：us#1749
+对象：DLL #US 字符串（record_offset=274272）
+原文：% Improvement: {0:0}
+译文：% 改进程度：{0:0}
+置信度：high
+原因：mono_ui_setter
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[475] 成功文本
+来源：Honor++_Data/Managed/ProceduralWorlds.SceneOptimizer.Core.dll
+键位：us#1815
+对象：DLL #US 字符串（record_offset=274338）
+原文：[Exception] 
+译文：[例外]
+置信度：high
+原因：mono_ui_setter
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[476] 成功文本
+来源：Honor++_Data/Managed/ProceduralWorlds.SceneOptimizer.Core.dll
+键位：us#1865
+对象：DLL #US 字符串（record_offset=274388）
+原文：) for object 
+译文：用于对象
+置信度：high
+原因：mono_ui_setter
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[477] 成功文本
+来源：Honor++_Data/Managed/ProceduralWorlds.SceneOptimizer.Core.dll
+键位：us#1893
+对象：DLL #US 字符串（record_offset=274416）
+原文：Medium Objects
+译文：中等对象
+置信度：high
+原因：mono_ui_setter
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[478] 成功文本
+来源：Honor++_Data/Managed/ProceduralWorlds.SceneOptimizer.Core.dll
+键位：us#1923
+对象：DLL #US 字符串（record_offset=274446）
+原文：CA{0}
+译文：CA{0}
+置信度：high
+原因：mono_ui_setter
+角色：display
+质量评分：—（passed=True）
+翻译评价：回显保留原文（未实际翻译）
+需要优化：是（回显未翻译）
+写回：未执行（回显——译文与原文相同，无需写回）
+
+────────────────────────────────────────────────────────────────
+[479] 成功文本
+来源：Honor++_Data/Managed/ProceduralWorlds.SceneOptimizer.Core.dll
+键位：us#1935
+对象：DLL #US 字符串（record_offset=274458）
+原文：{0}, {1} {2} of {3}
+译文：{0}, {1} {2} 来自 {3}
+置信度：high
+原因：mono_ui_setter
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[480] 成功文本
+来源：Honor++_Data/Managed/ProceduralWorlds.SceneOptimizer.Core.dll
+键位：us#1975
+对象：DLL #US 字符串（record_offset=274498）
+原文：[Error] 
+译文：[错误]
+置信度：high
+原因：mono_ui_setter
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[481] 成功文本
+来源：Honor++_Data/Managed/ProceduralWorlds.SceneOptimizer.Core.dll
+键位：us#1993
+对象：DLL #US 字符串（record_offset=274516）
+原文：Could not make generic-type definition '
+译文：无法定义“通用类型”
+置信度：high
+原因：mono_ui_setter
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[482] 成功文本
+来源：Honor++_Data/Managed/ProceduralWorlds.SceneOptimizer.Core.dll
+键位：us#2075
+对象：DLL #US 字符串（record_offset=274598）
+原文：Large Objects
+译文：大型对象
+置信度：high
+原因：mono_ui_setter
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[483] 成功文本
+来源：Honor++_Data/Managed/ProceduralWorlds.SceneOptimizer.Core.dll
+键位：us#2129
+对象：DLL #US 字符串（record_offset=274652）
+原文：CL{0}_{1}
+译文：CL{0}_{1}
+置信度：high
+原因：mono_ui_setter
+角色：display
+质量评分：—（passed=True）
+翻译评价：回显保留原文（未实际翻译）
+需要优化：是（回显未翻译）
+写回：未执行（回显——译文与原文相同，无需写回）
+
+────────────────────────────────────────────────────────────────
+[484] 成功文本
+来源：Honor++_Data/Managed/ProceduralWorlds.SceneOptimizer.Core.dll
+键位：us#2149
+对象：DLL #US 字符串（record_offset=274672）
+原文：Small Objects
+译文：小型物品
+置信度：high
+原因：mono_ui_setter
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[485] 成功文本
+来源：Honor++_Data/Managed/ProceduralWorlds.SceneOptimizer.Core.dll
+键位：us#2177
+对象：DLL #US 字符串（record_offset=274700）
+原文：Failed to serialize field name 
+译文：无法序列化字段名称
+置信度：high
+原因：mono_ui_setter
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[486] 成功文本
+来源：Honor++_Data/Managed/ProceduralWorlds.SceneOptimizer.Core.dll
+键位：us#2284
+对象：DLL #US 字符串（record_offset=274806）
+原文：Could not deserialize object as it's type could no be deserialized!
+译文：无法反序列化该对象，因为其类型无法被反序列化！
+置信度：high
+原因：mono_ui_setter
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[487] 成功文本
+来源：Honor++_Data/Managed/Sirenix.Serialization.Config.dll
+键位：us#175
+对象：DLL #US 字符串（record_offset=5901）
+原文：The serialization format of the data in specially serialized Unity objects. Binary is recommended for builds; JSON has the benefit of being human-readable but has significantly worse performance.
+
+With the special editor-only node format, the serialized data will be formatted in such a way that, if the asset is saved with Unity's text format (Edit -> Project Settings -> Editor -> Asset Serialization -> Mode), the data will be mergeable when using version control systems. This makes the custom serialized data a lot less fragile, but comes at a performance cost during serialization and deserialization. The node format is recommended in the editor.
+
+This setting can be overridden on a per-instance basis.
+
+译文：数据在特别序列化的 Unity 对象中的序列化格式。建议使用二进制格式进行构建；JSON 的优点是易于人类阅读，但性能明显较差。
+
+使用专用编辑器节点格式时，序列化后的数据会以一种方式格式化：如果资产以 Unity 的文本格式保存（编辑 -> 项目设置 -> 编辑器 -> 资产序列化 -> 模式），则这些数据可以在使用版本控制系统时进行合并。这使得自定义序列化数据的稳定性大大提高，但代价是序列化和反序列化过程中的性能有所下降。因此，建议在编辑器中使用节点格式。
+此设置可以针对每个实例进行单独调整。
+
+置信度：medium
+原因：user_string_uppercase_ui
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[488] 成功文本
+来源：Honor++_Data/Managed/Sirenix.Serialization.dll
+键位：us#5779
+对象：DLL #US 字符串（record_offset=295470）
+原文：    <<<< READ POSITION
+译文：<<< 阅读位置信息
+置信度：medium
+原因：user_string_uppercase_ui
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[489] 成功文本
+来源：Honor++_Data/Managed/Sirenix.Serialization.dll
+键位：us#6950
+对象：DLL #US 字符串（record_offset=296640）
+原文：' failed due to missing AOT support. 
+
+ Please use Odin's AOT generation feature to generate an AOT dll before building, and MAKE SURE that all of the following types were automatically added to the supported types list after a scan (if they were not, please REPORT AN ISSUE with the details of which exact types the scan is missing and ADD THEM MANUALLY): 
+
+
+译文：由于缺少 AOT 支持，导致失败。请在构建之前使用 Odin 的 AOT 生成功能来生成 AOT dll，并确保所有以下类型在扫描后都能自动添加到支持的类型列表中（如果未能添加，请报告问题，并详细说明哪些具体类型缺失，然后手动添加这些类型）。
+置信度：medium
+原因：user_string_uppercase_ui
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[490] 成功文本
+来源：Honor++_Data/Managed/Sirenix.Serialization.dll
+键位：us#23895
+对象：DLL #US 字符串（record_offset=313586）
+原文：EMPTY EXCEPTION MESSAGE
+译文：空异常消息
+置信度：medium
+原因：user_string_uppercase_ui
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[491] 成功文本
+来源：Honor++_Data/Managed/Sirenix.Serialization.dll
+键位：us#33105
+对象：DLL #US 字符串（record_offset=322795）
+原文：'. This likely means that Unity has filled Odin's stored serialization data with garbage, which can randomly happen after upgrading the Unity version of the project, or when otherwise doing things that have a lot of fragile interactions with the asset database. Locating the asset which causes this error log and causing it to reserialize (IE, modifying it and then causing it to be saved to disk) is likely to 'fix' the issue and make this message go away. Experience shows that this issue is particularly likely to occur on prefab instances, and if this is the case, the parent prefab is also under suspicion, and should be re-saved and re-imported. Note that DATA MAY HAVE BEEN LOST, and you should verify with your version control system (you're using one, right?!) that everything is alright, and if not, use it to rollback the asset to recover your data.
+
+
+
+译文：这很可能意味着 Unity 将 Odin 中存储的序列化数据替换成了垃圾数据。这种情况可能在升级项目使用的 Unity 版本时发生，或者当进行某些与资产数据库有频繁交互的操作时也会发生。找到导致此错误日志的资产并重新对其进行序列化（即修改它后再将其保存到磁盘上）可能会解决该问题，使该消息消失。经验表明，这个问题特别容易出现在预制件实例上；如果是这种情况，那么父预制件也可能存在问题，应该重新保存和导入该预制件。请注意，数据可能已经丢失，您应该使用版本控制系统来确认一切是否正常。如果不正常，可以使用该工具将资产回滚以恢复数据。
+
+
+
+置信度：medium
+原因：user_string_uppercase_ui
+角色：display
+质量评分：—（passed=True）
+翻译评价：需优化（审核：信息完整性——译文严重偏离原文，擅自添加了原文未提及的警告信息（数据丢失、版本控制、回滚工具），且将原文建议的“修改并保存”操作错误地表述为“重新保存和导入”，导致信息完整性错误。）
+需要优化：是（审核：信息完整性——译文严重偏离原文，擅自添加了原文未提及的警告信息（数据丢失、版本控制、回滚工具），且将原文建议的“修改并保存”操作错误地表述为“重新保存和导入”，导致信息完整性错误。；建议：这很可能意味着 Unity 将 Odin 中存储的序列化数据替换成了垃圾数据。这种情况可能在升级项目使用的 Unity 版本时发生，或者当进行某些与资产数据库有频繁交互的操作时也会发生。找到导致此错误日志的资产并重新对其进行序列化（即修改它后再将其保存到磁盘上）可能会解决该问题，使该消息消失。经验表明，这个问题特别容易出现在预制件实例上；如果是这种情况，那么父预制件也可能存在问题，应该重新保存和导入该预制件。）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[492] 成功文本
+来源：Honor++_Data/Managed/ToonyColorsPro2.Demo.dll
+键位：us#2398
+对象：DLL #US 字符串（record_offset=33057）
+原文：View with TCP2 PBS shader
+译文：使用 TCP2 PBS 着色器进行查看
+置信度：high
+原因：mono_ui_setter
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[493] 成功文本
+来源：Honor++_Data/Managed/ToonyColorsPro2.Demo.dll
+键位：us#2450
+对象：DLL #US 字符串（record_offset=33109）
+原文：View with Unity Standard shader
+译文：使用 Unity 标准着色器进行查看
+置信度：high
+原因：mono_ui_setter
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[494] 成功文本
+来源：Honor++_Data/Managed/UniRx.dll
+键位：us#2777
+对象：DLL #US 字符串（record_offset=375700）
+原文：HEAP is Empty
+译文：堆为空。
+置信度：medium
+原因：user_string_uppercase_ui
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[495] 成功文本
+来源：Honor++_Data/Managed/Unity.ProBuilder.dll
+键位：us#28945
+对象：DLL #US 字符串（record_offset=343596）
+原文：UCLA Blue
+译文：UCLA Blue
+置信度：medium
+原因：user_string_uppercase_ui
+角色：display
+质量评分：—（passed=True）
+翻译评价：回显保留原文（未实际翻译）
+需要优化：是（回显未翻译）
+写回：未执行（回显——译文与原文相同，无需写回）
+
+────────────────────────────────────────────────────────────────
+[496] 成功文本
+来源：Honor++_Data/Managed/Unity.ProBuilder.dll
+键位：us#28965
+对象：DLL #US 字符串（record_offset=343616）
+原文：UCLA Gold
+译文：UCLA黄金
+置信度：medium
+原因：user_string_uppercase_ui
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[497] 成功文本
+来源：Honor++_Data/Managed/Unity.ProBuilder.dll
+键位：us#29375
+对象：DLL #US 字符串（record_offset=344026）
+原文：USAFA Blue
+译文：USAFA 蓝色
+置信度：medium
+原因：user_string_uppercase_ui
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[498] 成功文本
+来源：Honor++_Data/Managed/Unity.Services.Authentication.dll
+键位：us#6538
+对象：DLL #US 字符串（record_offset=103096）
+原文：Additional text found in JSON string after finishing deserializing object.
+译文：在反序列化对象后，JSON字符串中还会包含额外的文本。
+置信度：medium
+原因：user_string_uppercase_ui
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[499] 成功文本
+来源：Honor++_Data/Managed/Unity.Services.Authentication.PlayerAccounts.dll
+键位：us#1861
+对象：DLL #US 字符串（record_offset=29163）
+原文：<html><body><b>DONE!</b><br>(You can return to your app and close this tab/window now)
+译文：<html><body><b>完成！</b><br>（您可以返回到您的应用程序并关闭此标签页/窗口。）
+置信度：medium
+原因：user_string_uppercase_ui
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入

@@ -1,0 +1,90 @@
+[
+ {
+  "locator": "HUNT_Data/level0:asset#level0#1008/str/0",
+  "original": "(PRESS SPACE TO PLAY)",
+  "verdict": "flag",
+  "issue": "术语一致性",
+  "reason": "游戏启动按钮误用“播放”一词，不符合行业标准术语规范，应使用“开始”。",
+  "suggestion": "（按空格键开始）"
+ },
+ {
+  "locator": "HUNT_Data/level3:asset#level3#1218/str/0",
+  "original": "New day, new madness. Today it’s foxes",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用符合行业标准，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "HUNT_Data/level3:asset#level3#1219/str/0",
+  "original": "Stupid creatures, not a bad haul for today",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文的语义、语气及人物关系，术语使用符合游戏 UI 标准，无错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "HUNT_Data/level4:asset#level4#1316/str/0",
+  "original": "Damn, I’m good at this. Used way too much mascara.",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用规范，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "HUNT_Data/level7:asset#level7#1093/str/0",
+  "original": "Why am I tied up? What? WHY DO YOU HAVE A SAW, YOU SON OF A BITCH?",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文的愤怒情绪、人物关系及核心疑问，无术语错误或语义偏差。",
+  "suggestion": ""
+ },
+ {
+  "locator": "HUNT_Data/level7:asset#level7#1100/str/0",
+  "original": "What do you bitches want? Huh? You want to kill me?",
+  "verdict": "pass",
+  "issue": "语气",
+  "reason": "译文整体语义准确，但'混蛋'一词在中文游戏语境中略显直白，可优化为更地道的'贱人'或'杂碎'以匹配原文'bitches'的轻蔑语气。",
+  "suggestion": "你们这些贱人想要什么？哈？你们想杀了我吗？"
+ },
+ {
+  "locator": "HUNT_Data/level8:asset#level8#1072/str/0",
+  "original": "Why am I tied up? What? WHY DO YOU HAVE A SAW, YOU SON OF A BITCH?",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文的愤怒情绪、人物关系及核心疑问，无术语错误或语义偏差。",
+  "suggestion": ""
+ },
+ {
+  "locator": "HUNT_Data/level8:asset#level8#1079/str/0",
+  "original": "What do you bitches want? Huh? You want to kill me?",
+  "verdict": "flag",
+  "issue": "语气",
+  "reason": "译文使用了“混蛋”而非“贱人”，未能准确传达原文中带有强烈侮辱性和特定性别指向的粗俗语气。",
+  "suggestion": "你们这些贱人想要什么？哈？你们想杀了我吗？"
+ },
+ {
+  "locator": "HUNT_Data/Managed/Assembly-CSharp.dll:us#3585",
+  "original": "You have selected link <#ffff00> ID 01",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用规范，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "HUNT_Data/Managed/Assembly-CSharp.dll:us#3663",
+  "original": "You have selected link <#ffff00> ID 02",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用规范，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "HUNT_Data/Managed/Assembly-CSharp.dll:us#3742",
+  "original": "Camera Control - <#ffff00>Shift + RMB\n</color>Zoom - <#ffff00>Mouse wheel.",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用规范，无语法或逻辑错误。",
+  "suggestion": ""
+ }
+]

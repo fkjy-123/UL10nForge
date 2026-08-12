@@ -1,0 +1,1116 @@
+游戏：hunt
+导出时间：2026-08-13 04:59:48
+翻译模型：Hy-MT2-1.8B-Q6_K
+成功文本：74 条
+
+────────────────────────────────────────────────────────────────
+[1] 成功文本
+来源：HUNT_Data/app.info
+键位：plain/1
+对象：纯文本文件行
+原文：HUNT
+译文：狩猎
+置信度：medium
+原因：—
+角色：—
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[2] 成功文本
+来源：HUNT_Data/level0
+键位：asset#level0#1004/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=1004）
+原文：HUNT
+译文：狩猎
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[3] 成功文本
+来源：HUNT_Data/level0
+键位：asset#level0#1005/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=1005）
+原文：Oh yes, I killed those pathetic creatures.
+译文：哦，是的，我杀死了那些可恶的怪物。
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[4] 成功文本
+来源：HUNT_Data/level0
+键位：asset#level0#1006/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=1006）
+原文：ESC - EXIT
+译文：ESC – 退出
+置信度：high
+原因：interaction_prompt
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[5] 成功文本
+来源：HUNT_Data/level0
+键位：asset#level0#1007/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=1007）
+原文：BY KSEURO
+译文：由 KSEURO 提供
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[6] 成功文本
+来源：HUNT_Data/level0
+键位：asset#level0#1008/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=1008）
+原文：(PRESS SPACE TO PLAY)
+译文：（按空格键播放）
+置信度：high
+原因：interaction_prompt
+角色：display
+质量评分：—（passed=True）
+翻译评价：需优化（审核：术语一致性——游戏启动按钮误用“播放”一词，不符合行业标准术语规范，应使用“开始”。）
+需要优化：是（审核：术语一致性——游戏启动按钮误用“播放”一词，不符合行业标准术语规范，应使用“开始”。；建议：（按空格键开始））
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[7] 成功文本
+来源：HUNT_Data/level1
+键位：asset#level1#21/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=21）
+原文：We ventured deep into the vast forest to revel in the slaughter of beasts.
+译文：我们深入那片广阔的森林，尽情享受着对野兽的屠杀。
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[8] 成功文本
+来源：HUNT_Data/level2
+键位：asset#level2#1130/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=1130）
+原文：The hunt is going to be killer; we need to bag a few rabbits.
+译文：这次狩猎将会非常艰难；我们必须能捕获几只兔子。
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[9] 成功文本
+来源：HUNT_Data/level2
+键位：asset#level2#1131/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=1131）
+原文：Oh yes, I killed those pathetic creatures.
+译文：哦，是的，我杀死了那些可恶的怪物。
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[10] 成功文本
+来源：HUNT_Data/level3
+键位：asset#level3#1218/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level3、obj=1218）
+原文：New day, new madness. Today it’s foxes
+译文：新的一天，新的疯狂。今天是狐狸的日子。
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[11] 成功文本
+来源：HUNT_Data/level3
+键位：asset#level3#1219/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level3、obj=1219）
+原文：Stupid creatures, not a bad haul for today
+译文：愚蠢的生物们，今天收获还不错啊。
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[12] 成功文本
+来源：HUNT_Data/level3
+键位：asset#level3#1222/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level3、obj=1222）
+原文：Zone
+译文：区域
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[13] 成功文本
+来源：HUNT_Data/level3
+键位：asset#level3#1254/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level3、obj=1254）
+原文：Zone
+译文：区域
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[14] 成功文本
+来源：HUNT_Data/level3
+键位：asset#level3#1268/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level3、obj=1268）
+原文：Zone
+译文：区域
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[15] 成功文本
+来源：HUNT_Data/level3
+键位：asset#level3#1347/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level3、obj=1347）
+原文：Zone
+译文：区域
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[16] 成功文本
+来源：HUNT_Data/level3
+键位：asset#level3#1355/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level3、obj=1355）
+原文：Zone
+译文：区域
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[17] 成功文本
+来源：HUNT_Data/level3
+键位：asset#level3#1375/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level3、obj=1375）
+原文：Zone
+译文：区域
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[18] 成功文本
+来源：HUNT_Data/level3
+键位：asset#level3#1436/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level3、obj=1436）
+原文：Zone
+译文：区域
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[19] 成功文本
+来源：HUNT_Data/level4
+键位：asset#level4#1315/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level4、obj=1315）
+原文：A new day begins. I hope to take down even more of those forest creatures today
+译文：新的一天开始了。我希望今天能再消灭更多那些森林里的生物。
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[20] 成功文本
+来源：HUNT_Data/level4
+键位：asset#level4#1316/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level4、obj=1316）
+原文：Damn, I’m good at this. Used way too much mascara.
+译文：该死，我可真擅长这个啊。用的睫毛膏太多了。
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[21] 成功文本
+来源：HUNT_Data/level4
+键位：asset#level4#1336/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level4、obj=1336）
+原文：Zone
+译文：区域
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[22] 成功文本
+来源：HUNT_Data/level4
+键位：asset#level4#1345/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level4、obj=1345）
+原文：Zone
+译文：区域
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[23] 成功文本
+来源：HUNT_Data/level4
+键位：asset#level4#1365/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level4、obj=1365）
+原文：Zone
+译文：区域
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[24] 成功文本
+来源：HUNT_Data/level4
+键位：asset#level4#1392/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level4、obj=1392）
+原文：Zone
+译文：区域
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[25] 成功文本
+来源：HUNT_Data/level4
+键位：asset#level4#1427/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level4、obj=1427）
+原文：Zone
+译文：区域
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[26] 成功文本
+来源：HUNT_Data/level4
+键位：asset#level4#1430/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level4、obj=1430）
+原文：Zone
+译文：区域
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[27] 成功文本
+来源：HUNT_Data/level4
+键位：asset#level4#1466/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level4、obj=1466）
+原文：Zone
+译文：区域
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[28] 成功文本
+来源：HUNT_Data/level4
+键位：asset#level4#1481/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level4、obj=1481）
+原文：Zone
+译文：区域
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[29] 成功文本
+来源：HUNT_Data/level4
+键位：asset#level4#1522/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level4、obj=1522）
+原文：Zone
+译文：区域
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[30] 成功文本
+来源：HUNT_Data/level4
+键位：asset#level4#1525/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level4、obj=1525）
+原文：Zone
+译文：区域
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[31] 成功文本
+来源：HUNT_Data/level5
+键位：asset#level5#1383/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level5、obj=1383）
+原文：Wow, I’ve taken down so much game. A whole herd of deer is coming, I’m gonna have a blast.
+译文：哇，我已经击败了这么多游戏角色呢。一大群鹿正在靠近，我一定会玩得很开心。
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[32] 成功文本
+来源：HUNT_Data/level5
+键位：asset#level5#1384/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level5、obj=1384）
+原文：Oh yeah, I’ve never been this lucky before
+译文：哦，对啊，我以前从未这么幸运过。
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[33] 成功文本
+来源：HUNT_Data/level5
+键位：asset#level5#1399/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level5、obj=1399）
+原文：Zone
+译文：区域
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[34] 成功文本
+来源：HUNT_Data/level5
+键位：asset#level5#1406/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level5、obj=1406）
+原文：Zone
+译文：区域
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[35] 成功文本
+来源：HUNT_Data/level5
+键位：asset#level5#1416/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level5、obj=1416）
+原文：Zone
+译文：区域
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[36] 成功文本
+来源：HUNT_Data/level5
+键位：asset#level5#1436/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level5、obj=1436）
+原文：Zone
+译文：区域
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[37] 成功文本
+来源：HUNT_Data/level5
+键位：asset#level5#1441/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level5、obj=1441）
+原文：Zone
+译文：区域
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[38] 成功文本
+来源：HUNT_Data/level5
+键位：asset#level5#1498/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level5、obj=1498）
+原文：Zone
+译文：区域
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[39] 成功文本
+来源：HUNT_Data/level5
+键位：asset#level5#1507/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level5、obj=1507）
+原文：Zone
+译文：区域
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[40] 成功文本
+来源：HUNT_Data/level5
+键位：asset#level5#1529/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level5、obj=1529）
+原文：Zone
+译文：区域
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[41] 成功文本
+来源：HUNT_Data/level5
+键位：asset#level5#1553/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level5、obj=1553）
+原文：Zone
+译文：区域
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[42] 成功文本
+来源：HUNT_Data/level5
+键位：asset#level5#1593/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level5、obj=1593）
+原文：Zone
+译文：区域
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[43] 成功文本
+来源：HUNT_Data/level5
+键位：asset#level5#1619/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level5、obj=1619）
+原文：Zone
+译文：区域
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[44] 成功文本
+来源：HUNT_Data/level5
+键位：asset#level5#1626/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level5、obj=1626）
+原文：Zone
+译文：区域
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[45] 成功文本
+来源：HUNT_Data/level6
+键位：asset#level6#1083/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level6、obj=1083）
+原文：What the hell is that lousy creature making all that noise at night? I need to kill it.
+译文：那讨厌的家伙在夜里发出那么大的噪音，到底是什么东西啊？我得把它杀掉。
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[46] 成功文本
+来源：HUNT_Data/level6
+键位：asset#level6#1084/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level6、obj=1084）
+原文：Hahaha, serves you right, you pathetic creature.
+译文：哈哈哈，这就够了。对你这个可悲的生物。
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[47] 成功文本
+来源：HUNT_Data/level6
+键位：asset#level6#1128/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level6、obj=1128）
+原文：Zone
+译文：区域
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[48] 成功文本
+来源：HUNT_Data/level7
+键位：asset#level7#1092/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level7、obj=1092）
+原文：My head... who the fuck are you people? What kind of clowns are you?
+译文：我的头……你们到底是谁？你们这些人是些什么人啊？
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[49] 成功文本
+来源：HUNT_Data/level7
+键位：asset#level7#1093/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level7、obj=1093）
+原文：Why am I tied up? What? WHY DO YOU HAVE A SAW, YOU SON OF A BITCH?
+译文：我为什么被绑起来了？什么？你这个混蛋，为什么会有锯子？
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[50] 成功文本
+来源：HUNT_Data/level7
+键位：asset#level7#1094/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level7、obj=1094）
+原文：What? No, no, no, don't! I BEG you.
+译文：什么？不，不要！我求你了。
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[51] 成功文本
+来源：HUNT_Data/level7
+键位：asset#level7#1095/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level7、obj=1095）
+原文：You have killed so many... so many... defenseless creatures.
+译文：你已经杀死了如此多……如此多的无助的生物。
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[52] 成功文本
+来源：HUNT_Data/level7
+键位：asset#level7#1096/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level7、obj=1096）
+原文：So what? I enjoy killing you pathetic creatures.
+译文：那又怎样？我喜欢杀死那些可恶的怪物。
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[53] 成功文本
+来源：HUNT_Data/level7
+键位：asset#level7#1097/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level7、obj=1097）
+原文：Even in the face of death, you show no humanity.
+译文：即使面对死亡，你依然毫无人性可言。
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[54] 成功文本
+来源：HUNT_Data/level7
+键位：asset#level7#1098/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level7、obj=1098）
+原文：No, your death won't change anything. We will turn you into a helpless creature)
+译文：不，你的死亡不会改变任何事情。我们会让你变成一个无助的生灵。
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[55] 成功文本
+来源：HUNT_Data/level7
+键位：asset#level7#1099/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level7、obj=1099）
+原文：I beg you, please forgive me!
+译文：我恳请您，请原谅我吧！
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[56] 成功文本
+来源：HUNT_Data/level7
+键位：asset#level7#1100/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level7、obj=1100）
+原文：What do you bitches want? Huh? You want to kill me?
+译文：你们这些混蛋想要什么？哈？你们想杀了我吗？
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[57] 成功文本
+来源：HUNT_Data/level8
+键位：asset#level8#1071/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level8、obj=1071）
+原文：My head... who the fuck are you people? What kind of clowns are you?
+译文：我的头……你们到底是谁？你们这些人是些什么人啊？
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[58] 成功文本
+来源：HUNT_Data/level8
+键位：asset#level8#1072/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level8、obj=1072）
+原文：Why am I tied up? What? WHY DO YOU HAVE A SAW, YOU SON OF A BITCH?
+译文：我为什么被绑起来了？什么？你这个混蛋，为什么会有锯子？
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[59] 成功文本
+来源：HUNT_Data/level8
+键位：asset#level8#1073/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level8、obj=1073）
+原文：What? No, no, no, don't! I BEG you.
+译文：什么？不，不要！我求你了。
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[60] 成功文本
+来源：HUNT_Data/level8
+键位：asset#level8#1074/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level8、obj=1074）
+原文：You have killed so many... so many... defenseless creatures.
+译文：你已经杀死了如此多……如此多的无助的生物。
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[61] 成功文本
+来源：HUNT_Data/level8
+键位：asset#level8#1075/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level8、obj=1075）
+原文：So what? I enjoy killing you pathetic creatures.
+译文：那又怎样？我喜欢杀死那些可恶的怪物。
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[62] 成功文本
+来源：HUNT_Data/level8
+键位：asset#level8#1076/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level8、obj=1076）
+原文：Even in the face of death, you show no humanity.
+译文：即使面对死亡，你依然毫无人性可言。
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[63] 成功文本
+来源：HUNT_Data/level8
+键位：asset#level8#1077/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level8、obj=1077）
+原文：No, your death won't change anything. We will turn you into a helpless creature)
+译文：不，你的死亡不会改变任何事情。我们会让你变成一个无助的生灵。
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[64] 成功文本
+来源：HUNT_Data/level8
+键位：asset#level8#1078/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level8、obj=1078）
+原文：I beg you, please forgive me!
+译文：我恳请您，请原谅我吧！
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[65] 成功文本
+来源：HUNT_Data/level8
+键位：asset#level8#1079/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level8、obj=1079）
+原文：What do you bitches want? Huh? You want to kill me?
+译文：你们这些混蛋想要什么？哈？你们想杀了我吗？
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：—（passed=True）
+翻译评价：需优化（审核：语气——译文使用了“混蛋”而非“贱人”，未能准确传达原文中带有强烈侮辱性和特定性别指向的粗俗语气。）
+需要优化：是（审核：语气——译文使用了“混蛋”而非“贱人”，未能准确传达原文中带有强烈侮辱性和特定性别指向的粗俗语气。；建议：你们这些贱人想要什么？哈？你们想杀了我吗？）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[66] 成功文本
+来源：HUNT_Data/resources.assets
+键位：asset#resources.assets#72/json/Player/RenderThreadingMode
+对象：—（asset_file=resources.assets、obj=72）
+原文：Split
+译文：分割
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[67] 成功文本
+来源：HUNT_Data/resources.assets
+键位：asset#resources.assets#72/json/Player/AndroidBuildSystem
+对象：—（asset_file=resources.assets、obj=72）
+原文：Gradle
+译文：Gradle
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：—（passed=True）
+翻译评价：回显保留原文（未实际翻译）
+需要优化：是（回显未翻译）
+写回：未执行（回显——译文与原文相同，无需写回）
+
+────────────────────────────────────────────────────────────────
+[68] 成功文本
+来源：HUNT_Data/resources.assets
+键位：asset#resources.assets#72/json/Editor/Branch
+对象：—（asset_file=resources.assets、obj=72）
+原文：6000.5/staging
+译文：6000.5/阶段
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[69] 成功文本
+来源：HUNT_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#36/str/2
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=36）
+原文：VCR OSD Mono
+译文：VCR OSD Mono
+置信度：medium
+原因：natural_language
+角色：display
+质量评分：—（passed=True）
+翻译评价：回显保留原文（未实际翻译）
+需要优化：是（回显未翻译）
+写回：未执行（回显——译文与原文相同，无需写回）
+
+────────────────────────────────────────────────────────────────
+[70] 成功文本
+来源：HUNT_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#36/str/3
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=36）
+原文：Regular
+译文：常规
+置信度：medium
+原因：object_has_display_evidence
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[71] 成功文本
+来源：HUNT_Data/Managed/Assembly-CSharp.dll
+键位：us#2609
+对象：DLL #US 字符串（record_offset=79016）
+原文：A <#0080ff>simple</color> line of text.
+译文：一条<#0080ff>简单的</color>文本行。
+置信度：high
+原因：mono_ui_setter
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[72] 成功文本
+来源：HUNT_Data/Managed/Assembly-CSharp.dll
+键位：us#3585
+对象：DLL #US 字符串（record_offset=79992）
+原文：You have selected link <#ffff00> ID 01
+译文：您选择了链接 <#ffff00>，ID为01。
+置信度：high
+原因：mono_ui_setter
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[73] 成功文本
+来源：HUNT_Data/Managed/Assembly-CSharp.dll
+键位：us#3663
+对象：DLL #US 字符串（record_offset=80070）
+原文：You have selected link <#ffff00> ID 02
+译文：您选择了链接 <#ffff00>，ID为02。
+置信度：high
+原因：mono_ui_setter
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[74] 成功文本
+来源：HUNT_Data/Managed/Assembly-CSharp.dll
+键位：us#3742
+对象：DLL #US 字符串（record_offset=80148）
+原文：Camera Control - <#ffff00>Shift + RMB
+</color>Zoom - <#ffff00>Mouse wheel.
+译文：相机控制 - <#ffff00>Shift + RMB
+</color>缩放 - <#ffff00>鼠标滚轮。
+置信度：high
+原因：mono_ui_setter
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入

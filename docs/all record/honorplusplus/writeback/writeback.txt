@@ -1,0 +1,169 @@
+游戏：honorplusplus
+写回时间：2026-08-13 04:51:32
+输出目录：D:\游戏\honorplusplus_汉化
+
+文件清单：39 个
+
+- Honor++_Data/app.info（2 条）
+- Honor++_Data/level1（1915 条）
+- Honor++_Data/level2（716 条）
+- Honor++_Data/level3（223 条）
+- Honor++_Data/level4（5 条）
+- Honor++_Data/resources.assets（1827 条）
+- Honor++_Data/sharedassets1.assets（71 条）
+- Honor++_Data/sharedassets2.assets（212 条）
+- Honor++_Data/sharedassets3.assets（733 条）
+- Honor++_Data/sharedassets4.assets（13 条）
+- Honor++_Data/Managed/AnimatorEvent.dll（106 条）
+- Honor++_Data/Managed/Assembly-CSharp-firstpass.dll（107 条）
+- Honor++_Data/Managed/Assembly-CSharp.dll（70 条）
+- Honor++_Data/Managed/ch.sycoforge.Unity.Runtime.dll（40 条）
+- Honor++_Data/Managed/Cinemachine.dll（39 条）
+- Honor++_Data/Managed/FMODUnity.dll（150 条）
+- Honor++_Data/Managed/FMODUnityResonance.dll（2 条）
+- Honor++_Data/Managed/Fusion.Common.dll（73 条）
+- Honor++_Data/Managed/Fusion.dll（101 条）
+- Honor++_Data/Managed/Fusion.Runtime.dll（494 条）
+- Honor++_Data/Managed/Fusion.Sockets.dll（62 条）
+- Honor++_Data/Managed/Game.dll（104 条）
+- Honor++_Data/Managed/JUFootPlacement.dll（18 条）
+- Honor++_Data/Managed/Lofelt.NiceVibrations.Demo.dll（23 条）
+- Honor++_Data/Managed/MagicaClothV2.dll（202 条）
+- Honor++_Data/Managed/MeshBakerCore.dll（543 条）
+- Honor++_Data/Managed/MoreMountains.Feedbacks.dll（40 条）
+- Honor++_Data/Managed/MoreMountains.Tools.dll（169 条）
+- Honor++_Data/Managed/Photon3Unity3D.dll（193 条）
+- Honor++_Data/Managed/PrimeTween.Demo.dll（4 条）
+- Honor++_Data/Managed/PrimeTween.Runtime.dll（77 条）
+- Honor++_Data/Managed/ProceduralWorlds.SceneOptimizer.Core.dll（64 条）
+- Honor++_Data/Managed/Sirenix.Serialization.Config.dll（9 条）
+- Honor++_Data/Managed/Sirenix.Serialization.dll（393 条）
+- Honor++_Data/Managed/ToonyColorsPro2.Demo.dll（58 条）
+- Honor++_Data/Managed/UniRx.dll（55 条）
+- Honor++_Data/Managed/Unity.ProBuilder.dll（1005 条）
+- Honor++_Data/Managed/Unity.Services.Authentication.dll（91 条）
+- Honor++_Data/Managed/Unity.Services.Authentication.PlayerAccounts.dll（48 条）
+
+────────────────────────────────────────────────────────────────
+写回结果
+文本文件：1
+输入保护：True
+重开验证：True
+变更文件：63
+写入译文：475
+总体闸门：PASS
+字体层级：runtime_verified
+清单：.hanhua-manifest.json
+备份：None
+
+四态闸门明细
+  file=N/A
+  container=PASS
+  object=PASS
+  runtime=PASS
+
+────────────────────────────────────────────────────────────────
+知识库案例转规则：5 条已启用（writeback_case → 可执行检测）
+
+- [fit_bytes_nul_padding] 固定容量池截短译文后字符串尾部带 NUL 导致逻辑判定失灵（实现：writer._fit_bytes（pad 模式容量对齐）+ 译文长度头自证（logic_audit.verify_string_l）
+- [placeholder_preserve] 写回截断把 {0} 占位符切开导致 string.Format 崩溃（实现：writer._restore_placeholders / _placeholders_intact（截断不得破坏占位符，缺失补末）
+- [textasset_encoding_preserve] TextAsset 非 UTF-8 内容被 decode-repla（实现：writer 写回按源编码/严格校验，不把非 UTF-8 当 UTF-8 重写）
+- [unityevent_binding_preserve] 替换 prefab/资源后 UnityEvent 事件绑定断裂按钮无（实现：extractor._UNITYEVENT_SIGNALS 对象信号 → structural 跳过+ logic_audit.lo）
+- [logic_key_compare] 代码把显示文本当逻辑键（按钮文字/物品名比较分发）（实现：logic_audit.LOGIC_COMPARE_WORDS 比较词表 + 代码对象联合判定（写回自动回退））
+
+────────────────────────────────────────────────────────────────
+逻辑层审计（写回逻辑敏感形态 / 扩容 / 语义回退 / 重开验证）
+
+疑似逻辑键（report，已写回需复核）：62 条
+
+- [short_code_word] join → 加入（asset#level1#7020/str/0）
+- [short_code_word] off → 关闭（asset#level1#7021/str/0）
+- [short_code_word] high → 高（asset#level1#7023/str/0）
+- [short_code_word] host → 主机（asset#level1#7030/str/0）
+- [logic_compare_word] retry → 重试（asset#level1#7031/str/0）
+- [short_code_word] kills → 杀死（asset#level1#7038/str/0）
+- [logic_compare_word] settings → 设置（asset#level1#7047/str/0）
+- [short_code_word] map → 地图（asset#level1#7050/str/0）
+- [short_code_word] off → 关闭（asset#level1#7058/str/0）
+- [logic_compare_word] credits → 致谢（asset#level1#7059/str/0）
+- [logic_compare_word] play → 播放（asset#level1#7062/str/0）
+- [short_code_word] host → 主机（asset#level1#7065/str/0）
+- [logic_compare_word] settings → 设置（asset#level1#7072/str/0）
+- [short_code_word] off → 关闭（asset#level1#7075/str/0）
+- [logic_compare_word] apply → 应用（asset#level1#7087/str/0）
+- [short_code_word] off → 关闭（asset#level1#7090/str/0）
+- [logic_compare_word] play → 播放（asset#level1#7108/str/0）
+- [logic_compare_word] settings → 设置（asset#level1#7121/str/0）
+- [short_code_word] host → 主机（asset#level1#7123/str/0）
+- [logic_compare_word] select → 选择（asset#level1#7124/str/0）
+- [logic_compare_word] select → 选择（asset#level1#7125/str/0）
+- [logic_compare_word] select → 选择（asset#level1#7126/str/0）
+- [logic_compare_word] select → 选择（asset#level1#7127/str/0）
+- [logic_compare_word] select → 选择（asset#level1#7128/str/0）
+- [logic_compare_word] CANCEL → 取消（asset#level1#7518/str/0）
+- [short_code_word] size → 大小（asset#level1#7765/str/0）
+- [short_code_word] size → 大小（asset#level1#7777/str/0）
+- [short_code_word] size → 大小（asset#level1#7854/str/0）
+- [short_code_word] size → 大小（asset#level1#7889/str/0）
+- [short_code_word] kills → 杀死（asset#level2#1539/str/0）
+…（其余 32 条）
+
+短词/常见按钮文本（note，正常可译）：101 条（抽样：['join', 'off', 'high', 'host', 'retry', 'kills', 'username', 'settings']）
+
+rawstr 扩容写入：161 条（译文 UTF-8 字节 > 原文）
+
+- join → 加入（4 → 6 字节，+2）
+- off → 关闭（3 → 6 字节，+3）
+- ragdoll count → ragdoll 计数（13 → 14 字节，+1）
+- FULL SCREEN → 全屏显示（11 → 12 字节，+1）
+- NO sessions found → 未找到相关会话。（17 → 24 字节，+7）
+- host → 主机（4 → 6 字节，+2）
+- retry → 重试（5 → 6 字节，+1）
+- by time → 随着时间的推移（7 → 21 字节，+14）
+- max players → 最大玩家数（11 → 15 字节，+4）
+- kills → 杀死（5 → 6 字节，+1）
+- max health → 最大值健康（10 → 15 字节，+5）
+- username → 用户名（8 → 9 字节，+1）
+- map → 地图（3 → 6 字节，+3）
+- FULL SCREEN → 全屏显示（11 → 12 字节，+1）
+- Audio, Sound, SFX → 音频、声音、音效（17 → 24 字节，+7）
+- off → 关闭（3 → 6 字节，+3）
+- Potato PC → 土豆电脑（9 → 12 字节，+3）
+- play → 播放（4 → 6 字节，+2）
+- host → 主机（4 → 6 字节，+2）
+- Booting up...
+Mounting system driv → 正在启动中……
+正在挂载系统驱动器……
+正在检查系统资源……<w（936 → 981 字节，+45）
+…（其余 141 条）
+
+回显跳过（译文==原文，未写入）：24 条
+
+- Honor++_Data/app.info:plain/1：Honor++
+- Honor++_Data/level1:asset#level1#7104/str/0：GRUEL SCUM
+- Honor++_Data/level2:asset#level2#1649/str/0：Jow Blob
+
+- Honor++_Data/resources.assets:asset#resources.assets#342/json/Player/AndroidBuildSystem：Gradle
+- Honor++_Data/resources.assets:asset#resources.assets#4243/str/9：SFX
+- Honor++_Data/resources.assets:asset#resources.assets#4257/str/2：VCR OSD Mono
+- Honor++_Data/resources.assets:asset#resources.assets#4907/str/0：Minimum: 0
+- Honor++_Data/resources.assets:asset#resources.assets#5169/str/0：#FFC400
+- Honor++_Data/sharedassets3.assets:asset#sharedassets3.assets#2539/str/0：Jow Blob
+
+- Honor++_Data/Managed/ch.sycoforge.Unity.Runtime.dll:us#516：RGBA({0:F3}, {1:F3}, {2:F3}, {3:F3})
+- Honor++_Data/Managed/FMODUnity.dll:us#13846：[FMOD] {0} : {1}
+- Honor++_Data/Managed/FMODUnity.dll:us#15882：CHANNELS: real = {0}, total = {1}
+
+- Honor++_Data/Managed/MagicaClothV2.dll:us#13617：AABB({0}, {1})
+- Honor++_Data/Managed/MagicaClothV2.dll:us#13855：[MC2 DEBUG] {0}
+- Honor++_Data/Managed/ProceduralWorlds.SceneOptimizer.Core.dll:us#346：CR{0}
+- Honor++_Data/Managed/ProceduralWorlds.SceneOptimizer.Core.dll:us#442：M{0}_L{1}_{2}
+- Honor++_Data/Managed/ProceduralWorlds.SceneOptimizer.Core.dll:us#1469：SP
+- Honor++_Data/Managed/ProceduralWorlds.SceneOptimizer.Core.dll:us#1565：RootObject
+- Honor++_Data/Managed/ProceduralWorlds.SceneOptimizer.Core.dll:us#1657：LG
+- Honor++_Data/Managed/ProceduralWorlds.SceneOptimizer.Core.dll:us#1663：MainCamera
+- Honor++_Data/Managed/ProceduralWorlds.SceneOptimizer.Core.dll:us#1685：FPS: {0:0}
+- Honor++_Data/Managed/ProceduralWorlds.SceneOptimizer.Core.dll:us#1923：CA{0}
+- Honor++_Data/Managed/ProceduralWorlds.SceneOptimizer.Core.dll:us#2129：CL{0}_{1}
+- Honor++_Data/Managed/Unity.ProBuilder.dll:us#28945：UCLA Blue
+

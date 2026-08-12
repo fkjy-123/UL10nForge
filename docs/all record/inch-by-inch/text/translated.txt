@@ -1,0 +1,5836 @@
+游戏：inch-by-inch
+导出时间：2026-08-13 05:16:06
+翻译模型：Hy-MT2-1.8B-Q6_K
+成功文本：386 条
+
+────────────────────────────────────────────────────────────────
+[1] 成功文本
+来源：level0
+键位：asset#level0#1396/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=1396）
+原文：Look Up
+
+译文：查找
+
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[2] 成功文本
+来源：level0
+键位：asset#level0#1400/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=1400）
+原文：SETTINGS
+译文：设置
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[3] 成功文本
+来源：level0
+键位：asset#level0#1401/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=1401）
+原文：Difficulty
+译文：难度
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[4] 成功文本
+来源：level0
+键位：asset#level0#1408/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=1408）
+原文：Audio
+译文：音频
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[5] 成功文本
+来源：level0
+键位：asset#level0#1416/str/4
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=1416）
+原文：Off
+译文：关闭
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[6] 成功文本
+来源：level0
+键位：asset#level0#1416/str/5
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=1416）
+原文：Low
+译文：低
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[7] 成功文本
+来源：level0
+键位：asset#level0#1416/str/6
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=1416）
+原文：Medium
+译文：中等
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[8] 成功文本
+来源：level0
+键位：asset#level0#1416/str/7
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=1416）
+原文：High
+译文：高
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[9] 成功文本
+来源：level0
+键位：asset#level0#1422/str/4
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=1422）
+原文：Off
+译文：关闭
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[10] 成功文本
+来源：level0
+键位：asset#level0#1422/str/5
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=1422）
+原文：Low
+译文：低
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[11] 成功文本
+来源：level0
+键位：asset#level0#1422/str/6
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=1422）
+原文：High
+译文：高
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[12] 成功文本
+来源：level0
+键位：asset#level0#1426/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=1426）
+原文：Head Bopping
+译文：摇头晃脑
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[13] 成功文本
+来源：level0
+键位：asset#level0#1431/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=1431）
+原文：Medium
+译文：中等
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[14] 成功文本
+来源：level0
+键位：asset#level0#1433/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=1433）
+原文：Option A
+译文：选项 A
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[15] 成功文本
+来源：level0
+键位：asset#level0#1435/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=1435）
+原文：120 Hz
+译文：120 Hz
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：回显保留原文（未实际翻译）
+需要优化：是（回显未翻译）
+写回：未执行（回显——译文与原文相同，无需写回）
+
+────────────────────────────────────────────────────────────────
+[16] 成功文本
+来源：level0
+键位：asset#level0#1437/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=1437）
+原文：Rotate Object
+
+译文：旋转对象
+
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[17] 成功文本
+来源：level0
+键位：asset#level0#1453/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=1453）
+原文：Left
+译文：左侧
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[18] 成功文本
+来源：level0
+键位：asset#level0#1461/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=1461）
+原文：Keyboard Settings
+译文：键盘设置
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[19] 成功文本
+来源：level0
+键位：asset#level0#1469/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=1469）
+原文：Option A
+译文：选项 A
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[20] 成功文本
+来源：level0
+键位：asset#level0#1474/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=1474）
+原文：Keyboard Settings
+译文：键盘设置
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[21] 成功文本
+来源：level0
+键位：asset#level0#1475/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=1475）
+原文：Special Thanks
+译文：特别感谢
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[22] 成功文本
+来源：level0
+键位：asset#level0#1477/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=1477）
+原文：Medium
+译文：中等
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[23] 成功文本
+来源：level0
+键位：asset#level0#1478/str/4
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=1478）
+原文：Quit
+译文：退出
+置信度：medium
+原因：code_heavy_display_word
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[24] 成功文本
+来源：level0
+键位：asset#level0#1481/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=1481）
+原文：Use + Carry
+译文：使用 + 携带
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[25] 成功文本
+来源：level0
+键位：asset#level0#1494/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=1494）
+原文：Show
+译文：显示
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[26] 成功文本
+来源：level0
+键位：asset#level0#1495/str/4
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=1495）
+原文：Off
+译文：关闭
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[27] 成功文本
+来源：level0
+键位：asset#level0#1495/str/5
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=1495）
+原文：Low
+译文：低
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[28] 成功文本
+来源：level0
+键位：asset#level0#1495/str/6
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=1495）
+原文：High
+译文：高
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[29] 成功文本
+来源：level0
+键位：asset#level0#1508/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=1508）
+原文：WARNING!
+译文：警告！
+置信度：medium
+原因：natural_language
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[30] 成功文本
+来源：level0
+键位：asset#level0#1509/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=1509）
+原文：100.00 cm
+译文：100.00 厘米
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[31] 成功文本
+来源：level0
+键位：asset#level0#1518/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=1518）
+原文：Quality
+译文：质量
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[32] 成功文本
+来源：level0
+键位：asset#level0#1521/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=1521）
+原文：Music Vol.
+译文：音乐卷。
+置信度：medium
+原因：natural_language
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[33] 成功文本
+来源：level0
+键位：asset#level0#1526/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=1526）
+原文：Time
+译文：时间
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[34] 成功文本
+来源：level0
+键位：asset#level0#1528/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=1528）
+原文：QUIT
+译文：退出
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[35] 成功文本
+来源：level0
+键位：asset#level0#1531/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=1531）
+原文：Created by
+译文：由……创建
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[36] 成功文本
+来源：level0
+键位：asset#level0#1542/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=1542）
+原文：Video
+译文：视频
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[37] 成功文本
+来源：level0
+键位：asset#level0#1548/str/4
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=1548）
+原文：Apply
+译文：应用
+置信度：medium
+原因：code_heavy_display_word
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[38] 成功文本
+来源：level0
+键位：asset#level0#1555/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=1555）
+原文：Option A
+译文：选项 A
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[39] 成功文本
+来源：level0
+键位：asset#level0#1565/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=1565）
+原文：CREDITS
+译文：致谢
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[40] 成功文本
+来源：level0
+键位：asset#level0#1576/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=1576）
+原文：Option A
+译文：选项 A
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[41] 成功文本
+来源：level0
+键位：asset#level0#1585/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=1585）
+原文：No Data
+译文：无数据
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[42] 成功文本
+来源：level0
+键位：asset#level0#1586/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=1586）
+原文：Controls
+译文：控制
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[43] 成功文本
+来源：level0
+键位：asset#level0#1592/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=1592）
+原文：Mouse Sensitivity
+译文：鼠标灵敏度
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[44] 成功文本
+来源：level0
+键位：asset#level0#1596/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=1596）
+原文：Carry (Hold)
+译文：携带（持有）
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[45] 成功文本
+来源：level0
+键位：asset#level0#1598/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=1598）
+原文：Option A
+译文：选项 A
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[46] 成功文本
+来源：level0
+键位：asset#level0#1604/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=1604）
+原文：100.00 cm
+译文：100.00 厘米
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[47] 成功文本
+来源：level0
+键位：asset#level0#1607/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=1607）
+原文：Option A
+译文：选项 A
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[48] 成功文本
+来源：level0
+键位：asset#level0#1623/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=1623）
+原文：Invert Mouse Y
+译文：反转鼠标 Y 轴方向
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[49] 成功文本
+来源：level0
+键位：asset#level0#1625/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=1625）
+原文：Difficulty: Scientist
+译文：难度：科学家
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[50] 成功文本
+来源：level0
+键位：asset#level0#1628/str/4
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=1628）
+原文：Low
+译文：低
+置信度：medium
+原因：code_heavy_display_word
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[51] 成功文本
+来源：level0
+键位：asset#level0#1628/str/5
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=1628）
+原文：Medium
+译文：中等
+置信度：medium
+原因：code_heavy_display_word
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[52] 成功文本
+来源：level0
+键位：asset#level0#1628/str/6
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=1628）
+原文：High
+译文：高
+置信度：medium
+原因：code_heavy_display_word
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[53] 成功文本
+来源：level0
+键位：asset#level0#1650/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=1650）
+原文：Use
+译文：使用
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[54] 成功文本
+来源：level0
+键位：asset#level0#1666/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=1666）
+原文：Fullscreen
+译文：全屏
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[55] 成功文本
+来源：level0
+键位：asset#level0#1667/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=1667）
+原文：Motion Blur
+译文：运动模糊
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[56] 成功文本
+来源：level0
+键位：asset#level0#1676/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=1676）
+原文：PLAY
+译文：播放
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[57] 成功文本
+来源：level0
+键位：asset#level0#1682/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=1682）
+原文：Settings
+
+译文：设置
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[58] 成功文本
+来源：level0
+键位：asset#level0#1684/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=1684）
+原文：Carry (Toggle)
+译文：携带（切换）
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[59] 成功文本
+来源：level0
+键位：asset#level0#1690/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=1690）
+原文：Option A
+译文：选项 A
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[60] 成功文本
+来源：level0
+键位：asset#level0#1693/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=1693）
+原文：Sandbox Mode
+译文：沙箱模式
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[61] 成功文本
+来源：level0
+键位：asset#level0#1699/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=1699）
+原文：Look Down
+译文：向下看
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[62] 成功文本
+来源：level0
+键位：asset#level0#1702/str/4
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=1702）
+原文：Lab Intern
+译文：实验室实习生
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[63] 成功文本
+来源：level0
+键位：asset#level0#1702/str/7
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=1702）
+原文：Custom
+译文：自定义
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[64] 成功文本
+来源：level0
+键位：asset#level0#1707/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=1707）
+原文：Effects Vol.
+译文：效果 卷
+置信度：medium
+原因：natural_language
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[65] 成功文本
+来源：level0
+键位：asset#level0#1713/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=1713）
+原文：Marig (@DareLooks)
+译文：Marig (@DareLooks)
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：回显保留原文（未实际翻译）
+需要优化：是（回显未翻译）
+写回：未执行（回显——译文与原文相同，无需写回）
+
+────────────────────────────────────────────────────────────────
+[66] 成功文本
+来源：level0
+键位：asset#level0#1716/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=1716）
+原文：Revert to Default
+译文：恢复到默认状态
+置信度：medium
+原因：natural_language
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[67] 成功文本
+来源：level0
+键位：asset#level0#1724/str/4
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=1724）
+原文：Off
+译文：关闭
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[68] 成功文本
+来源：level0
+键位：asset#level0#1724/str/5
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=1724）
+原文：Low
+译文：低
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[69] 成功文本
+来源：level0
+键位：asset#level0#1724/str/6
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=1724）
+原文：Medium
+译文：中等
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[70] 成功文本
+来源：level0
+键位：asset#level0#1724/str/7
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=1724）
+原文：High
+译文：高
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[71] 成功文本
+来源：level0
+键位：asset#level0#1724/str/8
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=1724）
+原文：Custom
+译文：自定义
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[72] 成功文本
+来源：level0
+键位：asset#level0#1727/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=1727）
+原文：High
+译文：高
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[73] 成功文本
+来源：level0
+键位：asset#level0#1735/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=1735）
+原文：Option A
+译文：选项 A
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[74] 成功文本
+来源：level0
+键位：asset#level0#1738/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=1738）
+原文：Run
+译文：运行
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[75] 成功文本
+来源：level0
+键位：asset#level0#1758/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=1758）
+原文：Show Dialogues
+译文：显示对话框
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[76] 成功文本
+来源：level0
+键位：asset#level0#1779/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=1779）
+原文：High
+译文：高
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[77] 成功文本
+来源：level0
+键位：asset#level0#1782/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=1782）
+原文：YES
+译文：是的
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[78] 成功文本
+来源：level0
+键位：asset#level0#1786/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=1786）
+原文：Option A
+译文：选项 A
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[79] 成功文本
+来源：level0
+键位：asset#level0#1790/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=1790）
+原文：Lucis (@LevelXProject)
+
+译文：Lucis (@LevelXProject)
+
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：回显保留原文（未实际翻译）
+需要优化：是（回显未翻译）
+写回：未执行（回显——译文与原文相同，无需写回）
+
+────────────────────────────────────────────────────────────────
+[80] 成功文本
+来源：level0
+键位：asset#level0#1796/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=1796）
+原文：Resolution
+译文：分辨率
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[81] 成功文本
+来源：level0
+键位：asset#level0#1802/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=1802）
+原文：No Data
+译文：无数据
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[82] 成功文本
+来源：level0
+键位：asset#level0#1806/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=1806）
+原文：BACK
+译文：返回
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[83] 成功文本
+来源：level0
+键位：asset#level0#1807/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=1807）
+原文：Turn Left
+译文：转向左侧
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[84] 成功文本
+来源：level0
+键位：asset#level0#1810/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=1810）
+原文：Post FX
+译文：Post FX
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：回显保留原文（未实际翻译）
+需要优化：是（回显未翻译）
+写回：未执行（回显——译文与原文相同，无需写回）
+
+────────────────────────────────────────────────────────────────
+[85] 成功文本
+来源：level0
+键位：asset#level0#1812/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=1812）
+原文：Lab Intern
+译文：实验室实习生
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[86] 成功文本
+来源：level0
+键位：asset#level0#1816/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=1816）
+原文：SCORE
+译文：分数
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[87] 成功文本
+来源：level0
+键位：asset#level0#1822/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=1822）
+原文：HEIGHT SCORE
+译文：身高分数
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[88] 成功文本
+来源：level0
+键位：asset#level0#1833/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=1833）
+原文：Option A
+译文：选项 A
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[89] 成功文本
+来源：level0
+键位：asset#level0#1843/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=1843）
+原文：Right
+译文：对
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[90] 成功文本
+来源：level0
+键位：asset#level0#1849/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=1849）
+原文：BACK
+译文：返回
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[91] 成功文本
+来源：level0
+键位：asset#level0#1850/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=1850）
+原文：(In Sandbox Mode: Use Number Keys 0 - 9 to set Progress)
+译文：（在沙箱模式下：使用数字键 0-9 来设置进度）
+置信度：medium
+原因：natural_language
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[92] 成功文本
+来源：level0
+键位：asset#level0#1856/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=1856）
+原文：High
+译文：高
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[93] 成功文本
+来源：level0
+键位：asset#level0#1858/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=1858）
+原文：Wibbly Wobbly
+译文：Wibbly Wobbly
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：回显保留原文（未实际翻译）
+需要优化：是（回显未翻译）
+写回：未执行（回显——译文与原文相同，无需写回）
+
+────────────────────────────────────────────────────────────────
+[94] 成功文本
+来源：level0
+键位：asset#level0#1862/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=1862）
+原文：Play with Tutorial
+译文：播放与教程
+置信度：medium
+原因：natural_language
+角色：display
+质量评分：—（passed=True）
+翻译评价：需优化（审核：术语一致性——术语误用，Play 在游戏 UI 中应译为“开始”而非“播放”，且“与”字连接生硬，不符合游戏按钮动词习惯。）
+需要优化：是（审核：术语一致性——术语误用，Play 在游戏 UI 中应译为“开始”而非“播放”，且“与”字连接生硬，不符合游戏按钮动词习惯。；建议：开始教程）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[95] 成功文本
+来源：level0
+键位：asset#level0#1868/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=1868）
+原文：Advanced Settings
+译文：高级设置
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[96] 成功文本
+来源：level0
+键位：asset#level0#1870/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=1870）
+原文：Show Reticle
+译文：显示瞄准镜
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[97] 成功文本
+来源：level0
+键位：asset#level0#1871/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=1871）
+原文：Turn Right
+译文：转向对
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[98] 成功文本
+来源：level0
+键位：asset#level0#1877/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=1877）
+原文：Lab Intern
+译文：实验室实习生
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[99] 成功文本
+来源：level0
+键位：asset#level0#1891/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=1891）
+原文：BACK
+译文：返回
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[100] 成功文本
+来源：level0
+键位：asset#level0#1892/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=1892）
+原文：Jump
+译文：跳跃
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[101] 成功文本
+来源：level0
+键位：asset#level0#1895/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=1895）
+原文：Are you sure you want to permanently delete all highscore data?
+译文：您确定要永久删除所有高分记录数据吗？
+置信度：medium
+原因：natural_language
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[102] 成功文本
+来源：level0
+键位：asset#level0#1896/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=1896）
+原文：Difficulty
+译文：难度
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[103] 成功文本
+来源：level1
+键位：asset#level1#3339/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=3339）
+原文：- Empty -
+译文：空 –
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[104] 成功文本
+来源：level1
+键位：asset#level1#3340/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=3340）
+原文：SANDBOX MODE
+译文：SANDBOX模式
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[105] 成功文本
+来源：level1
+键位：asset#level1#3348/str/4
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=3348）
+原文：Lab Intern
+译文：实验室实习生
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[106] 成功文本
+来源：level1
+键位：asset#level1#3348/str/7
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=3348）
+原文：Custom
+译文：自定义
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[107] 成功文本
+来源：level1
+键位：asset#level1#3359/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=3359）
+原文：Option A
+译文：选项 A
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[108] 成功文本
+来源：level1
+键位：asset#level1#3368/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=3368）
+原文：QUICK SETTINGS
+译文：快速设置
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[109] 成功文本
+来源：level1
+键位：asset#level1#3371/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=3371）
+原文：Music Vol.
+译文：音乐卷。
+置信度：medium
+原因：natural_language
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[110] 成功文本
+来源：level1
+键位：asset#level1#3378/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=3378）
+原文：- recipe -
+译文：食谱 –
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[111] 成功文本
+来源：level1
+键位：asset#level1#3393/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=3393）
+原文：Shrinking Progress 100%
+译文：缩小进度 100%
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：需优化（审核：术语一致性——术语使用错误，'Shrinking' 在此语境下指进度条减少而非物理缩小，且'Progress'应译为'进度'而非'进度条'，整体表达不符合游戏 UI 规范。）
+需要优化：是（审核：术语一致性——术语使用错误，'Shrinking' 在此语境下指进度条减少而非物理缩小，且'Progress'应译为'进度'而非'进度条'，整体表达不符合游戏 UI 规范。；建议：减少进度 100%）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[112] 成功文本
+来源：level1
+键位：asset#level1#3398/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=3398）
+原文：3 Key Ingredients for antidote!
+译文：3种用于解毒的关键成分！
+置信度：medium
+原因：natural_language
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[113] 成功文本
+来源：level1
+键位：asset#level1#3404/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=3404）
+原文：RESTART
+译文：重启
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[114] 成功文本
+来源：level1
+键位：asset#level1#3406/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=3406）
+原文：- Empty -
+译文：空 –
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[115] 成功文本
+来源：level1
+键位：asset#level1#3430/str/4
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=3430）
+原文：Confirm
+译文：确认
+置信度：medium
+原因：code_heavy_display_word
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[116] 成功文本
+来源：level1
+键位：asset#level1#3441/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=3441）
+原文：Shrink Speed
+译文：收缩速度
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[117] 成功文本
+来源：level1
+键位：asset#level1#3450/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=3450）
+原文：BACK TO MENU
+译文：返回到菜单
+置信度：medium
+原因：natural_language
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[118] 成功文本
+来源：level1
+键位：asset#level1#3455/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=3455）
+原文：RESUME WITH CURRENT SIZE
+译文：当前大小的简历
+置信度：medium
+原因：natural_language
+角色：display
+质量评分：—（passed=True）
+翻译评价：需优化（审核：术语一致性——术语严重错误，将游戏 UI 中的 Resume（继续）误译为简历，且未传达原文‘使用当前大小’的含义。）
+需要优化：是（审核：术语一致性——术语严重错误，将游戏 UI 中的 Resume（继续）误译为简历，且未传达原文‘使用当前大小’的含义。；建议：使用当前大小继续）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[119] 成功文本
+来源：level1
+键位：asset#level1#3459/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=3459）
+原文：- Empty -
+译文：空 –
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[120] 成功文本
+来源：level1
+键位：asset#level1#3460/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=3460）
+原文：RESTART
+译文：重启
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[121] 成功文本
+来源：level1
+键位：asset#level1#3468/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=3468）
+原文：BACK TO MENU
+译文：返回到菜单
+置信度：medium
+原因：natural_language
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[122] 成功文本
+来源：level1
+键位：asset#level1#3472/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=3472）
+原文：Option A
+译文：选项 A
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[123] 成功文本
+来源：level1
+键位：asset#level1#3519/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=3519）
+原文：YOU WON!
+译文：你赢了！
+置信度：medium
+原因：natural_language
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[124] 成功文本
+来源：level1
+键位：asset#level1#3522/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=3522）
+原文：Effects Vol.
+译文：效果 卷
+置信度：medium
+原因：natural_language
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[125] 成功文本
+来源：level1
+键位：asset#level1#3525/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=3525）
+原文：PAUSE
+译文：暂停
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[126] 成功文本
+来源：level1
+键位：asset#level1#3527/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=3527）
+原文：Difficulty
+译文：难度
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[127] 成功文本
+来源：level1
+键位：asset#level1#3530/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=3530）
+原文：SHOW SCORE
+译文：显示得分
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[128] 成功文本
+来源：level1
+键位：asset#level1#3534/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=3534）
+原文：Show
+译文：显示
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[129] 成功文本
+来源：level1
+键位：asset#level1#3550/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=3550）
+原文：BACK TO MENU
+译文：返回到菜单
+置信度：medium
+原因：natural_language
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[130] 成功文本
+来源：level1
+键位：asset#level1#3569/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=3569）
+原文：BACK TO MENU
+译文：返回到菜单
+置信度：medium
+原因：natural_language
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[131] 成功文本
+来源：level1
+键位：asset#level1#3571/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=3571）
+原文：0 cm
+译文：0 厘米
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[132] 成功文本
+来源：level1
+键位：asset#level1#3577/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=3577）
+原文：HEIGHT SCORE
+译文：身高分数
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[133] 成功文本
+来源：level1
+键位：asset#level1#3584/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=3584）
+原文：CONTINUE
+译文：继续
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[134] 成功文本
+来源：level1
+键位：asset#level1#3590/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=3590）
+原文：100.00 cm
+译文：100.00 厘米
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[135] 成功文本
+来源：level1
+键位：asset#level1#3609/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=3609）
+原文：BACK TO MENU
+译文：返回到菜单
+置信度：medium
+原因：natural_language
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[136] 成功文本
+来源：level1
+键位：asset#level1#3614/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=3614）
+原文：200.00 cm
+译文：200.00 厘米
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[137] 成功文本
+来源：level1
+键位：asset#level1#3640/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=3640）
+原文：You've lost the game!
+译文：你输掉了游戏！
+置信度：medium
+原因：natural_language
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[138] 成功文本
+来源：level1
+键位：asset#level1#3659/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=3659）
+原文：Formulas:
+译文：公式：
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[139] 成功文本
+来源：level1
+键位：asset#level1#3670/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=3670）
+原文：Carry Text
+译文：携带文本
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：需优化（审核：术语一致性——术语使用错误，'Carry'在游戏UI中通常指'携带'或'持有'，而非'携带文本'这种生硬直译，且未体现游戏语境下的标准术语规范。）
+需要优化：是（审核：术语一致性——术语使用错误，'Carry'在游戏UI中通常指'携带'或'持有'，而非'携带文本'这种生硬直译，且未体现游戏语境下的标准术语规范。；建议：携带）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[140] 成功文本
+来源：level1
+键位：asset#level1#3676/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=3676）
+原文：RESTART
+译文：重启
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[141] 成功文本
+来源：level1
+键位：asset#level1#3679/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=3679）
+原文：Mouse Sensitivity
+译文：鼠标灵敏度
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[142] 成功文本
+来源：level1
+键位：asset#level1#3680/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=3680）
+原文：Min Height
+译文：最小高度
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[143] 成功文本
+来源：level1
+键位：asset#level1#3683/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=3683）
+原文：Ingredients:
+译文：Ingredients:
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：回显保留原文（未实际翻译）
+需要优化：是（回显未翻译）
+写回：未执行（回显——译文与原文相同，无需写回）
+
+────────────────────────────────────────────────────────────────
+[144] 成功文本
+来源：level1
+键位：asset#level1#3689/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=3689）
+原文：100.00 cm
+译文：100.00 厘米
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[145] 成功文本
+来源：level1
+键位：asset#level1#3741/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=3741）
+原文：Lab Intern
+译文：实验室实习生
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[146] 成功文本
+来源：level1
+键位：asset#level1#3751/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=3751）
+原文：Ingredients:
+译文：Ingredients:
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：回显保留原文（未实际翻译）
+需要优化：是（回显未翻译）
+写回：未执行（回显——译文与原文相同，无需写回）
+
+────────────────────────────────────────────────────────────────
+[147] 成功文本
+来源：level1
+键位：asset#level1#3758/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=3758）
+原文：- recipe -
+译文：食谱 –
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[148] 成功文本
+来源：level1
+键位：asset#level1#3761/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=3761）
+原文：RESTART
+译文：重启
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[149] 成功文本
+来源：level1
+键位：asset#level1#3765/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=3765）
+原文：Marig was here!
+Thanks for visiting! :D
+译文：Marig在这里！
+感谢您的来访！:D
+置信度：medium
+原因：natural_language
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[150] 成功文本
+来源：level1
+键位：asset#level1#3784/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=3784）
+原文：CONTINUE PLAYING
+译文：继续播放
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[151] 成功文本
+来源：level1
+键位：asset#level1#3787/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=3787）
+原文：Default
+译文：默认
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[152] 成功文本
+来源：level1
+键位：asset#level1#3790/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=3790）
+原文：QUICK SETTINGS
+译文：快速设置
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[153] 成功文本
+来源：level1
+键位：asset#level1#3797/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=3797）
+原文：Option A
+译文：选项 A
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[154] 成功文本
+来源：level1
+键位：asset#level1#3804/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=3804）
+原文：Option A
+译文：选项 A
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[155] 成功文本
+来源：level1
+键位：asset#level1#3821/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=3821）
+原文：Mouse Sensitivity
+译文：鼠标灵敏度
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[156] 成功文本
+来源：level1
+键位：asset#level1#3823/str/7
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=3823）
+原文：Wibbly Wobbly
+译文：Wibbly Wobbly
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：回显保留原文（未实际翻译）
+需要优化：是（回显未翻译）
+写回：未执行（回显——译文与原文相同，无需写回）
+
+────────────────────────────────────────────────────────────────
+[157] 成功文本
+来源：level1
+键位：asset#level1#3825/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=3825）
+原文：RESTART
+译文：重启
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[158] 成功文本
+来源：level1
+键位：asset#level1#3833/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=3833）
+原文：~~ Lucis was here :3 ~~
+I hope you are having fun! :)
+译文：~~ Lucis 在这里 :3 ~~
+希望你们玩得开心！:)
+置信度：medium
+原因：natural_language
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[159] 成功文本
+来源：level1
+键位：asset#level1#3837/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=3837）
+原文：No Data
+译文：无数据
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[160] 成功文本
+来源：level1
+键位：asset#level1#3838/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=3838）
+原文：Wibbly Wobbly
+译文：Wibbly Wobbly
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：回显保留原文（未实际翻译）
+需要优化：是（回显未翻译）
+写回：未执行（回显——译文与原文相同，无需写回）
+
+────────────────────────────────────────────────────────────────
+[161] 成功文本
+来源：level1
+键位：asset#level1#3840/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=3840）
+原文：Max Height
+译文：最大高度
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[162] 成功文本
+来源：level1
+键位：asset#level1#3843/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=3843）
+原文：- recipe -
+译文：食谱 –
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[163] 成功文本
+来源：level1
+键位：asset#level1#3844/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=3844）
+原文：No Data
+译文：无数据
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[164] 成功文本
+来源：level1
+键位：asset#level1#3848/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=3848）
+原文：ENTER
+译文：进入
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[165] 成功文本
+来源：level1
+键位：asset#level1#3877/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=3877）
+原文：- Empty -
+译文：空 –
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[166] 成功文本
+来源：level1
+键位：asset#level1#3895/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=3895）
+原文：Music Vol.
+译文：音乐卷。
+置信度：medium
+原因：natural_language
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[167] 成功文本
+来源：level1
+键位：asset#level1#3907/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=3907）
+原文：- Empty -
+译文：空 –
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[168] 成功文本
+来源：level1
+键位：asset#level1#3909/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=3909）
+原文：Effects Vol.
+译文：效果 卷
+置信度：medium
+原因：natural_language
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[169] 成功文本
+来源：level1
+键位：asset#level1#3931/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=3931）
+原文：Lab Intern
+译文：实验室实习生
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[170] 成功文本
+来源：level1
+键位：asset#level1#3944/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=3944）
+原文：Seems like you created the wrong substance or got too small.
+译文：看起来你创建的物质有误，或者尺寸太小了。
+置信度：medium
+原因：natural_language
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[171] 成功文本
+来源：level1
+键位：asset#level1#3945/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=3945）
+原文：CONTINUE PLAYING
+译文：继续播放
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[172] 成功文本
+来源：level1
+键位：asset#level1#3946/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=3946）
+原文：Focus Text
+译文：重点文本
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[173] 成功文本
+来源：level1
+键位：asset#level1#3950/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=3950）
+原文：GAME OVER
+译文：游戏结束
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[174] 成功文本
+来源：level1
+键位：asset#level1#3986/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=3986）
+原文：EXIT
+译文：退出
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[175] 成功文本
+来源：level2
+键位：asset#level2#2283/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=2283）
+原文：Explodium + [1245] = Xanolium
+译文：收入 + [1245] = Xanolium
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[176] 成功文本
+来源：level2
+键位：asset#level2#2287/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=2287）
+原文：Draconium + [7283]
+= Coffee-Powder
+译文：Draconium + [7283]
+= 咖啡粉
+置信度：medium
+原因：natural_language
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[177] 成功文本
+来源：level2
+键位：asset#level2#2289/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=2289）
+原文：Xanolium + Microwave = ...
+译文：Xanolium + 微波 = …
+置信度：medium
+原因：natural_language
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[178] 成功文本
+来源：level2
+键位：asset#level2#2298/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=2298）
+原文：Ignatium + Water = Explodium
+译文：Ignatium + 水 = Explodium
+置信度：medium
+原因：natural_language
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[179] 成功文本
+来源：level2
+键位：asset#level2#2302/str/6
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=2302）
+原文：Hide
+译文：隐藏
+置信度：medium
+原因：code_heavy_display_word
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[180] 成功文本
+来源：level2
+键位：asset#level2#2320/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=2320）
+原文：- Empty -
+译文：空 –
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[181] 成功文本
+来源：level2
+键位：asset#level2#2341/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=2341）
+原文：Formulas:
+译文：公式：
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[182] 成功文本
+来源：level2
+键位：asset#level2#2354/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=2354）
+原文：Effects Vol.
+译文：效果 卷
+置信度：medium
+原因：natural_language
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[183] 成功文本
+来源：level2
+键位：asset#level2#2356/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=2356）
+原文：- Empty -
+译文：空 –
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[184] 成功文本
+来源：level2
+键位：asset#level2#2371/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=2371）
+原文：ENTER
+译文：进入
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[185] 成功文本
+来源：level2
+键位：asset#level2#2389/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=2389）
+原文：- Empty -
+译文：空 –
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[186] 成功文本
+来源：level2
+键位：asset#level2#2390/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=2390）
+原文：- Empty -
+译文：空 –
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[187] 成功文本
+来源：level2
+键位：asset#level2#2407/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=2407）
+原文：QUICK SETTINGS
+译文：快速设置
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[188] 成功文本
+来源：level2
+键位：asset#level2#2435/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=2435）
+原文：200.00 cm
+译文：200.00 厘米
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[189] 成功文本
+来源：level2
+键位：asset#level2#2441/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=2441）
+原文：Looking for a recipe or formula?
+Just search for hints on notepads or clipboards.
+You can sometimes find those in drawers, too!
+译文：寻找配方或公式吗？
+只需在记事本或剪贴板上搜索相关提示即可。
+有时候，你也可以在抽屉里找到它们！
+置信度：medium
+原因：natural_language
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[190] 成功文本
+来源：level2
+键位：asset#level2#2469/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=2469）
+原文：Ignatium + Water = Explodium
+译文：Ignatium + 水 = Explodium
+置信度：medium
+原因：natural_language
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[191] 成功文本
+来源：level2
+键位：asset#level2#2473/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=2473）
+原文：PAUSE
+译文：暂停
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[192] 成功文本
+来源：level2
+键位：asset#level2#2480/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=2480）
+原文：Carry Text
+译文：携带文本
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[193] 成功文本
+来源：level2
+键位：asset#level2#2499/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=2499）
+原文：Ingredients:
+译文：Ingredients:
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：回显保留原文（未实际翻译）
+需要优化：是（回显未翻译）
+写回：未执行（回显——译文与原文相同，无需写回）
+
+────────────────────────────────────────────────────────────────
+[194] 成功文本
+来源：level2
+键位：asset#level2#2502/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=2502）
+原文：Formulas:
+译文：公式：
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[195] 成功文本
+来源：level2
+键位：asset#level2#2505/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=2505）
+原文：Music Vol.
+译文：音乐卷。
+置信度：medium
+原因：natural_language
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[196] 成功文本
+来源：level2
+键位：asset#level2#2506/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=2506）
+原文：Explodium + [7283] = Xanolium
+译文：支出 + [7283] = Xanolium
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[197] 成功文本
+来源：level2
+键位：asset#level2#2507/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=2507）
+原文：Remember the kinds of machines and how they process ingredients!
+译文：记住那些机器的类型以及它们如何处理各种原料！
+置信度：medium
+原因：natural_language
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[198] 成功文本
+来源：level2
+键位：asset#level2#2560/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=2560）
+原文：Looking for an ingredient or formula?
+Just search for hints on notepads or clipboards.
+You can sometimes find those in drawers, too!
+译文：在寻找某种成分或配方吗？
+只需在记事本或剪贴板上搜索相关提示即可。
+有时候，这些信息也可能藏在抽屉里哦！
+置信度：medium
+原因：natural_language
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[199] 成功文本
+来源：level2
+键位：asset#level2#2564/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=2564）
+原文：BACK TO MENU
+译文：返回到菜单
+置信度：medium
+原因：natural_language
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[200] 成功文本
+来源：level2
+键位：asset#level2#2611/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=2611）
+原文：SKIP TUTORIAL
+译文：跳过教程
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[201] 成功文本
+来源：level2
+键位：asset#level2#2620/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=2620）
+原文：Focus Text
+译文：重点文本
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[202] 成功文本
+来源：level2
+键位：asset#level2#2632/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=level2、obj=2632）
+原文：Mouse Sensitivity
+译文：鼠标灵敏度
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[203] 成功文本
+来源：resources.assets
+键位：asset#resources.assets#134/line/0
+对象：TextAsset 脚本（asset_file=resources.assets、obj=134、line=0）
+原文：To the extent possible under law, Christoph Peters has waived all copyright and
+译文：在法律允许的范围内，Christoph Peters已放弃所有版权及
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[204] 成功文本
+来源：resources.assets
+键位：asset#resources.assets#134/line/2
+对象：TextAsset 脚本（asset_file=resources.assets、obj=134、line=2）
+原文：subdirectories. This work is published from: Germany.
+译文：子目录。这项工作发表于德国。
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[205] 成功文本
+来源：resources.assets
+键位：asset#resources.assets#134/line/4
+对象：TextAsset 脚本（asset_file=resources.assets、obj=134、line=4）
+原文：The work is made available under the terms of the Creative Commons CC0 Public
+译文：该作品按照 Creative Commons CC0 公共许可协议的条款提供。
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[206] 成功文本
+来源：resources.assets
+键位：asset#resources.assets#134/line/5
+对象：TextAsset 脚本（asset_file=resources.assets、obj=134、line=5）
+原文：Domain Dedication.
+译文：领域奉献。
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[207] 成功文本
+来源：resources.assets
+键位：asset#resources.assets#135/line/0
+对象：TextAsset 脚本（asset_file=resources.assets、obj=135、line=0）
+原文：Textures from:
+译文：纹理来源：
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[208] 成功文本
+来源：resources.assets
+键位：asset#resources.assets#137/line/0
+对象：TextAsset 脚本（asset_file=resources.assets、obj=137、line=0）
+原文：Creative Commons Legal Code
+译文：Creative Commons 法律条款
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[209] 成功文本
+来源：resources.assets
+键位：asset#resources.assets#137/line/2
+对象：TextAsset 脚本（asset_file=resources.assets、obj=137、line=2）
+原文：CC0 1.0 Universal
+译文：CC0 1.0 通用版
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[210] 成功文本
+来源：resources.assets
+键位：asset#resources.assets#137/line/4
+对象：TextAsset 脚本（asset_file=resources.assets、obj=137、line=4）
+原文：CREATIVE COMMONS CORPORATION IS NOT A LAW FIRM AND DOES NOT PROVIDE
+译文：Creative Commons Corporation 并非律师事务所，也不提供任何法律服务。
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[211] 成功文本
+来源：resources.assets
+键位：asset#resources.assets#137/line/5
+对象：TextAsset 脚本（asset_file=resources.assets、obj=137、line=5）
+原文：LEGAL SERVICES. DISTRIBUTION OF THIS DOCUMENT DOES NOT CREATE AN
+译文：法律服务。本文件的分发并不构成任何法律上的效力。
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[212] 成功文本
+来源：resources.assets
+键位：asset#resources.assets#137/line/6
+对象：TextAsset 脚本（asset_file=resources.assets、obj=137、line=6）
+原文：ATTORNEY-CLIENT RELATIONSHIP. CREATIVE COMMONS PROVIDES THIS
+译文：律师与客户之间的关系。Creative Commons提供了这种关系的相关内容。
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[213] 成功文本
+来源：resources.assets
+键位：asset#resources.assets#137/line/8
+对象：TextAsset 脚本（asset_file=resources.assets、obj=137、line=8）
+原文：REGARDING THE USE OF THIS DOCUMENT OR THE INFORMATION OR WORKS
+译文：关于使用本文件或其中的信息或成果
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[214] 成功文本
+来源：resources.assets
+键位：asset#resources.assets#137/line/9
+对象：TextAsset 脚本（asset_file=resources.assets、obj=137、line=9）
+原文：PROVIDED HEREUNDER, AND DISCLAIMS LIABILITY FOR DAMAGES RESULTING FROM
+译文：根据以下条款，并免除因此类情况而产生的任何损害责任。
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[215] 成功文本
+来源：resources.assets
+键位：asset#resources.assets#137/line/10
+对象：TextAsset 脚本（asset_file=resources.assets、obj=137、line=10）
+原文：THE USE OF THIS DOCUMENT OR THE INFORMATION OR WORKS PROVIDED
+译文：使用本文件或所提供的信息或成果
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[216] 成功文本
+来源：resources.assets
+键位：asset#resources.assets#137/line/13
+对象：TextAsset 脚本（asset_file=resources.assets、obj=137、line=13）
+原文：Statement of Purpose
+译文：目的陈述
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[217] 成功文本
+来源：resources.assets
+键位：asset#resources.assets#137/line/15
+对象：TextAsset 脚本（asset_file=resources.assets、obj=137、line=15）
+原文：The laws of most jurisdictions throughout the world automatically confer
+译文：世界上大多数司法管辖区的法律自动赋予……
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[218] 成功文本
+来源：resources.assets
+键位：asset#resources.assets#137/line/16
+对象：TextAsset 脚本（asset_file=resources.assets、obj=137、line=16）
+原文：exclusive Copyright and Related Rights (defined below) upon the creator
+译文：独家版权及相关权利（定义见下文）归创作者所有
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[219] 成功文本
+来源：resources.assets
+键位：asset#resources.assets#137/line/18
+对象：TextAsset 脚本（asset_file=resources.assets、obj=137、line=18）
+原文：authorship and/or a database (each, a "Work").
+译文：作者身份和/或数据库（每项均称为“作品”）。
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[220] 成功文本
+来源：resources.assets
+键位：asset#resources.assets#137/line/20
+对象：TextAsset 脚本（asset_file=resources.assets、obj=137、line=20）
+原文：Certain owners wish to permanently relinquish those rights to a Work for
+译文：某些所有者希望永久放弃对这些作品的权益。
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[221] 成功文本
+来源：resources.assets
+键位：asset#resources.assets#137/line/21
+对象：TextAsset 脚本（asset_file=resources.assets、obj=137、line=21）
+原文：the purpose of contributing to a commons of creative, cultural and
+译文：贡献于创意、文化和……的共享资源的目的
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[222] 成功文本
+来源：resources.assets
+键位：asset#resources.assets#137/line/22
+对象：TextAsset 脚本（asset_file=resources.assets、obj=137、line=22）
+原文：scientific works ("Commons") that the public can reliably and without fear
+译文：科学著作（“Commons”），公众能够可靠且无需担忧地获取这些作品
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[223] 成功文本
+来源：resources.assets
+键位：asset#resources.assets#137/line/24
+对象：TextAsset 脚本（asset_file=resources.assets、obj=137、line=24）
+原文：works, reuse and redistribute as freely as possible in any form whatsoever
+译文：以任何形式自由使用、再利用和再分发
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[224] 成功文本
+来源：resources.assets
+键位：asset#resources.assets#137/line/26
+对象：TextAsset 脚本（asset_file=resources.assets、obj=137、line=26）
+原文：These owners may contribute to the Commons to promote the ideal of a free
+译文：这些所有者可能会为“Common”做出贡献，以推动自由的理念。
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[225] 成功文本
+来源：resources.assets
+键位：asset#resources.assets#137/line/28
+对象：TextAsset 脚本（asset_file=resources.assets、obj=137、line=28）
+原文：works, or to gain reputation or greater distribution for their Work in
+译文：为了获得收益，或者为了使其作品获得声誉或更广泛的传播。
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[226] 成功文本
+来源：resources.assets
+键位：asset#resources.assets#137/line/29
+对象：TextAsset 脚本（asset_file=resources.assets、obj=137、line=29）
+原文：part through the use and efforts of others.
+译文：通过他人的努力和贡献来实现。
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[227] 成功文本
+来源：resources.assets
+键位：asset#resources.assets#137/line/31
+对象：TextAsset 脚本（asset_file=resources.assets、obj=137、line=31）
+原文：For these and/or other purposes and motivations, and without any
+译文：出于这些及/或其他目的和动机，且没有任何
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[228] 成功文本
+来源：resources.assets
+键位：asset#resources.assets#137/line/33
+对象：TextAsset 脚本（asset_file=resources.assets、obj=137、line=33）
+原文：associating CC0 with a Work (the "Affirmer"), to the extent that he or she
+译文：将 CC0 与某项作品关联起来（即“确认者”），其程度为：他或她
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[229] 成功文本
+来源：resources.assets
+键位：asset#resources.assets#137/line/34
+对象：TextAsset 脚本（asset_file=resources.assets、obj=137、line=34）
+原文：is an owner of Copyright and Related Rights in the Work, voluntarily
+译文：是该作品的版权及相关权利的所有者，且这是自愿做出的决定。
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[230] 成功文本
+来源：resources.assets
+键位：asset#resources.assets#137/line/35
+对象：TextAsset 脚本（asset_file=resources.assets、obj=137、line=35）
+原文：elects to apply CC0 to the Work and publicly distribute the Work under its
+译文：决定将 CC0 应用于该作品，并公开分发该作品。
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[231] 成功文本
+来源：resources.assets
+键位：asset#resources.assets#137/line/36
+对象：TextAsset 脚本（asset_file=resources.assets、obj=137、line=36）
+原文：terms, with knowledge of his or her Copyright and Related Rights in the
+译文：相关条款，同时了解其版权及相关权利。
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[232] 成功文本
+来源：resources.assets
+键位：asset#resources.assets#137/line/37
+对象：TextAsset 脚本（asset_file=resources.assets、obj=137、line=37）
+原文：Work and the meaning and intended legal effect of CC0 on those rights.
+译文：工作以及 CC0 对这些权利的意义和预期法律效果。
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[233] 成功文本
+来源：resources.assets
+键位：asset#resources.assets#137/line/39
+对象：TextAsset 脚本（asset_file=resources.assets、obj=137、line=39）
+原文：1. Copyright and Related Rights. A Work made available under CC0 may be
+译文：1. 版权及相关权利。根据 CC0 条款发布的作品可以……
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[234] 成功文本
+来源：resources.assets
+键位：asset#resources.assets#137/line/40
+对象：TextAsset 脚本（asset_file=resources.assets、obj=137、line=40）
+原文：protected by copyright and related or neighboring rights ("Copyright and
+译文：受版权及相关权利保护（“版权及
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[235] 成功文本
+来源：resources.assets
+键位：asset#resources.assets#137/line/41
+对象：TextAsset 脚本（asset_file=resources.assets、obj=137、line=41）
+原文：Related Rights"). Copyright and Related Rights include, but are not
+译文：“相关权利”。版权及相关权利包括，但不仅限于
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[236] 成功文本
+来源：resources.assets
+键位：asset#resources.assets#137/line/45
+对象：TextAsset 脚本（asset_file=resources.assets、obj=137、line=45）
+原文：communicate, and translate a Work;
+译文：进行沟通，并翻译作品；
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[237] 成功文本
+来源：resources.assets
+键位：asset#resources.assets#137/line/48
+对象：TextAsset 脚本（asset_file=resources.assets、obj=137、line=48）
+原文：likeness depicted in a Work;
+译文：所描绘的相似性在一项工作中；
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[238] 成功文本
+来源：resources.assets
+键位：asset#resources.assets#137/line/49
+对象：TextAsset 脚本（asset_file=resources.assets、obj=137、line=49）
+原文：iv. rights protecting against unfair competition in regards to a Work,
+译文：iv. 保护作品免受不公平竞争的权利。
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[239] 成功文本
+来源：resources.assets
+键位：asset#resources.assets#137/line/50
+对象：TextAsset 脚本（asset_file=resources.assets、obj=137、line=50）
+原文：subject to the limitations in paragraph 4(a), below;
+译文：受第4(a)段以下限制的限制。
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[240] 成功文本
+来源：resources.assets
+键位：asset#resources.assets#137/line/52
+对象：TextAsset 脚本（asset_file=resources.assets、obj=137、line=52）
+原文：in a Work;
+译文：在一项工作中；
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[241] 成功文本
+来源：resources.assets
+键位：asset#resources.assets#137/line/53
+对象：TextAsset 脚本（asset_file=resources.assets、obj=137、line=53）
+原文：vi. database rights (such as those arising under Directive 96/9/EC of the
+译文：vi. 数据库权利（例如，根据欧盟第96/9/EC号指令所赋予的权利）
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[242] 成功文本
+来源：resources.assets
+键位：asset#resources.assets#137/line/54
+对象：TextAsset 脚本（asset_file=resources.assets、obj=137、line=54）
+原文：European Parliament and of the Council of 11 March 1996 on the legal
+译文：1996年3月11日欧洲议会与理事会关于法律问题的决议
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[243] 成功文本
+来源：resources.assets
+键位：asset#resources.assets#137/line/57
+对象：TextAsset 脚本（asset_file=resources.assets、obj=137、line=57）
+原文：directive); and
+译文：指令）；以及
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[244] 成功文本
+来源：resources.assets
+键位：asset#resources.assets#137/line/59
+对象：TextAsset 脚本（asset_file=resources.assets、obj=137、line=59）
+原文：world based on applicable law or treaty, and any national
+译文：基于适用法律或条约的世界，以及任何国家
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[245] 成功文本
+来源：resources.assets
+键位：asset#resources.assets#137/line/60
+对象：TextAsset 脚本（asset_file=resources.assets、obj=137、line=60）
+原文：implementations thereof.
+译文：其实现方式。
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[246] 成功文本
+来源：resources.assets
+键位：asset#resources.assets#137/line/62
+对象：TextAsset 脚本（asset_file=resources.assets、obj=137、line=62）
+原文：2. Waiver. To the greatest extent permitted by, but not in contravention
+译文：2. 豁免。在允许的范围内，但不违反相关规定
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[247] 成功文本
+来源：resources.assets
+键位：asset#resources.assets#137/line/63
+对象：TextAsset 脚本（asset_file=resources.assets、obj=137、line=63）
+原文：of, applicable law, Affirmer hereby overtly, fully, permanently,
+译文：关于适用法律，Affirmer在此明确、全面、永久地声明。
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[248] 成功文本
+来源：resources.assets
+键位：asset#resources.assets#137/line/65
+对象：TextAsset 脚本（asset_file=resources.assets、obj=137、line=65）
+原文：Affirmer's Copyright and Related Rights and associated claims and causes
+译文：阿弗尔默的版权及相关权利以及相关的索赔和诉讼
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[249] 成功文本
+来源：resources.assets
+键位：asset#resources.assets#137/line/67
+对象：TextAsset 脚本（asset_file=resources.assets、obj=137、line=67）
+原文：future claims and causes of action), in the Work (i) in all territories
+译文：未来的索赔和诉讼理由），在作品中（i）在所有领土上
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[250] 成功文本
+来源：resources.assets
+键位：asset#resources.assets#137/line/72
+对象：TextAsset 脚本（asset_file=resources.assets、obj=137、line=72）
+原文：purposes (the "Waiver"). Affirmer makes the Waiver for the benefit of each
+译文：目的（“豁免条款”）。Affirmer为每位当事人的利益而制定该豁免条款。
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[251] 成功文本
+来源：resources.assets
+键位：asset#resources.assets#137/line/73
+对象：TextAsset 脚本（asset_file=resources.assets、obj=137、line=73）
+原文：member of the public at large and to the detriment of Affirmer's heirs and
+译文：普通公众的一员，且这对Affirmer的继承人不利。
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[252] 成功文本
+来源：resources.assets
+键位：asset#resources.assets#137/line/74
+对象：TextAsset 脚本（asset_file=resources.assets、obj=137、line=74）
+原文：successors, fully intending that such Waiver shall not be subject to
+译文：继任者们，完全同意此类豁免不应受到……的约束
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[253] 成功文本
+来源：resources.assets
+键位：asset#resources.assets#137/line/76
+对象：TextAsset 脚本（asset_file=resources.assets、obj=137、line=76）
+原文：equitable action to disrupt the quiet enjoyment of the Work by the public
+译文：旨在破坏公众正常使用该作品的行为
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[254] 成功文本
+来源：resources.assets
+键位：asset#resources.assets#137/line/77
+对象：TextAsset 脚本（asset_file=resources.assets、obj=137、line=77）
+原文：as contemplated by Affirmer's express Statement of Purpose.
+译文：正如Affirmer在目的陈述中所明确指出的那样。
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[255] 成功文本
+来源：resources.assets
+键位：asset#resources.assets#137/line/79
+对象：TextAsset 脚本（asset_file=resources.assets、obj=137、line=79）
+原文：3. Public License Fallback. Should any part of the Waiver for any reason
+译文：3. 公共许可证的替代方案。如果由于任何原因导致豁免条款中的任何部分不再适用
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[256] 成功文本
+来源：resources.assets
+键位：asset#resources.assets#137/line/81
+对象：TextAsset 脚本（asset_file=resources.assets、obj=137、line=81）
+原文：Waiver shall be preserved to the maximum extent permitted taking into
+译文：应尽可能地保留该豁免权，同时需考虑相关因素。
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[257] 成功文本
+来源：resources.assets
+键位：asset#resources.assets#137/line/82
+对象：TextAsset 脚本（asset_file=resources.assets、obj=137、line=82）
+原文：account Affirmer's express Statement of Purpose. In addition, to the
+译文：账户持有人的明确声明。此外，还需要……
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[258] 成功文本
+来源：resources.assets
+键位：asset#resources.assets#137/line/83
+对象：TextAsset 脚本（asset_file=resources.assets、obj=137、line=83）
+原文：extent the Waiver is so judged Affirmer hereby grants to each affected
+译文：根据该豁免条款的约定，Affirmer特此向每位受影响的方授予相应的权利。
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[259] 成功文本
+来源：resources.assets
+键位：asset#resources.assets#137/line/85
+对象：TextAsset 脚本（asset_file=resources.assets、obj=137、line=85）
+原文：irrevocable and unconditional license to exercise Affirmer's Copyright and
+译文：不可撤销且无条件的许可，以行使Affirmer的版权。
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[260] 成功文本
+来源：resources.assets
+键位：asset#resources.assets#137/line/86
+对象：TextAsset 脚本（asset_file=resources.assets、obj=137、line=86）
+原文：Related Rights in the Work (i) in all territories worldwide, (ii) for the
+译文：作品中的相关权利：(i) 在全球所有地区，(ii) 用于
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[261] 成功文本
+来源：resources.assets
+键位：asset#resources.assets#137/line/87
+对象：TextAsset 脚本（asset_file=resources.assets、obj=137、line=87）
+原文：maximum duration provided by applicable law or treaty (including future
+译文：适用法律或条约规定的最长持续时间（包括未来）
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[262] 成功文本
+来源：resources.assets
+键位：asset#resources.assets#137/line/89
+对象：TextAsset 脚本（asset_file=resources.assets、obj=137、line=89）
+原文：of copies, and (iv) for any purpose whatsoever, including without
+译文：副本数量，以及(iv) 出于任何目的，包括但不限于是……
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[263] 成功文本
+来源：resources.assets
+键位：asset#resources.assets#137/line/91
+对象：TextAsset 脚本（asset_file=resources.assets、obj=137、line=91）
+原文："License"). The License shall be deemed effective as of the date CC0 was
+译文：“许可证”。该许可证应自 CC0 生效之日起视为有效。
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[264] 成功文本
+来源：resources.assets
+键位：asset#resources.assets#137/line/92
+对象：TextAsset 脚本（asset_file=resources.assets、obj=137、line=92）
+原文：applied by Affirmer to the Work. Should any part of the License for any
+译文：由 Affirmer 应用于该作品中。如果许可证的任何部分适用于任何……
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[265] 成功文本
+来源：resources.assets
+键位：asset#resources.assets#137/line/93
+对象：TextAsset 脚本（asset_file=resources.assets、obj=137、line=93）
+原文：reason be judged legally invalid or ineffective under applicable law, such
+译文：根据适用法律，该理由可能被判定为无效或无效。
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[266] 成功文本
+来源：resources.assets
+键位：asset#resources.assets#137/line/95
+对象：TextAsset 脚本（asset_file=resources.assets、obj=137、line=95）
+原文：of the License, and in such case Affirmer hereby affirms that he or she
+译文：关于该许可证，在这种情况下，Affirmer特此确认，他或她
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[267] 成功文本
+来源：resources.assets
+键位：asset#resources.assets#137/line/96
+对象：TextAsset 脚本（asset_file=resources.assets、obj=137、line=96）
+原文：will not (i) exercise any of his or her remaining Copyright and Related
+译文：不会行使其剩余的版权及相关权利。
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[268] 成功文本
+来源：resources.assets
+键位：asset#resources.assets#137/line/97
+对象：TextAsset 脚本（asset_file=resources.assets、obj=137、line=97）
+原文：Rights in the Work or (ii) assert any associated claims and causes of
+译文：对作品中的权利或 (ii) 主张任何相关的权利及理由
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[269] 成功文本
+来源：resources.assets
+键位：asset#resources.assets#137/line/98
+对象：TextAsset 脚本（asset_file=resources.assets、obj=137、line=98）
+原文：action with respect to the Work, in either case contrary to Affirmer's
+译文：对作品采取的行动，在任何情况下都违反Affirmer的意愿。
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[270] 成功文本
+来源：resources.assets
+键位：asset#resources.assets#137/line/99
+对象：TextAsset 脚本（asset_file=resources.assets、obj=137、line=99）
+原文：express Statement of Purpose.
+译文：明确的目的陈述。
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[271] 成功文本
+来源：resources.assets
+键位：asset#resources.assets#137/line/101
+对象：TextAsset 脚本（asset_file=resources.assets、obj=137、line=101）
+原文：4. Limitations and Disclaimers.
+译文：4. 限制与免责声明。
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[272] 成功文本
+来源：resources.assets
+键位：asset#resources.assets#137/line/103
+对象：TextAsset 脚本（asset_file=resources.assets、obj=137、line=103）
+原文：a. No trademark or patent rights held by Affirmer are waived, abandoned,
+译文：a. Affirmer并不放弃或放弃其拥有的任何商标或专利权利。
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[273] 成功文本
+来源：resources.assets
+键位：asset#resources.assets#137/line/104
+对象：TextAsset 脚本（asset_file=resources.assets、obj=137、line=104）
+原文：surrendered, licensed or otherwise affected by this document.
+译文：已投降、获得许可或以其他方式受此文件约束。
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[274] 成功文本
+来源：resources.assets
+键位：asset#resources.assets#137/line/105
+对象：TextAsset 脚本（asset_file=resources.assets、obj=137、line=105）
+原文：b. Affirmer offers the Work as-is and makes no representations or
+译文：b. Affirmer仅提供该作品的原貌，并不作出任何承诺或保证。
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[275] 成功文本
+来源：resources.assets
+键位：asset#resources.assets#137/line/106
+对象：TextAsset 脚本（asset_file=resources.assets、obj=137、line=106）
+原文：warranties of any kind concerning the Work, express, implied,
+译文：关于该作品的任何形式的保修条款，无论是明示的还是暗示的。
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[276] 成功文本
+来源：resources.assets
+键位：asset#resources.assets#137/line/108
+对象：TextAsset 脚本（asset_file=resources.assets、obj=137、line=108）
+原文：title, merchantability, fitness for a particular purpose, non
+译文：标题、可销售性、适用于特定用途、非
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[277] 成功文本
+来源：resources.assets
+键位：asset#resources.assets#137/line/112
+对象：TextAsset 脚本（asset_file=resources.assets、obj=137、line=112）
+原文：c. Affirmer disclaims responsibility for clearing rights of other persons
+译文：c. Affirmer否认对其他人的清算权利承担任何责任
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[278] 成功文本
+来源：resources.assets
+键位：asset#resources.assets#137/line/113
+对象：TextAsset 脚本（asset_file=resources.assets、obj=137、line=113）
+原文：that may apply to the Work or any use thereof, including without
+译文：该内容可能适用于本作品或任何其用途，包括但不限于是
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[279] 成功文本
+来源：resources.assets
+键位：asset#resources.assets#137/line/114
+对象：TextAsset 脚本（asset_file=resources.assets、obj=137、line=114）
+原文：limitation any person's Copyright and Related Rights in the Work.
+译文：限制任何人对该作品的版权及相关权利。
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[280] 成功文本
+来源：resources.assets
+键位：asset#resources.assets#137/line/115
+对象：TextAsset 脚本（asset_file=resources.assets、obj=137、line=115）
+原文：Further, Affirmer disclaims responsibility for obtaining any necessary
+译文：此外，Affirmer否认对获取任何必要资料承担责任。
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[281] 成功文本
+来源：resources.assets
+键位：asset#resources.assets#137/line/118
+对象：TextAsset 脚本（asset_file=resources.assets、obj=137、line=118）
+原文：d. Affirmer understands and acknowledges that Creative Commons is not a
+译文：d. Affirmer理解并承认，Creative Commons并非……
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[282] 成功文本
+来源：resources.assets
+键位：asset#resources.assets#137/line/119
+对象：TextAsset 脚本（asset_file=resources.assets、obj=137、line=119）
+原文：party to this document and has no duty or obligation with respect to
+译文：本文件的签署方，且对于该文件而言没有任何义务或责任。
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[283] 成功文本
+来源：resources.assets
+键位：asset#resources.assets#137/line/120
+对象：TextAsset 脚本（asset_file=resources.assets、obj=137、line=120）
+原文：this CC0 or use of the Work.
+译文：这种 CC0 状态或对该作品的使用。
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[284] 成功文本
+来源：resources.assets
+键位：asset#resources.assets#258/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=resources.assets、obj=258）
+原文：Smiley
+译文：笑脸表情
+置信度：medium
+原因：object_has_display_evidence
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[285] 成功文本
+来源：resources.assets
+键位：asset#resources.assets#258/str/3
+对象：MonoBehaviour rawstr 数组（asset_file=resources.assets、obj=258）
+原文：Wink
+译文：眨眼
+置信度：medium
+原因：object_has_display_evidence
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[286] 成功文本
+来源：resources.assets
+键位：asset#resources.assets#258/str/5
+对象：MonoBehaviour rawstr 数组（asset_file=resources.assets、obj=258）
+原文：Whaaat!
+译文：哇！
+置信度：medium
+原因：natural_language
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[287] 成功文本
+来源：resources.assets
+键位：asset#resources.assets#267/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=resources.assets、obj=267）
+原文：Off
+译文：关闭
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[288] 成功文本
+来源：resources.assets
+键位：asset#resources.assets#273/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=resources.assets、obj=273）
+原文：Off
+译文：关闭
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[289] 成功文本
+来源：resources.assets
+键位：asset#resources.assets#274/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=resources.assets、obj=274）
+原文：Off
+译文：关闭
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[290] 成功文本
+来源：resources.assets
+键位：asset#resources.assets#283/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=resources.assets、obj=283）
+原文：Off
+译文：关闭
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[291] 成功文本
+来源：resources.assets
+键位：asset#resources.assets#284/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=resources.assets、obj=284）
+原文：Off
+译文：关闭
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[292] 成功文本
+来源：resources.assets
+键位：asset#resources.assets#288/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=resources.assets、obj=288）
+原文：Off
+译文：关闭
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[293] 成功文本
+来源：sharedassets0.assets
+键位：asset#sharedassets0.assets#78/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=78）
+原文：Difficulty - Custom
+译文：难度 – 自定义
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[294] 成功文本
+来源：sharedassets0.assets
+键位：asset#sharedassets0.assets#79/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=79）
+原文：Difficulty - Easy
+译文：难度 – 简单
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[295] 成功文本
+来源：sharedassets0.assets
+键位：asset#sharedassets0.assets#79/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=79）
+原文：Lab Intern
+译文：实验室实习生
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[296] 成功文本
+来源：sharedassets0.assets
+键位：asset#sharedassets0.assets#80/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=80）
+原文：Difficulty - Hard
+译文：难度 – 困难
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[297] 成功文本
+来源：sharedassets0.assets
+键位：asset#sharedassets0.assets#81/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=81）
+原文：Difficulty - Medium
+译文：难度 – 中等
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[298] 成功文本
+来源：sharedassets0.assets
+键位：asset#sharedassets0.assets#82/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=82）
+原文：Game Config
+译文：游戏配置
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[299] 成功文本
+来源：sharedassets0.assets
+键位：asset#sharedassets0.assets#82/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=82）
+原文：Off
+译文：关闭
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[300] 成功文本
+来源：sharedassets0.assets
+键位：asset#sharedassets0.assets#82/str/2
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=82）
+原文：Low
+译文：低
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[301] 成功文本
+来源：sharedassets0.assets
+键位：asset#sharedassets0.assets#82/str/3
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=82）
+原文：Medium
+译文：中等
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[302] 成功文本
+来源：sharedassets0.assets
+键位：asset#sharedassets0.assets#82/str/4
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=82）
+原文：High
+译文：高
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[303] 成功文本
+来源：sharedassets0.assets
+键位：asset#sharedassets0.assets#82/str/6
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=82）
+原文：Left
+译文：左侧
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[304] 成功文本
+来源：sharedassets0.assets
+键位：asset#sharedassets0.assets#82/str/7
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=82）
+原文：Right
+译文：对
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[305] 成功文本
+来源：sharedassets0.assets
+键位：asset#sharedassets0.assets#82/str/12
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=82）
+原文：Y Axis
+译文：Y轴
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[306] 成功文本
+来源：sharedassets0.assets
+键位：asset#sharedassets0.assets#82/str/13
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=82）
+原文：Look X
+译文：看 X
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[307] 成功文本
+来源：sharedassets0.assets
+键位：asset#sharedassets0.assets#82/str/14
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=82）
+原文：Turn Left
+译文：转向左侧
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[308] 成功文本
+来源：sharedassets0.assets
+键位：asset#sharedassets0.assets#82/str/15
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=82）
+原文：Turn Right
+译文：转向对
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[309] 成功文本
+来源：sharedassets0.assets
+键位：asset#sharedassets0.assets#82/str/16
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=82）
+原文：Axis 4
+译文：轴4
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[310] 成功文本
+来源：sharedassets0.assets
+键位：asset#sharedassets0.assets#82/str/17
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=82）
+原文：Look Y
+译文：看吧，Y
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[311] 成功文本
+来源：sharedassets0.assets
+键位：asset#sharedassets0.assets#82/str/18
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=82）
+原文：Look Down
+译文：向下看
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[312] 成功文本
+来源：sharedassets0.assets
+键位：asset#sharedassets0.assets#82/str/19
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=82）
+原文：Look Up
+译文：查找
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[313] 成功文本
+来源：sharedassets0.assets
+键位：asset#sharedassets0.assets#82/str/20
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=82）
+原文：Axis 5
+译文：轴5
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[314] 成功文本
+来源：sharedassets0.assets
+键位：asset#sharedassets0.assets#82/str/23
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=82）
+原文：Left
+译文：左侧
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[315] 成功文本
+来源：sharedassets0.assets
+键位：asset#sharedassets0.assets#82/str/24
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=82）
+原文：Right
+译文：对
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[316] 成功文本
+来源：sharedassets0.assets
+键位：asset#sharedassets0.assets#82/str/25
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=82）
+原文：Jump
+译文：跳跃
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[317] 成功文本
+来源：sharedassets0.assets
+键位：asset#sharedassets0.assets#82/str/26
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=82）
+原文：Run
+译文：运行
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[318] 成功文本
+来源：sharedassets0.assets
+键位：asset#sharedassets0.assets#82/str/28
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=82）
+原文：Use
+译文：使用
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[319] 成功文本
+来源：sharedassets0.assets
+键位：asset#sharedassets0.assets#82/str/30
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=82）
+原文：Carry Toggle
+译文：切换开关
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[320] 成功文本
+来源：sharedassets0.assets
+键位：asset#sharedassets0.assets#82/str/31
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=82）
+原文：Combined Use
+译文：联合使用
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[321] 成功文本
+来源：sharedassets0.assets
+键位：asset#sharedassets0.assets#82/str/32
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=82）
+原文：Rotate Object
+译文：旋转对象
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[322] 成功文本
+来源：sharedassets0.assets
+键位：asset#sharedassets0.assets#82/str/33
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=82）
+原文：Turn Left
+译文：转向左侧
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[323] 成功文本
+来源：sharedassets0.assets
+键位：asset#sharedassets0.assets#82/str/34
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=82）
+原文：Turn Right
+译文：转向对
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[324] 成功文本
+来源：sharedassets0.assets
+键位：asset#sharedassets0.assets#82/str/35
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=82）
+原文：Look Up
+译文：查找
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[325] 成功文本
+来源：sharedassets0.assets
+键位：asset#sharedassets0.assets#82/str/36
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=82）
+原文：Look Down
+译文：向下看
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[326] 成功文本
+来源：sharedassets0.assets
+键位：asset#sharedassets0.assets#89/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets0.assets、obj=89）
+原文：Lab Intern
+译文：实验室实习生
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[327] 成功文本
+来源：sharedassets1.assets
+键位：asset#sharedassets1.assets#337/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets1.assets、obj=337）
+原文：The first <b><color=orange>key ingredient</color></b>!
+It goes into the <b><color=orange>Antidote Processor</color></b>, next to the computer!
+译文：第一个<b><color=orange>关键成分</color></b>！
+它会被放入<b><color=orange>解毒处理器</color></b>中，就在计算机旁边！
+置信度：medium
+原因：natural_language
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[328] 成功文本
+来源：sharedassets1.assets
+键位：asset#sharedassets1.assets#338/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets1.assets、obj=338）
+原文：While I'm waiting I should keep looking for the other ingredients and formulas!
+译文：在等待的过程中，我仍需继续寻找其他所需的原料和配方！
+置信度：medium
+原因：natural_language
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[329] 成功文本
+来源：sharedassets1.assets
+键位：asset#sharedassets1.assets#338/str/2
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets1.assets、obj=338）
+原文：If I get too small I may need stairs and bridges to reach this equipment...
+译文：如果空间太小的话，我可能需要使用楼梯和桥梁才能到达这些设备……
+置信度：medium
+原因：natural_language
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[330] 成功文本
+来源：sharedassets1.assets
+键位：asset#sharedassets1.assets#338/str/3
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets1.assets、obj=338）
+原文：I should build some from random objects, while I still can!
+译文：我应该趁还能的时候，用一些随机的物品来制作一些东西！
+置信度：medium
+原因：natural_language
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[331] 成功文本
+来源：sharedassets1.assets
+键位：asset#sharedassets1.assets#339/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets1.assets、obj=339）
+原文：Oh, oh...
+译文：哦，哦...
+置信度：medium
+原因：natural_language
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[332] 成功文本
+来源：sharedassets1.assets
+键位：asset#sharedassets1.assets#339/str/2
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets1.assets、obj=339）
+原文：I think I'm too small now to use any of our equipment!
+译文：我觉得我现在太瘦了，根本无法使用我们的任何设备！
+置信度：medium
+原因：natural_language
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[333] 成功文本
+来源：sharedassets1.assets
+键位：asset#sharedassets1.assets#339/str/3
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets1.assets、obj=339）
+原文：Hopefully I don't get any smaller, then maybe someone will find me on Monday...
+译文：希望我不会变得更小，那样也许周一会有人找到我……
+置信度：medium
+原因：natural_language
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[334] 成功文本
+来源：sharedassets1.assets
+键位：asset#sharedassets1.assets#340/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets1.assets、obj=340）
+原文：Ha, I did it! I've stopped shrinking!
+译文：哈，我成功了！我不再缩小了！
+置信度：medium
+原因：natural_language
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[335] 成功文本
+来源：sharedassets1.assets
+键位：asset#sharedassets1.assets#340/str/3
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets1.assets、obj=340）
+原文：How do I get big, again..?
+译文：我该如何变得更强呢……？
+置信度：medium
+原因：natural_language
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[336] 成功文本
+来源：sharedassets1.assets
+键位：asset#sharedassets1.assets#341/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets1.assets、obj=341）
+原文：Argh, I must have gotten the formula wrong!
+I have to revert this to try again!
+译文：啊，我肯定是把公式弄错了！我必须撤销这个操作，再试一次！
+置信度：medium
+原因：natural_language
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[337] 成功文本
+来源：sharedassets1.assets
+键位：asset#sharedassets1.assets#341/str/2
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets1.assets、obj=341）
+原文：I must put this useless ingredient into the <b><color=orange>Chemical Reverter</color></b>, right below the bookshelf!
+译文：我必须将这种无用的成分放入<b><color=orange>化学还原器</color></b>中，就在书架的下方！
+置信度：medium
+原因：natural_language
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[338] 成功文本
+来源：sharedassets1.assets
+键位：asset#sharedassets1.assets#342/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets1.assets、obj=342）
+原文：Yes! My second <b><color=orange>key ingredient</color></b>!
+Quickly add it to the <b><color=orange>Antidote Processor</color></b>! Only one more!
+译文：是的！这是我第二个<b><color=orange>关键成分</color></b>！
+请迅速将其添加到<b><color=orange>解毒处理器</color></b>中！只剩下最后一个了！
+置信度：medium
+原因：natural_language
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[339] 成功文本
+来源：sharedassets1.assets
+键位：asset#sharedassets1.assets#343/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets1.assets、obj=343）
+原文：Damn it! I'm getting too short to reach the table tops!
+译文：该死！我太矮了，够不到桌子的顶部！
+置信度：medium
+原因：natural_language
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[340] 成功文本
+来源：sharedassets1.assets
+键位：asset#sharedassets1.assets#343/str/2
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets1.assets、obj=343）
+原文：There should be enough materials in this lab to build some improvised stairs...
+译文：在这个实验室里应该有足够多的材料来制作一些临时楼梯……
+置信度：medium
+原因：natural_language
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[341] 成功文本
+来源：sharedassets1.assets
+键位：asset#sharedassets1.assets#344/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets1.assets、obj=344）
+原文：This is getting ridiculous!
+译文：这太荒谬了！
+置信度：medium
+原因：natural_language
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[342] 成功文本
+来源：sharedassets1.assets
+键位：asset#sharedassets1.assets#345/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets1.assets、obj=345）
+原文：Some of these objects are getting way too big and heavy for me!
+译文：其中一些物品对我来说实在太大且太重了！
+置信度：medium
+原因：natural_language
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[343] 成功文本
+来源：sharedassets1.assets
+键位：asset#sharedassets1.assets#345/str/2
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets1.assets、obj=345）
+原文：I can only carry increasingly small items...
+I should think ahead and lift large ones first!
+译文：我只能携带越来越小的物品……
+我应该提前考虑，先处理那些较大的物体！
+置信度：medium
+原因：natural_language
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[344] 成功文本
+来源：sharedassets1.assets
+键位：asset#sharedassets1.assets#346/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets1.assets、obj=346）
+原文：I kind of feel funny...
+译文：我有点觉得奇怪……
+置信度：medium
+原因：natural_language
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[345] 成功文本
+来源：sharedassets1.assets
+键位：asset#sharedassets1.assets#346/str/2
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets1.assets、obj=346）
+原文：Maybe I should stop using our lab equipment to make coffee?
+译文：也许我应该停止使用实验室设备来煮咖啡了？
+置信度：medium
+原因：natural_language
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[346] 成功文本
+来源：sharedassets1.assets
+键位：asset#sharedassets1.assets#346/str/3
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets1.assets、obj=346）
+原文：What's this?! I'm shrinking!
+译文：这是什么？！我在缩小啊！
+置信度：medium
+原因：natural_language
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[347] 成功文本
+来源：sharedassets1.assets
+键位：asset#sharedassets1.assets#346/str/4
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets1.assets、obj=346）
+原文：Okay, okay, no panic!
+All I need are the <b><color=orange>3 key components</color></b> for the antidote!
+译文：好吧，别慌！
+我只需要<b><color=orange>3个关键成分</color></b>来制作解毒剂就行了！
+置信度：medium
+原因：natural_language
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[348] 成功文本
+来源：sharedassets1.assets
+键位：asset#sharedassets1.assets#346/str/5
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets1.assets、obj=346）
+原文：The <b><color=orange>formulas</color></b> and <b><color=orange>ingredients</color></b> have to be around here, somewhere!
+译文：<b><color=orange>公式</color></b>和<b><color=orange>成分</color></b>必须位于这里，某个地方！
+置信度：medium
+原因：natural_language
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[349] 成功文本
+来源：sharedassets1.assets
+键位：asset#sharedassets1.assets#347/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets1.assets、obj=347）
+原文：That's it! That's the last <b><color=orange>key ingredient</color></b> I need! Here I go!
+译文：就是这样！这就是我所需要的最后一个<b><color=orange>关键成分</color></b>了！开始吧！
+置信度：medium
+原因：natural_language
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[350] 成功文本
+来源：sharedassets1.assets
+键位：asset#sharedassets1.assets#349/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets1.assets、obj=349）
+原文：Delicous Ice Tea
+译文：美味冰茶
+置信度：medium
+原因：natural_language
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[351] 成功文本
+来源：sharedassets1.assets
+键位：asset#sharedassets1.assets#349/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets1.assets、obj=349）
+原文：Iced Tea
+译文：冰茶
+置信度：medium
+原因：object_has_display_evidence
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[352] 成功文本
+来源：sharedassets1.assets
+键位：asset#sharedassets1.assets#368/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets1.assets、obj=368）
+原文：120 cm
+译文：120厘米
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[353] 成功文本
+来源：sharedassets1.assets
+键位：asset#sharedassets1.assets#381/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets1.assets、obj=381）
+原文：Ignatium + Water = Explodium
+译文：Ignatium + 水 = Explodium
+置信度：medium
+原因：natural_language
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[354] 成功文本
+来源：sharedassets1.assets
+键位：asset#sharedassets1.assets#383/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets1.assets、obj=383）
+原文：Explodium + [1245] = Xanolium
+译文：收入 + [1245] = Xanolium
+置信度：medium
+原因：display_phrase
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[355] 成功文本
+来源：sharedassets2.assets
+键位：asset#sharedassets2.assets#35/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets2.assets、obj=35）
+原文：Shadows Into Light Two
+译文：阴影变为光明 二
+置信度：medium
+原因：natural_language
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[356] 成功文本
+来源：sharedassets2.assets
+键位：asset#sharedassets2.assets#36/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets2.assets、obj=36）
+原文：TutorialDialogStep1 Wrong Code
+译文：教程对话框步骤1：错误的代码
+置信度：medium
+原因：natural_language
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[357] 成功文本
+来源：sharedassets2.assets
+键位：asset#sharedassets2.assets#36/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets2.assets、obj=36）
+原文：What? Wait, no, that's not the correct code!
+译文：什么？等等，不，那不是正确的代码！
+置信度：medium
+原因：natural_language
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[358] 成功文本
+来源：sharedassets2.assets
+键位：asset#sharedassets2.assets#36/str/2
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets2.assets、obj=36）
+原文：Entering the wrong code would yield unexpted results.
+I'd lose this Explodium and would have to start over!
+译文：输入错误的代码会导致意想不到的结果。
+我会失去这笔收入，不得不重新开始！
+置信度：medium
+原因：natural_language
+角色：display
+质量评分：—（passed=True）
+翻译评价：需优化（审核：术语一致性——译文将原文中的游戏道具'Explodium'误译为'收入'，导致语义完全错误且术语使用不当。）
+需要优化：是（审核：术语一致性——译文将原文中的游戏道具'Explodium'误译为'收入'，导致语义完全错误且术语使用不当。；建议：我会失去这个 Explodium，不得不重新开始！）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[359] 成功文本
+来源：sharedassets2.assets
+键位：asset#sharedassets2.assets#36/str/3
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets2.assets、obj=36）
+原文：Let's try this, again. The correct code is on the clipboard!
+译文：让我们再试一次。正确的代码就在剪贴板里！
+置信度：medium
+原因：natural_language
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[360] 成功文本
+来源：sharedassets2.assets
+键位：asset#sharedassets2.assets#37/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets2.assets、obj=37）
+原文：A new day at the lab! Let's get started!
+译文：实验室的新一天！让我们开始吧！
+置信度：medium
+原因：natural_language
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[361] 成功文本
+来源：sharedassets2.assets
+键位：asset#sharedassets2.assets#37/str/2
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets2.assets、obj=37）
+原文：What I need now is Ignatium!
+Luckily there is some on my desk: Let's pick it up!
+译文：我现在需要的是Ignatium！
+幸运的是，我的桌子上还有些东西。我们拿起来吧！
+置信度：medium
+原因：natural_language
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[362] 成功文本
+来源：sharedassets2.assets
+键位：asset#sharedassets2.assets#39/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets2.assets、obj=39）
+原文：Finally! Just what I need right now!
+译文：终于！正是我现在所需要的！
+置信度：medium
+原因：natural_language
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[363] 成功文本
+来源：sharedassets2.assets
+键位：asset#sharedassets2.assets#39/str/2
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets2.assets、obj=39）
+原文：A nice, hot cup of coffee!
+译文：一杯美味的热咖啡！
+置信度：medium
+原因：natural_language
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[364] 成功文本
+来源：sharedassets2.assets
+键位：asset#sharedassets2.assets#39/str/3
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets2.assets、obj=39）
+原文：Now, the real work can begin!
+译文：现在，真正的工作可以开始了！
+置信度：medium
+原因：natural_language
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[365] 成功文本
+来源：sharedassets2.assets
+键位：asset#sharedassets2.assets#40/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets2.assets、obj=40）
+原文：This machine needs two ingredients.
+So let's get some water and put it into the Destillator, too!
+译文：这台机器需要两种原料。
+那么，让我们拿些水来，也把它放入蒸馏器中吧！
+置信度：medium
+原因：natural_language
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[366] 成功文本
+来源：sharedassets2.assets
+键位：asset#sharedassets2.assets#42/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets2.assets、obj=42）
+原文：...wait for a moment...
+译文：……请稍等一会儿……
+置信度：medium
+原因：natural_language
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[367] 成功文本
+来源：sharedassets2.assets
+键位：asset#sharedassets2.assets#43/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets2.assets、obj=43）
+原文：Voi là!
+Ignatium + Water = Explodium!
+译文：你来了！
+伊格纳提乌姆 + 水 = 埃克普洛迪姆！
+置信度：medium
+原因：natural_language
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[368] 成功文本
+来源：sharedassets2.assets
+键位：asset#sharedassets2.assets#43/str/2
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets2.assets、obj=43）
+原文：The next step is to put this new ingredient into our Bioreactor!
+译文：下一步是将这种新成分放入我们的生物反应器中！
+置信度：medium
+原因：natural_language
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[369] 成功文本
+来源：sharedassets2.assets
+键位：asset#sharedassets2.assets#44/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets2.assets、obj=44）
+原文：Ah, there it is! This is the formula I need with the correct code for the Bioreactor!
+译文：啊，找到了！这就是我需要的公式，以及生物反应器所需的正确代码。
+置信度：medium
+原因：natural_language
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[370] 成功文本
+来源：sharedassets2.assets
+键位：asset#sharedassets2.assets#44/str/2
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets2.assets、obj=44）
+原文：All I have to do now is enter the code into the Bioreactor's keypad! The code is [7283].
+译文：我现在只需要将代码输入到生物反应器的键盘上即可！代码是 [7283]。
+置信度：medium
+原因：natural_language
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[371] 成功文本
+来源：sharedassets2.assets
+键位：asset#sharedassets2.assets#45/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets2.assets、obj=45）
+原文：The Bioreactor only takes a single ingredient but also requires a code to be programmed.
+译文：该生物反应器仅需要一种原料，但还需要编写相应的程序代码。
+置信度：medium
+原因：natural_language
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[372] 成功文本
+来源：sharedassets2.assets
+键位：asset#sharedassets2.assets#45/str/2
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets2.assets、obj=45）
+原文：I wrote down the code and put it into one of the drawers...
+Just can't remember which one.
+译文：我把代码写下来，然后把它放进了其中一个抽屉里……
+实在记不住是哪一个了。
+置信度：medium
+原因：natural_language
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[373] 成功文本
+来源：sharedassets2.assets
+键位：asset#sharedassets2.assets#45/str/3
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets2.assets、obj=45）
+原文：Well then, guess I'll have to search the drawers for the clipboard with the formula!
+译文：那好吧，看来我得去翻箱底找那个装着公式的剪贴板了！
+置信度：medium
+原因：natural_language
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[374] 成功文本
+来源：sharedassets2.assets
+键位：asset#sharedassets2.assets#46/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets2.assets、obj=46）
+原文：Perfect, it worked! Let's wait for a moment...
+译文：Perfect, it worked! 让我们稍等一会儿吧……
+置信度：medium
+原因：natural_language
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[375] 成功文本
+来源：sharedassets2.assets
+键位：asset#sharedassets2.assets#47/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets2.assets、obj=47）
+原文：Explodium + [7283] = Xanolium!
+译文：收入 + [7283] = Xanolium!
+置信度：medium
+原因：natural_language
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[376] 成功文本
+来源：sharedassets2.assets
+键位：asset#sharedassets2.assets#48/str/1
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets2.assets、obj=48）
+原文：The microwave is a lot easier to use than the other machines, but also takes the longest to finish...
+译文：微波炉比其他设备更容易使用，但完成操作所需的时间也更长……
+置信度：medium
+原因：natural_language
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[377] 成功文本
+来源：sharedassets2.assets
+键位：asset#sharedassets2.assets#48/str/2
+对象：MonoBehaviour rawstr 数组（asset_file=sharedassets2.assets、obj=48）
+原文：Sheesh, this takes ages!
+译文：唉，这真慢啊！
+置信度：medium
+原因：natural_language
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[378] 成功文本
+来源：Managed/Assembly-CSharp.dll
+键位：us#8050
+对象：DLL #US 字符串（record_offset=323013）
+原文：Speed: {0:0.00}% per second
+译文：速度：每秒{0:0.00}%
+置信度：high
+原因：mono_ui_setter
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[379] 成功文本
+来源：Managed/Assembly-CSharp.dll
+键位：us#8434
+对象：DLL #US 字符串（record_offset=323397）
+原文： [LOCKED]
+译文：[被锁住了]
+置信度：medium
+原因：user_string_uppercase_ui
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[380] 成功文本
+来源：Managed/Assembly-CSharp.dll
+键位：us#12088
+对象：DLL #US 字符串（record_offset=327051）
+原文：OR REPLACE
+译文：或替换
+置信度：medium
+原因：user_string_uppercase_ui
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[381] 成功文本
+来源：Managed/Assembly-CSharp.dll
+键位：us#13434
+对象：DLL #US 字符串（record_offset=328397）
+原文：Expression is NULL
+译文：表达式为 NULL
+置信度：medium
+原因：user_string_uppercase_ui
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[382] 成功文本
+来源：Managed/Assembly-CSharp.dll
+键位：us#16211
+对象：DLL #US 字符串（record_offset=331174）
+原文：A <#0080ff>simple</color> line of text.
+译文：一条<#0080ff>简单的</color>文本行。
+置信度：high
+原因：mono_ui_setter
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[383] 成功文本
+来源：Managed/Assembly-CSharp.dll
+键位：us#17189
+对象：DLL #US 字符串（record_offset=332152）
+原文：You have selected link <#ffff00> ID 01
+译文：您选择了链接 <#ffff00>，ID为01。
+置信度：high
+原因：mono_ui_setter
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[384] 成功文本
+来源：Managed/Assembly-CSharp.dll
+键位：us#17267
+对象：DLL #US 字符串（record_offset=332230）
+原文：You have selected link <#ffff00> ID 02
+译文：您选择了链接 <#ffff00>，ID为02。
+置信度：high
+原因：mono_ui_setter
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[385] 成功文本
+来源：Managed/Assembly-CSharp.dll
+键位：us#17346
+对象：DLL #US 字符串（record_offset=332308）
+原文：Camera Control - <#ffff00>Shift + RMB
+</color>Zoom - <#ffff00>Mouse wheel.
+译文：相机控制 - <#ffff00>Shift + RMB
+</color>缩放 - <#ffff00>鼠标滚轮。
+置信度：high
+原因：mono_ui_setter
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入
+
+────────────────────────────────────────────────────────────────
+[386] 成功文本
+来源：Managed/Assembly-CSharp.dll
+键位：us#18627
+对象：DLL #US 字符串（record_offset=333590）
+原文：{0} FPS
+译文：{0} 帧每秒
+置信度：high
+原因：mono_ui_setter
+角色：display
+质量评分：—（passed=True）
+翻译评价：已产出译文
+需要优化：否（审核通过或未审核）
+写回：已写入

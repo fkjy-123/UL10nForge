@@ -1,0 +1,914 @@
+[
+ {
+  "locator": "Incremental RTS_Data/level0:asset#level0#499/str/0",
+  "original": "Start debug scene",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用符合行业标准，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "Incremental RTS_Data/level1:asset#level1#433/str/0",
+  "original": "Nothing to see here. Just some trees. Do you like trees? I do. But no idea what to do with them really",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用规范，语气自然流畅。",
+  "suggestion": ""
+ },
+ {
+  "locator": "Incremental RTS_Data/level1:asset#level1#441/str/0",
+  "original": "Enjoying the game? Wishlist the larger version on Steam!",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文的互动意图与促销信息，术语使用规范，无语义偏差。",
+  "suggestion": ""
+ },
+ {
+  "locator": "Incremental RTS_Data/level2:asset#level2#138/str/0",
+  "original": "Wishlist on Steam",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了 Steam 平台愿望清单的功能含义，术语使用符合行业标准，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "Incremental RTS_Data/level2:asset#level2#140/str/0",
+  "original": "Feedback Form",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用符合行业标准，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "Incremental RTS_Data/level2:asset#level2#145/str/0",
+  "original": "Join Discord",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达原文含义，术语使用符合行业标准，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "Incremental RTS_Data/level3:asset#level3#432/str/0",
+  "original": "Nothing to see here. Just some trees. Do you like trees? I do. But no idea what to do with them really",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用规范，语气自然流畅。",
+  "suggestion": ""
+ },
+ {
+  "locator": "Incremental RTS_Data/level3:asset#level3#442/str/0",
+  "original": "Enjoying the game? Wishlist the larger version on Steam!",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用规范，语气自然流畅。",
+  "suggestion": ""
+ },
+ {
+  "locator": "Incremental RTS_Data/resources.assets:asset#resources.assets#209/csv/row/1",
+  "original": "Tap to start",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用符合行业标准，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "Incremental RTS_Data/resources.assets:asset#resources.assets#209/csv/row/8",
+  "original": "Join Discord",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用符合行业标准，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "Incremental RTS_Data/resources.assets:asset#resources.assets#209/csv/row/9",
+  "original": "Feedback Form",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达原文含义，术语符合行业标准，无语义或结构问题。",
+  "suggestion": ""
+ },
+ {
+  "locator": "Incremental RTS_Data/resources.assets:asset#resources.assets#209/csv/row/10",
+  "original": "Quit",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "术语准确，符合行业标准译法。",
+  "suggestion": ""
+ },
+ {
+  "locator": "Incremental RTS_Data/resources.assets:asset#resources.assets#209/csv/row/11",
+  "original": "Wishlist on <wave>Steam!</wave>",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用规范，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "Incremental RTS_Data/resources.assets:asset#resources.assets#209/csv/row/32",
+  "original": "Details / Privacy policy",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用符合行业标准，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "Incremental RTS_Data/resources.assets:asset#resources.assets#209/csv/row/50",
+  "original": "Press any key...",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语与 UI 规范一致，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "Incremental RTS_Data/resources.assets:asset#resources.assets#209/csv/row/53",
+  "original": "You have got a Warpoint. Unlock Upgrades (press [%s] or the button on the left)",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用规范，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "Incremental RTS_Data/resources.assets:asset#resources.assets#209/csv/row/55",
+  "original": "Warpoints are constantly flowing in. Don't forget to check upgrades!",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用规范，语气符合游戏 UI 风格。",
+  "suggestion": ""
+ },
+ {
+  "locator": "Incremental RTS_Data/resources.assets:asset#resources.assets#209/csv/row/57",
+  "original": "If your base is destroyed you start anew but you keep ALL the upgrades",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文关于基地重建、重新开始及保留升级成果的全部含义，术语使用规范，无语义偏差。",
+  "suggestion": ""
+ },
+ {
+  "locator": "Incremental RTS_Data/resources.assets:asset#resources.assets#209/csv/row/58",
+  "original": "You can buy five factories at once if you hold ctrl/cmd when purchasing",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文的所有信息，术语使用规范，无语义错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "Incremental RTS_Data/resources.assets:asset#resources.assets#209/csv/row/63",
+  "original": "Watch out — the enemy will launch an assault! Keep an eye on the countdown widget.",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文的警告语气、人物关系及倒计时信息，术语使用符合行业标准。",
+  "suggestion": ""
+ },
+ {
+  "locator": "Incremental RTS_Data/resources.assets:asset#resources.assets#209/csv/row/64",
+  "original": "Every factory you buy raises the cost of all other factories. Same-tier factories get a bigger price bump. Diversify your production!",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文所有含义，术语使用规范，语气符合游戏提示风格。",
+  "suggestion": ""
+ },
+ {
+  "locator": "Incremental RTS_Data/resources.assets:asset#resources.assets#209/csv/row/65",
+  "original": "Enjoying the game? Rate it on itch.io or leave a comment. That helps me a lot :)",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用规范，语气自然，无错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "Incremental RTS_Data/resources.assets:asset#resources.assets#209/csv/row/66",
+  "original": "Enjoying the demo? Wishlist the full game on Steam — 60 levels, deeper upgrades, more chaos!",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用规范，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "Incremental RTS_Data/resources.assets:asset#resources.assets#209/csv/row/67",
+  "original": "The enemy gets modifiers that make it unpredictably stronger. Hover the enemy base to see them! They are different on each level",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用规范，无语义或逻辑错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "Incremental RTS_Data/resources.assets:asset#resources.assets#209/csv/row/70",
+  "original": "Laser weapons focus extreme heat and precise impact. They shred vehicles and aircraft beautifully, but large static structures simply absorb the energy. Lasers only deal %s%% damage to buildings.",
+  "verdict": "flag",
+  "issue": "信息完整性",
+  "reason": "译文将原文中激光武器对建筑物“仅造成特定百分比伤害”的精确数值限制，错误地泛化为“只会造成损害”，导致关键游戏机制信息丢失。",
+  "suggestion": "激光武器能够产生极高的热量和精确的能量打击。它们能轻松摧毁各种车辆和飞机，但大型静态结构则只能吸收这种能量。激光对建筑物仅造成 %s%% 的伤害。"
+ },
+ {
+  "locator": "Incremental RTS_Data/resources.assets:asset#resources.assets#209/csv/row/72",
+  "original": "Killing enemy units can earn cash. Unlock kill-reward upgrades in the economy tree to get a cut of their production cost — up to 1/8 per kill.",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文所有含义，术语使用规范，无语义偏差或信息缺失。",
+  "suggestion": ""
+ },
+ {
+  "locator": "Incremental RTS_Data/resources.assets:asset#resources.assets#209/csv/row/76",
+  "original": "With enough upgrades, small units become extremely strong. Deep upgrade paths unlock new combat skills and can turn swarms into late-game monsters.",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用规范，无语义或逻辑错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "Incremental RTS_Data/resources.assets:asset#resources.assets#209/csv/row/78",
+  "original": "Rock deals 2.5x damage to buildings. Since buildings don't move, it's excellent for pushing enemy bases.",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用规范，逻辑关系清晰，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "Incremental RTS_Data/resources.assets:asset#resources.assets#209/csv/row/79",
+  "original": "Factories of the same tier increase each other's cost more than different tiers. Diversifying production keeps your long-term economy healthier.",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文关于工厂层级互动及多元化生产对经济影响的含义，术语使用规范，无语义偏差。",
+  "suggestion": ""
+ },
+ {
+  "locator": "Incremental RTS_Data/resources.assets:asset#resources.assets#209/csv/row/83",
+  "original": "You earn Warpoints!\\nDon't forget to\\nspend them!",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用规范，语气符合游戏 UI 风格。",
+  "suggestion": ""
+ },
+ {
+  "locator": "Incremental RTS_Data/resources.assets:asset#resources.assets#209/csv/row/92",
+  "original": "<b>Unit Balance</b>",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "术语'Unit Balance'在游戏 UI 中译为'单位余额'符合行业标准，语义准确且无其他问题。",
+  "suggestion": ""
+ },
+ {
+  "locator": "Incremental RTS_Data/resources.assets:asset#resources.assets#209/csv/row/103",
+  "original": "Warpoints per Level",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用符合行业标准，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "Incremental RTS_Data/resources.assets:asset#resources.assets#209/csv/row/106",
+  "original": "Warpoints per Kill",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用符合行业标准，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "Incremental RTS_Data/resources.assets:asset#resources.assets#209/csv/row/116",
+  "original": "Unlock the full game on Steam to access this upgrade.",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用规范，无语义或逻辑错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "Incremental RTS_Data/resources.assets:asset#resources.assets#209/csv/row/122",
+  "original": "The source of all evil. They make the games with microtransactions there.",
+  "verdict": "flag",
+  "issue": "术语一致性",
+  "reason": "译文存在术语误用及信息缺失，'source of all evil'未准确传达讽刺含义，且遗漏了原文中关于'制作游戏'的具体行为描述。",
+  "suggestion": "万恶之源。他们在那里通过微交易制作游戏。"
+ },
+ {
+  "locator": "Incremental RTS_Data/resources.assets:asset#resources.assets#209/csv/row/123",
+  "original": "The source of all evil. They have invented the loot boxes here.",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用符合行业标准，无语义或逻辑错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "Incremental RTS_Data/resources.assets:asset#resources.assets#209/csv/row/124",
+  "original": "The source of all evil. They promise you can make ~100%% income in a week with some crypto schemes right before it crashes.",
+  "verdict": "flag",
+  "issue": "语义一致性",
+  "reason": "译文严重违背原文逻辑，将'骗局'误译为'手段'，且'约 100%'与'一周'的语序混乱导致含义完全错误。",
+  "suggestion": "所有邪恶的根源。他们承诺你利用一些加密货币骗局，在一周内就能获得约 100% 的收益，就在其崩溃之前。"
+ },
+ {
+  "locator": "Incremental RTS_Data/resources.assets:asset#resources.assets#209/csv/row/125",
+  "original": "The source of all evil. They make the Deutsche Bahn trains always late.",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用规范，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "Incremental RTS_Data/resources.assets:asset#resources.assets#209/csv/row/126",
+  "original": "The source of all evil. They are always trying to sell you some DLC.",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用规范，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "Incremental RTS_Data/resources.assets:asset#resources.assets#209/csv/row/127",
+  "original": "The source of all evil. They make you watch ads for rewards.",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用规范，无语义或逻辑错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "Incremental RTS_Data/resources.assets:asset#resources.assets#209/csv/row/128",
+  "original": "The source of all evil. They are responsible for all the bugs in the game. Ok, no, that was me, sorry.",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用规范，语气自然，无逻辑或事实性错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "Incremental RTS_Data/resources.assets:asset#resources.assets#209/csv/row/129",
+  "original": "The source of all evil. They are also known as HR department.",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用符合行业标准，无语义或逻辑错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "Incremental RTS_Data/resources.assets:asset#resources.assets#209/csv/row/130",
+  "original": "The source of all evil. They have invented the \"Let's jump on a short call.\" phrase.",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "{\"level\": \"MAJOR\", \"reason\": \"译文严重偏离原文含义，将讽刺性的“邪恶源头”误译为中性描述，且错误翻译了特定短语。\", \"issues\": [{\"type\": \"语义一致性\", \"detail\": \"原文 'The source of all evil' 是强烈的讽刺或指代特定反派，译文 '一切邪恶的源头' 虽字面对应但丢失了语境中的讽刺意味或特定指代；原文 'Let\\'s jump on a short call' 是特定俚语，译文 '我们赶紧行动吧' 完全错误。\", \"suggestion\": \"一切邪恶的源头。他们发明了‘我们赶紧打个短电话’这种说法。\"}]}",
+  "suggestion": ""
+ },
+ {
+  "locator": "Incremental RTS_Data/resources.assets:asset#resources.assets#209/csv/row/131",
+  "original": "The source of all evil. They make you forget your passwords.",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用规范，无语义或逻辑错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "Incremental RTS_Data/resources.assets:asset#resources.assets#209/csv/row/132",
+  "original": "The source of all evil. They manipulate the RNG when you need it the most.",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用规范，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "Incremental RTS_Data/resources.assets:asset#resources.assets#209/csv/row/133",
+  "original": "The source of all evil. They reorder traffic lights for fun.",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用规范，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "Incremental RTS_Data/resources.assets:asset#resources.assets#209/csv/row/134",
+  "original": "The source of all evil. They write the TnCs here. Especially the small print.",
+  "verdict": "flag",
+  "issue": "术语一致性",
+  "reason": "术语翻译不准确，'TnCs'应译为'用户协议'而非'禁忌事项'，且'evil'在此处为双关语，译为'邪恶'丢失了原意中'错误'的含义。",
+  "suggestion": "所有错误的源头。他们在这里写下用户协议。尤其是那些小字部分。"
+ },
+ {
+  "locator": "Incremental RTS_Data/resources.assets:asset#resources.assets#209/csv/row/181",
+  "original": "%s<color=#%s><b>Damage: %s | DPS: %s</b></color> | Range: %s | Cooldown: %ss",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文所有数值与属性信息，术语使用符合行业标准，无语义偏差。",
+  "suggestion": ""
+ },
+ {
+  "locator": "Incremental RTS_Data/resources.assets:asset#resources.assets#209/csv/row/189",
+  "original": "<b>Hot Reload:</b> %s%% chance to set next cooldown to 1s",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用规范，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "Incremental RTS_Data/resources.assets:asset#resources.assets#209/csv/row/192",
+  "original": "<b>Instant Melt:</b> %s%% chance to instantly destroy an enemy unit on hit",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用规范，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "Incremental RTS_Data/resources.assets:asset#resources.assets#209/csv/row/196",
+  "original": "<b>Ant Evasion:</b> %s%% chance to ignore incoming damage",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用规范，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "Incremental RTS_Data/resources.assets:asset#resources.assets#209/csv/row/197",
+  "original": "<b>Colossus Brood:</b> %s%% chance to spawn with %sx HP and damage",
+  "verdict": "flag",
+  "issue": "信息完整性",
+  "reason": "译文严重缺失关键信息，将'HP 和伤害'简化为'损害'，导致数值属性丢失，且'损害'一词不符合游戏术语规范。",
+  "suggestion": "<b>巨兽世代：</b> %s%% 几率生成 %sx HP 及 %sx 伤害"
+ },
+ {
+  "locator": "Incremental RTS_Data/resources.assets:asset#resources.assets#209/csv/row/207",
+  "original": "Supercharged storm cores. Thunderstorms spawn {scale} larger with {health} HP, {damage} damage, {speedPenalty} move speed, but Thunderstorm production rate {productionPenalty}",
+  "verdict": "flag",
+  "issue": "信息完整性",
+  "reason": "译文严重缺失关键数值占位符，导致信息完全丢失且出现乱码。",
+  "suggestion": "增强版风暴核心。雷暴的规模会增大至{scale}，拥有{health} HP、{damage} 伤害、{speedPenalty} 移动速度惩罚，但雷暴产生速率{productionPenalty}。"
+ },
+ {
+  "locator": "Incremental RTS_Data/resources.assets:asset#resources.assets#209/csv/row/263",
+  "original": "<b>Analytics is OFF.</b> Gameplay data is not being collected.",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用规范，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "Incremental RTS_Data/resources.assets:asset#resources.assets#209/csv/row/271",
+  "original": "Menu [Esc]",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用符合行业标准，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "Incremental RTS_Data/resources.assets:asset#resources.assets#209/csv/row/278",
+  "original": "Deploy the Lightning unit. Extreme-range laser cannon with devastating damage. Only few vehicles can survive it. Large structures with regular armor simply absorb the heat too well (only {buildingDamage} damage to buildings)",
+  "verdict": "flag",
+  "issue": "语义一致性",
+  "reason": "译文严重违背原文逻辑，将‘吸收热量’错误译为‘被高温破坏’，导致语义完全相反。",
+  "suggestion": "那些拥有常规装甲的大型建筑，反而能吸收热量（对建筑物仅造成{buildingDamage}点伤害）"
+ },
+ {
+  "locator": "Incremental RTS_Data/resources.assets:asset#resources.assets#209/csv/row/280",
+  "original": "Rhino warheads cook through armor on contact. Rhino shots always instantly destroy most enemy units. Buildings and some melt-shielded mega units are immune. Due to engineering complexity Rhino production rate {productionPenalty}",
+  "verdict": "flag",
+  "issue": "语义一致性",
+  "reason": "译文严重违背原文逻辑，将‘接触即摧毁’误译为‘接触时摧毁’，且错误地将‘熔岩护盾’译为‘熔岩护盾’（原文为 melt-shielded，指融化护盾或类似机制，此处语境应为免疫特定伤害，译文逻辑混乱），同时遗漏了原文中关于工程复杂性与生产惩罚的具体关联描述。",
+  "suggestion": "当 Rhino 弹头接触敌人装甲时，会立即将其摧毁。Rhino 炮弹总能瞬间摧毁大多数敌方单位。拥有熔覆护盾的巨型单位则免疫此伤害。由于工程复杂，Rhino 的生产速度会受到惩罚。"
+ },
+ {
+  "locator": "Incremental RTS_Data/resources.assets:asset#resources.assets#209/csv/row/298",
+  "original": "Restorative protocols knit wounds between volleys. All units regenerate {regen} HP per second",
+  "verdict": "flag",
+  "issue": "语义一致性",
+  "reason": "译文严重偏离原文含义，将游戏机制描述误译为人际关系，且丢失关键数值信息。",
+  "suggestion": "修复协议在轮次间缝合伤口。所有单位每秒再生 {regen} HP"
+ },
+ {
+  "locator": "Incremental RTS_Data/resources.assets:asset#resources.assets#209/csv/row/302",
+  "original": "Sacrificial layers flake away instead of hull. Reduce damage taken by {reduction}",
+  "verdict": "flag",
+  "issue": "语气",
+  "reason": "译文语序生硬且因果逻辑连接词使用不当，不符合游戏 UI 简洁自然的表达习惯。",
+  "suggestion": "牺牲层会剥落而非外壳，以此减少受到的伤害（{reduction}）"
+ },
+ {
+  "locator": "Incremental RTS_Data/resources.assets:asset#resources.assets#209/csv/row/310",
+  "original": "Heavy tank bruiser unit. Slow acceleration. Never stops. Prefers base weapons",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文所有含义，术语使用规范，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "Incremental RTS_Data/resources.assets:asset#resources.assets#209/csv/row/324",
+  "original": "Disposable impact layers strip kinetic energy before the hull. Mantis units gain {shields} extra shields, but their production rate {productionPenalty}",
+  "verdict": "flag",
+  "issue": "信息完整性",
+  "reason": "译文严重偏离原文，丢失关键信息且错误处理了变量占位符，导致语义不完整。",
+  "suggestion": "一次性冲击层在船体之前就能将动能转化为其他形式。Mantis 单元则能够吸收这种能量，获得 {shields} 额外护盾，但其生产速度 {productionPenalty}。"
+ },
+ {
+  "locator": "Incremental RTS_Data/resources.assets:asset#resources.assets#209/csv/row/330",
+  "original": "Your base radiates special waves restoring all friendly units. All your units regenerate {regen} HP per second",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用规范，无语义或逻辑错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "Incremental RTS_Data/resources.assets:asset#resources.assets#209/csv/row/336",
+  "original": "Field repairs stitch hulls between bombardments. All units regenerate {regen} HP per second",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "{\"level\": \"MAJOR\", \"reason\": \"译文严重偏离原文含义，将“舰体修复”误译为“人员工作”，将“再生 HP\"误译为“恢复功能”，且未准确传达数值属性。\", \"issues\": [{\"type\": \"语义一致性\", \"detail\": \"原文指舰体在轰炸间隙自动修复并恢复生命值，译文错误地描述为‘人们’进行‘修复工作’，改变了动作主体和性质。\", \"suggestion\": \"在轰炸间隙，舰体自动进行修复。所有单位每秒恢复 {regen} HP。\"}, {\"type\": \"术语准确性\", \"detail\": \"原文'HP'是生命值数值，译文将其模糊化为‘功能’，导致数值属",
+  "suggestion": ""
+ },
+ {
+  "locator": "Incremental RTS_Data/resources.assets:asset#resources.assets#209/csv/row/340",
+  "original": "Refuse to fall. Gain an extra {chance} death defiance chance, but overall production speed {productionPenalty}. Units below {minHp} of max HP cannot defy death",
+  "verdict": "flag",
+  "issue": "否定",
+  "reason": "译文严重偏离原文含义，存在否定词缺失、人物/对象关系颠倒、术语误用及信息截断等问题。",
+  "suggestion": "拒绝倒下。获得额外的死亡反抗机会，但整体生产速度将受到惩罚。低于最大生命值 {minHp} 的单位无法反抗死亡。"
+ },
+ {
+  "locator": "Incremental RTS_Data/resources.assets:asset#resources.assets#209/csv/row/352",
+  "original": "Oversized ordnance cores occasionally produce a walking siege rifle. {chance} chance each Reed unit spawns {scale} larger with {multiplier} HP and damage, {rangeMultiplier} attack range, {speedPenalty} move speed, fires large ordnance, but Reed production rate {productionPenalty}",
+  "verdict": "flag",
+  "issue": "人物关系",
+  "reason": "译文将原文中'武器被生成'错误地理解为'Reed单位被生成'，导致人物关系与逻辑对象严重偏差。",
+  "suggestion": "大型弹药核心偶尔会生成一种步行式攻城步枪。每有一个 Reed 单位，就有{chance}{scale}个更大、拥有{multiplier}点生命值和伤害值的**武器**被生成；其攻击范围为{rangeMultiplier}，移动速度为{speedPenalty}。这种武器可以发射大型弹药，但 Reed 单位的生产效率会受到{productionPenalty}的影响。"
+ },
+ {
+  "locator": "Incremental RTS_Data/resources.assets:asset#resources.assets#209/csv/row/356",
+  "original": "Ant units gain an additional {evasion} chance to evade damage, but Ant production rate {productionPenalty}",
+  "verdict": "flag",
+  "issue": "语义一致性",
+  "reason": "译文存在严重语病，将名词误译为动词，且句子结构破碎导致语义不通顺。",
+  "suggestion": "蚂蚁单位获得额外的 {evasion} 几率来躲避伤害，但蚂蚁的生产速率会 {productionPenalty}"
+ },
+ {
+  "locator": "Incremental RTS_Data/resources.assets:asset#resources.assets#209/csv/row/360",
+  "original": "Rock crews dial trajectories to the horizon. Increase Rock attack range by {range}",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用符合行业标准，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "Incremental RTS_Data/resources.assets:asset#resources.assets#209/csv/row/388",
+  "original": "Death defiance survival improves by {survivalHp} of max HP instead of 1 HP. Stacks with other survival upgrades",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用规范，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "Incremental RTS_Data/resources.assets:asset#resources.assets#209/csv/row/390",
+  "original": "Ionized cloud decks bleed off damage as self-repair. Thunderstorm units regenerate {regen} of max HP per second, but Thunderstorm production rate {productionPenalty}",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用规范，无逻辑或事实错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "Incremental RTS_Data/resources.assets:asset#resources.assets#209/csv/row/400",
+  "original": "Death defiance survival improves by {survivalHp} of max HP instead of 1 HP. Stacks with other survival upgrades",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用规范，无语义或逻辑错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "Incremental RTS_Data/resources.assets:asset#resources.assets#209/csv/row/406",
+  "original": "Factory lines never sleep. Increase production speed by {production}",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用规范，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "Incremental RTS_Data/resources.assets:asset#resources.assets#209/csv/row/412",
+  "original": "Fast flying unit. Very weak but can attack both ground and air units. Dangerous in high quantities",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文关于飞行单位特性、攻击范围及数量风险的全部含义，术语使用规范，无语义偏差。",
+  "suggestion": ""
+ },
+ {
+  "locator": "Incremental RTS_Data/resources.assets:asset#resources.assets#209/csv/row/430",
+  "original": "High-spec weapon packages slow output but hit harder. Production speed {productionPenalty}, unit damage {damage}",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文关于武器包输出速度、伤害、生产惩罚及单位伤害的语义，术语使用符合行业标准，无语义偏差或信息缺失。",
+  "suggestion": ""
+ },
+ {
+  "locator": "Incremental RTS_Data/resources.assets:asset#resources.assets#209/csv/row/434",
+  "original": "Penetrating warheads breach armor seams but slow the assembly lines. Production speed {productionPenalty}, unit damage {damage}",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用规范，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "Incremental RTS_Data/resources.assets:asset#resources.assets#209/csv/row/444",
+  "original": "Super heavy tank. Very slow, never stops. Very low range but large AoE",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文所有信息，术语使用规范，无逻辑或语义错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "Incremental RTS_Data/resources.assets:asset#resources.assets#209/csv/row/462",
+  "original": "Defeat contingency reserves seed the next deployment. After losing, gain {resources} for your next run",
+  "verdict": "flag",
+  "issue": "术语一致性",
+  "reason": "译文存在严重术语误用（'部署'应为'回合'，'优势'应为'资源'，'运行'应为'回合'），导致游戏机制含义完全错误。",
+  "suggestion": "失败带来的应急储备为下一次回合提供了支持。失败后，就能获得{resources}用于你的下一次回合"
+ },
+ {
+  "locator": "Incremental RTS_Data/resources.assets:asset#resources.assets#209/csv/row/480",
+  "original": "Automated extraction lines run continuous shifts. Increase resource generation by {resources} per second",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用规范，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "Incremental RTS_Data/resources.assets:asset#resources.assets#209/csv/row/494",
+  "original": "Precision tooling raises line output at higher procurement cost. Increase production speed by {production}, but building costs increase by {buildingCost}",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文的因果逻辑、数量关系及术语含义，无语义错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "Incremental RTS_Data/resources.assets:asset#resources.assets#209/csv/row/512",
+  "original": "Expanded fallback allocation keeps production lines funded. After losing, gain {resources} for your next run",
+  "verdict": "flag",
+  "issue": "语义偏差",
+  "reason": "译文严重偏离原文逻辑，将'亏损后获得收益'错误地表述为'仍能获得收益'，且遗漏了'用于'这一关键用途信息。",
+  "suggestion": "扩展的备用分配机制确保生产线持续运行。若亏损，将在下一轮获得 {resources}。"
+ },
+ {
+  "locator": "Incremental RTS_Data/resources.assets:asset#resources.assets#209/csv/row/524",
+  "original": "Strategic reserve accounts absorb operational losses. After losing, gain {resources} for your next run",
+  "verdict": "flag",
+  "issue": "语义一致性",
+  "reason": "译文严重偏离原文逻辑，将“亏损后获得收益”误译为“亏损后，再获得收益”，且丢失了“用于你的下一次运行”这一关键信息，导致语义完全错误。",
+  "suggestion": "亏损后，为下一次运行获得 {resources} 收益。"
+ },
+ {
+  "locator": "Incremental RTS_Data/resources.assets:asset#resources.assets#209/csv/row/536",
+  "original": "Total mobilization diverts all output to the front. Increase resource generation by {resources} and gain {warPoints} Warpoint per completed level",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用符合行业标准，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "Incremental RTS_Data/resources.assets:asset#resources.assets#209/csv/row/550",
+  "original": "Maximum continuity budget guarantees reconstitution capacity. After losing, gain {resources} for your next run",
+  "verdict": "flag",
+  "issue": "语义一致性",
+  "reason": "译文严重偏离原文含义，将'获得资源'错误译为'获得胜利'，且'重建能力'与'连续性预算'的对应关系生硬，不符合游戏 UI 语境。",
+  "suggestion": "最大连续性预算保证重建能力。失败后，获得{resources}用于下一次运行"
+ },
+ {
+  "locator": "Incremental RTS_Data/resources.assets:asset#resources.assets#209/csv/row/556",
+  "original": "Atmospheric recovery plants pull trace elements from exhaust streams. Increase resource generation by {resources} per second",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文的技术含义，术语使用规范，无语义偏差。",
+  "suggestion": ""
+ },
+ {
+  "locator": "Incremental RTS_Data/resources.assets:asset#resources.assets#209/csv/row/562",
+  "original": "Denser kinetic cores can punch through more hull types. Increase all unit damage by {damage}",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用规范，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "Incremental RTS_Data/resources.assets:asset#resources.assets#209/csv/row/564",
+  "original": "Impact-tuned cores breach hardened plating. Increase all unit damage by {damage}",
+  "verdict": "flag",
+  "issue": "术语一致性",
+  "reason": "术语使用不规范，'Impact-tuned' 未采用游戏行业通用译法，且'镀层'一词在 UI 语境下不够精准。",
+  "suggestion": "经过 Impact 调校的核心能够击穿强化装甲。所有单位的伤害都会增加 {damage}。"
+ },
+ {
+  "locator": "Incremental RTS_Data/resources.assets:asset#resources.assets#209/csv/row/566",
+  "original": "Tempered cores overload shield capacitors on contact. Increase all unit damage by {damage}",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文的机制描述与数值效果，术语使用符合行业标准，无语义偏差。",
+  "suggestion": ""
+ },
+ {
+  "locator": "Incremental RTS_Data/resources.assets:asset#resources.assets#209/csv/row/574",
+  "original": "Extended barrels. Increases unit attack range by {range}",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用规范，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "Incremental RTS_Data/resources.assets:asset#resources.assets#209/csv/row/590",
+  "original": "Thorn units gain +{range} attack range and fire {fireRate} faster",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文的游戏机制含义，术语使用规范，无语义偏差。",
+  "suggestion": ""
+ },
+ {
+  "locator": "Incremental RTS_Data/resources.assets:asset#resources.assets#209/csv/row/594",
+  "original": "Heavy DPS tank. Never stops, rapid fire, anti-structure",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文关于坦克高输出、持续攻击、高射速及破甲能力的核心含义，术语使用规范。",
+  "suggestion": ""
+ },
+ {
+  "locator": "Incremental RTS_Data/resources.assets:asset#resources.assets#209/csv/row/602",
+  "original": "Oversized cores crater whatever they touch. Increase all unit damage by {damage}",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用规范，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "Incremental RTS_Data/resources.assets:asset#resources.assets#209/csv/row/612",
+  "original": "Thorn bullets destroy all shield stacks in a single hit. Thorn production rate {productionPenalty}",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用符合行业标准，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "Incremental RTS_Data/resources.assets:asset#resources.assets#209/csv/row/626",
+  "original": "Replace Bamboo's projectile with a precision laser beam that never misses. The beam's overwhelming temperature and precise impact can core through vehicle armor instantly, but large structures with regular armor simply absorb the heat too well. Only {buildingEffectiveness} effective against buildings. Bamboo production rate {productionPenalty} due to power systems",
+  "verdict": "flag",
+  "issue": "语义一致性",
+  "reason": "原文中'buildings'指代建筑物，译文将其误译为'巨大建筑物'，导致语义逻辑混乱且与后文'常规装甲'搭配不当，属于严重信息错误。",
+  "suggestion": "只有{buildingEffectiveness}对建筑物有效。"
+ },
+ {
+  "locator": "Incremental RTS_Data/resources.assets:asset#resources.assets#209/csv/row/640",
+  "original": "Range-finder calibration extends effective engagement distance. Increase unit attack range by {range}",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用规范，无语义或逻辑错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "Incremental RTS_Data/resources.assets:asset#resources.assets#209/csv/row/660",
+  "original": "Rock batteries dial longer lobs over the front line. Increase Rock attack range by {range}",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用规范，无语义或逻辑错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "Incremental RTS_Data/resources.assets:asset#resources.assets#209/csv/row/662",
+  "original": "Extended ballistics tables push Rocks past the horizon. Increase Rock attack range by {range}",
+  "verdict": "flag",
+  "issue": "语义一致性",
+  "reason": "译文将原文两个独立动作合并，导致语义偏差且丢失了关于'弹道表'和'地平线'的关键信息。",
+  "suggestion": "扩展弹道表将岩石推过地平线，并将攻击范围增加至{range}。"
+ },
+ {
+  "locator": "Incremental RTS_Data/resources.assets:asset#resources.assets#209/csv/row/668",
+  "original": "Second-pass range-finder tuning extends engagement envelopes. Increase unit attack range by {range}",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文的技术含义，术语使用符合行业标准，无语义偏差。",
+  "suggestion": ""
+ },
+ {
+  "locator": "Incremental RTS_Data/resources.assets:asset#resources.assets#209/csv/row/670",
+  "original": "Long-range fire solutions lock targets at extreme distance. Increase unit attack range by {range}",
+  "verdict": "flag",
+  "issue": "术语一致性",
+  "reason": "术语使用不规范，'Long-range fire solutions' 译为'远程射击解决方案'过于生硬且不符合游戏 UI 习惯，应简化为'远程火力'或'远程射击'。",
+  "suggestion": "远程火力可锁定极远距离目标。将单位攻击范围增加 {range}"
+ },
+ {
+  "locator": "Incremental RTS_Data/resources.assets:asset#resources.assets#209/csv/row/672",
+  "original": "Every perimeter emplacement receives upgraded fire solutions. Increase all base weapon damage by {damage}",
+  "verdict": "flag",
+  "issue": "术语一致性",
+  "reason": "术语严重错误，将游戏术语'fire solutions'误译为消防相关的'灭火装置'，导致含义完全偏离。",
+  "suggestion": "每个防御位置都配备了升级后的火力配置。所有基础武器造成的伤害均增加 {damage}。"
+ },
+ {
+  "locator": "Incremental RTS_Data/resources.assets:asset#resources.assets#209/csv/row/698",
+  "original": "Reinforced hardpoints add overlapping barrels. Increase all base weapon damage by {damage}",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用规范，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "Incremental RTS_Data/resources.assets:asset#resources.assets#209/csv/row/700",
+  "original": "Maximum armament — the base becomes a grid of overlapping fire. Increase all base weapon damage by {damage}",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用规范，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "Incremental RTS_Data/resources.assets:asset#resources.assets#209/csv/row/710",
+  "original": "Weapon capacitors dump surplus charge into each volley. Increase unit damage by {damage}",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用规范，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "Incremental RTS_Data/resources.assets:asset#resources.assets#209/csv/row/716",
+  "original": "Elite flying unit. AoE cannons, never stops. Cannot target air",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文所有含义，术语使用规范，无逻辑或语义错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "Incremental RTS_Data/resources.assets:asset#resources.assets#209/csv/row/722",
+  "original": "Minor line tuning shaves idle gaps without retooling. Increase production speed by {production}",
+  "verdict": "flag",
+  "issue": "术语一致性",
+  "reason": "术语使用不规范，'tuning'译为'微调调整'冗余且非行业标准，'retooling'译为'重新组装'不准确，应为'重新配置'或'重新设计'。",
+  "suggestion": "微调机制可消除闲置间隙，无需重新配置。"
+ },
+ {
+  "locator": "Incremental RTS_Data/resources.assets:asset#resources.assets#210/line/18",
+  "original": "The OFL allows the licensed fonts to be used, studied, modified and",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文关于字体许可使用范围的完整含义，无术语错误或信息缺失。",
+  "suggestion": ""
+ },
+ {
+  "locator": "Incremental RTS_Data/resources.assets:asset#resources.assets#210/line/47",
+  "original": "Permission is hereby granted, free of charge, to any person obtaining",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文法律许可的完整含义，术语与语气均符合游戏本地化标准。",
+  "suggestion": ""
+ },
+ {
+  "locator": "Incremental RTS_Data/resources.assets:asset#resources.assets#210/line/52",
+  "original": "1) Neither the Font Software nor any of its individual components,",
+  "verdict": "flag",
+  "issue": "否定",
+  "reason": "译文遗漏了原文中的否定词'Neither'，导致语义完全相反。",
+  "suggestion": "1) 无论是字体软件还是其任何单个组件，均不得..."
+ },
+ {
+  "locator": "Incremental RTS_Data/resources.assets:asset#resources.assets#210/line/62",
+  "original": "3) No Modified Version of the Font Software may use the Reserved Font",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文关于字体软件修改及预留字体使用的限制含义，术语使用符合行业标准。",
+  "suggestion": ""
+ },
+ {
+  "locator": "Incremental RTS_Data/resources.assets:asset#resources.assets#210/line/64",
+  "original": "Copyright Holder. This restriction only applies to the primary font name as",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文关于版权限制仅针对主字体名称的含义，术语使用规范，无语义偏差。",
+  "suggestion": ""
+ },
+ {
+  "locator": "Incremental RTS_Data/resources.assets:asset#resources.assets#210/line/69",
+  "original": "Modified Version, except to acknowledge the contribution(s) of the",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文关于修改版本及贡献声明的完整含义，术语与语境均符合标准。",
+  "suggestion": ""
+ },
+ {
+  "locator": "Incremental RTS_Data/resources.assets:asset#resources.assets#210/line/80",
+  "original": "This license becomes null and void if any of the above conditions are",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文关于许可证失效条件的全部含义，术语使用规范，无语义偏差。",
+  "suggestion": ""
+ },
+ {
+  "locator": "Incremental RTS_Data/resources.assets:asset#resources.assets#212/line/3",
+  "original": "This download contains Space Grotesk as both a variable font and static fonts.",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文关于字体包含形式的全部含义，术语使用规范，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "Incremental RTS_Data/resources.assets:asset#resources.assets#7425/str/0",
+  "original": "If your base is destroyed you will start again with all the upgrades and war points you have accumulated",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用规范，无语义或逻辑错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "Incremental RTS_Data/Managed/Assembly-CSharp.dll:us#13606",
+  "original": "=== SESSION START {0:o} | v{1} | {2} | {3} ===",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用符合行业标准，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "Incremental RTS_Data/Managed/MoreMountains.Tools.dll:us#25079",
+  "original": "YOUR DEBUG MESSAGE GOES HERE",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用规范，无语义或结构错误。",
+  "suggestion": ""
+ }
+]
