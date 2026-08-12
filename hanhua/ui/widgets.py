@@ -3,8 +3,9 @@ from __future__ import annotations
 
 from PySide6.QtCore import (QEasingCurve, QObject, QPropertyAnimation,
                             QRunnable, Qt, QTimer, Signal)
-from PySide6.QtGui import QColor, QPainter, QPen
+from PySide6.QtGui import QIcon
 from PySide6.QtWidgets import (QFrame, QGraphicsOpacityEffect, QHBoxLayout, QLabel,
+                               QLineEdit, QListWidget, QListWidgetItem,
                                QPushButton, QVBoxLayout, QWidget)
 
 from hanhua.ui import theme
@@ -409,6 +410,305 @@ class Toast:
             fade.start()
 
         QTimer.singleShot(duration_ms, close_toast)
+
+
+class AIPulseDot(QLabel):
+    """AI 状态点（§59/§62）：紫色微弱呼吸，AI 正在分析时的唯一动效。
+
+    克制：900ms 呼吸 0.45↔1.0，不发光不闪烁；仅状态为 running 时循环。
+    """
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.setObjectName("aiDot")
+        self._anim = None
+
+    def setActive(self, active: bool):
+        if active and self._anim is None:
+            effect = QGraphicsOpacityEffect(self)
+            self.setGraphicsEffect(effect)
+            self._anim = QPropertyAnimation(effect, b"opacity", self)
+            self._anim.setDuration(900)
+            self._anim.setStartValue(0.45)
+            self._anim.setEndValue(1.0)
+            self._anim.setEasingCurve(QEasingCurve.InOutSine)
+            self._anim.setLoopCount(-1)
+            self._anim.start()
+        elif not active and self._anim is not None:
+            self._anim.stop()
+            self._anim.deleteLater()
+            self._anim = None
+            self.setGraphicsEffect(None)
+
+
+class AIReviewPanel(QFrame):
+    """AI 审核面板（§27/§28/§29）：紫色语义区，展示 AI 判断与候选。
+
+    显示：AI 分数（x/100 + 通过/建议/强制）+ 游戏语境 + 候选词（含
+    概率与最佳标记）+ AI 判断原因 + 风险 + 采用建议按钮。数据经
+    update_review(dict) 注入；无数据时显示空态引导。
+    """
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.setObjectName("aiPanel")
+        lay = QVBoxLayout(self)
+        lay.setContentsMargins(14, 12, 14, 12)
+        lay.setSpacing(10)
+
+        head = QHBoxLayout()
+        head.setSpacing(8)
+        self.dot = AIPulseDot()
+        title = QLabel("AI 审核")
+        title.setObjectName("aiPanelTitle")
+        head.addWidget(self.dot)
+        head.addWidget(title)
+        head.addStretch(1)
+        self.state_label = QLabel("等待审核")
+        self.state_label.setObjectName("aiSectionTitle")
+        head.addWidget(self.state_label)
+        lay.addLayout(head)
+
+        # 语义准确度：大分数 + 判定
+        score_row = QHBoxLayout()
+        score_row.setSpacing(10)
+        self.score_label = QLabel("—")
+        self.score_label.setObjectName("aiScore")
+        self.verdict_label = QLabel("")
+        self.verdict_label.setObjectName("aiSectionTitle")
+        score_row.addWidget(self.score_label)
+        score_row.addWidget(self.verdict_label)
+        score_row.addStretch(1)
+        lay.addLayout(score_row)
+
+        # 游戏语境
+        self.context_label = QLabel("")
+        self.context_label.setObjectName("aiSectionTitle")
+        self.context_label.setWordWrap(True)
+        lay.addWidget(self.context_label)
+
+        # 候选词列表（含概率）
+        self.candidates_box = QVBoxLayout()
+        self.candidates_box.setSpacing(4)
+        lay.addLayout(self.candidates_box)
+
+        # AI 判断原因
+        self.reason_label = QLabel("")
+        self.reason_label.setObjectName("aiReason")
+        self.reason_label.setWordWrap(True)
+        lay.addWidget(self.reason_label)
+
+        # 风险
+        self.risk_label = QLabel("")
+        self.risk_label.setObjectName("aiSectionTitle")
+        self.risk_label.setWordWrap(True)
+        lay.addWidget(self.risk_label)
+
+        self.apply_btn = QPushButton("采用 AI 建议")
+        self.apply_btn.setAccessibleName("采用 AI 建议")
+        self.apply_btn.setMinimumHeight(TOKENS.control_height)
+        self.apply_btn.setVisible(False)
+        lay.addWidget(self.apply_btn)
+
+        self._candidate_views: list[tuple[QLabel, str]] = []
+        self._current_candidates: list[str] = []
+
+    def set_active(self, active: bool, status_text: str = "AI 正在分析"):
+        """AI 工作中：紫色呼吸 + 状态文字；结束后停止呼吸。"""
+        self.dot.setActive(active)
+        self.state_label.setText(status_text)
+
+    def update_review(self, *, score: float | None = None,
+                      verdict: str = "", context: str = "",
+                      candidates: list[tuple[str, float]] | None = None,
+                      reason: str = "", risk: str = "") -> None:
+        """注入 AI 审核结果。candidates: [(译文, 概率%)]。"""
+        if score is None:
+            self.score_label.setText("—")
+            self.verdict_label.setText("")
+            self.set_active(False, "等待审核")
+        else:
+            self.score_label.setText(f"{score:.0f} / 100")
+            self.verdict_label.setText(verdict)
+        self.context_label.setText(context or "")
+        self.reason_label.setText(reason or "")
+        self.risk_label.setText(("风险：" + risk) if risk else "")
+        self._render_candidates(candidates or [])
+        self.apply_btn.setVisible(bool(candidates))
+
+    def _render_candidates(self, candidates: list[tuple[str, float]]) -> None:
+        for label, _ in self._candidate_views:
+            label.deleteLater()
+        self._candidate_views.clear()
+        self._current_candidates = []
+        for text, prob in candidates:
+            row = QHBoxLayout()
+            row.setSpacing(8)
+            label = QLabel(f"{text}  {prob:.0f}%")
+            label.setObjectName("aiCandidate")
+            label.setProperty("best", text == candidates[0][0])
+            label.setMinimumHeight(30)
+            row.addWidget(label)
+            row.addStretch(1)
+            self.candidates_box.addLayout(row)
+            self._candidate_views.append((label, text))
+            self._current_candidates.append(text)
+
+    def best_candidate(self) -> str | None:
+        return self._current_candidates[0] if self._current_candidates else None
+
+
+class CommandPalette(QFrame):
+    """Ctrl+K 命令面板（§51）：浮层 + 过滤 + 回车执行。
+
+    命令表 [(标题, 描述, 回调)]；输入过滤匹配标题/描述（不区分大小写），
+    Enter 执行选中项，Esc 关闭。浮层覆盖在主窗口中央，微玻璃深底。
+    """
+
+    def __init__(self, parent: QWidget, commands: list[tuple[str, str, callable]],
+                 *, on_close: callable | None = None):
+        super().__init__(parent)
+        self._commands = commands
+        self._on_close = on_close
+        self.setObjectName("commandPalette")
+        self.setFixedWidth(560)
+        lay = QVBoxLayout(self)
+        lay.setContentsMargins(14, 14, 14, 12)
+        lay.setSpacing(10)
+
+        self.search = QLineEdit()
+        self.search.setPlaceholderText("搜索操作…（Ctrl+K 打开 / Esc 关闭）")
+        self.search.setAccessibleName("命令面板搜索")
+        self.search.setMinimumHeight(TOKENS.control_height)
+        self.search.textChanged.connect(self._filter)
+        lay.addWidget(self.search)
+
+        self.list_widget = QListWidget()
+        self.list_widget.setObjectName("commandList")
+        self.list_widget.setFixedHeight(260)
+        self.list_widget.itemActivated.connect(self._execute)
+        lay.addWidget(self.list_widget)
+
+        self._populate(self._commands)
+        self.setVisible(False)
+
+    def _populate(self, commands):
+        self.list_widget.clear()
+        for title, desc, _cb in commands:
+            item = QListWidgetItem(f"{title}" + (f"　— {desc}" if desc else ""))
+            item.setData(Qt.UserRole, title)
+            self.list_widget.addItem(item)
+        if self.list_widget.count():
+            self.list_widget.setCurrentRow(0)
+
+    def _filter(self, text: str):
+        needle = text.strip().casefold()
+        hits = [c for c in self._commands if not needle
+                or needle in c[0].casefold()
+                or needle in c[1].casefold()]
+        self._populate(hits)
+
+    def open(self):  # noqa: A003（父类 open 被 QFrame 占用名）
+        self.raise_()
+        self.setVisible(True)
+        self.search.clear()
+        self.search.setFocus()
+        # 浮层居中 + 200ms 淡入（§59 Dialog 动效）
+        parent = self.parentWidget()
+        if parent is not None:
+            x = (parent.width() - self.width()) // 2
+            y = max(60, (parent.height() - self.height()) // 3)
+            self.move(x, y)
+        self._fade(0.0, 1.0, 200)
+
+    def closeEvent(self, event):  # noqa: N802
+        if self._on_close is not None:
+            self._on_close()
+        super().closeEvent(event)
+
+    def _execute(self, item):
+        title = item.data(Qt.UserRole)
+        for cmd_title, _desc, cb in self._commands:
+            if cmd_title == title:
+                self.setVisible(False)
+                if self._on_close is not None:
+                    self._on_close()
+                cb()
+                return
+
+    def keyPressEvent(self, event):  # noqa: N802
+        if event.key() == Qt.Key_Escape:
+            self.setVisible(False)
+            if self._on_close is not None:
+                self._on_close()
+            return
+        super().keyPressEvent(event)
+
+    def _fade(self, start: float, end: float, duration: int):
+        effect = QGraphicsOpacityEffect(self)
+        self.setGraphicsEffect(effect)
+        effect.setOpacity(start)
+        anim = QPropertyAnimation(effect, b"opacity", self)
+        anim.setDuration(duration)
+        anim.setStartValue(start)
+        anim.setEndValue(end)
+        anim.finished.connect(
+            lambda: self.setGraphicsEffect(None) if end >= 1.0 else None)
+        self._palette_anim = anim  # noqa: SLF001 防 GC
+        anim.start()
+
+
+class TopBar(QWidget):
+    """§14 顶部条：当前项目 + 搜索入口（Ctrl+K）+ 通知 + 设置。"""
+
+    def __init__(self, state, parent=None):
+        super().__init__(parent)
+        self._state = state
+        self.setObjectName("topBar")
+        self.setFixedHeight(56)
+        lay = QHBoxLayout(self)
+        lay.setContentsMargins(18, 0, 18, 0)
+        lay.setSpacing(12)
+
+        left = QHBoxLayout()
+        left.setSpacing(8)
+        self.project_name = QLabel("尚未打开项目")
+        self.project_name.setObjectName("topBarProject")
+        self.project_sub = QLabel("选择 Unity 游戏文件夹开始")
+        self.project_sub.setObjectName("topBarProjectSub")
+        left.addWidget(self.project_name)
+        left.addWidget(self.project_sub)
+        lay.addLayout(left)
+        lay.addStretch(1)
+
+        self.search_label = QLabel("搜索操作  Ctrl+K")
+        self.search_label.setObjectName("topBarSearch")
+        self.search_label.setCursor(Qt.PointingHandCursor)
+        lay.addWidget(self.search_label)
+
+        self.notify_btn = QPushButton()
+        self.notify_btn.setAccessibleName("通知")
+        self.notify_btn.setProperty("ghost", True)
+        self.notify_btn.setMinimumHeight(TOKENS.control_height)
+        lay.addWidget(self.notify_btn)
+
+        self.settings_btn = QPushButton()
+        self.settings_btn.setAccessibleName("设置")
+        self.settings_btn.setProperty("ghost", True)
+        self.settings_btn.setMinimumHeight(TOKENS.control_height)
+        lay.addWidget(self.settings_btn)
+
+        self._install_icons()
+        state.projectOpened.connect(self._on_project)
+
+    def _install_icons(self):
+        self.notify_btn.setIcon(QIcon(LineIcon.pixmap("alert", 18)))
+        self.settings_btn.setIcon(QIcon(LineIcon.pixmap("gear", 18)))
+
+    def _on_project(self, project):
+        self.project_name.setText(project.game_dir.name)
+        self.project_sub.setText(
+            "Unity · 翻译记忆已就绪" if getattr(project, "store", None) else "Unity")
 
 
 class WorkerSignals(QObject):

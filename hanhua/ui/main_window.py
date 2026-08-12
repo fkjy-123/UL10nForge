@@ -1,10 +1,22 @@
-"""主窗口：左侧导航 + 页面栈。"""
+"""主窗口 v2：Top Bar + 分组可折叠 Sidebar + 页面栈 + 状态栏（任务二）。
+
+布局（§11/§12/§13/§14）：
+┌───────────────────────────────────────┐
+│ TopBar（当前项目 · Ctrl+K 搜索 · 通知 · 设置）│
+├───────────┬───────────────────────────┤
+│ Sidebar   │   页面栈（淡入切换）         │
+│ 分组导航    │                           │
+├───────────┴───────────────────────────┤
+│ StatusBar（本地模型/项目）              │
+└───────────────────────────────────────┘
+Ctrl+K 命令面板浮层覆盖在中央（§51）。
+"""
 from __future__ import annotations
 
 from pathlib import Path
 
 from PySide6.QtCore import QEasingCurve, QPropertyAnimation, QRect, Qt
-from PySide6.QtGui import QIcon
+from PySide6.QtGui import QIcon, QKeySequence, QShortcut
 from PySide6.QtWidgets import (QFrame, QGraphicsOpacityEffect, QHBoxLayout,
                                QLabel, QListWidget, QListWidgetItem,
                                QMainWindow, QStackedWidget, QStatusBar,
@@ -14,37 +26,59 @@ from hanhua.core.project import Project
 from hanhua.ui.app_state import AppState
 from hanhua.ui.design_system import TOKENS
 from hanhua.ui.icons import LineIcon
+from hanhua.ui.widgets import CommandPalette, TopBar
 
 PAGES = ["home", "review", "translate", "settings"]
+# 分组导航（§12：kind="group" 为不可选中标题行，其余为页面项）
 NAV_ENTRIES = (
-    ("首页", "home"),
-    ("文本审校", "review"),
-    ("翻译", "translate"),
-    ("设置", "settings"),
+    ("文本中心", "group", ""),
+    ("首页", "home", "home"),
+    ("文本审校", "review", "database"),
+    ("翻译", "translate", "translate"),
+    ("系统", "group", ""),
+    ("设置", "settings", "gear"),
 )
+# nav row → PAGES 索引（跳过 group 行；元组为 (标题, kind, 图标)）
+_NAV_PAGE_ROWS: dict[int, int] = {}
+_page_index = 0
+for _row, (_title, _kind, _icon) in enumerate(NAV_ENTRIES):
+    if _kind == "group":
+        continue
+    _NAV_PAGE_ROWS[_row] = _page_index
+    _page_index += 1
 
 
 class MainWindow(QMainWindow):
     def __init__(self, state: AppState):
         super().__init__()
         self.state = state
-        self.setWindowTitle("汉化助手 0.9.0 — Unity 游戏智能汉化工具")
-        self.resize(1180, 740)
+        self.setWindowTitle("汉化助手 — Unity 游戏智能汉化工具")
+        self.resize(1280, 800)
         self.setMinimumSize(1000, 660)
 
         central = QWidget()
         central.setObjectName("root")
         self.setCentralWidget(central)
-        root_lay = QHBoxLayout(central)
+        root_lay = QVBoxLayout(central)
         root_lay.setContentsMargins(0, 0, 0, 0)
         root_lay.setSpacing(0)
 
-        # ── 侧边栏 ──
+        # ── Top Bar（§14） ──
+        self.top_bar = TopBar(state)
+        root_lay.addWidget(self.top_bar)
+
+        # ── 中部：Sidebar + 页面栈 ──
+        body = QWidget()
+        body_lay = QHBoxLayout(body)
+        body_lay.setContentsMargins(0, 0, 0, 0)
+        body_lay.setSpacing(0)
+        root_lay.addWidget(body, 1)
+
         sidebar = QFrame()
         sidebar.setObjectName("sidebar")
         sidebar.setFixedWidth(210)
         side_lay = QVBoxLayout(sidebar)
-        side_lay.setContentsMargins(0, 22, 0, 14)
+        side_lay.setContentsMargins(0, 18, 0, 14)
         side_lay.setSpacing(0)
         brand_row = QHBoxLayout()
         brand_row.setContentsMargins(20, 0, 20, 0)
@@ -56,7 +90,7 @@ class MainWindow(QMainWindow):
         title = QLabel("汉化助手")
         title.setObjectName("appTitle")
         title.setAlignment(Qt.AlignLeft)
-        sub = QLabel("Unity 游戏智能汉化工具 v0.9.0")
+        sub = QLabel("Unity 游戏智能汉化工具")
         sub.setObjectName("appSub")
         sub.setAlignment(Qt.AlignLeft)
         brand_text.addWidget(title)
@@ -69,20 +103,25 @@ class MainWindow(QMainWindow):
         brand_bar.setObjectName("brandBar")
         brand_bar.setFixedHeight(3)
         side_lay.addWidget(brand_bar)
-        side_lay.addSpacing(20)
+        side_lay.addSpacing(12)
 
+        # 分组导航（§12/§13：图标+文字；group 行为不可选标题）
         self.nav = QListWidget()
         self.nav.setObjectName("navList")
-        for name, icon_name in NAV_ENTRIES:
-            item = QListWidgetItem(name)
+        for title, kind, icon_name in NAV_ENTRIES:
+            item = QListWidgetItem(title)
             item.setTextAlignment(Qt.AlignVCenter | Qt.AlignLeft)
-            item.setIcon(QIcon(LineIcon.pixmap(icon_name, 18)))
-            item.setData(Qt.UserRole, icon_name)
+            if kind == "group":
+                item.setFlags(Qt.NoItemFlags)
+                item.setData(Qt.UserRole, None)
+            else:
+                item.setIcon(QIcon(LineIcon.pixmap(icon_name, 18)))
+                item.setData(Qt.UserRole, kind)
             self.nav.addItem(item)
-        self.nav.setCurrentRow(0)
         self.nav.setIconSize(self.nav.iconSize().expandedTo(
             self.nav.iconSize()))
         self.nav.setSpacing(2)
+        self.nav.setCurrentRow(0)
         self._refresh_nav_icons(0)
         side_lay.addWidget(self.nav, 1)
         # 导航指示条：叠在列表视口上，切换时 180ms 滑到目标项
@@ -107,11 +146,11 @@ class MainWindow(QMainWindow):
         side_lay.addWidget(self.project_card)
         side_lay.addSpacing(14)
 
-        root_lay.addWidget(sidebar)
+        body_lay.addWidget(sidebar)
 
         # ── 页面栈 ──
         self.stack = QStackedWidget()
-        root_lay.addWidget(self.stack, 1)
+        body_lay.addWidget(self.stack, 1)
 
         from hanhua.ui.pages.home_page import HomePage
         from hanhua.ui.pages.review_page import ReviewPage
@@ -132,31 +171,51 @@ class MainWindow(QMainWindow):
         state.settingsChanged.connect(self._refresh_statusbar)
         state.projectOpened.connect(self._on_project_opened)
 
-    def _on_project_opened(self, project):
-        """项目打开：更新侧边栏卡片并同步状态栏项目名。"""
-        self.updateProjectCard(project)
-        self._refresh_statusbar()
+        # ── Ctrl+K 命令面板（§51） ──
+        self.palette: CommandPalette | None = None
+        shortcut = QShortcut(QKeySequence("Ctrl+K"), self)
+        shortcut.activated.connect(self._toggle_palette)
+        # TopBar 搜索入口点击打开命令面板
+        self.top_bar.search_label.mousePressEvent = lambda _e: (
+            self._toggle_palette())  # noqa: SLF001（测试环境无 signal 依赖）
+        self.top_bar.settings_btn.clicked.connect(
+            lambda: self.navigate("settings"))
+        self.top_bar.notify_btn.clicked.connect(self._show_notifications)
+
+    # ── 导航 ───────────────────────────────────────────────
+    def _page_row(self) -> int:
+        """当前选中 page 对应的 nav row。"""
+        for row, index in _NAV_PAGE_ROWS.items():
+            if index == self.stack.currentIndex():
+                return row
+        return 0
 
     def _on_nav_changed(self, row: int):
-        if 0 <= row < len(PAGES):
-            self.stack.setCurrentIndex(row)
-            self._refresh_nav_icons(row)
-            self._animate_nav_indicator(row)
-            self._fade_in_page(row)
+        if row in _NAV_PAGE_ROWS:
+            index = _NAV_PAGE_ROWS[row]
+            self.stack.setCurrentIndex(index)
+            self._refresh_nav_icons(index)
+            self._animate_nav_indicator(index)
+            self._fade_in_page(index)
             self._refresh_statusbar()
+        else:
+            # 误选中 group 标题行：回退到当前页面
+            self.nav.blockSignals(True)
+            self.nav.setCurrentRow(self._page_row())
+            self.nav.blockSignals(False)
 
-    def _refresh_nav_icons(self, selected_row: int):
-        """选中项图标用品牌青色，其余用中性色。"""
-        for row in range(self.nav.count()):
+    def _refresh_nav_icons(self, selected_index: int):
+        """选中项图标用品牌青色，其余用中性色（group 行无图标）。"""
+        for row, index in _NAV_PAGE_ROWS.items():
             item = self.nav.item(row)
             icon_name = item.data(Qt.UserRole) or "home"
-            color = TOKENS.primary if row == selected_row else TOKENS.text_disabled
+            color = TOKENS.primary if index == selected_index else TOKENS.text_disabled
             item.setIcon(QIcon(LineIcon.pixmap(icon_name, 18, color)))
 
     def _position_nav_indicator(self, animate: bool):
         """指示条定位到当前项；animate=True 时 180ms 滑动。"""
-        row = self.nav.currentRow()
-        item = self.nav.item(row) if 0 <= row else None
+        row = self._page_row()
+        item = self.nav.item(row) if 0 <= row < self.nav.count() else None
         if item is None:
             return
         rect = self.nav.visualItemRect(item)
@@ -178,12 +237,12 @@ class MainWindow(QMainWindow):
         self._nav_anim = anim
         anim.start()
 
-    def _animate_nav_indicator(self, row: int):
+    def _animate_nav_indicator(self, index: int):
         self._position_nav_indicator(True)
 
-    def _fade_in_page(self, row: int):
-        """页面切换：150ms 淡入（QSS 无法做动画，用 opacity effect）。"""
-        page = self.stack.widget(row)
+    def _fade_in_page(self, index: int):
+        """页面切换：200ms 淡入（§59 Page 动效；QSS 无法做动画）。"""
+        page = self.stack.widget(index)
         if page is None:
             return
         old = getattr(self, "_page_fade_anim", None)
@@ -196,7 +255,7 @@ class MainWindow(QMainWindow):
         effect.setOpacity(0.0)
         page.setGraphicsEffect(effect)
         anim = QPropertyAnimation(effect, b"opacity", self)
-        anim.setDuration(150)
+        anim.setDuration(200)
         anim.setStartValue(0.0)
         anim.setEndValue(1.0)
         anim.finished.connect(lambda p=page: p.setGraphicsEffect(None))
@@ -205,13 +264,16 @@ class MainWindow(QMainWindow):
 
     def navigate(self, name: str):
         if name in PAGES:
+            index = PAGES.index(name)
             self.nav.blockSignals(True)
-            self.nav.setCurrentRow(PAGES.index(name))
+            # _NAV_PAGE_ROWS 键是 nav 行号（group 行无键）——按值反查
+            self.nav.setCurrentRow(next((row for row, i in _NAV_PAGE_ROWS.items()
+                                         if i == index), index))
             self.nav.blockSignals(False)
-            self.stack.setCurrentIndex(PAGES.index(name))
-            self._refresh_nav_icons(PAGES.index(name))
-            self._animate_nav_indicator(PAGES.index(name))
-            self._fade_in_page(PAGES.index(name))
+            self.stack.setCurrentIndex(index)
+            self._refresh_nav_icons(index)
+            self._animate_nav_indicator(index)
+            self._fade_in_page(index)
 
     def showEvent(self, event):
         super().showEvent(event)
@@ -219,6 +281,39 @@ class MainWindow(QMainWindow):
 
     def current_page(self) -> str:
         return PAGES[self.stack.currentIndex()]
+
+    # ── Ctrl+K 命令面板（§51） ─────────────────────────────
+    def _toggle_palette(self):
+        if self.palette is not None and self.palette.isVisible():
+            self.palette.setVisible(False)
+            return
+        self._open_palette()
+
+    def _open_palette(self):
+        if self.palette is None:
+            commands = [
+                ("打开首页", "回到工作台", lambda: self.navigate("home")),
+                ("打开文本审校", "查看全部文本", lambda: self.navigate("review")),
+                ("打开 AI 翻译", "开始/查看翻译进度", lambda: self.navigate("translate")),
+                ("打开设置", "模型/审核/项目配置", lambda: self.navigate("settings")),
+            ]
+            self.palette = CommandPalette(self.centralWidget(), commands)
+        self.palette.open()
+
+    # ── 通知（§53：Toast 汇总） ────────────────────────────
+    def _show_notifications(self):
+        from hanhua.ui.widgets import Toast
+        page = self.pages.get(self.current_page())
+        if page is not None and self.state.project is not None:
+            Toast.show(page, "项目已载入 · 本地模型可用时即可开始翻译", "info")
+        else:
+            Toast.show(page or self, "暂无通知 · 打开项目后开始本地化流程", "info")
+
+    # ── 项目卡 / 状态栏（护栏测试断言：本地：Hy-MT2 · 未启动） ──
+    def _on_project_opened(self, project):
+        """项目打开：更新侧边栏卡片并同步状态栏项目名。"""
+        self.updateProjectCard(project)
+        self._refresh_statusbar()
 
     def updateProjectCard(self, project: Project):
         """项目卡两行紧凑摘要：项目名 + 缩略路径。"""

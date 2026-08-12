@@ -1,4 +1,9 @@
-"""首页：游戏接入任务入口（拖放/选择）、五步状态轨道与游戏档案。"""
+"""首页：工作台 Dashboard（任务二 §15~18）。
+
+打开项目后呈现：项目统计（文本总数/已翻译/待审核/高风险）、项目健康度
+（评分 + 四项指标）、任务推荐（下一步做什么）、五步任务状态轨道与游戏
+档案。未打开项目时保持拖放接入入口（护栏测试依赖的完整结构保留）。
+"""
 from __future__ import annotations
 
 from pathlib import Path
@@ -12,9 +17,10 @@ from PySide6.QtWidgets import (QFileDialog, QFrame, QHBoxLayout, QLabel,
 
 from hanhua.core.project import Project
 from hanhua.ui.app_state import AppState
+from hanhua.ui.design_system import TOKENS
 from hanhua.ui.icons import LineIcon
-from hanhua.ui.widgets import (MetricChip, PageHeader, StatusRail, Toast,
-                               Worker)
+from hanhua.ui.widgets import (MetricChip, PageHeader, StatCard, StatusRail,
+                               Toast, Worker)
 
 
 class _DirectoryDropZone(QFrame):
@@ -83,6 +89,61 @@ class _DirectoryDropZone(QFrame):
         self.directoryDropped.emit(path)
 
 
+class _HealthCard(QFrame):
+    """项目健康度（§16）：评分 + 四项指标进度。"""
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.setObjectName("card")
+        lay = QVBoxLayout(self)
+        lay.setContentsMargins(18, 14, 18, 14)
+        lay.setSpacing(8)
+        head = QHBoxLayout()
+        head.setSpacing(10)
+        self.score_label = QLabel("—")
+        self.score_label.setStyleSheet(
+            f"font-size: 30px; font-weight: 700; color: {TOKENS.primary};")
+        self.grade_label = QLabel("")
+        self.grade_label.setProperty("class", "statLabel")
+        head.addWidget(self.score_label)
+        head.addWidget(self.grade_label)
+        head.addStretch(1)
+        lay.addLayout(head)
+        self._rows: list[tuple[QLabel, QProgressBar, QLabel]] = []
+        for label in ("翻译完成", "语义审核", "术语一致性", "格式完整性"):
+            row = QHBoxLayout()
+            row.setSpacing(8)
+            name = QLabel(label)
+            name.setProperty("class", "metricLabel")
+            bar = QProgressBar()
+            bar.setRange(0, 100)
+            bar.setFixedHeight(6)
+            pct = QLabel("—")
+            pct.setStyleSheet(f"color: {TOKENS.text_secondary}; font-size: 8pt;")
+            row.addWidget(name)
+            row.addWidget(bar, 1)
+            row.addWidget(pct)
+            lay.addLayout(row)
+            self._rows.append((name, bar, pct))
+
+    def update_health(self, score: float, grade: str,
+                      items: list[tuple[str, float]]) -> None:
+        self.score_label.setText(f"{score:.1f}")
+        self.grade_label.setText(grade)
+        for (name, bar, pct), (label, value) in zip(self._rows, items):
+            name.setText(label)
+            bar.setValue(int(round(max(0.0, min(100.0, value)))))
+            pct.setText(f"{value:.1f}%")
+        if score >= 90:
+            color = TOKENS.success
+        elif score >= 75:
+            color = TOKENS.warning
+        else:
+            color = TOKENS.error
+        self.score_label.setStyleSheet(
+            f"font-size: 30px; font-weight: 700; color: {color};")
+
+
 class HomePage(QWidget):
     def __init__(self, state: AppState, window):
         super().__init__()
@@ -99,8 +160,8 @@ class HomePage(QWidget):
 
         # ── 页面抬头 ──
         col.addWidget(PageHeader(
-            "游戏接入",
-            "拖入游戏文件夹，检测、提取、工具交叉验证、翻译质量与安全写回，一条龙完成",
+            "工作台",
+            "拖入游戏文件夹开始本地化；打开项目后在此掌握进度、健康度与下一步",
         ))
 
         # ── 拖放区（任务入口） ──
@@ -143,7 +204,7 @@ class HomePage(QWidget):
         dz.addStretch(1)
         col.addWidget(self.drop_zone)
 
-        # ── 运行时概要（工具状态/缓存等细节并入状态轨道与审校页） ──
+        # ── 运行时概要 ──
         self.runtime_strip = QFrame()
         self.runtime_strip.setObjectName("card")
         runtime_row = QHBoxLayout(self.runtime_strip)
@@ -155,6 +216,57 @@ class HomePage(QWidget):
         runtime_row.addWidget(self.tool_value)
         runtime_row.addStretch(1)
         col.addWidget(self.runtime_strip)
+
+        # ── 工作台 Dashboard（§15~18：项目打开后显示） ──
+        self.dashboard = QWidget()
+        dash = QVBoxLayout(self.dashboard)
+        dash.setContentsMargins(0, 0, 0, 0)
+        dash.setSpacing(12)
+
+        stats_row = QHBoxLayout()
+        stats_row.setSpacing(12)
+        self.stat_total = StatCard("文本总数", 0)
+        self.stat_translated = StatCard("已翻译", 0)
+        self.stat_review = StatCard("待审核", 0)
+        self.stat_high_risk = StatCard("高风险", 0)
+        for card in (self.stat_total, self.stat_translated,
+                     self.stat_review, self.stat_high_risk):
+            stats_row.addWidget(card)
+        dash.addLayout(stats_row)
+
+        health_row = QHBoxLayout()
+        health_row.setSpacing(12)
+        self.health_card = _HealthCard()
+        health_row.addWidget(self.health_card, 3)
+
+        # 任务推荐（§17：告诉用户下一步做什么）
+        self.tip_card = QFrame()
+        self.tip_card.setObjectName("card")
+        tip = QVBoxLayout(self.tip_card)
+        tip.setContentsMargins(18, 14, 18, 14)
+        tip.setSpacing(6)
+        tip_title = QLabel("下一步")
+        tip_title.setProperty("class", "metricLabel")
+        self.tip_icon = LineIcon("alert", 26, TOKENS.warning)
+        self.tip_text = QLabel("打开项目后这里会给出建议。")
+        self.tip_text.setWordWrap(True)
+        self.tip_text.setProperty("class", "subtitle")
+        self.tip_btn = QPushButton("立即处理")
+        self.tip_btn.setMinimumHeight(TOKENS.control_height)
+        self.tip_btn.setAccessibleName("处理建议任务")
+        self.tip_btn.setVisible(False)
+        tip.addWidget(tip_title)
+        tip_row = QHBoxLayout()
+        tip_row.setSpacing(10)
+        tip_row.addWidget(self.tip_icon)
+        tip_row.addWidget(self.tip_text, 1)
+        tip.addLayout(tip_row)
+        tip.addWidget(self.tip_btn)
+        health_row.addWidget(self.tip_card, 2)
+        dash.addLayout(health_row)
+        col.addWidget(self.dashboard)
+        self.dashboard.setVisible(False)
+        self.tip_btn.clicked.connect(lambda: self.window.navigate("review"))
 
         # ── 五步任务状态轨道（横向节点 + 连接线） ──
         rail_head = QHBoxLayout()
@@ -201,6 +313,9 @@ class HomePage(QWidget):
         self.pick_btn.clicked.connect(self._pick_dir)
         self.drop_zone.directoryDropped.connect(self.open_dir)
         self.drop_zone.activeChanged.connect(self._set_drop_active)
+        # Dashboard 刷新：打开项目与条目变化（翻译/审校后）都要更新
+        state.projectOpened.connect(lambda _p: self._refresh_dashboard())
+        state.entriesChanged.connect(self._refresh_dashboard)
 
     # ── 拖放 ──
     def _set_drop_active(self, active: bool):
@@ -321,6 +436,84 @@ class HomePage(QWidget):
             metrics = f"置信度 {step.confidence} · 缓存 {cache} · 耗时 {elapsed}"
             self.pipeline_rail.set_node_state(
                 node.step_id, step.status, step.reason, metrics)
+
+    # ── 工作台 Dashboard（§15~18） ─────────────────────────
+    def _refresh_dashboard(self):
+        """项目统计 + 健康度 + 任务推荐。无项目时隐藏 Dashboard。"""
+        project = self.state.project
+        if project is None or project.store is None:
+            self.dashboard.setVisible(False)
+            return
+        self.dashboard.setVisible(True)
+        store = project.store
+        total = sum(store.count(s) for s in
+                    ("pending", "translated", "skipped", "failed"))
+        translated = store.count("translated")
+        # 待审核：已翻译但未过质量门（meta.quality_passed 非 True）
+        reviewed = 0
+        flagged = 0
+        for row in store.get_entries("translated"):
+            meta = row.get("meta") or {}
+            if isinstance(meta, str):
+                try:
+                    import json
+                    meta = json.loads(meta)
+                except (ValueError, TypeError):
+                    meta = {}
+            if meta.get("quality_passed") is True:
+                reviewed += 1
+            if meta.get("quality_passed") is False \
+                    or meta.get("review_status") in {"flagged", "suspicious"}:
+                flagged += 1
+        pending_review = translated - reviewed
+        self.stat_total.setValue(total)
+        self.stat_translated.setValue(translated)
+        self.stat_review.setValue(max(0, pending_review))
+        self.stat_high_risk.setValue(flagged + store.count("failed"))
+
+        # 健康度（合理近似：翻译 40% / 语义 25% / 术语 20% / 格式 15%）
+        def _pct(part: int, whole: int) -> float:
+            return 100.0 * part / whole if whole else 0.0
+
+        translate_pct = _pct(translated, total)
+        review_pct = _pct(reviewed, translated)
+        format_issues = sum(1 for row in store.get_entries("translated")
+                            if "format" in str(row.get("meta", "")).lower()
+                            and "格式" in str(row.get("meta", "")))
+        format_pct = 100.0 - format_issues / translated * 100.0 if translated else 0.0
+        term_pct = review_pct  # 术语一致性近似：与审核通过率同源（无术语冲突记录时）
+        score = (translate_pct * 0.40 + review_pct * 0.25
+                 + term_pct * 0.20 + max(0.0, format_pct) * 0.15)
+        grade = ("优秀" if score >= 90 else "良好" if score >= 75
+                 else "需关注" if score >= 60 else "起步中")
+        self.health_card.update_health(
+            score, grade,
+            [("翻译完成", translate_pct), ("语义审核", review_pct),
+             ("术语一致性", term_pct), ("格式完整性", max(0.0, format_pct))])
+
+        # 任务推荐（§17）
+        if flagged + store.count("failed") > 0:
+            self.tip_icon.setColor(TOKENS.warning)
+            self.tip_text.setText(
+                f"{flagged + store.count('failed')} 条高风险文本等待人工确认，"
+                "处理后再写回更稳妥。")
+            self.tip_btn.setText("立即处理")
+            self.tip_btn.setVisible(True)
+        elif pending_review > 0:
+            self.tip_icon.setColor(TOKENS.info)
+            self.tip_text.setText(
+                f"剩余 {pending_review} 条文本等待审核，运行 AI 审核后可自动通过。")
+            self.tip_btn.setText("开始审核")
+            self.tip_btn.setVisible(True)
+        elif total > 0:
+            self.tip_icon.setColor(TOKENS.success)
+            self.tip_text.setText("全部文本已通过质量门，可以在翻译页安全写回。")
+            self.tip_btn.setText("去写回")
+            self.tip_btn.setVisible(True)
+        else:
+            self.tip_icon.setColor(TOKENS.status_idle)
+            self.tip_text.setText("打开项目后这里会给出建议。")
+            self.tip_btn.setVisible(False)
 
     def _refresh_profile_card(self):
         self.profile_card.setHidden(False)

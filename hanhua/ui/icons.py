@@ -37,6 +37,11 @@ class LineIcon(QWidget):
         self.setFixedSize(size, size)
         self.setAccessibleName(f"{name} 图标")
 
+    def setColor(self, color: str):
+        """运行期改色并重绘（首页任务推荐图标随状态变色）。"""
+        self.color = color
+        self.update()
+
     def paintEvent(self, event):
         painter = QPainter(self)
         painter.setRenderHint(QPainter.Antialiasing)

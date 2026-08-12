@@ -1,19 +1,39 @@
-"""审校页：搜索/筛选、行内编辑、锁定、右键菜单、批量翻译入口。"""
+"""审校页 v2：三栏工作区（§21-28）——文本列表 25% / 翻译工作区 50% / AI 审核 25%。
+
+左栏列表沿用表格模型（EntryTableModel 六列 + 筛选 + 右键菜单，护栏
+契约不变，列宽适配窄栏）；中栏展示选中条目的原文、译文编辑与上下文
+（§24 Context 区域）；右栏 AIReviewPanel 展示已落盘的审核结果
+（review_level → AI 分数换算）。选中联动：表格 selectionChanged →
+中栏/右栏同步刷新；保存/锁定后恢复选中，避免 reload 丢焦点。
+"""
 from __future__ import annotations
 
 import json
 from pathlib import Path
 
-from PySide6.QtCore import QAbstractTableModel, QModelIndex, QSortFilterProxyModel, Qt
+from PySide6.QtCore import (QAbstractTableModel, QModelIndex,
+                            QSortFilterProxyModel, Qt)
 from PySide6.QtGui import QColor, QKeySequence, QPainter, QPen, QShortcut
-from PySide6.QtWidgets import (QCheckBox, QComboBox, QFrame, QHBoxLayout, QHeaderView,
-                               QLabel, QLineEdit, QMenu, QPushButton, QStackedLayout,
-                               QStyledItemDelegate, QTableView, QVBoxLayout, QWidget)
+from PySide6.QtWidgets import (QCheckBox, QComboBox, QFrame, QHBoxLayout,
+                               QHeaderView, QLabel, QLineEdit, QMenu,
+                               QPlainTextEdit, QPushButton, QSplitter,
+                               QStackedLayout, QStyledItemDelegate, QTableView,
+                               QVBoxLayout, QWidget)
 
 from hanhua.ui.app_state import AppState
 from hanhua.ui import theme
-from hanhua.ui.widgets import (STATUS_COLOR, STATUS_TEXT, EmptyState,
-                               PageHeader, Toast)
+from hanhua.ui.design_system import TOKENS
+from hanhua.ui.widgets import (AIReviewPanel, STATUS_COLOR, STATUS_TEXT,
+                               EmptyState, PageHeader, StatusBadge, Toast)
+
+# 审核流程落盘的 review_level → AI 分数 / 判定文案（§27 语义换算）
+_REVIEW_LEVEL_SCORE = {
+    "PASS": 92, "MINOR": 72, "MAJOR": 50, "CRITICAL": 25, "RETRANSLATED": 40,
+}
+_REVIEW_LEVEL_TEXT = {
+    "PASS": "通过", "MINOR": "轻微建议", "MAJOR": "较大问题",
+    "CRITICAL": "严重问题", "RETRANSLATED": "已重译",
+}
 
 
 def _row_meta(row: dict) -> dict:
@@ -232,13 +252,14 @@ class ReviewPage(QWidget):
         self.state = state
         self.window = window
         self._loading = True
+        self._current_row: int | None = None
 
         lay = QVBoxLayout(self)
         lay.setContentsMargins(26, 22, 26, 18)
         lay.setSpacing(12)
 
         # ── 页面抬头（操作按钮放入右上角动作区） ──
-        header = PageHeader("文本审校", "搜索、筛选、行内编辑、锁定与批量翻译")
+        header = PageHeader("文本审校", "三栏工作区：筛选文本、精修译文、查看 AI 审核")
         self.translate_btn = QPushButton("开始翻译 →")
         self.translate_btn.setProperty("primary", True)
         self.translate_btn.setMinimumHeight(48)
@@ -277,7 +298,12 @@ class ReviewPage(QWidget):
         toolbar.addWidget(self.summary_label)
         lay.addLayout(toolbar)
 
-        # ── 表格（空数据时切换为占位页，保留工具栏） ──
+        # ── 三栏工作区（§21：25% / 50% / 25%） ──
+        self.splitter = QSplitter(Qt.Horizontal)
+        self.splitter.setChildrenCollapsible(False)
+        lay.addWidget(self.splitter, 1)
+
+        # ── 左栏：文本列表（表格模型 + 筛选 + 右键菜单，契约不变） ──
         self.model = EntryTableModel(state)
         self.proxy = EntryFilterProxy(self)
         self.proxy.setSourceModel(self.model)
@@ -290,8 +316,8 @@ class ReviewPage(QWidget):
         self.table.verticalHeader().setDefaultSectionSize(34)
         header = self.table.horizontalHeader()
         header.setSectionResizeMode(0, QHeaderView.Fixed)
-        header.resizeSection(0, 90)
-        for column, width in ((1, 150), (4, 150), (5, 60)):
+        header.resizeSection(0, 74)
+        for column, width in ((1, 110), (4, 100), (5, 44)):
             header.setSectionResizeMode(column, QHeaderView.Fixed)
             header.resizeSection(column, width)
         header.setSectionResizeMode(2, QHeaderView.Stretch)
@@ -308,7 +334,31 @@ class ReviewPage(QWidget):
         self._stack.addWidget(self.table)
         self._stack.addWidget(self.empty_state)
         self._stack.setCurrentWidget(self.table)
-        lay.addLayout(self._stack, 1)
+        self._stack_host = QWidget()
+        self._stack_host.setLayout(self._stack)
+        self.splitter.addWidget(self._stack_host)
+
+        # ── 中栏：翻译工作区（原文 / 译文编辑 / 上下文 / 质量门） ──
+        self._detail_stack = QStackedLayout()
+        self.detail_panel = self._build_detail_panel()
+        self.detail_empty = EmptyState(
+            "database", "选择条目查看详情",
+            "在左侧列表选中一条文本，这里展示原文、译文与上下文")
+        self._detail_stack.addWidget(self.detail_panel)
+        self._detail_stack.addWidget(self.detail_empty)
+        self._detail_stack.setCurrentWidget(self.detail_empty)
+        self._detail_host = QWidget()
+        self._detail_host.setLayout(self._detail_stack)
+        self.splitter.addWidget(self._detail_host)
+
+        # ── 右栏：AI 审核面板（§27-29 紫色语义区） ──
+        self.ai_panel = AIReviewPanel()
+        self.splitter.addWidget(self.ai_panel)
+
+        self.splitter.setStretchFactor(0, 1)
+        self.splitter.setStretchFactor(1, 2)
+        self.splitter.setStretchFactor(2, 1)
+        self.splitter.setSizes([300, 540, 260])
 
         self.search_box.textChanged.connect(self._apply_filters)
         self.status_combo.currentTextChanged.connect(self._apply_filters)
@@ -318,11 +368,201 @@ class ReviewPage(QWidget):
         # Ctrl+F 聚焦搜索框（搜索框 placeholder 已提示）
         _search_shortcut = QShortcut(QKeySequence("Ctrl+F"), self)
         _search_shortcut.activated.connect(self._focus_search)
+        # 选中联动：左栏选中 → 中栏/右栏刷新
+        self.table.selectionModel().selectionChanged.connect(
+            self._on_selection_changed)
 
         self.state.projectOpened.connect(lambda _p: self.reload())
         self.state.entriesChanged.connect(self.reload)
         self.reload()
 
+    # ── 中栏构建 ───────────────────────────────────────────
+    def _build_detail_panel(self) -> QFrame:
+        panel = QFrame()
+        panel.setObjectName("detailPanel")
+        lay = QVBoxLayout(panel)
+        lay.setContentsMargins(16, 14, 16, 14)
+        lay.setSpacing(10)
+
+        head = QHBoxLayout()
+        head.setSpacing(8)
+        self.detail_badge = StatusBadge("pending")
+        self.detail_source = QLabel("")
+        self.detail_source.setObjectName("detailSection")
+        head.addWidget(self.detail_badge)
+        head.addWidget(self.detail_source, 1)
+        lay.addLayout(head)
+
+        lay.addWidget(self._section_label("原文"))
+        self.detail_original = QLabel("")
+        self.detail_original.setObjectName("detailOriginal")
+        self.detail_original.setWordWrap(True)
+        self.detail_original.setTextInteractionFlags(Qt.TextSelectableByMouse)
+        lay.addWidget(self.detail_original)
+
+        lay.addWidget(self._section_label("译文"))
+        self.detail_edit = QPlainTextEdit()
+        self.detail_edit.setObjectName("detailEdit")
+        self.detail_edit.setPlaceholderText("在此输入或修改译文…")
+        self.detail_edit.setFixedHeight(96)
+        lay.addWidget(self.detail_edit)
+
+        ops = QHBoxLayout()
+        ops.setSpacing(8)
+        self.save_btn = QPushButton("保存译文")
+        self.save_btn.setMinimumHeight(TOKENS.control_height)
+        self.save_btn.clicked.connect(self._save_detail)
+        self.copy_src_btn = QPushButton("复制原文")
+        self.copy_src_btn.setMinimumHeight(TOKENS.control_height)
+        self.copy_src_btn.clicked.connect(
+            lambda: self._copy(self.detail_original.text()))
+        self.copy_tr_btn = QPushButton("复制译文")
+        self.copy_tr_btn.setMinimumHeight(TOKENS.control_height)
+        self.copy_tr_btn.clicked.connect(
+            lambda: self._copy(self.detail_edit.toPlainText()))
+        self.lock_check = QCheckBox("锁定（不翻译）")
+        self.lock_check.setMinimumHeight(TOKENS.control_height)
+        self.lock_check.toggled.connect(self._toggle_detail_lock)
+        for w in (self.save_btn, self.copy_src_btn, self.copy_tr_btn,
+                  self.lock_check):
+            ops.addWidget(w)
+        lay.addLayout(ops)
+
+        lay.addWidget(self._section_label("上下文"))
+        self.detail_context = QLabel("")
+        self.detail_context.setObjectName("detailContext")
+        self.detail_context.setWordWrap(True)
+        lay.addWidget(self.detail_context)
+
+        lay.addWidget(self._section_label("质量门"))
+        self.detail_reason = QLabel("")
+        self.detail_reason.setObjectName("detailReason")
+        self.detail_reason.setWordWrap(True)
+        lay.addWidget(self.detail_reason)
+        lay.addStretch(1)
+        return panel
+
+    @staticmethod
+    def _section_label(text: str) -> QLabel:
+        label = QLabel(text)
+        label.setObjectName("detailSection")
+        return label
+
+    # ── 选中联动 ───────────────────────────────────────────
+    def _on_selection_changed(self, selected, _deselected):
+        indexes = selected.indexes()
+        if not indexes:
+            self._current_row = None
+            self._detail_stack.setCurrentWidget(self.detail_empty)
+            return
+        src = self.proxy.mapToSource(self.model.index(indexes[0].row(), 0))
+        self._current_row = src.row()
+        self._fill_detail(self.model._rows[self._current_row])
+
+    def _fill_detail(self, row: dict):
+        meta = _row_meta(row)
+        self.detail_badge.setStatus(row["status"])
+        source = meta.get("source", row["file_id"])
+        name = Path(source).name if isinstance(source, str) and source else str(source)
+        self.detail_source.setText(name)
+        self.detail_original.setText(row["original"])
+        self.detail_edit.setPlainText(row["translation"] or "")
+        self.lock_check.blockSignals(True)
+        self.lock_check.setChecked(bool(row["locked"]))
+        self.lock_check.blockSignals(False)
+        self.detail_context.setText(self._context_text(meta))
+        self.detail_reason.setText(self._quality_text(row, meta))
+        self._detail_stack.setCurrentWidget(self.detail_panel)
+        self._update_ai_panel(meta)
+
+    def _context_text(self, meta: dict) -> str:
+        """§24 Context 区域：文件/类型/场景/前文/后文。"""
+        lines = []
+        for label, key in (("场景", "scene"), ("位置", "ui_position"),
+                           ("类型", "text_type")):
+            value = meta.get(key)
+            if value:
+                lines.append(f"{label}：{value}")
+        if meta.get("ctx_before"):
+            lines.append(f"前文：{meta['ctx_before']}")
+        if meta.get("ctx_after"):
+            lines.append(f"后文：{meta['ctx_after']}")
+        return "\n".join(lines) or "—"
+
+    def _quality_text(self, row: dict, meta: dict) -> str:
+        """质量门 + 审核判定摘要（来自翻译/审核流程落盘字段）。"""
+        parts = []
+        reasons = meta.get("quality_reasons") or []
+        if row["status"] == "failed":
+            parts.append("✗ 翻译失败（右键可标记重试）")
+        elif meta.get("quality_passed"):
+            parts.append("✓ 已通过质量门")
+        if reasons:
+            parts.append("未通过：" + "、".join(str(r) for r in reasons))
+        level = meta.get("review_level")
+        if level in _REVIEW_LEVEL_TEXT:
+            text = f"AI 审核：{_REVIEW_LEVEL_TEXT[level]}"
+            if meta.get("review_reason"):
+                text += f" · {meta['review_reason']}"
+            parts.append(text)
+        if meta.get("review_blocked"):
+            parts.append("⚠ 审核阻断：多轮未通过")
+        return "\n".join(parts) if parts else "—"
+
+    def _update_ai_panel(self, meta: dict):
+        """右栏 AI 审核面板：review_level → 分数/判定（候选译文不落盘，
+        candidates 传 None，采用按钮保持隐藏）。"""
+        level = meta.get("review_level")
+        if level in _REVIEW_LEVEL_SCORE:
+            reason = meta.get("review_reason", "") or ""
+            suggestion = meta.get("review_suggestion", "")
+            if suggestion:
+                reason = f"{reason}\n建议：{suggestion}".strip("\n")
+            self.ai_panel.update_review(
+                score=_REVIEW_LEVEL_SCORE[level],
+                verdict=_REVIEW_LEVEL_TEXT[level],
+                context=self._context_text(meta),
+                candidates=None,
+                reason=reason or "—",
+                risk="审核阻断：多轮未通过" if meta.get("review_blocked") else "")
+            self.ai_panel.set_active(False, "审核完成")
+        else:
+            self.ai_panel.update_review(score=None)
+            self.ai_panel.set_active(False, "等待审核")
+
+    # ── 中栏操作（复用 model.setData 持久化路径） ────────────
+    def _save_detail(self):
+        if self._current_row is None:
+            return
+        row = self.model._rows[self._current_row]
+        fid, key = row["file_id"], row["key_path"]
+        if self.model.setData(self.model.index(self._current_row, 3),
+                              self.detail_edit.toPlainText()):
+            Toast.show(self, "已保存译文")
+        else:
+            Toast.show(self, "译文未变化或该行为留档样本")
+            self._fill_detail(row)
+        self._restore_selection(fid, key)
+
+    def _toggle_detail_lock(self, checked: bool):
+        if self._current_row is None:
+            return
+        row = self.model._rows[self._current_row]
+        fid, key = row["file_id"], row["key_path"]
+        self.state.project.store.set_locked(fid, key, checked)
+        row["locked"] = checked
+        self.state.entriesChanged.emit()
+        self._restore_selection(fid, key)
+
+    def _restore_selection(self, file_id: str, key_path: str):
+        """reload 重建模型后按主键找回行并重新选中（保持中栏焦点）。"""
+        for row_idx, row in enumerate(self.model._rows):
+            if row["file_id"] == file_id and row["key_path"] == key_path:
+                src = self.proxy.mapFromSource(self.model.index(row_idx, 0))
+                self.table.selectRow(src.row())
+                break
+
+    # ── 既有逻辑（护栏契约不变） ────────────────────────────
     def _focus_search(self):
         self.search_box.setFocus()
         self.search_box.selectAll()
@@ -346,6 +586,7 @@ class ReviewPage(QWidget):
             self._loading = False
             self.model.setEntries([])
             self._stack.setCurrentWidget(self.empty_state)
+            self._detail_stack.setCurrentWidget(self.detail_empty)
             self._refresh_summary()
             return
         store = self.state.project.store

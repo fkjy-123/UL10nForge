@@ -1,10 +1,10 @@
-"""夜航工作台深色设计系统：颜色 token + 全局 QSS。
+"""夜航工作台深色设计系统 v2：颜色 token + 全局 QSS（任务二重构）。
 
-设计约束（来自夜航工作台规范）：
-- 面板提亮、深蓝底；薄荷青主色、柠檬黄仅提示、珊瑚红仅失败。
-- 青紫渐变只允许出现在品牌轨道与进度完成段。
-- 页面分区优先使用分隔线、留白与颜色面，不为每段内容套卡片。
-- QSS 不包含 transition/animation/keyframes（Qt 不支持），动效全部在 Python。
+设计约束（UI-UX 重构规范）：
+- 暗色中性底（#080D18）+ Surface 三级；薄荷青主色 #48E6C1。
+- 紫色只属于 AI（§6.2）：审核面板/AI 徽章/AI 状态呼吸。
+- 琥珀警告、珊瑚红仅失败；页面分区优先分隔线、留白与颜色面。
+- QSS 不包含 transition/animation/keyframes（Qt 不支持），动效全在 Python。
 """
 from __future__ import annotations
 
@@ -25,6 +25,9 @@ ACCENT_HOVER = TOKENS.primary_hover
 ACCENT_PRESSED = TOKENS.primary_pressed
 ACCENT_BG = TOKENS.primary_muted
 ACCENT2 = TOKENS.accent2
+AI = TOKENS.ai_primary            # 紫色=AI（§6.2）
+AI_SECONDARY = TOKENS.ai_secondary
+AI_BG = TOKENS.ai_muted           # AI 面板/徽章低饱和底
 GRAD_START = TOKENS.gradient_start
 GRAD_END = TOKENS.gradient_end
 SIDEBAR_BG = TOKENS.sidebar_bg
@@ -40,7 +43,10 @@ STATUS_IDLE = TOKENS.status_idle
 STATUS_LOCKED = TOKENS.status_locked
 LOGGER_BG = TOKENS.logger_bg
 RADIUS = TOKENS.radius
+RADIUS_MD = TOKENS.radius_md
 RADIUS_CARD = TOKENS.radius_card
+RADIUS_PANEL = TOKENS.radius_panel
+RADIUS_DIALOG = TOKENS.radius_dialog
 PRIMARY_TEXT = "#071713"  # 主按钮上的深色文字
 
 _QSS = f"""
@@ -82,7 +88,7 @@ QListWidget#navList {{
 QListWidget#navList::item {{
     padding: 10px 14px;
     margin: 2px 10px;
-    border-radius: 7px;
+    border-radius: {RADIUS}px;
     color: {TEXT_SECONDARY};
     border-left: 3px solid transparent;
 }}
@@ -100,18 +106,18 @@ QFrame#navIndicator {{
     border: none;
 }}
 
-/* ── 按钮（四类全状态） ───────────────────────────────────── */
+/* ── 按钮（四类全状态；圆角 §8：Button 8px） ─────────────── */
 /* 次按钮（默认） */
 QPushButton {{
     background: {CARD};
     border: 1px solid {BORDER};
-    border-radius: 7px;
+    border-radius: {RADIUS_MD}px;
     padding: 6px 16px;
     min-height: {TOKENS.control_height}px;
     color: {TEXT};
 }}
 QPushButton:hover {{ background: {CARD_HOVER}; border-color: {BORDER_STRONG}; }}
-QPushButton:pressed {{ background: #182A47; }}
+QPushButton:pressed {{ background: {RAISED}; }}
 QPushButton:disabled {{ color: {TEXT_DISABLED}; background: {PANEL}; border-color: {BORDER}; }}
 QPushButton:focus {{ border: {TOKENS.focus_width}px solid {ACCENT}; }}
 
@@ -152,7 +158,7 @@ QPushButton[ghost="true"]:hover {{ background: {CARD}; color: {TEXT}; }}
 QLineEdit, QPlainTextEdit, QTextEdit, QSpinBox, QDoubleSpinBox, QComboBox {{
     background: {CARD};
     border: 1px solid {BORDER};
-    border-radius: 7px;
+    border-radius: {RADIUS_MD}px;
     padding: 5px 10px;
     selection-background-color: {ACCENT};
     selection-color: {PRIMARY_TEXT};
@@ -170,7 +176,7 @@ QComboBox::drop-down {{ border: none; width: 32px; }}
 QComboBox QAbstractItemView {{
     background: {RAISED};
     border: 1px solid {BORDER};
-    border-radius: 7px;
+    border-radius: {RADIUS_MD}px;
     outline: none;
     selection-background-color: {ACCENT_BG};
     selection-color: {TEXT};
@@ -343,6 +349,19 @@ QCheckBox::indicator:checked {{
     border-color: {ACCENT};
 }}
 QCheckBox:disabled {{ color: {TEXT_DISABLED}; }}
+QRadioButton {{ spacing: 8px; color: {TEXT_SECONDARY}; }}
+QRadioButton::indicator {{
+    width: 16px;
+    height: 16px;
+    border-radius: 8px;
+    border: 1px solid {BORDER_STRONG};
+    background: {CARD};
+}}
+QRadioButton::indicator:checked {{
+    border: 4px solid {ACCENT};
+    background: {CARD};
+}}
+QRadioButton:disabled {{ color: {TEXT_DISABLED}; }}
 QStatusBar {{
     background: {PANEL}; color: {TEXT_SECONDARY};
     border-top: 1px solid {BORDER};
@@ -357,7 +376,7 @@ QFrame#card:hover {{ border-color: {BORDER_STRONG}; }}
 QFrame#metricChip {{
     background: {CARD};
     border: 1px solid {BORDER};
-    border-radius: 7px;
+    border-radius: {RADIUS_MD}px;
 }}
 QLabel[class="metricLabel"] {{ color: {TEXT_SECONDARY}; font-size: 9pt; }}
 QLabel[class="metricValue"] {{ color: {TEXT}; font-weight: 600; }}
@@ -406,7 +425,7 @@ QFrame#profileCard {{
     background: {PANEL};
     border: none;
     border-left: 3px solid {WARNING};
-    border-radius: {RADIUS}px;
+    border-radius: {RADIUS_MD}px;
 }}
 QFrame[class="sectionRule"] {{
     background: {BORDER};
@@ -430,12 +449,167 @@ QPlainTextEdit#logView {{
 QFrame#toast {{
     background: {RAISED};
     border: 1px solid {BORDER_STRONG};
-    border-radius: 7px;
+    border-radius: {RADIUS_MD}px;
     border-left: 4px solid {INFO};
 }}
 QFrame#toast[success="true"] {{ border-left-color: {SUCCESS}; }}
 QFrame#toast[error="true"] {{ border-left-color: {ERROR}; }}
 QFrame#toast[warning="true"] {{ border-left-color: {WARNING}; }}
+
+/* ── Top Bar（§14：当前项目 + 搜索 + 通知 + 设置） ─────────── */
+QFrame#topBar {{
+    background: {PANEL};
+    border: none;
+    border-bottom: 1px solid {BORDER};
+}}
+QLabel#topBarProject {{
+    font-size: 10.5pt; font-weight: 600;
+}}
+QLabel#topBarProjectSub {{ color: {TEXT_SECONDARY}; font-size: 8.5pt; }}
+QLabel#topBarSearch {{
+    background: {CARD};
+    border: 1px solid {BORDER};
+    border-radius: {RADIUS_MD}px;
+    padding: 4px 14px;
+    color: {TEXT_DISABLED};
+    font-size: 9pt;
+}}
+
+/* ── Sidebar 分组导航（§12/§13：图标+文字，分组标题，可折叠） ─ */
+QLabel#navGroup {{
+    color: {TEXT_DISABLED};
+    font-size: 8pt;
+    padding: 10px 22px 2px 22px;
+}}
+QFrame#navCollapse {{
+    background: transparent;
+    border: none;
+    border-top: 1px solid {BORDER};
+}}
+
+/* ── AI 面板（§27：紫色=AI，微玻璃） ───────────────────────── */
+QFrame#aiPanel {{
+    background: {AI_BG};
+    border: 1px solid {BORDER_STRONG};
+    border-radius: {RADIUS_PANEL}px;
+}}
+QLabel#aiPanelTitle {{
+    color: {AI};
+    font-size: 9.5pt; font-weight: 700;
+}}
+QLabel#aiDot {{
+    min-width: 8px; max-width: 8px;
+    min-height: 8px; max-height: 8px;
+    border-radius: 4px;
+    background: {AI};
+}}
+QLabel#aiScore {{ color: {AI}; font-size: 21px; font-weight: 700; }}
+QLabel#aiSectionTitle {{ color: {TEXT_SECONDARY}; font-size: 8pt; font-weight: 600; }}
+QLabel#aiReason {{
+    color: {TEXT};
+    font-size: 9pt;
+    background: {PANEL};
+    border-radius: {RADIUS_MD}px;
+    padding: 8px 10px;
+}}
+QLabel#aiCandidate {{
+    background: {PANEL};
+    border: 1px solid {BORDER};
+    border-radius: {RADIUS_MD}px;
+    padding: 6px 10px;
+    color: {TEXT_SECONDARY};
+    font-size: 9pt;
+}}
+QLabel#aiCandidate[best="true"] {{
+    border-color: {AI_SECONDARY};
+    color: {TEXT};
+}}
+
+/* ── 命令面板（§51 Ctrl+K：微玻璃 + dialog 圆角） ──────────── */
+QFrame#commandPalette {{
+    background: {RAISED};
+    border: 1px solid {BORDER_STRONG};
+    border-radius: {RADIUS_DIALOG}px;
+}}
+QListWidget#commandList {{
+    background: transparent;
+    border: none;
+    outline: none;
+}}
+QListWidget#commandList::item {{
+    padding: 9px 16px;
+    margin: 1px 6px;
+    border-radius: {RADIUS}px;
+    color: {TEXT_SECONDARY};
+}}
+QListWidget#commandList::item:hover {{ background: {CARD_HOVER}; color: {TEXT}; }}
+QListWidget#commandList::item:selected {{
+    background: {ACCENT_BG};
+    color: {ACCENT};
+}}
+
+/* ── 审校三栏工作区（§21-28：列表 25% / 翻译 50% / AI 审核 25%） ── */
+QSplitter::handle {{
+    background: transparent;
+    width: 12px;
+}}
+QSplitter::handle:hover {{
+    background: {ACCENT_BG};
+}}
+QFrame#detailPanel {{
+    background: {PANEL};
+    border: 1px solid {BORDER};
+    border-radius: {RADIUS_PANEL}px;
+}}
+QLabel#detailOriginal {{
+    background: {CARD};
+    border: 1px solid {BORDER};
+    border-radius: {RADIUS_MD}px;
+    padding: 12px 14px;
+    color: {TEXT};
+    font-size: 14pt;
+    font-weight: 600;
+}}
+QPlainTextEdit#detailEdit {{
+    background: {CARD};
+    border: 1px solid {BORDER};
+    border-radius: {RADIUS_MD}px;
+    padding: 10px 12px;
+    color: {TEXT};
+    font-size: 11pt;
+    selection-background-color: {ACCENT_BG};
+    selection-color: {PRIMARY_TEXT};
+}}
+QLabel#detailSection {{
+    color: {TEXT_DISABLED};
+    font-size: 8pt;
+    font-weight: 600;
+    letter-spacing: 1px;
+}}
+QLabel#detailContext, QLabel#detailReason {{
+    color: {TEXT_SECONDARY};
+    font-size: 9pt;
+}}
+
+/* ── 设置中心（§66：左侧分类导航 + 右侧内容） ────────────── */
+QListWidget#settingsNav {{
+    background: {PANEL};
+    border: 1px solid {BORDER};
+    border-radius: {RADIUS_PANEL}px;
+    padding: 8px;
+    outline: none;
+}}
+QListWidget#settingsNav::item {{
+    padding: 10px 14px;
+    margin: 2px 0;
+    border-radius: {RADIUS}px;
+    color: {TEXT_SECONDARY};
+}}
+QListWidget#settingsNav::item:hover {{ background: {CARD_HOVER}; color: {TEXT}; }}
+QListWidget#settingsNav::item:selected {{
+    background: {ACCENT_BG};
+    color: {ACCENT};
+}}
 """
 
 

@@ -5,12 +5,14 @@ from dataclasses import replace
 
 from PySide6.QtCore import Qt, QThreadPool
 from PySide6.QtGui import QIcon
-from PySide6.QtWidgets import (QComboBox, QFormLayout, QHBoxLayout,
-                               QHeaderView, QLabel, QLineEdit, QPushButton,
+from PySide6.QtWidgets import (QCheckBox, QComboBox, QFormLayout, QHBoxLayout,
+                               QHeaderView, QLabel, QLineEdit, QListWidget,
+                               QListWidgetItem, QPushButton, QRadioButton,
                                QTableWidget, QTableWidgetItem,
                                QTabWidget, QVBoxLayout, QWidget)
 
 from hanhua.ui.icons import LineIcon
+from hanhua.ui.design_system import TOKENS
 from hanhua.core.glossary import GlossaryStore
 from hanhua.core.local_model import LocalModelError, discover_model
 from hanhua.core.translator import create_client
@@ -40,7 +42,7 @@ class SettingsPage(QWidget):
 
         lay.addWidget(PageHeader(
             "设置",
-            "翻译后端接入与全局术语表 · 术语将注入翻译提示词",
+            "分类设置中心 · 翻译后端 / 模型 / AI 审核 / 术语 / 关于",
         ))
 
         # 构建顺序：高级 tab 先建（API tab 的 _load_api_ui/_sync_backend_mode
@@ -48,13 +50,192 @@ class SettingsPage(QWidget):
         advanced_tab = self._build_advanced_tab()
         api_tab = self._build_api_tab()
         glossary_tab = self._build_glossary_tab()
+        review_tab = self._build_review_tab()
+        about_tab = self._build_about_tab()
         self.tabs = QTabWidget()
         self.tabs.addTab(api_tab, "翻译后端")
         self.tabs.addTab(advanced_tab, "高级设置")
         self.tabs.addTab(glossary_tab, "术语表")
-        for index, icon_name in enumerate(("rocket", "tool", "database")):
+        self.tabs.addTab(review_tab, "AI 审核")
+        self.tabs.addTab(about_tab, "关于")
+        for index, icon_name in enumerate(
+                ("rocket", "tool", "database", "shield", "brand")):
             self.tabs.setTabIcon(index, QIcon(LineIcon.pixmap(icon_name, 16)))
-        lay.addWidget(self.tabs, 1)
+        self.tabs.tabBar().setVisible(False)  # §66：左侧分类导航切换
+
+        # ── 左侧分类导航（§66：分类设置中心，不把所有设置堆一页） ──
+        body = QHBoxLayout()
+        body.setSpacing(16)
+        self.settings_nav = QListWidget()
+        self.settings_nav.setObjectName("settingsNav")
+        self.settings_nav.setFixedWidth(180)
+        for title, tab_index, icon_name in (
+                ("翻译后端", 0, "rocket"),
+                ("模型（高级）", 1, "tool"),
+                ("AI 审核", 3, "shield"),
+                ("术语表", 2, "database"),
+                ("关于", 4, "brand")):
+            item = QListWidgetItem(
+                QIcon(LineIcon.pixmap(icon_name, 16)), title)
+            item.setData(Qt.UserRole, tab_index)
+            self.settings_nav.addItem(item)
+        self.settings_nav.currentRowChanged.connect(self._on_settings_nav)
+        self.settings_nav.setCurrentRow(0)
+        body.addWidget(self.settings_nav)
+        body.addWidget(self.tabs, 1)
+        lay.addLayout(body, 1)
+
+    # ── 左侧分类导航（§66） ──
+    def _on_settings_nav(self, row: int):
+        item = self.settings_nav.item(row)
+        if item is not None:
+            self.tabs.setCurrentIndex(item.data(Qt.UserRole))
+
+    # ── AI 审核设置（§68 开关与策略 / §69 阈值说明） ──
+    def _build_review_tab(self) -> QWidget:
+        tab = QWidget()
+        root = QHBoxLayout(tab)
+        root.setContentsMargins(28, 24, 28, 18)
+        root.setSpacing(24)
+
+        left = QWidget()
+        form = QFormLayout(left)
+        form.setContentsMargins(0, 0, 0, 0)
+        form.setSpacing(14)
+        self.review_enabled = QCheckBox("翻译完成后自动进行 AI 语义审核")
+        self.review_enabled.setMinimumHeight(44)
+        strategy_box = QWidget()
+        s_lay = QVBoxLayout(strategy_box)
+        s_lay.setContentsMargins(0, 0, 0, 0)
+        s_lay.setSpacing(8)
+        self.review_fast = QRadioButton("快速 —— 约 5% 最高风险文本送审")
+        self.review_balanced = QRadioButton("平衡（推荐）—— 约 15% 最高风险文本送审")
+        self.review_strict = QRadioButton("严格 —— 约 30% 最高风险文本送审")
+        for r in (self.review_fast, self.review_balanced, self.review_strict):
+            r.setMinimumHeight(34)
+            s_lay.addWidget(r)
+        form.addRow("自动审核", self.review_enabled)
+        form.addRow("审核策略", strategy_box)
+        self.review_save_btn = QPushButton("保存 AI 审核设置")
+        self.review_save_btn.setProperty("primary", True)
+        self.review_save_btn.setMinimumHeight(44)
+        form.addRow("", self.review_save_btn)
+        root.addWidget(left, 4)
+
+        right = QWidget()
+        right_lay = QVBoxLayout(right)
+        right_lay.setContentsMargins(0, 0, 0, 0)
+        right_lay.setSpacing(10)
+        head = QLabel("语义审核说明")
+        head.setProperty("class", "pageTitle")
+        hint = QLabel(
+            "翻译完成后，本地审核模型按风险评分对最可疑的译文做四级判定"
+            "（通过 / 轻微 / 较大问题 / 严重）：\n\n"
+            "· 严重问题 —— 自动重译并再次复核（最多 2 轮收敛）；\n"
+            "· 较大问题 —— 按审核建议修正后放行；\n"
+            "· 审核不通过的条目在「文本审校」页标为「需要优化」，"
+            "审核词对经语境门禁沉淀后跨游戏复用。\n\n"
+            "审核全程本地运行（llama.cpp · Qwen3.5-4B 审核模型），"
+            "数据不出本机。送审率是硬约束上限：只对分流器挑出的最高"
+            "风险条目送审，宁缺毋滥。")
+        hint.setProperty("class", "subtitle")
+        hint.setWordWrap(True)
+        right_lay.addWidget(head)
+        right_lay.addWidget(hint)
+        right_lay.addStretch(1)
+        root.addWidget(right, 6)
+
+        self._load_review_ui()
+        self.review_save_btn.clicked.connect(self._save_review)
+        return tab
+
+    def _load_review_ui(self):
+        api = self.state.api
+        self.review_enabled.setChecked(api.ai_review_enabled)
+        strategy = getattr(api, "ai_review_strategy", "balanced")
+        self.review_fast.setChecked(strategy == "fast")
+        self.review_balanced.setChecked(strategy == "balanced")
+        self.review_strict.setChecked(strategy == "strict")
+        if not (self.review_fast.isChecked() or self.review_balanced.isChecked()
+                or self.review_strict.isChecked()):
+            self.review_balanced.setChecked(True)
+
+    def _save_review(self):
+        cfg = replace(self.state.api)
+        cfg.ai_review_enabled = self.review_enabled.isChecked()
+        if self.review_fast.isChecked():
+            cfg.ai_review_strategy = "fast"
+        elif self.review_strict.isChecked():
+            cfg.ai_review_strategy = "strict"
+        else:
+            cfg.ai_review_strategy = "balanced"
+        self._commit_api_config(cfg)
+        Toast.show(self, "AI 审核设置已保存，下次翻译生效", "success")
+
+    # ── 关于（版本 / 本地架构 / 隐私） ──
+    def _build_about_tab(self) -> QWidget:
+        from hanhua import VERSION
+        tab = QWidget()
+        root = QHBoxLayout(tab)
+        root.setContentsMargins(28, 24, 28, 18)
+        root.setSpacing(24)
+
+        left = QWidget()
+        lay = QVBoxLayout(left)
+        lay.setContentsMargins(0, 0, 0, 0)
+        lay.setSpacing(12)
+        brand_row = QHBoxLayout()
+        brand_row.setSpacing(12)
+        icon = LineIcon("brand", 40, TOKENS.primary)
+        brand_text = QVBoxLayout()
+        brand_text.setSpacing(0)
+        name = QLabel("汉化助手")
+        name.setProperty("class", "pageTitle")
+        ver = QLabel(f"v{VERSION} · Unity 游戏智能汉化工具")
+        ver.setProperty("class", "subtitle")
+        brand_text.addWidget(name)
+        brand_text.addWidget(ver)
+        brand_row.addWidget(icon)
+        brand_row.addLayout(brand_text)
+        brand_row.addStretch(1)
+        lay.addLayout(brand_row)
+        lay.addSpacing(8)
+        head = QLabel("本地推理架构")
+        head.setProperty("class", "pageTitle")
+        lay.addWidget(head)
+        model_text = QLabel(
+            "四模型全部本地运行（llama.cpp）：\n\n"
+            "· Hy-MT2 1.8B —— 翻译主模型；\n"
+            "· Qwen3.5-4B —— 语义审核（四级判定 + 反馈重译）；\n"
+            "· Qwen3-Reranker 0.6B —— 语料相关度重排；\n"
+            "· Qwen3-Embedding 0.6B —— 语境向量记忆检索。\n\n"
+            "检测 / 提取 / 翻译 / 审核 / 写回全流程离线完成，"
+            "数据不出本机。")
+        model_text.setProperty("class", "subtitle")
+        model_text.setWordWrap(True)
+        lay.addWidget(model_text)
+        lay.addStretch(1)
+        root.addWidget(left, 5)
+
+        right = QWidget()
+        right_lay = QVBoxLayout(right)
+        right_lay.setContentsMargins(0, 0, 0, 0)
+        right_lay.setSpacing(10)
+        head2 = QLabel("隐私与数据")
+        head2.setProperty("class", "pageTitle")
+        privacy = QLabel(
+            "· 翻译、审核、记忆检索均在本机完成，不向任何云端服务发送"
+            "文本内容；\n\n"
+            "· 「在线 API」设置项仅为存在性保留，不作为开发验收通道；\n\n"
+            "· 全局术语表、语境记忆与知识库存储于应用数据目录，"
+            "跨游戏复用，可随时在术语表页维护。")
+        privacy.setProperty("class", "subtitle")
+        privacy.setWordWrap(True)
+        right_lay.addWidget(head2)
+        right_lay.addWidget(privacy)
+        right_lay.addStretch(1)
+        root.addWidget(right, 5)
+        return tab
 
     # ── API 配置 ──
     def _build_api_tab(self) -> QWidget:

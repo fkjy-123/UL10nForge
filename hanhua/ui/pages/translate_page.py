@@ -4,6 +4,7 @@ from __future__ import annotations
 from dataclasses import dataclass, field, replace
 import json
 import os
+from pathlib import Path
 import subprocess
 import threading
 
@@ -108,6 +109,7 @@ class TranslatePage(QWidget):
         self._write_running = False
         self._write_terminal_message = ""
         self._last_stats = None
+        self._stream_last_done = 0
         self._pool = QThreadPool.globalInstance()
         # 经验记忆（AgentMemory）：跨游戏持久、证据驱动——懒创建于
         # app_dir/agent_memory.db；每次翻译运行前 session_reset，写回后
@@ -157,6 +159,46 @@ class TranslatePage(QWidget):
         sub_row.addWidget(self.chip_failed)
         sub_row.addWidget(self.chip_skipped)
         lay.addLayout(sub_row)
+
+        # ── AI Translation Console（§33~35：实时处理流 + 模型信息） ──
+        console_row = QHBoxLayout()
+        console_row.setSpacing(12)
+        stream_frame = QFrame()
+        stream_frame.setObjectName("card")
+        sf = QVBoxLayout(stream_frame)
+        sf.setContentsMargins(14, 10, 14, 10)
+        sf.setSpacing(6)
+        st_head = QHBoxLayout()
+        st_title = QLabel("实时处理流")
+        st_title.setProperty("class", "pageTitle")
+        self.stream_status = QLabel("等待开始")
+        self.stream_status.setProperty("class", "subtitle")
+        st_head.addWidget(st_title)
+        st_head.addStretch(1)
+        st_head.addWidget(self.stream_status)
+        self.stream_view = QPlainTextEdit()
+        self.stream_view.setObjectName("logView")
+        self.stream_view.setReadOnly(True)
+        self.stream_view.setMaximumHeight(140)
+        sf.addLayout(st_head)
+        sf.addWidget(self.stream_view)
+        console_row.addWidget(stream_frame, 3)
+
+        model_frame = QFrame()
+        model_frame.setObjectName("card")
+        mf = QVBoxLayout(model_frame)
+        mf.setContentsMargins(14, 10, 14, 10)
+        mf.setSpacing(6)
+        model_title = QLabel("当前模型")
+        model_title.setProperty("class", "pageTitle")
+        mf.addWidget(model_title)
+        self.model_chip = MetricStrip("模型", "未启动")
+        self.backend_chip = MetricStrip("后端", "—")
+        self.throughput_chip = MetricStrip("吞吐", "—")
+        for chip in (self.model_chip, self.backend_chip, self.throughput_chip):
+            mf.addWidget(chip)
+        console_row.addWidget(model_frame, 1)
+        lay.addLayout(console_row)
 
         # ── 数据舱：待翻译 / tokens ──
         self.metric_pending = MetricStrip("待翻译", "—")
@@ -302,6 +344,10 @@ class TranslatePage(QWidget):
         self.write_btn.setEnabled(False)
         self.progress_label.setText("正在请求模型…（第一批可能需要一点时间）")
         self.progress_bar.setRange(0, 0)          # 第一批返回前为忙碌动画
+        self.stream_view.clear()
+        self._stream_last_done = 0
+        self.stream_view.appendPlainText("◐ 正在请求模型…")
+        self.stream_status.setText("◐ 正在处理")
         signals_holder = {}
 
         def run_translation():
@@ -425,8 +471,11 @@ class TranslatePage(QWidget):
                     memory=store, model=api.model, lang=lang,
                     system_prompt=system,
                     glossary=[(row["term"], row["translation"])
-                              for row in glossary_rows] + knowledge_pairs
-                             + agent_pairs,
+                              # candidate 仅参考不强制（与
+                              # format_for_prompt 对齐，F10 实证）
+                              for row in glossary_rows
+                              if row.get("status", "active") == "active"]
+                             + knowledge_pairs + agent_pairs,
                     agent_memory=agent_memory,
                     agent_game=str(getattr(
                         getattr(project, "game_dir", None), "name", "")
@@ -491,12 +540,20 @@ class TranslatePage(QWidget):
                 # 写 store meta（审校页「需要优化」筛选），术语词对经
                 # add_reviewed 门禁沉淀（跨游戏复用）。审核失败不阻断
                 # 翻译结果（按全部通过保守处理，日志告警）。
+                # §68 设置：开关关闭时跳过审核；策略映射送审率上限
+                # （快速 5% / 平衡 15% / 严格 30%，risk_gate 硬约束上限）。
                 try:
-                    review_summary = review_entries(
-                        entries, learn_g,
-                        game_name=str(profile.game_name or ""),
-                        on_note=on_log)
-                    if review_summary["used"]:
+                    review_summary = None
+                    if self.state.api.ai_review_enabled:
+                        strategy_rate = {
+                            "fast": 0.05, "balanced": 0.15, "strict": 0.30,
+                        }.get(self.state.api.ai_review_strategy, 0.15)
+                        review_summary = review_entries(
+                            entries, learn_g,
+                            game_name=str(profile.game_name or ""),
+                            on_note=on_log,
+                            max_send_rate=strategy_rate)
+                    if review_summary and review_summary["used"]:
                         flagged = review_summary["flagged"]
                         if flagged:
                             meta_rows = []
@@ -572,6 +629,19 @@ class TranslatePage(QWidget):
     def _on_progress(self, stats):
         self._last_stats = stats
         self._refresh_chips()
+        # 实时处理流（§34）：批粒度事件，不伪造逐条数据
+        done = stats.done
+        prev = self._stream_last_done
+        if done > prev:
+            delta = done - prev
+            source = "（记忆命中）" if delta and stats.from_memory else ""
+            self.stream_view.appendPlainText(
+                f"✓ 本批完成 {delta} 条 · 累计 {done} / {stats.total} {source}")
+            self._stream_last_done = done
+        if stats.total:
+            self.stream_status.setText(
+                f"◐ 正在处理 {done + stats.failed} / {stats.total} 条")
+        self.throughput_chip.setValue(f"{stats.rate_per_minute:.0f} 条/分")
 
     def _on_finished(self, stats):
         self._running = False
@@ -582,6 +652,11 @@ class TranslatePage(QWidget):
         self._refresh_chips()
         self._set_primary(self.write_btn)
         self.state.entriesChanged.emit()
+        if stats.failed:
+            self.stream_view.appendPlainText(f"✗ {stats.failed} 条失败（可重试）")
+        else:
+            self.stream_view.appendPlainText("✓ 全部完成")
+        self.stream_status.setText("○ 已完成")
         if stats.failed:
             export_path = self._export_fail_record()
             Toast.show(
@@ -648,6 +723,7 @@ class TranslatePage(QWidget):
         self.stop_btn.setEnabled(False)
         self._refresh_chips()
         self._set_primary(self.write_btn)
+        self.stream_status.setText("○ 已停止")
         self.progress_label.setText("翻译出错")
         diagnostic = sanitize_exception(RuntimeError(str(err)), secrets)
         Toast.show(self, f"翻译出错：{json.dumps(diagnostic, ensure_ascii=False)}", "error")
@@ -1040,6 +1116,7 @@ class TranslatePage(QWidget):
         self._write_terminal_message = ""
         self._worker = None
         self._last_stats = None
+        self._stream_last_done = 0
         self.start_btn.setEnabled(self._active_run is None)
         self.stop_btn.setEnabled(False)
         self.retry_btn.setEnabled(False)
@@ -1047,6 +1124,17 @@ class TranslatePage(QWidget):
         self.progress_bar.setValue(0)
         self.progress_label.setText("尚未开始")
         self.log_view.clear()
+        self.stream_view.clear()
+        self.stream_status.setText("等待开始")
+        self.throughput_chip.setValue("—")
+        api = self.state.api
+        if api.mode == "local":
+            self.model_chip.setValue(Path(api.local_model_path).stem
+                                     if api.local_model_path else "未配置")
+            self.backend_chip.setValue("本地 llama.cpp")
+        else:
+            self.model_chip.setValue(api.model or "未配置")
+            self.backend_chip.setValue("在线 API")
         self._refresh_chips()
         self._set_primary(self.start_btn)
         self.reveal_btn.setHidden(True)

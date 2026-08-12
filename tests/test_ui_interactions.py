@@ -103,28 +103,56 @@ def test_nav_click_switches_stack_and_enables_nav(qapp, tmp_path):
     assert window.current_page() == "home"
     assert not window.pages["review"].isVisible() or window.stack.currentIndex() == 0
 
-    # 逐一点击每个导航项，断言页面栈切换（nav row 1..3 对应 review/translate/settings）
-    for row, page_name in enumerate(("review", "translate", "settings"), start=1):
+    # 逐一点击每个导航项，断言页面栈切换（分组导航：group 行为
+    # 不可选标题，页面项行号来自 _NAV_PAGE_ROWS 映射）
+    from hanhua.ui.main_window import PAGES, _NAV_PAGE_ROWS
+    for row, page_index in sorted(_NAV_PAGE_ROWS.items(), key=lambda kv: kv[0]):
         window.nav.setCurrentRow(row)
-        assert window.current_page() == page_name, f"row {row} 应切到 {page_name}"
+        assert window.current_page() == PAGES[page_index], \
+            f"row {row} 应切到 {PAGES[page_index]}"
         # 选中项图标应为品牌青色（响应验证）
         selected = window.nav.item(row)
         assert selected.icon() is not None and not selected.icon().isNull()
+    # 分组标题行（row 0「文本中心」）点击后回退当前页不切页
+    current_before = window.current_page()
     window.nav.setCurrentRow(0)
+    assert window.current_page() == current_before
+    # 点击「首页」（row 1）回到 home
+    home_row = next(r for r, i in _NAV_PAGE_ROWS.items() if i == 0)
+    window.nav.setCurrentRow(home_row)
+    assert window.current_page() == "home"
+
+
+def test_navigate_programmatic_all_pages(qapp, tmp_path):
+    """程序化 navigate(name) 四页全覆盖（F 回归：settings 页曾因
+    _NAV_PAGE_ROWS 键值反查 KeyError 崩溃——group 行无键）。"""
+    state = _state(tmp_path)
+    window = MainWindow(state)
+    for name in ("home", "review", "translate", "settings"):
+        window.navigate(name)
+        assert window.current_page() == name, f"navigate({name}) 未到达"
+    # 命令面板打开路径（Ctrl+K 懒加载创建）
+    window._open_palette()
+    assert window.palette is not None
+    window.navigate("home")
     assert window.current_page() == "home"
 
 
 def test_nav_always_available_without_project(qapp, tmp_path):
-    """未打开游戏文件夹时导航也可用：设置/审校/翻译都允许进入页面。"""
+    """未打开游戏文件夹时导航也可用：设置/审校/翻译都允许进入页面；
+    分组标题行（group）不可选中。"""
     state = _state(tmp_path)
     window = MainWindow(state)
-    for row in range(1, window.nav.count()):
+    from hanhua.ui.main_window import PAGES, _NAV_PAGE_ROWS
+    for row in range(window.nav.count()):
         item = window.nav.item(row)
-        assert item.flags() & Qt.ItemIsEnabled, f"row {row} 无项目时也应可点"
-    for row, page_name in enumerate(("review", "translate", "settings"),
-                                    start=1):
+        if row in _NAV_PAGE_ROWS:
+            assert item.flags() & Qt.ItemIsEnabled, f"row {row} 无项目时也应可点"
+        else:
+            assert not (item.flags() & Qt.ItemIsEnabled), f"row {row} 是分组标题"
+    for row, page_index in _NAV_PAGE_ROWS.items():
         window.nav.setCurrentRow(row)
-        assert window.current_page() == page_name
+        assert window.current_page() == PAGES[page_index]
 
 
 def test_statusbar_reflects_project_and_backend(qapp, tmp_path):
@@ -360,6 +388,38 @@ def test_settings_save_persists_config(qapp, tmp_path):
     page.api_url.setText("https://example.com/v1")
     page._save_api()
     assert state.api.base_url == "https://example.com/v1"
+
+
+def test_settings_nav_switches_tabs(qapp, tmp_path):
+    """§66：左侧分类导航驱动右侧内容（tabBar 隐藏）。"""
+    from hanhua.ui.pages.settings_page import SettingsPage
+    page = SettingsPage(_state(tmp_path), _RecordingWindow())
+    assert not page.tabs.tabBar().isVisible()
+    assert page.tabs.currentIndex() == 0
+    page.settings_nav.setCurrentRow(2)  # AI 审核
+    assert page.tabs.currentIndex() == 3
+    page.settings_nav.setCurrentRow(3)  # 术语表
+    assert page.tabs.currentIndex() == 2
+
+
+def test_settings_review_strategy_persists(qapp, tmp_path):
+    """§68：AI 审核开关与策略（快速/平衡/严格）保存并持久化。"""
+    from hanhua.ui.pages.settings_page import SettingsPage
+    state = _state(tmp_path)
+    page = SettingsPage(state, _RecordingWindow())
+    assert page.review_enabled.isChecked()  # 默认开启
+    assert page.review_balanced.isChecked()  # 默认平衡
+    page.review_strict.setChecked(True)
+    page._save_review()
+    assert state.api.ai_review_strategy == "strict"
+    assert state.api.ai_review_enabled is True
+    page.review_enabled.setChecked(False)
+    page._save_review()
+    assert state.api.ai_review_enabled is False
+    # 重新加载页面，配置还原（持久化验证）
+    page2 = SettingsPage(state, _RecordingWindow())
+    assert not page2.review_enabled.isChecked()
+    assert page2.review_strict.isChecked()
 
 
 def test_settings_glossary_add_edit_delete(qapp, tmp_path):
