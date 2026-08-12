@@ -76,7 +76,6 @@ def parse_cmap_codepoints(data: bytes) -> set[int]:
             out: set[int] = set()
             if sub_off + 16 > len(data):
                 return out
-            length = struct.unpack(">H", data[sub_off + 2:sub_off + 4])[0]
             seg_count_x2 = struct.unpack(
                 ">H", data[sub_off + 6:sub_off + 8])[0]
             seg_count = seg_count_x2 // 2
@@ -86,7 +85,6 @@ def parse_cmap_codepoints(data: bytes) -> set[int]:
             ro_off = delta_off + seg_count_x2
             if ro_off + seg_count_x2 > len(data):
                 return out
-            glyph_ids = []
             for seg in range(seg_count):
                 end = struct.unpack(">H", data[end_off + seg * 2:end_off + seg * 2 + 2])[0]
                 start = struct.unpack(">H", data[start_off + seg * 2:start_off + seg * 2 + 2])[0]

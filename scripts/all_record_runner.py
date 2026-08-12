@@ -25,12 +25,20 @@ import os
 import re
 import shutil
 import sys
-import tempfile
 from dataclasses import replace
 from pathlib import Path
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(PROJECT_ROOT))
+
+# Windows 控制台 GBK 下 print 含 ⚠ 等非 GBK 字符（写回汇总等）会
+# UnicodeEncodeError 崩溃（hickory 实证，2026-08-13）——强制 UTF-8
+# 输出，errors=replace 兜底（不影响逻辑，只影响控制台显示）
+for _stream in (sys.stdout, sys.stderr):
+    try:
+        _stream.reconfigure(encoding="utf-8", errors="replace")
+    except (AttributeError, ValueError):
+        pass
 
 from hanhua.core.agent_memory import AgentMemory  # noqa: E402
 from hanhua.core.glossary import GlossaryStore  # noqa: E402
@@ -564,7 +572,7 @@ def _run_semantic_review(project, entries, out_dir: Path, game_name: str,
     (review_dir / "review-report.md").write_text(
         "\n".join([
             f"# {game_name} 语义审核报告", "",
-            f"- 审核模型：{reviewer.config.model}",
+            f"- 审核模型：{reviewer.model_name}",
             f"- 审核条数：{summary['reviewed']}（跳过回显/未翻译）",
             f"- 不合格：{len(flagged)} 条（{issue_text}）",
             f"- 术语沉淀：{added} 条词对 → 全局术语库"
@@ -614,10 +622,8 @@ def run_game(game_dir: Path, *, batch: int | None = None,
     （runner 中断恢复——faerie 实证：翻译完成 18634 条后卡在内嵌审核
     超时循环，重跑要重扫重翻 4.5h）。库不存在则报错退出。
 
-    no_cleanup=True：写回成功后保留 `_汉化` 发布目录（默认闭环即删）。
-    实机测试前置（《实机测试计划》§0：汉化输出目录仍在）——实测组合
-    `--resume --no-review --no-cleanup`：快速重新发布，实测通过后
-    手动清理或重跑普通流程。
+    no_cleanup=True：写回成功后保留 `_汉化` 发布目录（默认闭环即删），
+    供发布目录保留调试/复验（免实机测试流程，2026-08-12 指令）。
     """
     game_dir = Path(game_dir).resolve()
     if not game_dir.is_dir():
@@ -761,8 +767,15 @@ def run_game(game_dir: Path, *, batch: int | None = None,
             memory=project.store, model=api.model, lang=lang,
             system_prompt=system,
             glossary=[(row["term"], row["translation"])
-                      for row in glossary_rows] + knowledge_pairs
-                     + agent_pairs,
+                      # 与 format_for_prompt 对齐：只取 active 词对做
+                      # 强制约束——candidate（审核沉淀未跨游戏复现）仅
+                      # 参考不强制（F10 实证：审核沉淀 <b> 标签垃圾词对
+                      # b→整句译文 在 candidate 桶，list_all 全量并入
+                      # 强制词对 → incremental-rts 'Analytics is ON.'
+                      # 误杀 glossary_mismatch）
+                      for row in glossary_rows
+                      if row.get("status", "active") == "active"]
+                     + knowledge_pairs + agent_pairs,
             agent_memory=agent_memory, agent_game=game_name,
         )
         from hanhua.core.models import is_actionable_translation
@@ -947,8 +960,8 @@ def run_game(game_dir: Path, *, batch: int | None = None,
                    language_profile=lang_profile)
     print(f"═══ {game_name} 记录完成：{out_dir} ═══")
     # 闭环成功 → 删汉化输出目录与发布备份，只保留原版（做完一个删一个）。
-    # 写回失败不删（需排查/回滚，备份是回滚依据）。--no-cleanup 供实机
-    # 测试保留发布目录（实测通过后再手动清理）。
+    # 写回失败不删（需排查/回滚，备份是回滚依据）。--no-cleanup 供
+    # 发布目录保留调试（免实机测试流程）。
     if writeback_result is not None and not writeback_error and not no_cleanup:
         _cleanup_hanhua_output(game_dir)
     # 闭环成功 → 删库（keep_library=False 默认）。
@@ -1113,7 +1126,6 @@ def _write_summary(project, report, stats, writeback_result, game_name,
         "- [ ] 失败文本根因系统彻查（同类问题全解）",
         "- [ ] 跳过文本逐条判定（该翻→识别修复；不该翻→记录判定）",
         "- [ ] 写回问题根源修复",
-        "- [ ] 写回后实机测试（按实机测试计划逐项验证）",
         "- [ ] 修复后用升级版本重跑本游戏全流程（闭环）",
         "- [ ] 闭环后删除汉化输出目录",
         "",
@@ -1145,7 +1157,7 @@ def main() -> int:
                         "后卡在内嵌审核超时循环）")
     parser.add_argument("--no-cleanup", action="store_true",
                         help="写回成功后保留 `_汉化` 发布目录（默认闭环即删；"
-                        "实机测试前置，实测通过后再清理）")
+                        "供发布目录保留调试/复验）")
     args = parser.parse_args()
     return run_game(
         args.game_dir,

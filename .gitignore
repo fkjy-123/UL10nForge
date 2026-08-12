@@ -37,3 +37,7 @@ survey_out/
 # 阶段 4 外测数据：下载的 zip 与解压的游戏副本（体积大、可重新下载）
 ext_downloads/
 ext_games/
+
+# Runner/game runtime state (secret-bearing, machine-specific)
+review_runtime.json
+*.log

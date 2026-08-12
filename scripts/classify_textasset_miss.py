@@ -13,7 +13,6 @@
 """
 from __future__ import annotations
 
-import base64
 import re
 import sys
 from collections import Counter
@@ -23,8 +22,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from UnityPy import Environment
 
-from hanhua.core.scanner import (TEXT_EXTENSIONS, _BINARY_SUFFIXES,
-                                 probe_head_kind)
+from hanhua.core.scanner import probe_head_kind
 from hanhua.core.unity.extractor import _textasset_entries, find_asset_files
 from hanhua.core.unity.writer import _dispose_environment
 

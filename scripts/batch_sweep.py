@@ -47,7 +47,7 @@ def run_one(name: str) -> str:
             except (ValueError, IndexError):
                 pass
         if "写回成功" in line:
-            wb = line
+            pass
     tail = "\n".join(out.splitlines()[-3:])
     return f"{name}: {done}译/{failed}败 | {tail}"
 

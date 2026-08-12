@@ -65,7 +65,7 @@ def main() -> None:
         print(f"       例: {warn_games[key][:4]}")
 
     slow = sorted(ok, key=lambda r: -r.get("elapsed_s", 0))[:5]
-    print(f"\n== 最慢 5 个 ==")
+    print("\n== 最慢 5 个 ==")
     for r in slow:
         print(f"  [{r['game']}] {r.get('elapsed_s')}s")
 

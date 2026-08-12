@@ -15,7 +15,7 @@ import time
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from scripts.ttf_cjk_check import _CJK_SAMPLE, _SAMPLE_CODES, parse_cmap_codepoints
+from scripts.ttf_cjk_check import _SAMPLE_CODES, parse_cmap_codepoints
 
 from UnityPy import Environment
 from hanhua.core.unity.writer import _dispose_environment
