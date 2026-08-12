@@ -99,8 +99,14 @@ def test_typetree_type_descriptor_never_a_display_text():
     display, candidates = _typetree_string_entries("f", 12, tree)
 
     assert [entry.original for entry in display] == ["Real text"]
-    assert not any("FormatterType" in str(e.meta["field_path"])
-                   for e in display + candidates)
+    # R5：类型引用不再静默丢弃——留档为 skipped 候选（kind=typetree_prefilter），
+    # 仍不得以 pending/display 身份出现
+    prefilter = [e for e in candidates
+                 if "FormatterType" in str(e.meta["field_path"])]
+    assert len(prefilter) == 1
+    assert prefilter[0].status == "skipped"
+    assert prefilter[0].meta["kind"] == "typetree_prefilter"
+    assert prefilter[0].meta["reason"] == "prefilter_type_descriptor"
 
 
 def test_looks_like_type_descriptor_does_not_reject_real_text():
@@ -555,12 +561,102 @@ def test_unaligned_structural_strings_are_not_promoted(text):
     assert _raw_string_entries("f1", 5, raw, {}) == []
 
 
+def _scriptable_object_raw(*texts: str) -> bytes:
+    """ScriptableObject 形态 raw：头部 12 字节全零（无 m_GameObject 引用）
+    + 依次字符串（每个串 payload 后对齐到 4 字节，Unity 序列化常见布局；
+    无对齐则后续串的长度头落在非 4 对齐偏移，scan_strings 拒收）。
+    the-supper 按钮配置对象实证形态。"""
+    raw = b"\x00" * 12
+    for t in texts:
+        payload = t.encode("utf-8")
+        raw += struct.pack("<I", len(payload)) + payload
+        raw += b"\x00" * (-len(payload) % 4)
+    return raw
+
+
+@pytest.mark.parametrize("obj_name,button_text", [
+    ("NewGameButton", "New Game"),
+    ("QuitButton", "Quit"),
+    ("BackButton", "Pause"),
+])
+def test_ui_control_object_button_text_is_display(obj_name, button_text):
+    # the-supper 实证（R1 证据分层）：Corgi Engine 按钮配置对象
+    # （对象名 NewGameButton + 按钮文本 'New Game'）被 small_config
+    # 规则误跳过——对象名含 UI 控件词缀是显式形态证据，优先于
+    # 「小配置=引擎键」的猜测；按钮文本必须放行翻译。
+    entries = _raw_string_entries("f1", 5, _scriptable_object_raw(obj_name, button_text), {})
+    hit = [e for e in entries if e.original == button_text]
+    assert hit, f"{button_text!r} 未被提取"
+    assert hit[0].status == "pending"
+    assert hit[0].meta["role"] == "display"
+
+
+def test_ui_word_object_pause_menu_is_display():
+    # the-supper obj 1755 实证：UIMenu 面板配置 'Pause'+'Menu'——
+    # 白名单显示词证据豁免 small_config（'Timothy'/'Player Idle' 等
+    # 引擎配置名不在白名单，不受影响）。
+    entries = _raw_string_entries("f1", 5, _scriptable_object_raw("Pause", "Menu"), {})
+    origins = {e.original: e for e in entries}
+    assert origins["Pause"].status == "pending"
+    assert origins["Menu"].status == "pending"
+
+
+def test_gated_word_item_name_in_evidence_object_is_display():
+    """R2 回归：'Skull'（emoji 字符名同形）在含显示证据的对象（物品列表+
+    描述句）里是真实物品名——必须放行（审计 R2 实证曾全局无条件跳过）。"""
+    raw = (_with_len("Skull")
+           + _with_len("A rare item dropped by bosses."))
+    entries = _raw_string_entries("f1", 5, raw, {})
+    skull = next(e for e in entries if e.original == "Skull")
+    assert skull.status == "pending"
+    assert skull.meta["role"] == "display"
+
+
+def test_gated_word_alone_still_skipped_as_engine_asset():
+    """R2 回归：'Skull' 无显示证据单串（TMP 表情资产形态）仍是引擎内容
+    ——门控层不是放行层，rawstr 分类链按证据决定。"""
+    entries = _raw_string_entries(
+        "f1", 5, _scriptable_object_raw("Skull"), {})
+    assert all(e.status == "skipped" for e in entries)
+
+
+def test_press_button_text_in_ui_control_object_is_display():
+    """R2 回归：'Press'（Input 绑定名同形）在 UI 控件对象（PressButton）
+    里是按钮文本——白名单证据放行。"""
+    entries = _raw_string_entries(
+        "f1", 5, _scriptable_object_raw("PressButton", "Press"), {})
+    hit = next(e for e in entries if e.original == "Press")
+    assert hit.status == "pending"
+    assert hit.meta["role"] == "display"
+
+
+@pytest.mark.parametrize("text", ["Timothy", "Player Idle"])
+def test_engine_config_names_still_skipped(text):
+    # morfosigame 对照：Timeline 剪辑名/动画状态名（无控件词缀、不在
+    # 白名单）仍是引擎键——R1 修复不得放行引擎配置对象。
+    # 'Player Idle' 12 字符命中句子形状，真实里由 Timeline 对象信号
+    # （UnityEngine.Timeline 程序集串）拦截——样本带信号才代表真实形态。
+    texts = [text]
+    if text == "Player Idle":
+        texts = ["Player Idle", "UnityEngine.Timeline"]
+    entries = _raw_string_entries("f1", 5, _scriptable_object_raw(*texts), {})
+    assert all(e.status == "skipped" for e in entries)
+
+
 def test_is_engine_string():
+    from hanhua.core.engine_strings import is_engine_string_gated
     assert _is_engine_string("_MainTex")
     assert _is_engine_string("UnityEngine.Rendering.DebugUI")
     assert _is_engine_string("TextMeshPro/Mobile/Distance Field")
-    assert _is_engine_string("Navigate")          # Input System 默认绑定
-    assert _is_engine_string("Keyboard&Mouse")
+    # R2 三层拆分：Input System 绑定名/emoji 字符名/后处理单词等普通英语
+    # 单词移入 gated 层——rawstr 侧按对象证据放行（'Skull' 物品名回归），
+    # 不再是无条件引擎串；DLL 侧仍由 mono_dll 显式 gated 拦截
+    assert not _is_engine_string("Navigate")
+    assert is_engine_string_gated("Navigate")
+    assert is_engine_string_gated("Mouse")
+    assert is_engine_string_gated("Skull")
+    assert not is_engine_string_gated("monologuetable")
+    assert _is_engine_string("Keyboard&Mouse")   # 组合绑定形态仍在 core
     assert not _is_engine_string("Hello player")
     assert not _is_engine_string("要活下去")
 
@@ -935,13 +1031,15 @@ def test_textasset_patch_long_translation_free():
 
 
 def test_raw_string_entries_filters_engine():
-    from hanhua.core.models import TextEntry
     raw = (b"\x00" * 8) + _with_len("_MainTex") + _with_len("Follow the light") + _with_len("Yes")
     entries = _raw_string_entries("f1", 5, raw, {"_MainTex": 300, "Follow the light": 1, "Yes": 1})
-    orig = [e.original for e in entries]
-    assert "Follow the light" in orig
-    assert "_MainTex" not in orig      # 引擎属性
-    assert "Yes" in orig               # 显示单词（白名单）→ 可翻译
+    by_original = {e.original: e for e in entries}
+    # R5：引擎串不再静默丢弃——留档为 skipped 条目（reason=prefilter_*）
+    assert by_original["_MainTex"].status == "skipped"
+    assert by_original["_MainTex"].meta["reason"] == "prefilter_engine_string"
+    assert by_original["_MainTex"].meta["role"] == "structural"
+    assert by_original["Follow the light"].status == "pending"  # 普通句子
+    assert by_original["Yes"].status == "pending"               # 显示单词（白名单）
 
 
 def test_single_string_object_is_high_confidence_display_text():
@@ -1099,7 +1197,12 @@ def test_controller_prompt_with_slashes_survives_raw_string_filtering():
     "Assets/Square/X/Y Button: Jump/config",
 ])
 def test_semantic_input_words_inside_paths_remain_filtered(text):
-    assert _raw_string_entries("f1", 9, _with_len(text), {}) == []
+    # R5：路径串不再静默丢弃——留档为 skipped 条目（prefilter_*）
+    entries = _raw_string_entries("f1", 9, _with_len(text), {})
+    assert len(entries) == 1
+    assert entries[0].status == "skipped"
+    assert entries[0].meta["reason"].startswith("prefilter_")
+    assert entries[0].meta["role"] == "structural"
 
 
 def test_code_heavy_object_keeps_sentence_and_marks_structure_skipped():
@@ -1217,9 +1320,15 @@ def test_raw_string_entries_skips_identifier_keys():
     raw = (b"\x00" * 8) + _with_len("ui_newGame") + _with_len("MENU_PLAY") \
         + _with_len("UITable_en") + _with_len("phone_call_01") + _with_len("NEW GAME")
     entries = _raw_string_entries("f1", 5, raw, {})
-    orig = [e.original for e in entries]
-    assert all(k not in orig for k in ("ui_newGame", "MENU_PLAY", "UITable_en", "phone_call_01"))
-    assert "NEW GAME" in orig          # 含空格 → 显示文本
+    by_orig = {e.original: e for e in entries}
+    # R5：键标识符不再静默丢弃——留档为 skipped 条目（reason=prefilter_*；
+    # 部分标识符同时命中引擎命名模式，engine 优先于 key_identifier）
+    for key in ("ui_newGame", "MENU_PLAY", "UITable_en", "phone_call_01"):
+        assert key in by_orig
+        assert by_orig[key].status == "skipped"
+        assert by_orig[key].meta["reason"].startswith("prefilter_")
+        assert by_orig[key].meta["role"] == "structural"
+    assert by_orig["NEW GAME"].status == "pending"        # 含空格 → 显示文本
 
 
 def test_raw_string_entries_key_list_object_all_skipped():
@@ -1229,7 +1338,9 @@ def test_raw_string_entries_key_list_object_all_skipped():
         + _with_len("New Game")
     entries = _raw_string_entries("f1", 5, raw, {})
     by_orig = {e.original: e for e in entries}
-    assert all(k not in by_orig for k in ("ui_settings", "ui_options", "ui_language"))
+    assert all(k in by_orig for k in ("ui_settings", "ui_options", "ui_language"))
+    assert all(by_orig[k].status == "skipped"
+               for k in ("ui_settings", "ui_options", "ui_language"))
     assert by_orig["New Game"].status == "pending"        # 值形态文本保留
 
 
@@ -1253,7 +1364,9 @@ def test_raw_string_entries_word_values_translatable():
     by_orig = {e.original: e for e in entries}
     assert by_orig["CREDITOS"].status == "pending"       # 西语 UI 标签 → 值
     assert by_orig["SENSIBILIDAD"].status == "pending"
-    assert "ui_newGame" not in by_orig                   # 键风格 → 键，剔除
+    # R5：键风格 → 键，留档为 skipped（reason=prefilter_*）
+    assert by_orig["ui_newGame"].status == "skipped"
+    assert by_orig["ui_newGame"].meta["reason"].startswith("prefilter_")
 
 
 def test_core_menu_terms_require_ui_collection_evidence():
@@ -1331,7 +1444,9 @@ def test_raw_string_entries_inputsystem_binding_path_object_all_skipped():
     # 绑定路径是结构串（skipped 保留标记，写回不会写），interactions 被引擎过滤
     for name in ("<Keyboard>/z", "<Mouse>/position", "<Gamepad>/leftStick"):
         assert by_orig[name].status == "skipped", name
-    assert "Press(behavior=2)" not in by_orig
+    # R5：interactions 引擎串留档为 skipped（prefilter_engine_string）
+    assert by_orig["Press(behavior=2)"].status == "skipped"
+    assert by_orig["Press(behavior=2)"].meta["reason"] == "prefilter_engine_string"
     # 动作名/绑定组名在输入配置对象内全部跳过
     for name in ("Normal", "Proceed", "Interact", "Action", "Button",
                  "Controls", "Arrow Keys"):
@@ -1492,10 +1607,15 @@ def test_high_frequency_generic_strong_display_is_kept():
 
 
 def test_raw_string_entries_freq_filter():
-    from hanhua.core.models import TextEntry
     raw = _with_len("SomeEngineThing") + _with_len("AnotherEngineThing")
     entries = _raw_string_entries("f1", 5, raw, {"SomeEngineThing": 50, "AnotherEngineThing": 50})
-    assert entries == []
+    # R5：高频串不再静默丢弃——留档为 skipped 条目（reason=prefilter_*；
+    # 'SomeEngineThing' 同时命中引擎命名模式，engine 优先于 high_frequency）
+    assert len(entries) == 2
+    assert all(e.status == "skipped" for e in entries)
+    assert all(e.meta["reason"].startswith("prefilter_") for e in entries)
+    # skipped_count 是对象内同 reason 的累计跳过数（首条 1，后续递增）
+    assert {e.meta["skipped_count"] for e in entries} == {1, 2}
 
 
 # ── #US 堆 ──
@@ -2412,7 +2532,13 @@ def test_symbols_only_rawstr_skipped():
     raw = unistr("{0} : {1}") + unistr("A perfectly normal sentence.")
     entries = _raw_string_entries("f1", 5, raw, {})
     placeholder = [e for e in entries if e.original == "{0} : {1}"]
-    assert not placeholder, "纯符号串不得进池"
+    # R5：键风格占位串留档为 skipped（reason=prefilter_key_identifier），
+    # 不 pending、不进翻译池
+    assert len(placeholder) == 1
+    assert placeholder[0].status == "skipped"
+    assert placeholder[0].meta["reason"] == "prefilter_key_identifier"
+    sentence = [e for e in entries if e.original == "A perfectly normal sentence."]
+    assert sentence[0].status == "pending"
 
 
 def test_escaped_braces_format_template_hard_structural():
@@ -2645,7 +2771,12 @@ def test_unityevent_object_method_names_are_structural():
     assert len(entries) >= 1
     for entry in entries:
         assert entry.status == "skipped", entry.original
-        assert entry.meta["reason"] == "unityevent_object"
+        # R5：预过滤留档条目（prefilter_*）reason 定稿为 prefilter 原因，
+        # 其余对象内条目 reason 为 unityevent_object
+        if entry.meta.get("prefilter"):
+            assert entry.meta["reason"].startswith("prefilter_")
+        else:
+            assert entry.meta["reason"] == "unityevent_object"
 
 
 def test_unityevent_object_without_signal_is_normal():
@@ -2790,3 +2921,41 @@ def test_verify_length_headers_detects_broken_header():
     problems = verify_string_length_headers(raw, {"Quest Discovered!": translation})
     assert problems, "长度头损坏必须被检测到"
     assert "长度头" in problems[0]
+
+
+# ── R5 预过滤留档（消灭哑信号）──
+def test_prefilter_samples_are_limited_per_object():
+    """R5：引擎串密集对象只留 10 条样本条目，skipped_count 承载真实总数
+    （防止条目爆炸），报告按 skipped_count 聚合可得准确总数。"""
+    from hanhua.core.unity.extractor import _PREFILTER_SAMPLE_LIMIT
+    raw = b"\x00" * 12
+    for i in range(13):
+        raw += _with_len(f"_Prop{i}")
+    entries = _raw_string_entries("f1", 5, raw, {})
+    prefilters = [e for e in entries if e.meta.get("prefilter") == "engine_string"]
+    assert len(prefilters) == _PREFILTER_SAMPLE_LIMIT
+    assert all(e.status == "skipped" for e in prefilters)
+    counts = sorted(e.meta["skipped_count"] for e in prefilters)
+    assert counts == list(range(1, _PREFILTER_SAMPLE_LIMIT + 1))
+
+
+def test_prefilter_does_not_poison_object_value_evidence():
+    """R5 回归：预过滤留档不得改变对象级值证据语义——should_skip/freq
+    串仍贡献对象值证据（'A rare item dropped by bosses.' 是 should_skip
+    串但对象值证据仍由它提供，'Skull' 物品名据此放行）。"""
+    raw = _with_len("Skull") + _with_len("A rare item dropped by bosses.")
+    entries = _raw_string_entries("f1", 5, raw, {})
+    by_orig = {e.original: e for e in entries}
+    assert by_orig["Skull"].status == "pending"
+    assert by_orig["Skull"].meta["reason"] == "object_has_display_evidence"
+    assert by_orig["A rare item dropped by bosses."].status == "pending"
+
+
+def test_credit_like_does_not_swallow_real_sentences():
+    """R5 回归：is_credit_like 的 by 归属分支把 'dropped by bosses.' 句子
+    当署名——句末标点现在也是句子标记（署名行无句号）。"""
+    from hanhua.core.placeholders import is_credit_like
+    assert not is_credit_like("A rare item dropped by bosses.")
+    assert is_credit_like("A game by Kyuppin")      # 真署名仍拦截
+    assert is_credit_like("Created by Sam Hogan")
+    assert is_credit_like("made in 48h")

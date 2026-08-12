@@ -17,17 +17,26 @@ _ENGINE_NAME = re.compile(
     r"UnityEngine|UnityEditor|Unity\.RenderPipelines|Unity\.Addressables|"
     r"Unity\.Services|ShaderGraph|TextMeshPro/|DebugUI|Texture2D_|\.dll$", re.I)
 
+# ── 引擎串三层架构（审计 R2）─────────────────────────────────────────
+# 1) ENGINE_STRINGS（确定性层）：无上下文歧义的引擎串——组合词/专名/代码
+#    形态，游戏显示文本里几乎不可能完整出现（'face with tears of joy'、
+#    'monologuetable'、'arial'）。全局无条件跳过。
+# 2) ENGINE_GATED_STRINGS（门控层）：高歧义普通英语单词——输入词
+#    （tap/click/press/mouse——'Press' 按钮文本同形）、emoji 字符名
+#    （imp/skull/sleeping——'Skull' 物品名/'Imp' 敌人名/'Sleeping' 状态名
+#    同形）、后处理效果单词（bloom/vignette）。独立出现时可能是真实显示
+#    文本：rawstr 侧（有对象级显示证据系统）交给分类链按证据放行；
+#    DLL 侧（无对象级证据，只有验证链）保持无条件拦截。
+# 3) _ENGINE_NAMING_PATTERNS（命名猜测层）：编程命名形态（PascalCase/
+#    camelCase/snake_case/表名语言变体）。形态是猜测，验证链/显示证据优先。
+
 # 确定性引擎字符串（与 _is_engine_string 的 strip 语义一致，不带首尾空格）
 ENGINE_STRINGS = {
-    # Input System 默认绑定
-    "navigate", "joystick", "gamepad", "touch", "keyboard", "mouse", "scrollwheel",
-    "middleclick", "rightclick", "leftclick", "trackeddeviceposition",
-    "trackeddeviceorientation", "trackeddirection", "2dvector", "keyboard&mouse",
-    "pointer", "tap", "click", "press",
-    # URP 后处理 Volume 组件/效果
+    # URP 后处理 Volume 组件/效果（组合词/专有术语，非普通英语单词）
     "lifgammagain", "splittoning", "motionblur", "coloradjustments", "filmgrain",
     "tonemapping", "paniniprojection", "probevolumesoptions", "whitebalance",
-    "defaultinputactions", "quaternion", "volume profile",
+    "defaultinputactions", "quaternion", "2dvector", "keyboard&mouse",
+    "volume profile",
     "liberation sans", "liberationsans sdf", "screen space", "ambient occlusion",
     "depth of field", "bloom", "vignette", "chromatic aberration", "lut", "color lut",
     "widescreen", "target framerate",
@@ -63,15 +72,33 @@ ENGINE_STRINGS = {
     # Unity Localization 表名
     "monologuetable", "dialoguetable", "uitable", "monologuetable shared data",
     "dialoguetable shared data", "uitable shared data",
-    # TMP/EmojiOne 表情名（精确匹配；与显示词歧义大的不放这里）
-    "smiley", "wink", "winking", "smirk", "blush", "grinning", "stuck out tongue",
-    "tongue", "kissing", "pensive", "weary", "grimacing", "sleeping", "sleepy",
-    "scream", "hugging", "thinking", "zipper mouth", "money mouth", "nerd",
-    "smiling imp", "imp", "skull", "poop", "sob", "cold sweat", "eye roll",
-    "smile cat", "joy cat", "yum", "dizzy", "astonished", "hushed", "sweat",
-    "laughing", "whaaat", "whaaat!", ".notdef",
+    # TMP/EmojiOne 表情名（组合词/专名——'face with tears of joy' 等完整
+    # 描述串在游戏显示文本中几乎不出现；普通英语单词如 imp/skull/sleeping
+    # 已移入门控层 ENGINE_GATED_STRINGS）
+    "stuck out tongue", "zipper mouth", "money mouth", "cold sweat", "eye roll",
+    "smile cat", "joy cat", "smiling imp", "face with tears of joy", ".notdef",
 }
 _ENGINE_STRINGS_LOWER = {s.strip().lower() for s in ENGINE_STRINGS}
+
+# 门控层：高歧义普通英语单词（独立出现时可能是真实显示文本）
+ENGINE_GATED_STRINGS = {
+    # Input System 绑定/动作名（'Press' 按钮文本、'Keyboard'/'Mouse' 控制
+    # 设置菜单标签同形；组合绑定 'Keyboard&Mouse' 带分隔符是确定性形态，
+    # 留在 ENGINE_STRINGS core 层）
+    "navigate", "joystick", "gamepad", "touch", "keyboard", "mouse",
+    "scrollwheel", "middleclick", "rightclick", "leftclick",
+    "trackeddeviceposition", "trackeddeviceorientation", "trackeddirection",
+    "pointer", "tap", "click", "press",
+    # TMP/EmojiOne 字符名中的普通英语单词（'Skull' 物品名/'Imp' 敌人名/
+    # 'Sleeping' 状态名/'Yum!' 对话词同形——审计 R2 实证误跳过）
+    "smiley", "wink", "winking", "smirk", "blush", "grinning", "tongue",
+    "kissing", "pensive", "weary", "grimacing", "sleeping", "sleepy", "scream",
+    "hugging", "thinking", "nerd", "imp", "skull", "poop", "sob", "yum",
+    "dizzy", "astonished", "hushed", "sweat", "laughing", "whaaat", "whaaat!",
+    # 后处理效果单词（设置菜单 'Bloom' 开关标签同形）
+    "bloom", "vignette", "lut",
+}
+_ENGINE_GATED_LOWER = {s.strip().lower() for s in ENGINE_GATED_STRINGS}
 # 前缀匹配引擎串（演示文本等带后缀的确定性内容；_is_engine_string 会先 strip 再匹配）
 _ENGINE_PREFIX = ("text -", "pts - lorem ipsum", "bitfield", "default sprite asset")
 
@@ -82,6 +109,12 @@ _ENGINE_NAMING_PATTERNS = [
     re.compile(r"^[a-z]+_[a-zA-Z0-9_]+$"),
     # PascalCase 数据/类名（FlashlightData、MonologueTable）
     re.compile(r"^[A-Z][a-z]+[A-Z][a-zA-Z0-9]*$"),
+    # Localization 表名语言变体（UITable_en / MonologueTable_es / monologue_table_es）：
+    # 表名+语言码命名猜测。从确定性桶（_ENGINE_PATTERNS）移入猜测桶——
+    # 「已验证 UI setter 消费」的 IL 数据流证据优先于本形态（F26 回归：
+    # 放 core 里把 set_text 消费的 UITable_en 也拦截了；而 I2 表键在
+    # raw scan 里仍由全量 is_engine_string 拦截，行为不变）。
+    re.compile(r"[Tt]able_[a-z]{2}$"),
 ]
 
 _ENGINE_PATTERNS = [
@@ -101,7 +134,6 @@ _ENGINE_PATTERNS = [
                r"relieved face|neutral face|expressionless face)", re.I),  # emoji 字符名
     re.compile(r"^[A-Za-z]+ \([a-z]{2,3}\)$"),                      # 语言名 English (en)
     re.compile(r"table shared data$", re.I),                        # Localization 表名 XxxTable Shared Data
-    re.compile(r"table_[a-z]{2}$", re.I),                           # 表名语言变体 MonologueTable_es
     # HTTP 协议状态行（websocket-sharp.dll 网络库内部串，非游戏文本）
     re.compile(r"^HTTP/\d(?:\.\d)? \d{3} [A-Za-z][A-Za-z ]*$", re.I),
     # Input System 序列化绑定路径（<Keyboard>/z、<Mouse>/position、<Gamepad>/leftStick）。
@@ -119,6 +151,12 @@ _ENGINE_PATTERNS = [
     re.compile(r"^(?:Activation|Animation|Audio|Control|Group|Marker|Playable|"
                r"Signal|Cinemachine) Track(?:\s*\(\d+\))?$", re.I),
     re.compile(r"^version=0\.0\.0\.0, culture=neutral", re.I),      # 程序集限定名尾部
+    # Unity Shader 路径名（Shader.Find 查找键）：Hidden/ 前缀是引擎内置
+    # 隐藏 shader 的惯例（Hidden/Post FX/FXAA 等后处理链）。翻译后
+    # Shader.Find 找不到 → 材质空 → 渲染崩溃（tiiny-ragdoll 实证：
+    # '隐藏/后期处理/FXAA' → PostProcessing OnRenderImage 每帧抛异常
+    # → 启动卡死）。仅 Hidden/ 前缀（引擎惯例最确定，防过宽）。
+    re.compile(r"^Hidden/", re.I),
 ]
 
 _DISPLAY_WORD = re.compile(r"[A-Za-zÀ-ÖØ-öø-ÿА-Яа-я]{2,}")
@@ -418,12 +456,56 @@ def is_engine_string_core(s: str) -> bool:
     return any(p.search(s2) for p in _ENGINE_PATTERNS)
 
 
+def is_engine_string_gated(s: str) -> bool:
+    """门控层引擎串判定：高歧义普通英语单词（输入词/emoji 字符名/后处理
+    效果单词）精确匹配。
+
+    调用方决定门控策略：
+    - DLL 侧（mono_dll）无对象级显示证据系统，只有 IL 验证链——gated 词
+      在未验证时无条件拦截（绑定名/枚举名形态，'press'/'mouse' 独立 ldstr
+      大多是代码串）；
+    - rawstr 侧（extractor）有对象级显示证据（句子/交互提示/白名单词/
+      控件信号）——gated 词不在此层拦截，流入分类链按证据放行（审计 R2：
+      'Skull' 物品名/'Imp' 敌人名/'Sleeping' 状态名曾被全局词表误跳过）。
+    """
+    return s.strip().lower() in _ENGINE_GATED_LOWER
+
+
 def is_engine_string(s: str) -> bool:
     """引擎内部字符串判定：着色器属性、序列化引用、程序集限定名、已知引擎字符串。"""
     if is_engine_string_core(s):
         return True
     s2 = s.strip()
     return any(p.search(s2) for p in _ENGINE_NAMING_PATTERNS)
+
+
+def display_evidence_tier(text: str) -> str:
+    """统一显示证据档位判定（审计 R3 收敛三套阈值）：sentence / phrase /
+    word / none。
+
+    历史问题：_has_sentence_shape（≥10 字符含空格即句子）、has_display_
+    text_evidence（≥3 词）、_SENTENCE_PUNCT 三套阈值互不一致——同一文本
+    在不同路径判定不同（'Player Idle'/'White Flash' 等 2 词引擎配置名被
+    10 字符规则误判句子放行；'New Game'/'Load game' 等 2 词按钮文本卡
+    在 3 词阈值下）。收敛为单一权威函数，调用方按需取档：
+    - sentence：句末标点或 ≥3 词——真实句子/对话/教程形态，可独立放行；
+    - phrase：2 词（无标点）——按钮/菜单短文本（'New Game'/'Press
+      Start'），需对象级证据配合放行（组件对象/UI 控件/白名单）；
+    - word：单词（无空格）——需白名单/对象级证据配合放行；
+    - none：无语言内容（空串；纯代码形态由调用方先行排除）。
+    2 词短语（'Player Idle'/'Arrow Keys'/'Grass Shader'）不凭文本形态
+    放行——它们与 'Press Start'/'New Game' 文本层面不可区分，只能靠
+    对象级证据（所在对象是引擎配置还是 UI 元素）区分。
+    """
+    stripped = text.strip()
+    if not stripped:
+        return "none"
+    words = _DISPLAY_WORD.findall(stripped)
+    if _SENTENCE_PUNCT.search(stripped) or len(words) >= 3:
+        return "sentence"
+    if len(words) >= 2:
+        return "phrase"
+    return "word"
 
 
 def has_display_text_evidence(text: str) -> bool:
@@ -433,8 +515,7 @@ def has_display_text_evidence(text: str) -> bool:
         return False
     if is_interaction_prompt(stripped):
         return True
-    words = _DISPLAY_WORD.findall(stripped)
-    return bool(_SENTENCE_PUNCT.search(stripped) or len(words) >= 3)
+    return display_evidence_tier(stripped) == "sentence"
 
 
 def is_interaction_prompt(text: str) -> bool:

@@ -84,6 +84,15 @@ namespace Hanhua.FontFallback
             new HashSet<string>(StringComparer.Ordinal);
         private readonly List<RuntimeTranslationTemplate> runtimeTemplates =
             new List<RuntimeTranslationTemplate>();
+        // W3 运行时排除表（translations-exclude.json）：静态写回被回退
+        // （保留原文防断链）的逻辑键原文——插件把这些串再翻译成中文 →
+        // 游戏按原名查找断链（按键失灵）。exact 按原文精确匹配；
+        // normalized 按 NormalizeRuntimeText 归一后匹配（与翻译查找同
+        // 归一规则，排除表里带换行/首尾空格的原文同样被拦）。
+        private readonly HashSet<string> excludedTranslations =
+            new HashSet<string>(StringComparer.Ordinal);
+        private readonly HashSet<string> excludedNormalizedTranslations =
+            new HashSet<string>(StringComparer.Ordinal);
         private readonly Dictionary<int, TranslationApplicationState>
             translationApplicationStates =
                 new Dictionary<int, TranslationApplicationState>();
@@ -536,7 +545,7 @@ namespace Hanhua.FontFallback
             });
         }
 
-        private static object[] BuildTmpFactoryArguments(
+        private object[] BuildTmpFactoryArguments(
             MethodInfo method,
             object firstArgument)
         {
@@ -581,6 +590,16 @@ namespace Hanhua.FontFallback
                 {
                     arguments[index] = true;
                 }
+                else if (type == typeof(Shader))
+                {
+                    // CreateFontAsset 带 shader 参数的重载（TMP 3.x 完整
+                    // 版）。此前落入 Activator.CreateInstance → Shader 无
+                    // 公共无参构造 → 重载必然失败；且 TMP 1 参数版内部
+                    // 从 TMP_Settings 拿 shader，游戏无默认字体时为 null
+                    // → 动态字体创建失败 → 中文文本无字形消失
+                    // （deepest-sword 实证）。显式解析 SDF shader。
+                    arguments[index] = ResolveTmpSdfShader();
+                }
                 else
                 {
                     arguments[index] = Activator.CreateInstance(type);
@@ -588,6 +607,79 @@ namespace Hanhua.FontFallback
             }
 
             return arguments;
+        }
+
+        private Shader ResolveTmpSdfShader()
+        {
+            // TMP 动态字体创建需要 SDF shader。查找顺序：显式 Shader.Find
+            // （TMP 3.x 经典路径）→ TMP_Settings 默认字体的材质 shader →
+            // 已加载 TMP 材质的 shader 借用。全部失败返回 null——TMP
+            // CreateFontAsset 抛 shader null 异常（deepest-sword 实证：
+            // 游戏无 TMP 默认字体时 CreateFontAsset(Font) 内部 shader 为
+            // null → 动态字体创建失败 → TMP 适配器 failed → 场景中文
+            // 文本无字形显示为空/消失）。
+            Shader shader = Shader.Find("TextMeshPro/Distance Field");
+            if (shader != null)
+            {
+                return shader;
+            }
+            shader = Shader.Find("TextMeshPro/Mobile/Distance Field");
+            if (shader != null)
+            {
+                return shader;
+            }
+            try
+            {
+                if (tmpSettingsType != null)
+                {
+                    PropertyInfo property = tmpSettingsType.GetProperty(
+                        "defaultFontAsset",
+                        BindingFlags.Public | BindingFlags.Static);
+                    if (property != null)
+                    {
+                        object defaultFontAsset = property.GetValue(null, null);
+                        if (defaultFontAsset != null)
+                        {
+                            PropertyInfo materialProperty = defaultFontAsset
+                                .GetType().GetProperty(
+                                    "material",
+                                    BindingFlags.Public | BindingFlags.Instance);
+                            if (materialProperty != null)
+                            {
+                                Material material = materialProperty.GetValue(
+                                    defaultFontAsset, null) as Material;
+                                if (material != null && material.shader != null)
+                                {
+                                    return material.shader;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception exception)
+            {
+                Logger.LogWarning(
+                    "TMP default font shader lookup failed: " + exception);
+            }
+            try
+            {
+                foreach (Material material in Resources.FindObjectsOfTypeAll<Material>())
+                {
+                    if (material != null && material.shader != null
+                        && material.shader.name.IndexOf(
+                            "TextMeshPro", StringComparison.OrdinalIgnoreCase) >= 0)
+                    {
+                        return material.shader;
+                    }
+                }
+            }
+            catch (Exception exception)
+            {
+                Logger.LogWarning(
+                    "TMP material shader scan failed: " + exception);
+            }
+            return null;
         }
 
         private static void SetOptionalProperty(object target, string name, object value)
@@ -615,6 +707,7 @@ namespace Hanhua.FontFallback
             normalizedTranslations.Clear();
             conflictingNormalizedTranslations.Clear();
             runtimeTemplates.Clear();
+            LoadExclusionTable();
             if (!File.Exists(path))
             {
                 Logger.LogInfo("EXACT_TRANSLATIONS_READY count=0 file=missing");
@@ -632,6 +725,35 @@ namespace Hanhua.FontFallback
             BuildNormalizedTranslations();
             LoadRuntimeTemplates();
             Logger.LogInfo("EXACT_TRANSLATIONS_READY count=" + exactTranslations.Count);
+        }
+
+        private void LoadExclusionTable()
+        {
+            excludedTranslations.Clear();
+            excludedNormalizedTranslations.Clear();
+            string path = Path.Combine(pluginDirectory, "translations-exclude.json");
+            if (!File.Exists(path))
+            {
+                Logger.LogInfo("TRANSLATIONS_EXCLUDED count=0 file=missing");
+                return;
+            }
+            string payload = File.ReadAllText(path, new UTF8Encoding(false, true));
+            int cursor = 0;
+            List<string> excluded = ReadJsonStringArray(payload, ref cursor);
+            foreach (string value in excluded)
+            {
+                if (value.Length == 0)
+                {
+                    continue;
+                }
+                excludedTranslations.Add(value);
+                string normalized = NormalizeRuntimeText(value);
+                if (normalized.Length > 0)
+                {
+                    excludedNormalizedTranslations.Add(normalized);
+                }
+            }
+            Logger.LogInfo("TRANSLATIONS_EXCLUDED count=" + excludedTranslations.Count);
         }
 
         private void BuildNormalizedTranslations()
@@ -1669,6 +1791,7 @@ namespace Hanhua.FontFallback
             string translated;
             TranslationMatchMode matchMode;
             if (string.IsNullOrEmpty(current)
+                || IsExcludedTranslation(current)
                 || (!TryGetExactTranslation(current, out translated)
                     && !TryGetNormalizedTranslation(current, out translated)
                     && !TryGetUniqueTemplateTranslation(current, out translated))
@@ -1734,6 +1857,13 @@ namespace Hanhua.FontFallback
                 + translationApplicationsByTargetAndMode[
                     (int)target, (int)TranslationMatchMode.Template]
                 + "}";
+        }
+
+        private bool IsExcludedTranslation(string current)
+        {
+            return excludedTranslations.Contains(current)
+                || excludedNormalizedTranslations.Contains(
+                    NormalizeRuntimeText(current));
         }
 
         private bool TryGetExactTranslation(string current, out string translated)

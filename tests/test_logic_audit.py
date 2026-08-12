@@ -175,17 +175,38 @@ class TestLogicKeyEvidence:
 
     def test_code_object_compare_word_reverts(self):
         from hanhua.core.unity.logic_audit import logic_key_evidence
-        # 代码对象（结构跳过身份）中的比较词 = 代码按字符串分发键
-        verdict = logic_key_evidence("Continue",
-                                     {"structural_reason": "code_heavy_identifier"})
+        # 代码对象（结构跳过身份）中的比较词 = 代码按字符串分发键。
+        # W1 回归：权威键是 reason（extractor 分类链写入），旧的
+        # structural_reason 已被 pop——必须断言 reason 路径触发。
+        verdict = logic_key_evidence(
+            "Continue", {"reason": "code_heavy_identifier",
+                         "role": "structural"})
         assert verdict and verdict[0] == "revert"
         assert verdict[1].startswith("logic_key_in_code_object")
 
     def test_input_binding_object_camel_reverts(self):
         from hanhua.core.unity.logic_audit import logic_key_evidence
-        verdict = logic_key_evidence("moveForward",
-                                     {"structural_reason": "input_binding"})
+        verdict = logic_key_evidence(
+            "moveForward", {"reason": "input_binding", "role": "structural"})
         assert verdict and verdict[0] == "revert"
+
+    def test_unityevent_object_reason_reverts(self):
+        from hanhua.core.unity.logic_audit import logic_key_evidence
+        # W1 回归：unityevent_object 分支此前因值域不匹配从不触发
+        verdict = logic_key_evidence(
+            "OnClick", {"reason": "unityevent_object", "role": "structural"})
+        assert verdict and verdict[0] == "revert"
+        assert verdict[1] == "unityevent_binding"
+
+    def test_obj_is_key_list_signal_reverts_missed_display(self):
+        from hanhua.core.unity.logic_audit import logic_key_evidence
+        # W1 补强：识别层漏放（判成 display）但对象是键清单时，写回侧
+        # 仍按键处置——防「结构串洗白」裸奔
+        verdict = logic_key_evidence(
+            "moveForward", {"reason": "natural_language",
+                            "role": "display", "obj_is_key_list": True})
+        assert verdict and verdict[0] == "revert"
+        assert verdict[1].startswith("logic_key_in_code_object")
 
     def test_identifier_without_context_reports(self):
         from hanhua.core.unity.logic_audit import logic_key_evidence
@@ -213,15 +234,20 @@ class TestRepeatConsistency:
     """同原文互斥一致性（防「译文+原文」混排断链）。"""
 
     @staticmethod
-    def _entry(original, translation, offset, structural=None):
-        return ({"original": original, "translation": translation},
-                {"obj": 7, "offset": offset, "structural_reason": structural})
+    def _entry(original, translation, offset, role=None, reason=None):
+        meta = {"obj": 7, "offset": offset}
+        if role is not None:
+            meta["role"] = role
+        if reason is not None:
+            meta["reason"] = reason
+        return ({"original": original, "translation": translation}, meta)
 
     def test_structural_skip_reverts_whole_group(self):
         from hanhua.core.unity.logic_audit import audit_repeat_consistency
         items = [
-            self._entry("Splash", "画面", 100),                       # 要翻译
-            self._entry("Splash", "Splash", 140, structural="code_line"),  # 键身份
+            self._entry("Splash", "画面", 100),                  # 要翻译
+            self._entry("Splash", "Splash", 140,
+                        role="structural", reason="code_line"),  # 键身份
         ]
         records = audit_repeat_consistency(items)
         assert records and records[0]["action"] == "all_reverted"
@@ -268,3 +294,95 @@ class TestStringLengthHeaders:
         problems = verify_string_length_headers(
             bytes(raw), {"Settings": "设置"})
         assert problems and any("长度头" in p for p in problems)
+
+
+class TestTypetreeLogicKeyEvidence:
+    """W2：typetree 分支反向语义审计（字段路径信号 + 值形态）。"""
+
+    def _meta(self, field_path, **extra):
+        meta = {"obj": 9, "field_path": field_path}
+        meta.update(extra)
+        return meta
+
+    def test_unityevent_method_name_field_path_reverts(self):
+        from hanhua.core.unity.logic_audit import typetree_logic_key_evidence
+        # m_MethodName 不在 _IMMUTABLE_FIELD_NAMES（W2 缺口），但字段路径
+        # 信号必须拦截——反射按名绑定，翻译即断绑（按钮无反应）。
+        verdict = typetree_logic_key_evidence(
+            self._meta(["m_OnClick", "m_PersistentCalls", "m_Calls",
+                        0, "m_MethodName"]), "OnClick")
+        assert verdict and verdict[0] == "revert"
+        assert verdict[1] == "unityevent_binding"
+
+    def test_target_assembly_type_name_reverts(self):
+        from hanhua.core.unity.logic_audit import typetree_logic_key_evidence
+        # m_Target 下的 m_TargetAssemblyTypeName：类型引用字符串（UnityEvent
+        # 持久化监听器的程序集限定类型名）——save_typetree 依赖。
+        verdict = typetree_logic_key_evidence(
+            self._meta(["m_OnClick", "m_PersistentCalls", "m_Calls",
+                        0, "m_TargetAssemblyTypeName"]),
+            "UnityEngine.UI.Button, UnityEngine.UI")
+        assert verdict and verdict[0] == "revert"
+
+    def test_type_descriptor_value_reverts(self):
+        from hanhua.core.unity.logic_audit import typetree_logic_key_evidence
+        # 类型描述符值经 typetree 字段写入——save_typetree 反序列化依赖，
+        # 翻译即 Referenced type not found。
+        verdict = typetree_logic_key_evidence(
+            self._meta(["m_Type"]), "System.Boolean, mscorlib")
+        assert verdict and verdict[0] == "revert"
+        assert verdict[1] == "type_descriptor"
+
+    def test_key_env_code_shape_reverts(self):
+        from hanhua.core.unity.logic_audit import typetree_logic_key_evidence
+        verdict = typetree_logic_key_evidence(
+            self._meta(["m_Property"], obj_is_key_list=True), "moveForward")
+        assert verdict and verdict[0] == "revert"
+        assert verdict[1].startswith("logic_key_in_code_object")
+
+    def test_camel_without_context_reports(self):
+        from hanhua.core.unity.logic_audit import typetree_logic_key_evidence
+        verdict = typetree_logic_key_evidence(
+            self._meta(["m_Text"]), "isReady")
+        assert verdict and verdict[0] == "report"
+        assert verdict[1] == "camel_case"
+
+    def test_display_text_passes(self):
+        from hanhua.core.unity.logic_audit import typetree_logic_key_evidence
+        assert typetree_logic_key_evidence(
+            self._meta(["m_Text"]), "Welcome to the game") is None
+        assert typetree_logic_key_evidence(self._meta([]), "") is None
+
+
+class TestWritebackAuditSeverityLink:
+    """W4：warn 级形态 + 键环境 → 审计报告如实标注 revert（联动跳过）。"""
+
+    def test_warn_shape_in_key_env_marks_revert(self):
+        from hanhua.core.unity.logic_audit import audit_entries_before_writeback
+        records = audit_entries_before_writeback([{
+            "key_path": "obj/field",
+            "original": "moveForward",
+            "translation": "前进",
+            "meta": '{"reason": "code_line", "obj_is_key_list": true}',
+        }])
+        assert records and records[0]["severity"] == "revert"
+
+    def test_warn_shape_in_plain_object_stays_warn(self):
+        from hanhua.core.unity.logic_audit import audit_entries_before_writeback
+        records = audit_entries_before_writeback([{
+            "key_path": "obj/field",
+            "original": "isReady",
+            "translation": "就绪",
+            "meta": '{"reason": "natural_language"}',
+        }])
+        assert records and records[0]["severity"] == "warn"
+
+    def test_note_shape_never_marks_revert(self):
+        from hanhua.core.unity.logic_audit import audit_entries_before_writeback
+        records = audit_entries_before_writeback([{
+            "key_path": "obj/field",
+            "original": "continue",
+            "translation": "继续",
+            "meta": '{"obj_is_key_list": true}',
+        }])
+        assert records and records[0]["severity"] == "note"

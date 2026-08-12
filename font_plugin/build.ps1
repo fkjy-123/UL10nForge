@@ -181,7 +181,6 @@ try {
 
     $referencePaths = @(
         (Join-Path $managedDirectory 'mscorlib.dll'),
-        (Join-Path $managedDirectory 'netstandard.dll'),
         (Join-Path $managedDirectory 'System.dll'),
         (Join-Path $managedDirectory 'System.Core.dll'),
         (Join-Path $managedDirectory 'UnityEngine.dll'),
@@ -191,6 +190,15 @@ try {
         $textMeshProCandidates[0],
         (Join-Path $runtimeDirectory 'BepInEx\core\BepInEx.dll')
     )
+    # netstandard.dll 仅 .NET 4.x 配置的 Managed 目录存在（Unity 2018.1+
+    # 的 .NET 4.x 模式）；CLR 2.0（.NET 3.5，Unity 2018.2 及更早默认）下
+    # 没有——可选引用，保证老 Unity 也能编译。产物引用游戏 mscorlib：
+    # 用 CLR 2.0 游戏编译产出 mscorlib 2.0 引用，所有 Unity（CLR 4.0
+    # 兼容 2.0 目标）通用。
+    $netstandardPath = Join-Path $managedDirectory 'netstandard.dll'
+    if (Test-Path -LiteralPath $netstandardPath -PathType Leaf) {
+        $referencePaths += $netstandardPath
+    }
     $missingReferences = @(
         $referencePaths | Where-Object { -not (Test-Path -LiteralPath $_ -PathType Leaf) }
     )
@@ -225,6 +233,24 @@ try {
     & dotnet @compilerArguments
     if ($LASTEXITCODE -ne 0 -or -not (Test-Path -LiteralPath $temporaryOutput -PathType Leaf)) {
         throw "Roslyn compilation failed with exit code $LASTEXITCODE"
+    }
+
+    # 产物 mscorlib 引用必须 ≤ 2.0（CLR 2.0 老 Unity 兼容）；否则部署到
+    # 2018.2 等 .NET 3.5 游戏会 TypeLoadException（tiiny-ragdoll 实证）。
+    $probeAssembly = [Reflection.Assembly]::ReflectionOnlyLoadFrom($temporaryOutput)
+    $probeMscorlib = @(
+        $probeAssembly.GetReferencedAssemblies() |
+            Where-Object { $_.Name -eq 'mscorlib' }
+    )
+    if ($probeMscorlib.Count -ne 1) {
+        throw 'Compiled plugin has no single mscorlib reference; cannot verify CLR compatibility'
+    }
+    if ($probeMscorlib[0].Version.Major -gt 2) {
+        throw (
+            'Compiled plugin targets mscorlib ' + $probeMscorlib[0].Version +
+            '; CLR 2.0 games (Unity 2018.2 / .NET 3.5) cannot load it. ' +
+            'Rebuild with a Unity 2018.2 game directory'
+        )
     }
 
     $outputDirectory = [System.IO.Path]::GetFullPath(

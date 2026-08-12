@@ -7,6 +7,7 @@ from typing import Callable
 from urllib.parse import quote, unquote
 
 from hanhua.core.engine_strings import (CORE_MENU_SOURCE_TERMS,
+                                         display_evidence_tier,
                                          has_display_text_evidence,
                                         is_code_action_binding,
                                         is_engine_string,
@@ -24,8 +25,6 @@ from hanhua.core.scanner import (_has_unity_bundle_magic, _is_runtime_file,
                                  _walk_files)
 import re as _re
 
-# 句子形态：标点结尾（真正的显示文本，如 'BOSS: ...'、'Hello!'）
-_SENTENCE_END = _re.compile(r"[.!?:，。！？;；]$")
 _METHOD_NAME = _re.compile(r"^(?:get|set)_[A-Za-z_][A-Za-z0-9_]*$")
 # InputSystem action 路径（Section/Action，每段 1-2 个标识符词）：
 # Player/Move、Menu/dPadHoriz、Debug/Warp 0、Forward/Back Tilt。
@@ -460,7 +459,8 @@ def _typetree_string_entries(
         for _, text, normalized, blocked in leaves)
 
     def append(kind: str, path: list[str | int], text: str, reason: str,
-               confidence: str, status: str, role: str) -> None:
+               confidence: str, status: str, role: str,
+               extra_meta: dict | None = None) -> None:
         meta = {
             "kind": kind, "obj": obj_path_id, "field_path": path,
             "confidence": confidence, "role": role,
@@ -468,6 +468,8 @@ def _typetree_string_entries(
             "reason": reason,
             "obj_has_values": has_value_evidence,
         }
+        if extra_meta:
+            meta.update(extra_meta)
         if asset_file_name:
             meta["asset_file"] = asset_file_name
         target = display if role == "display" else candidates
@@ -476,6 +478,9 @@ def _typetree_string_entries(
             key_path=f"{prefix}/field/{_encode_field_path(path)}",
             original=text, status=status, meta=meta))
 
+    # R5 留档：键/标识符/结构值/类型引用不再静默 continue（限量样本 +
+    # skipped_count 承载真实总数），typetree 候选层同理。
+    prefilter_counts: dict[str, int] = {}
     for path, text, normalized, blocked in leaves:
         if blocked:
             continue
@@ -485,7 +490,16 @@ def _typetree_string_entries(
                    "high", "pending", "display")
         elif (should_skip(text) or is_hard_structural(text)
               or _looks_like_type_descriptor(text)):
-            continue        # 键/标识符/结构值/类型引用：不产生条目
+            prefilter = ("key_identifier" if should_skip(text)
+                         else "hard_structural" if is_hard_structural(text)
+                         else "type_descriptor")
+            count = prefilter_counts[prefilter] = \
+                prefilter_counts.get(prefilter, 0) + 1
+            if count <= _PREFILTER_SAMPLE_LIMIT:
+                append("typetree_prefilter", path, text,
+                       f"prefilter_{prefilter}", "low", STATUS_SKIPPED,
+                       "candidate", {"prefilter": prefilter,
+                                     "skipped_count": count})
         elif (_has_sentence_shape(stripped) or has_display_text_evidence(text)
               or has_value_evidence):
             append("typetree", path, text, "typetree_display_evidence",
@@ -656,9 +670,42 @@ def _structural_reason(text: str) -> str | None:
 
 
 def _has_sentence_shape(text: str) -> bool:
-    stripped = text.strip()
-    return bool(_SENTENCE_END.search(stripped) or
-                (len(stripped) >= 10 and " " in stripped))
+    # R3 统一阈值：句子档 = 句末标点或 ≥3 词（display_evidence_tier）。
+    # 旧的「≥10 字符含空格即句子」把 'Player Idle'/'White Flash'/'Grass
+    # Shader'（2 词引擎配置名）误判为句子放行；2 词短语归 phrase 档，
+    # 由对象级证据（组件对象/UI 控件/白名单）决定放行与否。
+    return display_evidence_tier(text.strip()) == "sentence"
+
+
+# R5：预过滤留档样本上限——每对象每原因最多保留 N 条样本条目（防止
+# 键列表对象/引擎串密集对象条目爆炸），完整计数由首条样本的
+# skipped_count 承载，报告按 reason 聚合可得真实总数。
+_PREFILTER_SAMPLE_LIMIT = 10
+
+
+def _prefilter_entry(file_id: str, obj_path_id: int, idx: int, offset: int,
+                     text: str, prefilter: str, count: int,
+                     asset_file_name: str = "") -> TextEntry:
+    """预过滤留档条目（审计 R5）：被引擎串/键标识符/高频串过滤的字符串
+    不再静默丢弃，产生限量样本（status=skipped，role=structural）供审计。
+
+    count = 该对象内同 prefilter 原因的累计跳过数；首条样本携带
+    skipped_count，报告按 reason 聚合即得真实总数（样本数不等于总数）。
+    """
+    prefix = (f"asset#{asset_file_name}#{obj_path_id}"
+              if asset_file_name else f"asset#{obj_path_id}")
+    meta = {
+        "kind": "rawstr", "obj": obj_path_id, "offset": offset,
+        "confidence": "low", "role": "structural",
+        "disposition": "structural",
+        "reason": f"prefilter_{prefilter}",
+        "prefilter": prefilter,
+        "skipped_count": count,
+    }
+    if asset_file_name:
+        meta["asset_file"] = asset_file_name
+    return TextEntry(file_id=file_id, key_path=f"{prefix}/str/{idx}",
+                     original=text, status=STATUS_SKIPPED, meta=meta)
 
 
 def _is_scriptable_object_shape(raw: bytes) -> bool:
@@ -688,6 +735,9 @@ def _raw_string_entries(file_id: str, obj_path_id: int, raw: bytes,
        在无值特征的配置/代码型对象（InputActionAsset、UI 样式等）里是
        绑定名/枚举名/引擎名——游戏按原名查找，翻译必然破坏功能（输入失效）。
        值特征 = 对象含 Localization 标记，或含句子形态字符串（标点结尾或长句）。
+    5) 预过滤（引擎串/键风格标识符/全游戏高频串）不静默丢弃（R5）：产生
+       限量样本条目（status=skipped，带 reason）供审计——用户能区分
+       「日志/键」与「该翻未翻」，且对象级统计可告警（消灭哑信号）。
     """
     aligned = scan_strings(raw)
     recovered = _scan_unaligned_display_strings(
@@ -710,6 +760,7 @@ def _raw_string_entries(file_id: str, obj_path_id: int, raw: bytes,
     seen: dict[str, int] = {}
     entries: list[TextEntry] = []
     non_engine: list[str] = []
+    prefilter_counts: dict[str, int] = {}
     for idx, offset, s in scanned:
         seen[s] = seen.get(s, 0) + 1
         is_last = seen[s] == counts[s]
@@ -721,12 +772,29 @@ def _raw_string_entries(file_id: str, obj_path_id: int, raw: bytes,
             interaction_prompt
             or (structural_reason is None and has_display_text_evidence(s))
         )
+        # R5 预过滤留档：引擎串/键风格标识符/全游戏高频串不再静默 continue。
+        # 产生限量样本条目（status=skipped，带 reason）供审计与报告聚合
+        # ——用户能区分「日志/键（该跳）」与「该翻未翻（误跳）」（审计 R5：
+        # the-supper 893 条 unverified 零告警的机制根源是静默丢弃）。
+        # 注意：should_skip/freq 串仍进 non_engine（与原语义一致——它们是
+        # 对象字符串池成员，贡献对象级值证据；只有引擎串不进池）。
         if _is_engine_string(s) and structural_reason is None:
-            continue
-        non_engine.append(s)
-        if should_skip(s) and structural_reason is None:
-            continue
-        if freq.get(s, 0) >= 40 and not strong_display_evidence:
+            prefilter = "engine_string"
+        else:
+            non_engine.append(s)
+            if should_skip(s) and structural_reason is None:
+                prefilter = "key_identifier"
+            elif freq.get(s, 0) >= 40 and not strong_display_evidence:
+                prefilter = "high_frequency"
+            else:
+                prefilter = None
+        if prefilter is not None:
+            count = prefilter_counts[prefilter] = \
+                prefilter_counts.get(prefilter, 0) + 1
+            if count <= _PREFILTER_SAMPLE_LIMIT:
+                entries.append(_prefilter_entry(
+                    file_id, obj_path_id, idx, offset, s,
+                    prefilter, count, asset_file_name))
             continue
         # 非键风格显示文本每次出现都 pending。原“首键末值”规则（首次=键、
         # 末次=值）只对 I2/Localization 字典（has_marker）有意义——其键是
@@ -801,9 +869,21 @@ def _raw_string_entries(file_id: str, obj_path_id: int, raw: bytes,
     is_shared_resource = not (
         asset_file_name and Path(asset_file_name).name.casefold().startswith("level"))
     small_words = {s.strip() for s in non_engine if s.strip()}
-    # ScriptableObject 形态（无 m_GameObject）才可能是引擎配置；场景组件
-    # 即使单短词也是显示文本（UI 脚本，如 'Battery'），不触发本规则。
-    is_small_config_object = (
+    # UI 控件配置对象信号：串池含 UI 控件词缀（Button/Label 等）——对象是
+    # UI 元素配置（Corgi Engine 按钮实证 the-supper obj 1643：对象名
+    # 'NewGameButton' + 按钮文本 'New Game'）。控件词缀是显式形态证据，
+    # 优先于「小配置对象=引擎键」的对象级猜测（证据分层，审计 R1）：
+    # 该对象里的普通词串是按钮/标签显示文本，必须放行翻译。
+    # 词缀只取最强形态（Button/Label）——menu/screen/panel 等歧义词（可能
+    # 是场景对象名/引擎资源名）不纳入，防过宽。
+    ui_control_signal = any(
+        s.strip().casefold().endswith(("button", "btn", "label"))
+        for _, _, s in scanned)
+    # 小配置对象形态判定（无豁免的原始条件）：ScriptableObject 形态 +
+    # 共享资源 + ≤2 个非句子短词。豁免（ui_control_signal/ui_word_signal）
+    # 只在本形态内生效——绑定名对象（down/left/right，InputActionAsset
+    # 非 ScriptableObject 头部）里白名单词仍是键，不得豁免。
+    is_small_config_shape = (
         _is_scriptable_object_shape(raw)
         and is_shared_resource
         and not has_marker
@@ -811,6 +891,21 @@ def _raw_string_entries(file_id: str, obj_path_id: int, raw: bytes,
         and all(
             not _has_sentence_shape(s) and len(s) <= 16
             for s in small_words))
+    # 白名单显示词证据：小配置形态对象中任一词在显式显示词白名单
+    # （Pause/Menu/Save/Load/Language/Off/Talk 等 UI 界面词）——该对象
+    # 是 UI 配置（Corgi Engine UIMenu 面板实证 the-supper obj 1755
+    # 'Pause'+'Menu'），其词串是界面文本。白名单词是显式显示词证据
+    # （形态性），不得被「小配置=引擎键」的猜测性规则推翻（证据分层）；
+    # 引擎配置名（'Timothy'/'Player Idle'/'White Flash'）不在白名单，
+    # 不受影响。
+    ui_word_signal = is_small_config_shape and any(
+        s.strip().casefold() in DISPLAY_WORDS for s in small_words)
+    # 引擎配置对象（无豁免的小配置形态）：Timeline 剪辑名/动画状态名
+    # 不含控件词缀且不在白名单，仍按配置跳过。
+    is_small_config_object = (
+        is_small_config_shape
+        and not ui_control_signal
+        and not ui_word_signal)
 
     # 对象级键列表判定：键列表对象中的标识符全部降级为 skipped（写回也据此跳过）。
     # 单词式写法（CREDITOS / Settings）是显示值不算键风格标识符——避免西语等
@@ -839,6 +934,11 @@ def _raw_string_entries(file_id: str, obj_path_id: int, raw: bytes,
     is_core_menu_control = len(control_states) >= 3
     is_single_visible = len(scanned) == 1 and len(entries) == 1
     for entry in entries:
+        # R5：预过滤留档条目（prefilter_*）的 reason/role 已由
+        # _prefilter_entry 定稿，不再走分类链（否则会被
+        # duplicate_key_position 等后处理覆盖）。
+        if entry.meta.get("prefilter"):
+            continue
         reason = entry.meta.pop("structural_reason", None)
         stripped = entry.original.strip()
         if reason:
@@ -971,13 +1071,20 @@ def _raw_string_entries(file_id: str, obj_path_id: int, raw: bytes,
         elif _IDENTIFIER.match(stripped):
             if (stripped.casefold() in DISPLAY_WORDS
                     and stripped.casefold() not in control_states
-                    and direct_code_signal_count >= 1):
+                    and (direct_code_signal_count >= 1
+                         or ui_control_signal
+                         or ui_word_signal)):
                 # 显示词白名单仅在「真实组件对象」中优先于通用标识符规则
                 # （0.25.0 地毯式实证：a-catfiends 的 Save/Load/Rewind 按钮
                 # 在「单显示词+类型引用」对象（MonoBehaviour 组件实例）里被
                 # 通用标识符规则误杀——组件含 type_reference 信号 = 组件实例
                 # 证据，其白名单词是按钮文本；无组件信号的纯字符串对象
                 # （绑定名 down/left/right）中白名单词仍是键，维持跳过）。
+                # UI 控件词缀信号（ui_control_signal，the-supper 实证
+                # QuitButton 对象里的 'Quit'）与白名单显示词信号
+                # （ui_word_signal，UIMenu 面板 'Pause'+'Menu' 实证）与
+                # 组件信号同等权重——对象名含 Button/Label 或对象词串
+                # 是白名单 UI 词即 UI 元素配置，白名单词是按钮/标签文本。
                 reason = "display_phrase"
                 confidence, role = "medium", "display"
             else:

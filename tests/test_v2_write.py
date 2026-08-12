@@ -135,7 +135,7 @@ def test_write_all_installs_font_in_staging_before_commit(tmp_path, monkeypatch)
         family="Test Font",
     )
 
-    def install(game, staging, config, *, translations):
+    def install(game, staging, config, *, translations, exclude):
         nonlocal seen_staging
         seen_staging = staging
         assert game == proj.game_dir
@@ -146,6 +146,8 @@ def test_write_all_installs_font_in_staging_before_commit(tmp_path, monkeypatch)
         assert config.enabled is True
         assert config.filename == "test-font.ttf"
         assert translations == {runtime_original: "已翻译"}
+        # W3：写回回退的逻辑键原文传给插件排除表（本场景无回退 → 空集）
+        assert exclude == set()
         assert all(done < total for done, total in progress)
         (staging / "font-installed.marker").write_text("installed", encoding="utf-8")
         return font_result
@@ -1058,3 +1060,18 @@ def test_write_all_blocks_when_translation_does_not_fit_file_encoding(
     assert marker.read_text(encoding="utf-8") == "old output"
     assert not list(project.out_dir.parent.glob(
         f".{project.out_dir.name}.staging-*"))
+
+
+def test_write_result_tracks_reverted_sources_complete():
+    """W3：逻辑回退的原文集合必须完整记录（插件排除表数据源），
+    不随 30 条摘要截断。"""
+    from hanhua.core.unity.writer import WriteResult
+    result = WriteResult()
+    for i in range(50):
+        result.note_logic_reverted(
+            {"original": f"Key{i}", "translation": f"键{i}"}, "code_line")
+    assert result.logic_reverted == 50
+    assert len(result.logic_reverted_items) == 30       # 摘要截断
+    assert len(result.logic_reverted_sources) == 50     # 完整集合
+    assert "Key0" in result.logic_reverted_sources
+    assert "Key49" in result.logic_reverted_sources

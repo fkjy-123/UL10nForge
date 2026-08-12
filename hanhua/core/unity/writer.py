@@ -136,6 +136,9 @@ class WriteResult:
     logic_mismatches: list[str] = field(default_factory=list)  # 重开逻辑验证失败（字符串边界）
     logic_reverted: int = 0        # 反向语义审计自动回退条目数（译文→原文，防逻辑键断链）
     logic_reverted_items: list[str] = field(default_factory=list)  # 回退摘要（最多 30 条）
+    # W3：被回退（保留原文防断链）的原文完整集合——运行时插件翻译表必须
+    # 排除这些串（插件把静态回退的原文再翻译成中文 → 按名比较断链）。
+    logic_reverted_sources: set[str] = field(default_factory=set)
 
     def __post_init__(self):
         if self.entries and not self.attempted:
@@ -193,9 +196,12 @@ class WriteResult:
         （尝试写但失败）语义不同，不触发对象闸门阻断。"""
         locator = self.note_attempt(entry)
         self.logic_reverted += 1
+        original = str(entry.get("original") or "")
+        if original:
+            self.logic_reverted_sources.add(original)
         if len(self.logic_reverted_items) < 30:
             self.logic_reverted_items.append(
-                f"{reason}:「{str(entry.get('original', ''))[:36]}」"
+                f"{reason}:「{original[:36]}」"
                 f"→「{str(entry.get('translation', ''))[:36]}」({locator})")
 
 
@@ -998,7 +1004,38 @@ def _patch_asset(path: Path, entries: list[dict], result: WriteResult):
                                 entry, "typed_locator_preferred")
                         changed_paths: list[tuple[list[str | int], str]] = []
                         prev_len = len(patched_entries)
+                        # W2 反向语义审计（typetree 分支）：UnityEvent/代码
+                        # 对象的键字段经 typetree 写入——m_MethodName 等
+                        # UnityEvent 绑定字段不在不可变字段清单（_IMMUTABLE_
+                        # FIELD_NAMES 只收 m_Name/m_Key/…惯例字段），rawstr
+                        # 路径的 logic_key_evidence 也不覆盖 typetree 分支。
+                        # 按「字段路径信号（UnityEvent 绑定字段）+ 值形态
+                        # （type_descriptor/键环境代码形态）」判定逻辑键
+                        # 身份：确定性回退（保留原文），与 rawstr 同层防线。
+                        from hanhua.core.unity.logic_audit import (
+                            typetree_logic_key_evidence,
+                        )
+                        reverted_typetree: set[int] = set()
                         for entry, meta in typetree_items:
+                            verdict = typetree_logic_key_evidence(
+                                meta, str(entry["original"]))
+                            if not verdict:
+                                continue
+                            if verdict[0] == "revert":
+                                entry["status"] = "skipped"
+                                reverted_typetree.add(id(entry))
+                                result.note_logic_reverted(entry, verdict[1])
+                                result.logic_audit.append({
+                                    "stage": "semantic_revert",
+                                    "locator": str(entry.get("key_path") or ""),
+                                    "obj": meta.get("obj"),
+                                    "original": entry["original"],
+                                    "translation": entry["translation"],
+                                    "reason": verdict[1],
+                                })
+                        for entry, meta in typetree_items:
+                            if id(entry) in reverted_typetree:
+                                continue
                             field_path = meta.get("field_path")
                             if not isinstance(field_path, list):
                                 result.note_rejected(entry, "field_path_missing")

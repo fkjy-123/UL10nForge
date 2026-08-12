@@ -1345,6 +1345,10 @@ class Project:
                 progress_cb(copy_total + 1, progress_total)
             v2 = write_back_v2(self.store, self.game_dir, staging)
             writer_outcome = v2.outcome
+            # W3 运行时排除表：静态写回被回退（保留原文防断链）的逻辑键
+            # 原文——插件翻译表必须剔除，否则游戏运行时被插件换成中文 →
+            # 按名比较断链（按键失灵反复出现的机制之一）。
+            reverted_sources = set(v2.logic_reverted_sources)
             if progress_cb:
                 progress_cb(copy_total + 2, progress_total)
             _emit_writeback_stage(stage_cb, "runtime_payload", "正在部署中文字体")
@@ -1374,7 +1378,9 @@ class Project:
                         # Mono：静态替换成功后再部署运行时插件兜底
                         # （覆盖动态加载字体），插件失败不阻断。
                         try:
-                            font_kwargs = {"translations": runtime_translations}
+                            font_kwargs = {
+                                "translations": runtime_translations,
+                                "exclude": reverted_sources}
                             install_font_override(
                                 self.game_dir, staging, active_font_config,
                                 **font_kwargs)
@@ -1392,7 +1398,9 @@ class Project:
                 # （install_font_override 内部对 disabled 安全 no-op）；
                 # IL2CPP 无 provider 时记 unsupported。
                 if not active_font_config.enabled or font_capability.runtime == "mono":
-                    font_kwargs = {"translations": runtime_translations}
+                    font_kwargs = {
+                        "translations": runtime_translations,
+                        "exclude": reverted_sources}
                     try:
                         install_params = inspect.signature(
                             install_font_override).parameters

@@ -464,11 +464,14 @@ _JSON_IDENTIFIER_STRING_LINE = re.compile(
 _ASTERISK_CAPS_LABEL = re.compile(
     r"^\*[A-Z]{2,}\*(?:\s+[^\r\n]*)?$")
 # 普通句子标记：credit 形状的行若含这些虚词仍是可翻译句子。
-# 注意不含单字母 a——标题/选项（Option A、A* star）中的 A 不是虚词
+# 注意不含单字母 a——标题/选项（Option A、A* star）中的 A 不是虚词。
+# 句末标点也是句子标记：'dropped by bosses.'（句号结尾）是真实句子，
+# 署名行形态无句号（'A game by Kyuppin'）——by 归属分支只拦截无标点行
+# （审计 R5 实证：is_credit_like 把普通句子当署名跳过，对象值证据随之丢失）。
 _SENTENCE_MARKERS = re.compile(
     r"(?i:\b(?:the|an|of|for|and|with|to|in|on|is|are|was|were|"
     r"it|we|you|your|our|this|that|have|has|had|will|would|can|could|"
-    r"should|not|no|be|been)\b)")
+    r"should|not|no|be|been)\b|[.!?。！？]$)")
 
 
 def _is_full_value_path_or_binding(text: str) -> bool:
@@ -504,6 +507,10 @@ DISPLAY_WORDS = {
     "ok", "yes", "no", "on", "off", "go", "hi", "hey", "hello", "bye",
     "goodbye", "thanks", "thank", "sorry", "welcome", "wait", "back", "next",
     "prev", "enter", "exit", "leave", "return", "cancel", "confirm", "accept",
+    # 交互/按钮高频词（'Press Start'/'Click to continue'/'Tap to play'——
+    # 与 InputAction 绑定名同形，由 is_input_system_object 对象信号先拦；
+    # R2 实证 'PressButton'+'Press' 按钮文本需要白名单放行）
+    "press", "click", "tap",
     "apply", "close", "open", "skip", "retry", "continue", "start", "stop",
     "pause", "resume", "restart", "reset", "default", "backtomenu",
     # 菜单/UI

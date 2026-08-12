@@ -87,8 +87,10 @@ def test_default_font_runtime_assets_are_production_payloads() -> None:
     } <= members
 
     plugin_payload = assets.plugin_dll.read_bytes()
+    # W3 排除表支持（translations-exclude.json + IsExcludedTranslation）
+    # 重新编译后的确定性产物哈希。
     assert hashlib.sha256(plugin_payload).hexdigest() == (
-        "f056d927895024905520c58b920d0c944bf08b86765117dc287140fe0879e7d5"
+        "e5c2bf02d22f27ea43fcefd93029777e3b9883b3966a459f148e6bd58d9844ae"
     )
     assert len(plugin_payload) > 0x40
     assert plugin_payload[:2] == b"MZ"
@@ -165,7 +167,7 @@ def test_optional_text_discovery_and_ui_toolkit_tree_are_font_independent() -> N
     assert "WriteHealthManifest(false);" in source
     assert 'WriteHealthManifest(reason == "periodic");' in source
     factory_arguments = source[
-        source.index("private static object[] BuildTmpFactoryArguments"):
+        source.index("private object[] BuildTmpFactoryArguments"):
         source.index("private static void SetOptionalProperty")
     ]
     assert factory_arguments.index('"padding"') < factory_arguments.index('"atlas"')
@@ -284,7 +286,7 @@ def test_tmp_reflection_tries_every_path_then_font_factory_candidate() -> None:
               / "HanhuaFontPlugin.cs").read_text(encoding="utf-8")
     initialize = source[
         source.index("private void InitializeTmpFont"):
-        source.index("private static object[] BuildTmpFactoryArguments")
+        source.index("private object[] BuildTmpFactoryArguments")
     ]
 
     assert "List<MethodInfo> fileFactories" in initialize
@@ -307,7 +309,7 @@ def test_tmp_candidate_is_verified_and_failed_candidate_falls_back_periodically(
 
     initialize = source[
         source.index("private void InitializeTmpFont"):
-        source.index("private static object[] BuildTmpFactoryArguments")
+        source.index("private object[] BuildTmpFactoryArguments")
     ]
     apply_fonts = source[
         source.index("private void ApplyFonts"):
@@ -1552,3 +1554,47 @@ def test_uses_valid_pe_when_another_matching_candidate_is_invalid(tmp_path: Path
     )
 
     assert result.installed is True
+
+
+def test_installer_excludes_reverted_logic_keys_from_runtime_translations(
+        tmp_path: Path) -> None:
+    """W3：静态写回被回退（保留原文防断链）的逻辑键原文，必须从插件
+    翻译表剔除并落排除表文件——插件运行时再翻译 → 按名比较断链。"""
+    game_dir = _make_mono_game(tmp_path / "game")
+    out_dir = tmp_path / "output"
+    assets = _make_assets(tmp_path / "assets")
+
+    install_font_override(
+        game_dir, out_dir, FontConfig(enabled=True), assets=assets,
+        translations={
+            "Continue": "继续",      # 显示侧译文
+            "Quit": "退出",
+        },
+        exclude={"Continue", "moveForward"},   # 写回侧回退的逻辑键
+    )
+
+    plugin_dir = out_dir / "BepInEx" / "plugins" / "HanhuaFont"
+    payload = json.loads(
+        (plugin_dir / "translations.json").read_text(encoding="utf-8"))
+    assert payload == {"Quit": "退出"}          # Continue 被剔除
+    exclude_payload = json.loads(
+        (plugin_dir / "translations-exclude.json").read_text(encoding="utf-8"))
+    assert exclude_payload == ["Continue", "moveForward"]
+
+
+def test_installer_no_exclude_writes_no_exclude_file(tmp_path: Path) -> None:
+    """无回退逻辑键时不产生排除表文件（零额外载荷）。"""
+    game_dir = _make_mono_game(tmp_path / "game")
+    out_dir = tmp_path / "output"
+    assets = _make_assets(tmp_path / "assets")
+
+    install_font_override(
+        game_dir, out_dir, FontConfig(enabled=True), assets=assets,
+        translations={"Quit": "退出"},
+    )
+
+    plugin_dir = out_dir / "BepInEx" / "plugins" / "HanhuaFont"
+    assert not (plugin_dir / "translations-exclude.json").exists()
+    assert json.loads(
+        (plugin_dir / "translations.json").read_text(encoding="utf-8")) == {
+        "Quit": "退出"}

@@ -271,6 +271,55 @@ def test_proper_name_echo_not_target_script_mismatch(source, translation):
     assert entry.meta["quality_passed"] is True
 
 
+def test_proper_name_echo_marked_exempt():
+    """Q4 回归：回显豁免通过的条目必须打 echo_exempt 标（写回/统计可见
+    它是「模型未翻译」而非真译文），且不得作为记忆源。"""
+    translator = BatchTranslator(
+        FakeClient(), batch_size=1, concurrency=1, lang="en→zh-CN")
+    entry = TextEntry(
+        "ui", "reported", "[ S K I P ]",
+        meta={"role": "display", "disposition": "translate"},
+    )
+
+    assert translator._apply_quality(entry, "[S K I P]") is True
+    assert entry.meta.get("echo_exempt") == "proper_name"
+
+
+def test_echo_exempt_translation_not_added_to_memory():
+    """Q4 回归：回显保留条目（译文=原文）不进记忆——防「原文→原文」
+    无效记忆污染跨游戏一致性锚定。正常译文照常进记忆。"""
+    import tempfile
+    store = ProjectStore(Path(tempfile.mkdtemp()) / "echo.db")
+    store.init_schema()
+    echo_entry = _to_model([{
+        "file_id": "ui", "key_path": "title/1",
+        "original": "Crash Bandicoot",
+        "meta": {"role": "display", "disposition": "translate"},
+    }])[0]
+    normal_entry = _to_model([{
+        "file_id": "ui", "key_path": "menu/2",
+        "original": "Open Door",
+        "meta": {"role": "display", "disposition": "translate"},
+    }])[0]
+    client = FakeClient({
+        "Crash Bandicoot": "Crash Bandicoot",   # 回显（专名保留合理）
+        "Open Door": "打开门",
+    })
+    BatchTranslator(
+        client, memory=store, model="m", lang="en→zh-CN",
+        batch_size=1, concurrency=1,
+    ).run([echo_entry, normal_entry])
+
+    # 回显条目打标（写回/统计可见「模型未翻译」）
+    assert echo_entry.meta.get("echo_exempt") == "proper_name"
+    # 回显不产生记忆；正常译文进记忆
+    assert "Crash Bandicoot" not in store.get_memory_hits(
+        ["Crash Bandicoot"], "m", "en→zh-CN")
+    assert store.get_memory_hits(["Open Door"], "m", "en→zh-CN") == {
+        "Open Door": "打开门",
+    }
+
+
 def test_uppercase_action_echo_fails_by_knowledge_rule():
     """知识库规则：全大写动作指令（TOSS TRASH）回显一律判失败。
 
@@ -3468,3 +3517,89 @@ def test_repair_spaced_action_translation_skips_non_spaced():
     assert translator._repair_spaced_action_translation(
         entry, translator.client.translate_text, "zh-CN") is None
     assert translator.client.calls == []
+
+
+# ── Q3 失败分类 + attempt 预算 ──
+def test_failure_records_category_and_attempt_count():
+    """Q3：失败记账写 failure_category（策略类别）+ attempt_count 跨轮累计。"""
+    from hanhua.core.batch_translator import (
+        _record_failure_attempt, _attempt_exhausted)
+    from hanhua.core.models import TextEntry
+    e = TextEntry(file_id="f", key_path="k", original="Hello world",
+                  status="pending", meta={})
+    _record_failure_attempt(e, "untranslated_text")
+    assert e.meta["attempt_count"] == 1
+    assert e.meta["failure_category"] == "model_behavior"
+    # 同轮重复记账幂等（repair 路径防重复计账）
+    _record_failure_attempt(e, "placeholder_missing")
+    assert e.meta["attempt_count"] == 1
+    # 预算未耗尽 → 可再跑
+    assert not _attempt_exhausted(e)
+    # 跨轮重跑：store 重新加载 → 新对象 → attempt 继续累计
+    e2 = TextEntry(file_id="f", key_path="k", original="Hello world",
+                   status="failed", meta=dict(e.meta))
+    _record_failure_attempt(e2, "untranslated_text")
+    assert e2.meta["attempt_count"] == 2
+    # model_behavior 预算 2 → 耗尽
+    assert _attempt_exhausted(e2)
+
+
+def test_request_category_has_higher_budget():
+    """Q3：request 类（API 故障可恢复）预算 3；content_inherent 预算 1。"""
+    from hanhua.core.batch_translator import (
+        _record_failure_attempt, _attempt_exhausted, _MAX_ATTEMPTS)
+    from hanhua.core.models import TextEntry
+    assert _MAX_ATTEMPTS["request"] >= 3
+    assert _MAX_ATTEMPTS["model_behavior"] == 2
+    assert _MAX_ATTEMPTS["content_inherent"] == 1
+    e = TextEntry(file_id="f", key_path="k", original="Hello",
+                  status="failed", meta={})
+    for _ in range(3):
+        # 每轮 store 重新加载 → 新对象 → attempt 累计
+        e = TextEntry(file_id="f", key_path="k", original="Hello",
+                      status="failed", meta=dict(e.meta))
+        _record_failure_attempt(e, "request_error")
+    assert e.meta["failure_category"] == "request"
+    assert _attempt_exhausted(e)
+
+
+# ── Q1 语义门（BUILTIN_UI_REFERENCES 进质量门）+ Q2 记忆毒化防护 ──
+def test_builtin_ui_wrong_translation_rejected():
+    """Q1：'Resume'→'简历'（形式门全过：有中文/占位符齐）被语义门拦截——
+    BUILTIN_UI_REFERENCES 参考译文 '继续' 不在译文中。"""
+    from hanhua.core.batch_translator import BatchTranslator
+    from hanhua.core.models import TextEntry
+    bt = BatchTranslator(FakeClient())
+    e = TextEntry(file_id="f", key_path="k", original="Resume",
+                  status="pending",
+                  meta={"role": "display", "disposition": "translate"})
+    assert not bt._apply_quality(e, "简历")
+    assert e.meta["quality_passed"] is False
+    assert e.meta["quality_reasons"] == ["builtin_ui_mismatch"]
+    assert e.meta["failure_category"] == "model_behavior"
+
+
+def test_builtin_ui_correct_translation_passes():
+    """Q1：'Resume'→'继续'（参考译文子串）与 '继续游戏'（宽容变体）均通过。"""
+    from hanhua.core.batch_translator import BatchTranslator
+    from hanhua.core.models import TextEntry
+    for translation in ("继续", "继续游戏"):
+        # 独立实例（一致性锚定同实例同原文强制一致，属另一机制）
+        bt = BatchTranslator(FakeClient())
+        e = TextEntry(file_id="f", key_path="k", original="Resume",
+                      status="pending",
+                      meta={"role": "display", "disposition": "translate"})
+        assert bt._apply_quality(e, translation), translation
+        assert e.meta["quality_passed"] is True
+
+
+def test_builtin_ui_gate_respects_user_glossary_override():
+    """Q1：用户 glossary 覆盖 'Resume' 后语义门停用（merge 已移除内置 pair）。"""
+    from hanhua.core.batch_translator import BatchTranslator
+    from hanhua.core.models import TextEntry
+    bt = BatchTranslator(FakeClient(), glossary=(("Resume", "恢复"),))
+    assert "resume" not in bt.builtin_ui_exact
+    e = TextEntry(file_id="f", key_path="k", original="Resume",
+                  status="pending",
+                  meta={"role": "display", "disposition": "translate"})
+    assert bt._apply_quality(e, "恢复")

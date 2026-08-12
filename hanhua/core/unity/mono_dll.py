@@ -10,6 +10,8 @@ from hanhua.core.paths import (UnsafeRelativePathError, ensure_trusted_root,
                                resolve_relative_under)
 from hanhua.core.placeholders import is_code_identifier, is_hard_structural
 from hanhua.core.engine_strings import (is_engine_string as _is_engine_string,
+                                        is_engine_string_core,
+                                        is_engine_string_gated,
                                         is_strong_interaction_prompt)
 from hanhua.core.tooling.player_layout import (
     PlayerLayoutError,
@@ -570,8 +572,16 @@ def extract_dll_user_strings(path: str | Path, file_id: str | None = None,
                 " " in s and bool(_UI_UPPERCASE_WORD.search(s)))
             if is_hard_structural(s):
                 continue
+            # 确定性引擎串（Shader 路径/输入绑定/哈希/枚举名等强形态，
+            # is_engine_string_core 无编程命名猜测）优先于 uppercase_ui 猜测
+            # ——tiiny-ragdoll 实证：'Hidden/Post FX/FXAA' 的 FX 全大写词
+            # 触发 uppercase_ui 误判为 UI 文本，翻译后 Shader.Find 失败
+            # → 渲染崩溃启动卡死。引擎查找键永不翻译，不论 UI 证据。
+            if is_engine_string_core(s):
+                continue
             if (not is_ui_text and not interaction_prompt and not uppercase_ui
-                    and (is_code_identifier(s) or _is_engine_string(s))):
+                    and (is_code_identifier(s) or _is_engine_string(s)
+                         or is_engine_string_gated(s))):
                 continue
             # 内部诊断/日志/错误消息：即使命中 uppercase_ui 也判代码文本
             # （ProBuilder/Poly2Tri 实证：FAILED:/[FLIP]/CNOT 是开发诊断，

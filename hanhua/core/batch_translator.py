@@ -83,6 +83,15 @@ _GREETING_WORDS = {"hello", "hi", "hey"}
 # 内置 UI 术语（BUILTIN_UI_SOURCE_TERMS）：模型回显 = 未翻译（SFX/Quit/Volume…）
 _BUILTIN_UI_TERMS_CASEFOLD = {
     str(term).casefold() for term in BUILTIN_UI_SOURCE_TERMS}
+# Q1 语义门：BUILTIN_UI_REFERENCES 精确对照（source casefold → 权威中文
+# 译名）。原文精确命中 source 时，译文必须包含参考译名——'Resume'→'简历'
+# 这类「有中文、占位符齐」的形式门全过错误被此门拦截（审计 Q1：参考译文
+# 只进 prompt 不进质量门；Q2：错误译文进记忆 + 一致性锚定复制污染）。
+# 子串匹配宽容合理变体（'继续游戏' 含 '继续'；'itch 页面' 含 'itch' 保留
+# 平台名），同时拦下不相关译文（'简历' 不含 '继续'）。
+_BUILTIN_UI_EXACT = {
+    source.strip().casefold(): target
+    for source, target in BUILTIN_UI_REFERENCES}
 # 英语功能词（冠词/介词/连词/代词/be 动词等）：原文 TitleCase 形态
 # （句子开头 "The End is near" 的 The）不是专名——译文小写残留（"the End"）
 # 是真实半翻，不得走小写化专名豁免（baldis 实证的是 Bossfight→bossfight
@@ -258,6 +267,51 @@ def _auto_translatable(entry: TextEntry) -> bool:
     return is_actionable_translation(entry)
 
 
+# Q3 失败原因分类体系：reason → 策略类别（审计报告 Q3——16 个失败 reason
+# 平铺无分类，失败条目每轮全量重跑同一条链、无 attempt 预算，「同样的问题
+# 反复出现」的机制根源是原因不驱动策略）。
+# - request：API/网络级失败（request_error）——外部瞬时可恢复，重试预算高；
+# - model_behavior：模型输出质量失败（回显/漏译/格式错/占位符破坏）——重试
+#   大概率复败（小模型稳定行为 + Q2 记忆锚定放大），预算低；耗尽后条目保持
+#   失败状态不再重试，报告按类别可见「该翻未翻」而非每轮重复烧 token；
+# - content_inherent：条目内容不可译——单次验证即放弃。
+# 质量门 reason（quality.py 全部）默认归 model_behavior；只有显式列出的
+# 才归其他类别。
+FAILURE_CATEGORIES = {
+    "request_error": "request",
+    "content_inherent": "content_inherent",
+}
+# 每类别 attempt 预算（meta["attempt_count"] 跨轮累计，store 持久化）
+_MAX_ATTEMPTS = {"request": 3, "model_behavior": 2, "content_inherent": 1}
+
+
+def _record_failure_attempt(entry: TextEntry, reason: str) -> None:
+    """Q3 失败记账：attempt_count 跨轮累计 + failure_category 分类。
+
+    幂等安全：同一 entry 同轮多次失败（repair 路径）只递增一次——
+    以 meta 中的 attempt_mark 防重复计账；跨轮（新 run）自然继续累计。
+    """
+    meta = dict(entry.meta)
+    mark = meta.get("_attempt_mark")
+    current = id(entry)
+    if mark == current:
+        return
+    meta["_attempt_mark"] = current
+    attempts = int(meta.get("attempt_count", 0)) + 1
+    meta["attempt_count"] = attempts
+    meta["failure_category"] = FAILURE_CATEGORIES.get(
+        reason, "model_behavior")
+    entry.meta = meta
+
+
+def _attempt_exhausted(entry: TextEntry) -> bool:
+    """Q3 预算判定：attempt_count 达到类别上限 → 不再进入翻译链。"""
+    meta = entry.meta
+    attempts = int(meta.get("attempt_count", 0))
+    category = meta.get("failure_category", "model_behavior")
+    return attempts >= _MAX_ATTEMPTS.get(category, 2)
+
+
 class BatchTranslator:
     """批量翻译引擎：记忆命中 → 分批并发 → 占位符校验 → 结果落库。
 
@@ -282,6 +336,33 @@ class BatchTranslator:
         self.glossary = tuple(glossary)
         self.cancellation_event = cancellation_event
         self.references = merge_translation_references(self.glossary)
+        # Q1 语义门对照表。三条件：
+        # 1) source 必须内置于参考表（_BUILTIN_UI_EXACT）——用户自定义术语
+        #    不设语义门；
+        # 2) 用户 glossary 覆盖的 source 显式排除——merge 虽已用用户 pair
+        #    替换内置 pair，但用户 pair 的 source 仍在 _BUILTIN_UI_EXACT
+        #    键集合内，不排除就会按用户译文强检查，误伤自由翻译；
+        # 3) 只对**单术语**生效（source 无空白）——复合短语（'Interact
+        #    hold' → '交互（长按）'）合理变体多（'交互保持'/'按住交互'），
+        #    硬子串门会误杀自由翻译；单术语按钮标签（Resume/Quit/Settings）
+        #    是固定 UI 词，权威译名要求严格才合理。
+        merged_builtin = _BUILTIN_UI_EXACT
+        user_sources = set()
+        for item in self.glossary:
+            if isinstance(item, (tuple, list)) and len(item) >= 2:
+                source = item[0]
+            elif isinstance(item, dict):
+                source = item.get("term")
+            else:
+                source = getattr(item, "term", None)
+            if isinstance(source, str) and source.strip():
+                user_sources.add(source.strip().casefold())
+        self.builtin_ui_exact = {
+            source.strip().casefold(): target
+            for source, target in self.references
+            if (source.strip().casefold() in merged_builtin
+                and " " not in source.strip()
+                and source.strip().casefold() not in user_sources)}
         self._stop = threading.Event()
         self._metrics_lock = threading.Lock()
         self._consistency_lock = threading.Lock()
@@ -316,7 +397,11 @@ class BatchTranslator:
             self._output_tokens = 0
         with self._consistency_lock:
             self._consistent_translations.clear()
-        run_scope = [entry for entry in entries if _auto_translatable(entry)]
+        # Q3 attempt 预算：失败条目跨轮累计 attempt_count，预算耗尽不再
+        # 重跑同一条链（保留失败状态供报告审计）——消灭「每轮全量重跑
+        # 同一条链」的反复失败。
+        run_scope = [entry for entry in entries
+                     if _auto_translatable(entry) and not _attempt_exhausted(entry)]
         stats = TranslateStats(total=len(run_scope))
         started_at = time.perf_counter()
 
@@ -414,8 +499,9 @@ class BatchTranslator:
                         stats.failed += 1
                     changed.append(member)
                 if good and en.translation and self.memory:
-                    new_memory.append(
-                        (en.original, en.translation, self.model, self.lang))
+                    if not en.meta.get("echo_exempt"):
+                        new_memory.append(
+                            (en.original, en.translation, self.model, self.lang))
                 completed_representatives += 1
                 if completed_representatives % self.batch_size == 0:
                     flush()
@@ -486,7 +572,10 @@ class BatchTranslator:
                                 stats.failed += 1
                             changed.append(member)
                         if good and en.translation and self.memory:
-                            new_memory.append((en.original, en.translation, self.model, self.lang))
+                            if not en.meta.get("echo_exempt"):
+                                new_memory.append(
+                                    (en.original, en.translation,
+                                     self.model, self.lang))
                     flush()
                     emit_stats()
                     if not self._stop.is_set() and not (cancelled is not None and cancelled.is_set()):
@@ -1867,7 +1956,37 @@ class BatchTranslator:
             entry.meta = dict(entry.meta)
             entry.meta["quality_passed"] = False
             entry.meta["quality_reasons"] = ["target_script_mismatch"]
+            _record_failure_attempt(entry, "target_script_mismatch")
             return False
+        # Q1 语义门：BUILTIN_UI_REFERENCES 精确对照（权威参考译文子串要求）。
+        # 原文精确命中内置 UI 术语 source 时，译文必须包含参考译名——
+        # 参考译文已在 prompt 中，模型给出不相关译文（'Resume'→'简历'）是
+        # 稳定错误，重试大概率复败；拦截（builtin_ui_mismatch）而非放行，
+        # 防止错误译文进记忆 + 一致性锚定复制污染（Q2 记忆毒化防护闭环）。
+        # 放在 echo 豁免之前：UI 术语回显由本门先拦（reason 更准确），
+        # 且失败即 return，不会写入一致性锚定表。
+        builtin_target = self.builtin_ui_exact.get(
+            entry.original.strip().casefold())
+        if (result.passed and builtin_target is not None
+                and not proper_name_echo and not lorem_placeholder):
+            if builtin_target not in translation:
+                entry.translation = result.normalized_translation
+                entry.quality_reasons = ("builtin_ui_mismatch",)
+                entry.meta = dict(entry.meta)
+                entry.meta["quality_passed"] = False
+                entry.meta["quality_reasons"] = ["builtin_ui_mismatch"]
+                _record_failure_attempt(entry, "builtin_ui_mismatch")
+                return False
+        if proper_name_echo or lorem_placeholder or glossary_keep_echo:
+            # Q4 回显豁免打标：译文=原文（字母序列相同/占位/术语保留）——
+            # 这是「模型未翻译」而非「翻译结果」。打标后：1) 写回/审计/
+            # 统计可见该条目是回显保留而非真译文；2) 记忆写入跳过（防
+            # 「原文→原文」无效记忆污染跨游戏锚定）。
+            entry.meta = dict(entry.meta)
+            entry.meta["echo_exempt"] = (
+                "proper_name" if proper_name_echo
+                else "lorem_placeholder" if lorem_placeholder
+                else "glossary_keep")
         if result.passed:
             role = str(entry.meta.get("role", "display"))
             consistency_key = (entry.original, role)
@@ -1882,12 +2001,15 @@ class BatchTranslator:
                     entry.meta = dict(entry.meta)
                     entry.meta["quality_passed"] = False
                     entry.meta["quality_reasons"] = ["consistency_mismatch"]
+                    _record_failure_attempt(entry, "consistency_mismatch")
                     return False
         entry.translation = result.normalized_translation
         entry.quality_reasons = result.reasons
         entry.meta = dict(entry.meta)
         entry.meta["quality_passed"] = result.passed
         entry.meta["quality_reasons"] = list(result.reasons)
+        if not result.passed and result.reasons:
+            _record_failure_attempt(entry, result.reasons[0])
         return result.passed
 
     def _has_disallowed_chinese_target_letters(
@@ -2362,6 +2484,8 @@ class BatchTranslator:
         entry.meta = dict(entry.meta)
         entry.meta["quality_passed"] = False
         entry.meta["quality_reasons"] = [reason]
+        # Q3：失败分类 + attempt 预算记账
+        _record_failure_attempt(entry, reason)
         # P0-3：invalid_response 时模型返回的原始内容作为证据留存
         if raw_output:
             entry.meta["raw_output"] = raw_output

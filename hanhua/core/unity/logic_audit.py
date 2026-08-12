@@ -109,13 +109,18 @@ def logic_key_evidence(stripped: str, meta: dict,
     - ("report", reason)：疑似逻辑键——不能确定（可能是真实显示文本），
       写译文但报告进审计段供复核。
 
-    meta 提供对象上下文（obj/field 路径/structural_reason），obj_strings
-    提供对象字符串池（跨条目上下文，如 UnityEvent 信号/值特征）。
+    meta 提供对象上下文（obj/field 路径/reason/role/obj_is_key_list），
+    obj_strings 提供对象字符串池（跨条目上下文，如 UnityEvent 信号/值特征）。
+    语义判定元数据单一权威键：reason（extractor 分类链写入的条目级处置
+    原因）+ role（structural/display）+ obj_is_key_list（对象级键清单
+    信号）——不再读已废弃的 structural_reason（extractor 在分类链
+    842 行 pop 掉，读它必为空；旧值域也与分类链值域不一致）。
     """
     if not stripped:
         return None
     pattern = logic_pattern_of(stripped)
-    obj_reason = meta.get("structural_reason") or ""
+    obj_reason = meta.get("reason") or ""
+    is_structural = meta.get("role") == "structural"
     # 确定性逻辑键（revert）：
     # 1. 类型描述符（Namespace.Type, Assembly）——save_typetree 依赖，
     #    翻译即 Referenced type not found。
@@ -128,10 +133,14 @@ def logic_key_evidence(stripped: str, meta: dict,
         return "revert", "unityevent_binding"
     # 3. 代码对象（structural 跳过身份）里的逻辑比较词——代码按字符串
     #    比较分发（按钮文字/物品名比较）。structural 身份证明该对象是
-    #    键清单（同对象内其他串被结构规则跳过）。
+    #    键清单（同对象内其他串被结构规则跳过）。obj_is_key_list 是提取
+    #    器在结构跳过分支显式设置的对象级键清单信号；reason 是条目级
+    #    分类——两者任一命中都说明该条目身处键环境，防识别层漏放
+    #    （判成 display 但对象是键清单）的结构串在写回侧裸奔。
     low = stripped.lower()
-    if (obj_reason in ("input_binding", "code_line", "code_heavy_identifier",
-                       "input_system_object", "localization_key_list")
+    if ((obj_reason in ("input_binding", "code_line", "code_heavy_identifier",
+                        "input_system_object", "localization_key_list")
+         or meta.get("obj_is_key_list"))
             and (low in LOGIC_COMPARE_WORDS
                  or pattern in ("camel_case", "snake_case",
                                 "uppercase_const", "lowercode_word"))):
@@ -146,8 +155,52 @@ def logic_key_evidence(stripped: str, meta: dict,
         return "report", "short_code_word"
     # 6. 逻辑比较词在非代码对象（按钮/菜单对象）——显示文本本体，但
     #    有被代码比较分发的风险（案例 5 的灰色地带）。
-    if low in LOGIC_COMPARE_WORDS and not obj_reason:
+    if low in LOGIC_COMPARE_WORDS and not is_structural:
         return "report", "logic_compare_word"
+    return None
+
+
+def typetree_logic_key_evidence(
+        meta: dict, original: str) -> tuple[str, str] | None:
+    """typetree 分支的反向语义审计（W2）：按「字段路径 + 值形态」判定。
+
+    rawstr 路径的 logic_key_evidence 在字节层无字段身份，只能靠对象
+    字符串池信号；typetree 路径恰恰有精确的字段名——UnityEvent 绑定
+    字段（m_MethodName/m_Target/m_PersistentCalls…）经 typetree 写入
+    时反射按名绑定，翻译即断绑（按钮无反应）；这些字段不在不可变
+    字段清单（m_MethodName 不在 _IMMUTABLE_FIELD_NAMES）。
+
+    返回 (verdict, reason)：与 logic_key_evidence 同构。
+    """
+    from hanhua.core.unity.extractor import _UNITYEVENT_SIGNALS
+    field_path = meta.get("field_path") or []
+    path_names = [str(segment).casefold()
+                  for segment in field_path if isinstance(segment, str)]
+    # 字段路径信号：任一字段名命中 UnityEvent 绑定字段（含路径中间段——
+    # m_PersistentCalls 下的 m_Calls 数组内嵌 m_MethodName，值在深层叶子）。
+    if any(any(sig.casefold() in name
+               for sig in _UNITYEVENT_SIGNALS)
+           for name in path_names):
+        return "revert", "unityevent_binding"
+    pattern = logic_pattern_of(original)
+    # 类型描述符值（m_TargetAssemblyTypeName 等）——save_typetree 依赖，
+    # 翻译即 Referenced type not found。
+    if pattern == "type_descriptor":
+        return "revert", "type_descriptor"
+    # 键环境对象（obj_is_key_list / 代码类 reason）+ 代码形态 → 确定性回退，
+    # 与 rawstr 路径 logic_key_evidence 条件 3 同一规则。
+    obj_reason = str(meta.get("reason") or "")
+    if (pattern in ("camel_case", "snake_case", "uppercase_const",
+                    "numeric_mix", "lowercode_word")
+            and (meta.get("obj_is_key_list")
+                 or obj_reason in ("input_binding", "code_line",
+                                   "code_heavy_identifier",
+                                   "input_system_object",
+                                   "localization_key_list"))):
+        return "revert", f"logic_key_in_code_object:{pattern}"
+    if pattern in ("camel_case", "snake_case", "uppercase_const",
+                   "numeric_mix"):
+        return "report", pattern
     return None
 
 
@@ -176,7 +229,7 @@ def audit_repeat_consistency(items: list[tuple[dict, dict]]) -> list[dict]:
             for e, _ in group if e.get("translation") != original
         }
         structural_skip = any(
-            meta.get("structural_reason") for _, meta in group)
+            meta.get("role") == "structural" for _, meta in group)
         pending_count = sum(
             1 for e, _ in group
             if str(e.get("translation") or "") != str(e.get("original") or ""))
@@ -265,9 +318,16 @@ def audit_entries_before_writeback(entries: list[dict]) -> list[dict]:
     """写回前审计：对 disposition=translate 且译文≠原文的条目做形态检查。
 
     返回审计记录列表（每项：locator/original/translation/pattern/
-    severity=warn 或 note）。只报告不阻断——按钮文本 back/retry 大量命中
-    短词形态，阻断会误伤真实显示文本；真正破坏性的是 camelCase 等代码
-    标识符形态（游戏按原名查找）。"""
+    severity=warn/note/revert）。warn 只报告不阻断——按钮文本 back/retry
+    大量命中短词形态，阻断会误伤真实显示文本；真正破坏性的是 camelCase
+    等代码标识符形态（游戏按原名查找）。
+
+    W4 联动跳过：severity 升级为 revert = 该条目在对象循环里会被
+    logic_key_evidence/typetree_logic_key_evidence 确定性回退（译文→原文，
+    保留原文防断链）。warn 形态 + 键环境对象（obj_is_key_list / 代码类
+    reason，与判定函数同条件）时报告如实标注 revert——「warn 级审计不
+    联动跳过」的缺口：报告与行为不一致（报告说风险但实际不跳）。
+    报告与行为单一来源：此处仅标注，真实跳过仍由对象循环执行。"""
     audit: list[dict] = []
     for e in entries:
         original = str(e.get("original") or "")
@@ -277,6 +337,16 @@ def audit_entries_before_writeback(entries: list[dict]) -> list[dict]:
         pattern = logic_pattern_of(original)
         if pattern is None:
             continue
+        meta = {}
+        raw_meta = e.get("meta")
+        if isinstance(raw_meta, str) and raw_meta.strip():
+            try:
+                import json as _json
+                meta = _json.loads(raw_meta)
+            except (_json.JSONDecodeError, TypeError):
+                meta = {}
+        elif isinstance(raw_meta, dict):
+            meta = raw_meta
         severity = "warn" if pattern in {
             "camel_case", "snake_case", "uppercase_const",
             "numeric_mix", "type_descriptor",
@@ -284,6 +354,16 @@ def audit_entries_before_writeback(entries: list[dict]) -> list[dict]:
         low = original.strip().lower()
         if pattern == "short_code_word" and low in LOGIC_KEYS_COMMON:
             severity = "note"  # 常见 UI 按钮文本，正常可译
+        # W4：warn 形态 + 键环境（与 typetree_logic_key_evidence 条件 3
+        # 同规则）→ 该条目写回时确定性回退，报告如实标注 revert。
+        obj_reason = str(meta.get("reason") or "")
+        if severity == "warn" and (
+                meta.get("obj_is_key_list")
+                or obj_reason in ("input_binding", "code_line",
+                                  "code_heavy_identifier",
+                                  "input_system_object",
+                                  "localization_key_list")):
+            severity = "revert"
         audit.append({
             "locator": str(e.get("key_path") or e.get("locator") or ""),
             "original": original,

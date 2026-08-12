@@ -549,6 +549,30 @@ class TranslatePage(QWidget):
             Toast.show(self, f"失败记录导出失败：{exc}", "error")
             return None
 
+    def _export_records(self, write_result=None,
+                        error_title: str = "",
+                        error_detail: str = "") -> Path | None:
+        """写回后自动生成完整记录文档（docs/all record/游戏名/）。
+
+        与 runner 闭环同一文档结构；成功与失败路径都落盘，保证手动
+        汉化每次写回都有记录依据（用户实测问题可复盘）。
+        """
+        if self.state.project is None:
+            return None
+        from hanhua.core.record_writer import export_records
+        out_root = self.state.resource_dir / "docs" / "all record"
+        api = getattr(self.state, "api", None)
+        model_name = str(getattr(api, "model", "") or "")
+        try:
+            return export_records(
+                self.state.project, out_root,
+                write_result=write_result,
+                error_title=error_title, error_detail=error_detail,
+                model_name=model_name)
+        except Exception as exc:  # noqa: BLE001 记录导出不阻断写回主流程
+            Toast.show(self, f"记录导出失败：{exc}", "error")
+            return None
+
     def _on_error(self, err: str, secrets=()):
         self._running = False
         self.start_btn.setEnabled(True)
@@ -656,6 +680,10 @@ class TranslatePage(QWidget):
         export_path = self._export_fail_record("写回失败", err)
         if export_path:
             self.log_view.appendPlainText(f"失败记录已导出：{export_path}")
+        record_path = self._export_records(
+            error_title="写回失败", error_detail=err)
+        if record_path:
+            self.log_view.appendPlainText(f"完整记录已导出：{record_path}")
 
     def _write_worker(self, project, generation: int, font_config,
                       signals=None, *, allow_partial: bool = False):
@@ -822,6 +850,9 @@ class TranslatePage(QWidget):
                     and font.installed):
                 toast += f" · 中文字体 {font.family}"
             Toast.show(self, toast, "warning" if warnings else "success")
+        record_path = self._export_records(write_result=result)
+        if record_path:
+            self.log_view.appendPlainText(f"完整记录已导出：{record_path}")
 
     def reveal_output(self):
         out = str(self.state.project.out_dir)

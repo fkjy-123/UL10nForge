@@ -835,6 +835,7 @@ def install_font_override(
     *,
     assets: FontRuntimeAssets | None = None,
     translations: dict[str, str] | None = None,
+    exclude: set[str] | None = None,
     player_root: Path | None = None,
 ) -> FontInstallResult:
     if not config.enabled:
@@ -985,10 +986,15 @@ def install_font_override(
 
     runtime_plugin_relative = Path("BepInEx") / "plugins" / "HanhuaFont"
     plugin_relative = player_relative / runtime_plugin_relative
+    # W3 运行时排除表：静态写回被回退（保留原文防断链）的逻辑键原文——
+    # 插件把这些串再翻译成中文 → 游戏按原名查找断链（按键失灵）。
+    # 同一原文若同时是显示文本（静态已写译文），插件翻译表里剔除它后
+    # 动态加载的文本保持英文——防断链优先于个别动态文本未翻。
+    excluded = {str(s) for s in (exclude or ()) if str(s).strip()}
     exact_translations = {
         str(source): str(target)
         for source, target in (translations or {}).items()
-        if str(source) and str(target)
+        if str(source) and str(target) and str(source) not in excluded
     }
     translations_payload = (
         json.dumps(
@@ -997,6 +1003,12 @@ def install_font_override(
         ) + "\n"
     ).encode("utf-8")
     runtime_templates_payload = _runtime_template_payload(exact_translations)
+    exclude_payload = (
+        json.dumps(
+            sorted(excluded), ensure_ascii=False,
+            separators=(",", ":"),
+        ) + "\n"
+    ).encode("utf-8") if excluded else b""
     try:
         with tempfile.TemporaryDirectory(
             prefix="hanhua-font-install-",
@@ -1019,6 +1031,9 @@ def install_font_override(
                 translations_payload)
             (plugin_dir / "runtime-templates.json").write_bytes(
                 runtime_templates_payload)
+            if exclude_payload:
+                (plugin_dir / "translations-exclude.json").write_bytes(
+                    exclude_payload)
             cleanup_pending = _commit_install_tree(
                 stage_dir, output_root, owned_relative=plugin_relative)
     except OSError as exc:
