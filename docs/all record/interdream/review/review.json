@@ -1,0 +1,4570 @@
+[
+ {
+  "locator": "DELTATRAVELER_Data/level0:asset#level0#97/str/1",
+  "original": "This game is unaffiliated\nwith Toby Fox.",
+  "verdict": "flag",
+  "issue": "信息完整性",
+  "reason": "译文末尾多出一句与原文无关的文本，导致信息不完整且产生歧义。",
+  "suggestion": "这款游戏与任何组织或公司无关。"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level0:asset#level0#98/str/1",
+  "original": "[press z or enter to continue]",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用符合行业标准，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level1:asset#level1#49/str/1",
+  "original": "[press z or enter to restart the game]",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用规范，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level1:asset#level1#56/str/1",
+  "original": "\n       \n       Whoops, an unknown error occurred...\n    Please report this to the developers!",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用规范，语气自然，无错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level10:asset#level10#172/str/0",
+  "original": "* Only the fearless may proceed.\\n* Brave ones, foolish ones.\\n* Both walk not the middle road.",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文的警示意味与人物关系，术语使用规范，无语义偏差。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level100:asset#level100#213/str/0",
+  "original": "* (Pick up Jerry's bandana?)",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用规范，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level100:asset#level100#213/str/3",
+  "original": "* (You got the Blood Bandana.)",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用规范，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level100:asset#level100#213/str/5",
+  "original": "* (You're more concerned about\\n  getting Jerryitus.)",
+  "verdict": "flag",
+  "issue": "术语一致性",
+  "reason": "术语'Jerryitus'疑似为游戏特定名词，但译文'杰里图斯'未提供上下文验证，且'concerned about'译为'关心'在口语语境下略显生硬，建议确认专有名词译法并优化口语化表达。",
+  "suggestion": "确认官方译名，若确认为新词可保留音译，但需确保全游戏统一。"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level100:asset#level100#214/str/0",
+  "original": "* (There's a katana stuck in the\\n  ground.)^05\\n* (Take it?)",
+  "verdict": "flag",
+  "issue": "语义一致性",
+  "reason": "译文存在严重语序混乱导致语义不通，且关键动词“接受”未准确对应原文的询问语气。",
+  "suggestion": "* 有一把刀卡在地面上……\n*(要拿走吗？)*"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level100:asset#level100#214/str/3",
+  "original": "* (You pulled the Bluster Blade.)",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用规范，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level100:asset#level100#219/str/4",
+  "original": "* I wonder if we can\\n  find a key somewhere.",
+  "verdict": "flag",
+  "issue": "语义一致性",
+  "reason": "译文将原文的疑问句结构误译为陈述句，且丢失了关键疑问词'if'，导致语义偏差。",
+  "suggestion": "* 我想知道我们是否能在某个地方找到钥匙。"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level103:asset#level103#115/str/0",
+  "original": "quit",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "术语使用准确，符合行业标准译法。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level103:asset#level103#132/str/0",
+  "original": "options",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确，符合行业标准术语规范。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level103:asset#level103#144/str/0",
+  "original": "start game",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用符合行业标准，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level103:asset#level103#145/str/0",
+  "original": "options",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确，符合行业标准术语规范。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level105:asset#level105#171/str/2",
+  "original": "* (You try to take the spear,^05\\n  but the handle was way too\\n  slippery.)",
+  "verdict": "flag",
+  "issue": "语义一致性",
+  "reason": "译文严重偏离原文含义，将'滑溜'误译为'太难用了'，导致语义完全错误。",
+  "suggestion": "* 你试图拿起那支长矛，^05\n  但是，把手太滑了。\n  滑溜溜。"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level105:asset#level105#175/str/1",
+  "original": "* (You wonder if you're in a\\n  training ground.)",
+  "verdict": "flag",
+  "issue": "语义一致性",
+  "reason": "译文严重偏离原文含义，将'训练场'误译为'某种情境'，且遗漏了关键名词'训练场'。",
+  "suggestion": "* 你是否觉得自己仿佛身处某种情境中……\n  训练场。"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level105:asset#level105#175/str/2",
+  "original": "* (You wonder if you're next.)",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文的疑问语气与人物关系，术语与语法均符合游戏本地化标准。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level105:asset#level105#175/str/4",
+  "original": "* (You try to take the spear,^05\\n  but the handle was way too\\n  slippery.)",
+  "verdict": "flag",
+  "issue": "语义一致性",
+  "reason": "译文严重偏离原文含义，将'滑溜'误译为'太难用了'，导致语义完全错误。",
+  "suggestion": "* 你试图拿起那支长矛，^05\n  但是，把手太滑了。\n  滑溜溜。"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level105:asset#level105#180/str/1",
+  "original": "* (You can think of a few\\n  ways this could've happened.)^05\\n* (None involve the dog.)",
+  "verdict": "flag",
+  "issue": "语义一致性",
+  "reason": "译文存在严重语序混乱导致语义不通，且未准确传达原文的假设语气（could've happened）。",
+  "suggestion": "* 你可以想出几种这种方式可能发生的途径。\n*（与狗无关。）"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level105:asset#level105#187/str/4",
+  "original": "* Susie,^05 it's not just\\n  that.",
+  "verdict": "flag",
+  "issue": "否定",
+  "reason": "译文将原文的否定含义（not just）错误地处理为肯定（不只是...那个），导致语义逻辑颠倒。",
+  "suggestion": "* 苏西，^05 不仅仅是这样。"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level105:asset#level105#187/str/11",
+  "original": "* Okay,^05 fine,^05 it's just\\n  a random statue.^05\\n* Now let's go.",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用规范，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level105:asset#level105#188/str/1",
+  "original": "* The big guy from the guard\\n  won't let me by cuz they're\\n  on high alert.",
+  "verdict": "flag",
+  "issue": "人物关系/语义一致性",
+  "reason": "译文存在严重语病，主语指代混乱导致逻辑不通，且部分表达不符合游戏 UI 规范。",
+  "suggestion": "* 那个来自警卫队的大个子不会让我通行，因为他们处于高度警戒状态。"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level105:asset#level105#188/str/7",
+  "original": "* Noel,^05 if you know her,^05 can\\n  you tell her to STOP training\\n  the dogs to be killers???",
+  "verdict": "flag",
+  "issue": "信息完整性",
+  "reason": "译文严重缺失原文关键信息，且将原文的疑问句（询问是否知道）错误地处理为陈述句（她应该会），导致语义完全改变。",
+  "suggestion": "* 诺埃尔，如果你认识她的话，你能告诉她停止训练那些狗成为杀手吗？？？"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level105:asset#level105#188/str/8",
+  "original": "* She ain't part of the guard,^05\\n  and I'm not lookin' to be\\n  oppressed.",
+  "verdict": "flag",
+  "issue": "信息完整性",
+  "reason": "译文存在严重信息缺失，导致语义不完整且语气不匹配。",
+  "suggestion": "* 她不属于那支卫队。^05\\n 而且，我并不想成为受压迫的人。"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level105:asset#level105#188/str/21",
+  "original": "* With how people act,^05 I'd be\\n  surprised if ANYONE let a\\n  human live.",
+  "verdict": "flag",
+  "issue": "术语/实体错误",
+  "reason": "译文严重偏离原文，将'human'误译为'URP'，且'human live'被错误处理为'人类生活'，导致语义完全错误。",
+  "suggestion": "从人们的行为来看，^05 我可能会惊讶地发现，竟然有人会让人类活下来。"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level105:asset#level105#188/str/22",
+  "original": "* Whatever.^05\\n* Guess I just gotta wait until\\n  they call off the search.",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用规范，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level105:asset#level105#189/str/1",
+  "original": "* (You try to take the spear,^05\\n  but the handle was way too\\n  slippery.)",
+  "verdict": "flag",
+  "issue": "语义一致性",
+  "reason": "译文严重偏离原文含义，将'滑溜'误译为'太难用了'，导致语义完全错误。",
+  "suggestion": "* 你试图拿起那支长矛，^05\n  但是，把手太滑了。\n  滑溜溜。"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level105:asset#level105#189/str/3",
+  "original": "* (You try to take the spear,^05\\n  but the handle was way too\\n  slippery.)",
+  "verdict": "flag",
+  "issue": "语义一致性",
+  "reason": "译文严重偏离原文含义，将'滑溜'误译为'太难用了'，导致语义完全错误。",
+  "suggestion": "* 你试图拿起那支长矛，^05\n  但是，把手太滑了。\n  滑溜溜。"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level105:asset#level105#191/str/1",
+  "original": "* (Seems like the dog put all\\n  the cobwebs in here for the\\n  time being.)",
+  "verdict": "flag",
+  "issue": "语义一致性",
+  "reason": "译文严重偏离原文含义，将比喻句误译为字面描述，且丢失关键信息导致语义完全错误。",
+  "suggestion": "* 看来是那只狗把这里所有的蜘蛛网都弄乱了。\n  暂时就这样吧。"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level106:asset#level106#416/str/0",
+  "original": "I THOUGHT YOU WERE \\nBETTER THAN THIS,^05 \\n^N...",
+  "verdict": "flag",
+  "issue": "语义一致性",
+  "reason": "译文严重偏离原文含义，将原文关于“你不如预期”的抱怨错误地翻译为“你还在”，且丢失了关键比较信息。",
+  "suggestion": "我以为你比这更好。\n^05\n^N..."
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level107:asset#level107#138/str/0",
+  "original": "* No,^05 I didn't do it.",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文的否定含义、人物关系及完整语义，术语使用规范，无语病。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level107:asset#level107#138/str/2",
+  "original": "* No...^10 it was the skeleton guy\\n  himself that cut the rope\\n  to town.",
+  "verdict": "flag",
+  "issue": "语义一致性",
+  "reason": "译文严重违背原文逻辑，将“骷髅人自己割断绳子”错误译为“他自己切断了绳子去镇上”，导致人物动作与目的关系混乱，且未传达出骷髅人身份的关键信息。",
+  "suggestion": "* 不……^10 是那个骷髅人自己割断了绳子\n  去镇上。"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level107:asset#level107#138/str/13",
+  "original": "* But I'm pretty sure it\\n  wasn't even the government that\\n  installed the rope.",
+  "verdict": "flag",
+  "issue": "语义一致性",
+  "reason": "译文严重偏离原文，错误理解并篡改了原文关于“绳索安装者”的核心含义，且存在大量信息缺失与逻辑混乱。",
+  "suggestion": "* 但我相当确定，\n  甚至政府本身也没\n  安装过那根绳索。"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level107:asset#level107#139/str/2",
+  "original": "* No escape,^05 huh.",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文的语义、语气及人物关系，术语使用符合游戏本地化标准。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level107:asset#level107#147/str/2",
+  "original": "*\\ti don't think he\\n\\tsaw me,^05 but...",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文的否定含义、人物关系及口语语气，无术语错误或信息缺失。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level109:asset#level109#148/str/0",
+  "original": "* \"Holiday Residence\\n* FOR SALE: CONTACT --- ----\\n  FOR INFORMATION\"",
+  "verdict": "flag",
+  "issue": "术语一致性",
+  "reason": "译文存在术语误用及信息缺失，'FOR INFORMATION'被生硬直译为'用于信息获取'，不符合游戏 UI 标准用语习惯。",
+  "suggestion": "FOR INFORMATION"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level109:asset#level109#148/str/3",
+  "original": "* It's pretty run-down,^05\\n  huh.",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文的语义、语气及人物关系，术语使用符合游戏 UI 标准，无错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level11:asset#level11#149/str/0",
+  "original": "* \"Press ^Z to read signs!\"",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文指令，术语和语气均符合游戏 UI 标准。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level11:asset#level11#150/str/0",
+  "original": "* Please press this switch.\\n  too.\\n             - TORIEL",
+  "verdict": "flag",
+  "issue": "信息完整性",
+  "reason": "译文严重缺失原文关键信息，导致语义完全错误。",
+  "suggestion": "* 请按下这个开关。\n  也。\n             - 托里埃尔"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level11:asset#level11#152/str/0",
+  "original": "* Please press this switch.\\n\\n            - TORIEL",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语和人物名称使用正确，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level110:asset#level110#115/str/5",
+  "original": "SAY,^05 IF YOU CAN \\nBRING ME SOMETHING \\nINTERESTING...",
+  "verdict": "flag",
+  "issue": "人物关系与动作逻辑",
+  "reason": "译文存在严重语序混乱及信息缺失，导致人物关系与动作逻辑颠倒，不符合游戏 UI 标准。",
+  "suggestion": "说吧，如果你能的话，请给我带来点有趣的东西……"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level110:asset#level110#115/str/11",
+  "original": "THOUGH IT IS YOUR \\nCHOICE.",
+  "verdict": "flag",
+  "issue": "信息完整性",
+  "reason": "译文末尾多译了“选择”二字，导致语义冗余且不符合原文结构。",
+  "suggestion": "尽管这是你的决定。"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level110:asset#level110#115/str/36",
+  "original": "YOU DO NOT HAVE \\nANYTHING FOR ME \\nYET?",
+  "verdict": "flag",
+  "issue": "否定",
+  "reason": "译文严重违背原文逻辑，将'尚未'误译为'都'，导致否定含义完全错误且语意不通。",
+  "suggestion": "您还没有给我任何东西吗？"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level111:asset#level111#334/str/13",
+  "original": "* But I can't say for sure\\n  it's even related.",
+  "verdict": "flag",
+  "issue": "否定",
+  "reason": "译文后半句漏译了关键否定词 not，导致语义完全相反。",
+  "suggestion": "* 但我无法确定它是否相关。"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level111:asset#level111#340/str/0",
+  "original": "* Jester?^10\\n* No,^05 I'm what some may\\n  call a <color=#FF0000FF>demon</color>.",
+  "verdict": "flag",
+  "issue": "语义一致性",
+  "reason": "译文严重错误，将原文的'call a demon'（被称为恶魔）误译为'打电话给恶魔'，导致含义完全颠倒。",
+  "suggestion": "* 小丑？^10\n不，^05 我就是有些人所说的那种人。\n  我是一名 <color=#FF0000FF>恶魔</color>。"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level111:asset#level111#340/str/1",
+  "original": "* Just because I smile all\\n  the time doesn't mean I'm\\n  a clown.",
+  "verdict": "flag",
+  "issue": "语义一致性",
+  "reason": "译文严重违背原文逻辑，将'微笑'误译为'时间'，导致语义完全错误。",
+  "suggestion": "* 仅仅因为我总是微笑\n  并不意味着我\n  是个小丑。"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level111:asset#level111#340/str/3",
+  "original": "* Being called JEVIL II by\\n  someone named...^10\\n  <color=#FFFF00FF>something Quetzalcoatl III</color>.",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用符合行业标准，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level111:asset#level111#340/str/5",
+  "original": "* I don't know,^05 but it keeps\\n  showing up and punching me\\n  in the face.",
+  "verdict": "flag",
+  "issue": "语义一致性",
+  "reason": "译文严重偏离原文，丢失关键动作信息，且将'punching me in the face'错误翻译为'打我直面'，导致语义混乱。",
+  "suggestion": "* 我不知道，^05 但它一直在出现，不断打我的脸。"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level111:asset#level111#341/str/0",
+  "original": "* What.^10\\n* What?^10\\n* WHAT!?",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文的疑问语气和感叹强度，无术语或语义错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level111:asset#level111#342/str/3",
+  "original": "* She didn't let me go anywhere\\n  near Waterfall earlier!",
+  "verdict": "flag",
+  "issue": "语义一致性",
+  "reason": "译文严重违背原文逻辑，将“没让我去瀑布附近”错误理解为“没让我离开任何地方，且当时在瀑布附近”，导致人物关系与场景描述完全颠倒。",
+  "suggestion": "* 她之前没让我去瀑布附近！"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level111:asset#level111#342/str/6",
+  "original": "* ...^05 Huh?^05\\n* The boat?",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文的疑问语气和指代对象，无术语错误或信息缺失。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level111:asset#level111#342/str/22",
+  "original": "* What?^05\\n* You got a secret\\n  hide-out or something?",
+  "verdict": "flag",
+  "issue": "信息完整性",
+  "reason": "译文遗漏了原文中关键的动词'got'（得到/拥有），导致语义不完整，且'秘密'一词未准确传达'secret'在语境中作为'秘密基地'含义的潜在歧义风险。",
+  "suggestion": "* 什么？^05\\n你得到了一个秘密\\n  藏身处之类的东西吗？"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level111:asset#level111#342/str/26",
+  "original": "* Susie!!!^05\\n* Leave her alone!",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文的警告语气及人物关系，术语使用规范，无错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level111:asset#level111#346/str/1",
+  "original": "* This looks eerily like\\n  Sans's house back home...",
+  "verdict": "flag",
+  "issue": "语义一致性",
+  "reason": "译文语序混乱且信息结构错误，将原文的对比逻辑（像桑斯的家）错误地拆解为两个独立且逻辑不通的句子，破坏了语义连贯性。",
+  "suggestion": "* 这看起来简直和……桑斯以前的家一模一样。"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level111:asset#level111#346/str/3",
+  "original": "* Cuz Kris's mom's house\\n  was nothing like it\\n  was back home.",
+  "verdict": "flag",
+  "issue": "信息完整性",
+  "reason": "译文严重偏离原文，丢失关键信息且逻辑混乱，导致含义完全错误。",
+  "suggestion": "* 因为克里斯妈妈的房子\n  跟家乡时完全不一样。"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level111:asset#level111#346/str/4",
+  "original": "* You were at Kris's\\n  house...?",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用规范，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level111:asset#level111#349/str/1",
+  "original": "* Okay,^05 so is Sans\\n  popular,^05 or does he\\n  not check his mail?",
+  "verdict": "flag",
+  "issue": "语义一致性",
+  "reason": "译文严重偏离原文语义，错误地将'popular'（受欢迎）译为'也是了'，且句式结构混乱，导致含义完全不符。",
+  "suggestion": "* 好的，^05那么 Sans 受欢迎吗？^05还是说他根本不检查邮件？"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level111:asset#level111#350/str/2",
+  "original": "* Huh?????^05\\n* What does THAT mean???",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文的惊讶语气和疑问含义，术语与格式均符合游戏本地化标准。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level111:asset#level111#351/str/0",
+  "original": "* Oh my goodness,^05\\n  Kris???",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文的惊讶语气及人物称呼，无术语或语义错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level111:asset#level111#351/str/1",
+  "original": "* Remember when we\\n  had a Grillby's at\\n  home?",
+  "verdict": "flag",
+  "issue": "语义一致性",
+  "reason": "译文严重破坏原文语义结构，将'Grillby's'作为专有名词错误地拆解并插入到句子中间，导致'家吗？'成为独立且无意义的结尾，完全丢失了'家里有过 Grillby's 店'这一核心信息。",
+  "suggestion": "* 还记得我们以前家里开过 Grillby's 吗？"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level111:asset#level111#355/str/0",
+  "original": "* (Welcome to Snowdin Town!)",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用符合行业标准，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level111:asset#level111#356/str/0",
+  "original": "* It's always so nice visiting\\n  Snowdin Town!",
+  "verdict": "flag",
+  "issue": "语义一致性",
+  "reason": "译文将原文的‘访问/造访’错误地处理为‘拜访别人’，导致语义偏差且不符合游戏 UI 语境，同时‘雪丁镇’译名不规范。",
+  "suggestion": "去拜访雪丁镇总是这么愉快啊。"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level111:asset#level111#356/str/5",
+  "original": "* But Snowdin is a lot bigger\\n  than people give it\\n  credit for!",
+  "verdict": "flag",
+  "issue": "语义一致性",
+  "reason": "译文严重偏离原文含义，将“给予的信用/认可”错误地翻译为“功劳归于”，导致语义逻辑混乱且不符合游戏 UI 语境。",
+  "suggestion": "* 但是，Snowdin 的规模大得多，远超人们的预期！"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level111:asset#level111#356/str/7",
+  "original": "* Yeah...^10\\n* Yeah,^05 that...",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文的口语语气、省略含义及时间标记，无术语或语义错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level111:asset#level111#369/str/1",
+  "original": "* (Try the undersnow tunnels!)^05\\n* (They're efficiently laid out.)",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用规范，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level113:asset#level113#171/str/2",
+  "original": "* Came by today to make sure\\n  Ice Wolf was still throwing\\n  Ice to cool the CORE.",
+  "verdict": "flag",
+  "issue": "术语一致性",
+  "reason": "译文存在严重术语错误，将游戏核心术语 CORE 误译为‘核心区域’，且‘扔东西’未准确传达‘扔冰’的特定动作含义。",
+  "suggestion": "冰狼仍在继续扔冰来冷却核心。"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level115:asset#level115#170/str/0",
+  "original": "* So the fish lady from the\\n  guard came to tell the rest\\n  of 'em about a human hunt?",
+  "verdict": "flag",
+  "issue": "信息完整性",
+  "reason": "译文严重缺失原文关键信息（'guard'未译出），且人物关系与逻辑混乱，导致语义偏差。",
+  "suggestion": "* 所以，那个来自守卫的鱼女郎啊\n  来通知其他人了。\n  关于他们的人类狩猎行为？"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level115:asset#level115#173/str/0",
+  "original": "* I've never heard of the\\n  ROYAL GUARD going on a human\\n  hunt in the morning.",
+  "verdict": "flag",
+  "issue": "语义一致性",
+  "reason": "译文严重偏离原文含义，将'去进行人类狩猎'错误译为'变成人类形态'，且遗漏了'human'这一关键修饰词，导致语义完全错误。",
+  "suggestion": "* 我从未听说过皇家卫队在早上去猎捕人类。"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level115:asset#level115#174/str/5",
+  "original": "* Dr. Alphys has studied a lot\\n  about humanity.",
+  "verdict": "flag",
+  "issue": "语义一致性",
+  "reason": "译文将原文关于人类的研究对象表述为‘很多东西’，导致语义偏差且不符合游戏术语规范。",
+  "suggestion": "* 阿尔菲斯博士已经研究了关于人类的大量内容。"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level115:asset#level115#174/str/6",
+  "original": "* I think if there's anyone\\n  we can trust about this,^05\\n  it's Alphys.",
+  "verdict": "flag",
+  "issue": "信息完整性",
+  "reason": "译文严重偏离原文含义，将'关于这一点'误译为'我们可以放心'，导致信息缺失且逻辑错误。",
+  "suggestion": "* 我认为，如果真有谁的话……\n  关于这件事，我们可以信任的人。\n  那就是阿尔菲斯。"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level115:asset#level115#175/str/8",
+  "original": "* I love her Cinnamon Buns,^05 but\\n  I'm absolutely NOT getting them\\n  from Sans.",
+  "verdict": "flag",
+  "issue": "人物关系",
+  "reason": "译文出现严重的人物关系颠倒错误，将原文中 Sans 拒绝提供面包的语境错误地翻译为面包来自 Sans，导致语义完全相反。",
+  "suggestion": "* 我喜欢她的肉桂面包，^05但是\n  我绝对不会从 Sans 那里拿到它们。"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level116:asset#level116#123/str/6",
+  "original": "* Sounds kinda like Asgore\\n  to me, fahaha!",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文的语义、语气及人物关系，术语使用规范。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level116:asset#level116#125/str/0",
+  "original": "* Love,^05 hope,^05 compassion...^05\\n* This is what people say\\n  monster SOULs are made of.",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用规范，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level116:asset#level116#127/str/7",
+  "original": "* Uh,^05 not Frisk OR\\n  Chara.",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文的否定含义、人物指代及口语语气，术语使用符合游戏本地化标准。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level116:asset#level116#127/str/9",
+  "original": "* And you're Papyrus,^05\\n  right?",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用正确，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level116:asset#level116#127/str/10",
+  "original": "QUITE THE DELTA-\\nTRAVELLING TRIO,^05 \\nAREN'T YOU?",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "{\"level\": \"CRITICAL\", \"reason\": \"原文 QUITE 为拼写错误（应为 QUITE），译文将其误译为 Quit（退出），导致语义完全错误且不符合游戏 UI 术语规范。\", \"issues\": [{\"type\": \"术语一致性\", \"detail\": \"原文 QUITE 实为拼写错误，正确含义为 QUITE（完全），译文错误地将其识别为 Quit 并翻译为‘退出’，严重偏离原意。\", \"suggestion\": \"QUITE THE DELTA-TRAVELLING TRIO, AREN'T YOU?\"}]}`",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level116:asset#level116#133/str/0",
+  "original": "* (Here I am...^05\\n* Writing this book.)",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语与格式均符合标准，无错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level116:asset#level116#133/str/2",
+  "original": "* (They start reading it...!)",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语和语气均符合游戏 UI 标准。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level116:asset#level116#133/str/3",
+  "original": "* Sorry,^05 I'm lost.^05\\n* The hell is this\\n  about?",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用规范，无语义或逻辑错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level117:asset#level117#105/str/0",
+  "original": "* (You open the drawer.)^05\\n* (There's a photobook inside.)",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用规范，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level117:asset#level117#106/str/0",
+  "original": "* (You open the drawer.)^05\\n* (There's a badge inside.)",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文的语义、人物关系及术语，无语义错误或术语误用。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level118:asset#level118#126/str/1",
+  "original": "* (There are a bunch of job\\n  listings.)^05\\n* (All taken by Sans.)",
+  "verdict": "flag",
+  "issue": "语义一致性",
+  "reason": "译文严重偏离原文含义，将'job listings'误译为'工作机会'并错误添加'列表'，将'all taken by'误译为'照片均由...拍摄'，导致人物关系与核心信息完全错误。",
+  "suggestion": "* （有一堆工作职位列表。）^05\n* （都被 Sans 抢光了。）"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level118:asset#level118#127/str/3",
+  "original": "* (You got the Egg.)",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用规范，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level118:asset#level118#127/str/6",
+  "original": "* And read All the books !",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语与语气均符合游戏 UI 标准。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level118:asset#level118#130/str/4",
+  "original": "* They actually used to live\\n  here in Snowdin.",
+  "verdict": "pass",
+  "issue": "语序/冗余",
+  "reason": "译文整体语义准确，但结尾重复了“在这里”导致语序不自然且略显冗余。",
+  "suggestion": "* 他们实际上曾经住在这里，在斯诺丁。"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level12:asset#level12#156/str/1",
+  "original": "* \"Perhaps trapping this ghost\\n  in a room with <color=#FFFF00FF>FAKE WALLS</color>\\n  was a    <color=#FFFF00FF>Mistake ,</color>\"",
+  "verdict": "flag",
+  "issue": "语义一致性",
+  "reason": "译文严重偏离原文含义，将“陷阱”误译为“抓住”，将“是”误译为“曾经是”，且破坏了原文的讽刺语气。",
+  "suggestion": "* 或许把这只鬼魂关在有 <color=#FFFF00FF>虚假墙壁</color> 的房间里\n  就是个 <color=#FFFF00FF>错误</color>"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level12:asset#level12#158/str/0",
+  "original": "* Kris, ^05c'mon...",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文的呼唤语气与省略号含义，无术语或语义错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level12:asset#level12#159/str/0",
+  "original": "* What.^10\\n* What?^10\\n* WHAT!?",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文的疑问语气和感叹强度，无术语或语义错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level12:asset#level12#165/str/1",
+  "original": "* Well,^05 I often start with\\n  a simple 'how do you\\n  do...'",
+  "verdict": "flag",
+  "issue": "语义一致性",
+  "reason": "译文严重偏离原文，将口语化的问候语误译为生硬的书面语，且丢失了原文的互动感和具体语境。",
+  "suggestion": "* 嗯，我通常是从一句简单的‘你好’开始的。"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level12:asset#level12#165/str/28",
+  "original": "* You can say anything...^10\\n* The dummy will not\\n  be bothered.",
+  "verdict": "flag",
+  "issue": "信息完整性",
+  "reason": "译文出现严重语序混乱，导致后半句逻辑不通，且未准确传达原文关于假人“不会被打扰”的完整含义。",
+  "suggestion": "* 你可以说任何你想说的话……^10\\n这个假人不会感到烦恼。"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level121:asset#level121#116/str/8",
+  "original": "* It's called an Echo\\n  Flower.",
+  "verdict": "flag",
+  "issue": "术语一致性",
+  "reason": "译文将专有名词 Echo 错误地拆解为普通名词，破坏了游戏术语的完整性与一致性。",
+  "suggestion": "* 它被称为\"Echo Flower\"。\n  花。"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level122:asset#level122#216/str/1",
+  "original": "* The royal guard is going to\\n  bring back the rock puzzle\\n  that used to be here.",
+  "verdict": "flag",
+  "issue": "信息完整性",
+  "reason": "译文严重偏离原文，丢失关键信息且未准确传达‘带回’及‘曾经在此’的含义。",
+  "suggestion": "* 皇家卫队即将出发，\n  带回那块曾经在此的石头拼图。"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level122:asset#level122#220/str/2",
+  "original": "* (Why would you,^05 though???)^10\\n* (You can't use items\\n  when they're in the box!)",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用规范，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level122:asset#level122#220/str/4",
+  "original": "* What a loser.^05\\n* They don't know what\\n  they're missing.",
+  "verdict": "flag",
+  "issue": "信息完整性",
+  "reason": "译文严重偏离原文，丢失关键信息并错误添加无关内容，导致语义完全改变。",
+  "suggestion": "* 真是个失败者啊。^05\\n他们不知道自己在失去什么。"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level123:asset#level123#107/str/4",
+  "original": "* (You got the Old Tutu.)",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用符合游戏行业惯例，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level126:asset#level126#438/str/0",
+  "original": "* If an error is made,^05 the Bell\\n  Blossom can call the Bridge\\n  Seeds back to where they start.",
+  "verdict": "flag",
+  "issue": "术语一致性",
+  "reason": "译文严重偏离原文，将专有名词误译为通用词，且错误地添加了原文不存在的‘应’字，导致含义完全改变。",
+  "suggestion": "* 如果出错的话，^05 贝尔花蕾\n  Blossom 可以呼叫'桥梁种子'\n  回到它们原来的位置。"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level127:asset#level127#314/str/2",
+  "original": "* Kris,^05 get your eye\\n  out of the way!!!",
+  "verdict": "flag",
+  "issue": "语义一致性",
+  "reason": "译文严重违背原文指令，将“让开”误译为“保护好眼睛”，导致人物关系与动作意图完全颠倒。",
+  "suggestion": "* Kris，^05 把眼睛移开！！！让开！！！"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level127:asset#level127#321/str/0",
+  "original": "* Shoot!!!^05\\n* I dropped Kris and Noelle!",
+  "verdict": "flag",
+  "issue": "语气与表达",
+  "reason": "译文存在严重语病，'让...掉了下去'不符合中文表达习惯，且未能准确传达'掉落'这一动作的被动或意外性质。",
+  "suggestion": "我弄掉了克里斯和诺埃尔！"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level128:asset#level128#340/str/1",
+  "original": "- Sprite Artists -",
+  "verdict": "flag",
+  "issue": "术语一致性",
+  "reason": "术语不一致，'Sprite Artists' 应译为'精灵艺术家'而非'sprite 艺术家'，且格式不统一。",
+  "suggestion": "- 精灵艺术家 -"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level128:asset#level128#343/str/1",
+  "original": "Sarah Mullins\nTheFamiliarScoot\nI'm an issue\nmarxvee\nDiane Sparks\nSonnakai\nsophiedeergirl",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文所有信息，人物名称与游戏术语均符合行业标准，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level128:asset#level128#347/str/1",
+  "original": "Writing this assuming everyone will think that Section 3 is lame because it's based on my interpretation of Underfell.  I hope you liked it in spite of that, though!!!\n\nHere's to more to come.\n\n- Sarah",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用规范，语气自然，无严重错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level128:asset#level128#352/str/1",
+  "original": "based on\nEarthbound / MOTHER 2 by Shigesato Itoi",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用符合行业标准，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level128:asset#level128#353/str/1",
+  "original": "Autumn\n\"Diddy\"",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用正确，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level128:asset#level128#357/str/1",
+  "original": "lvk\n\n\nBlaster\n\n\n\nToby Fox, Temmie Chang, UNDERTALE and DELTARUNE teams\n\nHUECYCLES\n\nDorked\n\n\nSubna\n\n\n\nnabbup (Raine)\n\n\nKasssm\nEllisBros\nNickolas\n\nGonerBoy\nStarGazer88\n\n\ngoldenanomaly\n\nChara Violet\n\nTeam Undertale Yellow",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文所有信息，术语翻译符合行业标准，无语法或逻辑错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level128:asset#level128#360/str/1",
+  "original": "- Section Credits -",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用符合行业标准，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level128:asset#level128#364/str/1",
+  "original": "based on\nUNDERTALE by Toby Fox",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用规范，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level128:asset#level128#366/str/1",
+  "original": "RENREN\nLexiTheTT\nLazyGales\nFrakture\nTygressLongheart\ngabbo\nlex3x\nAutumn / WavePrism\nTheTuneHero\nEribetra\nSawsk",
+  "verdict": "flag",
+  "issue": "术语一致性",
+  "reason": "原文为英文用户名，译文将部分英文单词错误意译或误译（如 Frakture 译断裂、Autumn 译秋季），破坏了用户名作为标识符的准确性与一致性。",
+  "suggestion": "Frakture"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level128:asset#level128#367/str/1",
+  "original": "TheFlowerVixen\nBeethovenus\r\nYippieTB\nJust a BLU Toon\r\nspider8bytes\r\nCyberCorvid\nLumaHoneyy\nmalloryFireflies\r\nparfae\r\ntubba\njevilhumor\r\nShaunt / SeanTG246\r\nasukaaa\nOcto\nsugariimarii\nValor52\nAutumn / WavePrism",
+  "verdict": "flag",
+  "issue": "术语一致性",
+  "reason": "部分玩家 ID 翻译生硬且不符合游戏社区习惯，如'贝多芬'、'帕尔法埃'、'坏心情'、'八'等未采用通用译法或过度意译。",
+  "suggestion": "Beethovenus"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level128:asset#level128#369/str/1",
+  "original": "Sarah Mullins\nBeethovenus\nCyberCorvid\nLumaHoneyy",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文专有名词含义，术语使用符合游戏行业规范，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level128:asset#level128#370/str/1",
+  "original": "Sarah Mullins\ncippbone\nCyberCorvid\nLumaHoneyy\njevilhumor\nShaunt\r / SeanTG246\nTheTuneHero\r\nHUECYCLES\r\nA Sick-Ass Werewolf\nLuneyToons\nAutumn / WavePrism\nThe Winterer\nValor52",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文所有开发者/工作室名称，无术语误用、否定错误或信息缺失。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level128:asset#level128#371/str/1",
+  "original": "- Special Thanks -",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用符合行业标准，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level128:asset#level128#376/str/1",
+  "original": "UNITALE Monster Dust Code\n\nEarthbound Distortional Background Shader\n\nLiterally everything\n\n\n\nDess Design Help\n\nInverted Fate Papyrus Appearance\n\nGoku\n<color=#FFFFFF80>(UNDERTALE: Legend of the Dragon Balls)</color>\n\nMario Bros. Title Background\n\nUNDERTALE:\nPapyrus's BELIEF\n<color=#FFFFFF80>(Music in UNO)</color>\n\nNoel Design Inspiration\n<color=#FFFFFF80>(DELTA_EXPERIMENT)</color>\n\nKris Ice Slide Poses\n\nSister Kid Design\n\nFrostermit\nClover Run Animation\nMusic in UNO!!!",
+  "verdict": "flag",
+  "issue": "术语一致性",
+  "reason": "存在多处术语翻译错误（如 UNITALE 应为 UNDERTALE、Frostermit 应为 Frostbite、Clover Run 应为 Clover Run 或特定游戏名误译）及专有名词拼写错误，且部分 UI 文本未统一使用行业标准译法。",
+  "suggestion": "UNDERTALE 怪物尘埃代码"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level128:asset#level128#385/str/1",
+  "original": "Gaster Blasted Ending\n",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了游戏术语 Gaster Blasted Ending 的含义，符合行业标准译法，无语义或术语错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level130:asset#level130#109/str/4",
+  "original": "* (You got the Old Tutu.)",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用符合游戏行业惯例，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level131:asset#level131#434/str/1",
+  "original": "Gaster Blasted Ending\n",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了游戏结局标题的含义，术语使用符合行业标准，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level131:asset#level131#454/str/1",
+  "original": "Writing this assuming everyone will think that Section 3 is lame because it's based on my interpretation of Underfell.  I hope you liked it in spite of that, though!!!\n\nHere's to more to come.\n\n- Sarah",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用规范，语气自然，无严重错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level131:asset#level131#460/str/1",
+  "original": "Autumn\n\"Diddy\"",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用正确，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level131:asset#level131#461/str/1",
+  "original": "based on\nEarthbound / MOTHER 2 by Shigesato Itoi",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用符合行业标准，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level131:asset#level131#462/str/1",
+  "original": "- Sprite Artists -",
+  "verdict": "pass",
+  "issue": "术语一致性",
+  "reason": "术语大小写不规范，且使用了非标准连接符，不符合游戏 UI 显示规范。",
+  "suggestion": "Sprite Artists"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level131:asset#level131#467/str/1",
+  "original": "Sarah Mullins\nTheFlowerVixen\nI'm an issue\nmarxvee\nDiane Sparks\nSonnakai\nsophiedeergirl",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，人物名称与用户名翻译符合游戏本地化规范，无语义或术语错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level131:asset#level131#472/str/1",
+  "original": "RENREN\nLexiTheTT\nLazyGales\nFrakture\nTygressLongheart\ngabbo\nlex3x\nAutumn / WavePrism\nTheTuneHero\nEribetra\nSawsk",
+  "verdict": "flag",
+  "issue": "术语一致性",
+  "reason": "原文为英文用户名列表，译文将部分英文单词错误意译或误译，破坏了用户名作为专有名词的完整性与一致性。",
+  "suggestion": "Frakture"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level131:asset#level131#473/str/1",
+  "original": "based on\nUNDERTALE by Toby Fox",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用规范，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level131:asset#level131#474/str/1",
+  "original": "- Special Thanks -",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用符合行业标准，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level131:asset#level131#475/str/1",
+  "original": "Sarah Mullins\ncippbone\nCyberCorvid\nLumaHoneyy\njevilhumor\nShaunt\r / SeanTG246\nTheTuneHero\r\nHUECYCLES\r\nA Sick-Ass Werewolf\nLuneyToons\nAutumn / WavePrism\nThe Winterer\nValor52",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文所有开发者/工作室名称，无术语误用、否定错误或信息缺失。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level131:asset#level131#477/str/1",
+  "original": "Sarah Mullins\nBeethovenus\nCyberCorvid\nLumaHoneyy",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文名称，术语符合游戏 UI 标准，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level131:asset#level131#479/str/1",
+  "original": "- Section Credits -",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用符合行业标准，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level131:asset#level131#489/str/1",
+  "original": "UNITALE Monster Dust Code\n\nEarthbound Distortional Background Shader\n\nLiterally everything\n\n\n\nDess Design Help\n\nInverted Fate Papyrus Appearance\n\nGoku\n<color=#FFFFFF80>(UNDERTALE: Legend of the Dragon Balls)</color>\n\nMario Bros. Title Background\n\nUNDERTALE:\nPapyrus's BELIEF\n<color=#FFFFFF80>(Music in UNO)</color>\n\nNoel Design Inspiration\n<color=#FFFFFF80>(DELTA_EXPERIMENT)</color>\n\nKris Ice Slide Poses\n\nSister Kid Design\n\nFrostermit\nClover Run Animation\nMusic in UNO!!!",
+  "verdict": "flag",
+  "issue": "术语一致性",
+  "reason": "存在多处术语翻译错误及专有名词拼写错误，违反行业标准译法。",
+  "suggestion": "Undertale Monster Dust Code"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level131:asset#level131#498/str/1",
+  "original": "Gaster Blasted Ending\n",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了游戏术语 Gaster Blasted Ending 的含义，符合行业标准译法。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level15:asset#level15#137/str/0",
+  "original": "* Ribbit,^10 ribbit.\\n^10* (Excuse me,^10 human.)",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用规范，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level15:asset#level15#137/str/5",
+  "original": "* (Use some <color=#FFFF00FF>MERCY,</color>^10 human.)^10\\n* Ribbit.",
+  "verdict": "flag",
+  "issue": "语义一致性",
+  "reason": "原文为祈使句“使用怜悯”，译文误译为陈述句“怜悯人”，导致语义完全颠倒且人物关系错误。",
+  "suggestion": "* 使用一些 <color=#FFFF00FF>怜悯，</color>^10 人。^10\\n* 嘎嘎。"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level15:asset#level15#137/str/6",
+  "original": "* Why were they only\\n  talking to YOU about\\n  this,^05 Kris?",
+  "verdict": "flag",
+  "issue": "语气与表达",
+  "reason": "译文存在严重语病，'交谈关于'不符合中文表达习惯，且未体现原文中 Kris 作为被称呼对象的自然语感。",
+  "suggestion": "* 为什么他们只\n  跟你聊这个，^05 克里斯？"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level15:asset#level15#137/str/15",
+  "original": "* Ribbit,^10 ribbit.\\n^10* (Careful,^10 purple lady.)",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文的拟声词及对话内容，术语与格式均符合标准。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level16:asset#level16#95/str/1",
+  "original": "* Kris,^10 we should just\\n  take all of it.",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用规范，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level19:asset#level19#177/str/6",
+  "original": "* Uhh...^10\\n* That's what I\\n  thought...?",
+  "verdict": "flag",
+  "issue": "语义一致性",
+  "reason": "译文严重偏离原文含义，将对话误译为内心独白，且错误添加了“思考”一词导致语义偏差。",
+  "suggestion": "* 呃……^10\\n那就是我的意思。\\n  是吗？"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level21:asset#level21#102/str/1",
+  "original": "* Hell yeah!^10\\n* Table cheese!",
+  "verdict": "flag",
+  "issue": "术语一致性",
+  "reason": "译文存在严重术语错误，'Table cheese' 误译为'表格奶酪'，实际应为'塔塔酱'或'塔塔酱'，且语气不够地道。",
+  "suggestion": "* Absolutely! ^10\\n塔塔酱！"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level23:asset#level23#97/str/1",
+  "original": "* \"Spider Donuts - 7G\"\\n* Leave 7G in the web?",
+  "verdict": "flag",
+  "issue": "术语一致性",
+  "reason": "术语使用错误，'web'在游戏存储语境下指'存储空间'而非'网页'，且'Leave'译为'留下'不符合游戏提示语习惯。",
+  "suggestion": "* 蜘蛛甜甜圈 – 7G\\n需预留 7G 存储空间吗？"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level23:asset#level23#98/str/0",
+  "original": "* Spider Bake Sale^10\\n* All proceeds go to real\\n  spiders.",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用规范，无语义或逻辑错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level23:asset#level23#99/str/1",
+  "original": "* \"Spider Cider - 18G\"\\n* Leave 18G in the web?",
+  "verdict": "flag",
+  "issue": "术语一致性",
+  "reason": "术语翻译错误，'Spider Cider' 误译为'蜘蛛苹果酒'，应为'蜘蛛酒'或'蜘蛛果酒'；'web' 误译为'网页'，游戏语境下应为'蛛网'。",
+  "suggestion": "* 蜘蛛酒 – 18G\n* 将 18G 留在蛛网上吗？"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level24:asset#level24#127/str/0",
+  "original": "* Did you miss it?\\n* Spider Bakesale down and to\\n  the right.",
+  "verdict": "flag",
+  "issue": "术语一致性",
+  "reason": "原文 'to the right' 意为'向右'，译文误译为'权利'，属于严重术语错误及语义偏差。",
+  "suggestion": "向右"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level24:asset#level24#127/str/7",
+  "original": "* Did you miss it?\\n* Spider Bakesale down and to\\n  the right.",
+  "verdict": "flag",
+  "issue": "术语一致性",
+  "reason": "原文'right'指方向'右'，译文误译为'权利'，属于严重术语错误导致含义完全改变。",
+  "suggestion": "蜘蛛烘焙集市向下移动，向右。"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level24:asset#level24#130/str/1",
+  "original": "* (But what does \"F4\" stand for?)\\n* (\"Four frogs\"?)",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用规范，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level24:asset#level24#130/str/9",
+  "original": "* Ribbit.\\n* (They're scared of you.)",
+  "verdict": "flag",
+  "issue": "语义一致性",
+  "reason": "原文拟声词与括号内解释的因果关系被完全破坏，导致语义逻辑错误。",
+  "suggestion": "* 呱呱叫。\n*（他们害怕你。）"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level24:asset#level24#130/str/11",
+  "original": "* Ribbit, ribbit.\\n* (Just a gut feeling that you\\n  can't hurt me.)",
+  "verdict": "flag",
+  "issue": "信息完整性",
+  "reason": "译文存在严重信息缺失，导致人物关系与语义逻辑混乱，且术语使用不规范。",
+  "suggestion": "*（只是你的直觉而已，你……不会伤害我。）"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level25:asset#level25#198/str/3",
+  "original": "* You got the Faded Ribbon.",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用符合行业标准，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level27:asset#level27#168/str/0",
+  "original": "* If you can read this,\\n^10  press the blue switch.",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用规范，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level28:asset#level28#164/str/0",
+  "original": "* If you can read this,\\n^10  press the red switch.",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文的指令含义，术语使用规范，无语义偏差。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level29:asset#level29#164/str/0",
+  "original": "* If you're reading this,\\n^10  press the green switch.",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用规范，无语义或逻辑错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level32:asset#level32#95/str/0",
+  "original": "* Ribbit,^10 ribbit.\\n^10* (Ooh,^10 are you two Kris\\n  and Susie?)",
+  "verdict": "flag",
+  "issue": "人物关系",
+  "reason": "译文将原文的疑问句结构误译为陈述句，导致人物关系和语气完全错误。",
+  "suggestion": "* Ribbit, ribbit.\\n*（哦，你们俩就是 Kris 和苏西吗？）"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level32:asset#level32#95/str/5",
+  "original": "* (Don't keep her waiting now.)\\n* Ribbit.",
+  "verdict": "pass",
+  "issue": "语气",
+  "reason": "译文整体语义准确，但对话语气与原文拟声词风格不匹配，建议调整以符合游戏角色设定。",
+  "suggestion": "* （不要让她再等待了。）\n呱。"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level32:asset#level32#95/str/14",
+  "original": "* (Don't keep her waiting now.)\\n* Ribbit.",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文的语义、语气及人物关系，无术语错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level33:asset#level33#99/str/3",
+  "original": "* You got the Toy Knife.",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用规范，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level33:asset#level33#99/str/5",
+  "original": "* You should totally equip\\n  that.\\n* Those are your style.",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文的口语语气和含义，术语使用正确，无语义或逻辑错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level34:asset#level34#176/str/0",
+  "original": "* Kris,^10 we should at\\n  least check out the\\n  surprise,^05 y'know?",
+  "verdict": "flag",
+  "issue": "人物关系",
+  "reason": "译文严重偏离原文，将原文的对话对象 Kris 误译为“我们”，且错误地将“惊喜”处理为独立句子，导致人物关系混乱和信息缺失。",
+  "suggestion": "* Kris，^10 我们至少应该去看看那个惊喜，^05 你知道吧？"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level35:asset#level35#122/str/1",
+  "original": "* (Some seeds and some broken\\n  crayons.)^10\\n* (Still no green.)",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用规范，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level36:asset#level36#112/str/2",
+  "original": "* Hey,^05 mind your\\n  business,^05 Kris!",
+  "verdict": "flag",
+  "issue": "语义一致性",
+  "reason": "译文严重误译，将英文专有名词'business'错误翻译为中文'商业'，导致语义完全错误且破坏游戏语境。",
+  "suggestion": "* 嘿，^05 别管你的私事，^05 克里斯！"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level36:asset#level36#114/str/2",
+  "original": "* (You find this alternate\\n  universe interpretation of\\n  Chairiel to be underwhelming.)",
+  "verdict": "flag",
+  "issue": "语义一致性",
+  "reason": "译文严重偏离原文，将'alternate universe interpretation'（替代宇宙诠释）误译为'替代方式宇宙的诠释'，且错误地将'underwhelming'（令人失望的）译为'不尽如人意'，导致语义完全错误。",
+  "suggestion": "* 您会发现这种关于 Chairiel 的替代宇宙诠释令人失望。"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level36:asset#level36#115/str/0",
+  "original": "* (You felt as though Berdly\\n  might enjoy this cactus.)^15\\n* (For some reason.)",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用规范，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level36:asset#level36#115/str/2",
+  "original": "* Kris,^05 stop looking at\\n  this cactus.",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语和语法均符合游戏本地化标准。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level37:asset#level37#152/str/1",
+  "original": "* Hell yeah, Kris!!!",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文的兴奋语气与人物关系，术语与格式均符合标准。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level37:asset#level37#152/str/3",
+  "original": "* You and Susie eat the moss.",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语与人物关系无误，无语义偏差。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level38:asset#level38#174/str/0",
+  "original": "* (The Leaning Tower of Box)",
+  "verdict": "pass",
+  "issue": "术语一致性",
+  "reason": "译文虽准确传达了原文含义，但“箱子的倾斜塔”不符合中文游戏 UI 的命名习惯，建议采用更地道的译法。",
+  "suggestion": "* （倾斜的盒子塔）"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level38:asset#level38#184/str/0",
+  "original": "* What?^10\\n* Are you jealous that\\n  I'm enjoying my bed?",
+  "verdict": "pass",
+  "issue": "语气",
+  "reason": "译文整体语义准确，但第二句口语化表达略显生硬，不够地道自然。",
+  "suggestion": "你是嫉妒我享受床铺时光吗？"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level38:asset#level38#186/str/3",
+  "original": "* (You got the Butterscotch Pie.)",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用规范，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level38:asset#level38#190/str/0",
+  "original": "* Kris,^10 c'mon.",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文的呼唤语气与人物关系，无术语或语义错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level39:asset#level39#129/str/0",
+  "original": "* (Dull gardening tools.)\\n* (They don't show much sign\\n  of use.)",
+  "verdict": "flag",
+  "issue": "语义一致性",
+  "reason": "译文存在严重语病，'太多迹象有用'不符合中文表达习惯，且未能准确传达原文'显示使用痕迹'的含义。",
+  "suggestion": "* （这些园艺工具看起来没什么用处。）\n它们似乎都没怎么被用过。"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level39:asset#level39#129/str/2",
+  "original": "* (You refuse to believe that\\n  this is not Chairiel.)",
+  "verdict": "flag",
+  "issue": "否定",
+  "reason": "否定词 not 被错误翻译，导致语义完全相反。",
+  "suggestion": "* 你拒绝相信这一点。\n  这是 Chairiel。"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level39:asset#level39#134/str/2",
+  "original": "* (You refuse to believe that\\n  this is not Chairiel.)",
+  "verdict": "flag",
+  "issue": "否定",
+  "reason": "否定词 not 被错误翻译，导致语义完全相反",
+  "suggestion": "* 你拒绝相信这一点。\n  这是 Chairiel。"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level4:asset#level4#196/str/1",
+  "original": "* It doesn't load a new scene.",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用规范，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level4:asset#level4#200/str/0",
+  "original": "* Well,^10 hello there,\\n  Kris!",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文的称呼对象和问候语气，无术语错误或信息缺失。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level4:asset#level4#200/str/1",
+  "original": "* I do believe that a\\n  strange human named <color=#FFFF00FF>Sarah</color>\\n  removed <color=#FFFF00FF>Player Pronouns</color>.",
+  "verdict": "flag",
+  "issue": "语义一致性",
+  "reason": "译文语序混乱，将原文的修饰结构错误重组，导致语义不通顺且不符合中文表达习惯。",
+  "suggestion": "* 我确实认为，一个名叫莎拉（Sarah）的奇怪人类已移除了玩家代词（Player Pronouns）。"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level4:asset#level4#203/str/1",
+  "original": "* Want a free test item?\\n\\n         Yes         No",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用符合行业标准，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level4:asset#level4#203/str/5",
+  "original": "* (You got the Test Food.)",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用规范，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level4:asset#level4#204/str/2",
+  "original": "* WELL TWO IN THREE [Teens]\\n  THINK [ChildEndangerment]\\n  SHOULDN\"T HAVE [\"Fun\"]",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "{\"level\": \"CRITICAL\", \"reason\": \"译文严重违背原文逻辑，将否定句误译为肯定句，且关键术语翻译错误。\", \"issues\": [{\"type\": \"否定\", \"detail\": \"原文 'SHOULDN\"T HAVE' 意为'不应该有'，译文'应该没有'虽语义相近但语气生硬且未体现原文警示语气，结合上下文应为'不应该有'。\", \"suggestion\": \"不应该有\"}, {\"type\": \"术语一致性\", \"detail\": \"原文 'Teens' 对应游戏 UI 标准术语应为'青少年'，译文使用了'青少年'，此处正确；但原文 'ChildEndangermen",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level4:asset#level4#204/str/3",
+  "original": "* SO THAT [\"Fun\"] IS\\n  OFFICIALLY\\n  [Eviction Notice]",
+  "verdict": "flag",
+  "issue": "语义一致性",
+  "reason": "译文严重缺失原文核心信息，将\"Fun\"误译为\"有趣\"，且未体现\"IS OFFICIALLY\"的官方确认含义，导致语义完全错误。",
+  "suggestion": "* 这样就能让\"乐趣\"正式\n  官方声明\n  [驱逐通知]"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level4:asset#level4#210/str/9",
+  "original": "* <color=#ff0000ff>It's time.</color>",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语与语气均符合游戏 UI 标准，无错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level4:asset#level4#210/str/12",
+  "original": "* And here we end off this\\n  weird NPC dialogue with\\n  <color=#ffff00ff>BATTLE TEXT</color>.",
+  "verdict": "flag",
+  "issue": "语义一致性",
+  "reason": "译文存在严重信息缺失，原文中'weird'（奇怪的）这一关键修饰语被遗漏，导致语义偏差。",
+  "suggestion": "* 至此，我们结束这部分内容了。\n  奇怪的 NPC 对话与\n  <color=#ffff00ff>战斗文本</color>."
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level4:asset#level4#212/str/2",
+  "original": "* <color=#ff0000ff>DARK TORIEL</color>.",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用符合行业标准，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level4:asset#level4#213/str/2",
+  "original": "* A <color=#ffff00ff>TEST</color>???",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用规范，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level4:asset#level4#214/str/3",
+  "original": "Pee Pee",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，符合游戏内幽默风格的术语规范。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level40:asset#level40#97/str/4",
+  "original": "* (You considered taking it,^10\\n  but you didn't want to\\n  upset Toriel.)",
+  "verdict": "flag",
+  "issue": "人物关系",
+  "reason": "译文存在严重信息缺失，原文中 Toriel 是说话对象，译文将其误作动作承受者，且未传达出“不想让 Toriel 心烦”这一核心因果逻辑。",
+  "suggestion": "* 你考虑过接受它吗？^10\n  但你并不想这么做。\n  以免让托里尔心烦。"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level40:asset#level40#100/str/2",
+  "original": "* (You considered taking it,^10\\n  but you didn't want to\\n  upset Toriel.)",
+  "verdict": "flag",
+  "issue": "人物关系",
+  "reason": "译文存在严重信息缺失，原文中 Toriel 是说话对象，译文将其误作动作承受者，且漏译了关键信息。",
+  "suggestion": "* 你考虑过接受它吗？^10\n  但你并不想这么做，\n  不想让托里尔心烦。"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level40:asset#level40#103/str/4",
+  "original": "* (You considered taking it,^10\\n  but you didn't want to\\n  upset Toriel.)",
+  "verdict": "flag",
+  "issue": "信息完整性",
+  "reason": "译文存在严重信息缺失，漏译了原文中关键的转折逻辑和具体对象，导致语义不完整。",
+  "suggestion": "* 你考虑过接受它吗？^10 但你并不想这么做，以免让托里尔心烦意乱。"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level40:asset#level40#104/str/2",
+  "original": "* (You considered taking it,^10\\n  but you didn't want to\\n  upset Toriel.)",
+  "verdict": "flag",
+  "issue": "人物关系与因果",
+  "reason": "译文存在严重信息缺失，原文中 Toriel 是“不想让 Toriel 心烦”的施动者，译文却变成了“让 Toriel 心烦”的独立陈述，导致人物关系和因果逻辑错误。",
+  "suggestion": "* 你考虑过接受它吗？^10\n  但你并不想这么做，\n  不想让托里尔心烦。"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level46:asset#level46#167/str/1",
+  "original": "HARD MODE was done because\nsomeone in the DELTATRAVELER\nDiscord Server had the idea\nuhhhhhhhhhhhhhhhhhhhhhhh",
+  "verdict": "flag",
+  "issue": "语气",
+  "reason": "原文包含大量拟声词表达犹豫和口语化语气，译文将其完全删除，导致语气严重不符且丢失关键信息。",
+  "suggestion": "困难模式之所以这样设定，是因为 DELTA TRAVELER 的 Discord 服务器里有人提出了这个想法……呃（长停顿）"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level46:asset#level46#169/str/1",
+  "original": "By Sarah Mullins",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文作者署名信息，术语使用符合行业标准，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level5:asset#level5#200/str/5",
+  "original": "tl`no_neutral`Funny 3: The Threequel",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文标题含义，术语使用符合行业标准，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level5:asset#level5#206/str/0",
+  "original": "* Smooth Brain",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用符合行业标准，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level5:asset#level5#209/str/0",
+  "original": "* You wanna GO???\\n\\n         Hell yea    NO!!!!!",
+  "verdict": "flag",
+  "issue": "否定",
+  "reason": "原文中明确包含否定词 NO，译文将其误译为肯定含义的'绝对不行'，导致语义完全相反。",
+  "suggestion": "绝对不行！！！"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level51:asset#level51#140/str/0",
+  "original": "* (You and Noelle combined your\\n  powers to become familiar with\\n  the new world before you.)",
+  "verdict": "flag",
+  "issue": "语义一致性",
+  "reason": "译文严重偏离原文含义，错误理解'combined your powers'为'合作'，且遗漏关键信息导致语义完全错误。",
+  "suggestion": "* 你和诺埃尔结合力量，以便在你们面前熟悉这个新世界。"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level53:asset#level53#982/str/8",
+  "original": "* (You got the Quiet Shroom.)",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用规范，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level53:asset#level53#982/str/14",
+  "original": "* That'll surely make the shroom\\n  angry.^05\\n* You can keep your money.",
+  "verdict": "flag",
+  "issue": "语义一致性",
+  "reason": "译文严重偏离原文含义，将‘生气’误译为‘变得更好’，且错误拆分了‘愤怒’一词。",
+  "suggestion": "* 那肯定会让蘑菇很生气。\n  你可以保留你的钱。"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level53:asset#level53#985/str/0",
+  "original": "* (Cross bridge to Happy-Happy\\n  Village)",
+  "verdict": "flag",
+  "issue": "信息完整性",
+  "reason": "译文遗漏了原文括号内的完整路径信息，导致游戏内导航指令不完整。",
+  "suggestion": "* （通往快乐村庄的桥梁）"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level53:asset#level53#1009/str/0",
+  "original": "* (There's a hard hat inside\\n  the box.)\\n* (Take it?)",
+  "verdict": "flag",
+  "issue": "信息完整性",
+  "reason": "译文存在严重信息缺失（漏译\"the box\"）及术语误用（\"接受\"不符合游戏 UI 规范），且标点格式错误。",
+  "suggestion": "* 盒子里面有一个安全帽\n  *(要拿吗？)"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level53:asset#level53#1009/str/3",
+  "original": "* (You got the Hard Hat.)",
+  "verdict": "flag",
+  "issue": "术语一致性",
+  "reason": "译文将游戏道具名称误译为中文成语，导致语义完全错误且破坏游戏沉浸感",
+  "suggestion": "* (You got the Hard Hat.)"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level53:asset#level53#1030/str/0",
+  "original": "* What.^10\\n* What?^10\\n* WHAT!?",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文的疑问语气和感叹强度，无术语或语义错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level54:asset#level54#186/str/0",
+  "original": "* (Happy-Happy Village ahead.)",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用规范，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level54:asset#level54#191/str/0",
+  "original": "* I'm from the bicycle shop\\n  \"Punk-Sure\"!",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用规范，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level54:asset#level54#191/str/8",
+  "original": "* We don't even need a\\n  bike.\\n* We can run.",
+  "verdict": "flag",
+  "issue": "语义一致性",
+  "reason": "译文严重偏离原文含义，将'bike'误译为'什么了'，将'run'误译为'继续前进'，导致游戏机制描述完全错误。",
+  "suggestion": "* 我们甚至不需要自行车。\n我们可以跑步。"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level54:asset#level54#194/str/7",
+  "original": "* (You got the Quiet Shroom.)",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用规范，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level54:asset#level54#195/str/0",
+  "original": "* (Peaceful Rest Valley ahead.\\n  Proceed through cave.)",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用符合行业标准，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level54:asset#level54#198/str/2",
+  "original": "Buy Hint",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用符合行业标准，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level56:asset#level56#508/str/0",
+  "original": "* Heh heh heh...^10\\n* That overweight kid helped me.",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用规范，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level56:asset#level56#515/str/0",
+  "original": "* Welcome to the headquarters of\\n  Happy-Happyism.",
+  "verdict": "flag",
+  "issue": "术语一致性",
+  "reason": "专有名词翻译不规范，未采用行业标准译法，且存在信息缺失。",
+  "suggestion": "欢迎来到总部。\n  快乐至上主义。"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level56:asset#level56#515/str/1",
+  "original": "* One day, Mr. Carpainter\\n  received a revelation.",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用规范，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level56:asset#level56#517/str/4",
+  "original": "Boiled Egg",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用规范，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level56:asset#level56#534/str/1",
+  "original": "* People call that place Lilliput\\n  Steps,^05 and it makes them feel\\n  uneasy.",
+  "verdict": "flag",
+  "issue": "语义一致性",
+  "reason": "译文严重误译，将原文的负面含义（不安）错误地译为正面含义（成就感），且遗漏了关键信息。",
+  "suggestion": "人们把那个地方叫做利利普特。\n  步骤，^05，这让他们感觉不安。"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level56:asset#level56#547/str/0",
+  "original": "* (All of our products are\\n  blessed.)\\n         --Blue-Blue Drugstore",
+  "verdict": "flag",
+  "issue": "语义错误",
+  "reason": "原文 'blessed' 意为'蒙神祝福'，译文将其误译为名词'祝福'，导致语义完全错误且不符合游戏 UI 语境。",
+  "suggestion": "* 我们所有的产品都蒙神祝福。\n– 蓝蓝药局"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level56:asset#level56#571/str/0",
+  "original": "* \"Welcome to Happy Happy\\n  Village!\"",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "{\"level\": \"MAJOR\", \"reason\": \"译文将英文专有名词 Village 错误地翻译为中文引号内的“村庄”，破坏了游戏标题的完整性与风格统一性。\", \"issues\": [{\"type\": \"信息完整性\", \"detail\": \"原文 Village 为专有名词，不应被翻译或加引号，导致标题结构混乱。\", \"suggestion\": \"* 欢迎来到 Happy Happy Village!\"}]}`",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level56:asset#level56#573/str/0",
+  "original": "* When I painted everything\\n  blue,^05 as Mr. Carpainter said,^05\\n  my wife returned home!",
+  "verdict": "flag",
+  "issue": "语义一致性",
+  "reason": "译文严重偏离原文语义，错误地将'涂成蓝色'理解为'涂好之后'，且遗漏了关键信息'蓝色'。",
+  "suggestion": "* 当我把一切都涂成蓝色时，正如 Carpainter 先生所说，我的妻子回家了！"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level56:asset#level56#574/str/4",
+  "original": "*\\thuh?^05\\n*\\tyou name actually kris?",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用规范，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level56:asset#level56#577/str/2",
+  "original": "* Really?\\n^05* Sounds to me like you're\\n  opposed to peace.",
+  "verdict": "flag",
+  "issue": "语义一致性",
+  "reason": "译文严重偏离原文含义，将‘反对和平’误译为‘与和平背道而驰’，且漏译了‘opposed to peace'的核心否定逻辑，导致语义完全错误。",
+  "suggestion": "* 真的吗？\n^05* 在我看来，你似乎反对和平。"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level56:asset#level56#579/str/0",
+  "original": "* Kris,^05 I do NOT trust\\n  this place.",
+  "verdict": "flag",
+  "issue": "否定",
+  "reason": "否定词 NOT 被错误翻译为肯定词，导致语义完全相反",
+  "suggestion": "* Kris,^05 我根本不信任这里。\n  这个地方。"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level56:asset#level56#591/str/0",
+  "original": "* \"Meager Livin' Farm\"\\n* (Lodgings available)",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用符合行业标准，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level56:asset#level56#608/str/9",
+  "original": "* Those weren't just for show.^05\\n* You can actually do something\\n  special to avoid them!",
+  "verdict": "flag",
+  "issue": "语气与语义",
+  "reason": "译文后半句将原文的祈使句“你可以做特殊事情来避免它们”误译为陈述句“请特别注意，避免它们”，导致语义偏差且语气不符。",
+  "suggestion": "* 那些并非只是用于展示而已。^05\\n你实际上可以做一些特殊的事情来避免它们！"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level6:asset#level6#1046/str/1",
+  "original": "Normal Text",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用符合行业标准，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level6:asset#level6#1051/str/1",
+  "original": "Selected Text",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用符合行业标准，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level6:asset#level6#1083/str/1",
+  "original": "Automatic Button Style",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用符合行业标准，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level6:asset#level6#1088/str/1",
+  "original": "Kris and Susie go places that\nthey shouldn't be at",
+  "verdict": "flag",
+  "issue": "时间",
+  "reason": "译文将原文的将来时/现在时叙事误译为过去时，且破坏了原文的连贯性，导致语义偏差。",
+  "suggestion": "克里斯和苏西去了他们不该去的地方。"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level6:asset#level6#1096/str/1",
+  "original": "Button Style\n",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用符合行业标准，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level6:asset#level6#1099/str/1",
+  "original": "Last Corridor",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用符合行业标准，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level6:asset#level6#1108/str/1",
+  "original": "Options",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确，符合行业标准术语规范。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level6:asset#level6#1109/str/1",
+  "original": "Window Scale",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用符合行业标准，无语义或结构问题。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level6:asset#level6#1113/str/1",
+  "original": "Touchpad Skin",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用符合行业标准，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level6:asset#level6#1123/str/1",
+  "original": "Buttons Skin",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用符合行业标准，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level6:asset#level6#1124/str/1",
+  "original": "Master Volume",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用符合行业标准，无语义或结构问题。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level6:asset#level6#1129/str/1",
+  "original": "[press z or enter]",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文操作指令，术语与格式均符合行业标准。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level6:asset#level6#1136/str/1",
+  "original": "Starting Flavor",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用符合行业标准，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level6:asset#level6#1141/str/1",
+  "original": "Low Graphics\n",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用符合行业标准，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level6:asset#level6#1153/str/1",
+  "original": "Begin Game",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达原文含义，术语使用符合行业标准，无语义或结构问题。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level6:asset#level6#1157/str/1",
+  "original": "Easy Mode\n",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了游戏术语'Easy Mode'的含义，符合行业标准。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level6:asset#level6#1170/str/1",
+  "original": "Content Setting",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用符合行业标准，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level6:asset#level6#1181/str/1",
+  "original": "Run Animations",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用符合行业标准，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level6:asset#level6#1188/str/1",
+  "original": "Default (English)",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用符合行业标准，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level6:asset#level6#1194/str/1",
+  "original": "Gamepad Controls\n\n",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用符合行业标准，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level6:asset#level6#1197/str/1",
+  "original": "Keyboard Controls\n",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用符合行业标准，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level6:asset#level6#1201/str/1",
+  "original": "Hard Mode",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了游戏术语含义，符合行业标准，无语义或结构问题。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level6:asset#level6#1203/str/1",
+  "original": "Touch Color Scheme",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用符合行业标准，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level6:asset#level6#1204/str/1",
+  "original": "Touchpad Resistance",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "术语准确，语义完整，符合行业标准。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level60:asset#level60#132/str/0",
+  "original": "* (There's a sandwich inside\\n  the box.)\\n* (Take it?)",
+  "verdict": "flag",
+  "issue": "信息完整性",
+  "reason": "译文严重偏离原文，出现信息错乱、标点错误及术语误用。",
+  "suggestion": "* 盒子里面有一个三明治。\n* （要拿走吗？）"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level60:asset#level60#132/str/3",
+  "original": "* (You got the Skip Sandwich.)",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用规范，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level7:asset#level7#129/str/0",
+  "original": "* Kris,^05 did that person\\n  FALL from up there???",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文的疑问语气、人物指代及动作描述，无术语错误或语义偏差。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level7:asset#level7#129/str/4",
+  "original": "* Huh?^10\\n* Kris?",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文的惊讶语气与人物称呼，无术语或语义错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level7:asset#level7#129/str/8",
+  "original": "* Toriel'll see what's up.",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用正确，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level70:asset#level70#493/str/0",
+  "original": "* Only Ness can absorb the\\n  power of this place.",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "{\"level\": \"MAJOR\", \"reason\": \"译文将原文长句错误截断为两句，破坏了语义连贯性，且“魔力”一词未明确指代前文的“power\"，造成信息结构混乱。\", \"issues\": [{\"type\": \"信息完整性\", \"detail\": \"原文为单句，译文被错误拆分为两句，导致语义断裂。\", \"suggestion\": \"* 只有尼斯能够吸收此地的魔力。\"}]}",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level70:asset#level70#497/str/0",
+  "original": "* (For some reason,^05 there's a\\n  burger inside.)^05\\n* (Take it?)",
+  "verdict": "flag",
+  "issue": "语义一致性",
+  "reason": "译文严重偏离原文语义，将'inside'误译为'里面的'导致逻辑不通，且'Take it?'口语化不足，未传达'拿走它吗'的邀请意味。",
+  "suggestion": "*（出于某种原因，^05那里有个汉堡在容器里。）^05\n（拿走它吗？）"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level70:asset#level70#497/str/3",
+  "original": "* (You got the Hamburger.)",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用规范，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level72:asset#level72#116/str/4",
+  "original": "* Are you okay???\\n^05* Can you even hear\\n  me???",
+  "verdict": "flag",
+  "issue": "人物关系",
+  "reason": "译文存在严重语序错误，导致人物关系颠倒，原意是“你能听到我吗”被译成了“你能听到吗？我”，造成逻辑混乱。",
+  "suggestion": "* 你甚至能听到我吗？？？"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level74:asset#level74#129/str/0",
+  "original": "* (You've returned to Snowdin,^05\\n  but things seem a bit\\n  off from last time.)",
+  "verdict": "flag",
+  "issue": "信息完整性",
+  "reason": "译文严重偏离原文含义，错误添加了‘比上次少了些’，且将‘off'误译为‘复杂’，导致信息缺失且语义错误。",
+  "suggestion": "不过，情况似乎有点不对劲。"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level75:asset#level75#135/str/0",
+  "original": "* We Live\\n* We Love\\n* We lie",
+  "verdict": "flag",
+  "issue": "语义一致性",
+  "reason": "原文 'We lie' 意为‘我们撒谎’，译文误译为‘我们撒谎’并添加未存在的宾语‘你们’，且前两句‘We Live/We Love’的宾语‘我们’被错误替换为‘你们’，严重破坏语义一致性。",
+  "suggestion": "* 我们生活\n* 我们爱\n* 我们撒谎"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level75:asset#level75#138/str/9",
+  "original": "* Kris,^05 your mom warned\\n  us about them,^05 but\\n  like...",
+  "verdict": "flag",
+  "issue": "语义一致性",
+  "reason": "译文严重偏离原文，丢失关键信息并错误处理否定词，导致含义完全改变。",
+  "suggestion": "* Kris，^05 你妈妈警告过我们关于它们，^05 但是\n  就像……"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level75:asset#level75#138/str/14",
+  "original": "* ...^05 Okay, Susie.",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语和语气均符合游戏对话标准。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level79:asset#level79#118/str/1",
+  "original": "* What???^05\\n* How does someone even\\n  smoke dog treats?",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文的惊讶语气及荒谬的假设情境，无术语或语义错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level80:asset#level80#160/str/0",
+  "original": "* North: Ice\\n* South: Ice\\n* West: Ice",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文的地理方位与地形信息，术语使用规范，无语义偏差。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level80:asset#level80#160/str/1",
+  "original": "* East: Snowdin Town",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文的方位与地名信息，术语使用符合行业标准，无语义偏差。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level81:asset#level81#93/str/4",
+  "original": "* (You got the Carrot.)",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用规范，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level82:asset#level82#405/str/0",
+  "original": "* Oh,^05 hey Kris.",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文的口语问候及角色称呼，无术语或语义错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level82:asset#level82#405/str/1",
+  "original": "* Umm...^10 Noelle's fine.",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用规范，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level82:asset#level82#405/str/5",
+  "original": "* (But for real,^05 Noelle\\n  doesn't wanna be near\\n  you because of this.)",
+  "verdict": "flag",
+  "issue": "人物关系与因果",
+  "reason": "译文存在严重语序混乱，导致因果逻辑与人物关系表达不清，不符合游戏本地化标准。",
+  "suggestion": "* 但说真的，^05 Noelle 不想靠近你，因为这件事。"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level83:asset#level83#364/str/1",
+  "original": "* \"There's no point to\\n  Nice Cream in such a\\n  mean world.\"",
+  "verdict": "flag",
+  "issue": "信息完整性",
+  "reason": "译文严重缺失原文核心信息，且将专有名词 Nice Cream 错误处理，导致语义完全改变。",
+  "suggestion": "* “在这样一个糟糕的世界里，吃 Nice Cream 毫无意义。”"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level84:asset#level84#158/str/1",
+  "original": "* Snow Smell - Snowman\\n  WHITE Rating\\n  Can become <color=#FFFF00FF>YELLOW</color> Rating",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用符合行业标准，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level84:asset#level84#158/str/2",
+  "original": "* Unsuspicious Smell - Puppy\\n  <color=#0000FFFF>BLUE</color> Rating\\n  Smell of rolling around.",
+  "verdict": "flag",
+  "issue": "术语一致性",
+  "reason": "术语'Rating'误译为'评分'，游戏 UI 中该词通常指'等级'或'评级'，且'Rolling around'的比喻义翻译生硬。",
+  "suggestion": "等级"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level84:asset#level84#158/str/3",
+  "original": "* Weird Smell - Humans\\n  <color=#FF0000FF>GREEN</color> Rating\\n  Destroy at all costs!",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用符合行业标准，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level85:asset#level85#150/str/2",
+  "original": "* Just walk past it,^05\\n  Kris...",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文的语义、人物关系及语气，术语使用符合标准，无错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level86:asset#level86#137/str/1",
+  "original": "* (All of the settings say\\n  \"spaghetti.\")",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用规范，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level86:asset#level86#140/str/0",
+  "original": "* (It's a plate of frozen\\n  spaghetti.)",
+  "verdict": "flag",
+  "issue": "语义一致性",
+  "reason": "译文将'frozen spaghetti'错误地泛化为'冷冻食品'，丢失了'意大利面'这一关键具体信息，且语序混乱。",
+  "suggestion": "* 这是一盘冷冻意大利面。"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level86:asset#level86#140/str/1",
+  "original": "* Hell yeah!^10\\n* Table spaghetti!",
+  "verdict": "flag",
+  "issue": "术语一致性",
+  "reason": "译文严重违背游戏术语标准，'Table spaghetti'被错误直译为'意大利面表格'，未识别为游戏内特定道具或技能名称，且'Absolutely'语气过于正式，不符合游戏口语风格。",
+  "suggestion": "Table spaghetti!"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level86:asset#level86#140/str/15",
+  "original": "* It m-^05might actually\\n  DESTROY the spaghetti...",
+  "verdict": "flag",
+  "issue": "语义一致性",
+  "reason": "原文 'might actually' 表示‘实际上可能’，译文将 'actually' 误译为‘那些’，导致语义完全错误且丢失关键信息。",
+  "suggestion": "* 它 m-^05实际上可能……\n  摧毁那些意大利面……"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level86:asset#level86#150/str/0",
+  "original": "* (The seemingly clever spaghetti\\n  trap stands before you,^05\\n  tempting you to consume it.)",
+  "verdict": "flag",
+  "issue": "术语一致性",
+  "reason": "译文存在术语误用（意大利面应译为通心粉/意面）、语序生硬及口语化表达不当，未完全传达原文幽默感。",
+  "suggestion": "* （那个看似聪明的通心粉陷阱就摆在你面前，^05\n  正引诱你将其吃掉。）"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level88:asset#level88#151/str/2",
+  "original": "* What if there's a\\n  MONSTER under the bed!!!^05\\n* Let's NOT!!!",
+  "verdict": "flag",
+  "issue": "否定",
+  "reason": "否定词 NOT 被错误翻译为“不要”，导致原文“让我们不要（做某事）”的否定含义在语境中完全丢失或产生歧义，且第一句严重偏离原文含义。",
+  "suggestion": "让我们别！！！"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level88:asset#level88#151/str/3",
+  "original": "* I think Kris would\\n  like that, actually.",
+  "verdict": "flag",
+  "issue": "信息完整性",
+  "reason": "译文存在严重语序混乱及信息缺失，导致句子逻辑不通且丢失关键信息。",
+  "suggestion": "* 我其实觉得克里斯会喜欢那样的。"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level88:asset#level88#151/str/10",
+  "original": "* Kris,^05 neither me nor\\n  Susie want to sleep for\\n  only two minutes.",
+  "verdict": "flag",
+  "issue": "信息完整性",
+  "reason": "译文严重偏离原文，不仅丢失关键信息，还错误地改变了人物关系和否定含义。",
+  "suggestion": "* Kris，^05 我和苏西都不想睡，\n  只想睡两分钟。"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level88:asset#level88#154/str/2",
+  "original": "* Yeah,^05 Kris,^05 why don't\\n  we just get something\\n  from uh...",
+  "verdict": "flag",
+  "issue": "语义一致性",
+  "reason": "译文严重偏离原文含义，将'get something'误译为'得到了一些东西'，且错误添加了'刚刚'，导致语义逻辑混乱。",
+  "suggestion": "* 是的，Kris，我们干脆从……拿点东西吧？"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level88:asset#level88#154/str/3",
+  "original": "* What should we call\\n  him?^05\\n* Blue Sans?",
+  "verdict": "flag",
+  "issue": "语义一致性",
+  "reason": "译文将原文的疑问对象（him）错误地拆解为独立问句，导致语义逻辑混乱且不符合游戏 UI 语境。",
+  "suggestion": "* 我们该怎么称呼他？\n蓝色 Sans 字体？"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level88:asset#level88#154/str/13",
+  "original": "* What're we gonna call\\n  the bad guy Sans\\n  then?",
+  "verdict": "flag",
+  "issue": "人物关系",
+  "reason": "译文将原文中针对特定角色'Sans'的提问错误地泛化为对'反派'的提问，导致人物关系和指代对象发生偏差。",
+  "suggestion": "* 我们该怎么称呼那个坏家伙 Sans 呢？\n  然后呢？"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level88:asset#level88#154/str/14",
+  "original": "* Prolly Red Sans.",
+  "verdict": "flag",
+  "issue": "术语一致性",
+  "reason": "译文将专有名词 Red Sans 误译为普通名词短语，破坏了游戏内角色名称的专有属性，且语气过于口语化不符合 UI 规范。",
+  "suggestion": "* 可能是 Red Sans。"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level88:asset#level88#154/str/18",
+  "original": "* Dunno.^05\\n* Just got a feeling\\n  he'd be green.",
+  "verdict": "flag",
+  "issue": "语义偏差",
+  "reason": "译文将原文中暗示的“绿色”（指代某种状态或属性）误译为字面意义的“变成绿色”，导致语义偏差且不符合游戏术语规范。",
+  "suggestion": "他会处于那种状态。"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level89:asset#level89#361/str/0",
+  "original": "* The History of the Kingdom\\n  by Gerson Boom",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文标题及作者信息，术语使用规范，无语义偏差。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level89:asset#level89#361/str/3",
+  "original": "* \"This was the only time the\\n  Royal Guard was given a direct\\n  order of violence by the king.\"",
+  "verdict": "flag",
+  "issue": "语义一致性",
+  "reason": "译文将原文中‘国王发布命令’这一动作主体与‘卫队获得授权’的被动结构混淆，导致语义逻辑偏差，且‘授权’一词未能准确传达‘暴力命令’的强制性含义。",
+  "suggestion": "这是唯一一次……\n  皇家卫队直接接到了国王\n  下达的暴力命令。"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level89:asset#level89#361/str/4",
+  "original": "* \"The queen was banished to the\\n  Ruins,^05 to the anguish of his\\n  majesty.\"",
+  "verdict": "flag",
+  "issue": "人物关系",
+  "reason": "人物关系严重颠倒，原文指‘他的 majesty'（国王）痛苦，译文误译为‘陛下’陷入痛苦，导致主宾关系错误。",
+  "suggestion": "女王被流放到……\n  废墟，^05 令陛下陷入无尽的痛苦之中。"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level90:asset#level90#376/str/0",
+  "original": "* What.^10\\n* What?^10\\n* WHAT!?",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文的疑问语气和感叹强度，无术语或语义错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level91:asset#level91#175/str/1",
+  "original": "* Love it when the\\n  answer is just...^05\\n  Gone.",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用规范，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level93:asset#level93#291/str/15",
+  "original": "* Just ignore him and\\n  do the puzzle yourself,^05\\n  Kris.",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用规范，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level93:asset#level93#291/str/17",
+  "original": "* What are you?^05\\n* Berdly?",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用正确，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level93:asset#level93#293/str/1",
+  "original": "* (Press it?)",
+  "verdict": "pass",
+  "issue": "语气",
+  "reason": "译文语序略显生硬，虽语义准确但不够地道，建议调整为更符合中文习惯的表达。",
+  "suggestion": "* （按吧？）或 * （按一下？）"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level93:asset#level93#293/str/3",
+  "original": "Press it",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用符合行业标准，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level94:asset#level94#381/str/3",
+  "original": "* Actually,^05 nevermind.^05\\n* Let's forget it.",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用规范，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level94:asset#level94#384/str/0",
+  "original": "* Kris,^05 do you think\\n  you can eat the\\n  orange tiles?",
+  "verdict": "flag",
+  "issue": "信息完整性",
+  "reason": "译文严重缺失原文关键信息，将'橙色瓷砖'误译为'它'，导致游戏机制描述错误。",
+  "suggestion": "* Kris，你觉得呢？\n  你可以吃橙色瓷砖。"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level94:asset#level94#384/str/18",
+  "original": "* Just do the puzzle,^05\\n  Kris.",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用规范，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level94:asset#level94#384/str/21",
+  "original": "* Whatever the hell\\n  Berdly was on about?",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用规范，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level94:asset#level94#384/str/22",
+  "original": "* Whatever.^05\\n* Let's do this.",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文的随意语气和指令含义，术语与语法均无误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level94:asset#level94#385/str/12",
+  "original": "* That's what I took\\n  away from that,^05 so\\n  I hope that helps,^05 Kris.",
+  "verdict": "flag",
+  "issue": "语义一致性",
+  "reason": "译文严重偏离原文，将“带走/领悟”误译为“远离”，且错误地将人名 Kris 置于句末作为称呼而非名字本身。",
+  "suggestion": "* 那就是我所理解的意思。\n  从那里带走了一些东西，^05\n  希望这能有所帮助，^05 Kris。"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level95:asset#level95#151/str/6",
+  "original": "* Okay,^05 Susie.",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文的称呼与确认语气，无术语或语义错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level95:asset#level95#154/str/0",
+  "original": "* Hey,^05 it's me!^05\\n* Hell yeah!",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文的口语语气和人物关系，术语使用符合游戏 UI 标准，无错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level95:asset#level95#161/str/3",
+  "original": "* This is what,^05 Susie?",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语和语气均符合游戏本地化标准。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level95:asset#level95#161/str/4",
+  "original": "* Uhhh...^05 it's cool.^05\\n* Yeah.",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文的口语语气和含义，无术语错误或信息缺失。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level95:asset#level95#169/str/9",
+  "original": "* The <color=#FFFF00FF>bright light</color> will allow you\\n  to SAVE your progress.",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用符合行业标准，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level97:asset#level97#107/str/0",
+  "original": "* (The remains of a Snow\\n  Papyrus.)",
+  "verdict": "flag",
+  "issue": "信息完整性",
+  "reason": "译文将原文中 Snow Papyrus 这一专有名词拆解为两个独立句子，导致语义割裂且未传达完整含义。",
+  "suggestion": "* （雪纸莎草的残骸）"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level97:asset#level97#107/str/1",
+  "original": "* (Alas,^05 poor Papyrus...)",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文的感叹语气及人物关系，术语使用符合游戏本地化标准。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level98:asset#level98#136/str/2",
+  "original": "* He's just been making\\n  Kris do all of them.",
+  "verdict": "flag",
+  "issue": "人物关系",
+  "reason": "译文严重偏离原文，错误地将第三人称指代（He/Kris）处理为具体人名（克里斯），且将“让 Kris 做”误译为“克里斯参与”，导致人物关系和动作逻辑完全错误。",
+  "suggestion": "* 他只是让 Kris 做所有这些。\n  Kris 全都做了。"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level99:asset#level99#114/str/1",
+  "original": "* Yup.^05\\n* Just bolted outta\\n  here.",
+  "verdict": "flag",
+  "issue": "信息完整性",
+  "reason": "译文末尾多译了“这里”二字，导致信息冗余且不符合原文逻辑。",
+  "suggestion": "* 是的。^05\n刚从那里出来而已。"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/level99:asset#level99#114/str/10",
+  "original": "* Uhhhhhhhhhh^20\\n* Who?",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文的语音拖长效果和疑问含义，无语义错误或术语问题。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/resources.assets:asset#resources.assets#34703/str/1",
+  "original": "Tense Theme:",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用规范，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/resources.assets:asset#resources.assets#34708/str/0",
+  "original": "Vertical Wave",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语符合行业标准，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/resources.assets:asset#resources.assets#34710/str/2",
+  "original": "* ...^05 But I am flying.\\n* You are not.",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文的否定对比含义，术语和语法均无误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/resources.assets:asset#resources.assets#34710/str/3",
+  "original": "* I'll make you start\\n  REALLY flying if you\\n  get more mouthy.",
+  "verdict": "flag",
+  "issue": "语义一致性",
+  "reason": "译文严重偏离原文含义，将威胁性警告误译为鼓励性话语，且未准确传达'get more mouthy'（嘴臭/挑衅）的语义。",
+  "suggestion": "* 你要是再嘴臭，我就让你体验真正的飞行。"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/resources.assets:asset#resources.assets#34717/str/1",
+  "original": "Monster Candy\n",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用符合行业标准，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/resources.assets:asset#resources.assets#34727/str/1",
+  "original": "press [x] to preview tense theme",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用规范，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/resources.assets:asset#resources.assets#34734/str/2",
+  "original": "* Ribbit...^10\\n* (They were flying,^05 though...)",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文的拟声词、时间状语从句及标点格式，无术语错误或语义偏差。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/resources.assets:asset#resources.assets#34741/str/2",
+  "original": "* Then go meet the great\\n  Mr. Carpainter as soon as\\n  possible.",
+  "verdict": "flag",
+  "issue": "信息完整性",
+  "reason": "译文严重缺失原文关键信息，导致人物关系与指令含义完全错误。",
+  "suggestion": "* 然后尽快去见那位了不起的 Carpainter 先生。"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/resources.assets:asset#resources.assets#34769/str/1",
+  "original": "Music Chooser",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用符合行业标准，无语义或结构问题。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/resources.assets:asset#resources.assets#34797/str/1",
+  "original": "Monster Candy\n",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用符合行业标准，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/resources.assets:asset#resources.assets#34802/str/0",
+  "original": "Vertical Offset Wave",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用符合行业标准，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/resources.assets:asset#resources.assets#34808/str/1",
+  "original": "Press [X] to Finish",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用规范，无语义错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/resources.assets:asset#resources.assets#34815/str/0",
+  "original": "* Would you quit staring at\\n  my friend?",
+  "verdict": "flag",
+  "issue": "术语一致性",
+  "reason": "术语使用错误，'quit' 在游戏 UI 中应译为'退出'而非'停止'，且'friend'作为宾语位置不当导致语义生硬。",
+  "suggestion": "* 你会退出盯着看我的朋友吗？"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/resources.assets:asset#resources.assets#34815/str/1",
+  "original": "* They're not into the \"<color=#FFFF00>Devour</color>\"\\n  ACT.",
+  "verdict": "flag",
+  "issue": "语气与表达",
+  "reason": "译文语序生硬且不符合中文游戏 UI 习惯，'并不感兴趣于'应改为'对...不感兴趣'，'行动'作为 ACT 的直译略显生硬。",
+  "suggestion": "* 他们并不喜欢\"<color=#FFFF00>吞噬\"\"行动\"。"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/resources.assets:asset#resources.assets#34836/str/0",
+  "original": "Vertical Wave",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了游戏 UI 中垂直波浪模式的含义，术语使用符合行业标准。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/resources.assets:asset#resources.assets#34878/str/1",
+  "original": "Normal Theme:",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用符合行业标准，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/resources.assets:asset#resources.assets#34880/str/0",
+  "original": "Horizontal Wave",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用符合行业标准，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/resources.assets:asset#resources.assets#34910/str/0",
+  "original": "Horizontal Wave",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了 UI 术语含义，无语义偏差或术语错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/resources.assets:asset#resources.assets#34953/str/0",
+  "original": "Vertical Wave",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用符合行业标准，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/resources.assets:asset#resources.assets#34964/str/0",
+  "original": "Vertical Wave",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用符合行业标准，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/resources.assets:asset#resources.assets#34966/str/1",
+  "original": "* You strange,^05 unmasked people.^05\\n* Don't go to heaven!",
+  "verdict": "flag",
+  "issue": "信息完整性",
+  "reason": "译文严重缺失原文关键信息，导致语义不完整且语气不当。",
+  "suggestion": "* 你们这些奇怪、不戴面具的人啊，^05 别去天堂！^05"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/resources.assets:asset#resources.assets#35002/str/2",
+  "original": "* Hello,^05 traveller.\n* How can I help you?",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用规范，语气自然得体。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/resources.assets:asset#resources.assets#35002/str/4",
+  "original": "* Thank you!\n^05* Come again!",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文的感谢与邀请再次光临的语义，术语与语气均符合游戏 UI 标准。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/resources.assets:asset#resources.assets#35013/str/0",
+  "original": "Vertical Offset Wave",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用符合行业标准，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/resources.assets:asset#resources.assets#35025/str/1",
+  "original": "Dating Start!",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用符合行业标准，语气自然且无错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/resources.assets:asset#resources.assets#35040/str/1",
+  "original": "Single Theme",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用符合行业标准，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/resources.assets:asset#resources.assets#35072/str/0",
+  "original": "Horizontal Offset Wave",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用符合行业标准，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/resources.assets:asset#resources.assets#35074/str/0",
+  "original": "* (Her frying pan.)\\n* (Take it?)",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用规范，无语义或逻辑错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/resources.assets:asset#resources.assets#35074/str/3",
+  "original": "* (You got the Clean Pan.)",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用规范，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/resources.assets:asset#resources.assets#35077/str/0",
+  "original": "Horizontal Offset Wave",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了 UI 术语含义，符合行业标准，无语义或结构问题。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/resources.assets:asset#resources.assets#35088/str/0",
+  "original": "Vertical Wave",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了 UI 术语含义，无语义错误或术语误用。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/resources.assets:asset#resources.assets#35100/str/19",
+  "original": "closed`*\\t...^10 kris,^05 huh.",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用规范，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/resources.assets:asset#resources.assets#35100/str/27",
+  "original": "neutral`*\\tbesides,^05 don't you have\\n\\tanything <color=#FFFF00FF>more important</color> to do?",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文的否定含义、人物关系及语气，术语使用符合标准，无信息缺失或偏差。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/resources.assets:asset#resources.assets#35100/str/46",
+  "original": "neutral`*\\ti guess it's some kid that's\\n\\ttryna save the world.",
+  "verdict": "flag",
+  "issue": "语气与结构",
+  "reason": "译文将原文的现在进行时（tryna）错误地处理为独立句子，导致语义断裂且语气不自然。",
+  "suggestion": "我猜那可能是某个孩子，正试图拯救世界。"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/resources.assets:asset#resources.assets#35114/str/0",
+  "original": "Horizontal Wave",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用符合行业标准，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/resources.assets:asset#resources.assets#35117/str/1",
+  "original": "Dating Fight!",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用符合行业标准，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/resources.assets:asset#resources.assets#35118/str/0",
+  "original": "Horizontal Offset Wave",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用符合行业标准，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/resources.assets:asset#resources.assets#35131/str/0",
+  "original": "Horizontal Offset Wave",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用符合行业标准，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/resources.assets:asset#resources.assets#35161/str/0",
+  "original": "* Ribbit,^10 ribbit.\\n^10* (Sorry to trouble you,\\n  but...)",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文的拟声词节奏及道歉语气，无术语错误或语义偏差。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/resources.assets:asset#resources.assets#35167/str/0",
+  "original": "* Devour <color=#00FF00FF>Greens</color>",
+  "verdict": "flag",
+  "issue": "术语一致性",
+  "reason": "专有名词翻译错误，将游戏术语'Greens'误译为政治实体'绿党'，导致语义偏差。",
+  "suggestion": "* 吞噬 <color=#00FF00FF>绿草</color>"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/resources.assets:asset#resources.assets#35167/str/1",
+  "original": "* Not <color=#FCA600FF>Oranges</color>",
+  "verdict": "flag",
+  "issue": "术语一致性",
+  "reason": "术语使用错误，'Oranges' 在此语境下指水果而非人名，且否定词位置导致语义生硬，不符合游戏 UI 规范。",
+  "suggestion": "* 不是橙子"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/resources.assets:asset#resources.assets#35182/str/0",
+  "original": "Vertical Wave",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用符合行业标准，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/resources.assets:asset#resources.assets#35207/str/0",
+  "original": "Horizontal Offset Wave",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用符合行业标准，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/resources.assets:asset#resources.assets#35208/str/0",
+  "original": "* Robbit,^10 robbit.\\n^10* (What a tense fight.)",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文的对话内容、语气及格式，术语使用正确，无逻辑或语义错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/resources.assets:asset#resources.assets#35210/str/0",
+  "original": "* Ribbit,^10 ribbit.\\n^10* (Thank you for sparing\\n  me,^10 human and monster.)",
+  "verdict": "flag",
+  "issue": "语义一致性",
+  "reason": "译文严重偏离原文含义，将对话内容错误替换为无关的“耐心等待”，且破坏了人物关系与句子结构。",
+  "suggestion": "* Ribbit, ^10 ribbit.\\n^10*（谢谢你没杀我，人类和怪物。）"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/resources.assets:asset#resources.assets#35210/str/11",
+  "original": "* Ugh!!!^10\\n* Why couldn't we just\\n  have Ralsei here?!",
+  "verdict": "flag",
+  "issue": "语义一致性",
+  "reason": "译文将原文的疑问句结构误译为两个独立的问句，导致语义逻辑断裂且语气不符。",
+  "suggestion": "* 呃！！！^10\\n为什么我们就不能直接把 Ralsei 叫过来呢？！"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/resources.assets:asset#resources.assets#35212/str/0",
+  "original": "* Robbit, robbit.^10\\n* (Are you impressed with how I\\n  fly through the air?)",
+  "verdict": "flag",
+  "issue": "信息完整性",
+  "reason": "译文存在信息缺失，将原文中关于“飞行”的疑问句拆分并丢失了后半部分含义。",
+  "suggestion": "* 你对我在空中飞行的表现印象深刻吗？"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/resources.assets:asset#resources.assets#35259/str/0",
+  "original": "Horizontal Offset Wave",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用符合行业标准，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/resources.assets:asset#resources.assets#35273/str/0",
+  "original": "* Robbit, robbit.^10\\n* (Greetings,^05 human and monster.)",
+  "verdict": "flag",
+  "issue": "术语一致性",
+  "reason": "译文将原文中针对“人类和怪物”的复数概念误译为“人类与怪物们”，导致语义偏差且不符合游戏 UI 习惯用语。",
+  "suggestion": "* 罗比特，罗比特。^10\\n（问候，^05 人类与怪物。）"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/resources.assets:asset#resources.assets#35273/str/1",
+  "original": "* (You have done wonderfully in\\n  the battle.)^05\\n* (You were quite mystical.)",
+  "verdict": "flag",
+  "issue": "语义一致性",
+  "reason": "译文严重偏离原文含义，将'战斗'误植为独立句子，且'神秘兮兮'未能准确传达'mystical'的语境含义。",
+  "suggestion": "* 你在战斗中表现得非常出色。\n  你真是充满神秘感。"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/resources.assets:asset#resources.assets#35273/str/14",
+  "original": "* Robbit, robbit.^10\\n* (Do not act surprised, Susie.)",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用规范，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/resources.assets:asset#resources.assets#35277/str/15",
+  "original": "* Their name used to be\\n  <color=#FFFF00FF>\"Vegetoid\"</color>.",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用符合行业标准，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/resources.assets:asset#resources.assets#35285/str/1",
+  "original": "press [z] to preview theme",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文操作指令，术语使用规范，无语义偏差。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/resources.assets:asset#resources.assets#35289/str/1",
+  "original": "press [z] to preview normal theme",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用规范，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/resources.assets:asset#resources.assets#35317/str/1",
+  "original": "press [c] to exit",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用规范，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/resources.assets:asset#resources.assets#35334/str/0",
+  "original": "* Did You Enjoy\\n  <color=#00FF00FF>Tasty Green Snakes</color>",
+  "verdict": "flag",
+  "issue": "语义一致性",
+  "reason": "译文将游戏标题误译为食物名称，严重偏离原文含义，且未体现游戏品牌感。",
+  "suggestion": "* 你喜欢吗？\n  <color=#00FF00FF>美味绿蛇"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/resources.assets:asset#resources.assets#35377/str/0",
+  "original": "Horizontal Offset Wave",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用符合行业标准，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/resources.assets:asset#resources.assets#35413/str/3",
+  "original": "* Call me \"Johnny Icepants.\"",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达原文含义，术语使用规范，语气自然。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/resources.assets:asset#resources.assets#35432/str/1",
+  "original": "New File",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用符合行业标准，无语义或结构问题。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/resources.assets:asset#resources.assets#35436/str/1",
+  "original": "Big Pencil",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用符合行业标准，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/resources.assets:asset#resources.assets#35442/str/0",
+  "original": "* Y'know,^05 I ruined a lot of\\n  games of \"Ball Game\" by being\\n  in that hole.",
+  "verdict": "flag",
+  "issue": "语义一致性",
+  "reason": "译文严重偏离原文含义，将‘毁掉游戏’误译为‘毁掉东西’，且错误地将‘在那个洞里’处理为对游戏玩法的说明，导致语义完全错误。",
+  "suggestion": "* 你知道的，我因为身处那个洞，毁掉了很多《Ball Game》的游戏。"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/resources.assets:asset#resources.assets#35459/str/1",
+  "original": "Writing this assuming everyone will think that Section 3 is lame because it's based on my interpretation of Underfell.  I hope you liked it in spite of that, though!!!\n\nHere's to more to come.\n\n- Sarah",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文的假设、转折及署名信息，术语使用规范，无语义偏差。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/resources.assets:asset#resources.assets#35462/str/1",
+  "original": "Autumn\n\"Diddy\"",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用规范，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/resources.assets:asset#resources.assets#35463/str/1",
+  "original": "based on\nEarthbound / MOTHER 2 by Shigesato Itoi",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用符合行业标准，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/resources.assets:asset#resources.assets#35469/str/1",
+  "original": "- Sprite Artists -",
+  "verdict": "flag",
+  "issue": "术语一致性",
+  "reason": "术语不一致，'Sprite Artists' 应译为'精灵艺术家'而非'sprite 艺术家'，且标点符号不统一。",
+  "suggestion": "精灵艺术家"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/resources.assets:asset#resources.assets#35477/str/1",
+  "original": "based on\nUNDERTALE by Toby Fox",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用规范，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/resources.assets:asset#resources.assets#35478/str/1",
+  "original": "RENREN\nLexiTheTT\nLazyGales\nFrakture\nTygressLongheart\ngabbo\nlex3x\nAutumn / WavePrism\nTheTuneHero\nEribetra\nSawsk",
+  "verdict": "flag",
+  "issue": "术语一致性",
+  "reason": "原文为英文用户名列表，译文将部分英文单词错误翻译为中文，破坏了列表的格式一致性。",
+  "suggestion": "Frakture, Autumn"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/resources.assets:asset#resources.assets#35481/str/1",
+  "original": "Sarah Mullins\nBeethovenus\nCyberCorvid\nLumaHoneyy",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文专有名词含义，术语使用符合游戏行业规范，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/resources.assets:asset#resources.assets#35483/str/1",
+  "original": "Sarah Mullins\ncippbone\nCyberCorvid\nLumaHoneyy\njevilhumor\nShaunt\r / SeanTG246\nTheTuneHero\r\nHUECYCLES\r\nA Sick-Ass Werewolf\nLuneyToons\nAutumn / WavePrism\nThe Winterer\nValor52",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文所有信息，术语使用符合行业标准，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/resources.assets:asset#resources.assets#35484/str/1",
+  "original": "- Special Thanks -",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用符合行业标准，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/resources.assets:asset#resources.assets#35488/str/1",
+  "original": "- Section Credits -",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用符合行业标准，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/resources.assets:asset#resources.assets#35526/str/1",
+  "original": "My Castle Town",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用符合行业标准，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/resources.assets:asset#resources.assets#35621/str/1",
+  "original": "UNITALE Monster Dust Code\n\nEarthbound Distortional Background Shader\n\nLiterally everything\n\n\n\nDess Design Help\n\nInverted Fate Papyrus Appearance\n\nGoku\n<color=#FFFFFF80>(UNDERTALE: Legend of the Dragon Balls)</color>\n\nMario Bros. Title Background\n\nUNDERTALE:\nPapyrus's BELIEF\n<color=#FFFFFF80>(Music in UNO)</color>\n\nNoel Design Inspiration\n<color=#FFFFFF80>(DELTA_EXPERIMENT)</color>\n\nKris Ice Slide Poses\n\nSister Kid Design\n\nFrostermit\nClover Run Animation\nMusic in UNO!!!",
+  "verdict": "flag",
+  "issue": "术语一致性",
+  "reason": "存在多处术语翻译错误（如 UNITALE 应为 UNDERTALE、Frostermit 应为 Frostbite）及专有名词翻译不准确，且原文中未出现的英文内容被擅自翻译。",
+  "suggestion": "UNDERTALE 怪物尘埃代码"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/resources.assets:asset#resources.assets#35665/str/1",
+  "original": "Susie Weapon:",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文的 UI 标签含义，术语使用符合行业标准，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/resources.assets:asset#resources.assets#35729/str/1",
+  "original": "WARNING: This theme will\nmake Papyrus go all-out.",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文警告含义，术语使用正确，无语义偏差。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/resources.assets:asset#resources.assets#35739/str/3",
+  "original": "* Definitely not hungry enough\\n  to eat this spaghetti.",
+  "verdict": "pass",
+  "issue": "语气与语序",
+  "reason": "译文语序生硬，未完整传达原文‘因为不够饿所以不吃’的因果逻辑，且‘吃这意大利面’表述口语化不足。",
+  "suggestion": "* 肯定还不够饿，吃不了这意大利面。"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/resources.assets:asset#resources.assets#35745/str/2",
+  "original": "* Whatever!!!^05\\n* Everyone is here!!!",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文的感叹语气、人物关系及数量信息，术语使用符合游戏 UI 标准，无逻辑或语义错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/resources.assets:asset#resources.assets#35758/str/1",
+  "original": "Save",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "术语使用准确，符合行业标准，语义完整。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/resources.assets:asset#resources.assets#35775/str/1",
+  "original": "Press [Z]",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用规范，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/resources.assets:asset#resources.assets#35786/str/1",
+  "original": "Butterscotch Pie",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语符合行业标准，无语义或结构问题。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/resources.assets:asset#resources.assets#35816/str/1",
+  "original": "* Why did you say \"Snowy that\\n  I know?\"",
+  "verdict": "flag",
+  "issue": "信息完整性",
+  "reason": "译文严重缺失原文关键信息，导致含义完全改变，且未正确翻译引号内的完整句子。",
+  "suggestion": "* 为什么你说'Snowy that I know'呢？"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/resources.assets:asset#resources.assets#35816/str/7",
+  "original": "* (Just like Snowy...)",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用规范，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/resources.assets:asset#resources.assets#35837/str/1",
+  "original": "Noelle Weapon:",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文的专有名词与冒号结构，无术语错误或信息缺失。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/resources.assets:asset#resources.assets#35968/str/3",
+  "original": "* Yeah,^05 but...^05\\n  You're the good ones.",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，人物关系、否定词及术语使用均正确，无语义偏差。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/resources.assets:asset#resources.assets#36046/str/1",
+  "original": "Gaster Blasted Ending\n",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了游戏术语 Gaster Blasted Ending 的含义，符合行业标准译法，无语义或术语错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/resources.assets:asset#resources.assets#36091/str/1",
+  "original": "Cotton Candy",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了游戏 UI 中 Candy 类道具的标准名称，术语一致且无语义偏差。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/resources.assets:asset#resources.assets#36210/str/1",
+  "original": "Snow Ring",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了游戏术语'Snow Ring'的含义，符合行业标准。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/resources.assets:asset#resources.assets#36211/str/1",
+  "original": "Exit to Menu",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用符合行业标准，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/resources.assets:asset#resources.assets#36216/str/1",
+  "original": "Overwrite Slot x?",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文的确认覆盖意图，术语使用符合行业标准，无语义偏差。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/resources.assets:asset#resources.assets#36220/str/1",
+  "original": "Quit Game",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用符合行业标准，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/resources.assets:asset#resources.assets#36266/str/1",
+  "original": "Kris Weapon:",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用符合行业标准，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/resources.assets:asset#resources.assets#36398/str/1",
+  "original": "Selected Text",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用符合行业标准，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/resources.assets:asset#resources.assets#36402/str/1",
+  "original": "New File",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用符合行业标准，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/resources.assets:asset#resources.assets#36426/str/1",
+  "original": "Normal Text",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用符合行业标准，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/resources.assets:asset#resources.assets#36472/str/1",
+  "original": "Hold Direction",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用符合行业标准，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/resources.assets:asset#resources.assets#36498/str/1",
+  "original": "* But at this point,^05 it's become\\n  a game of \"Who will go missing\\n  next?\"",
+  "verdict": "flag",
+  "issue": "信息完整性",
+  "reason": "译文严重缺失原文核心信息，将'Who will go missing next'的疑问句结构完全丢失，导致游戏机制含义改变。",
+  "suggestion": "* 但到了这个地步，^05情况已经变得……\n  “接下来谁会失踪”的游戏"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/resources.assets:asset#resources.assets#36498/str/2",
+  "original": "* Huh?^05\\n* Why's that?",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文的惊讶与疑惑语气，无术语错误或信息缺失。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/resources.assets:asset#resources.assets#36650/str/20",
+  "original": "closed`*\\t...^10 kris,^05 huh.",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用规范，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/resources.assets:asset#resources.assets#36650/str/28",
+  "original": "neutral`*\\tbesides,^05 don't you have\\n\\tanything <color=#FFFF00FF>more important</color> to do?",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文的疑问语气和语义，术语使用符合标准，无错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/resources.assets:asset#resources.assets#36650/str/47",
+  "original": "wink`*\\tvery weak SLASH weapon.^10\\n*\\tit's as powerful as plastic.",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用规范，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/resources.assets:asset#resources.assets#36650/str/52",
+  "original": "Royal Scientist",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用符合行业标准，无语义或结构问题。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/resources.assets:asset#resources.assets#36650/str/59",
+  "original": "neutral`*\\tthat'd be like me assuming\\n\\tyour gender,^05 kris.^10\\n*\\tit'd be pretty rude.",
+  "verdict": "flag",
+  "issue": "人物关系",
+  "reason": "译文严重偏离原文语境，将对话中的角色称呼误译为名词短语，导致人物关系混乱且信息缺失。",
+  "suggestion": "这就像是我自己做出的假设一样。\n你的性别，克里斯。\n这真是太无礼了。"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/resources.assets:asset#resources.assets#36658/str/1",
+  "original": "Mini Party Member:",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用符合行业标准，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/resources.assets:asset#resources.assets#36659/str/1",
+  "original": "Save",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "术语使用准确，符合行业标准，语义完整。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/resources.assets:asset#resources.assets#36680/str/1",
+  "original": "press [c] to say vno!",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文的指令含义，术语使用规范，无语义错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/resources.assets:asset#resources.assets#36682/str/1",
+  "original": "press [c] to challenge +4 card",
+  "verdict": "flag",
+  "issue": "语气与信息完整性",
+  "reason": "译文过度解释导致信息冗余，且将游戏机制中的'加成'具体化为'使其获得'，改变了原文简洁的指令语气。",
+  "suggestion": "按 [c] 键挑战 +4 卡牌"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/resources.assets:asset#resources.assets#36691/str/1",
+  "original": "Save File\n",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用符合行业标准，无语义或结构问题。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/resources.assets:asset#resources.assets#36714/str/1",
+  "original": "New File",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用符合行业标准，无语义或结构问题。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/resources.assets:asset#resources.assets#36769/str/1",
+  "original": "My Castle Town",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用符合行业标准，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/Managed/Assembly-CSharp.dll:us#9795",
+  "original": "... You actually \nWEREN'T Frisk!",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文的否定含义及人物关系，术语使用正确，无语义偏差。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/Managed/Assembly-CSharp.dll:us#12202",
+  "original": "Kris",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语符合行业标准，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/Managed/Assembly-CSharp.dll:us#23013",
+  "original": "Did you think that \nI'd just RUN AWAY???",
+  "verdict": "flag",
+  "issue": "否定",
+  "reason": "否定含义完全颠倒，原文为反问句强调“不应该跑”，译文误译为“难道应该跑”，导致语义相反。",
+  "suggestion": "你以为我会直接跑掉吗？？？"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/Managed/Assembly-CSharp.dll:us#43344",
+  "original": "Deals RUDE Damage`50",
+  "verdict": "flag",
+  "issue": "术语一致性",
+  "reason": "术语使用不规范，'Damage'未统一为游戏标准译法'伤害'，且'RUDE'未准确传达为'粗暴'或'野蛮'，语气不符。",
+  "suggestion": "造成粗暴伤害`50"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/Managed/Assembly-CSharp.dll:us#43428",
+  "original": "Spares TIRED Enemies`32",
+  "verdict": "flag",
+  "issue": "语义一致性",
+  "reason": "原文中 TIRED 为形容词修饰 Enemies，译文误将“疲惫”处理为动词“提供”，导致语义完全颠倒且语法错误。",
+  "suggestion": "为疲惫的敌人提供支援"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/Managed/Assembly-CSharp.dll:us#43642",
+  "original": "Deals all FIRE Damage`36",
+  "verdict": "flag",
+  "issue": "术语一致性",
+  "reason": "译文将英文术语 FIRE 直接保留，未进行本地化翻译，违反术语一致性标准。",
+  "suggestion": "造成所有火属性伤害`36"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/Managed/Assembly-CSharp.dll:us#46022",
+  "original": "* Your SOUL shined its power\n  onto Susie!",
+  "verdict": "flag",
+  "issue": "语义一致性",
+  "reason": "译文存在严重语病，'到苏西那里去'不符合英语原句 'onto' 的介词含义，且句式生硬，未准确传达'力量投射/灌注'的动态感。",
+  "suggestion": "* 你的灵魂将力量闪耀给了苏西！"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/Managed/Assembly-CSharp.dll:us#46192",
+  "original": "* Your SOUL shined its power\n  onto Noelle!",
+  "verdict": "flag",
+  "issue": "语气",
+  "reason": "译文语序生硬且不符合中文表达习惯，导致句子结构不自然。",
+  "suggestion": "* 你的灵魂将力量闪耀给了诺埃尔！"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/Managed/Assembly-CSharp.dll:us#47848",
+  "original": " a WILD REVERSE.\n* Turn order has been reversed!\n* The color changes to ",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用规范，无逻辑或信息错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/Managed/Assembly-CSharp.dll:us#48331",
+  "original": "* Paula tried SHIELD...\n* Your SOUL was protected by\n  a LIGHT shield for 15 hits!",
+  "verdict": "flag",
+  "issue": "信息完整性",
+  "reason": "译文严重缺失原文关键信息，未传达'15 次攻击'的具体数值及'护盾'的具体名称，导致信息不完整。",
+  "suggestion": "* 保拉尝试了 SHIELD……\n* 你的灵魂得到了保护。\n  一个能抵挡 15 次攻击的 LIGHT 护盾！"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/Managed/Assembly-CSharp.dll:us#56173",
+  "original": "/WDI'VE FELT THIS \nBEFORE",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语与语法均符合标准。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/Managed/Assembly-CSharp.dll:us#56630",
+  "original": "* BLADEKNIGHT ATK 50 DEF 50\n* It has taken arms against\n  the light.",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用规范，无逻辑或事实错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/Managed/Assembly-CSharp.dll:us#56768",
+  "original": "* You continue praying.\n* Its DEFENSE decreased!",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用规范，无语义或逻辑错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/Managed/Assembly-CSharp.dll:us#56866",
+  "original": "* You prayed for power.\n* Its DEFENSE decreased!",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用规范，无语义或逻辑错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/Managed/Assembly-CSharp.dll:us#56964",
+  "original": "* You prayed for safety.\n* Its DEFENSE decreased!",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用符合行业标准，无语义或逻辑错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/Managed/Assembly-CSharp.dll:us#57064",
+  "original": "* You prayed for love and\n  hope.\n* Its DEFENSE decreased!",
+  "verdict": "flag",
+  "issue": "术语一致性",
+  "reason": "术语使用不规范，'DEFENSE'未统一为游戏标准译法'防御'，且'祈求'一词在战斗语境下略显生硬，建议优化为'祈祷'。",
+  "suggestion": "* 你祈祷了爱与希望。\n* 其防御降低了！"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/Managed/Assembly-CSharp.dll:us#73751",
+  "original": "* Kris used K-ACTION!\n* But they could just ACT,\n  so nothing happened.",
+  "verdict": "flag",
+  "issue": "语义一致性",
+  "reason": "译文严重偏离原文含义，将'行动'误译为'行动起来'，导致逻辑矛盾且未传达原文关于'使用特定动作'的意图。",
+  "suggestion": "* Kris 使用了 K-ACTION！\n* 但她们完全可以执行 ACT，\n  所以什么都没发生。"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/Managed/Assembly-CSharp.dll:us#74874",
+  "original": "* You hugged the tree.\n* The tree felt more relaxed.\n* It became TIRED.",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用规范，无语义或逻辑错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/Managed/Assembly-CSharp.dll:us#76328",
+  "original": "* You laugh at Feraldrake.\n* Feraldrake became TIRED.",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用规范，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/Managed/Assembly-CSharp.dll:us#76636",
+  "original": "* You booed Feraldrake.\n* Feraldrake became TIRED.",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用规范，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/Managed/Assembly-CSharp.dll:us#77016",
+  "original": "* You make a bad ice pun.\n* Feraldrake became TIRED.",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用规范，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/Managed/Assembly-CSharp.dll:us#77741",
+  "original": "* Susie points her weapon\n  at Feraldrake.\n* Feraldrake became TIRED.",
+  "verdict": "flag",
+  "issue": "信息完整性",
+  "reason": "译文严重缺失原文关键信息，导致语义不完整且逻辑混乱。",
+  "suggestion": "* 苏西将武器指向费拉德拉克。"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/Managed/Assembly-CSharp.dll:us#78149",
+  "original": "* Noelle flows snow through\n  the cold air.\n* Feraldrake became TIRED.",
+  "verdict": "flag",
+  "issue": "语义一致性",
+  "reason": "译文存在严重语病，第一句“让雪流过来寒冷的空气”结构混乱，导致语义不通且信息缺失；第二句语气过于书面化，不符合游戏战斗日志的口语习惯。",
+  "suggestion": "* 诺埃尔让雪花在冰冷的空气中飞舞。"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/Managed/Assembly-CSharp.dll:us#80934",
+  "original": "* You compliment Final Froggit.\n* It understood you perfectly.\n* Its ATTACK dropped.",
+  "verdict": "flag",
+  "issue": "术语一致性",
+  "reason": "术语使用不规范，'ATTACK'未统一为游戏标准译法'攻击'，且'compliment'译为'称赞'在语境中略显生硬，建议调整为更符合游戏对话的'夸奖'。",
+  "suggestion": "你夸奖了 Final Froggit。\n它完全理解了你的意思。\n它的攻击下降了。"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/Managed/Assembly-CSharp.dll:us#81105",
+  "original": "* You threaten Final Froggit.\n* It understood you perfectly.\n* Its DEFENSE dropped.",
+  "verdict": "flag",
+  "issue": "术语一致性",
+  "reason": "译文存在术语不一致问题，'DEFENSE'未统一为游戏标准译法'防御'，且'Its'指代不明导致人物关系/主宾关系存疑。",
+  "suggestion": "* 你威胁了 Final Froggit。\n* 它完全理解了你的意思。\n* 它的防御下降了。"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/Managed/Assembly-CSharp.dll:us#81721",
+  "original": "* Final Froggit recognizes this\n  threat.\n* It became TIRED.",
+  "verdict": "flag",
+  "issue": "信息完整性",
+  "reason": "译文存在严重信息缺失，原文两处星号后的完整句子被错误截断，导致语义不完整。",
+  "suggestion": "* Final Froggit 意识到了这一点威胁。\n* 它变得疲惫了。"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/Managed/Assembly-CSharp.dll:us#88072",
+  "original": "* FLOWEY attacks!",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用规范，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/Managed/Assembly-CSharp.dll:us#90933",
+  "original": "* ... But haters only make\n  Glyde stronger.\n* Glyde ATTACK UP+DEFENSE DOWN.",
+  "verdict": "flag",
+  "issue": "语义偏差",
+  "reason": "原文中'only'作为限定词修饰'make'，强调诋毁者只会产生强化 Glyde 这一单一结果，译文'制造混乱而已'增加了原文未有的负面含义（混乱），且未准确传达'只会让 Glyde 变强'的核心逻辑。",
+  "suggestion": "* ……但那些诋毁者只会让 Glyde 变得更强大。"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/Managed/Assembly-CSharp.dll:us#91357",
+  "original": "* Glyde takes this as a\n  challenge!\n* It's ATTACK increased!",
+  "verdict": "flag",
+  "issue": "信息完整性",
+  "reason": "译文存在严重信息缺失，原文\"takes this as a challenge\"被截断为\"视为一种……\"，导致语义不完整。",
+  "suggestion": "* Glyde 将这视为一种挑战！"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/Managed/Assembly-CSharp.dll:us#93029",
+  "original": "* You and Noelle called\n  for the GREATERDOG,^05 but\n  it didn't budge.",
+  "verdict": "flag",
+  "issue": "信息完整性",
+  "reason": "译文严重偏离原文，丢失关键信息（未提及打电话对象、未提及狗名、逻辑混乱），且否定词处理不当。",
+  "suggestion": "* 你和诺埃尔打电话叫 GREATERDOG，但它一动不动。"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/Managed/Assembly-CSharp.dll:us#93179",
+  "original": "* You and Noelle called\n  for the GREATERDOG.",
+  "verdict": "flag",
+  "issue": "语义一致性",
+  "reason": "译文严重偏离原文含义，将'叫来'误译为'打电话'，且未翻译'GREATERDOG'专有名词。",
+  "suggestion": "* 你和诺埃尔叫来了 GREATERDOG。"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/Managed/Assembly-CSharp.dll:us#94526",
+  "original": "* Aim to grab GREATERDOG's\n  {0}!\n^05* (Press ^Z to grab!)^10 ",
+  "verdict": "flag",
+  "issue": "信息完整性",
+  "reason": "译文严重缺失原文关键信息，导致指令含义不完整且可能误导玩家。",
+  "suggestion": "* 目标是抓住 GREATERDOG 的 {0}！"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/Managed/Assembly-CSharp.dll:us#94652",
+  "original": "* You and Susie tried\n  snatching GREATERDOG's\n  {0}...",
+  "verdict": "flag",
+  "issue": "信息完整性",
+  "reason": "译文严重缺失原文核心动词'抢'及宾语'物品'，导致语义完全改变且信息大量丢失。",
+  "suggestion": "* 你和苏西尝试抢走 GREATERDOG 的 {0}..."
+ },
+ {
+  "locator": "DELTATRAVELER_Data/Managed/Assembly-CSharp.dll:us#96587",
+  "original": "* Susie barks at GREATERDOG!\n* Nothing happened.",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用符合行业标准，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/Managed/Assembly-CSharp.dll:us#110678",
+  "original": "* Its WIND-infused katana is\n  its only means of attack.",
+  "verdict": "flag",
+  "issue": "术语一致性",
+  "reason": "译文将原文的'剑'（物体）误译为'剑术'（技能/能力），导致语义偏差且不符合游戏术语规范。",
+  "suggestion": "其充满风的剑\n这是其唯一的攻击方式。"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/Managed/Assembly-CSharp.dll:us#115249",
+  "original": "* Jerry became ENRAGED!\n^05* Its ATTACK increased!",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用规范，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/Managed/Assembly-CSharp.dll:us#118450",
+  "original": "Shut up!!!^05\nYou know NOTHING!!!",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文的愤怒语气、否定含义及特殊符号，无术语或语义错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/Managed/Assembly-CSharp.dll:us#121982",
+  "original": "* Press ^Z to shoot when yellow!\n* Hold and release ^Z to fire\n  a BIG SHOT!",
+  "verdict": "flag",
+  "issue": "语气",
+  "reason": "原文强调“按住并释放”的操作机制，译文“按住并释放”虽保留动作，但前句“按...即可射击”未体现“按住”的持续状态要求，且“太棒了”语气过于夸张，不符合游戏 UI 提示的简洁规范。",
+  "suggestion": "太酷了！"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/Managed/Assembly-CSharp.dll:us#122137",
+  "original": "* Press ^Z to shoot when\n  yellow! Hold and release\n  ^Z to fire a BIG SHOT!",
+  "verdict": "flag",
+  "issue": "术语一致性",
+  "reason": "译文存在术语误用（'用于'应为'按下'）及语序生硬问题，影响操作理解。",
+  "suggestion": "* 按下 ^Z 键在黄色时射击！按住并释放 ^Z 发射大威力炮弹！"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/Managed/Assembly-CSharp.dll:us#124349",
+  "original": "* You and Susie threatened to\n  kill Kris.\n* Kris became TIRED.",
+  "verdict": "flag",
+  "issue": "信息完整性",
+  "reason": "译文在原文省略处强行补全了“要”，导致语义偏差，且“很累了”口语化严重，不符合游戏 UI 简洁规范。",
+  "suggestion": "* 你和苏西威胁杀死克里斯。"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/Managed/Assembly-CSharp.dll:us#124526",
+  "original": "* Everyone brought to Kris\n  <color=#FFFF00FF>FOUR WHOLE CHUNGUSSIES</color>.",
+  "verdict": "flag",
+  "issue": "人物关系/术语一致性",
+  "reason": "译文严重篡改原文含义，将游戏内角色名称误译为书名，且遗漏了关键数量词'四本'及形容词'完整的'。",
+  "suggestion": "* 大家都带来了 Kris。\n  <color=#FFFF00FF>四本完整的 Chunguessies。</color>"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/Managed/Assembly-CSharp.dll:us#131159",
+  "original": "* Noelle hums a soothing tune.\n* Lesser Dog has become TIRED!",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用规范，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/Managed/Assembly-CSharp.dll:us#136037",
+  "original": "* It seems to feel bad.\n* It's ATTACK and DEFENSE\n  drop!",
+  "verdict": "flag",
+  "issue": "语气",
+  "reason": "译文语气过于书面化，不符合游戏 UI 的口语化风格，且未体现原文的感叹语气。",
+  "suggestion": "* 看起来有点难受。\n* 攻击和防御\n  掉落！"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/Managed/Assembly-CSharp.dll:us#139910",
+  "original": "* You lie down and rest.\n* Moldessa tucks you in with\n  a blanket of <color=#00FF00FF>[MOSS]</color>.",
+  "verdict": "flag",
+  "issue": "信息完整性",
+  "reason": "译文严重缺失原文关键信息，将“用苔藓毯子盖好你”简化为“盖好被子”，且错误地将专有名词'MOSS'译为通用词‘覆盖物’，导致游戏机制与术语双重错误。",
+  "suggestion": "* 你躺下来休息。\n* Moldessa 用 <color=#00FF00FF>[苔藓毯子]</color> 把你盖好。"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/Managed/Assembly-CSharp.dll:us#141872",
+  "original": "* Moldsmal is still\n  AFFECTIONATE.\n^05* Cannot consume.",
+  "verdict": "flag",
+  "issue": "术语一致性",
+  "reason": "原文为游戏内状态描述，译文将'AFFECTIONATE'误译为'继续着'，且'充满感情'语序生硬，严重偏离游戏 UI 语境。",
+  "suggestion": "* Moldsmal 仍然充满感情。\n^05* 无法消耗。"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/Managed/Assembly-CSharp.dll:us#141987",
+  "original": "* Susie tried to get a bite\n  out of Moldsmal.^05\n* Moldsmal became AFFECTIONATE!",
+  "verdict": "flag",
+  "issue": "术语一致性",
+  "reason": "译文严重违背游戏术语规范，将'AFFECTIONATE'误译为'深情'，且未体现'变得'这一状态变化过程，导致语义偏差。",
+  "suggestion": "* Moldsmal 变得很友好了！"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/Managed/Assembly-CSharp.dll:us#143138",
+  "original": "* Its ATTACK and DEFENSE dropped!",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用规范，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/Managed/Assembly-CSharp.dll:us#149089",
+  "original": "* You can use S-ACTION from\n  Susie's MAGIC menu to talk\n  to Napstablook.",
+  "verdict": "flag",
+  "issue": "信息完整性",
+  "reason": "译文严重缺失原文关键信息，导致功能描述不完整且逻辑混乱。",
+  "suggestion": "* 你可以使用 Susie 的魔法菜单中的 S-ACTION 功能与 Napstablook 对话。"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/Managed/Assembly-CSharp.dll:us#151186",
+  "original": "* He starts to understand.\n* Ness's ATTACK dropped!",
+  "verdict": "flag",
+  "issue": "术语一致性",
+  "reason": "术语使用错误，ATTACK 未统一为游戏标准译法，且否定词 dropped 翻译为‘失败’导致语义偏差。",
+  "suggestion": "尼斯的攻击命中！"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/Managed/Assembly-CSharp.dll:us#155440",
+  "original": "* You ordered Susie to cast\n  RED BUSTER.\n* Susie disobeyed orders!",
+  "verdict": "flag",
+  "issue": "术语/专有名词",
+  "reason": "译文严重错误，将专有名词'RED BUSTER'误译为'红色上衣'，导致游戏核心指令含义完全丢失。",
+  "suggestion": "红色爆破"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/Managed/Assembly-CSharp.dll:us#155576",
+  "original": "* You ordered Susie to cast\n  RED BUSTER.\n* Susie hits you!",
+  "verdict": "flag",
+  "issue": "术语一致性",
+  "reason": "译文严重错误，将游戏术语'RED BUSTER'误译为'红胸鸟'，且未传达'发射'动作含义。",
+  "suggestion": "你命令苏西发射红爆弹。\n红爆弹。\n苏西打你了！"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/Managed/Assembly-CSharp.dll:us#160795",
+  "original": "no_playful`snd_txtnoe`* Kris,^05 you have SOUL\n  powers,^05 right?\n* Try to parry!",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用规范，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/Managed/Assembly-CSharp.dll:us#175458",
+  "original": "su_pissed`snd_txtsus`* You're so PATHETIC.\n* You're no different than\n  the Snowy I know.",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用规范，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/Managed/Assembly-CSharp.dll:us#178567",
+  "original": "What?\nWanna \nFIGHT \nabout \nit?",
+  "verdict": "flag",
+  "issue": "语义一致性",
+  "reason": "译文严重破坏原文语义，将'关于'误译为'它'，导致句子逻辑完全崩塌且不符合游戏 UI 规范。",
+  "suggestion": "什么？想为这件事战斗吗？"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/Managed/Assembly-CSharp.dll:us#180000",
+  "original": "* Protocol: MUST SPIN\n* Can't handle standing still.",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文的警告含义，术语使用符合游戏 UI 规范，无语义或逻辑错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/Managed/Assembly-CSharp.dll:us#180961",
+  "original": "* Spinning Robo became TIRED\n  for the rest of the turn.",
+  "verdict": "pass",
+  "issue": "语序/流畅度",
+  "reason": "译文语序生硬，将原文的状语从句处理为两个独立短句，导致中文表达不流畅。",
+  "suggestion": "* Spinning Robo 在接下来的回合中变得很疲倦。"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/Managed/Assembly-CSharp.dll:us#186361",
+  "original": "* Use LEFT and RIGHT to change\n  weapons. Setting Susie/Noelle\n  to None will deactivate them.",
+  "verdict": "flag",
+  "issue": "术语一致性",
+  "reason": "译文存在严重术语错误（'LEFT'误译为'左侧'）及信息缺失（'None'未翻译），导致操作指令含义改变。",
+  "suggestion": "使用'左键'或'左方向键'"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/Managed/Assembly-CSharp.dll:us#191533",
+  "original": "* Whimsalot was not deterred.\n* Its ATTACK went up.",
+  "verdict": "flag",
+  "issue": "否定",
+  "reason": "原文包含否定词 not，译文漏译导致语义完全相反，且未体现数值上升的具体属性。",
+  "suggestion": "* Whimsalot 并未被阻止。"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/Managed/Assembly-CSharp.dll:us#200515",
+  "original": "SUCCESS QUAD: ",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用符合行业标准，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/Managed/Assembly-CSharp.dll:us#205105",
+  "original": "* Hello.^10\n* This is TORIEL.",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用符合行业标准，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/Managed/Assembly-CSharp.dll:us#207493",
+  "original": "* If Kris's mom lets\n  me actually fight WITH\n  you,^05 that is...",
+  "verdict": "flag",
+  "issue": "语义一致性",
+  "reason": "译文严重偏离原文逻辑，将'如果妈妈同意'的条件句误译为'实际上'，且错误地将'与之战斗'的主语锁定为'我'，导致人物关系和语义逻辑完全混乱。",
+  "suggestion": "* 如果克里斯的妈妈让我真正和你一起战斗，那就是……"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/Managed/Assembly-CSharp.dll:us#208855",
+  "original": "* GOD DAMN IT KRIS WHERE\n  THE HELL ARE WE",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文的愤怒情绪、人物称呼及地点询问的语义，无术语错误或信息缺失。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/Managed/Assembly-CSharp.dll:us#211372",
+  "original": "* You wouldn't let him\n  get away from you,\n^05  WOULD YOU KRIS?",
+  "verdict": "flag",
+  "issue": "语义一致性",
+  "reason": "译文严重偏离原文含义，将‘让他逃脱’错误译为‘让他这么做’，且遗漏了关键动词'get away'。",
+  "suggestion": "* 你不会让他从你身边溜走的。\n^05 你会吗，克里斯？"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/Managed/Assembly-CSharp.dll:us#213690",
+  "original": "* Hahaha...\n^05* Are you bad at\n  LISTENING or something?",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文的幽默讽刺语气，术语与语法均无误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/Managed/Assembly-CSharp.dll:us#215203",
+  "original": "* All of this?^05\n* You wanted me to think\n  that you were THEM.",
+  "verdict": "flag",
+  "issue": "语义一致性",
+  "reason": "译文严重偏离原文含义，将'You wanted me to think that you were THEM'错误翻译为'你就是他们'，导致人物关系和逻辑完全混乱。",
+  "suggestion": "* 你希望我思考一下，\n  你其实是他们。"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/Managed/Assembly-CSharp.dll:us#220069",
+  "original": "* But...^10 don't you wanna\n  know about your SOUL?^15\n* About LOVE?",
+  "verdict": "flag",
+  "issue": "术语一致性",
+  "reason": "译文将原文中强调的'LOVE'（爱）误译为'LOVE'（保持原词未汉化），且未体现与'SOUL'（灵魂）对应的'LOVE'（爱）的对比语境，导致信息缺失且术语使用不当。",
+  "suggestion": "* 但是……^10 你难道不想了解你的灵魂吗？^15\n* 关于爱？"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/Managed/Assembly-CSharp.dll:us#231076",
+  "original": "* KRIS!!!^10\n* WAKE UP!!!",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文的唤醒指令与紧急语气，术语与格式均符合标准。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/Managed/Assembly-CSharp.dll:us#231973",
+  "original": "* Kris,^10 you've been\n  sleeping for TWO HOURS!!",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "{\"level\": \"CRITICAL\", \"reason\": \"译文严重偏离原文含义，将“一直睡觉”误译为“一直很好”，且完全丢失了“睡眠时长两小时”的关键信息。\", \"issues\": [{\"type\": \"语义一致性\", \"detail\": \"原文指 Kris 一直在睡觉，译文却变成 Kris 状态很好，含义完全相反。\", \"suggestion\": \"* Kris，你一直睡了两小时！！\"}, {\"type\": \"数量\", \"detail\": \"原文明确提及\"TWO HOURS\"，译文完全丢失该数量信息。\", \"suggestion\": \"* Kris，你一直睡了两小时！！\"}, {\"t",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/Managed/Assembly-CSharp.dll:us#238259",
+  "original": "* SUSIE????^10 KRIS????",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文的人物名称、生命值数值及状态符号，无术语错误或语义偏差。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/Managed/Assembly-CSharp.dll:us#238407",
+  "original": "* WHAT'S HAPPENING???^05\n* IS KRIS OKAY!?!??!",
+  "verdict": "flag",
+  "issue": "语气",
+  "reason": "译文语气过于随意，未能准确传达原文的焦急与震惊情绪，且未体现原文中强烈的感叹符号堆叠感。",
+  "suggestion": "* 发生了什么？？？^05\n* 克里斯还好吗？！？？！"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/Managed/Assembly-CSharp.dll:us#244224",
+  "original": "* But you can run a\n  LITTLE faster than this,^05\n  right?",
+  "verdict": "flag",
+  "issue": "语义一致性",
+  "reason": "译文严重偏离原文含义，将‘run'误译为‘运行它’，导致语义逻辑混乱且丢失关键信息。",
+  "suggestion": "* 但你可以稍微快一点跑，对吧？"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/Managed/Assembly-CSharp.dll:us#250199",
+  "original": "* As a human living in\n  the UNDERGROUND,^10\n  monsters may attack you.",
+  "verdict": "flag",
+  "issue": "术语一致性",
+  "reason": "译文将原文的'Underground'（地下世界/地底）误译为'地下通道'，导致语义偏差且不符合游戏术语规范。",
+  "suggestion": "作为生活在其中的地底居民，怪物可能会攻击你。"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/Managed/Assembly-CSharp.dll:us#271001",
+  "original": "* All of you monsters\n  abide by the disgusting\n  King ASGORE.",
+  "verdict": "flag",
+  "issue": "语义一致性",
+  "reason": "译文严重偏离原文含义，将'遵守'误译为'规定/行为'，且'那些'一词无中生有，破坏语义一致性。",
+  "suggestion": "* 你们这些怪物们\n  都遵守着令人厌恶的\n  国王阿斯戈雷。"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/Managed/Assembly-CSharp.dll:us#285710",
+  "original": "GOD DAMN IT KRIS\nWHERE THE HELL ARE\nWE NOW",
+  "verdict": "flag",
+  "issue": "语义一致性",
+  "reason": "译文严重违背原文含义，将'我们现在在哪'错误翻译为'我们现在可以了'，且遗漏了关键疑问词'where'。",
+  "suggestion": "他到底在哪儿呢，我们现在在哪？"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/Managed/Assembly-CSharp.dll:us#287970",
+  "original": "(Your SOUL shined its power\nonto Noelle.)",
+  "verdict": "flag",
+  "issue": "信息完整性",
+  "reason": "译文严重缺失原文关键信息，导致语义不完整且破坏游戏术语一致性。",
+  "suggestion": "（你的灵魂将力量闪耀在诺埃尔身上。）"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/Managed/Assembly-CSharp.dll:us#290972",
+  "original": "* Heheheh....\n^05* Looks like we taught\n  THEM a lesson!",
+  "verdict": "flag",
+  "issue": "语义一致性",
+  "reason": "译文严重违背原文含义，将“教了教训”误译为“教错了”，且语气从自信挑衅变为自我怀疑。",
+  "suggestion": "看来我们确实给他们上了一课！"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/Managed/Assembly-CSharp.dll:us#326462",
+  "original": "* ... Why didn't you\n  do ANYTHING,^05 Ralsei???",
+  "verdict": "flag",
+  "issue": "否定",
+  "reason": "译文严重缺失原文核心否定词'ANYTHING'及疑问语气，导致语义完全颠倒，将质问变为祈使句。",
+  "suggestion": "* ……你为什么不做任何事呢，^05 Ralsei???"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/Managed/Assembly-CSharp.dll:us#333684",
+  "original": "NOT ONLY DID I \nSAVE YOUR LIFE LAST \nTIME WE MET...",
+  "verdict": "flag",
+  "issue": "否定",
+  "reason": "译文严重偏离原文，将陈述句误译为祈使句，且丢失关键信息并篡改语气。",
+  "suggestion": "我不仅在上次我们相遇时救过你的命……"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/Managed/Assembly-CSharp.dll:us#336155",
+  "original": "* UHHH,^05 why don't we just\n  do the maze, Kris!?",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文的疑问语气、人物关系及核心请求，无术语错误或信息缺失。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/Managed/Assembly-CSharp.dll:us#338921",
+  "original": "* IT IS TORTURE,^10 KRIS.",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语和人名使用正确，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/Managed/Assembly-CSharp.dll:us#355714",
+  "original": "I MUST BECOME A \nMEMBER OF THE ROYAL \nGUARD!!",
+  "verdict": "flag",
+  "issue": "术语一致性",
+  "reason": "译文将'ROYAL GUARD'（皇家卫队）错误地拆解并翻译为'王室成员'和'守卫'，导致人物身份与组织名称严重偏差，且'守卫'一词在语境中显得多余且不准确。",
+  "suggestion": "我必须成为一名皇家卫队成员！！"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/Managed/Assembly-CSharp.dll:us#369512",
+  "original": "* UNTIL WE MEET AGAIN,^10 KRIS.",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用规范，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/Managed/Assembly-CSharp.dll:us#370074",
+  "original": "* START RUNNING!!!",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用符合行业标准，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/Managed/Assembly-CSharp.dll:us#383848",
+  "original": "* They'll BOTH run away\n  after I beat him\n  up.",
+  "verdict": "flag",
+  "issue": "语义一致性",
+  "reason": "译文严重缺失原文核心动作'向上冲'，导致人物关系与行为逻辑完全错误，且遗漏关键动词。",
+  "suggestion": "* 他们俩都会向上逃跑。\n在我打败他之后。"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/Managed/Assembly-CSharp.dll:us#384610",
+  "original": "* And Sans chasing us\n  means his eyes were\n  kept on SHIT!!!",
+  "verdict": "flag",
+  "issue": "语义一致性",
+  "reason": "译文严重偏离原文含义，将“盯着看”误译为“眼睛糟糕”，且未传达出原文的愤怒情绪。",
+  "suggestion": "* 而桑斯正在追我们\n  这意味着他的眼睛\n  一直死死盯着 SHIT!!!"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/Managed/Assembly-CSharp.dll:us#403412",
+  "original": "\b          IT APPEARS\n\b        WE HAVE RUN OUT\n\b           OF TIME.",
+  "verdict": "flag",
+  "issue": "信息完整性",
+  "reason": "译文严重缺失原文核心信息，将游戏内资源耗尽的警告误译为无关的陈述句，且完全丢失了'时间'这一关键要素。",
+  "suggestion": "它似乎已经。我们已经没有时间了。"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/Managed/Assembly-CSharp.dll:us#408850",
+  "original": "\b   I AM SURE IT IS EXHAUSTING^15\n\b        TO BE TETHERED^15\n\b           TO KRIS.",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文的语义、人物关系及否定含义，术语使用符合游戏本地化标准。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/Managed/Assembly-CSharp.dll:us#441156",
+  "original": "* Kris,^05 we REALLY didn't\n  need to kill that\n  dog.",
+  "verdict": "flag",
+  "issue": "语义一致性",
+  "reason": "译文严重缺失原文核心动词'kill'，导致人物关系与动作意图完全颠倒，且否定词处理混乱。",
+  "suggestion": "* Kris，^05 我们真的没必要杀那只狗。"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/Managed/Assembly-CSharp.dll:us#443432",
+  "original": "HEH HEH HEH HEH \nNYEH!!!",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文的拟声词语气和感叹情绪，无术语或语义错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/Managed/Assembly-CSharp.dll:us#447189",
+  "original": "* Not THAT Sans!",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文的否定语气、人物指代及感叹词，术语使用符合游戏本地化标准。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/Managed/Assembly-CSharp.dll:us#453617",
+  "original": "ESPECIALLY YOU,^05\nKRIS.",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文的称呼对象、语气及特殊符号，无术语或语义错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/Managed/Assembly-CSharp.dll:us#454485",
+  "original": "I WANT TO START \nMAKING A POSITIVE \nMARK ON THE WORLD.",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文的意愿、动作及目标，术语使用规范，无语义偏差。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/Managed/Assembly-CSharp.dll:us#465982",
+  "original": "* You...^10\n* You KILLED her!?",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文的语义、语气及人物关系，无术语错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/Managed/Assembly-CSharp.dll:us#468761",
+  "original": "ALPHYS WANTED TO \nPUT A 30 SECOND \nTIMER ON THIS...",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用规范，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/Managed/Assembly-CSharp.dll:us#471404",
+  "original": "CONTRIBUTED BY THE \nBRILLIANT DR. ALPHYS!",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用规范，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/Managed/Assembly-CSharp.dll:us#472658",
+  "original": "SO THESE NEW ONES \nWILL GENERATE A \nBULLET TO ATTACK!",
+  "verdict": "flag",
+  "issue": "术语一致性",
+  "reason": "译文将游戏术语'Generate'误译为'生成'，未采用行业标准译法'发射'，且'有子弹可以攻击了'口语化严重，不符合游戏 UI 提示的简洁有力要求。",
+  "suggestion": "所以，这些新来的将发射子弹进行攻击！"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/Managed/Assembly-CSharp.dll:us#474844",
+  "original": "YOU CAN KEEP TRACK \nOF KRIS'S SMELL!",
+  "verdict": "flag",
+  "issue": "信息完整性",
+  "reason": "译文严重丢失原文关键信息，将'追踪'误译为'保持记录'，且未传达'克里斯的'这一所有格关系。",
+  "suggestion": "你可以追踪克里斯的气味！"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/Managed/Assembly-CSharp.dll:us#474918",
+  "original": "IF KRIS STEPS ON \nAN ORANGE TILE,^05 \nRAISE THE ORANGE!",
+  "verdict": "flag",
+  "issue": "语义一致性",
+  "reason": "译文严重偏离原文含义，将游戏机制误译为日常对话，且完全丢失了关键的游戏指令信息。",
+  "suggestion": "如果克里斯踩到橙色方块，^05 获得橙色道具！"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/Managed/Assembly-CSharp.dll:us#475030",
+  "original": "IF KRIS STEPS ON \nA PURPLE TILE,^05 \nRAISE THE LEMON!",
+  "verdict": "flag",
+  "issue": "否定",
+  "reason": "否定词缺失导致含义完全相反，且人物关系与动作对象严重错误。",
+  "suggestion": "如果克里斯没有踩到紫色瓷砖，就举起柠檬！"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/Managed/Assembly-CSharp.dll:us#476502",
+  "original": "NYEH HEH HEH!^05\nGET READY...!",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文的幽默语气、表情符号及准备状态的语义，无术语错误或信息缺失。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/Managed/Assembly-CSharp.dll:us#480564",
+  "original": "I HOPE YOU ENJOY!^05\nNYEH HEH HEH!",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文的幽默语气和期望，无术语错误或语义偏差。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/Managed/Assembly-CSharp.dll:us#496699",
+  "original": "* AND I ONLY TRUST\n  \"THE BOYS\" IN THE HANDS\n  OF [[Pacifist Route]]",
+  "verdict": "flag",
+  "issue": "信息完整性",
+  "reason": "译文存在严重信息缺失，原文中\"THE BOYS\"作为特定称谓被译为\"那些男孩\"，导致专有名词含义模糊，且未体现\"信任\"的对象明确性。",
+  "suggestion": "* 而我只信任\"THE BOYS\"。\"那些男孩\"掌握在来自[[和平主义路线]]的手中"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/Managed/Assembly-CSharp.dll:us#496837",
+  "original": "* SO THAT [[\"Fun\"]] IS\n  OFFICIALLY\n  [[Eviction Notice]]",
+  "verdict": "flag",
+  "issue": "语义一致性",
+  "reason": "原文为“为了 Fun 正式成为驱逐通知”，译文将“成为”误译为“成立”，导致语义完全相反且逻辑不通。",
+  "suggestion": "* 这样 [[Fun]] 就正式成为了 [[驱逐通知]]"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/Managed/Assembly-CSharp.dll:us#497186",
+  "original": "* WELL 2 IN 3 [[Teens]]\n  THINK [[ChildEndanger]]\n  SHOULDN\"T HAVE [[\"Fun\"]]",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "{\"level\": \"CRITICAL\", \"reason\": \"否定词 SHOULDN'T 被错误翻译为肯定句“应该没有”，导致语义完全相反，且专有名词标签未保留。\", \"issues\": [{\"type\": \"否定\", \"detail\": \"原文 'SHOULDN'T' 表示‘不应该’，译文‘应该没有’将否定含义错误地转化为对‘有’的否定，导致逻辑颠倒。\", \"suggestion\": \"SHOULDN'T HAVE\"}, {\"type\": \"术语一致性\", \"detail\": \"原文 'WELL' 为游戏内专有标签（Well），译文‘嗯’将其误译为口语感叹词，破坏了游戏 UI 的标签格式",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/Managed/Assembly-CSharp.dll:us#501581",
+  "original": "* Human.^05\n* Either surrender your\n  SOUL now...",
+  "verdict": "flag",
+  "issue": "信息完整性",
+  "reason": "译文严重缺失原文关键信息，导致语义完全改变，且存在否定词缺失问题。",
+  "suggestion": "* 要么现在就放弃你的灵魂……"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/Managed/Assembly-CSharp.dll:us#523400",
+  "original": "DELTATRAVELER Exception Log\n\n--- EXCEPTION ---\n",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用符合行业标准，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/Managed/Assembly-CSharp.dll:us#529792",
+  "original": "Ruins OBLIT Failsafe",
+  "verdict": "flag",
+  "issue": "术语一致性",
+  "reason": "术语翻译不规范，'OBLIT'作为游戏内特定术语未采用标准译法，且'故障安全系统'表述冗余，不符合游戏 UI 简洁性要求。",
+  "suggestion": "Ruins OBLIT 故障安全系统"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/Managed/Assembly-CSharp.dll:us#532186",
+  "original": "Napstablook OBLIT Failsafe",
+  "verdict": "flag",
+  "issue": "术语一致性",
+  "reason": "术语'Failsafe'译为'安全模式'不准确，游戏语境下应译为'故障安全'或'失效保护'，且'安全模式'易产生歧义。",
+  "suggestion": "Napstablook OBLIT 故障安全"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/Managed/Assembly-CSharp.dll:us#539189",
+  "original": "}* This weapon is a SLASH\n  type weapon.\n* One bar, standard damage.",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文关于武器类型、伤害条及伤害属性的全部含义，术语使用规范。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/Managed/Assembly-CSharp.dll:us#539328",
+  "original": "}* This ICERING allows Noelle to\n  cast ICE spells when equipped.",
+  "verdict": "flag",
+  "issue": "术语一致性",
+  "reason": "术语翻译不规范，'ICERING'未使用游戏标准译法，且译文存在信息截断。",
+  "suggestion": "}* 这个冰晶护符使得诺埃尔能够……"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/Managed/Assembly-CSharp.dll:us#539461",
+  "original": "}* This QUAD-type weapon uses\n  four bars instead of one.\n* More crits means more damage.",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用规范，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/Managed/Assembly-CSharp.dll:us#539835",
+  "original": "}* This is a BASH type weapon.\n* The bar progressively gets\n  faster with time.",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用规范，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/Managed/Assembly-CSharp.dll:us#539996",
+  "original": "}* This weapon is a ICESLASH\n  type weapon.\n* One bar, standard ICE damage.}* If equipped to Noelle,^05 she will\n  be able to cast ICE spells.}* However,^05 its effect on HEAL\n  PRAYER will be weaker than\n  other MAGIC weapons.",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文所有信息，术语使用符合行业标准，无逻辑或语义错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/Managed/Assembly-CSharp.dll:us#543436",
+  "original": "* OOOORAAAAA!!!\n* Susie rips up the punch card!}* Susie's AT increased by 10!",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用规范，无逻辑或事实错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/Managed/Assembly-CSharp.dll:us#548205",
+  "original": "* A sea-based sandwich that\n  increases SPEED in battle.}* Additionally,^05 eating it out of\n  battle will increase your\n  base speed for the room.",
+  "verdict": "flag",
+  "issue": "信息完整性",
+  "reason": "译文严重缺失关键信息，导致游戏机制描述完全错误，且术语使用混乱。",
+  "suggestion": "* 一种海边的三明治，能提升战斗中的速度。此外，在战斗外食用它还能提升该房间的基准速度。"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/Managed/Assembly-CSharp.dll:us#553227",
+  "original": "tori_neutral`snd_txttor`* Hello.\n^10* This is TORIEL.",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用规范，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/Managed/Assembly-CSharp.dll:us#589719",
+  "original": "UNO!\n^10GET BONED, \nBONEHEAD!",
+  "verdict": "flag",
+  "issue": "术语一致性",
+  "reason": "原文为游戏内嘲讽用语，译文误将 UNO 译为联合国，造成严重语义错误。",
+  "suggestion": "UNO!"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/Managed/Assembly-CSharp.dll:us#589807",
+  "original": "UNO!\n^10I CAN SMELL \nVICTORY!",
+  "verdict": "flag",
+  "issue": "术语一致性",
+  "reason": "严重误译，将游戏胜利提示 UNO 错误翻译为政治组织名称联合国，且完全丢失了胜利含义。",
+  "suggestion": "胜利了！"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/Managed/Assembly-CSharp.dll:us#590416",
+  "original": "* SUSIE - {0} ATK {1} DEF\n* Strong-headed \"mean girl\"\n  struggling in Uno.",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用规范，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/Managed/Assembly-CSharp.dll:us#590793",
+  "original": "* PAPYRUS - ATK 20 DEF 20\n* He likes to say:\n  \"Nyeh heh heh!\"",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文的人物名称、属性数值及对话内容，术语使用符合行业标准，无语义偏差。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/Managed/Assembly-CSharp.dll:us#591560",
+  "original": "Song That Might Play When You Fight Sans`From UNDERTALE\nBy Toby Fox",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文标题含义，术语使用规范，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/Managed/Assembly-CSharp.dll:us#591738",
+  "original": "Spear of Justice`From UNDERTALE\nBy Toby Fox",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文标题、出处及作者信息，术语使用符合行业标准，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/Managed/Assembly-CSharp.dll:us#592540",
+  "original": "Attack of the Killer Queen`From DELTARUNE\nBy Toby Fox",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文标题、来源及作者信息，术语使用符合游戏本地化标准，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/Managed/Assembly-CSharp.dll:us#592698",
+  "original": "NOW'S YOUR CHANCE TO BE A`From DELTARUNE\nBy Toby Fox",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用规范，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/Managed/Assembly-CSharp.dll:us#593905",
+  "original": "Eye for an Eye`From GG!UNDERFELL\nBy TheTuneHero",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文标题、来源及作者信息，术语使用规范，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/Managed/Assembly-CSharp.dll:us#594520",
+  "original": "Fever Pitch`From UNDERTALE Yellow\nBy MasterSwordRemix & MyNewSoundtrack",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文标题、来源及创作者信息，术语使用规范，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/Managed/Assembly-CSharp.dll:us#594707",
+  "original": "Forlorn`From UNDERTALE Yellow\nBy MasterSwordRemix & MyNewSoundtrack",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文标题、来源、版本及制作人员信息，术语使用符合行业标准，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/Managed/Assembly-CSharp.dll:us#594882",
+  "original": "Protocol`From UNDERTALE Yellow\nBy MasterSwordRemix & MyNewSoundtrack",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文的版权信息，术语和格式均符合行业标准，无错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/Managed/Assembly-CSharp.dll:us#595067",
+  "original": "Apprehension`From UNDERTALE Yellow\nBy MasterSwordRemix & MyNewSoundtrack",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文的标题、来源及创作者信息，术语使用符合游戏本地化规范，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/Managed/Assembly-CSharp.dll:us#595402",
+  "original": "Guns Blazing`From UNDERTALE Yellow\nBy MasterSwordRemix & MyNewSoundtrack",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文标题、来源及创作者信息，无术语错误或语义偏差。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/Managed/Assembly-CSharp.dll:us#595600",
+  "original": "END OF THE LINE_`From UNDERTALE Yellow\nBy Figburn",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文标题、来源及作者信息，无术语错误或语义偏差。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/Managed/Assembly-CSharp.dll:us#595769",
+  "original": "Some Point of No Return`From UNDERTALE Yellow\nBy MasterSwordRemix & MyNewSoundtrack",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文标题含义及出处信息，术语使用规范，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/Managed/Assembly-CSharp.dll:us#601863",
+  "original": "* WHAT THE HELL ARE YOU\n  LAUGHING ABOUT,^05 KRIS?",
+  "verdict": "flag",
+  "issue": "语义一致性",
+  "reason": "译文严重缺失原文核心信息，将‘你在笑什么’误译为‘你在干什么’，导致语义偏差。",
+  "suggestion": "* 你到底在笑什么啊，克里斯？"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/Managed/Assembly-CSharp.dll:us#602212",
+  "original": "* Man,^05 Kris,^05 you usually\n  don't suck THIS much\n  ass at puzzles.",
+  "verdict": "flag",
+  "issue": "否定",
+  "reason": "译文严重偏离原文含义，错误地将否定句'不总是'处理为肯定句'总是'，且完全丢失了原文关于'解决谜题'的具体语境。",
+  "suggestion": "* 兄弟，Kris，你通常不总是这样啊。别这么差劲了。解决谜题。"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/Managed/Assembly-CSharp.dll:us#613104",
+  "original": "NYEH HEH HEH!^05\nLET US BEGIN!",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文的幽默语气与行动指令，术语使用符合行业标准，无逻辑或信息错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/Managed/Assembly-CSharp.dll:us#613706",
+  "original": "YOU START OUT WITH \n7 CARDS.",
+  "verdict": "flag",
+  "issue": "语义一致性",
+  "reason": "译文严重偏离原文含义，将“起始拥有”误译为“从以下开始”，且遗漏了介词 with 的核心语义。",
+  "suggestion": "你起始拥有 7 张卡片。"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/Managed/Assembly-CSharp.dll:us#617319",
+  "original": "OH RIGHT!!!^05\nCALLING UNO!",
+  "verdict": "pass",
+  "issue": "语气",
+  "reason": "译文口语化程度不足，未能准确传达原文中角色急切、狂热的召唤语气。",
+  "suggestion": "叫你，UNO！"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/Managed/Assembly-CSharp.dll:us#618219",
+  "original": "THAT IS QUITE...^05 \nFRISK-LIKE OF YOU.",
+  "verdict": "flag",
+  "issue": "术语一致性",
+  "reason": "术语使用不规范，'Frisk-like' 未采用游戏行业通用译法'无头骑士'，且译文语序生硬，不符合中文表达习惯。",
+  "suggestion": "那真是……^05 你就是那种‘无头骑士’风格的人。"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/Managed/Assembly-CSharp.dll:us#619249",
+  "original": "HOW WELL DO YOU \nTHINK YOU'LL DO?^05\nNYEH HEH HEH!",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文的疑问语气和幽默感，术语与格式均符合标准。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/Managed/Assembly-CSharp.dll:us#621212",
+  "original": "* How unorthodox...^05\n* You must REALLY need a\n  hint.",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用规范，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/Managed/Assembly-CSharp.dll:us#656930",
+  "original": "* <color=#00A2E8>LIGHT BLUE</color> - \"Ball\" is \"Small.\"^10\n* You waited,^05 still,^05 for\n  this opportunity...",
+  "verdict": "flag",
+  "issue": "术语一致性",
+  "reason": "术语翻译错误，'Small' 在 RPG 语境下应译为'小'而非'Small'，且'相当于'表述生硬，不符合游戏本地化规范。",
+  "suggestion": "* <color=#00A2E8>浅蓝色</color> “球”是“小”。^10"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/Managed/Assembly-CSharp.dll:us#657381",
+  "original": "* <color=#D535D9>PURPLE</color> - Even when you felt\n  trapped,^05 you took notes and\n  achieved the end of \"Ball.\"",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用规范，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/Managed/Assembly-CSharp.dll:us#657614",
+  "original": "* <color=#00C000>GREEN</color> - Your concern and care\n  for \"Ball\" led you to a\n  delicious victory.",
+  "verdict": "flag",
+  "issue": "信息完整性",
+  "reason": "译文存在严重信息缺失（漏译 'led you to' 导致因果断裂）及术语误用（'Ball' 未翻译），且语气不符合游戏成就提示风格。",
+  "suggestion": "* <color=#00C000>绿色</color> – 你对'Ball'的关心与呵护让你赢得了这场美味胜利。"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/Managed/Assembly-CSharp.dll:us#658026",
+  "original": "* <color=#FFFF00FF>YELLOW</color> - Your sure-fire\n  accuracy put an end to\n  the mayhem of \"Ball.\"",
+  "verdict": "flag",
+  "issue": "信息完整性",
+  "reason": "译文存在严重信息缺失，漏译了原文中关键的形容词'sure-fire'（百发百中/绝对可靠），导致语义力度大幅减弱，且未体现原文对'Ball'这一特定名称的引用语境。",
+  "suggestion": "* <color=#FFFF00FF>黄色</color> - 你百发百中的准确性终结了\"Ball\"带来的混乱局面。"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/Managed/Assembly-CSharp.dll:us#664118",
+  "original": "NEW SAVE (FORMAT VERSION ",
+  "verdict": "flag",
+  "issue": "术语一致性",
+  "reason": "术语使用不规范，'NEW SAVE'未采用行业标准译法'新建存档'，且括号内英文原文缺失导致信息不完整。",
+  "suggestion": "新建存档（格式化版本）"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/Managed/Assembly-CSharp.dll:us#664798",
+  "original": "LEGACY SAVE",
+  "verdict": "flag",
+  "issue": "术语一致性",
+  "reason": "术语使用错误，游戏存档应译为“存档”而非“遗产保护”。",
+  "suggestion": "旧存档"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/Managed/Assembly-CSharp.dll:us#665006",
+  "original": "Press      to Finish",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用符合行业标准，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/Managed/Assembly-CSharp.dll:us#670105",
+  "original": "You look like you \nalready did the \nFRISK thing.",
+  "verdict": "flag",
+  "issue": "信息完整性",
+  "reason": "译文严重缺失原文关键信息，且错误添加了原文不存在的句子，导致语义完全改变。",
+  "suggestion": "你看起来像是已经做过那个'FRISK'了。"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/Managed/Assembly-CSharp.dll:us#670640",
+  "original": "What?^05\nAre you waiting for \nEAGLELAND to be a \nplace to visit?",
+  "verdict": "flag",
+  "issue": "信息完整性",
+  "reason": "译文存在严重信息缺失，原文询问是否等待 EAGLELAND 成为可游之地，译文仅翻译了前半句且后半句逻辑断裂，未传达“成为值得去的地方”这一核心含义。",
+  "suggestion": "什么？^05 你是在等待 EAGLELAND 成为一个值得去的地方吗？"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/Managed/Assembly-CSharp.dll:us#675114",
+  "original": "What's with that look?^10\nYou don't LIKE IT????",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文的惊讶与质问语气，术语与格式均符合标准。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/Managed/Assembly-CSharp.dll:us#681191",
+  "original": "WEAPON: Clean Pan\nARMOR: Big Ribbon\nMONEY: 5",
+  "verdict": "flag",
+  "issue": "术语一致性",
+  "reason": "术语严重错误，游戏内物品名称未采用行业标准译法，且语义表达不符合游戏语境。",
+  "suggestion": "武器：清洁锅\n护甲：大丝带\n金钱：5"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/Managed/Assembly-CSharp.dll:us#683627",
+  "original": "Quit Game",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用符合行业标准，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/Managed/Assembly-CSharp.dll:us#683647",
+  "original": "Really Quit?",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用符合行业标准，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/Managed/Assembly-CSharp.dll:us#683821",
+  "original": "File Saved",
+  "verdict": "flag",
+  "issue": "信息完整性",
+  "reason": "译文添加了原文不存在的限定词'的'，导致语义从'文件已保存'变为'已保存的文件'，改变了原意。",
+  "suggestion": "已保存"
+ },
+ {
+  "locator": "DELTATRAVELER_Data/Managed/Assembly-CSharp.dll:us#698038",
+  "original": "[press z]",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文操作指令，术语与格式均符合行业标准。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/Managed/Assembly-CSharp.dll:us#699592",
+  "original": "Keyboard / Controller",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用符合行业标准，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/Managed/Assembly-CSharp.dll:us#701920",
+  "original": "Select New Color",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用符合行业标准，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/Managed/Assembly-CSharp.dll:us#702436",
+  "original": "You can play this card!\nWould you like to?",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用规范，语气自然。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/Managed/Assembly-CSharp.dll:us#702550",
+  "original": "Really Forfeit?",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文的疑问语气和核心含义，术语使用符合游戏 UI 规范。",
+  "suggestion": ""
+ },
+ {
+  "locator": "DELTATRAVELER_Data/Managed/Assembly-CSharp.dll:us#712570",
+  "original": "* Wait, is that a\n  PLASTIC knife?^05\n* That's kinda lame.",
+  "verdict": "pass",
+  "issue": "语气",
+  "reason": "译文整体准确，但第二句口语化表达略显生硬，不够地道。",
+  "suggestion": "那有点烂。"
+ }
+]
