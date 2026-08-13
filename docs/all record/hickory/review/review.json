@@ -1,6 +1,6 @@
 [
  {
-  "locator": "Hickory_Data/data.unity3d:asset#globalgamemanagers.assets#2103/str/3",
+  "locator": "Hickory_Data/data.unity3d:asset#globalgamemanagers.assets#2103/field/k:m_LightBlendStyles/i:2/k:name",
   "original": "Multiply with Mask",
   "verdict": "pass",
   "issue": "",
@@ -8,31 +8,15 @@
   "suggestion": ""
  },
  {
-  "locator": "Hickory_Data/data.unity3d:asset#globalgamemanagers.assets#2103/str/4",
-  "original": "Additive with Mask",
-  "verdict": "pass",
-  "issue": "",
-  "reason": "译文准确传达了原文含义，术语使用规范，无语义或结构错误。",
-  "suggestion": ""
- },
- {
-  "locator": "Hickory_Data/data.unity3d:asset#level0#395/str/0",
-  "original": "So much chaos! Desolo and Benjamin pulled through like always. Jonathan saw for loops in Daniel's shaders. Wirovin's pulled off amazing environments for her first jam. And 47A continues to lend her flexible voice.",
-  "verdict": "flag",
-  "issue": "语义一致性",
-  "reason": "译文严重偏离原文含义，将编程概念（for loops, shaders）错误地翻译为游戏测试术语，且将“项目”误译为“测试”，导致语义完全错误。",
-  "suggestion": "Jonathan 在 Daniel 的着色器代码中发现了循环结构。"
- },
- {
-  "locator": "Hickory_Data/data.unity3d:asset#level0#398/str/0",
+  "locator": "Hickory_Data/data.unity3d:asset#level0#398/field/k:m_text",
   "original": "The earliest struggle was figuring out how we wanted our character to look. At the time, she was human and we spent a lot of time arguing over her color scheme and her outfit. The Hickory Dickory Dock motif did not come until much later in development.",
   "verdict": "pass",
   "issue": "",
-  "reason": "译文准确传达了原文关于角色设计初期挑战及 Hickory Dickory Dock 图案引入时机的全部含义，术语使用规范，无语义偏差。",
+  "reason": "译文准确传达了原文关于角色设计初期挑战及 Hickory Dickory Dock 主题出现时间的全部含义，术语使用符合行业标准，无语义或结构错误。",
   "suggestion": ""
  },
  {
-  "locator": "Hickory_Data/data.unity3d:asset#level0#400/str/0",
+  "locator": "Hickory_Data/data.unity3d:asset#level0#400/field/k:m_text",
   "original": "Development was quite slow in the beginning, with most of the time spent designing and arguing. Lots of placeholders were used. This was our biggest team yet, and everyone seemed to have different ideas.",
   "verdict": "pass",
   "issue": "",
@@ -40,95 +24,15 @@
   "suggestion": ""
  },
  {
-  "locator": "Hickory_Data/data.unity3d:asset#level0#401/str/0",
+  "locator": "Hickory_Data/data.unity3d:asset#level0#401/field/k:m_text",
   "original": "As was tradition with most of our jam games (starting around 2022) they've always featured a boss or some sort of huge encounter. Daniel just loves making bosses for some reason. Of course Daniel can't draw like Emiliano or Coco or Yishan or Wirovin so he has to settle with a terrible doodled concept.",
-  "verdict": "pass",
-  "issue": "",
-  "reason": "译文准确传达了原文关于游戏传统、人物关系及绘画能力的全部含义，术语使用符合行业标准，无语义错误或信息缺失。",
-  "suggestion": ""
+  "verdict": "flag",
+  "issue": "术语一致性",
+  "reason": "译文存在术语不规范及人物关系指代不清问题，且部分专有名词翻译未统一。",
+  "suggestion": "Jam 游戏；Daniel 统一为丹尼尔，Emiliano 统一为埃米利亚诺，Coco 统一为科科，Yishan 统一为伊山，Wirovin 统一为维罗文"
  },
  {
-  "locator": "Hickory_Data/data.unity3d:asset#level0#402/str/0",
-  "original": "Options",
-  "verdict": "pass",
-  "issue": "",
-  "reason": "术语使用准确，符合行业标准译法。",
-  "suggestion": ""
- },
- {
-  "locator": "Hickory_Data/data.unity3d:asset#level0#406/str/0",
-  "original": "Jonathan had an idea for a robot game about maintaining your factory, which we revisited in our brainstorming when Daniel thought of merging it with the theme of a clock tower. We all wanted to do something with a clock tower vibe.",
-  "verdict": "pass",
-  "issue": "",
-  "reason": "译文准确传达了原文关于游戏创意、头脑风暴过程及主题融合的核心信息，无术语误用或语义偏差。",
-  "suggestion": ""
- },
- {
-  "locator": "Hickory_Data/data.unity3d:asset#level0#412/str/0",
-  "original": "Behind the Scenes",
-  "verdict": "pass",
-  "issue": "",
-  "reason": "译文准确传达原文含义，术语符合行业标准，无语义或结构问题。",
-  "suggestion": ""
- },
- {
-  "locator": "Hickory_Data/data.unity3d:asset#level0#414/str/0",
-  "original": "Options",
-  "verdict": "pass",
-  "issue": "",
-  "reason": "术语使用准确，符合行业标准译法。",
-  "suggestion": ""
- },
- {
-  "locator": "Hickory_Data/data.unity3d:asset#level0#415/str/0",
-  "original": "Quit",
-  "verdict": "pass",
-  "issue": "",
-  "reason": "术语准确，符合行业标准译法。",
-  "suggestion": ""
- },
- {
-  "locator": "Hickory_Data/data.unity3d:asset#level1#84/str/0",
-  "original": "Press SPACE to skip.",
-  "verdict": "pass",
-  "issue": "",
-  "reason": "译文准确传达了原文含义，术语使用规范，无语义或结构错误。",
-  "suggestion": ""
- },
- {
-  "locator": "Hickory_Data/data.unity3d:asset#level1#85/str/0",
-  "original": "\"But no worker can work forever. Cracks. Hairline fractures. All things break given time. And somewhere below, teeth grind through the brass and something scurries in the dark.\"",
-  "verdict": "pass",
-  "issue": "",
-  "reason": "译文准确传达了原文的语义、否定含义及人物关系，术语使用符合游戏 UI 标准，无语义偏差。",
-  "suggestion": ""
- },
- {
-  "locator": "Hickory_Data/data.unity3d:asset#level1#86/str/0",
-  "original": "\"One last worker remains. A contingency if you will. Unwound. Unused. Waiting. A little someone stirs in the wake of it all. Wake up.\"",
-  "verdict": "pass",
-  "issue": "",
-  "reason": "译文准确传达了原文的叙事氛围与所有信息，术语使用符合游戏语境，无语义或逻辑错误。",
-  "suggestion": ""
- },
- {
-  "locator": "Hickory_Data/data.unity3d:asset#level1#87/str/0",
-  "original": "\"Three dolls, wound by its very mechanisms, are duty-bound to its maintenance. Day after day. Month after month. Year after year.\"",
-  "verdict": "pass",
-  "issue": "",
-  "reason": "译文准确传达了原文关于玩偶维护义务及时间跨度的全部含义，术语使用规范，无语义偏差。",
-  "suggestion": ""
- },
- {
-  "locator": "Hickory_Data/data.unity3d:asset#sharedassets2.assets#445/str/9",
-  "original": "Get – tck – me. Out.",
-  "verdict": "pass",
-  "issue": "",
-  "reason": "译文准确传达了原文的指令含义、人物关系及语气，术语使用符合游戏 UI 标准，无错误。",
-  "suggestion": ""
- },
- {
-  "locator": "Hickory_Data/data.unity3d:asset#level2#1911/str/0",
+  "locator": "Hickory_Data/data.unity3d:asset#level0#402/field/k:m_text",
   "original": "Options",
   "verdict": "pass",
   "issue": "",
@@ -136,11 +40,67 @@
   "suggestion": ""
  },
  {
-  "locator": "Hickory_Data/data.unity3d:asset#level3#166/str/0",
+  "locator": "Hickory_Data/data.unity3d:asset#level0#406/field/k:m_text",
+  "original": "Jonathan had an idea for a robot game about maintaining your factory, which we revisited in our brainstorming when Daniel thought of merging it with the theme of a clock tower. We all wanted to do something with a clock tower vibe.",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文关于游戏创意、头脑风暴过程及核心主题的所有信息，无术语误用或语义偏差。",
+  "suggestion": ""
+ },
+ {
+  "locator": "Hickory_Data/data.unity3d:asset#level0#414/field/k:m_text",
+  "original": "Options",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确，符合行业标准术语规范。",
+  "suggestion": ""
+ },
+ {
+  "locator": "Hickory_Data/data.unity3d:asset#level0#415/field/k:m_text",
+  "original": "Quit",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "术语准确，符合行业标准译法。",
+  "suggestion": ""
+ },
+ {
+  "locator": "Hickory_Data/data.unity3d:asset#level1#84/field/k:m_text",
+  "original": "Press SPACE to skip.",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文含义，术语使用规范，无语义或结构错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "Hickory_Data/data.unity3d:asset#level1#85/field/k:m_text",
+  "original": "\"But no worker can work forever. Cracks. Hairline fractures. All things break given time. And somewhere below, teeth grind through the brass and something scurries in the dark.\"",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文的警示意味与恐怖氛围，术语使用规范，无逻辑或事实性错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "Hickory_Data/data.unity3d:asset#level1#86/field/k:m_text",
+  "original": "\"One last worker remains. A contingency if you will. Unwound. Unused. Waiting. A little someone stirs in the wake of it all. Wake up.\"",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "译文准确传达了原文的叙事氛围与所有关键信息，术语使用符合游戏语境，无语义偏差或逻辑错误。",
+  "suggestion": ""
+ },
+ {
+  "locator": "Hickory_Data/data.unity3d:asset#level2#1911/field/k:m_text",
+  "original": "Options",
+  "verdict": "pass",
+  "issue": "",
+  "reason": "术语使用准确，符合行业标准译法。",
+  "suggestion": ""
+ },
+ {
+  "locator": "Hickory_Data/data.unity3d:asset#level3#166/field/k:m_text",
   "original": "Music and SFX",
   "verdict": "pass",
   "issue": "",
-  "reason": "译文准确传达了原文含义，术语使用符合行业标准，无语义或结构错误。",
+  "reason": "译文准确传达了原文含义，术语使用符合行业标准，无语义或结构问题。",
   "suggestion": ""
  }
 ]

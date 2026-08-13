@@ -141,7 +141,7 @@
 变更文件：155
 写入译文：3807
 总体闸门：WARN
-字体层级：runtime_verified
+字体层级：runtime_verified（LEGACY_EVIDENCE_UNSCOPED：旧协议证据，未含逐码点 attestation/覆盖证明）
 清单：.hanhua-manifest.json
 备份：None
 

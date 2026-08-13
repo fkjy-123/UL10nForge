@@ -5,6 +5,7 @@ STATUS_PENDING = "pending"
 STATUS_TRANSLATED = "translated"
 STATUS_FAILED = "failed"
 STATUS_SKIPPED = "skipped"
+STATUS_BLOCKED = "blocked"   # 语义审核终态：重译/再审未收敛，需人工复核
 
 
 @dataclass
@@ -51,6 +52,10 @@ class GameProfile:
     world_setting: str = ""
     tone_notes: str = ""
     style_guide: str = ""
+    # #10：Style/Personalization——用户自定义翻译风格要求（游戏本地化
+    # 角色行为边界之外的个性化指令）。空 = 使用内置默认角色；非空 →
+    # 以【个性化风格要求】块注入 system prompt 并优先于内置文风。
+    prompt_style: str = ""
     source_lang: str = "auto"    # auto / English / 日本語 / 한국어 / ...
     target_lang: str = "zh-CN"
 
@@ -83,6 +88,8 @@ class ApiConfig:
 class FontConfig:
     enabled: bool = True
     filename: str = "SimplifiedChinese/SourceHanSansSC-Regular.otf"
+    #: TMP 替换字体的粗细档位：heavy（粗）/ medium（中）/ thin（细）
+    weight: str = "medium"
 
 
 @dataclass

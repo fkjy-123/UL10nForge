@@ -1,11 +1,18 @@
 from __future__ import annotations
 import hashlib
 import json
+import re
 import sqlite3
 import threading
 from pathlib import Path
 
-from hanhua.core.models import GameProfile
+from hanhua.core.models import STATUS_TRANSLATED, GameProfile
+from hanhua.core.review_outcome import PUBLISHABLE as _PUBLISHABLE_OUTCOMES
+
+
+def _now() -> str:
+    import datetime as _dt
+    return _dt.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
 
 class ProjectStore:
@@ -41,13 +48,35 @@ class ProjectStore:
             );
             CREATE TABLE IF NOT EXISTS memory(
                 src_hash TEXT PRIMARY KEY, original TEXT, translation TEXT,
-                model TEXT, lang TEXT, created_at TEXT DEFAULT (datetime('now'))
+                model TEXT, lang TEXT, pending INTEGER DEFAULT 0,
+                created_at TEXT DEFAULT (datetime('now'))
             );
             CREATE INDEX IF NOT EXISTS idx_entries_status ON entries(status);
             CREATE TABLE IF NOT EXISTS profile(
                 key TEXT PRIMARY KEY, value TEXT
             );
+            CREATE TABLE IF NOT EXISTS audit_log(
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                at TEXT DEFAULT (datetime('now')), kind TEXT,
+                file_id TEXT, key_path TEXT, original TEXT,
+                before_translation TEXT, after_translation TEXT,
+                model TEXT, lang TEXT, note TEXT
+            );
+            CREATE TABLE IF NOT EXISTS vector_outbox(
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                at TEXT DEFAULT (datetime('now')),
+                kind TEXT, file_id TEXT, key_path TEXT,
+                original TEXT, translation TEXT
+            );
             """)
+            # 迁移：旧库无 pending 列（Phase B PendingEvidence，2026-08-13）。
+            # 旧数据视为已提交（pending=0）——历史记忆不因新协议失效。
+            try:
+                self.conn.execute(
+                    "ALTER TABLE memory ADD COLUMN pending INTEGER DEFAULT 0")
+                self.conn.commit()
+            except sqlite3.OperationalError:
+                pass  # 列已存在（新库或已迁移）
             self.conn.commit()
 
     def schema_tables(self) -> frozenset[str]:
@@ -343,17 +372,143 @@ class ProjectStore:
                               (status, file_id, key_path))
             self.conn.commit()
 
+    def reset_to_pending(self, file_id, key_path):
+        """标记重译：status→pending 并清空旧审核终态（#9）。
+
+        只 set_status 的旧做法让 BLOCKED/NEEDS_REVISION 残留（review_outcome、
+        review_blocked 等）继续 fail-closed 拒绝重译成功的译文——用户
+        「重试失败/标记为待翻译」后重译成功仍发布被拒，失败文本无法
+        自己处理。重译是新的开始：清终态 + 质量门字段，由重译结果
+        重新判定。
+        """
+        with self._lock:
+            row = self.conn.execute(
+                "SELECT meta FROM entries WHERE file_id=? AND key_path=?",
+                (file_id, key_path)).fetchone()
+            if row is None:
+                return
+            try:
+                meta = json.loads(row["meta"] or "{}")
+            except (json.JSONDecodeError, TypeError):
+                meta = {}
+            for field in self._REVIEW_STATE_CLEAR:
+                meta.pop(field, None)
+            for field in ("review_outcome", "quality_passed", "review_issue"):
+                meta.pop(field, None)
+            self.conn.execute(
+                "UPDATE entries SET status='pending', meta=? "
+                "WHERE file_id=? AND key_path=?",
+                (json.dumps(meta, ensure_ascii=False), file_id, key_path))
+            self.conn.commit()
+
     def set_locked(self, file_id, key_path, locked: bool):
         with self._lock:
             self.conn.execute("UPDATE entries SET locked=? WHERE file_id=? AND key_path=?",
                               (1 if locked else 0, file_id, key_path))
             self.conn.commit()
 
-    def set_manual(self, file_id, key_path, translation):
-        """人工审校：非空译文通过；清空时恢复 pending。"""
+    # 人工修正要清理的旧审核状态字段（Phase B-2，审计 §6 P1-6）：
+    # BLOCKED/REVIEW_ERROR/NEEDS_REVISION 等残留会让发布门 fail-closed
+    # 拒绝（被人工改正后仍不可写回），旧 APPROVED 残留会让新译文未经
+    # 复查就带发布资格——全部清除，由 apply_manual_correction 重写终态。
+    _REVIEW_STATE_CLEAR = (
+        "review_blocked", "review_error", "need_revision", "need_retranslate",
+        "review_level", "review_reason", "review_suggestion",
+        "review_error_kind", "review_blocked_rounds", "rejected_candidate",
+        "quality_reasons",
+    )
+
+    def apply_manual_correction(self, file_id, key_path, translation) -> dict:
+        """人工修正原子写入（审计 §6 P1-6）：清理旧审核状态 → 人工终态。
+
+        审校页直接编辑译文过去只改 translation/status（set_manual）：
+        review_outcome / review_blocked / need_* 旧审核状态残留——被
+        人工改正的坏译文仍被发布门拒绝，或旧 approved 状态未刷新。
+        人改即终局：
+        - 非空译文 → status=translated、review_outcome=APPROVED、
+          review_level=MANUAL、quality_passed=True、
+          confidence_promoted=True（低置信条目经人工提升可写回），
+          manual_corrected 记录修正时间与旧译文；
+        - 空输入（清空译文）→ status=pending、review_outcome 移除、
+          quality_passed=False，等同重置待译。
+        返回 {applied, original, before_translation, translation, status}。
+        """
         normalized = str(translation).strip()
-        status = "translated" if normalized else "pending"
-        self.update_translation(file_id, key_path, normalized, status)
+        with self._lock:
+            row = self.conn.execute(
+                "SELECT original, translation, meta FROM entries "
+                "WHERE file_id=? AND key_path=?",
+                (file_id, key_path)).fetchone()
+            if row is None:
+                return {"applied": False}
+            try:
+                meta = json.loads(row["meta"] or "{}")
+            except (json.JSONDecodeError, TypeError):
+                meta = {}
+            before = row["translation"] or ""
+            original = row["original"] or ""
+            # 先清旧审核状态，再写人工终态（避免 MANUAL 被清掉）
+            for field in self._REVIEW_STATE_CLEAR:
+                meta.pop(field, None)
+            if normalized:
+                status = STATUS_TRANSLATED
+                meta["review_outcome"] = "APPROVED"
+                meta["review_level"] = "MANUAL"
+                meta["quality_passed"] = True
+                meta["confidence_promoted"] = True
+                meta["quality_source"] = "manual_api"
+                meta["manual_corrected"] = {
+                    "at": _now(), "before": before,
+                }
+            else:
+                status = "pending"
+                meta.pop("review_outcome", None)
+                meta.pop("manual_corrected", None)
+                meta["quality_passed"] = False
+            self.conn.execute(
+                "UPDATE entries SET translation=?, status=?, meta=? "
+                "WHERE file_id=? AND key_path=?",
+                (normalized, status, json.dumps(meta, ensure_ascii=False),
+                 file_id, key_path))
+            self.conn.commit()
+        return {"applied": True, "original": original,
+                "before_translation": before, "translation": normalized,
+                "status": status}
+
+    def set_manual(self, file_id, key_path, translation):
+        """人工写入（历史 API）：委托 apply_manual_correction 统一回流。
+
+        Phase B-2（审计 §6 P1-6）后所有人工/规则修正写入走同一原子
+        路径：清理旧审核状态 + 重写人工终态（旧实现只改
+        translation/status，审核残留与坏记忆不清理）。返回结果 dict
+        （忽略返回值的旧调用方不受影响）。
+        """
+        return self.apply_manual_correction(file_id, key_path, translation)
+
+    def record_audit(self, *, kind, file_id, key_path, original="",
+                     before="", after="", model="", lang="", note="") -> None:
+        """审计日志（Phase B-2：人工修正/清空全程可追溯）。"""
+        with self._lock:
+            self.conn.execute(
+                "INSERT INTO audit_log(kind, file_id, key_path, original,"
+                " before_translation, after_translation, model, lang, note)"
+                " VALUES (?,?,?,?,?,?,?,?,?)",
+                (kind, file_id, key_path, original, before, after,
+                 model, lang, note))
+            self.conn.commit()
+
+    def enqueue_vector(self, *, kind, file_id, key_path,
+                       original="", translation="") -> None:
+        """矢量索引 outbox 出队（Phase C 消费）：修正与清空都入队。
+
+        translation 为空 = 消费端应删除该条目的矢量（原文不再有效）。
+        """
+        with self._lock:
+            self.conn.execute(
+                "INSERT INTO vector_outbox(kind, file_id, key_path,"
+                " original, translation) VALUES (?,?,?,?,?)",
+                (kind, file_id, key_path, original, translation))
+            self.conn.commit()
 
     def get_entries(self, status: str | None = None) -> list[dict]:
         with self._lock:
@@ -367,17 +522,88 @@ class ProjectStore:
             return row["c"] if row else 0
 
     def get_memory_hits(self, originals: list[str], model: str, lang: str) -> dict[str, str]:
-        """返回 {原文: 译文} 命中缓存（单条 IN 查询，替代逐条 SELECT）。"""
+        """返回 {原文: 译文} 命中缓存（单条 IN 查询，替代逐条 SELECT）。
+
+        Phase B（PendingEvidence，2026-08-13 审计 §5 P0-3）：只返回已
+        提交（pending=0）记忆——翻译管线批量写入的记忆是 pending 待审
+        状态，深审前不参与命中（坏译不得进入下一轮 prompt）；审核通过
+        由 promote_memory / settle_translation_memory 提交后才可见。
+        """
         if not originals:
             return {}
         hashes = [(hashlib.md5(s.encode("utf-8")).hexdigest(), s) for s in originals]
         with self._lock:
             rows = self.conn.execute(
                 "SELECT src_hash, translation FROM memory WHERE model=? AND lang=? "
+                "AND pending = 0 "
                 "AND src_hash IN (%s)" % ",".join("?" * len(hashes)),
                 (model, lang, *(h for h, _ in hashes))).fetchall()
         by_hash = {r["src_hash"]: r["translation"] for r in rows}
         return {s: by_hash[h] for h, s in hashes if h in by_hash}
+
+    #: TM 归一化键（#43 阶段 C）：大小写/空白/标点无关（同 glossary
+    #: term_norm 语义，保留 CJK 字符）
+    _TM_NORM = re.compile(r"[^0-9a-z一-鿿]+")
+    #: 模糊查询扫描上限（按最新记忆，防全表扫爆内存）
+    _FUZZY_SCAN_LIMIT = 2000
+
+    @staticmethod
+    def _tm_norm_key(text: str) -> str:
+        return ProjectStore._TM_NORM.sub("", text.casefold())
+
+    @staticmethod
+    def _tm_tokens(text: str) -> set[str]:
+        """分词：英文单词（casefold）+ CJK 单字。相似度比较基础。"""
+        words = set(re.findall(r"[a-z0-9]+", text.casefold()))
+        cjk = set(ch for ch in text if "一" <= ch <= "鿿")
+        return words | cjk
+
+    def get_memory_similar(self, original: str, model: str, lang: str,
+                           min_similarity: float = 0.6) -> list[dict]:
+        """TM 模糊查询（重构指令 §6 第 6 路召回）：归一化命中 + token 相似。
+
+        TM 与 Terminology 分层（指令 §三-2）：记忆是「同原文/近原文的
+        历史译文」，不覆盖术语强制，只作 references 参考。
+
+        返回按置信降序的 [{original, translation, confidence, kind}]：
+          normalized  归一化命中（去空格/大小写/标点）→ 0.95
+          similar     token 重叠率（Jaccard）→ 0.7 × overlap
+        只查 pending=0 已提交记忆（坏译不得进入 prompt——Phase B 语义
+        延续）；低于 min_similarity 不返回；空 original/无记忆返回 []。
+        """
+        if not original or min_similarity <= 0:
+            return []
+        target_norm = self._tm_norm_key(original)
+        target_tokens = self._tm_tokens(original)
+        if not target_norm and not target_tokens:
+            return []
+        with self._lock:
+            rows = self.conn.execute(
+                "SELECT original, translation FROM memory"
+                " WHERE model=? AND lang=? AND pending=0"
+                " ORDER BY created_at DESC LIMIT ?",
+                (model, lang, self._FUZZY_SCAN_LIMIT)).fetchall()
+        out: list[dict] = []
+        seen: set[str] = set()
+        for r in rows:
+            cand = str(r["original"] or "")
+            if not cand or cand in seen:
+                continue
+            seen.add(cand)
+            if self._tm_norm_key(cand) == target_norm:
+                out.append({"original": cand, "translation": r["translation"],
+                            "confidence": 0.95, "kind": "normalized"})
+                continue
+            if not target_tokens:
+                continue
+            overlap = (len(target_tokens & self._tm_tokens(cand))
+                       / len(target_tokens | self._tm_tokens(cand)))
+            conf = 0.7 * overlap
+            if overlap >= min_similarity:
+                out.append({"original": cand, "translation": r["translation"],
+                            "confidence": round(conf, 3), "kind": "similar"})
+        out.sort(key=lambda d: d["confidence"], reverse=True)
+        return out
 
     def remove_memory(self, original: str, model: str, lang: str) -> None:
         source_hash = hashlib.md5(original.encode("utf-8")).hexdigest()
@@ -387,6 +613,19 @@ class ProjectStore:
                 (source_hash, model, lang),
             )
             self.conn.commit()
+
+    def remove_memory_all(self, original: str) -> int:
+        """按原文删除全部记忆行（不限 model/lang）。
+
+        Phase B-2：人工清空译文 = 重置待译，旧坏译文可能在不同
+        model/lang 组合下都命中过——全部撤销。
+        """
+        source_hash = hashlib.md5(original.encode("utf-8")).hexdigest()
+        with self._lock:
+            cursor = self.conn.execute(
+                "DELETE FROM memory WHERE src_hash=?", (source_hash,))
+            self.conn.commit()
+            return cursor.rowcount
 
     def clear_translation_memory(self) -> int:
         """Atomically clear cached translations and return deleted row count."""
@@ -406,24 +645,57 @@ class ProjectStore:
         return entries_rows, memory_rows
 
     def add_memory(self, original, translation, model, lang):
+        """显式提交记忆（pending=0）：审核通过/人工写入——立即可命中。"""
         h = hashlib.md5(original.encode("utf-8")).hexdigest()
         with self._lock:
             self.conn.execute(
-                "INSERT OR REPLACE INTO memory(src_hash, original, translation, model, lang) VALUES (?,?,?,?,?)",
+                "INSERT OR REPLACE INTO memory(src_hash, original, translation, "
+                "model, lang, pending) VALUES (?,?,?,?,?,0)",
                 (h, original, translation, model, lang))
             self.conn.commit()
 
     def batch_add_memory(self, rows: list[tuple]) -> None:
-        """批量写入翻译记忆。rows: [(original, translation, model, lang)]"""
+        """批量写入翻译记忆（pending=1 待审）。
+
+        Phase B（PendingEvidence）：翻译管线机械门通过后先入 pending 桶，
+        深审通过（promote）或未开启审核（settle）前不参与任何命中——
+        坏译不得在深审前污染记忆。
+        """
         if not rows:
             return
         with self._lock:
             self.conn.executemany(
-                "INSERT OR REPLACE INTO memory(src_hash, original, translation, model, lang) "
-                "VALUES (?,?,?,?,?)",
+                "INSERT OR REPLACE INTO memory(src_hash, original, translation, "
+                "model, lang, pending) VALUES (?,?,?,?,?,1)",
                 [(hashlib.md5(o.encode("utf-8")).hexdigest(), o, t, m, l)
                  for o, t, m, l in rows])
             self.conn.commit()
+
+    def promote_memory(self, rows: list[tuple]) -> int:
+        """审后提交：批量把记忆提升为已提交（pending=0，可命中）。
+
+        rows: [(original, translation, model, lang)]——upsert 语义，
+        未入 pending 桶的条目（如审核期间反馈重译的新译文）直接提交。
+        返回提交条数。
+        """
+        if not rows:
+            return 0
+        with self._lock:
+            self.conn.executemany(
+                "INSERT OR REPLACE INTO memory(src_hash, original, translation, "
+                "model, lang, pending) VALUES (?,?,?,?,?,0)",
+                [(hashlib.md5(o.encode("utf-8")).hexdigest(), o, t, m, l)
+                 for o, t, m, l in rows])
+            self.conn.commit()
+        return len(rows)
+
+    def count_pending_memory(self) -> int:
+        """pending 待审记忆条数（Phase B 可观测性）。"""
+        with self._lock:
+            row = self.conn.execute(
+                "SELECT COUNT(*) AS n FROM memory WHERE pending = 1"
+            ).fetchone()
+        return int(row["n"])
 
     def get_files(self) -> list[dict]:
         with self._lock:
@@ -509,3 +781,38 @@ class ProjectStore:
     def close(self):
         with self._lock:
             self.conn.close()
+
+
+def settle_translation_memory(store, entries, model: str, lang: str) -> dict:
+    """审后记忆结算（Phase B PendingEvidence 的唯一结算点）。
+
+    由 GUI/headless 在审核步骤结束后各调用一次；与 review_entries 内部
+    的逐条记忆门禁（_memory_apply）互补且幂等：
+
+    - 条目有审核终态 APPROVED/APPROVED_MINOR → promote（pending=0，
+      可命中；反馈重译产生的新译文经 upsert 直接提交）；
+    - 条目有审核终态（其余全部）→ 撤销（remove，坏译连 pending 也不留）；
+    - 条目无审核终态（审核关闭/审核器不可用/未送审）→ 机械质量门已是
+      最后裁决，promote（保持既有行为——审核关闭时记忆仍可用）。
+
+    返回 {"promoted": n, "revoked": n}（供报告可观测性）。
+    """
+    committed: list[tuple] = []
+    revoked = 0
+    for e in entries:
+        translation = str(e.translation or "")
+        if not translation or e.status != STATUS_TRANSLATED:
+            continue                    # 未通过机械门/无译文不结算
+        meta = e.meta or {}
+        if meta.get("echo_exempt") or meta.get("language_source_kept"):
+            continue   # 回显/语言保持条目不产生记忆（与翻译批入桶规则一致）
+        outcome = meta.get("review_outcome")
+        if outcome is None:
+            committed.append((e.original, translation, model, lang))
+        elif outcome in _PUBLISHABLE_OUTCOMES:
+            committed.append((e.original, translation, model, lang))
+        else:
+            store.remove_memory(e.original, model, lang)
+            revoked += 1
+    promoted = store.promote_memory(committed) if committed else 0
+    return {"promoted": promoted, "revoked": revoked}

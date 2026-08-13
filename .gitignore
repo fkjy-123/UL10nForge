@@ -40,4 +40,9 @@ ext_games/
 
 # Runner/game runtime state (secret-bearing, machine-specific)
 review_runtime.json
+model_runtime.json
+coord_runtime_embed.json
 *.log
+
+# TMP bundle 构建的参考字体资产（可随时用 build_tmp_font_bundles.py 重建，148M 不入库）
+.ref_fonts/

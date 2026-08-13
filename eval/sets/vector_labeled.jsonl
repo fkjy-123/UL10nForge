@@ -1,0 +1,79 @@
+{"text": "Options", "games": ["hickory", "interdream"], "label": 1, "kind": "same_source", "count": 4, "verdicts": ["pass"]}
+{"text": "Quit", "games": ["hickory", "inch-by-inch", "incremental-rts"], "label": 1, "kind": "same_source", "count": 3, "verdicts": ["pass"]}
+{"text": "Attack", "games": ["honorplusplus"], "label": 1, "kind": "same_source", "count": 7, "verdicts": ["pass"]}
+{"text": "Medium Objects", "games": ["honorplusplus"], "label": 1, "kind": "same_source", "count": 2, "verdicts": ["pass"]}
+{"text": "Large Objects", "games": ["honorplusplus"], "label": 1, "kind": "same_source", "count": 2, "verdicts": ["pass"]}
+{"text": "Extra Large Objects", "games": ["honorplusplus"], "label": 1, "kind": "same_source", "count": 2, "verdicts": ["pass"]}
+{"text": "There is a version mismatch between the FMOD header and either the FMOD Studio library or the FMOD Low Level library.", "games": ["honorplusplus", "isolated-inhale"], "label": 0, "kind": "same_source", "count": 2, "verdicts": ["flag", "pass"]}
+{"text": "[FMOD] RuntimeManager accessed outside of runtime. Do not use RuntimeManager for Editor-only functionality, create your own System objects instead.", "games": ["honorplusplus", "isolated-inhale"], "label": 1, "kind": "same_source", "count": 2, "verdicts": ["pass"]}
+{"text": "[FMOD] Studio::System::initialize returned {0}, defaulting to no-sound mode.", "games": ["honorplusplus", "isolated-inhale"], "label": 1, "kind": "same_source", "count": 2, "verdicts": ["pass"]}
+{"text": "FMOD Studio Debug", "games": ["honorplusplus", "isolated-inhale"], "label": 1, "kind": "same_source", "count": 2, "verdicts": ["pass"]}
+{"text": "[FMOD] Unable to load {0} - bank already loaded. This may occur when attempting to load another localized bank before the first is unloaded, or if a bank has been loaded via the API.", "games": ["honorplusplus", "isolated-inhale"], "label": 1, "kind": "same_source", "count": 2, "verdicts": ["pass"]}
+{"text": "[FMOD] Could not load bank '{0}' : {1} : {2}", "games": ["honorplusplus", "isolated-inhale"], "label": 1, "kind": "same_source", "count": 2, "verdicts": ["pass"]}
+{"text": "[FMOD] Could not load bank '{0}' : {1}", "games": ["honorplusplus", "isolated-inhale"], "label": 1, "kind": "same_source", "count": 2, "verdicts": ["pass"]}
+{"text": "Why am I tied up? What? WHY DO YOU HAVE A SAW, YOU SON OF A BITCH?", "games": ["hunt"], "label": 1, "kind": "same_source", "count": 2, "verdicts": ["pass"]}
+{"text": "What do you bitches want? Huh? You want to kill me?", "games": ["hunt"], "label": 0, "kind": "same_source", "count": 2, "verdicts": ["flag", "pass"]}
+{"text": "You have selected link <#ffff00> ID 01", "games": ["hunt", "inch-by-inch"], "label": 1, "kind": "same_source", "count": 2, "verdicts": ["pass"]}
+{"text": "You have selected link <#ffff00> ID 02", "games": ["hunt", "inch-by-inch"], "label": 1, "kind": "same_source", "count": 2, "verdicts": ["pass"]}
+{"text": "Camera Control - <#ffff00>Shift + RMB\n</color>Zoom - <#ffff00>Mouse wheel.", "games": ["hunt", "inch-by-inch"], "label": 1, "kind": "same_source", "count": 2, "verdicts": ["pass"]}
+{"text": "Keyboard Settings", "games": ["inch-by-inch"], "label": 1, "kind": "same_source", "count": 2, "verdicts": ["pass"]}
+{"text": "Music Vol.", "games": ["inch-by-inch"], "label": 1, "kind": "same_source", "count": 2, "verdicts": ["pass"]}
+{"text": "Lab Intern", "games": ["inch-by-inch"], "label": 1, "kind": "same_source", "count": 4, "verdicts": ["pass"]}
+{"text": "Effects Vol.", "games": ["inch-by-inch"], "label": 1, "kind": "same_source", "count": 2, "verdicts": ["pass"]}
+{"text": "Run", "games": ["inch-by-inch"], "label": 1, "kind": "same_source", "count": 2, "verdicts": ["pass"]}
+{"text": "Nothing to see here. Just some trees. Do you like trees? I do. But no idea what to do with them really", "games": ["incremental-rts"], "label": 1, "kind": "same_source", "count": 2, "verdicts": ["pass"]}
+{"text": "Enjoying the game? Wishlist the larger version on Steam!", "games": ["incremental-rts"], "label": 1, "kind": "same_source", "count": 2, "verdicts": ["pass"]}
+{"text": "Feedback Form", "games": ["incremental-rts"], "label": 1, "kind": "same_source", "count": 2, "verdicts": ["pass"]}
+{"text": "Join Discord", "games": ["incremental-rts"], "label": 1, "kind": "same_source", "count": 2, "verdicts": ["pass"]}
+{"text": "Press any key...", "games": ["incremental-rts", "isolated-inhale"], "label": 1, "kind": "same_source", "count": 4, "verdicts": ["pass"]}
+{"text": "Death defiance survival improves by {survivalHp} of max HP instead of 1 HP. Stacks with other survival upgrades", "games": ["incremental-rts"], "label": 1, "kind": "same_source", "count": 2, "verdicts": ["pass"]}
+{"text": "options", "games": ["interdream"], "label": 1, "kind": "same_source", "count": 2, "verdicts": ["pass"]}
+{"text": "* What.^10\\n* What?^10\\n* WHAT!?", "games": ["interdream"], "label": 1, "kind": "same_source", "count": 4, "verdicts": ["pass"]}
+{"text": "* (You got the Old Tutu.)", "games": ["interdream"], "label": 1, "kind": "same_source", "count": 2, "verdicts": ["pass"]}
+{"text": "Writing this assuming everyone will think that Section 3 is lame because it's based on my interpretation of Underfell.  I hope you liked it in spite of that, though!!!\n\nHere's to more to come.\n\n- Sarah", "games": ["interdream"], "label": 1, "kind": "same_source", "count": 3, "verdicts": ["pass"]}
+{"text": "based on\nEarthbound / MOTHER 2 by Shigesato Itoi", "games": ["interdream"], "label": 1, "kind": "same_source", "count": 3, "verdicts": ["pass"]}
+{"text": "Autumn\n\"Diddy\"", "games": ["interdream"], "label": 1, "kind": "same_source", "count": 3, "verdicts": ["pass"]}
+{"text": "- Section Credits -", "games": ["interdream"], "label": 1, "kind": "same_source", "count": 3, "verdicts": ["pass"]}
+{"text": "based on\nUNDERTALE by Toby Fox", "games": ["interdream"], "label": 1, "kind": "same_source", "count": 3, "verdicts": ["pass"]}
+{"text": "Sarah Mullins\nBeethovenus\nCyberCorvid\nLumaHoneyy", "games": ["interdream"], "label": 1, "kind": "same_source", "count": 3, "verdicts": ["pass"]}
+{"text": "Sarah Mullins\ncippbone\nCyberCorvid\nLumaHoneyy\njevilhumor\nShaunt\r / SeanTG246\nTheTuneHero\r\nHUECYCLES\r\nA Sick-Ass Werewolf\nLuneyToons\nAutumn / WavePrism\nThe Winterer\nValor52", "games": ["interdream"], "label": 1, "kind": "same_source", "count": 3, "verdicts": ["pass"]}
+{"text": "- Special Thanks -", "games": ["interdream"], "label": 1, "kind": "same_source", "count": 3, "verdicts": ["pass"]}
+{"text": "Gaster Blasted Ending", "games": ["interdream"], "label": 1, "kind": "same_source", "count": 4, "verdicts": ["pass"]}
+{"text": "- Sprite Artists -", "games": ["interdream"], "label": 0, "kind": "same_source", "count": 3, "verdicts": ["flag", "pass"]}
+{"text": "* (Don't keep her waiting now.)\\n* Ribbit.", "games": ["interdream"], "label": 1, "kind": "same_source", "count": 2, "verdicts": ["pass"]}
+{"text": "* (You got the Quiet Shroom.)", "games": ["interdream"], "label": 1, "kind": "same_source", "count": 2, "verdicts": ["pass"]}
+{"text": "Normal Text", "games": ["interdream"], "label": 1, "kind": "same_source", "count": 2, "verdicts": ["pass"]}
+{"text": "Selected Text", "games": ["interdream"], "label": 1, "kind": "same_source", "count": 2, "verdicts": ["pass"]}
+{"text": "Vertical Wave", "games": ["interdream"], "label": 1, "kind": "same_source", "count": 6, "verdicts": ["pass"]}
+{"text": "Monster Candy", "games": ["interdream"], "label": 1, "kind": "same_source", "count": 2, "verdicts": ["pass"]}
+{"text": "Vertical Offset Wave", "games": ["interdream"], "label": 1, "kind": "same_source", "count": 2, "verdicts": ["pass"]}
+{"text": "Horizontal Wave", "games": ["interdream"], "label": 1, "kind": "same_source", "count": 3, "verdicts": ["pass"]}
+{"text": "Options", "similar_to": "options", "similarity": 0.857, "label": 0, "kind": "near_dup"}
+{"text": "Quit", "similar_to": "Really Quit?", "similarity": 0.5, "label": 0, "kind": "near_dup"}
+{"text": "Medium Objects", "similar_to": "Small Objects", "similarity": 0.667, "label": 0, "kind": "near_dup"}
+{"text": "Large Objects", "similar_to": "Charge progress", "similarity": 0.5, "label": 0, "kind": "near_dup"}
+{"text": "Extra Large Objects", "similar_to": "Small Objects", "similarity": 0.562, "label": 0, "kind": "near_dup"}
+{"text": "FMOD Studio Debug", "similar_to": "FMOD Studio Integration Settings", "similarity": 0.571, "label": 0, "kind": "near_dup"}
+{"text": "[FMOD] Could not load bank '{0}' : {1} : {2}", "similar_to": "[FMOD] Could not load bank '{0}' : {1}", "similarity": 0.927, "label": 0, "kind": "near_dup"}
+{"text": "Keyboard Settings", "similar_to": "Royal Scientist", "similarity": 0.5, "label": 0, "kind": "near_dup"}
+{"text": "Music Vol.", "similar_to": "Music/SFX", "similarity": 0.526, "label": 0, "kind": "near_dup"}
+{"text": "Lab Intern", "similar_to": "Modo Interior", "similarity": 0.522, "label": 0, "kind": "near_dup"}
+{"text": "Effects Vol.", "similar_to": "Music Vol.", "similarity": 0.545, "label": 0, "kind": "near_dup"}
+{"text": "Enjoying the game? Wishlist the larger version on Steam!", "similar_to": "Enjoying the demo? Wishlist the full game on Steam — 60 levels, deeper upgrades, more chaos!", "similarity": 0.568, "label": 0, "kind": "near_dup"}
+{"text": "Press any key...", "similar_to": "Press Enter to continue...", "similarity": 0.571, "label": 0, "kind": "near_dup"}
+{"text": "options", "similar_to": "Motion Blur", "similarity": 0.556, "label": 0, "kind": "near_dup"}
+{"text": "* What.^10\\n* What?^10\\n* WHAT!?", "similar_to": "* Huh?^05\\n* Why's that?", "similarity": 0.5, "label": 0, "kind": "near_dup"}
+{"text": "* (You got the Old Tutu.)", "similar_to": "* (You got the Hamburger.)", "similarity": 0.706, "label": 0, "kind": "near_dup"}
+{"text": "- Section Credits -", "similar_to": "- Special Thanks -", "similarity": 0.541, "label": 0, "kind": "near_dup"}
+{"text": "based on\nUNDERTALE by Toby Fox", "similar_to": "Spear of Justice`From UNDERTALE\nBy Toby Fox", "similarity": 0.603, "label": 0, "kind": "near_dup"}
+{"text": "- Special Thanks -", "similar_to": "- Sprite Artists -", "similarity": 0.5, "label": 0, "kind": "near_dup"}
+{"text": "Gaster Blasted Ending", "similar_to": "Game Camera Blends", "similarity": 0.513, "label": 0, "kind": "near_dup"}
+{"text": "- Sprite Artists -", "similar_to": "- Section Credits -", "similarity": 0.541, "label": 0, "kind": "near_dup"}
+{"text": "* (Don't keep her waiting now.)\\n* Ribbit.", "similar_to": "* (Her frying pan.)\\n* (Take it?)", "similarity": 0.507, "label": 0, "kind": "near_dup"}
+{"text": "* (You got the Quiet Shroom.)", "similar_to": "* (You got the Hamburger.)", "similarity": 0.727, "label": 0, "kind": "near_dup"}
+{"text": "Normal Text", "similar_to": "Normal Theme:", "similarity": 0.75, "label": 0, "kind": "near_dup"}
+{"text": "Selected Text", "similar_to": "Select New Color", "similarity": 0.552, "label": 0, "kind": "near_dup"}
+{"text": "Vertical Wave", "similar_to": "Horizontal Offset Wave", "similarity": 0.514, "label": 0, "kind": "near_dup"}
+{"text": "Monster Candy", "similar_to": "Use + Carry", "similarity": 0.5, "label": 0, "kind": "near_dup"}
+{"text": "Vertical Offset Wave", "similar_to": "Horizontal Offset Wave", "similarity": 0.762, "label": 0, "kind": "near_dup"}
+{"text": "Horizontal Wave", "similar_to": "Horizontal Offset Wave", "similarity": 0.811, "label": 0, "kind": "near_dup"}

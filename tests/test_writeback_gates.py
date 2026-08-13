@@ -38,7 +38,8 @@ def _fake_v2(files=0, entries=0):
 def _gates(project: Project, *, v2=None, font=None, rejected=(), truncated=0,
            text_files=1, text_verified=1, allow_partial=False, ready_text=1,
            font_enabled=False, written_total=0,
-           logic_mismatch_count=0, logic_reverted=0):
+           logic_mismatch_count=0, logic_reverted=0,
+           font_candidate_confirm=None, font_coverage=None):
     return project._evaluate_writeback_gates(
         text_files=text_files, v2=v2 if v2 is not None else _fake_v2(files=1, entries=1),
         text_verified=text_verified,
@@ -47,10 +48,48 @@ def _gates(project: Project, *, v2=None, font=None, rejected=(), truncated=0,
         rejected=list(rejected), truncated=truncated,
         allow_partial=allow_partial, ready_text_translations=ready_text,
         written_total=written_total, logic_mismatch_count=logic_mismatch_count,
-        logic_reverted=logic_reverted)
+        logic_reverted=logic_reverted, font_candidate_confirm=font_candidate_confirm,
+        font_coverage=font_coverage)
 
 
 # ── P0-1：四态闸门评估 ──
+
+def test_runtime_gate_follows_font_candidate_confirm(tmp_path):
+    """hickory 实证回归（2026-08-13）：runner 传
+    allow_unverified_font_candidate=True + allow_partial=False 时，四态
+    闸门的 runtime 门必须跟随候选确认（WARN）而不是用 allow_partial
+    重估（BLOCKED）——pipeline 内门与四态闸门终态必须一致。"""
+    from hanhua.core.font import FontConsumer, compute_coverage
+    from hanhua.core.font.glyph_set import build_required_glyph_set
+    from hanhua.core.project import _GlyphEntry
+    required = build_required_glyph_set([_GlyphEntry("f", "k", "设置", "设置")])
+    consumers = [
+        FontConsumer("bundle#f1", "tmp_font", static_replaced=True,
+                     font_scalars=frozenset(ord(c) for c in "设置"),
+                     unity_version="2022.3"),
+        FontConsumer("bundle#dyn", "dynamic_tmp",
+                     runtime_provider_available=True,
+                     ref="dynamic 0 glyph——静态无法证明覆盖"),
+    ]
+    coverage = compute_coverage(consumers, required)
+    assert coverage.overall.name == "PENDING_RUNTIME_ATTESTATION"
+    proj = Project.open_game_dir(_make_tree(), tmp_path / "app")
+    font = _fake_font(payload_deployed=True)  # runtime_verified=False
+
+    # runner 场景：候选确认 True + allow_partial False → runtime=WARN
+    gates = _gates(proj, font=font, font_enabled=True,
+                   allow_partial=False, font_candidate_confirm=True,
+                   font_coverage=coverage)
+    assert gates["runtime"]["status"] == "WARN"
+    # 未确认：即使 allow_partial=False 也是 BLOCKED（默认严格）
+    gates2 = _gates(proj, font=font, font_enabled=True,
+                    allow_partial=False, font_coverage=coverage)
+    assert gates2["runtime"]["status"] == "BLOCKED"
+    # 跟随 allow_partial（None 语义）
+    gates3 = _gates(proj, font=font, font_enabled=True,
+                    allow_partial=True, font_coverage=coverage)
+    assert gates3["runtime"]["status"] == "WARN"
+
 
 def test_gates_all_pass_when_everything_clean(tmp_path):
     proj = Project.open_game_dir(_make_tree(), tmp_path / "app")
@@ -240,7 +279,7 @@ def test_write_all_blocks_default_publish_on_rejected(
         files=1, entries=1, attempted=2,
         rejected=[WriteRejection("fake:key", "test_reject")])
 
-    def capture_v2(store, game_dir, staging):
+    def capture_v2(store, game_dir, staging, typetree_generator=None):
         return fake_outcome
 
     monkeypatch.setattr("hanhua.core.project.write_back_v2", capture_v2)
@@ -259,7 +298,7 @@ def test_write_all_publishes_with_warn_on_truncated_entries(tmp_path, monkeypatc
         files=1, entries=2, attempted=2, truncated=2,
         truncated_items=["「长文本」→「长文本…」"])
 
-    def capture_v2(store, game_dir, staging):
+    def capture_v2(store, game_dir, staging, typetree_generator=None):
         return fake_outcome
 
     monkeypatch.setattr("hanhua.core.project.write_back_v2", capture_v2)
@@ -287,7 +326,7 @@ def test_write_all_persists_reverted_locators_to_store(
         files=1, entries=1, attempted=1,
         reverted_locators={locator})
 
-    def capture_v2(store, game_dir, staging):
+    def capture_v2(store, game_dir, staging, typetree_generator=None):
         return fake_outcome
 
     monkeypatch.setattr("hanhua.core.project.write_back_v2", capture_v2)
@@ -308,7 +347,7 @@ def test_write_all_persists_reverted_locators_to_store(
         rejected=[WriteRejection("fake:key", "test_reject")],
         reverted_locators={f"{entry2['file_id']}:{entry2['key_path']}"})
 
-    def capture_blocked(store, game_dir, staging):
+    def capture_blocked(store, game_dir, staging, typetree_generator=None):
         return blocked_outcome
 
     monkeypatch.setattr("hanhua.core.project.write_back_v2", capture_blocked)
@@ -320,6 +359,113 @@ def test_write_all_persists_reverted_locators_to_store(
     assert still["status"] == "translated"
 
 
+def test_normalize_store_font_punctuation_persists(tmp_path, monkeypatch):
+    """字体标点兼容归一化（hickory 实证回归）：译文里的 U+2013 – → U+2014 —
+    持久化到 store，保留 status 与 meta，幂等且不误改无缺字条目。"""
+    _install_fake_raw_asset_environment(monkeypatch)
+    proj = _make_write_ready_project(tmp_path, monkeypatch)
+    entry = next(row for row in proj.store.get_entries()
+                 if row["status"] == "pending")
+    proj.store.set_manual(entry["file_id"], entry["key_path"],
+                          "I. – clk – 了解。")
+    other = next(row for row in proj.store.get_entries()
+                 if row["key_path"] != entry["key_path"])
+    untouched_text = other["translation"] or other["original"]
+
+    from hanhua.core.project import _normalize_store_font_punctuation
+    updated = _normalize_store_font_punctuation(proj.store)
+
+    assert updated == 1
+    rows = proj.store.get_entries()
+    fixed = next(r for r in rows if r["key_path"] == entry["key_path"])
+    assert fixed["translation"] == "I. — clk — 了解。"
+    assert fixed["status"] == "translated"
+    intact = next(r for r in rows if r["key_path"] == other["key_path"])
+    assert (intact["translation"] or intact["original"]) == untouched_text
+    # 幂等：再次归一化无变化
+    assert _normalize_store_font_punctuation(proj.store) == 0
+
+
+def test_normalize_store_font_punctuation_normalizes_skipped_original(
+        tmp_path, monkeypatch):
+    """未翻译条目（skipped/blocked，译文空）回退原文含缺字标点 → 译文置为
+    归一化原文并保留 status（hickory 实证：需求集因此消除 U+2013，
+    静态消费者不再 MISSING_CODEPOINT）。"""
+    _install_fake_raw_asset_environment(monkeypatch)
+    d = _make_tree()
+    with open(d / "strings.txt", "a", encoding="utf-8") as fh:
+        fh.write("b=Level 1 – 2\n")   # EN DASH：用户 SDF 字符表缺失
+    proj = Project.open_game_dir(d, tmp_path / "app")
+    proj.scan()
+    entry = next(r for r in proj.store.get_entries() if "–" in r["original"])
+    assert entry["status"] != "translated"
+    assert not entry["translation"]
+
+    from hanhua.core.project import _normalize_store_font_punctuation
+    assert _normalize_store_font_punctuation(proj.store) == 1
+    fixed = next(r for r in proj.store.get_entries()
+                 if r["key_path"] == entry["key_path"])
+    assert fixed["translation"] == "Level 1 — 2"
+    assert fixed["status"] == entry["status"]          # status 原样保留
+    assert _normalize_store_font_punctuation(proj.store) == 0  # 幂等
+
+
+def test_render_fallback_punctuation_gated_by_font_flag(tmp_path, monkeypatch):
+    """writer 回退原文归一化受开关控制：字体启用 → 未翻译条目原文里的
+    – 写为 —（与新 bundle 渲染字节一致）；字体未启用 → 原样写回。"""
+    from hanhua.core.writer import _render
+    d = _make_tree()
+    (d / "strings.txt").write_text("a=Level 1 – 2\n", encoding="utf-8")
+    proj = Project.open_game_dir(d, tmp_path / "app")
+    proj.scan()
+    f = next(x for x in proj.store.get_files()
+             if x["rel_path"].endswith("strings.txt"))
+    entries = [e for e in proj.store.get_entries() if e["file_id"] == f["id"]]
+    assert entries and all(not e.get("translation") for e in entries)
+
+    body_off = _render(d / f["rel_path"], f, entries, "zh-CN", False)
+    assert "–" in body_off          # 字体未启用：原文原样
+    body_on = _render(d / f["rel_path"], f, entries, "zh-CN", True)
+    assert "—" in body_on
+    assert "–" not in body_on       # 字体启用：回退原文归一化
+
+
+def test_write_all_normalizes_punctuation_when_font_enabled(
+        tmp_path, monkeypatch):
+    """write_all 在字体启用时执行归一化（单一接缝），禁用时不改译文。"""
+    from hanhua.core.font import pipeline as pipeline_module
+    from hanhua.core.font_support import FontInstallResult
+    _install_fake_raw_asset_environment(monkeypatch)
+    # fake 树结构不完整：桩掉真实插件安装，只验证归一化接缝
+    monkeypatch.setattr(
+        pipeline_module, "install_font_override",
+        lambda *a, **k: FontInstallResult(
+            installed=True, filename="f.otf", payload_deployed=True,
+            provider_supported=True, provider_id="bepinex5_mono_x64"))
+    proj = _make_write_ready_project(tmp_path, monkeypatch)
+    entry = next(row for row in proj.store.get_entries()
+                 if row["status"] == "pending")
+    proj.store.set_manual(entry["file_id"], entry["key_path"],
+                          "– 测试")
+
+    # 字体禁用：不归一化（默认 FontConfig(enabled=False)）
+    proj.write_all()
+    rows = proj.store.get_entries()
+    kept = next(r for r in rows if r["key_path"] == entry["key_path"])
+    assert kept["translation"] == "– 测试"
+
+    # 字体启用：写回入口归一化
+    proj2 = _make_write_ready_project(tmp_path, monkeypatch)
+    entry2 = next(row for row in proj2.store.get_entries()
+                  if row["status"] == "pending")
+    proj2.store.set_manual(entry2["file_id"], entry2["key_path"],
+                           "– 测试")
+    proj2.write_all(font_config=FontConfig(enabled=True))
+    rows2 = proj2.store.get_entries()
+    fixed = next(r for r in rows2 if r["key_path"] == entry2["key_path"])
+    assert fixed["translation"] == "— 测试"
+
+
 def test_write_all_publishes_with_warn_when_allow_partial(
         tmp_path, monkeypatch):
     _install_fake_raw_asset_environment(monkeypatch)
@@ -329,7 +475,7 @@ def test_write_all_publishes_with_warn_when_allow_partial(
         rejected=[WriteRejection("fake:key", "test_reject")],
         truncated=1, truncated_items=["「a」→「a…」"])
 
-    def capture_v2(store, game_dir, staging):
+    def capture_v2(store, game_dir, staging, typetree_generator=None):
         return fake_outcome
 
     monkeypatch.setattr("hanhua.core.project.write_back_v2", capture_v2)
@@ -434,3 +580,66 @@ def test_verify_saved_bundle_passes_when_immutable_intact(monkeypatch):
         Path("unused"),
         expected_raw_by_path_id={},
         expected_immutable_values={("x.assets", 7): immutable})
+
+
+# ── Phase 0（审计 §9）：字体 coverage 不完整必须阻断发布 ─────────
+# 发布门决策表 §8.2 锁定：正式发布仅「所有消费者静态完整覆盖」或
+# 「runtime attestation 完整」允许；已知缺字/未覆盖/IL2CPP 无 provider
+# 一律禁止（测试候选除外）。Phase 4 将 coverage_blocks_publish 接入
+# _evaluate_writeback_gates——语义在此先行锁定。
+
+def _coverage_outcome(*consumers):
+    from hanhua.core.font import compute_coverage
+    from hanhua.core.font.glyph_set import build_required_glyph_set
+    from hanhua.core.models import TextEntry
+    entry = TextEntry("f", "k1", "Continue", translation="继续游戏",
+                      status="translated")
+    return compute_coverage(
+        list(consumers), build_required_glyph_set([entry]))
+
+
+def _static_covered() -> SimpleNamespace:
+    from hanhua.core.font import FontConsumer
+    return FontConsumer("covered", "tmp_font", static_replaced=True,
+                        font_scalars=frozenset(ord(c) for c in "继续游戏"),
+                        unity_version="2021.3")
+
+
+def test_font_coverage_incomplete_blocks_publish(tmp_path):
+    """已知缺字/未覆盖消费者 → 阻断正式发布。"""
+    from hanhua.core.font import (CANDIDATE_ONLY, FontConsumer,
+                                   coverage_blocks_publish)
+    missing = FontConsumer(
+        "missing", "tmp_font", static_replaced=True,
+        font_scalars=frozenset(ord(c) for c in "继续"),   # 缺「游戏」
+        unity_version="2021.3")
+    outcome = _coverage_outcome(missing)
+    assert outcome.overall == CANDIDATE_ONLY
+    assert coverage_blocks_publish(outcome) is True
+
+
+def test_font_coverage_il2cpp_no_provider_blocks(tmp_path):
+    from hanhua.core.font import (BLOCKED, FontConsumer,
+                                   coverage_blocks_publish)
+    outcome = _coverage_outcome(FontConsumer(
+        "il2cpp", "dynamic_tmp", runtime_provider_available=False))
+    assert outcome.overall == BLOCKED
+    assert coverage_blocks_publish(outcome) is True
+
+
+def test_font_coverage_complete_allows_publish(tmp_path):
+    from hanhua.core.font import COVERED, coverage_blocks_publish
+    outcome = _coverage_outcome(_static_covered())
+    assert outcome.overall == COVERED
+    assert coverage_blocks_publish(outcome) is False
+
+
+def test_font_coverage_pending_allows_candidate_not_formal(tmp_path):
+    """runtime 已部署未验证：测试候选允许，禁止称正式完成（§8.2）。"""
+    from hanhua.core.font import (PENDING_RUNTIME_ATTESTATION,
+                                   FontConsumer, coverage_blocks_publish)
+    outcome = _coverage_outcome(FontConsumer(
+        "mono_pending", "dynamic_tmp", runtime_provider_available=True))
+    assert outcome.overall == PENDING_RUNTIME_ATTESTATION
+    assert coverage_blocks_publish(outcome) is False   # 不阻断候选
+    assert outcome.pending_runtime() is True           # 但未正式完成

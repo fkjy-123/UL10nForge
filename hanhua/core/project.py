@@ -5,9 +5,9 @@ import os
 import gc
 import csv
 import io
-import inspect
 import json
 import shutil
+import struct
 import tempfile
 import threading
 import time
@@ -19,13 +19,17 @@ from typing import Callable
 from hanhua.core.extractor import parse_file
 from hanhua.core.formats import read_text
 from hanhua.core.formats.csv_format import pick_target_col
+from hanhua.core.font import build_required_glyph_set
+from hanhua.core.font.pipeline import (FontCompatibilityPipeline,
+                                       FontPipelineInput)
+from hanhua.core.font.providers import (inject_bitmap_font,
+                                        resolve_bitmap_providers)
+from hanhua.core.font.publish_gate import evaluate_font_gate
 from hanhua.core.font_support import (
     FontInstallResult,
     FontProviderCapability,
-    install_font_override,
     resolve_font_provider,
 )
-from hanhua.core.unity.font_replace import install_static_fonts
 from hanhua.core.memory import ProjectStore
 from hanhua.core.models import FontConfig, GameProfile
 from hanhua.core.paths import (_is_reparse_point, ensure_trusted_root,
@@ -61,6 +65,62 @@ class WritebackStage:
     message: str
     current: int = 0
     total: int = 0
+
+
+def _is_managed_dll_with_metadata(path: Path) -> bool:
+    """轻量 PE 预检：确认是带完整 CLR metadata 的真实 .NET 程序集。
+
+    检查链：MZ → PE → Optional(0x20B) → CLR 数据目录 → CLR 头 →
+    metadata 根（BSJB + 非零版本长度 + 大小在文件内）。stub PE（测试
+    fixture 的 1KB 假 DLL）、纯文本占位（"fixture"）都会在某一环失败，
+    避免把垃圾喂给原生 TypeTreeGenerator——失败加载会污染进程状态。
+    """
+    try:
+        data = path.read_bytes()
+    except OSError:
+        return False
+    if len(data) < 0x90 or data[:2] != b"MZ":
+        return False
+    pe_off = struct.unpack_from("<I", data, 0x3C)[0]
+    if pe_off + 0x40 > len(data) or data[pe_off:pe_off + 4] != b"PE\0\0":
+        return False
+    opt_magic = struct.unpack_from("<H", data, pe_off + 0x18)[0]
+    opt_size = struct.unpack_from("<H", data, pe_off + 0x14)[0]
+    if opt_magic not in (0x10B, 0x20B) or opt_size < 0x60:
+        return False
+    if opt_magic == 0x10B:
+        dd_off = pe_off + 0x18 + 0x60   # PE32 数据目录在 opt+96
+    else:
+        dd_off = pe_off + 0x18 + 0x70   # PE32+ 数据目录在 opt+112
+    clr_rva, clr_size = struct.unpack_from("<II", data, dd_off + 14 * 8)
+    if clr_rva == 0 or clr_size < 0x48:
+        return False
+
+    def _rva_to_offset(rva: int) -> int | None:
+        n_sections = struct.unpack_from("<H", data, pe_off + 6)[0]
+        sec = pe_off + 0x18 + opt_size   # 节表紧跟 optional header
+        for i in range(n_sections):
+            vs, va, rs, pr = struct.unpack_from(
+                "<IIII", data, sec + i * 40 + 8)
+            if va <= rva < va + max(vs, rs):
+                return pr + (rva - va)
+        return None
+
+    clr_off = _rva_to_offset(clr_rva)
+    if clr_off is None or clr_off + 0x48 > len(data):
+        return False
+    meta_rva, meta_size = struct.unpack_from("<II", data, clr_off + 8)
+    if meta_rva == 0 or meta_size < 0x10:
+        return False
+    meta_off = _rva_to_offset(meta_rva)
+    if meta_off is None or meta_off + 16 > len(data):
+        return False
+    if data[meta_off:meta_off + 4] != b"BSJB":
+        return False
+    ver_len = struct.unpack_from("<I", data, meta_off + 12)[0]
+    if ver_len <= 0 or meta_off + 16 + ver_len > len(data):
+        return False
+    return True
 
 
 def _emit_writeback_stage(
@@ -249,6 +309,120 @@ def _count_write_ready_translations(
             continue
         count += 1
     return count
+
+
+@dataclass(frozen=True)
+class _GlyphEntry:
+    """store 行 → build_required_glyph_set 所需的不可变轻量视图。
+
+    与写回语义一致：write_ready 条目取译文，其余保留原文（原样写回
+    仍会被渲染，方框字审计 §7.2：需求集 = 本次发布实际渲染文本）。
+    快照在 install_static_fonts 调用前定格——后续写回不得影响字形需求。"""
+
+    file_id: str
+    key_path: str
+    original: str
+    translation: str = ""
+
+
+def _font_required_glyph_set(store: ProjectStore):
+    """不可变翻译快照 → 本次发布实际渲染字形需求集（字体闭环 Phase 1/2）。
+
+    store 行先转不可变视图（后续调用不随 store 变化），再交给
+    build_required_glyph_set：富文本/空白不产生需求、<sprite> 排除、
+    非 BMP 按单 scalar 计。返回 RequiredGlyphSet（scalars + locator 回溯）
+    ——Phase 2 install_static_fonts 逐消费者覆盖验证的比对基准。
+    """
+    from hanhua.core.font.punct_normalize import normalize_font_punctuation
+    snapshot: list[_GlyphEntry] = []
+    for entry in store.get_entries():
+        original = entry.get("original", "") or ""
+        translation = entry.get("translation", "") or ""
+        if translation and is_write_ready(
+                entry.get("status", ""), translation,
+                entry.get("meta", "{}") or "{}"):
+            text = translation
+        else:
+            # 需求集必须与实际写出的字节一致：未翻译条目写回时回退原文，
+            # 字体替换后该文本同样由新 bundle 渲染——与 writer._render 的
+            # 回退归一化配套，bundle 缺字标点（– → —）从需求集中消除
+            # （hickory 实证：skipped/blocked 条目回退原文含 U+2013 →
+            # MISSING_CODEPOINT → 发布门永久 BLOCKED）。
+            text = normalize_font_punctuation(original)
+        snapshot.append(_GlyphEntry(
+            entry["file_id"], entry["key_path"], original, text))
+    return build_required_glyph_set(snapshot)
+
+
+def _scalar_label(scalar: int) -> str:
+    """码点展示标签：可打印字符带字形，其余 U+XXXX（计划 §11 缺字格式）。"""
+    if 0x20 <= scalar < 0x7F or 0x4E00 <= scalar <= 0x9FFF:
+        return f"{chr(scalar)} (U+{scalar:04X})"
+    return f"U+{scalar:04X}"
+
+
+def _font_coverage_summary(coverage, plan=None) -> dict | None:
+    """逐栈/逐码点覆盖摘要（计划 §11：每种渲染栈消费者数 + 缺字 Top-N
+    回溯 + 终态分布；record_writer 与 runner 输出统一口径）。"""
+    if coverage is None:
+        return None
+    stack_counts: dict[str, int] = {}
+    state_counts: dict[str, int] = {}
+    missing_rows: list[dict] = []
+    for cc in coverage.consumers:
+        kind = cc.consumer.kind
+        stack_counts[kind] = stack_counts.get(kind, 0) + 1
+        state_counts[cc.state.name] = state_counts.get(cc.state.name, 0) + 1
+        for scalar in sorted(cc.missing_scalars):
+            sources = plan.sources_of(scalar) if plan is not None else ()
+            missing_rows.append({
+                "scalar": _scalar_label(scalar),
+                "consumer": cc.consumer.consumer_id,
+                "kind": kind,
+                "locators": sources[:3],
+            })
+    return {
+        "overall": coverage.overall.name,
+        "stack_counts": stack_counts,
+        "state_counts": state_counts,
+        "missing": missing_rows,
+    }
+
+
+def _normalize_store_font_punctuation(store: ProjectStore) -> int:
+    """字体标点兼容归一化（写回入口单接缝，字体启用时调用）。
+
+    译文里 bundle 缺的标点（– EN DASH 等）→ 中文排版等价标点并持久化
+    到 store（保留 meta/status，幂等）——译文、静态写回、重开验证、
+    运行时插件表、字形需求集全部读 store，零漂移；缺字 → □ 在写回前
+    即被消除（hickory 实证：用户 SDF 字符表缺 U+2013，发布门
+    MISSING_CODEPOINT 永久 BLOCKED）。返回实际更新条数。
+    """
+    from hanhua.core.font.punct_normalize import (
+        needs_normalization, normalize_font_punctuation)
+    rows: list[tuple] = []
+    for entry in store.get_entries():
+        translation = entry.get("translation", "") or ""
+        if needs_normalization(translation):
+            rows.append((
+                normalize_font_punctuation(translation),
+                entry.get("status", "translated"),
+                entry["file_id"], entry["key_path"]))
+            continue
+        # 未翻译条目（skipped/blocked/…）写回时回退原文——原文含 bundle
+        # 缺字标点时同样归一化（保留 status：条目仍不可自动写回，译文
+        # 仅作为「回退字节的归一化事实」持久化，与 writer._render 的
+        # 回退归一化 + _font_required_glyph_set 需求集三者一致）。
+        original = entry.get("original", "") or ""
+        status = entry.get("status", "")
+        if (status != "translated" and not translation
+                and needs_normalization(original)):
+            rows.append((
+                normalize_font_punctuation(original),
+                status, entry["file_id"], entry["key_path"]))
+    if rows:
+        store.batch_update_translations(rows)
+    return len(rows)
 
 
 def _runtime_exact_translations(store: ProjectStore) -> dict[str, str]:
@@ -617,6 +791,10 @@ class Project:
             fingerprint, {tool_id: status.state
                           for tool_id, status in statuses.items()},
             font_capability=font_capability,
+            # Phase 5：位图 provider 计数（0 = 无可注入资产 → 旧语义）
+            bitmap_provider_count=len(resolve_bitmap_providers(
+                self.game_dir, fingerprint,
+                exclude_roots=(self.out_dir,))),
         )
         report = AnalysisReport(
             fingerprint=fingerprint,
@@ -766,7 +944,8 @@ class Project:
         self.store.init_schema()
         rows = self.store.get_entries()
         status_counts = tuple((status, sum(row["status"] == status for row in rows))
-                              for status in ("pending", "translated", "failed", "skipped"))
+                              for status in ("pending", "translated", "failed",
+                                             "skipped", "blocked"))
         confidence = {"high": 0, "medium": 0, "low": 0}
         for row in rows:
             try:
@@ -913,6 +1092,39 @@ class Project:
         return kept
 
     # ── v2：Unity 二进制资源扫描（.assets / DLL / IL2CPP metadata） ──
+    def _build_typetree_generator(self, fingerprint):
+        """MonoBehaviour typetree 生成器：资产未带 typetree（DisableWrite
+        TypeTree / Player 构建 strip）时，Mono 游戏可从本地 Managed DLL
+        生成脚本 typetree——hickory 实证 1890/1898 读取失败（文本全漏 +
+        TMP 字体无法静态替换）→ 生成后 1884/1898 成功。IL2CPP（无 DLL）
+        或生成器缺失时返回 None 静默回退 raw scan 兜底，不影响扫描。
+        扫描与写回共用同一生成器，保证两侧对 MonoBehaviour 视图一致。
+
+        预检：只加载带完整 CLR metadata 的真实 .NET 程序集。原生生成器
+        在假/损坏 DLL（stub PE、纯文本占位）上会留下不稳定状态，同进程
+        多次失败后进程级崩溃（test_project 实测 exit 127）；真游戏
+        Managed 目录也常混有垃圾占位文件，一律过滤。
+        """
+        if fingerprint.data_dir is None or not fingerprint.unity_version:
+            return None
+        managed_dir = fingerprint.data_dir / "Managed"
+        if not managed_dir.is_dir():
+            return None
+        dlls = [p for p in sorted(managed_dir.glob("*.dll"))
+                if _is_managed_dll_with_metadata(p)]
+        if not dlls:
+            return None
+        try:
+            from UnityPy.helpers.TypeTreeGenerator import (
+                TypeTreeGenerator)
+            tt_generator = TypeTreeGenerator(
+                fingerprint.unity_version)
+            for dll in dlls:
+                tt_generator.load_dll(dll.read_bytes())
+            return tt_generator
+        except Exception:  # noqa: BLE001 生成器不可用不阻断扫描
+            return None
+
     def scan_v2(self, progress_cb: Callable | None = None) -> int:
         """扫描二进制资源并入库，返回保留的资源文件数。"""
         standalone_before = None
@@ -926,12 +1138,19 @@ class Project:
         self.store.init_schema()
         found_ids: set[str] = set()
         kept = 0
+        tt_generator = self._build_typetree_generator(fingerprint)
         sources: list[tuple[Callable, Path, str]] = []
         for f in unity_extractor.find_asset_files(
                 selected_root, data_dir=fingerprint.data_dir,
                 exclude_roots=excluded_roots):
             rel = str(f.relative_to(self.game_dir)).replace("\\", "/")
-            sources.append((unity_extractor.extract_asset_file, f, rel))
+            if tt_generator is not None:
+                sources.append((
+                    lambda f_, file_id=None, gen=tt_generator:
+                    unity_extractor.extract_asset_file(
+                        f_, file_id=file_id, typetree_generator=gen), f, rel))
+            else:
+                sources.append((unity_extractor.extract_asset_file, f, rel))
         for f in fingerprint.application_assemblies:
             rel = str(f.relative_to(self.game_dir)).replace("\\", "/")
             sources.append((mono_extractor.extract_dll_user_strings, f, rel))
@@ -1173,7 +1392,9 @@ class Project:
             ready_text_translations: int,
             written_total: int = 0,
             logic_mismatch_count: int = 0,
-            logic_reverted: int = 0) -> dict:
+            logic_reverted: int = 0,
+            font_coverage=None,
+            font_candidate_confirm: bool | None = None) -> dict:
         """写回安全闸门 P0-1：把“写回成功”拆成文件/容器/对象/运行时
         四态，禁止单一 succeeded 掩盖后续失败。
 
@@ -1255,17 +1476,22 @@ class Project:
         else:
             object_gate = gate("PASS", "全部条目完整写入")
 
-        # 运行时级：字体/运行时回退层
-        if not active_font_config.enabled:
-            runtime_gate = gate("N/A", "用户未启用中文字体")
-        elif font.runtime_verified:
-            runtime_gate = gate("PASS", font_level)
-        elif font.installed or font.payload_deployed:
-            runtime_gate = gate("WARN", font_level)
-        elif not font.provider_supported:
-            runtime_gate = gate("WARN", font.unsupported_reason or font_level)
-        else:
-            runtime_gate = gate("BLOCKED", "字体运行时回退层不可验证")
+        # 运行时级：字体/运行时回退层（Phase 4：覆盖终态决策表 §8.2——
+        # 静态 coverage 优先，CANDIDATE_ONLY/BLOCKED 阻断正式发布；
+        # allow_partial 只把 PENDING/CANDIDATE_ONLY 降级为候选 WARN，
+        # 绝不绕过 BLOCKED（§8.3））
+        font_gate = evaluate_font_gate(
+            coverage=font_coverage,
+            runtime_verified=font.runtime_verified,
+            payload_deployed=font.payload_deployed,
+            provider_supported=font.provider_supported,
+            font_enabled=active_font_config.enabled,
+            # 与 pipeline.run 同一解析值（None → 跟随 allow_partial），
+            # 保证 pipeline 内门与四态闸门终态一致
+            allow_unverified_font_candidate=(
+                allow_partial if font_candidate_confirm is None
+                else font_candidate_confirm))
+        runtime_gate = gate(font_gate["status"], font_gate["detail"])
 
         gates = {
             "file": file_gate,
@@ -1347,15 +1573,32 @@ class Project:
         font_config: FontConfig | None = None,
         stage_cb: Callable[[WritebackStage], None] | None = None,
         allow_partial: bool = False,
+        allow_unverified_font_candidate: bool | None = None,
     ) -> dict:
         """复制游戏目录到输出目录，依次写回文本与二进制资源。
 
         allow_partial：存在 rejected/truncated 条目时是否允许发布
         （默认 False → BLOCKED 阻断；True → WARN 放行并完整记录）。
+
+        allow_unverified_font_candidate：None → 跟随 allow_partial（GUI
+        勾选语义）；True → 字体候选确认（PENDING_RUNTIME_ATTESTATION /
+        CANDIDATE_ONLY 降级为候选 WARN），对象级闸门（rejected/truncated/
+        逻辑验证）仍受 allow_partial 严格约束——批量闭环（免实机 attest，
+        2026-08-12 指令）用它确认候选字体发布，不影响条目完整性门。
         """
         _emit_writeback_stage(stage_cb, "preflight", "正在执行写回预检")
         _reject_store_inside_out_dir(self.app_dir, self.out_dir)
+        # 字体候选确认与 allow_partial 的合并语义（docstring：None → 跟随
+        # allow_partial）——pipeline.run 与 _evaluate_writeback_gates 必须
+        # 用同一解析值，否则 runner 传 allow_unverified_font_candidate=True
+        # 而 allow_partial 默认 False 时，pipeline 内门 WARN 而四态闸门用
+        # allow_partial 重估 → runtime=BLOCKED（hickory 实证 2026-08-13）。
+        font_candidate_confirm = (
+            allow_partial if allow_unverified_font_candidate is None
+            else allow_unverified_font_candidate)
         active_font_config = replace(font_config or self.font_config)
+        if active_font_config.enabled:
+            _normalize_store_font_punctuation(self.store)
         write_ready = _count_write_ready_translations(self.store)
         runtime_translations = _runtime_exact_translations(self.store)
         for file_record in self.store.get_files():
@@ -1378,6 +1621,7 @@ class Project:
             prefix=f".{self.out_dir.name}.staging-", dir=parent))
         backup: Path | None = None
         published = False
+        static = None  # install_static_fonts 结果（未启用字体时为 None）
         try:
             ensure_trusted_root(staging)
             _emit_writeback_stage(stage_cb, "copying", "正在复制原游戏")
@@ -1395,10 +1639,18 @@ class Project:
                     "与扫描清单不一致，已拒绝写回")
             self._verify_copied_il2cpp_inputs(fingerprint, staging)
             _emit_writeback_stage(stage_cb, "patching", "正在写入静态译文")
-            n_text = write_back_text(self.store, self.game_dir, staging)
+            n_text = write_back_text(
+                self.store, self.game_dir, staging,
+                normalize_fallback_punctuation=active_font_config.enabled)
             if progress_cb:
                 progress_cb(copy_total + 1, progress_total)
-            v2 = write_back_v2(self.store, self.game_dir, staging)
+            # 扫描/写回同源生成器（Mono typeless bundle 写回必须能
+            # 再生脚本 typetree；hickory 实证：写回侧无生成器 → 261 条
+            # typetree_unavailable 全拒）。字体管线复用同一实例
+            # （load_dll 122 个程序集代价高，构建两次翻倍启动耗时）。
+            tt_generator = self._build_typetree_generator(fingerprint)
+            v2 = write_back_v2(self.store, self.game_dir, staging,
+                               typetree_generator=tt_generator)
             writer_outcome = v2.outcome
             # W3 运行时排除表：静态写回被回退（保留原文防断链）的逻辑键
             # 原文——插件翻译表必须剔除，否则游戏运行时被插件换成中文 →
@@ -1412,89 +1664,69 @@ class Project:
             if progress_cb:
                 progress_cb(copy_total + 2, progress_total)
             _emit_writeback_stage(stage_cb, "runtime_payload", "正在部署中文字体")
-            # 所有运行时（Mono + IL2CPP）都先执行静态字体替换：legacy Font
-            # 内嵌 TTF 换中文字体（覆盖 uGUI Text/3D TextMesh）、TMP_FontAsset
-            # 按 Unity 版本 bundle 替换。静态替换是覆盖全部游戏的主路径。
-            if active_font_config.enabled:
-                static = install_static_fonts(
-                    staging, active_font_config,
-                    unity_version=fingerprint.unity_version)
-                static_warnings = (
-                    [f"字体替换跳过: {skip}" for skip in static.skipped]
-                    + list(static.warnings))
-                if static.replaced:
-                    # C5：静态字体替换整容器重建了 bundle（os.replace），
-                    # 其 content CRC 与 write_back_v2 更新 catalog.bin 时
-                    # 不一致 → 二次同步，否则 Addressables 运行时 CRC
-                    # Mismatch 拒载。失败语义与 write_back_v2 末尾一致：
-                    # catalog 是运行时必需，更新失败必须阻断发布。
-                    _update_addressables_catalogs(
-                        self.game_dir, staging,
-                        [{"rel_path": path}
-                         for path in static.replaced_paths])
-                    font = FontInstallResult(
-                        installed=True,
-                        filename=active_font_config.filename,
-                        payload_deployed=True,
-                        runtime_verified=True,
-                        architecture=font_capability.architecture,
-                        provider_supported=False,
-                        unsupported_reason=font_capability.reason,
-                        provider_id="static_font_replace",
-                        payload_available=True,
-                    )
-                    if font_capability.provider_supported:
-                        # Mono：静态替换成功后再部署运行时插件兜底
-                        # （覆盖动态加载字体），插件失败不阻断。
-                        try:
-                            font_kwargs = {
-                                "translations": runtime_translations,
-                                "exclude": reverted_sources}
-                            install_font_override(
-                                self.game_dir, staging, active_font_config,
-                                **font_kwargs)
-                        except Exception as exc:  # noqa: BLE001
-                            static_warnings.append(
-                                f"运行时字体插件部署失败（静态替换已生效）: {exc}")
-                else:
-                    font = None
-            else:
-                static_warnings = []
-                font = None
-            if font is None:
-                # 静态替换未找到可换对象（或无字体配置）：退回运行时路径。
-                # Mono 用 BepInEx 插件；未启用字体时调用保持旧行为
-                # （install_font_override 内部对 disabled 安全 no-op）；
-                # IL2CPP 无 provider 时记 unsupported。
-                if not active_font_config.enabled or font_capability.runtime == "mono":
-                    font_kwargs = {
-                        "translations": runtime_translations,
-                        "exclude": reverted_sources}
-                    try:
-                        install_params = inspect.signature(
-                            install_font_override).parameters
-                    except (TypeError, ValueError):
-                        install_params = {}
-                    if (fingerprint.player_root is not None and (
-                            "player_root" in install_params or any(
-                                parameter.kind is inspect.Parameter.VAR_KEYWORD
-                                for parameter in install_params.values()))):
-                        font_kwargs["player_root"] = fingerprint.player_root
-                    font = install_font_override(
-                        self.game_dir, staging, active_font_config,
-                        **font_kwargs)
-                else:
-                    font = FontInstallResult(
-                        installed=False,
-                        filename=active_font_config.filename,
-                        payload_deployed=False,
-                        runtime_verified=False,
-                        architecture=font_capability.architecture,
-                        provider_supported=False,
-                        unsupported_reason=font_capability.reason,
-                        provider_id=font_capability.provider_id,
-                        payload_available=font_capability.payload_available,
-                    )
+            # Phase 4：GUI/headless/批量共用同一字体闭环——project 只编排
+            # FontCompatibilityPipeline（plan → apply_static → verify_static
+            # → deploy_runtime → evaluate_publish），不再手工推导字体终态。
+            required_set = _font_required_glyph_set(self.store)
+            # Phase 5：位图字体 provider（NGUI/BMFont 栈）——发现原游戏
+            # .fnt + 装配 BMFont 工具链 executor。排除历史汉化输出（防止
+            # 把上次注入的 .fnt 当作原游戏资产反复注入）；工具链缺失 →
+            # pipeline 记 pending warning，消费者保持未覆盖（发布门阻断）。
+            bitmap_providers = resolve_bitmap_providers(
+                self.game_dir, fingerprint,
+                exclude_roots=(self.out_dir,))
+            bmfont_executor = None
+            if bitmap_providers:
+                try:
+                    app_root = Path(__file__).resolve().parents[2]
+                    registry = ToolRegistry.load(app_root)
+                    spec = registry.specs["bmfont"]
+                    runner = IsolatedToolRunner(self.app_dir / "tooling")
+                    font_file = (
+                        app_root / "fonts" / "SimplifiedChinese"
+                        / "SourceHanSansSC-Regular.otf")
+                    if font_file.is_file():
+                        def _bmfont_executor(provider, staging_fnt, plan):
+                            return inject_bitmap_font(
+                                provider, staging_fnt, plan,
+                                runner=runner, spec=spec, font_file=font_file)
+                        bmfont_executor = _bmfont_executor
+                except KeyError:
+                    bmfont_executor = None  # 清单无 bmfont → pending 警告
+            pipeline = FontCompatibilityPipeline(FontPipelineInput(
+                game_dir=self.game_dir, staging=staging,
+                font_config=active_font_config,
+                unity_version=fingerprint.unity_version,
+                runtime=fingerprint.runtime,
+                player_root=fingerprint.player_root,
+                capability=font_capability,
+                translations=runtime_translations,
+                exclude=frozenset(reverted_sources),
+                required_set=required_set,
+                bitmap_providers=bitmap_providers,
+                bmfont_executor=bmfont_executor,
+                typetree_generator=tt_generator,
+            ))
+            outcome = pipeline.run(
+                reverted_sources=frozenset(reverted_sources),
+                allow_unverified_font_candidate=font_candidate_confirm)
+            static = outcome.static
+            font = outcome.font
+            static_warnings = (
+                [f"字体替换跳过: {skip}" for skip in (
+                    static.skipped if static is not None else ())]
+                + list(static.warnings if static is not None else ())
+                + list(outcome.warnings))
+            if static is not None and static.replaced:
+                # C5：静态字体替换整容器重建了 bundle（os.replace），
+                # 其 content CRC 与 write_back_v2 更新 catalog.bin 时
+                # 不一致 → 二次同步，否则 Addressables 运行时 CRC
+                # Mismatch 拒载。失败语义与 write_back_v2 末尾一致：
+                # catalog 是运行时必需，更新失败必须阻断发布。
+                _update_addressables_catalogs(
+                    self.game_dir, staging,
+                    [{"rel_path": path}
+                     for path in static.replaced_paths])
             if active_font_config.enabled:
                 if font.installed:
                     font_reason = (
@@ -1606,6 +1838,21 @@ class Project:
                 "font_provider_id": font.provider_id,
                 "font_payload_deployed": bool(font.payload_deployed),
                 "font_runtime_verified": font.runtime_verified,
+                # Phase 4：发布门 + 逐栈/逐码点覆盖摘要（record_writer 与
+                # runner 输出统一口径，计划 §11）
+                "font_gate": outcome.gate,
+                "font_coverage": _font_coverage_summary(
+                    outcome.coverage, required_set),
+                # Phase 5：位图字体注入摘要（providers/injected/pending）
+                "font_bitmap": (
+                    {
+                        "providers": [p.provider_id
+                                      for p in outcome.bitmap.providers],
+                        "injected": outcome.bitmap.injected,
+                        "audited": outcome.bitmap.audited,
+                        "pending": outcome.bitmap.pending,
+                    }
+                    if outcome.bitmap is not None else None),
                 "allow_partial": allow_partial,
                 "logic_audit": logic_audit,
                 "raw_expansions": raw_expansions,
@@ -1622,13 +1869,21 @@ class Project:
                 active_font_config=active_font_config,
                 rejected=rejected_entries, truncated=len(truncated_items),
                 allow_partial=allow_partial,
+                # 字体候选确认必须与 pipeline.run 同值（合并后），否则
+                # runner 场景（候选确认 True + allow_partial False）四态
+                # 闸门用 allow_partial 重估 → runtime=BLOCKED（hickory
+                # 实证 2026-08-13）。_evaluate_writeback_gates 内部对
+                # 字体门使用该值做 allow_unverified_font_candidate。
+                font_candidate_confirm=font_candidate_confirm,
                 ready_text_translations=_count_write_ready_translations(
                     self.store, text_only=True),
                 # 写回 C6b/c：截断/逻辑审计计数闸门联动（见闸门内注释）
                 written_total=text_verified + int(getattr(v2, "entries", 0)
                                                   or 0),
                 logic_mismatch_count=len(logic_mismatches),
-                logic_reverted=logic_reverted)
+                logic_reverted=logic_reverted,
+                font_coverage=(
+                    static.coverage if static is not None else None))
             overall = gates["overall"]["status"]
             verification["gates"] = gates
             verification["overall"] = overall

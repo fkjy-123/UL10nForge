@@ -2,14 +2,16 @@
 from __future__ import annotations
 
 from dataclasses import replace
+from pathlib import Path
 
 from PySide6.QtCore import Qt, QThreadPool
-from PySide6.QtGui import QIcon
-from PySide6.QtWidgets import (QCheckBox, QComboBox, QFormLayout, QHBoxLayout,
-                               QHeaderView, QLabel, QLineEdit, QListWidget,
-                               QListWidgetItem, QPushButton, QRadioButton,
-                               QTableWidget, QTableWidgetItem,
-                               QTabWidget, QVBoxLayout, QWidget)
+from PySide6.QtGui import QBrush, QColor, QIcon
+from PySide6.QtWidgets import (QCheckBox, QComboBox, QFormLayout, QFrame,
+                               QGroupBox, QHBoxLayout, QHeaderView, QLabel,
+                               QLineEdit, QListWidget, QListWidgetItem,
+                               QPushButton, QRadioButton, QTableWidget,
+                               QTableWidgetItem, QTabWidget, QVBoxLayout,
+                               QWidget)
 
 from hanhua.ui.icons import LineIcon
 from hanhua.ui.design_system import TOKENS
@@ -42,7 +44,7 @@ class SettingsPage(QWidget):
 
         lay.addWidget(PageHeader(
             "设置",
-            "分类设置中心 · 翻译后端 / 模型 / AI 审核 / 术语 / 关于",
+            "分类设置中心 · 翻译服务 / 模型与性能 / AI 审核 / 术语库 / 关于",
         ))
 
         # 构建顺序：高级 tab 先建（API tab 的 _load_api_ui/_sync_backend_mode
@@ -53,9 +55,9 @@ class SettingsPage(QWidget):
         review_tab = self._build_review_tab()
         about_tab = self._build_about_tab()
         self.tabs = QTabWidget()
-        self.tabs.addTab(api_tab, "翻译后端")
-        self.tabs.addTab(advanced_tab, "高级设置")
-        self.tabs.addTab(glossary_tab, "术语表")
+        self.tabs.addTab(api_tab, "翻译服务")
+        self.tabs.addTab(advanced_tab, "模型与性能")
+        self.tabs.addTab(glossary_tab, "术语库")
         self.tabs.addTab(review_tab, "AI 审核")
         self.tabs.addTab(about_tab, "关于")
         for index, icon_name in enumerate(
@@ -63,17 +65,17 @@ class SettingsPage(QWidget):
             self.tabs.setTabIcon(index, QIcon(LineIcon.pixmap(icon_name, 16)))
         self.tabs.tabBar().setVisible(False)  # §66：左侧分类导航切换
 
-        # ── 左侧分类导航（§66：分类设置中心，不把所有设置堆一页） ──
+        # ── 左侧分类导航（§6.4：分类设置中心，不把所有设置堆一页） ──
         body = QHBoxLayout()
         body.setSpacing(16)
         self.settings_nav = QListWidget()
         self.settings_nav.setObjectName("settingsNav")
         self.settings_nav.setFixedWidth(180)
         for title, tab_index, icon_name in (
-                ("翻译后端", 0, "rocket"),
-                ("模型（高级）", 1, "tool"),
+                ("翻译服务", 0, "rocket"),
+                ("模型与性能", 1, "tool"),
                 ("AI 审核", 3, "shield"),
-                ("术语表", 2, "database"),
+                ("术语库", 2, "database"),
                 ("关于", 4, "brand")):
             item = QListWidgetItem(
                 QIcon(LineIcon.pixmap(icon_name, 16)), title)
@@ -82,8 +84,68 @@ class SettingsPage(QWidget):
         self.settings_nav.currentRowChanged.connect(self._on_settings_nav)
         self.settings_nav.setCurrentRow(0)
         body.addWidget(self.settings_nav)
-        body.addWidget(self.tabs, 1)
+        # §6.4 中央表单 640–760px 可读宽度：居中列限制 tabs 宽度
+        center = QWidget()
+        center_lay = QHBoxLayout(center)
+        center_lay.setContentsMargins(0, 0, 0, 0)
+        self.tabs.setMaximumWidth(760)
+        center_lay.addStretch(1)
+        center_lay.addWidget(self.tabs)
+        center_lay.addStretch(1)
+        body.addWidget(center, 1)
+        # §6.4 右侧实时状态卡：服务 / 模型 / 显存 / 测试结果
+        body.addWidget(self._build_status_card())
         lay.addLayout(body, 1)
+        state.settingsChanged.connect(self._refresh_status_card)
+        self._refresh_status_card()
+
+    # ── 右侧实时状态卡（§6.4） ────────────────────────────
+    def _build_status_card(self) -> QWidget:
+        card = QFrame()
+        card.setObjectName("statusCard")
+        lay = QVBoxLayout(card)
+        lay.setContentsMargins(16, 14, 16, 14)
+        lay.setSpacing(8)
+        title = QLabel("实时状态")
+        title.setProperty("class", "pageTitle")
+        lay.addWidget(title)
+        self.status_service = QLabel("未配置")
+        self.status_model = QLabel("—")
+        self.status_vram = QLabel("—")
+        self.status_test = QLabel("尚未测试连接")
+        for name, label in (
+                ("服务", self.status_service), ("模型", self.status_model),
+                ("显存", self.status_vram), ("测试", self.status_test)):
+            row = QHBoxLayout()
+            row.setSpacing(8)
+            tag = QLabel(name)
+            tag.setProperty("class", "metricLabel")
+            row.addWidget(tag)
+            row.addStretch(1)
+            row.addWidget(label)
+            lay.addLayout(row)
+        lay.addStretch(1)
+        card.setFixedWidth(220)
+        return card
+
+    def _refresh_status_card(self):
+        api = self.state.api
+        if api.mode == "local":
+            self.status_service.setText("本地 llama.cpp")
+            self.status_model.setText(
+                Path(api.local_model_path).stem
+                if api.local_model_path else "未配置模型")
+        elif api.base_url and api.api_key and api.model:
+            self.status_service.setText("在线 API")
+            self.status_model.setText(api.model)
+        else:
+            self.status_service.setText("未配置")
+            self.status_model.setText("—")
+        try:
+            total, free = gpu_memory_info()
+            self.status_vram.setText(f"{free:.1f} / {total:.1f} GB 可用")
+        except Exception:  # noqa: BLE001 无 GPU 信息时显示占位
+            self.status_vram.setText("—")
 
     # ── 左侧分类导航（§66） ──
     def _on_settings_nav(self, row: int):
@@ -189,7 +251,7 @@ class SettingsPage(QWidget):
         icon = LineIcon("brand", 40, TOKENS.primary)
         brand_text = QVBoxLayout()
         brand_text.setSpacing(0)
-        name = QLabel("汉化助手")
+        name = QLabel("UL10nForge")
         name.setProperty("class", "pageTitle")
         ver = QLabel(f"v{VERSION} · Unity 游戏智能汉化工具")
         ver.setProperty("class", "subtitle")
@@ -244,11 +306,15 @@ class SettingsPage(QWidget):
         root.setContentsMargins(28, 24, 28, 18)
         root.setSpacing(24)
 
-        # 左 4：表单
+        # 左 4：表单（表单 + 独立「中文字体档位」小设置卡片，见下方）
         left = QWidget()
-        form = QFormLayout(left)
+        left_lay = QVBoxLayout(left)
+        left_lay.setContentsMargins(0, 0, 0, 0)
+        left_lay.setSpacing(18)
+        form = QFormLayout()
         form.setContentsMargins(0, 0, 0, 0)
         form.setSpacing(14)
+        left_lay.addLayout(form)
         self.backend_mode = QComboBox()
         self.backend_mode.addItem("在线 API", "api")
         self.backend_mode.addItem("本地 Hy-MT2（llama.cpp）", "local")
@@ -278,6 +344,30 @@ class SettingsPage(QWidget):
         row.addWidget(self.save_btn)
         row.addStretch(1)
         form.addRow("", row)
+        # ── 中文字体档位（独立小设置卡片，2026-08-14：从翻译服务表单
+        # 拆出——三档挤在 API 表单里「粗」显示不全）──
+        font_group = QGroupBox("中文字体档位")
+        f_lay = QVBoxLayout(font_group)
+        f_lay.setContentsMargins(16, 14, 16, 14)
+        f_lay.setSpacing(10)
+        self.font_thin = QRadioButton("细")
+        self.font_medium = QRadioButton("中（推荐）")
+        self.font_heavy = QRadioButton("粗")
+        for r in (self.font_thin, self.font_medium, self.font_heavy):
+            r.setMinimumHeight(38)
+            r.setMinimumWidth(200)
+            f_lay.addWidget(r)
+        hint = QLabel("写回时 TMP 字体按所选档位替换"
+                      "（思源黑体 SDF：细 / 中 / 粗）")
+        hint.setProperty("class", "subtitle")
+        hint.setWordWrap(True)
+        f_lay.addWidget(hint)
+        self.font_save_btn = QPushButton("保存字体档位")
+        self.font_save_btn.setProperty("primary", True)
+        self.font_save_btn.setMinimumHeight(40)
+        f_lay.addWidget(self.font_save_btn)
+        left_lay.addWidget(font_group)
+        left_lay.addStretch(1)
         root.addWidget(left, 4)
 
         # 右 6：连接状态与本地服务
@@ -313,11 +403,32 @@ class SettingsPage(QWidget):
         self.stop_local_btn.clicked.connect(self._stop_local)
         self.test_btn.clicked.connect(self.test_connection)
         self.save_btn.clicked.connect(self._save_api)
+        self.font_save_btn.clicked.connect(self._save_font_weight)
         self._sync_backend_mode()
         return tab
 
+    def _load_font_weight_ui(self):
+        weight = getattr(self.state.settings.font, "weight", "medium")
+        (self.font_thin if weight == "thin"
+         else self.font_heavy if weight == "heavy"
+         else self.font_medium).setChecked(True)
+
+    def _save_font_weight(self):
+        cfg = replace(self.state.settings.font)
+        if self.font_thin.isChecked():
+            cfg.weight = "thin"
+        elif self.font_heavy.isChecked():
+            cfg.weight = "heavy"
+        else:
+            cfg.weight = "medium"
+        self.state.settings.font = cfg
+        self.state.settings.save()
+        self.state.settingsChanged.emit()
+        Toast.show(self, "字体设置已保存，写回时按所选档位替换字体", "success")
+
     def _load_api_ui(self):
         api = self.state.api
+        self._load_font_weight_ui()
         mode_idx = self.backend_mode.findData(api.mode)
         self.backend_mode.setCurrentIndex(max(0, mode_idx))
         idx = self.api_provider.findData(api.provider)
@@ -570,6 +681,7 @@ class SettingsPage(QWidget):
             reply_text = reply["reply"]
         else:
             reply_text = reply
+        self.status_test.setText(f"成功 · {reply_text[:24]}…")
         Toast.show(self, f"连接成功 · 模型返回：{reply_text}", "success")
 
     def _on_test_err(self, err: str):
@@ -603,13 +715,16 @@ class SettingsPage(QWidget):
         head.addWidget(self.del_btn)
         lay.addLayout(head)
 
-        self.glossary_table = QTableWidget(0, 4)
-        self.glossary_table.setHorizontalHeaderLabels(["术语", "译文", "类别", "备注"])
+        self.glossary_table = QTableWidget(0, 5)
+        self.glossary_table.setHorizontalHeaderLabels(
+            ["术语", "译文", "类别", "状态", "备注"])
         self.glossary_table.horizontalHeader().setSectionResizeMode(0, QHeaderView.ResizeToContents)
         self.glossary_table.horizontalHeader().setSectionResizeMode(1, QHeaderView.Stretch)
         self.glossary_table.horizontalHeader().setSectionResizeMode(2, QHeaderView.Fixed)
         self.glossary_table.horizontalHeader().resizeSection(2, 90)
-        self.glossary_table.horizontalHeader().setSectionResizeMode(3, QHeaderView.ResizeToContents)
+        self.glossary_table.horizontalHeader().setSectionResizeMode(3, QHeaderView.Fixed)
+        self.glossary_table.horizontalHeader().resizeSection(3, 72)
+        self.glossary_table.horizontalHeader().setSectionResizeMode(4, QHeaderView.ResizeToContents)
         self.glossary_table.verticalHeader().setVisible(False)
         self.glossary_table.setSelectionBehavior(QTableWidget.SelectRows)
         lay.addWidget(self.glossary_table, 1)
@@ -647,11 +762,21 @@ class SettingsPage(QWidget):
         translation = QTableWidgetItem(data["translation"])
         cat = QTableWidgetItem(data["category"])
         cat.setData(Qt.UserRole, data["term"])   # 记录原术语用于更新
+        # 状态列：active=强制生效；candidate=候选（仅参考不强制，跨游戏
+        # 复现才升级）。候选行置灰提示（术语表内容排查可见性，2026-08-13）
+        status = QTableWidgetItem(
+            "生效" if data.get("status", "active") == "active" else "候选")
+        status.setFlags(Qt.ItemIsEnabled)         # 状态不可编辑
         note = QTableWidgetItem(data["note"])
         self.glossary_table.setItem(row, 0, term)
         self.glossary_table.setItem(row, 1, translation)
         self.glossary_table.setItem(row, 2, cat)
-        self.glossary_table.setItem(row, 3, note)
+        self.glossary_table.setItem(row, 3, status)
+        self.glossary_table.setItem(row, 4, note)
+        if data.get("status", "active") != "active":
+            for col in range(5):
+                item = self.glossary_table.item(row, col)
+                item.setForeground(QBrush(QColor("#999999")))
         return row
 
     def _glossary_add(self):
@@ -674,7 +799,7 @@ class SettingsPage(QWidget):
             if self.glossary_table.item(row, 1) else ""
         cat_item = self.glossary_table.item(row, 2)
         category = cat_item.text() if cat_item else "术语"
-        note = self.glossary_table.item(row, 3).text() if self.glossary_table.item(row, 3) else ""
+        note = self.glossary_table.item(row, 4).text() if self.glossary_table.item(row, 4) else ""
         old_term = cat_item.data(Qt.UserRole) if cat_item else None
         if old_term:
             self._glossary.update(term, translation, category, note)

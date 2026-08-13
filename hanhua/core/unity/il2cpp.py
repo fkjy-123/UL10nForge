@@ -33,11 +33,48 @@ _LAYOUTS = {
 }
 _ALLOWED_CONTROLS = {"\t", "\n", "\r"}
 # 引擎/调试字符串特征（真实样本统计：老版 metadata 字符串池含大量
-# 反汇编/日志/格式模板，游戏显示文本不具备这些形态）：
-# - {0} / {1,6} / {0:x5} 格式占位符 → 代码模板（2328/16541 命中）
+# 反汇编/日志/格式模板）：
+# - {0} / {1,6} / {0:x5} 格式占位符 → 代码模板（2328/16541 命中）。
+#   #14 实时渲染文本加强：不再无条件跳过——真实样本（254361268a）
+#   证明 "HP: {0}/{1}"、"<color=#00FF00>+{0} HP</color>" 是游戏
+#   HUD/飘字实时渲染文本，按显示形态细分类（见 _is_display_template）
 # - 前导 ≥2 空白 → 调试/反汇编输出（'  .locals '、'   Character:'）
 # - 无字母（字符表/数字/纯标点）→ 不可译
 _IL2CPP_FORMAT_PLACEHOLDER = re.compile(r"\{[0-9][^}]*\}")
+# 显示模板判定（#14）：命中 → 游戏实时渲染显示文本（display/medium
+# 可自动翻译）；引擎异常消息（"Invalid token '{0}'…"）与键值模板
+# （"value={0}"）不命中 → display/low 留档可见（过滤不是删除；
+# 跳过是哑信号——见 memory recognition-silent-miss-lesson）。
+# - TMP 富文本标签：<color=#00FF00>+{0} HP</color>（TextMeshPro 飘字）
+# - HUD 冒号前缀：HP: {0}/{1}、Playtime: {0}（单短词 + 冒号 + 占位符；
+#   "Exception caught: {0}" 前缀多词/动词形态不命中）
+# - 数值比值 {0}/{1}：Ammo: {0}/{1}、Potions: {0}/{1}
+# - 数值加减 +{0} / -{0}：+{0} 经验、-{0} HP
+# - 按键交互动词开头：Press {0} to interact（仅含 {0} 的串才到此层）
+_IL2CPP_DISPLAY_TAG = re.compile(r"<[a-zA-Z][a-zA-Z0-9 ]*[=>]")
+_IL2CPP_HUD_PREFIX = re.compile(r"^[A-Za-z]{1,16}[:：] ?\{0\}")
+_IL2CPP_VALUE_RATIO = re.compile(r"\{0\}\s*/\s*\{1\}")
+_IL2CPP_VALUE_DELTA = re.compile(r"[+\-]\s*\{0\}")
+_IL2CPP_INTERACTION_TEMPLATE = re.compile(
+    r"^(?:press|hold|tap|click|push|hit)\b[^.!?\n]{0,32}\{0\}", re.I)
+
+
+def _is_display_template(s: str) -> bool:
+    """含格式占位符的串是否为游戏实时渲染显示文本（#14）。
+
+    依据真实样本判别：254361268a（HUD/飘字：'Potions: {0}/{1}'、
+    '<color=#00FF00>+{0} HP</color>'）vs dcdb50a165（引擎异常：
+    "Invalid token '{0}' in input string"、"Can't assign null…"）。
+    显示模板具备 TMP 富文本标签 / HUD 冒号前缀 / 数值比值加减值 /
+    按键交互动词形态；引擎异常消息与键值模板（"value={0}"）不具备
+    → 落入 display/low 留档（过滤不是删除，跳过是哑信号）。
+    """
+    return bool(
+        _IL2CPP_DISPLAY_TAG.search(s)
+        or _IL2CPP_HUD_PREFIX.match(s)
+        or _IL2CPP_VALUE_RATIO.search(s)
+        or _IL2CPP_VALUE_DELTA.search(s)
+        or _IL2CPP_INTERACTION_TEMPLATE.match(s))
 # 控制符/≥2 空白开头 = 调试输出（'\ndepth: '、'  .locals '、字符表片段）
 _IL2CPP_LEADING_WS = re.compile(r"^[\t\r\n]|^[ \t]{2,}")
 _MIN_LITERAL_LEN = 3
@@ -503,11 +540,9 @@ def extract_metadata_strings(path: str | Path, file_id: str | None = None,
             if sample:
                 entries.append(sample)
             continue
-        # 引擎/调试形态：格式模板、反汇编/日志输出、字符表 → 不产生条目
+        # 引擎/调试形态：反汇编/日志输出、字符表 → 不产生条目
         # （真实样本 16541 条中 65% 属此类，minato/seijunDROP v24 池）
-        if (_IL2CPP_FORMAT_PLACEHOLDER.search(s)
-                or _IL2CPP_LEADING_WS.match(s)
-                or len(s) < _MIN_LITERAL_LEN
+        if (_IL2CPP_LEADING_WS.match(s) or len(s) < _MIN_LITERAL_LEN
                 or not any(ch.isalpha() for ch in s)):
             # R5/L1：引擎/调试形态静默跳过留档（计数 + 限量样本）
             skipped["engine_morph"] = skipped.get("engine_morph", 0) + 1
@@ -516,6 +551,30 @@ def extract_metadata_strings(path: str | Path, file_id: str | None = None,
                 reason="engine_morph", count=skipped["engine_morph"])
             if sample:
                 entries.append(sample)
+            continue
+        # 含格式占位符的模板串：#14 实时渲染文本加强——旧逻辑无条件
+        # 跳过（注释称「游戏显示文本不具备这些形态」，真实样本
+        # 254361268a 证明错误：HUD/飘字模板被哑跳过）。细分类：
+        # 显示模板 → display/medium 可自动翻译（质量门禁放行）；
+        # 引擎异常消息/键值模板 → display/low 留档可见，不浪费模型
+        # 调用（批量引擎消息不进自动翻译）。
+        if _IL2CPP_FORMAT_PLACEHOLDER.search(s):
+            if _is_display_template(s):
+                status, confidence, role, disposition, reason = (
+                    "pending", "medium", "display", "translate",
+                    "il2cpp_display_template")
+            else:
+                status, confidence, role, disposition, reason = (
+                    "pending", "low", "display", "translate",
+                    "il2cpp_format_template")
+            entries.append(TextEntry(
+                file_id=fid, key_path=f"meta#{data_index}",
+                original=s, status=status,
+                meta={
+                    "kind": "il2cpp", "file_offset": data_pos, "length": length,
+                    "confidence": confidence, "role": role,
+                    "disposition": disposition, "reason": reason,
+                }))
             continue
         # 剩余字面量分类。真实样本验证（minato/seijunDROP 老版池）：
         # 池内容几乎全是引擎字符串（异常消息/属性名/系统库字符表），游戏

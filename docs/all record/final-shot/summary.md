@@ -26,7 +26,7 @@
 ## 3 写回
 - 文本文件：2 · 写入译文：309
 - 输入保护：True · 重开验证：True · 变更文件：37
-- 总体闸门：PASS · 字体：runtime_verified
+- 总体闸门：PASS · 字体：runtime_verified（LEGACY_EVIDENCE_UNSCOPED：旧协议证据，未含逐码点 attestation/覆盖证明）
 
 ## 4 分析（待办）
 - [ ] 成功文本质量抽检（译文是否得当/是否无关文本）

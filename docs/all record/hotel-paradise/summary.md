@@ -27,7 +27,7 @@
 ## 3 写回
 - 文本文件：1 · 写入译文：23
 - 输入保护：True · 重开验证：True · 变更文件：32
-- 总体闸门：WARN · 字体：payload_deployed
+- 总体闸门：WARN · 字体：payload_deployed（LEGACY_EVIDENCE_UNSCOPED：旧协议证据，未含逐码点 attestation/覆盖证明）
 
 ## 3.5 语义审核（翻译质量升级）
 - 审核条数：3 · 不合格：1 · 术语沉淀：0

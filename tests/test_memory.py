@@ -603,3 +603,98 @@ def test_upsert_does_not_guess_between_conflicting_translations():
 
     row = next(e for e in store.get_entries() if e["key_path"] == "new/99")
     assert (row["translation"], row["status"]) == ("", "pending")
+
+
+# ── Phase B PendingEvidence：审后提交/撤销（审计 §5 P0-3）────────────
+
+def test_pending_memory_staged_until_promoted():
+    """翻译批记忆入 pending 桶：promote 前不参与任何命中（坏译不得在
+    深审前污染下一轮 prompt）；promote 后可见。"""
+    store = _store()
+    store.init_schema()
+    store.batch_add_memory([("Open Door", "打开门", "m", "en→zh-CN")])
+    # 未提交：不可命中 + 可观测 pending 计数
+    assert store.get_memory_hits(["Open Door"], "m", "en→zh-CN") == {}
+    assert store.count_pending_memory() == 1
+    # 审核通过 → promote → 可命中、pending 清零
+    store.promote_memory([("Open Door", "打开门", "m", "en→zh-CN")])
+    assert store.get_memory_hits(["Open Door"], "m", "en→zh-CN") == {
+        "Open Door": "打开门"}
+    assert store.count_pending_memory() == 0
+
+
+def test_revoke_pending_memory_deletes_it():
+    """审核判坏 → 撤销：pending 记忆直接删除，不残留待审垃圾。"""
+    store = _store()
+    store.init_schema()
+    store.batch_add_memory([("Open Door", "坏译文", "m", "en→zh-CN")])
+    store.remove_memory("Open Door", "m", "en→zh-CN")
+    assert store.count_pending_memory() == 0
+    assert store.get_memory_hits(["Open Door"], "m", "en→zh-CN") == {}
+
+
+def test_explicit_add_memory_is_committed_immediately():
+    """显式 add_memory（人工/审核直达写入）→ pending=0 立即可命中；
+    旧行为保持（测试与人工写入不因 pending 协议失效）。"""
+    store = _store()
+    store.init_schema()
+    store.add_memory("Open Door", "打开门", "m", "en→zh-CN")
+    assert store.get_memory_hits(["Open Door"], "m", "en→zh-CN") == {
+        "Open Door": "打开门"}
+
+
+def test_old_schema_migrates_pending_column():
+    """旧库（无 pending 列）init_schema 迁移：列补齐，旧记忆视为已提交。"""
+    import hashlib as _hashlib
+    import sqlite3 as _sqlite3
+    path = Path(tempfile.mkdtemp()) / "old.db"
+    conn = _sqlite3.connect(str(path))
+    conn.execute("CREATE TABLE memory("
+                 "src_hash TEXT PRIMARY KEY, original TEXT,"
+                 " translation TEXT, model TEXT, lang TEXT,"
+                 " created_at TEXT DEFAULT (datetime('now')))")
+    h = _hashlib.md5("Open Door".encode("utf-8")).hexdigest()
+    conn.execute("INSERT INTO memory(src_hash, original, translation,"
+                 " model, lang) VALUES (?, 'Open Door', '打开门',"
+                 " 'm', 'en→zh-CN')", (h,))
+    conn.commit()
+    conn.close()
+    store = ProjectStore(path)
+    store.init_schema()
+    assert store.get_memory_hits(["Open Door"], "m", "en→zh-CN") == {
+        "Open Door": "打开门"}     # 旧数据 = 已提交
+
+
+def test_settle_promotes_approved_and_no_outcome_revokes_rejected():
+    """审后结算唯一决策点（settle_translation_memory）：
+    APPROVED → promote；BLOCKED 等非发布终态 → 撤销；无终态（审核
+    关闭/不可用）→ 机械门即最后裁决 promote。"""
+    from hanhua.core.models import TextEntry
+
+    def entry(original, translation, outcome=None, status="translated"):
+        meta = {"confidence": "high"}
+        if outcome:
+            meta["review_outcome"] = outcome
+        return TextEntry("f", original, original, translation=translation,
+                         status=status, meta=meta)
+
+    from hanhua.core.memory import settle_translation_memory
+    store = _store()
+    store.init_schema()
+    store.batch_add_memory([("A", "坏译文A", "m", "en→zh-CN"),
+                            ("B", "坏译文B", "m", "en→zh-CN")])
+    entries = [
+        entry("A", "好译文A", outcome="APPROVED"),
+        entry("B", "坏译文B", outcome="BLOCKED"),
+        entry("C", "好译文C"),                       # 无终态 → promote
+        entry("D", "回显D", outcome="APPROVED"),     # echo → 不产生记忆
+    ]
+    entries[3].meta["echo_exempt"] = "proper_name"
+    result = settle_translation_memory(store, entries, "m", "en→zh-CN")
+    assert result["promoted"] == 2                   # A(覆盖坏译文) + C
+    assert result["revoked"] == 1                    # B
+    assert store.get_memory_hits(["A"], "m", "en→zh-CN") == {"A": "好译文A"}
+    assert store.get_memory_hits(["B"], "m", "en→zh-CN") == {}
+    assert store.get_memory_hits(["C"], "m", "en→zh-CN") == {"C": "好译文C"}
+    assert store.get_memory_hits(["D"], "m", "en→zh-CN") == {}
+    assert store.count_pending_memory() == 0

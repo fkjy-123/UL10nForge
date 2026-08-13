@@ -88,7 +88,7 @@ def test_il2cpp_samples_recorded_for_each_skip_reason(tmp_path):
     pf = _extract_il2cpp(tmp_path, [
         "ab\x01cd",              # illegal_controls
         "PlayerController",      # code_identifier
-        "value={0}",             # engine_morph（数字格式占位符）
+        "  depth level",         # engine_morph（行首空白调试输出）
         "Hello player",          # 真实条目
     ])
     samples = [e for e in pf.entries if e.key_path.startswith("skip/")]
@@ -104,8 +104,8 @@ def test_il2cpp_samples_recorded_for_each_skip_reason(tmp_path):
         assert not e.meta.get("file_offset")  # 样本不伪装真实条目定位
     assert len(real) == 1
     # data_index 是数据区字节偏移：5(\x01cd 前) + 16(PlayerController)
-    # + 9(value={0}) = 30——与真实条目定位语义一致，未被样本挤占
-    assert real[0].key_path == "meta#30"
+    # + 13("  depth level") = 34——与真实条目定位语义一致，未被样本挤占
+    assert real[0].key_path == "meta#34"
     assert real[0].meta["file_offset"] >= 0
     assert real[0].original == "Hello player"
     # 样本 key_path 保留原 data_index 可追溯
@@ -116,7 +116,7 @@ def test_il2cpp_sample_quota_capped_at_ten_per_reason(tmp_path):
     """同类跳过 15 条 → 样本 ≤10 条；提取器末尾把累计计数（1..10）
     回写为最终计数 15——报告聚合（按单元取 max）即真实总数
     （累计值被求和的 55 失真修复：聚合端 15 而非 1+2+…+10=55）。"""
-    pf = _extract_il2cpp(tmp_path, ["value={0}"] * 15)
+    pf = _extract_il2cpp(tmp_path, ["  depth level"] * 15)
     samples = [e for e in pf.entries if e.key_path.startswith("skip/")]
     assert len(samples) == _PREFILTER_SAMPLE_LIMIT
     assert {e.meta["skipped_count"] for e in samples} == {15}
@@ -126,17 +126,18 @@ def test_il2cpp_sample_quota_capped_at_ten_per_reason(tmp_path):
     assert pf.noise is True
 
 
-def test_il2cpp_engine_morph_leading_ws_and_format_placeholders(tmp_path):
-    """engine_morph 可达子形态（数字格式占位符/行首空白多词串）留档。
+def test_il2cpp_engine_morph_leading_ws(tmp_path):
+    """engine_morph 可达路径（行首空白多词串）留档。
 
     超短/无字母/单词行首空白实际被 code_identifier 分支吸收（"ab"/
-    "123"/"\n  depth" 命中 should_skip 或 is_code_identifier 先退出），
-    此处验证真正到达 engine_morph 的两条路径。
+    "123"/"\n  depth" 命中 should_skip 或 is_code_identifier 先退出）。
+    #14 之后含字母的 {0} 模板不再走 engine_morph：显示模板细分类为
+    medium、其他模板 low 留档（见 test_il2cpp_display_templates）。
     """
-    pf = _extract_il2cpp(tmp_path, ["value={0}", "  depth level"])
+    pf = _extract_il2cpp(tmp_path, ["  depth level"])
     samples = [e for e in pf.entries if e.key_path.startswith("skip/")]
-    assert len(samples) == 2
-    assert all(e.meta["reason"] == "engine_morph" for e in samples)
+    assert len(samples) == 1
+    assert samples[0].meta["reason"] == "engine_morph"
 
 
 # ── Mono 集成：3 处 continue 形态 ─────────────────────────────

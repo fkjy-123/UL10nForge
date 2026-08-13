@@ -5,8 +5,10 @@ from dataclasses import dataclass, field, replace
 import json
 import os
 from pathlib import Path
+import re
 import subprocess
 import threading
+import time
 
 from PySide6.QtCore import Qt, QThreadPool
 from PySide6.QtWidgets import (QCheckBox, QFrame, QHBoxLayout, QLabel,
@@ -18,6 +20,7 @@ from hanhua.core.batch_translator import BatchTranslator
 from hanhua.core.glossary import GlossaryStore
 from hanhua.core.knowledge import KnowledgeBase
 from hanhua.core.local_model import LocalModelError, sanitize_exception
+from hanhua.core.memory import settle_translation_memory
 from hanhua.core.models import (GameProfile, TextEntry,
                                 is_actionable_translation)
 from hanhua.core.prompts import build_system_prompt, collect_known_names
@@ -25,7 +28,8 @@ from hanhua.core.quality import is_write_ready
 from hanhua.core.reviewer import review_entries
 from hanhua.core.translator import create_client
 from hanhua.ui.app_state import AppState
-from hanhua.ui.widgets import MetricStrip, PageHeader, Toast, Worker
+from hanhua.ui.widgets import (ActivityFeed, MetricStrip, PageHeader,
+                               SafetyBar, Toast, Worker)
 
 @dataclass(eq=False)
 class _TranslationRun:
@@ -110,11 +114,29 @@ class TranslatePage(QWidget):
         self._write_terminal_message = ""
         self._last_stats = None
         self._stream_last_done = 0
+        # 进度节流（#13 实证：home 分数与流水线 rail 只在全部完成后才
+        # 更新，翻译时「突然一下完成几十条」——批粒度 progress 直接
+        # emit entriesChanged 会让首页 O(N) 重扫刷屏）。每 ≥1s 才广播
+        # 一次实时刷新，进度条/日志仍按批粒度更新不受影响。
+        self._last_phase_emit = 0.0
+        # #6：进度驱动的 UI 计数刷新节流——_refresh_chips 全量 O(N)
+        # 查库（万级条目 × 每批一次会卡主线程）。与 entriesChanged 广播
+        # 共用 ≥1s 节流，翻译完成后必定全刷（_on_finished）。
+        self._last_chip_refresh = 0.0
+        # #2：计数刷新后台化竞态防护——每次 _refresh_chips 递增 token，
+        # worker 完成时 token 不符（项目已切换/更新刷新已发出）则丢弃。
+        self._chips_token = 0
+        self._chips_worker = None
+        self._chips_loading = False
         self._pool = QThreadPool.globalInstance()
         # 经验记忆（AgentMemory）：跨游戏持久、证据驱动——懒创建于
         # app_dir/agent_memory.db；每次翻译运行前 session_reset，写回后
         # session_report 随记录文档落盘（用户可追踪记忆成长）
         self._agent_memory: AgentMemory | None = None
+        # 知识检索统一门面（审计 Phase C，P1-1 修复）：ContextStore/
+        # VectorRecall/RerankGate 生产接线——懒创建于 app_dir（与
+        # glossary/knowledge/agent_memory 同库目录），跨次翻译复用。
+        self._knowledge_retrieval = None
 
         lay = QVBoxLayout(self)
         lay.setContentsMargins(26, 22, 26, 18)
@@ -160,9 +182,7 @@ class TranslatePage(QWidget):
         sub_row.addWidget(self.chip_skipped)
         lay.addLayout(sub_row)
 
-        # ── AI Translation Console（§33~35：实时处理流 + 模型信息） ──
-        console_row = QHBoxLayout()
-        console_row.setSpacing(12)
+        # ── AI Translation Console（§33~35：活动事件流；模型信息卡已移除） ──
         stream_frame = QFrame()
         stream_frame.setObjectName("card")
         sf = QVBoxLayout(stream_frame)
@@ -176,29 +196,12 @@ class TranslatePage(QWidget):
         st_head.addWidget(st_title)
         st_head.addStretch(1)
         st_head.addWidget(self.stream_status)
-        self.stream_view = QPlainTextEdit()
-        self.stream_view.setObjectName("logView")
-        self.stream_view.setReadOnly(True)
-        self.stream_view.setMaximumHeight(140)
+        # ActivityFeed（§6.4）：状态着色的事件流，容量上限自动裁剪
+        self.activity_feed = ActivityFeed(max_items=120)
+        self.activity_feed.setMaximumHeight(140)
         sf.addLayout(st_head)
-        sf.addWidget(self.stream_view)
-        console_row.addWidget(stream_frame, 3)
-
-        model_frame = QFrame()
-        model_frame.setObjectName("card")
-        mf = QVBoxLayout(model_frame)
-        mf.setContentsMargins(14, 10, 14, 10)
-        mf.setSpacing(6)
-        model_title = QLabel("当前模型")
-        model_title.setProperty("class", "pageTitle")
-        mf.addWidget(model_title)
-        self.model_chip = MetricStrip("模型", "未启动")
-        self.backend_chip = MetricStrip("后端", "—")
-        self.throughput_chip = MetricStrip("吞吐", "—")
-        for chip in (self.model_chip, self.backend_chip, self.throughput_chip):
-            mf.addWidget(chip)
-        console_row.addWidget(model_frame, 1)
-        lay.addLayout(console_row)
+        sf.addWidget(self.activity_feed)
+        lay.addWidget(stream_frame, 1)
 
         # ── 数据舱：待翻译 / tokens ──
         self.metric_pending = MetricStrip("待翻译", "—")
@@ -215,18 +218,22 @@ class TranslatePage(QWidget):
         self.quality_reason_label.setTextInteractionFlags(Qt.TextSelectableByMouse)
         lay.addWidget(self.quality_reason_label)
 
-        # ── 运行记录（标题 + 复制/清空） ──
+        # ── 运行记录（§35：默认折叠，可展开；标题 + 展开/复制/清空） ──
         log_head = QHBoxLayout()
         log_title = QLabel("运行记录")
         log_title.setProperty("class", "pageTitle")
+        self.log_toggle = QPushButton("展开日志")
+        self.log_toggle.setAccessibleName("展开或收起运行日志")
         self.copy_log_btn = QPushButton("复制")
         self.clear_log_btn = QPushButton("清空")
-        for button in (self.copy_log_btn, self.clear_log_btn):
+        for button in (self.log_toggle, self.copy_log_btn,
+                       self.clear_log_btn):
             button.setProperty("ghost", True)
             button.setMinimumHeight(32)
             button.setCursor(Qt.PointingHandCursor)
         log_head.addWidget(log_title)
         log_head.addStretch(1)
+        log_head.addWidget(self.log_toggle)
         log_head.addWidget(self.copy_log_btn)
         log_head.addWidget(self.clear_log_btn)
         lay.addLayout(log_head)
@@ -234,23 +241,23 @@ class TranslatePage(QWidget):
         self.log_view.setObjectName("logView")
         self.log_view.setReadOnly(True)
         self.log_view.setMaximumBlockCount(2000)
+        self.log_view.setVisible(False)   # §35 日志默认折叠
         lay.addWidget(self.log_view, 1)
 
-        # ── 底部固定操作区（任一时刻只有一个主按钮） ──
+        # ── 底部操作区：翻译控制 + SafetyBar 安全写回（§6.3） ──
         ctl = QHBoxLayout()
         ctl.setSpacing(10)
         self.start_btn = QPushButton("开始翻译")
         self.start_btn.setProperty("primary", True)
         self.stop_btn = QPushButton("停止")
         self.retry_btn = QPushButton("重试失败")
-        self.write_btn = QPushButton("写回游戏")
         self.play_btn = QPushButton("开始游戏")
         self.reveal_btn = QPushButton("在文件夹中显示")
         self.reveal_btn.setProperty("ghost", True)
         for button, name in (
             (self.start_btn, "开始自动翻译"), (self.stop_btn, "停止自动翻译"),
-            (self.retry_btn, "重试失败译文"), (self.write_btn, "安全写回游戏副本"),
-            (self.play_btn, "启动汉化副本进入游戏"), (self.reveal_btn, "打开汉化输出目录"),
+            (self.retry_btn, "重试失败译文"), (self.play_btn, "启动汉化副本进入游戏"),
+            (self.reveal_btn, "打开汉化输出目录"),
         ):
             button.setMinimumHeight(44)
             button.setAccessibleName(name)
@@ -263,7 +270,6 @@ class TranslatePage(QWidget):
         self.partial_check.setAccessibleName("允许部分写入并发布")
         self.stop_btn.setEnabled(False)
         self.retry_btn.setEnabled(False)
-        self.write_btn.setEnabled(False)
         self.play_btn.setEnabled(False)
         self.reveal_btn.setHidden(True)
         ctl.addWidget(self.start_btn)
@@ -272,9 +278,17 @@ class TranslatePage(QWidget):
         ctl.addStretch(1)
         ctl.addWidget(self.partial_check)
         ctl.addWidget(self.reveal_btn)
-        ctl.addWidget(self.write_btn)
         ctl.addWidget(self.play_btn)
         lay.addLayout(ctl)
+
+        # 安全写回栏：写回按钮由 SafetyBar.set_ready 统一管理（禁用时
+        # 显示具体原因；status 驱动左侧主题色）
+        self.write_btn = QPushButton("写回游戏")
+        self.write_btn.setMinimumHeight(44)
+        self.write_btn.setAccessibleName("安全写回游戏副本")
+        self.write_btn.setEnabled(False)
+        self.write_safety = SafetyBar(self.write_btn)
+        lay.addWidget(self.write_safety)
 
         self.start_btn.clicked.connect(self.start)
         self.stop_btn.clicked.connect(self.stop)
@@ -284,6 +298,10 @@ class TranslatePage(QWidget):
         self.reveal_btn.clicked.connect(self.reveal_output)
         self.copy_log_btn.clicked.connect(self._copy_log)
         self.clear_log_btn.clicked.connect(self._clear_log)
+        self.log_toggle.clicked.connect(self._toggle_log)
+        # §35「允许部分写入」改变后立即刷新写回原因
+        self.partial_check.toggled.connect(
+            lambda _checked: self._refresh_chips())
         self.state.projectOpened.connect(self._on_project)
         self.state.projectAboutToChange.connect(self._on_project_changing)
         self.state.settingsChanged.connect(lambda: self._refresh_chips())
@@ -307,6 +325,12 @@ class TranslatePage(QWidget):
     def _clear_log(self):
         self.log_view.clear()
 
+    def _toggle_log(self):
+        """§35 日志折叠：默认收起，点击展开/收起。"""
+        collapsed = not self.log_view.isVisibleTo(self)
+        self.log_view.setVisible(collapsed)
+        self.log_toggle.setText("收起日志" if collapsed else "展开日志")
+
     # ── 开始 ──
     def start(self):
         if self.state.project is None:
@@ -314,6 +338,9 @@ class TranslatePage(QWidget):
             return
         if self._active_run is not None:
             Toast.show(self, "上一个翻译任务仍在停止，请稍候", "warning")
+            return
+        if self._write_running:
+            Toast.show(self, "正在写回文件，请稍候再开始翻译", "warning")
             return
         api = replace(self.state.api)
         if (api.mode != "local"
@@ -344,9 +371,9 @@ class TranslatePage(QWidget):
         self.write_btn.setEnabled(False)
         self.progress_label.setText("正在请求模型…（第一批可能需要一点时间）")
         self.progress_bar.setRange(0, 0)          # 第一批返回前为忙碌动画
-        self.stream_view.clear()
+        self.activity_feed.clear()
         self._stream_last_done = 0
-        self.stream_view.appendPlainText("◐ 正在请求模型…")
+        self.activity_feed.append_event("running", "正在请求模型…")
         self.stream_status.setText("◐ 正在处理")
         signals_holder = {}
 
@@ -430,6 +457,30 @@ class TranslatePage(QWidget):
             agent_memory = self._agent_memory
             agent_memory.session_reset()
             agent_pairs = agent_memory.reference_pairs()
+            # 知识检索统一门面（审计 Phase C，P1-1）：懒装配一次，跨次
+            # 翻译复用。context/vector 证据跨游戏沉淀——翻译前 index_outbox
+            # 让历史证据可被本次命中，翻译后再次索引本次新沉淀（最终一致）。
+            agent_game = str(getattr(
+                getattr(project, "game_dir", None), "name", "")
+                or getattr(project, "name", ""))
+            if self._knowledge_retrieval is None:
+                from hanhua.core.knowledge_retrieval import (
+                    create_knowledge_retrieval)
+                self._knowledge_retrieval = create_knowledge_retrieval(
+                    self.state.app_dir,
+                    service_dir=self.state.resource_dir,
+                    game=agent_game)
+            knowledge_retrieval = self._knowledge_retrieval
+            try:
+                indexed = knowledge_retrieval.index_outbox()
+            except Exception:  # noqa: BLE001 知识链路故障不阻断翻译
+                indexed = 0
+            on_log(f"知识检索：{knowledge_retrieval.capability().summary()}"
+                   + (f" · 已索引 {indexed} 条" if indexed else ""))
+            # 流水线 rail（#15）：翻译阶段开始即广播，首页 rail 实时转
+            # running（此前 rail 全程停在扫描后的旧状态）。
+            self.state.pipelinePhase.emit(
+                "translation_quality", "running", "正在准备翻译环境…", "")
             if api.mode == "local":
                 on_log("正在启动本地 Hy-MT2 模型服务…")
                 if cancel.is_set():
@@ -476,10 +527,24 @@ class TranslatePage(QWidget):
                               for row in glossary_rows
                               if row.get("status", "active") == "active"]
                              + knowledge_pairs + agent_pairs,
+                    # 强制词对（质量门 glossary_mismatch 判定）：仅术语库
+                    # active + 知识库译例。经验记忆词对只做参考注入（prompt
+                    # 译例 + 精确命中直填）不做强制——reference_pairs 设计
+                    # 即「参考而非强制」，并入 glossary 强制后单 token 记忆
+                    # 词对成硬规则（Morfosi 64 条实证：('Locked','锁定')
+                    # 命中自然句 "IT'S LOCKED." 全灭）。强制过滤在质量门
+                    # （F10 语境豁免），不在记忆库。
+                    glossary_force=[(row["term"], row["translation"])
+                                    for row in glossary_rows
+                                    if row.get("status", "active") == "active"]
+                                   + knowledge_pairs,
                     agent_memory=agent_memory,
-                    agent_game=str(getattr(
-                        getattr(project, "game_dir", None), "name", "")
-                        or getattr(project, "name", "")),
+                    agent_game=agent_game,
+                    # 知识检索接线（审计 Phase C，P1-1）：语境直填 +
+                    # 向量相似去重/召回在生产入口首次生效
+                    context_store=knowledge_retrieval.context_store,
+                    context_game=agent_game,
+                    vector_recall=knowledge_retrieval.vector_recall,
                     cancellation_event=cancel)
                 run.attach_translator(translator)
                 entries = [self._entry_from_row(r) for r in store.get_entries()]
@@ -520,12 +585,20 @@ class TranslatePage(QWidget):
                 on_log(f"服务已重启：CPU 模式 · 单槽 · 端口 {runtime.port}")
                 reset = 0
                 for row in store.get_entries(status="failed"):
-                    store.set_status(row["file_id"], row["key_path"], "pending")
+                    store.reset_to_pending(row["file_id"], row["key_path"])
                     reset += 1
                 on_log(f"已将 {reset} 条失败重置为待翻译，继续…")
             on_log(f"翻译完成：{stats.done} 条已翻译"
                    f"（记忆命中 {stats.from_memory}），失败 {stats.failed} 条，"
                    f"请求 {stats.requests} 次")
+            # 翻译后：本次沉淀的共识证据入向量索引（Phase C 增量索引，
+            # 审核沉淀的 ContextEvidence 供下次/其他游戏向量复用）
+            try:
+                indexed = knowledge_retrieval.index_outbox()
+            except Exception:  # noqa: BLE001
+                indexed = 0
+            if indexed:
+                on_log(f"知识检索：本次沉淀 {indexed} 条证据入向量索引")
             if entries:
                 learn_g = GlossaryStore(self.state.app_dir / "glossary.db")
                 learn_g.init_schema()
@@ -535,16 +608,20 @@ class TranslatePage(QWidget):
                     on_log(f"术语库学习：新增 {learned} 条专名"
                            f"（跨游戏复用）")
                 # 翻译 C6：语义审核 + C5 门禁沉淀（与 runner 同源核心）。
-                # GUI 主路径此前无语义审核——Resume→简历 类术语错误检测
-                # 不到，审核词对也不反哺全局术语库；此处闭口：审核结论
-                # 写 store meta（审校页「需要优化」筛选），术语词对经
-                # add_reviewed 门禁沉淀（跨游戏复用）。审核失败不阻断
-                # 翻译结果（按全部通过保守处理，日志告警）。
+                # Phase A（2026-08-13 架构审计）：GUI 不再自己拼审核业务——
+                # review_entries 已成为统一审核管线，传入 translator（反馈
+                # 重译 + 再审收敛）、store（终态 + meta 原子落库，写回门
+                # 生效——MAJOR/CRITICAL/blocked/审核错误不可写回）、memory
+                # （记忆门禁）、app_dir（审核模型从资源根定位，不依赖 cwd，
+                # 审计 §5 P0-8）、cancellation_event（可取消，P0-9）。
                 # §68 设置：开关关闭时跳过审核；策略映射送审率上限
                 # （快速 5% / 平衡 15% / 严格 30%，risk_gate 硬约束上限）。
                 try:
                     review_summary = None
                     if self.state.api.ai_review_enabled:
+                        self.state.pipelinePhase.emit(
+                            "translation_quality", "running",
+                            "正在语义审核…", "")
                         strategy_rate = {
                             "fast": 0.05, "balanced": 0.15, "strict": 0.30,
                         }.get(self.state.api.ai_review_strategy, 0.15)
@@ -552,42 +629,90 @@ class TranslatePage(QWidget):
                             entries, learn_g,
                             game_name=str(profile.game_name or ""),
                             on_note=on_log,
-                            max_send_rate=strategy_rate)
+                            translator=translator,
+                            memory=store,
+                            store=store,
+                            # 审核模型从资源根定位（models/*.gguf 在
+                            # resource_dir，不在 ~/.hanhua——此前传 app_dir
+                            # 导致「审核模型缺失」→ TRANSPORT_ERROR）
+                            app_dir=self.state.resource_dir,
+                            model_name=api.model,
+                            lang=lang,
+                            max_send_rate=strategy_rate,
+                            cancellation_event=cancel)
                     if review_summary and review_summary["used"]:
                         flagged = review_summary["flagged"]
-                        if flagged:
-                            meta_rows = []
-                            for r in flagged:
-                                loc = review_summary["locators"].get(
-                                    r.entry_id, "")
-                                if ":" in loc:
-                                    f_id, k_path = loc.split(":", 1)
-                                    meta_rows.append((f_id, k_path, {
-                                        "review_issue": r.issue or "其他",
-                                        "review_reason":
-                                            (r.reason or "")[:200],
-                                        "review_suggestion": r.suggestion
-                                        or "",
-                                    }))
-                            if meta_rows:
-                                store.update_entry_metas(meta_rows)
                         added = review_summary["pairs_added"]
                         rejected_n = len(review_summary["pairs_rejected"])
+                        # Phase A：终态已由管线原子落库（store 的
+                        # batch_update_translation_results），此处只做汇总日志
                         line = (f"语义审核：不合格 {len(flagged)} 条"
                                 f"（已标「需要优化」，审校页可筛选）")
+                        if review_summary["blocked"]:
+                            line += (f" · 重译未收敛阻塞 "
+                                     f"{review_summary['blocked']} 条"
+                                     f"（坏译文已从发布槽移除）")
+                        if review_summary["errors"]:
+                            line += (f" · 审核错误 "
+                                     f"{review_summary['errors']} 条"
+                                     f"（不可发布）")
+                        if review_summary["cancelled"]:
+                            line += (f" · 取消 {review_summary['cancelled']} 条")
+                        if review_summary["deferred_due_to_budget"]:
+                            line += (f" · 预算截断 "
+                                     f"{review_summary['deferred_due_to_budget']}"
+                                     f" 条（人工队列）")
                         if added:
                             line += f" · 术语沉淀 {added} 条词对"
                         if rejected_n:
                             line += f" · C5 门禁拒绝 {rejected_n} 条"
                         on_log(line)
+                        # #43 阶段 F：审核报告落盘（reviews/ 目录，风险
+                        # 分布 + 失败明细；失败降级不阻断——报告是留档，
+                        # 不是主流程）
+                        try:
+                            from hanhua.core.reviewer import (
+                                write_review_report)
+                            report_dir = self.state.app_dir / "reviews"
+                            report_dir.mkdir(parents=True, exist_ok=True)
+                            safe = re.sub(r'[\\/:*?"<>|\s]+', "_",
+                                          str(profile.game_name or "game"))
+                            write_review_report(
+                                review_summary,
+                                report_dir / f"{safe}-review-report.md",
+                                game_name=str(profile.game_name or ""))
+                        except Exception:  # noqa: BLE001
+                            pass
                 except Exception as exc:  # noqa: BLE001
                     on_log(f"语义审核失败：{exc}")
+                # Phase B PendingEvidence（审计 §5 P0-3）：审后记忆结算——
+                # APPROVED → promote（pending 记忆可命中）；判坏 → 撤销
+                # （坏译连 pending 都不留）；审核关闭/不可用（无终态）→
+                # 机械质量门已是最后裁决，promote（保持既有记忆行为）。
+                settled = settle_translation_memory(
+                    store, entries, api.model, lang)
+                if settled["promoted"] or settled["revoked"]:
+                    on_log(f"记忆结算：提交 {settled['promoted']} 条"
+                           f" · 撤销 {settled['revoked']} 条坏记忆")
                 learn_g.close()
                 # 知识库学习：从「该翻未翻」回显条目沉淀特殊情况模式
                 learn_kb = KnowledgeBase(self.state.app_dir / "knowledge.db")
                 learned_kb, hits_kb = learn_kb.learn(
                     entries, str(profile.game_name or ""),
                     names=set(collected_names))
+                # #43 阶段 G（重构指令 §16 反馈学习）：审核失败结构化
+                # 沉淀（与 runner 同源 fail_case 域）——MAJOR/CRITICAL
+                # 语义错误 + REVIEW_ERROR 管线错误，后续游戏按原文召回
+                # 同类失败作反例（重译闭环收敛后仅剩未收敛/管线错误）
+                review_failures = (review_summary or {}).get(
+                    "review_failures") or []
+                if review_failures:
+                    failure_added = sum(
+                        1 for f in review_failures
+                        if learn_kb.record_review_failure(f))
+                    if failure_added:
+                        on_log(f"审核反例沉淀：{failure_added} 条失败案例"
+                               f"（知识库 fail_case 域，后续游戏自动参考）")
                 learn_kb.close()
                 if learned_kb or hits_kb:
                     on_log(f"知识库学习：新增 {learned_kb} 条规则"
@@ -626,22 +751,54 @@ class TranslatePage(QWidget):
             if isinstance(reasons, list) else (),
         )
 
+    def _update_progress_widgets(self, stats):
+        """进度条/数字按批粒度实时更新（O(1)，不进全量刷新节流）。"""
+        if stats is None:
+            return
+        n_total = stats.total
+        n_done = stats.done + stats.failed
+        n_failed = stats.failed
+        if self.progress_bar.maximum() == 0:
+            self.progress_bar.setRange(0, 100)
+        self.progress_bar.setValue(
+            int(n_done / n_total * 100) if n_total else 0)
+        self.progress_label.setText(f"{n_done} / {n_total} 条")
+        self.progress_sub.setText(
+            f"剩余 {max(0, n_total - n_done)} 条 · 失败 {n_failed} 条")
+
     def _on_progress(self, stats):
         self._last_stats = stats
-        self._refresh_chips()
+        self._update_progress_widgets(stats)
+        # #6：批粒度 progress 高频触发——计数刷新（全量 O(N) 查库）与
+        # entriesChanged 广播共用 ≥1s 节流，避免万级条目下每批卡主线程。
+        # 进度条/活动流/状态文本仍按批粒度实时更新（O(1)）。
+        now = time.monotonic()
+        if now - self._last_chip_refresh >= 1.0:
+            self._last_chip_refresh = now
+            self._refresh_chips()
         # 实时处理流（§34）：批粒度事件，不伪造逐条数据
         done = stats.done
         prev = self._stream_last_done
         if done > prev:
             delta = done - prev
             source = "（记忆命中）" if delta and stats.from_memory else ""
-            self.stream_view.appendPlainText(
-                f"✓ 本批完成 {delta} 条 · 累计 {done} / {stats.total} {source}")
+            self.activity_feed.append_event(
+                "success",
+                f"本批完成 {delta} 条 · 累计 {done} / {stats.total} {source}")
             self._stream_last_done = done
         if stats.total:
             self.stream_status.setText(
                 f"◐ 正在处理 {done + stats.failed} / {stats.total} 条")
-        self.throughput_chip.setValue(f"{stats.rate_per_minute:.0f} 条/分")
+        # 实时广播（#13/#15）：节流 ≥1s 一次，驱动首页分数与流水线 rail
+        # 边翻边刷——此前要等全部完成才 emit entriesChanged，首页数字
+        # 全程不动。节流避免批粒度（2 条/批）高频触发首页 O(N) 重扫。
+        if now - self._last_phase_emit >= 1.0:
+            self._last_phase_emit = now
+            self.state.entriesChanged.emit()
+            self.state.pipelinePhase.emit(
+                "translation_quality", "running", "正在翻译…",
+                f"已完成 {done + stats.failed} / {stats.total} 条"
+                f" · {stats.rate_per_minute:.0f} 条/分")
 
     def _on_finished(self, stats):
         self._running = False
@@ -652,10 +809,17 @@ class TranslatePage(QWidget):
         self._refresh_chips()
         self._set_primary(self.write_btn)
         self.state.entriesChanged.emit()
+        self.state.pipelinePhase.emit(
+            "translation_quality",
+            "succeeded" if stats.failed == 0 else "warning",
+            (f"翻译完成 {stats.done} 条"
+             + (f" · 失败 {stats.failed} 条" if stats.failed else "")),
+            f"耗时 {stats.elapsed:.1f} 秒 · {stats.rate_per_minute:.0f} 条/分")
         if stats.failed:
-            self.stream_view.appendPlainText(f"✗ {stats.failed} 条失败（可重试）")
+            self.activity_feed.append_event(
+                "error", f"{stats.failed} 条失败（可重试）")
         else:
-            self.stream_view.appendPlainText("✓ 全部完成")
+            self.activity_feed.append_event("success", "全部完成")
         self.stream_status.setText("○ 已完成")
         if stats.failed:
             export_path = self._export_fail_record()
@@ -725,6 +889,8 @@ class TranslatePage(QWidget):
         self._set_primary(self.write_btn)
         self.stream_status.setText("○ 已停止")
         self.progress_label.setText("翻译出错")
+        self.state.pipelinePhase.emit(
+            "translation_quality", "failed", "翻译出错", err[:60])
         diagnostic = sanitize_exception(RuntimeError(str(err)), secrets)
         Toast.show(self, f"翻译出错：{json.dumps(diagnostic, ensure_ascii=False)}", "error")
         export_path = self._export_fail_record(
@@ -751,7 +917,8 @@ class TranslatePage(QWidget):
     def retry_failed(self):
         store = self.state.project.store
         for r in store.get_entries(status="failed"):
-            store.set_status(r["file_id"], r["key_path"], "pending")
+            # #9：重置待译清旧审核终态，重译成功不再被残留 BLOCKED 拒绝
+            store.reset_to_pending(r["file_id"], r["key_path"])
         self.state.entriesChanged.emit()
         self.log_view.appendPlainText("已标记失败条目为待翻译")
         self.start()
@@ -777,6 +944,9 @@ class TranslatePage(QWidget):
         project = self.state.project
         generation = self.state.project_generation
         font_config = replace(self.state.settings.font)
+        # 流水线 rail（#15）：写回阶段开始广播 running
+        self.state.pipelinePhase.emit(
+            "writeback", "running", "正在写回游戏副本…", "")
         signals_holder = {}
 
         def run_write():
@@ -810,7 +980,7 @@ class TranslatePage(QWidget):
         self._write_running = True
         self._write_terminal_message = ""
         self._write_worker_task = worker
-        self.write_btn.setEnabled(False)
+        self.write_safety.set_ready(False, "写回进行中…")
         self.log_view.appendPlainText("正在写回…")
         self._pool.start(worker)
 
@@ -821,6 +991,8 @@ class TranslatePage(QWidget):
         self.progress_bar.setRange(0, 100)
         self.progress_bar.setValue(0)
         self.progress_label.setText(message)
+        self.state.pipelinePhase.emit(
+            "writeback", "failed", "写回失败", err[:60])
         Toast.show(self, message, "error")
         export_path = self._export_fail_record("写回失败", err)
         if export_path:
@@ -863,6 +1035,11 @@ class TranslatePage(QWidget):
         if phase in phases:
             self.progress_bar.setRange(0, 100)
             self.progress_bar.setValue(phases[phase])
+        # 流水线 rail（#15）：写回阶段进度实时广播（阶段数少，无需节流）
+        self.state.pipelinePhase.emit(
+            "writeback", "running", message or "正在写回…",
+            f"阶段 {phase or '—'}"
+            + (f" · {phases[phase]}%" if phase in phases else ""))
 
     def _on_write_drained(self, worker: Worker) -> None:
         if self._write_worker_task is not worker:
@@ -914,6 +1091,11 @@ class TranslatePage(QWidget):
                 and font.installed):
             parts.append(f"中文字体 {font.family}")
         result_label = "写回验证通过" if verified else "写回未通过验证"
+        # 流水线 rail（#15）：写回结束广播终态
+        self.state.pipelinePhase.emit(
+            "writeback", "succeeded" if verified else "warning",
+            result_label,
+            f"变更文件 {changed_files} · 写入译文 {written_translations}")
         self.log_view.appendPlainText(f"{result_label}：{'，'.join(parts)} → {out}")
         self.log_view.appendPlainText(
             f"验证摘要：变更文件 {changed_files} · 实际写入译文 "
@@ -925,8 +1107,40 @@ class TranslatePage(QWidget):
             "disabled": "未启用",
             "unavailable": "不可验证",
         }
-        self.log_view.appendPlainText(
-            f"字体层级：{font_labels.get(font_level, font_level)}")
+        font_level_text = font_labels.get(font_level, font_level)
+        # Phase 4：展示 coverage 发布门终态而非旧字体层级启发式——
+        # gate 与逐栈摘要与 GUI/runner/批量同一口径（计划 §8/§11）
+        gate = verification.get("font_gate")
+        coverage = verification.get("font_coverage")
+        if gate:
+            gate_text = f"{gate.get('status')} — {gate.get('detail')}"
+            self.log_view.appendPlainText(f"字体发布门：{gate_text}")
+            if coverage:
+                stacks = coverage.get("stack_counts") or {}
+                stack_text = " · ".join(
+                    f"{kind}: {n}" for kind, n in sorted(stacks.items()))
+                self.log_view.appendPlainText(
+                    f"字体覆盖：{coverage.get('overall')}"
+                    f"（{stack_text or '无消费者'}）")
+                missing = coverage.get("missing") or []
+                if missing:
+                    self.log_view.appendPlainText("缺字：")
+                    for row in missing[:16]:
+                        self.log_view.appendPlainText(
+                            f"  {row.get('scalar')} → {row.get('consumer')}"
+                            f"（{row.get('kind')}）")
+            # Phase 5：位图注入摘要（NGUI/BMFont provider 闭环）
+            bitmap = verification.get("font_bitmap")
+            if bitmap:
+                self.log_view.appendPlainText(
+                    "位图注入：" + f"provider {len(bitmap.get('providers') or [])} 个"
+                    f"（{', '.join(bitmap.get('providers') or [])}）· "
+                    f"注入 {bitmap.get('injected')} · "
+                    f"审计 {bitmap.get('audited')} · "
+                    f"未注入 {bitmap.get('pending')}")
+        else:
+            self.log_view.appendPlainText(
+                f"字体层级：{font_level_text}")
         if gates:
             gate_parts = [
                 f"{name}={item.get('status', 'N/A')}"
@@ -1046,68 +1260,126 @@ class TranslatePage(QWidget):
 
     # ── 状态刷新 ──
     def _refresh_chips(self):
+        """计数刷新（全量 O(N) 查库）——统计放后台线程。
+
+        #6 已把 3 次独立 SQL COUNT 并为单循环；#2 再进一步：整个统计
+        （get_entries + 万级 JSON 解析）移出主线程。翻译中每 ≥1s 一次
+        的刷新也不再卡 UI；写回按钮等状态在 _on_chips_stats 回调渲染。
+        """
         if self.state.project is None:
             return
         store = self.state.project.store
-        s = self._last_stats
+        self._chips_token += 1
+        self._chips_loading = True
+        token = self._chips_token
+        worker = Worker(self._collect_chips_stats, store)
+        # 引用必须保存（局部 worker 函数返回后 wrapper 引用丢失，
+        # finished 连接失效——同 review_page #2 实证）。
+        self._chips_worker = worker
+        worker.signals.finished.connect(
+            lambda stats: self._on_chips_stats(token, stats))
+        worker.signals.error.connect(
+            lambda err: self._on_chips_error(token, err))
+        QThreadPool.globalInstance().start(worker)
+
+    @staticmethod
+    def _collect_chips_stats(store):
+        """后台线程统计：#6 单循环口径（actionable/低置信留档/已翻/失败/
+        跳过 + 质量门失败原因 + 写回可用数），一次 get_entries 算完。"""
         rows = store.get_entries()
         # 待翻译 = 引擎实际会翻的条目（is_actionable_translation），与翻译引擎
         # 同源。此前用 store.count('pending') 裸计数：IL2CPP 低置信度引擎消息
         # 留档（pending/low，不可自动翻译）被计入 → 显示虚高且永不减少，
         # 「翻译已完成但待翻译不变」的真实案例（526 条引擎异常消息留档）。
-        actionable = low_pending = 0
+        actionable = low_pending = translated = failed = skipped = 0
+        reasons: dict[str, int] = {}
+        write_ready = 0
         for row in rows:
-            entry = self._entry_from_row(row)
+            entry = TranslatePage._entry_from_row(row)
             if is_actionable_translation(entry):
                 actionable += 1
             elif (row.get("status") == "pending"
                     and entry.meta.get("confidence") == "low"):
                 low_pending += 1
+            status = row.get("status")
+            if status == "translated":
+                translated += 1
+            elif status == "failed":
+                failed += 1
+            elif status == "skipped":
+                skipped += 1
+            # 质量门失败原因统计并入主循环（entry.meta 已解析，
+            # 省去二次全量 json.loads——万级条目每轮省一整遍 O(N) 解析）。
+            # write_ready 计数同样并主循环，替代独立 _write_ready_count。
+            for reason in entry.meta.get("quality_reasons", []):
+                reasons[str(reason)] = reasons.get(str(reason), 0) + 1
+            if is_write_ready(status, row.get("translation", ""), entry.meta):
+                write_ready += 1
+        return (actionable, low_pending, translated, failed, skipped,
+                reasons, write_ready)
+
+    def _on_chips_stats(self, token: int, stats: tuple) -> None:
+        """后台统计完成：渲染 chips/写回状态/进度口径（主线程）。"""
+        if token != self._chips_token:
+            return
+        self._chips_loading = False
+        (actionable, low_pending, translated, failed, skipped,
+         reasons, write_ready) = stats
+        s = self._last_stats
         self.chip_pending.setText(f"待翻译 {actionable}")
         self.chip_pending.setToolTip(
             f"另有 {low_pending} 条低置信度条目（引擎消息/疑似噪音）留档，"
-            "可在文本审校按「低置信度」筛选查看" if low_pending else "")
-        self.chip_done.setText(f"已翻译 {store.count('translated')}")
-        self.chip_failed.setText(f"失败 {store.count('failed')}")
-        self.chip_skipped.setText(f"跳过 {store.count('skipped')}")
+            "不参与翻译；如需处理可在文本审校中逐一精修" if low_pending else "")
+        self.chip_done.setText(f"已翻译 {translated}")
+        self.chip_failed.setText(f"失败 {failed}")
+        self.chip_skipped.setText(f"跳过 {skipped}")
         self.metric_pending.setValue(f"{actionable} 条")
-        reasons: dict[str, int] = {}
-        for row in rows:
-            try:
-                meta = json.loads(row.get("meta") or "{}")
-            except (json.JSONDecodeError, TypeError):
-                meta = {}
-            for reason in meta.get("quality_reasons", []):
-                reasons[str(reason)] = reasons.get(str(reason), 0) + 1
+        if s is None:
+            # 未开始翻译：进度显示按可翻译总数口径（TranslateStats 未
+            # 导入，直接传轻量代理对象——_update_progress_widgets 只用
+            # total/done/failed 三个字段）。#2：写回失败等终端消息已
+            # 显示时跳过——异步 chips 回调不得覆盖（_on_write_drained
+            # 用 _write_terminal_message 恢复，回调时序在其后）。
+            if not self._write_terminal_message:
+                self._update_progress_widgets(type(
+                    "_StatsProxy", (), {
+                        "total": actionable, "done": 0, "failed": 0})())
         if reasons:
             summary = " · ".join(f"{reason} {count}" for reason, count in sorted(reasons.items()))
             self.quality_reason_label.setText(f"质量门失败原因：{summary}")
         else:
             self.quality_reason_label.setText("质量门失败原因：无")
-        if s is None:
-            n_total = actionable
-            n_done = 0
-            n_failed = 0
+        # 写回可用性与核心质量门同源，翻译/写回进行中禁用；SafetyBar
+        # 统一管理按钮状态与原因（§6.3：禁用时说明具体原因）
+        if self._running:
+            self.write_safety.set_ready(False, "翻译进行中，写回已锁定")
+        elif self._write_running:
+            self.write_safety.set_ready(False, "写回进行中…")
         else:
-            n_total = s.total
-            n_done = s.done + s.failed
-            n_failed = s.failed
-        if self.progress_bar.maximum() == 0:
-            self.progress_bar.setRange(0, 100)
-        self.progress_bar.setValue(
-            int(n_done / n_total * 100) if n_total else 0)
-        self.progress_label.setText(f"{n_done} / {n_total} 条")
-        self.progress_sub.setText(
-            f"剩余 {max(0, n_total - n_done)} 条 · 失败 {n_failed} 条")
-        # 写回可用性与核心质量门同源，翻译/写回进行中禁用。
-        self.write_btn.setEnabled(
-            not self._running and not self._write_running
-            and _write_ready_count(store) > 0)
+            if write_ready > 0:
+                self.write_safety.set_ready(
+                    True,
+                    f"{write_ready} 条已通过质量门，写回生成汉化副本并验证")
+            elif failed > 0:
+                self.write_safety.set_ready(
+                    False, f"仍有 {failed} 条翻译失败，请先在审校页处理")
+            else:
+                self.write_safety.set_ready(
+                    False, "还没有通过质量门的译文，先开始翻译")
         if s is None:
             self.metric_tokens.setValue("—")
             return
         self.metric_tokens.setValue(f"{s.input_tokens}↑ / {s.output_tokens}↓"
                                     f" · 请求 {s.requests}")
+
+    def _on_chips_error(self, token: int, err: str) -> None:
+        if token != self._chips_token:
+            return
+        self._chips_loading = False
+        self.chip_pending.setText("待翻译 —")
+        self.chip_done.setText("已翻译 —")
+        self.chip_failed.setText("失败 —")
+        self.quality_reason_label.setText(f"质量门失败原因：统计失败（{err[:60]}）")
 
     def _on_project(self, _proj):
         if self.state.project is None:
@@ -1124,17 +1396,8 @@ class TranslatePage(QWidget):
         self.progress_bar.setValue(0)
         self.progress_label.setText("尚未开始")
         self.log_view.clear()
-        self.stream_view.clear()
+        self.activity_feed.clear()
         self.stream_status.setText("等待开始")
-        self.throughput_chip.setValue("—")
-        api = self.state.api
-        if api.mode == "local":
-            self.model_chip.setValue(Path(api.local_model_path).stem
-                                     if api.local_model_path else "未配置")
-            self.backend_chip.setValue("本地 llama.cpp")
-        else:
-            self.model_chip.setValue(api.model or "未配置")
-            self.backend_chip.setValue("在线 API")
         self._refresh_chips()
         self._set_primary(self.start_btn)
         self.reveal_btn.setHidden(True)

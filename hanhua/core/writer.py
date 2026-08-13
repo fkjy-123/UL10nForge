@@ -11,8 +11,14 @@ from hanhua.core.quality import is_write_ready
 
 
 def write_back(store: ProjectStore, game_dir: Path, out_dir: Path,
-               target_lang: str = "zh-CN") -> int:
-    """把项目库中的译文写回 out_dir（保留相对路径/编码/EOL）。返回写回文件数。"""
+               target_lang: str = "zh-CN",
+               normalize_fallback_punctuation: bool = False) -> int:
+    """把项目库中的译文写回 out_dir（保留相对路径/编码/EOL）。返回写回文件数。
+
+    normalize_fallback_punctuation：中文字体启用时，未翻译条目回退的
+    原文做字体标点归一化（– → —），与新 bundle 渲染字节一致（需求集
+    同款变换，防 □）。字体未启用时保持 False——原文原样写回。
+    """
     files = store.get_files()
     out_dir.mkdir(parents=True, exist_ok=True)
     count = 0
@@ -32,7 +38,8 @@ def write_back(store: ProjectStore, game_dir: Path, out_dir: Path,
         elif f["format"] == "zip":
             out.write_bytes(zip_format.apply_zip(src, _entries_to_model(entries)))
         else:
-            body = _render(src, f, entries, target_lang)
+            body = _render(src, f, entries, target_lang,
+                           normalize_fallback_punctuation)
             out.write_bytes(_encode(body, src, f))
         count += 1
     return count
@@ -68,7 +75,8 @@ def _encode(body: str, src: Path, f: dict) -> bytes:
             f"文件编码：{src}") from None
 
 
-def _render(src: Path, f: dict, entries: list[dict], target_lang: str) -> str:
+def _render(src: Path, f: dict, entries: list[dict], target_lang: str,
+            normalize_fallback_punctuation: bool = False) -> str:
     fmt = f["format"]
     model_entries = [_dict_to_entry(d) for d in entries]
     # 写回保护：键名/键字段条目即使曾被（误）翻译也不写回。
@@ -76,7 +84,15 @@ def _render(src: Path, f: dict, entries: list[dict], target_lang: str) -> str:
     from hanhua.core.models import STATUS_SKIPPED
     for e in model_entries:
         if not is_write_ready(e.status, e.translation, e.meta):
-            e.translation = ""
+            if normalize_fallback_punctuation:
+                # 回退原文 = 实际渲染字节：字体替换后 TMP 文本全由新
+                # bundle 渲染，原文含 bundle 缺字标点（– → —）会渲染为
+                # □——与 _font_required_glyph_set 需求集同款归一化，防缺字
+                from hanhua.core.font.punct_normalize import (
+                    normalize_font_punctuation)
+                e.translation = normalize_font_punctuation(e.original)
+            else:
+                e.translation = ""
         if is_key_style_identifier(e.original) or (
                 fmt == "json" and looks_like_key_field(e.key_path.rsplit("/", 1)[-1])):
             e.translation = ""

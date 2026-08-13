@@ -335,6 +335,23 @@ def _inherent_untranslatable(text: str) -> bool:
                 or _JAPANESE_KANA_RE.search(text))
 
 
+def _clear_review_state(meta: dict) -> None:
+    """重译成功写入前清旧审核终态（#9：重译是新的开始）。
+
+    审核阻断（review_outcome=BLOCKED/NEEDS_REVISION、review_blocked 等
+    残留）会让发布门 fail-closed 拒绝重译成功的译文——用户「重试失败/
+    标记为待翻译」后重译成功仍不可写回，失败文本无法自己处理。与
+    manual_correction 的 _REVIEW_STATE_CLEAR 同一清理语义；quality 门
+    字段由调用方随后重写。
+    """
+    for field in ("review_outcome", "review_blocked", "review_error",
+                  "need_revision", "need_retranslate", "review_level",
+                  "review_reason", "review_suggestion", "review_error_kind",
+                  "review_blocked_rounds", "rejected_candidate",
+                  "quality_reasons", "review_issue"):
+        meta.pop(field, None)
+
+
 def _record_failure_attempt(entry: TextEntry, reason: str) -> None:
     """Q3 失败记账：attempt_count 跨轮累计 + failure_category 分类。
 
@@ -385,7 +402,7 @@ class BatchTranslator:
     def __init__(self, client: BaseClient, batch_size: int = 25, concurrency: int = 3,
                  memory=None, model: str = "", lang: str = "→zh-CN",
                  system_prompt: str = "", placeholder_check: bool = True,
-                 glossary=(), cancellation_event=None,
+                 glossary=(), glossary_force=(), cancellation_event=None,
                  agent_memory=None, agent_game: str = "",
                  context_store=None, context_game: str = "",
                  vector_recall=None):
@@ -397,7 +414,17 @@ class BatchTranslator:
         self.lang = lang
         self.system_prompt = system_prompt
         self.placeholder_check = placeholder_check
+        # glossary = 强制 + 参考注入 + 精确直填全用途词对；glossary_force
+        # = 仅质量门强制（glossary_mismatch 判定）的词对子集。
+        # 经验记忆参考档（reference_pairs）设计即「参考而非强制」——
+        # 并入 glossary 使其成为硬规则（Morfosi 64 条同因全灭实证：
+        # ('Locked','锁定') 把自然句 "IT'S LOCKED." 判为标签语境强制），
+        # GUI/runner 只把术语库 active + 知识库译例传入 glossary_force，
+        # 记忆词对保留参考注入与精确直填（打破回显死循环）但不强制。
+        # 不传 glossary_force（或传空）→ 回退全量 glossary（旧行为）。
         self.glossary = tuple(glossary)
+        self._glossary_force = (
+            tuple(glossary_force) if glossary_force else self.glossary)
         self.cancellation_event = cancellation_event
         # 经验记忆（AgentMemory，跨游戏）：高置信短语直接应用 +
         # 质量门通过译文沉淀证据。agent_game 用于记忆溯源（来源游戏）。
@@ -527,6 +554,16 @@ class BatchTranslator:
 
         def emit_stats():
             """降级逐条期间实时上报进度（重算当前计数）。"""
+            if progress_cb is None:
+                # 无监听者零成本（#13 卡顿实证：runner 无 UI 场景每批
+                # O(N) 全扫 run_scope 白算）。计数由各路径递增（含 C4
+                # 预算耗尽 failed 补记），此处仅维护 tokens/requests 最终
+                # 统计（O(1)）——统计语义与重算完全等价。
+                with self._metrics_lock:
+                    stats.requests = self._requests
+                    stats.input_tokens = self._input_tokens
+                    stats.output_tokens = self._output_tokens
+                return
             stats.done = sum(
                 1 for entry in run_scope
                 if entry.status == STATUS_TRANSLATED)
@@ -539,8 +576,7 @@ class BatchTranslator:
                 stats.requests = self._requests
                 stats.input_tokens = self._input_tokens
                 stats.output_tokens = self._output_tokens
-            if progress_cb:
-                progress_cb(replace(stats))
+            progress_cb(replace(stats))
 
         # 1) 翻译记忆命中（工作记忆，会话级缓存）
         hits: dict[str, str] = {}
@@ -567,9 +603,13 @@ class BatchTranslator:
                         # run_scope，永久 pending 不 fail 不 translated，
                         # 统计不可见（只算进 pending 计数）；直接置 failed
                         # 保留拒绝原因供报告审计。
+                        # 补记 stats.failed（#13：emit_stats 无监听者时不再
+                        # 全扫重算 failed——此前预算耗尽计数只靠重算兜底）
                         e.status = (
                             STATUS_FAILED if _attempt_exhausted(e)
                             else "pending")
+                        if e.status == STATUS_FAILED:
+                            stats.failed += 1
                     changed.append(e)
             flush()
             if progress_cb:
@@ -605,6 +645,8 @@ class BatchTranslator:
                     e.status = (
                         STATUS_FAILED if _attempt_exhausted(e)
                         else "pending")
+                    if e.status == STATUS_FAILED:
+                        stats.failed += 1
                 self.agent_memory.apply_feedback(
                     e.original,
                     context_key_of(str(e.meta.get("role", ""))),
@@ -642,6 +684,8 @@ class BatchTranslator:
                     e.status = (
                         STATUS_FAILED if _attempt_exhausted(e)
                         else "pending")
+                    if e.status == STATUS_FAILED:
+                        stats.failed += 1
                 changed.append(e)
             flush()
             if progress_cb:
@@ -690,6 +734,8 @@ class BatchTranslator:
                     e.status = (
                         STATUS_FAILED if _attempt_exhausted(e)
                         else "pending")
+                    if e.status == STATUS_FAILED:
+                        stats.failed += 1
                 changed.append(e)
             flush()
             if progress_cb:
@@ -950,6 +996,7 @@ class BatchTranslator:
         e.status = "translated"
         e.quality_reasons = ()
         e.meta = dict(e.meta)
+        _clear_review_state(e.meta)
         e.meta["quality_passed"] = True
         e.meta["quality_reasons"] = []
         e.meta["language_source_kept"] = True
@@ -1070,6 +1117,7 @@ class BatchTranslator:
                 e.status = "translated"
                 e.quality_reasons = ()
                 e.meta = dict(e.meta)
+                _clear_review_state(e.meta)
                 e.meta["quality_passed"] = True
                 e.meta["quality_reasons"] = []
                 e.meta["deterministic_fill"] = "language_option"
@@ -1091,6 +1139,7 @@ class BatchTranslator:
                     e.status = "translated"
                     e.quality_reasons = ()
                     e.meta = dict(e.meta)
+                    _clear_review_state(e.meta)
                     e.meta["quality_passed"] = True
                     e.meta["quality_reasons"] = []
                     e.meta["deterministic_fill"] = "glossary_pair"
@@ -1183,6 +1232,7 @@ class BatchTranslator:
                 e.translation = sub[0][1]
                 e.quality_reasons = ()
                 e.meta = dict(e.meta)
+                _clear_review_state(e.meta)
                 e.meta["quality_passed"] = True
                 e.meta["quality_reasons"] = []
                 e.meta["line_merged"] = True
@@ -1353,6 +1403,7 @@ class BatchTranslator:
                 e.translation = e.original
                 e.quality_reasons = ()
                 e.meta = dict(e.meta)
+                _clear_review_state(e.meta)
                 e.meta["quality_passed"] = True
                 e.meta["quality_reasons"] = []
                 e.meta["language_source_kept"] = True
@@ -2260,7 +2311,7 @@ class BatchTranslator:
                 parts.append(translation[prev:])
                 translation = "".join(parts)
         result = validate_translation_quality(
-            entry, translation, self.glossary,
+            entry, translation, self._glossary_force,
             check_placeholders=self.placeholder_check,
         )
         # 格式模板串自愈：日期/数字格式模板（yyyy-MM-dd HH:mm:ss）是
@@ -2426,6 +2477,9 @@ class BatchTranslator:
         entry.translation = result.normalized_translation
         entry.quality_reasons = result.reasons
         entry.meta = dict(entry.meta)
+        # #9：重译成功清旧审核终态（BLOCKED/NEEDS_REVISION 残留会
+        # fail-closed 拒绝新译文）；quality 门字段随 result 重写
+        _clear_review_state(entry.meta)
         entry.meta["quality_passed"] = result.passed
         entry.meta["quality_reasons"] = list(result.reasons)
         if not result.passed and result.reasons:

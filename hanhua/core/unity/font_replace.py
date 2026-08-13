@@ -7,10 +7,12 @@
    Unity 对 dynamic Font 在运行时按 TTF 生成字形图集，替换后拉丁+中文全部可渲染。
 
 2. TMP_FontAsset 替换（版本化 bundle 路径）：
-   按游戏 Unity 版本选择 ``fonts/TMP_Font_AssetBundles_2025-12-08`` 中
-   对应版本的 ARIALUNI SDF 字体 bundle（u55to2017/u2018=TMP 1.x，
-   u2019/u2021/u2022=TMP 2.x，u6000=TMP 3.x），把游戏内 TMP_FontAsset 的
-   字形表/字符表/面信息替换为 bundle 字体的，图集 Texture2D 数据同步替换。
+   按游戏 Unity 版本 + 粗细档位选择 ``fonts/TMP_Font_AssetBundles`` 中
+   思源黑体（SourceHanSansSC）SDF 字体 bundle
+   ``sourcehan_sdf_<heavy|medium|thin>_u<2019|2021|2022|6000>``
+   （u2019/u2021/u2022=TMP 2.x，u6000=TMP 3.x；TMP 1.x 2018 及更早无
+   中文 SDF bundle，仅 legacy Font 路径可替换），把游戏内 TMP_FontAsset
+   的字形表/字符表/面信息替换为 bundle 字体的，图集 Texture2D 数据同步替换。
 
 安全语义：任何失败只跳过该对象并记录，绝不阻断文本写回；替换后重开验证
 （m_FontData == 目标 TTF / m_GlyphTable 数量一致）；外部流图集以追加方式
@@ -41,6 +43,22 @@ class FontReplaceResult:
     # 下 bundle CRC 已变，catalog.bin 中的 CRC 必须二次同步，否则运行时
     # CRC Mismatch 拒载（write_back_v2 末尾的 catalog 更新早于字体替换）。
     replaced_paths: list[str] = field(default_factory=list)
+    # ── Phase 2：结构化覆盖（replaced > 0 不再代表全局成功） ──
+    # 逐对象消费者记录 + 逐码点覆盖结果。调用方传入 RequiredGlyphSet 后，
+    # overall/incomplete 才有意义；未传时保持 None（旧行为兼容）。
+    consumers: list = field(default_factory=list)
+    coverage: object | None = None          # FontCoverageOutcome
+    overall: str | None = None              # CoverageState 名
+    incomplete: bool = False                # 存在未覆盖/阻断消费者
+
+    def summary_text(self) -> str:
+        """审计报告行：替换数 + 覆盖终态（有覆盖计算时）。"""
+        if self.coverage is None:
+            return f"字体替换 {self.replaced} 个对象，{len(self.skipped)} 个跳过"
+        text = f"字体替换 {self.replaced} 个对象，整体 {self.overall}"
+        if self.incomplete:
+            text += "（未覆盖——禁止称全局成功）"
+        return text
 
 
 @dataclass(frozen=True)
@@ -56,42 +74,70 @@ class TmpBundlePayload:
     atlas_width: int
     atlas_height: int
     atlas_format: int
+    #: Phase 2：载荷真实字符集（character table 提取）——替换后消费者
+    #: 的字形覆盖按此逐码点验证，不再只比总 glyph 数
+    charset: frozenset[int] = frozenset()
+    #: material/shader 契约（tmp_contract 校验用；缺失可降级）
+    material_name: str = ""
+    shader_name: str = ""
 
 
 # ── 版本映射 ────────────────────────────────────────────────
 
+def _make_env(typetree_generator=None):
+    """UnityPy Environment 构造：Mono 游戏 typetree 生成器透传。
+
+    资产构建未带 typetree 时（DisableWriteTypeTree），MonoBehaviour 读取
+    全部失败——TMP_FontAsset 找不到、静态替换与重开验证全空跑（hickory
+    实证：2 个 Spectral SDF 字体 99 字形纯 ASCII 未被发现 → 中文缺字
+    口口口）。挂上生成器后对象可读，替换/验证才能命中。
+    """
+    from UnityPy import Environment
+    env = Environment()
+    if typetree_generator is not None:
+        env.typetree_generator = typetree_generator
+    return env
+
+
 def _bundle_dir() -> Path:
     return (Path(__file__).resolve().parents[3] / "fonts"
-            / "TMP_Font_AssetBundles_2025-12-08")
+            / "TMP_Font_AssetBundles")
 
 
-def select_tmp_bundle(unity_version: str | None) -> Path | None:
-    """按 Unity 主版本选 TMP 字体 bundle；未知版本返回 None。"""
+#: TMP2 布局可用的 Unity 主版本（2019+，tmp2 骨架）→ bundle 后缀。
+#: 2018 及更早是 TMP1 布局（m_glyphInfoList），用户的中文 SDF 资产
+#: （TMP 1.1.0，tmp2 布局）不兼容 → 无可用 bundle，返回 None。
+_TMP2_WEIGHT_SUFFIXES = {"heavy": "heavy", "medium": "medium", "thin": "thin"}
+
+
+def select_tmp_bundle(unity_version: str | None,
+                      weight: str = "medium") -> Path | None:
+    """按 Unity 主版本 + 粗细档位选 TMP 字体 bundle；未知返回 None。
+
+    weight ∈ heavy/medium/thin → sourcehan_sdf_<weight>_u<ver>（用户
+    制作的思源黑体 SDF，覆盖 6 万码点，中文不缺字）。TMP1（2018 及
+    更早）无中文 SDF bundle，返回 None（仅 legacy Font 路径可替换）。
+    """
     if not unity_version:
         return None
     major = _MAJOR_VERSION.match(unity_version.strip())
     if not major:
         return None
     major_num = int(major.group(1))
-    names = {
-        "TMP1": "arialuni_sdf-u55to2017",
-        "TMP2": "arialuni_sdf_u2019",
-    }
-    if major_num <= 2017:
-        filename = names["TMP1"]
-    elif major_num == 2018:
-        filename = "arialuni_sdf_u2018"
-    elif major_num <= 2020:
-        filename = "arialuni_sdf_u2019"
+    if major_num <= 2018:
+        return None
+    weight_name = _TMP2_WEIGHT_SUFFIXES.get(weight or "medium", "medium")
+    if major_num <= 2020:
+        suffix = "u2019"
     elif major_num == 2021:
-        filename = "arialuni_sdf_u2021"
+        suffix = "u2021"
     elif major_num == 2022:
-        filename = "arialuni_sdf_u2022"
+        suffix = "u2022"
     elif major_num >= 6000:
-        filename = "arialuni_sdf_u6000"
+        suffix = "u6000"
     else:
         return None
-    bundle = _bundle_dir() / filename
+    bundle = _bundle_dir() / f"sourcehan_sdf_{weight_name}_{suffix}"
     return bundle if bundle.is_file() else None
 
 
@@ -144,9 +190,10 @@ def load_tmp_bundle(bundle: Path) -> TmpBundlePayload:
     font_obj = atlas_obj = None
     try:
         env.load([str(bundle)])
-        seen: set[tuple[str, int]] = set()
+        seen: set[tuple[str, str, int]] = set()
+        material_name = shader_name = ""
         for obj in env.objects:
-            key = (obj.type.name, obj.path_id)
+            key = (_obj_file_key(obj), obj.type.name, obj.path_id)
             if key in seen:
                 continue
             seen.add(key)
@@ -156,6 +203,10 @@ def load_tmp_bundle(bundle: Path) -> TmpBundlePayload:
                     font_obj = (obj, tree)
             elif obj.type.name == "Texture2D" and atlas_obj is None:
                 atlas_obj = (obj, obj.read_typetree())
+            elif obj.type.name == "Material" and not material_name:
+                tree = obj.read_typetree()
+                material_name = str(tree.get("m_Name", "") or "")
+                shader_name = str(tree.get("m_ShaderName", "") or "")
         if font_obj is None or atlas_obj is None:
             raise ValueError(
                 f"TMP 字体 bundle 缺少字体或图集对象: {bundle.name}")
@@ -167,6 +218,11 @@ def load_tmp_bundle(bundle: Path) -> TmpBundlePayload:
         atlas_bytes = _extract_atlas_bytes(env, atlas_tex, bundle, atlas_tree)
         if not atlas_bytes:
             raise ValueError(f"TMP 字体 bundle 图集数据缺失: {bundle.name}")
+        # Phase 2：真实字符集 = 字符表码点（tmp1: m_glyphInfoList 内嵌）
+        if layout == "tmp2":
+            charset = frozenset(_tmp_chars(font_tree))
+        else:
+            charset = frozenset(_tmp1_codes(font_tree))
         return TmpBundlePayload(
             bundle_path=bundle,
             font_name=str(font_tree.get("m_Name", "ARIALUNI SDF")),
@@ -178,6 +234,9 @@ def load_tmp_bundle(bundle: Path) -> TmpBundlePayload:
             atlas_width=int(atlas_tree.get("m_Width") or 0),
             atlas_height=int(atlas_tree.get("m_Height") or 0),
             atlas_format=int(atlas_tree.get("m_TextureFormat") or 0),
+            charset=charset,
+            material_name=material_name,
+            shader_name=shader_name,
         )
     finally:
         _dispose_environment(env)
@@ -323,12 +382,12 @@ def _verify_legacy_saved(saved: Path, ttf_bytes: bytes, replaced: int) -> None:
     verify = Environment()
     try:
         verify.load([str(saved)])
-        seen: set[tuple[str, int]] = set()
+        seen: set[tuple[str, str, int]] = set()
         matched = 0
         for obj in verify.objects:
             if obj.type.name != "Font":
                 continue
-            key = (obj.type.name, obj.path_id)
+            key = (_obj_file_key(obj), obj.type.name, obj.path_id)
             if key in seen:
                 continue
             seen.add(key)
@@ -348,39 +407,55 @@ def replace_legacy_fonts_in_container(
     path: Path,
     ttf_bytes: bytes,
     progress: int = 0,
-) -> tuple[int, list[str]]:
+    typetree_generator: Any | None = None,
+) -> tuple[int, list[str], list]:
     """替换单个 Unity 容器（.assets/level/bundle）内全部 Font 对象的内嵌 TTF。
 
-    返回 (替换数, 跳过原因列表)。
+    返回 (替换数, 跳过原因列表, 消费者记录列表)。Phase 2：每个 Font 对象
+    都进消费者清单——已替换的附目标 TTF 真实字符集（cmap 解析），未替换的
+    记为 STATIC_NOT_REPLACED（不得静默消失）。
     """
-    from UnityPy import Environment
-    env = Environment()
+    from hanhua.core.font import FontConsumer
+    from hanhua.core.font.ttf_charset import ttf_charset
+    env = _make_env(typetree_generator)
     replaced = 0
     skipped: list[str] = []
+    consumers: list[FontConsumer] = []
+    ttf_chars: frozenset[int] = ttf_charset(ttf_bytes)
     try:
         env.load([str(path)])
-        seen: set[tuple[str, int]] = set()
+        seen: set[tuple[str, str, int]] = set()
         for obj in env.objects:
             if obj.type.name != "Font":
                 continue
-            key = (obj.type.name, obj.path_id)
+            key = (_obj_file_key(obj), obj.type.name, obj.path_id)
             if key in seen:
                 continue
             seen.add(key)
             try:
                 if _patch_font_object(env, obj, ttf_bytes):
                     replaced += 1
+                    consumers.append(FontConsumer(
+                        f"{path.name}#Font#{obj.path_id}", "legacy_font",
+                        static_replaced=True, font_scalars=ttf_chars,
+                        atlas_resolved=True,
+                        ref="内嵌 TTF 已替换 · 字符集按 cmap 解析"))
+                    continue
             except Exception as exc:  # noqa: BLE001
                 skipped.append(f"{path.name}#Font#{obj.path_id}: {exc}")
+            consumers.append(FontConsumer(
+                f"{path.name}#Font#{obj.path_id}", "legacy_font",
+                static_replaced=False,
+                ref="无内嵌 TTF（静态位图/外部引用）未替换"))
         if not replaced:
-            return 0, skipped
+            return 0, skipped, consumers
         _replace_and_swap(
             path, env,
             verify_fn=lambda saved: _verify_legacy_saved(saved, ttf_bytes, replaced),
         )
     finally:
         _dispose_environment(env)
-    return replaced, skipped
+    return replaced, skipped, consumers
 
 
 # ── TMP_FontAsset 替换 ──────────────────────────────────────
@@ -395,22 +470,40 @@ _CJK_MIN_TOTAL = 2000  # 字符表 CJK 码点数门槛（覆盖样本外生僻�
 
 
 def _tmp_chars(tree: dict) -> list[int]:
-    """从 TMP 字符表提取 unicode 码点（tmp1/tmp2 兼容）。"""
+    """从 TMP 字符表提取 unicode 码点（tmp1/tmp2 兼容）。
+
+    tmp2：m_CharacterTable[].m_Unicode；tmp1：m_glyphInfoList[].m_characterCode。
+    m_Unicode 缺失时回退 m_characterCode（兼容不同序列化命名）。
+    """
     chars: list[int] = []
-    for key in ("m_CharacterTable", "m_characterTable"):
-        table = tree.get(key)
-        if isinstance(table, list):
-            for item in table:
-                if isinstance(item, dict):
-                    u = item.get("m_Unicode")
-                    if isinstance(u, int):
-                        chars.append(u)
-                    elif isinstance(u, str):
-                        try:
-                            chars.append(int(u, 16))
-                        except ValueError:
-                            pass
+    table = next((tree[k] for k in
+                  ("m_CharacterTable", "m_characterTable", "m_glyphInfoList")
+                  if isinstance(tree.get(k), list)), None)
+    for item in table or []:
+        if not isinstance(item, dict):
+            continue
+        u = item.get("m_Unicode")
+        if isinstance(u, str):
+            try:
+                u = int(u, 16)
+            except ValueError:
+                continue
+        if not isinstance(u, int):
+            u = item.get("m_characterCode")
+        if isinstance(u, int):
+            chars.append(u)
     return chars
+
+
+def _tmp1_codes(tree: dict) -> list[int]:
+    """tmp1 布局：m_glyphInfoList 内嵌 m_characterCode（载荷字符集提取）。"""
+    codes: list[int] = []
+    for glyph in tree.get("m_glyphInfoList") or []:
+        code = glyph.get("m_characterCode") if isinstance(glyph, dict) \
+            else None
+        if isinstance(code, int):
+            codes.append(code)
+    return codes
 
 
 def _tmp_covers_cjk(tree: dict) -> bool:
@@ -422,10 +515,25 @@ def _tmp_covers_cjk(tree: dict) -> bool:
     return all(c in cjk for c in _CJK_SAMPLE_CODES)
 
 
+def _tmp_covers_required(tree: dict, required: set[int]) -> bool:
+    """Phase 2：按本次真实译文需求集验证游戏自带字体（实现重点 2）。
+
+    旧逻辑（样本启发式 _tmp_covers_cjk）只验常用字子集——字形很多但缺
+    译文生僻字照样跳过替换 → 方框。现在：游戏字体字符表 ⊇ 需求集才算
+    「已覆盖」；缺任何需求码点都必须替换。
+    """
+    chars = set(_tmp_chars(tree))
+    return required <= chars
+
+
 _TMP2_COPY_FIELDS = (
     "m_FaceInfo", "m_GlyphTable", "m_CharacterTable",
     "m_AtlasTextureIndex", "m_IsMultiAtlasTexturesEnabled",
     "m_UsedGlyphRects", "m_FreeGlyphRects",
+    # 图集尺寸/padding：UV 坐标系依赖（hickory 实证缺陷）——bundle 图集
+    # 4096×4096 而游戏原 512/1024，不复制则 TMP 按 m_AtlasWidth=512 计算
+    # UV（rect/512 而非 rect/4096）→ 8 倍采样偏移 → 文本部分笔画。
+    "m_AtlasWidth", "m_AtlasHeight", "m_AtlasPadding",
 )
 _TMP1_COPY_FIELDS = (
     "m_fontInfo", "m_glyphInfoList", "m_kerningInfo",
@@ -450,11 +558,18 @@ def _copy_font_fields(game_tree: dict, payload: TmpBundlePayload) -> bool:
     return changed
 
 
-def _resolve_atlas_obj(env, tree: dict) -> object | None:
-    """解析 TMP 字体引用的图集 Texture2D。
+def _resolve_atlas_obj(env, tree: dict, anchor=None) -> object | None:
+    """解析 TMP 字体引用的图集 Texture2D（必须与字体同 SerializedFile）。
 
     Unity 引用 `m_FileID=0` 表示同一 SerializedFile 内的对象 —— 旧代码把
     "0" 当作资产文件名比对导致永远找不到图集（project-arrhythmia 真实失败）。
+
+    **path_id 只在 SerializedFile 内唯一**：data.unity3d 这类多文件 bundle
+    里跨文件会重号（hickory 实证：sharedassets0 与 globalgamemanagers 都有
+    pid=31）。全局找第一个同号对象会误选无关纹理（副本实证：FalloffLookup
+    /Large02/LDR_LLL1_9 四个无关纹理被撑成 4096×16MB，真图集从未替换 →
+    字形表 8361 配 512 原图 → 部分笔画 + 无关纹理撑爆卡顿）。anchor 为字体
+    对象时按同 assets_file 限定。
     """
     refs = tree.get("m_AtlasTextures") or tree.get("atlas")
     ref = None
@@ -476,10 +591,24 @@ def _resolve_atlas_obj(env, tree: dict) -> object | None:
         path_id = int(path_id)
     except (TypeError, ValueError):
         return None
+    anchor_file = _obj_file_key(anchor) if anchor is not None else None
     for other in env.objects:
-        if other.type.name == "Texture2D" and int(other.path_id) == path_id:
+        if other.type.name != "Texture2D":
+            continue
+        if anchor_file is not None and _obj_file_key(other) != anchor_file:
+            continue
+        if int(other.path_id) == path_id:
             return other
     return None
+
+
+def _obj_file_key(obj) -> str:
+    """对象所在 SerializedFile 名；mock/异常时回退空串（单文件 env 下
+    所有对象 key 相同 → anchor 限定自然放宽，测试 fixture 兼容）。"""
+    assets_file = getattr(obj, "assets_file", None)
+    if assets_file is None:
+        return ""
+    return getattr(assets_file, "name", "") or ""
 
 
 def _patch_atlas_texture(env, atlas_obj, payload: TmpBundlePayload) -> dict | None:
@@ -509,20 +638,32 @@ def _patch_atlas_texture(env, atlas_obj, payload: TmpBundlePayload) -> dict | No
 def replace_tmp_fonts_in_container(
     path: Path,
     payload: TmpBundlePayload,
-) -> tuple[int, list[str]]:
-    """替换单个容器内全部 TMP_FontAsset 对象。返回 (替换数, 跳过列表)。"""
-    from UnityPy import Environment
-    env = Environment()
+    *,
+    required: set[int] | None = None,
+    unity_version: str | None = None,
+    typetree_generator: Any | None = None,
+) -> tuple[int, list[str], list]:
+    """替换单个容器内全部 TMP_FontAsset 对象。
+
+    返回 (替换数, 跳过列表, 消费者记录列表)。Phase 2：
+    - required 给定 → 「已覆盖」按真实译文需求集验证（实现重点 2），
+      缺任何需求码点都必须替换；
+    - 每个 TMP 对象都进消费者清单：布局不匹配 / dynamic 0 glyph /
+      atlas 未解析 / 已覆盖 / 已替换 各有明确终态（实现重点 3/4/5）。
+    """
+    from hanhua.core.font import FontConsumer
+    env = _make_env(typetree_generator)
     replaced = 0
     skipped: list[str] = []
     patched: list = []
+    consumers: list[FontConsumer] = []
     try:
         env.load([str(path)])
-        seen: set[tuple[str, int]] = set()
+        seen: set[tuple[str, str, int]] = set()
         for obj in env.objects:
             if obj.type.name != "MonoBehaviour":
                 continue
-            key = (obj.type.name, obj.path_id)
+            key = (_obj_file_key(obj), obj.type.name, obj.path_id)
             if key in seen:
                 continue
             seen.add(key)
@@ -533,69 +674,146 @@ def replace_tmp_fonts_in_container(
             if _typetree_layout_version(tree) is None:
                 continue
             layout = _typetree_layout_version(tree)
+            cid = f"{path.name}#TMP#{obj.path_id}"
             if layout != payload.layout_version:
                 skipped.append(
                     f"{path.name}#TMP#{obj.path_id}: layout {layout} "
                     f"!= bundle {payload.layout_version}")
+                consumers.append(FontConsumer(
+                    cid, "tmp_font", static_replaced=False,
+                    layout_ok=False, unity_version=unity_version,
+                    ref=f"布局 {layout} != bundle {payload.layout_version}"))
                 continue
             glyphs = len(tree.get("m_GlyphTable")
                          or tree.get("m_glyphInfoList") or [])
             if glyphs <= 0:
-                # 动态/空字体：字形由运行时生成，替换静态字形表有行为冲突风险
-                skipped.append(
-                    f"{path.name}#TMP#{obj.path_id}: dynamic font (0 glyphs)")
+                # 动态/空字体（0 glyph）：字形本由运行时生成。仍可静态
+                # 替换——bundle 字符表全量覆盖需求集时 TMP 查表渲染，
+                # 未收录码点才走原动态路径（源字体引用保留、动态 mode
+                # 字段不在复制清单内），无行为冲突。hickory 实证：用户
+                # SDF 字体方案无 TTF 数据源，插件兜底不可部署
+                # （FontInstallError），0-glyph 字体不静态替换 → 动态
+                # 消费者永久 BLOCKED。图集引用不可解析时归 dynamic_tmp
+                # （运行时路径，诚实阻断）。
+                atlas_obj = _resolve_atlas_obj(env, tree, obj)
+                if atlas_obj is None:
+                    skipped.append(
+                        f"{path.name}#TMP#{obj.path_id}: dynamic font (0 glyphs)")
+                    consumers.append(FontConsumer(
+                        cid, "dynamic_tmp",
+                        runtime_provider_available=False,
+                        ref="dynamic 0 glyph——静态无法证明覆盖"))
+                    continue
+                # 静态替换后必须关掉动态注入：mode=1（Dynamic）会在运行时
+                # 按源字体生成字形注入图集——静态 8361 字符表 + 静态
+                # FreeGlyphRects 下注入会破坏图集布局（启动卡顿 + 部分笔画，
+                # hickory 实测根源之一）。静态替换即全部字形查表渲染，
+                # mode=0（Static）无副作用。
+                if isinstance(tree.get("m_AtlasPopulationMode"), int) \
+                        and tree["m_AtlasPopulationMode"] != 0:
+                    tree["m_AtlasPopulationMode"] = 0
+                changed = _copy_font_fields(tree, payload)
+                atlas_tree = _patch_atlas_texture(env, atlas_obj, payload)
+                if atlas_tree is None:
+                    skipped.append(
+                        f"{path.name}#TMP#{obj.path_id}: "
+                        "dynamic atlas replace failed")
+                    consumers.append(FontConsumer(
+                        cid, "tmp_font", static_replaced=False,
+                        layout_ok=True, unity_version=unity_version,
+                        atlas_resolved=False, ref="动态字体图集替换失败"))
+                    continue
+                atlas_obj.save_typetree(atlas_tree)
+                if changed:
+                    obj.save_typetree(tree)
+                patched.append((obj, atlas_obj))
+                replaced += 1
+                consumers.append(FontConsumer(
+                    cid, "tmp_font", static_replaced=True,
+                    font_scalars=payload.charset,
+                    layout_ok=True, unity_version=unity_version,
+                    ref=f"bundle {payload.font_name} 已替换动态字体 · "
+                        f"{len(payload.charset)} 字符"))
                 continue
-            if _tmp_covers_cjk(tree):
-                # 字符表已覆盖常用汉字（如游戏自带 chi_NotoSansCH）：
-                # 保留原字体，避免无谓替换与 bundle 膨胀
+            game_chars = set(_tmp_chars(tree))
+            if required is not None:
+                covers = required <= game_chars
+            else:
+                covers = _tmp_covers_cjk(tree)
+            if covers:
+                # 游戏自带字体已覆盖需求集（或常用汉字样本）→ 保留原字体，
+                # 避免无谓替换与 bundle 膨胀；其字符集即真实字形覆盖证据
                 skipped.append(
-                    f"{path.name}#TMP#{obj.path_id}: already covers CJK")
+                    f"{path.name}#TMP#{obj.path_id}: already covers "
+                    f"{'required' if required is not None else 'CJK'}")
+                consumers.append(FontConsumer(
+                    cid, "tmp_font", static_replaced=True,
+                    font_scalars=frozenset(game_chars),
+                    layout_ok=True, unity_version=unity_version,
+                    ref="游戏自带字体字符表已覆盖需求集"))
                 continue
             changed = _copy_font_fields(tree, payload)
-            # 图集：游戏字体引用的 Texture2D 需要同步替换（m_FileID=0 为同文件引用）
-            atlas_obj = _resolve_atlas_obj(env, tree)
+            # 图集：游戏字体引用的 Texture2D 需要同步替换（m_FileID=0 为
+            # 同文件引用；anchor 限定同 SerializedFile——跨文件同号对象
+            # 是错误目标，hickory 实证误替换撑爆无关纹理）
+            atlas_obj = _resolve_atlas_obj(env, tree, obj)
             if atlas_obj is None:
                 skipped.append(f"{path.name}#TMP#{obj.path_id}: atlas not found")
+                consumers.append(FontConsumer(
+                    cid, "tmp_font", static_replaced=False,
+                    layout_ok=True, unity_version=unity_version,
+                    atlas_resolved=False,
+                    ref="图集引用未解析（跨文件引用）"))
                 continue
             atlas_tree = _patch_atlas_texture(env, atlas_obj, payload)
             if atlas_tree is None:
                 skipped.append(
                     f"{path.name}#TMP#{obj.path_id}: atlas replace failed")
+                consumers.append(FontConsumer(
+                    cid, "tmp_font", static_replaced=False,
+                    layout_ok=True, unity_version=unity_version,
+                    atlas_resolved=False, ref="图集替换失败"))
                 continue
             atlas_obj.save_typetree(atlas_tree)
             if changed:
                 obj.save_typetree(tree)
             patched.append((obj, atlas_obj))
             replaced += 1
+            consumers.append(FontConsumer(
+                cid, "tmp_font", static_replaced=True,
+                font_scalars=payload.charset,   # 替换后真实字形 = bundle 字符集
+                layout_ok=True, unity_version=unity_version,
+                ref=f"bundle {payload.font_name} 已替换 · "
+                    f"{len(payload.charset)} 字符"))
         if not patched:
-            return 0, skipped
+            return 0, skipped, consumers
         _replace_and_swap(
             path, env,
             verify_fn=lambda saved: _verify_tmp_saved(
-                saved, payload, replaced))
+                saved, payload, replaced, typetree_generator))
     finally:
         _dispose_environment(env)
-    return replaced, skipped
+    return replaced, skipped, consumers
 
 
-def _verify_tmp_saved(saved: Path, payload: TmpBundlePayload, replaced: int) -> None:
+def _verify_tmp_saved(saved: Path, payload: TmpBundlePayload, replaced: int,
+                      typetree_generator: Any | None = None) -> None:
     """重开临时容器验证 TMP 字形表 + 图集像素均已替换。
 
     只验字形数量会漏掉「元数据更新但流没写入」的假通过——旧实现正是如此
     （同尺寸分支只改 typetree 不写像素）。图集流数据必须逐字节等于
     payload.atlas_stream。
     """
-    from UnityPy import Environment
-    verify = Environment()
+    verify = _make_env(typetree_generator)
     try:
         verify.load([str(saved)])
-        seen: set[tuple[str, int]] = set()
+        seen: set[tuple[str, str, int]] = set()
         matched = 0
         atlas_verified = 0
         for obj in verify.objects:
             if obj.type.name != "MonoBehaviour":
                 continue
-            key = (obj.type.name, obj.path_id)
+            key = (_obj_file_key(obj), obj.type.name, obj.path_id)
             if key in seen:
                 continue
             seen.add(key)
@@ -609,7 +827,7 @@ def _verify_tmp_saved(saved: Path, payload: TmpBundlePayload, replaced: int) -> 
                          or tree.get("m_glyphInfoList") or [])
             if glyphs == payload.glyph_count:
                 matched += 1
-            atlas_obj = _resolve_atlas_obj(verify, tree)
+            atlas_obj = _resolve_atlas_obj(verify, tree, obj)
             if atlas_obj is None:
                 continue
             atlas_tree = atlas_obj.read_typetree()
@@ -665,34 +883,64 @@ def _asset_candidates(out_dir: Path) -> list[Path]:
             if not any(part.casefold() in excluded for part in c.parts)]
 
 
-def install_static_fonts(
-    out_dir: Path,
-    config: FontConfig,
-    *,
-    unity_version: str | None = None,
-) -> FontReplaceResult:
+def _split_parts(parts: tuple):
+    """(replaced, skipped, consumers) → (replaced, skipped, consumers)。
+
+    容器函数返回 3-tuple（第三个元素是消费者列表）；旧 2-tuple 返回
+    （无消费者记录）也容忍。star-unpacking 会把列表整体收进一个元素，
+    这里归一化。
+    """
+    replaced, skipped, *consumer_list = parts
+    if len(consumer_list) == 1 and isinstance(consumer_list[0], list):
+        consumer_list = consumer_list[0]
+    return replaced, skipped, consumer_list
+
+
+def install_static_fonts(out_dir, config, *, unity_version=None,
+                         required=None,
+                         typetree_generator: Any | None = None,
+                         ) -> FontReplaceResult:
     """在写回副本上执行静态字体替换（legacy Font + TMP_FontAsset）。
 
     任何单项失败只跳过并记录；绝不抛出（字体是增强项，不阻断写回）。
+
+    Phase 2：required（RequiredGlyphSet）给定——本次真实译文需求集时，
+    逐对象消费者记录汇总为结构化覆盖：replaced > 0 不再代表全局成功；
+    任何消费者 CANDIDATE_ONLY/BLOCKED → result.incomplete=True
+    （「一个成功一个失败」的 fixture 结果必须是 INCOMPLETE 而非 PASS）。
     """
+    from hanhua.core.font import compute_coverage
+    required_scalars = set(required.scalars) if required is not None else None
     result = FontReplaceResult()
     ttf = _font_ttf_candidate(config)
     if ttf is not None:
         ttf_bytes = ttf.read_bytes()
+        # #42 防复发自检：候选文件存在但内容无效（坏 magic/空壳）时
+        # 拒绝替换并明确告警——旧行为把损坏 TTF 照样写进游戏且
+        # replaced>0，用户以为字体已替换（方框问题复发源头：静默假 PASS）。
+        if not _ttf_has_magic(ttf_bytes) or len(ttf_bytes) < 1024:
+            result.warnings.append(
+                f"目标字体 {config.filename} 内容无效（损坏或过小）——"
+                "拒绝静态替换；请重新下载字体文件")
+            ttf = None
+    if ttf is not None:
+        ttf_bytes = ttf.read_bytes()
         for asset in _asset_candidates(out_dir):
             try:
-                replaced, skipped = replace_legacy_fonts_in_container(
-                    asset, ttf_bytes)
+                parts = replace_legacy_fonts_in_container(
+                    asset, ttf_bytes, typetree_generator=typetree_generator)
             except Exception as exc:  # noqa: BLE001
                 result.warnings.append(f"{asset.name}: {exc}")
                 continue
+            replaced, skipped, consumers = _split_parts(parts)
             result.replaced += replaced
             result.skipped.extend(skipped)
+            result.consumers.extend(consumers)
             if replaced:
                 result.replaced_paths.append(
                     asset.relative_to(out_dir).as_posix())
-    # TMP 路径
-    bundle = select_tmp_bundle(unity_version)
+    # TMP 路径（粗细档位随 FontConfig.weight）
+    bundle = select_tmp_bundle(unity_version, weight=config.weight)
     if bundle is not None and config.enabled:
         try:
             payload = load_tmp_bundle(bundle)
@@ -702,14 +950,24 @@ def install_static_fonts(
         if payload is not None:
             for asset in _asset_candidates(out_dir):
                 try:
-                    replaced, skipped = replace_tmp_fonts_in_container(
-                        asset, payload)
+                    parts = replace_tmp_fonts_in_container(
+                        asset, payload, required=required_scalars,
+                        unity_version=unity_version,
+                        typetree_generator=typetree_generator)
                 except Exception as exc:  # noqa: BLE001
                     result.warnings.append(f"{asset.name}: {exc}")
                     continue
+                replaced, skipped, consumers = _split_parts(parts)
                 result.replaced += replaced
                 result.skipped.extend(skipped)
+                result.consumers.extend(consumers)
                 if replaced:
                     result.replaced_paths.append(
                         str(asset.relative_to(out_dir)))
+    # Phase 2：结构化覆盖（有需求集 + 有消费者记录时）
+    if required is not None and result.consumers:
+        outcome = compute_coverage(result.consumers, required)
+        result.coverage = outcome
+        result.overall = outcome.overall.name
+        result.incomplete = outcome.blocks_publish()
     return result

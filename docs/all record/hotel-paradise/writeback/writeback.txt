@@ -19,7 +19,7 @@
 变更文件：32
 写入译文：23
 总体闸门：WARN
-字体层级：payload_deployed
+字体层级：payload_deployed（LEGACY_EVIDENCE_UNSCOPED：旧协议证据，未含逐码点 attestation/覆盖证明）
 清单：.hanhua-manifest.json
 备份：None
 

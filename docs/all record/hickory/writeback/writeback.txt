@@ -1,11 +1,11 @@
 游戏：hickory
-写回时间：2026-08-13 04:56:13
+写回时间：2026-08-14 00:58:05
 输出目录：D:\游戏\hickory_汉化
 
 文件清单：3 个
 
 - Hickory_Data/app.info（2 条）
-- Hickory_Data/data.unity3d（1136 条）
+- Hickory_Data/data.unity3d（1030 条）
 - Hickory_Data/Managed/Assembly-CSharp.dll（84 条）
 
 ────────────────────────────────────────────────────────────────
@@ -13,101 +13,29 @@
 文本文件：1
 输入保护：True
 重开验证：True
-变更文件：28
-写入译文：120
+变更文件：2
+写入译文：310
 总体闸门：PASS
 字体层级：runtime_verified
-清单：.hanhua-manifest.json
-备份：None
 
 四态闸门明细
   file=N/A
   container=PASS
   object=PASS
   runtime=PASS
+警告：运行时字体插件未部署（静态覆盖已完整证明，插件兜底非必需）
+备份：None
+清单：.hanhua-manifest.json
 
 ────────────────────────────────────────────────────────────────
-知识库案例转规则：5 条已启用（writeback_case → 可执行检测）
-
-- [fit_bytes_nul_padding] 固定容量池截短译文后字符串尾部带 NUL 导致逻辑判定失灵（实现：writer._fit_bytes（pad 模式容量对齐）+ 译文长度头自证（logic_audit.verify_string_l）
-- [placeholder_preserve] 写回截断把 {0} 占位符切开导致 string.Format 崩溃（实现：writer._restore_placeholders / _placeholders_intact（截断不得破坏占位符，缺失补末）
-- [textasset_encoding_preserve] TextAsset 非 UTF-8 内容被 decode-repla（实现：writer 写回按源编码/严格校验，不把非 UTF-8 当 UTF-8 重写）
-- [unityevent_binding_preserve] 替换 prefab/资源后 UnityEvent 事件绑定断裂按钮无（实现：extractor._UNITYEVENT_SIGNALS 对象信号 → structural 跳过+ logic_audit.lo）
-- [logic_key_compare] 代码把显示文本当逻辑键（按钮文字/物品名比较分发）（实现：logic_audit.LOGIC_COMPARE_WORDS 比较词表 + 代码对象联合判定（写回自动回退））
+二进制资源（V2）
+文件：2 · 候选：310
 
 ────────────────────────────────────────────────────────────────
-逻辑层审计（写回逻辑敏感形态 / 扩容 / 语义回退 / 重开验证）
-
-疑似逻辑键（report，已写回需复核）：15 条
-
-- [logic_compare_word] Credits → 致谢（asset#level0#396/str/0）
-- [logic_compare_word] Options → 选项（asset#level0#402/str/0）
-- [logic_compare_word] Back → 返回（asset#level0#407/str/0）
-- [logic_compare_word] Begin → 开始（asset#level0#408/str/0）
-- [logic_compare_word] Credits → 致谢（asset#level0#409/str/0）
-- [logic_compare_word] Back → 返回（asset#level0#410/str/0）
-- [logic_compare_word] Back → 返回（asset#level0#411/str/0）
-- [logic_compare_word] Back → 返回（asset#level0#413/str/0）
-- [logic_compare_word] Options → 选项（asset#level0#414/str/0）
-- [logic_compare_word] Quit → 退出（asset#level0#415/str/0）
-- [logic_compare_word] Retry → 重试（asset#level2#1908/str/0）
-- [logic_compare_word] Back → 返回（asset#level2#1909/str/0）
-- [logic_compare_word] Menu → 菜单（asset#level2#1910/str/0）
-- [logic_compare_word] Options → 选项（asset#level2#1911/str/0）
-- [logic_compare_word] Menu → 菜单（asset#level2#1913/str/0）
-
-rawstr 扩容写入：69 条（译文 UTF-8 字节 > 原文）
-
-- Additive → 添加剂（8 → 9 字节，+1）
-- Additive with Mask → 含添加剂的口罩（18 → 21 字节，+3）
-- So much chaos! Desolo and Benjamin p → 真是混乱不堪！Desolo和Benjamin一如既往地成功通过了测试。J（213 → 268 字节，+55）
-- Extras → 额外内容（6 → 12 字节，+6）
-- As was tradition with most of our ja → 按照我们大多数解谜游戏的传统（从2022年左右开始），这些游戏总是会包含（302 → 340 字节，+38）
-- Music → 音乐（5 → 6 字节，+1）
-- Jonathan had an idea for a robot gam → 乔纳森想到了一个关于维护工厂的机器人游戏创意，我们在头脑风暴时重新考虑了（231 → 234 字节，+3）
-- Back → 返回（4 → 6 字节，+2）
-- Begin → 开始（5 → 6 字节，+1）
-- Back → 返回（4 → 6 字节，+2）
-- Back → 返回（4 → 6 字节，+2）
-- Back → 返回（4 → 6 字节，+2）
-- Quit → 退出（4 → 6 字节，+2）
-- Extras → 额外内容（6 → 12 字节，+6）
-- Press SPACE to skip. → 按空格键即可跳过。（20 → 27 字节，+7）
-- "But no worker can work forever. Cra → “但没有任何工人能够永远工作下去。会有裂缝，会有细微的骨折。所有东西都会（177 → 237 字节，+60）
-- "One last worker remains. A continge → 只剩下最后一名工人了。可以称之为应急方案吧。未被利用的、闲置的……它只是（134 → 198 字节，+64）
-- "High above the rooftops, wrapped in → 在高高的屋顶之上，笼罩着不散的雾气，耸立着一座宏伟的钟楼。这是一座历史如（156 → 180 字节，+24）
-- Doll 1 → 玩偶1（6 → 7 字节，+1）
-- You still look very well made, given → 考虑到实际情况，你的作品看起来仍然做得非常出色。（39 → 72 字节，+33）
-…（其余 49 条）
-
-回显跳过（译文==原文，未写入）：28 条
-
-- Hickory_Data/app.info:plain/0：Second Fiddle Studio
-- Hickory_Data/app.info:plain/1：Hickory
-- Hickory_Data/data.unity3d:asset#level0#399/str/0：SFX
-- Hickory_Data/data.unity3d:asset#sharedassets2.assets#445/str/1：Hickory
-- Hickory_Data/data.unity3d:asset#sharedassets2.assets#445/str/2：Hickory
-- Hickory_Data/data.unity3d:asset#sharedassets2.assets#445/str/6：Hickory
-- Hickory_Data/data.unity3d:asset#sharedassets2.assets#445/str/10：Hickory
-- Hickory_Data/data.unity3d:asset#sharedassets2.assets#445/str/12：Hickory
-- Hickory_Data/data.unity3d:asset#sharedassets2.assets#446/str/1：Alder
-- Hickory_Data/data.unity3d:asset#sharedassets2.assets#446/str/3：Hickory
-- Hickory_Data/data.unity3d:asset#sharedassets2.assets#446/str/5：Alder
-- Hickory_Data/data.unity3d:asset#sharedassets2.assets#446/str/6：Alder
-- Hickory_Data/data.unity3d:asset#sharedassets2.assets#446/str/8：Hickory
-- Hickory_Data/data.unity3d:asset#sharedassets2.assets#446/str/10：Alder
-- Hickory_Data/data.unity3d:asset#sharedassets2.assets#447/str/1：Hickory
-- Hickory_Data/data.unity3d:asset#sharedassets2.assets#447/str/3：Hickory
-- Hickory_Data/data.unity3d:asset#sharedassets2.assets#447/str/7：Hickory
-- Hickory_Data/data.unity3d:asset#sharedassets2.assets#447/str/11：Hickory
-- Hickory_Data/data.unity3d:asset#sharedassets2.assets#447/str/14：Hickory
-- Hickory_Data/data.unity3d:asset#sharedassets2.assets#448/str/1：Hickory
-- Hickory_Data/data.unity3d:asset#sharedassets2.assets#448/str/2：Hickory
-- Hickory_Data/data.unity3d:asset#sharedassets2.assets#449/str/1：Hickory
-- Hickory_Data/data.unity3d:asset#sharedassets2.assets#449/str/3：Hickory
-- Hickory_Data/data.unity3d:asset#sharedassets2.assets#450/str/1：Hickory
-- Hickory_Data/data.unity3d:asset#sharedassets2.assets#450/str/3：Hickory
-- Hickory_Data/data.unity3d:asset#level2#1890/str/0：Hickory
-- Hickory_Data/data.unity3d:asset#level2#1898/str/0：SFX
-- Hickory_Data/data.unity3d:asset#level3#156/str/0：Jason Li
-
+字体部署
+字体： · 层级：—
+安装：True
+发布门：PASS — 覆盖 COVERED：6 个消费者完整，0 个未覆盖，缺字 0 个码点
+覆盖终态：COVERED
+逐栈：tmp_font: 6
+终态分布：COVERED: 6

@@ -1,20 +1,23 @@
-"""首页：工作台 Dashboard（任务二 §15~18）。
+"""首页 v3（Aurora Forge §16~18）：欢迎态 / 项目态双容器。
 
-打开项目后呈现：项目统计（文本总数/已翻译/待审核/高风险）、项目健康度
-（评分 + 四项指标）、任务推荐（下一步做什么）、五步任务状态轨道与游戏
-档案。未打开项目时保持拖放接入入口（护栏测试依赖的完整结构保留）。
+- 欢迎态 `welcome_panel`：大拖放区 + 运行时概要（未打开项目时的接入入口）。
+- 项目态 `project_panel`：英雄区（项目名 + 主行动）、数据带（四指标）、
+  健康度 + 下一步推荐、五步任务轨道、游戏档案。
+打开项目后不保留大拖放框（spec：不长期保留大拖放区域）。
 """
 from __future__ import annotations
 
+import json
 from pathlib import Path
 
 from PySide6.QtCore import Qt, QThreadPool, Signal
 from PySide6.QtGui import (QColor, QDragEnterEvent, QDropEvent, QPainter,
                            QPen)
 from PySide6.QtWidgets import (QFileDialog, QFrame, QHBoxLayout, QLabel,
-                               QProgressBar, QPushButton, QVBoxLayout,
-                               QWidget)
+                               QProgressBar, QPushButton, QStackedWidget,
+                               QVBoxLayout, QWidget)
 
+from hanhua.core.models import TextEntry, is_actionable_translation
 from hanhua.core.project import Project
 from hanhua.ui.app_state import AppState
 from hanhua.ui.design_system import TOKENS
@@ -89,61 +92,6 @@ class _DirectoryDropZone(QFrame):
         self.directoryDropped.emit(path)
 
 
-class _HealthCard(QFrame):
-    """项目健康度（§16）：评分 + 四项指标进度。"""
-
-    def __init__(self, parent=None):
-        super().__init__(parent)
-        self.setObjectName("card")
-        lay = QVBoxLayout(self)
-        lay.setContentsMargins(18, 14, 18, 14)
-        lay.setSpacing(8)
-        head = QHBoxLayout()
-        head.setSpacing(10)
-        self.score_label = QLabel("—")
-        self.score_label.setStyleSheet(
-            f"font-size: 30px; font-weight: 700; color: {TOKENS.primary};")
-        self.grade_label = QLabel("")
-        self.grade_label.setProperty("class", "statLabel")
-        head.addWidget(self.score_label)
-        head.addWidget(self.grade_label)
-        head.addStretch(1)
-        lay.addLayout(head)
-        self._rows: list[tuple[QLabel, QProgressBar, QLabel]] = []
-        for label in ("翻译完成", "语义审核", "术语一致性", "格式完整性"):
-            row = QHBoxLayout()
-            row.setSpacing(8)
-            name = QLabel(label)
-            name.setProperty("class", "metricLabel")
-            bar = QProgressBar()
-            bar.setRange(0, 100)
-            bar.setFixedHeight(6)
-            pct = QLabel("—")
-            pct.setStyleSheet(f"color: {TOKENS.text_secondary}; font-size: 8pt;")
-            row.addWidget(name)
-            row.addWidget(bar, 1)
-            row.addWidget(pct)
-            lay.addLayout(row)
-            self._rows.append((name, bar, pct))
-
-    def update_health(self, score: float, grade: str,
-                      items: list[tuple[str, float]]) -> None:
-        self.score_label.setText(f"{score:.1f}")
-        self.grade_label.setText(grade)
-        for (name, bar, pct), (label, value) in zip(self._rows, items):
-            name.setText(label)
-            bar.setValue(int(round(max(0.0, min(100.0, value)))))
-            pct.setText(f"{value:.1f}%")
-        if score >= 90:
-            color = TOKENS.success
-        elif score >= 75:
-            color = TOKENS.warning
-        else:
-            color = TOKENS.error
-        self.score_label.setStyleSheet(
-            f"font-size: 30px; font-weight: 700; color: {color};")
-
-
 class HomePage(QWidget):
     def __init__(self, state: AppState, window):
         super().__init__()
@@ -160,11 +108,48 @@ class HomePage(QWidget):
 
         # ── 页面抬头 ──
         col.addWidget(PageHeader(
-            "工作台",
-            "拖入游戏文件夹开始本地化；打开项目后在此掌握进度、健康度与下一步",
+            "概览",
+            "项目状态总览——拖入游戏文件夹开始，或打开项目掌握进度",
         ))
 
-        # ── 拖放区（任务入口） ──
+        # ── 双态容器（欢迎 / 项目） ──
+        self._panels = QStackedWidget()
+        self.welcome_panel = QWidget()
+        self.project_panel = QWidget()
+        self._panels.addWidget(self.welcome_panel)
+        self._panels.addWidget(self.project_panel)
+        col.addWidget(self._panels, 1)
+        self.welcome_panel.setVisible(True)
+        self.project_panel.setVisible(False)
+
+        self._build_welcome_panel()
+        self._build_project_panel()
+
+        self.profile_edit_btn.clicked.connect(self._edit_profile)
+        self.pick_btn.clicked.connect(self._pick_dir)
+        # #2：数据带统计后台化竞态防护——每次刷新递增 token，worker
+        # 完成时 token 不符（项目已切换/更新刷新已发出）则丢弃。
+        self._dashboard_token = 0
+        self._dashboard_worker = None
+        self._dashboard_loading = False
+        self.drop_zone.directoryDropped.connect(self.open_dir)
+        self.drop_zone.activeChanged.connect(self._set_drop_active)
+        self.hero_btn.clicked.connect(lambda: self.window.navigate("translate"))
+        # 双态刷新：打开项目与条目变化（翻译/审校后）都要更新
+        state.projectOpened.connect(lambda _p: self._refresh_dashboard())
+        state.entriesChanged.connect(self._refresh_dashboard)
+        # 流水线 rail 实时刷新（#15）：扫描阶段事件 + 翻译/审核/写回阶段
+        # 广播——此前 rail 只在 _render_report（扫描完成）更新一次，扫描
+        # 与翻译全程 rail 卡在「游戏检测」节点。
+        state.pipelinePhase.connect(self._on_pipeline_phase)
+
+    # ── 欢迎态（§15 大拖放区） ────────────────────────────
+    def _build_welcome_panel(self):
+        lay = QVBoxLayout(self.welcome_panel)
+        lay.setContentsMargins(0, 0, 0, 0)
+        lay.setSpacing(12)
+
+        # 拖放区（任务入口）
         self.drop_zone = _DirectoryDropZone()
         dz = QVBoxLayout(self.drop_zone)
         dz.setSpacing(8)
@@ -202,9 +187,9 @@ class HomePage(QWidget):
         dz.addLayout(btn_row)
         dz.addWidget(self.scan_bar)
         dz.addStretch(1)
-        col.addWidget(self.drop_zone)
+        lay.addWidget(self.drop_zone)
 
-        # ── 运行时概要 ──
+        # 运行时概要
         self.runtime_strip = QFrame()
         self.runtime_strip.setObjectName("card")
         runtime_row = QHBoxLayout(self.runtime_strip)
@@ -215,66 +200,58 @@ class HomePage(QWidget):
         runtime_row.addWidget(self.runtime_value)
         runtime_row.addWidget(self.tool_value)
         runtime_row.addStretch(1)
-        col.addWidget(self.runtime_strip)
+        lay.addWidget(self.runtime_strip)
 
-        # ── 工作台 Dashboard（§15~18：项目打开后显示） ──
-        self.dashboard = QWidget()
-        dash = QVBoxLayout(self.dashboard)
-        dash.setContentsMargins(0, 0, 0, 0)
-        dash.setSpacing(12)
+    # ── 项目态（§16~18 英雄区 / 数据带 / 健康度+推荐 / 轨道 / 档案） ──
+    def _build_project_panel(self):
+        lay = QVBoxLayout(self.project_panel)
+        lay.setContentsMargins(0, 0, 0, 0)
+        lay.setSpacing(12)
 
-        stats_row = QHBoxLayout()
-        stats_row.setSpacing(12)
+        # 英雄区（§16）：项目名 + 副题 + 主行动
+        self.project_hero = QFrame()
+        self.project_hero.setObjectName("heroCard")
+        hero = QHBoxLayout(self.project_hero)
+        hero.setContentsMargins(22, 18, 22, 18)
+        hero.setSpacing(14)
+        hero_text = QVBoxLayout()
+        hero_text.setSpacing(4)
+        self.hero_title = QLabel("项目已就绪")
+        self.hero_title.setObjectName("heroTitle")
+        self.hero_sub = QLabel("正在准备项目摘要…")
+        self.hero_sub.setObjectName("heroSub")
+        hero_text.addWidget(self.hero_title)
+        hero_text.addWidget(self.hero_sub)
+        hero.addLayout(hero_text, 1)
+        self.hero_btn = QPushButton("开始翻译")
+        self.hero_btn.setProperty("primary", True)
+        self.hero_btn.setMinimumHeight(TOKENS.primary_height)
+        self.hero_btn.setAccessibleName("前往运行页开始翻译")
+        hero.addWidget(self.hero_btn)
+        lay.addWidget(self.project_hero)
+
+        # 数据带（§17）：四指标一排
+        self.data_strip = QFrame()
+        self.data_strip.setObjectName("dataStrip")
+        strip = QHBoxLayout(self.data_strip)
+        strip.setContentsMargins(16, 14, 16, 14)
+        strip.setSpacing(10)
         self.stat_total = StatCard("文本总数", 0)
         self.stat_translated = StatCard("已翻译", 0)
         self.stat_review = StatCard("待审核", 0)
         self.stat_high_risk = StatCard("高风险", 0)
         for card in (self.stat_total, self.stat_translated,
                      self.stat_review, self.stat_high_risk):
-            stats_row.addWidget(card)
-        dash.addLayout(stats_row)
+            strip.addWidget(card, 1)
+        lay.addWidget(self.data_strip)
 
-        health_row = QHBoxLayout()
-        health_row.setSpacing(12)
-        self.health_card = _HealthCard()
-        health_row.addWidget(self.health_card, 3)
-
-        # 任务推荐（§17：告诉用户下一步做什么）
-        self.tip_card = QFrame()
-        self.tip_card.setObjectName("card")
-        tip = QVBoxLayout(self.tip_card)
-        tip.setContentsMargins(18, 14, 18, 14)
-        tip.setSpacing(6)
-        tip_title = QLabel("下一步")
-        tip_title.setProperty("class", "metricLabel")
-        self.tip_icon = LineIcon("alert", 26, TOKENS.warning)
-        self.tip_text = QLabel("打开项目后这里会给出建议。")
-        self.tip_text.setWordWrap(True)
-        self.tip_text.setProperty("class", "subtitle")
-        self.tip_btn = QPushButton("立即处理")
-        self.tip_btn.setMinimumHeight(TOKENS.control_height)
-        self.tip_btn.setAccessibleName("处理建议任务")
-        self.tip_btn.setVisible(False)
-        tip.addWidget(tip_title)
-        tip_row = QHBoxLayout()
-        tip_row.setSpacing(10)
-        tip_row.addWidget(self.tip_icon)
-        tip_row.addWidget(self.tip_text, 1)
-        tip.addLayout(tip_row)
-        tip.addWidget(self.tip_btn)
-        health_row.addWidget(self.tip_card, 2)
-        dash.addLayout(health_row)
-        col.addWidget(self.dashboard)
-        self.dashboard.setVisible(False)
-        self.tip_btn.clicked.connect(lambda: self.window.navigate("review"))
-
-        # ── 五步任务状态轨道（横向节点 + 连接线） ──
+        # 五步任务状态轨道（横向节点 + 连接线）
         rail_head = QHBoxLayout()
         rail_title = QLabel("任务流水线")
         rail_title.setProperty("class", "pageTitle")
         rail_head.addWidget(rail_title)
         rail_head.addStretch(1)
-        col.addLayout(rail_head)
+        lay.addLayout(rail_head)
         definitions = (
             ("detection", "1 游戏检测", "scan"),
             ("text_scan", "2 文本扫描", "folder"),
@@ -285,9 +262,9 @@ class HomePage(QWidget):
         self.pipeline_rail = StatusRail(definitions)
         # 兼容既有测试：pipeline_cards 指向节点列表（每项含 step_id）
         self.pipeline_cards = self.pipeline_rail.nodes
-        col.addWidget(self.pipeline_rail)
+        lay.addWidget(self.pipeline_rail)
 
-        # ── 游戏档案（带左侧黄色标记的编辑区，不套大卡片） ──
+        # 游戏档案（带左侧黄色标记的编辑区，不套大卡片）
         self.profile_card = QFrame()
         self.profile_card.setObjectName("profileCard")
         self.profile_card.setFixedHeight(64)
@@ -307,15 +284,7 @@ class HomePage(QWidget):
         pc.addWidget(self.profile_summary, 1)
         pc.addWidget(self.profile_edit_btn)
         self.profile_card.setHidden(True)
-        col.addWidget(self.profile_card)
-
-        self.profile_edit_btn.clicked.connect(self._edit_profile)
-        self.pick_btn.clicked.connect(self._pick_dir)
-        self.drop_zone.directoryDropped.connect(self.open_dir)
-        self.drop_zone.activeChanged.connect(self._set_drop_active)
-        # Dashboard 刷新：打开项目与条目变化（翻译/审校后）都要更新
-        state.projectOpened.connect(lambda _p: self._refresh_dashboard())
-        state.entriesChanged.connect(self._refresh_dashboard)
+        lay.addWidget(self.profile_card)
 
     # ── 拖放 ──
     def _set_drop_active(self, active: bool):
@@ -358,18 +327,49 @@ class HomePage(QWidget):
             Toast.show(self, "请选择有效的文件夹", "warning")
             return
         self._set_busy(True)
-        worker = Worker(
-            self._scan_worker, str(path), str(self.state.app_dir)
-        )
+        # 扫描事件经 Worker 信号转发（M1：event_cb 此前未接线，rail 的
+        # 检测/扫描/工具分析节点全程卡在首个 running）
+        signals_holder = {}
+
+        def run_scan():
+            return self._scan_worker(
+                str(path), str(self.state.app_dir),
+                event_cb=signals_holder["signals"].progress.emit)
+
+        worker = Worker(run_scan)
+        signals_holder["signals"] = worker.signals
+        worker.signals.progress.connect(self._on_scan_progress)
         worker.signals.finished.connect(self._on_scan_done)
         worker.signals.error.connect(self._on_scan_error)
         QThreadPool.globalInstance().start(worker)
 
     @staticmethod
-    def _scan_worker(path_str: str, app_dir: str):
+    def _scan_worker(path_str: str, app_dir: str,
+                     event_cb=None):
         proj = Project.open_game_dir(path_str, app_dir)
-        report = proj.scan_all()
+        report = proj.scan_all(event_cb=event_cb)
         return proj, report
+
+    def _on_scan_progress(self, event) -> None:
+        """扫描阶段事件 → rail 实时更新（检测/文本扫描/工具分析）。"""
+        phase = getattr(event, "phase", "") or ""
+        status = getattr(event, "status", "") or ""
+        message = getattr(event, "message", "") or ""
+        if not phase or not status:
+            return
+        step_id = phase if phase in {
+            "detection", "text_scan", "tool_analysis", "binary_scan",
+        } else None
+        if step_id is None:
+            return
+        self.pipeline_rail.set_node_state(
+            step_id, status, message, "")
+
+    def _on_pipeline_phase(self, step_id: str, status: str,
+                           detail: str, metrics: str) -> None:
+        """翻译/审核/写回阶段广播 → rail 节点实时更新（#15）。"""
+        self.pipeline_rail.set_node_state(
+            step_id, status, detail, metrics)
 
     def _on_scan_done(self, result):
         proj, report = result
@@ -430,90 +430,134 @@ class HomePage(QWidget):
             if step is None:
                 continue
             tool = tool_by_id.get(step.backend)
-            cache = ("命中" if tool.cache_hit is True
-                     else "未命中" if tool.cache_hit is False else "—")
+            # tool_results 的 tool_id 与 route.backend 非同一命名空间
+            # （检测= native_fingerprint / 质量门= quality_gate / 写回=
+            # native_atomic_writer），Mono 游戏 tool_results 甚至为空——
+            # 必须判空，否则扫描完成必崩（C1）
+            cache = ("命中" if tool is not None and tool.cache_hit is True
+                     else "未命中" if tool is not None
+                     and tool.cache_hit is False else "—")
             elapsed = f"{tool.elapsed_ms} ms" if tool and tool.elapsed_ms else "—"
             metrics = f"置信度 {step.confidence} · 缓存 {cache} · 耗时 {elapsed}"
             self.pipeline_rail.set_node_state(
                 node.step_id, step.status, step.reason, metrics)
 
-    # ── 工作台 Dashboard（§15~18） ─────────────────────────
+    @staticmethod
+    def _entry_from_row(row: dict) -> TextEntry:
+        """与翻译页同源的 row → TextEntry（健康度口径一致）。"""
+        raw_meta = row.get("meta", {})
+        if isinstance(raw_meta, str):
+            try:
+                meta = json.loads(raw_meta)
+            except (json.JSONDecodeError, TypeError):
+                meta = {}
+        else:
+            meta = dict(raw_meta) if isinstance(raw_meta, dict) else {}
+        return TextEntry(
+            file_id=row["file_id"], key_path=row["key_path"],
+            original=row["original"], translation=row.get("translation", ""),
+            status=row.get("status", "pending"), locked=bool(row.get("locked", 0)),
+            id=row.get("id"), meta=meta,
+            confidence=str(meta.get("confidence", "medium")),
+        )
+
+    # ── 双态切换（§16：项目打开后隐藏大拖放框） ─────────────
     def _refresh_dashboard(self):
-        """项目统计 + 健康度 + 任务推荐。无项目时隐藏 Dashboard。"""
+        """有项目 → 项目态；无项目 → 欢迎态。"""
         project = self.state.project
-        if project is None or project.store is None:
-            self.dashboard.setVisible(False)
+        has_project = project is not None and project.store is not None
+        self._panels.setCurrentIndex(0 if not has_project else 1)
+        self.welcome_panel.setVisible(not has_project)
+        self.project_panel.setVisible(has_project)
+        if not has_project:
             return
-        self.dashboard.setVisible(True)
+        self._refresh_project_state()
+
+    def _refresh_project_state(self):
+        """数据带 + 健康度 + 推荐 + 英雄区（#2：全量统计后台线程）。"""
+        project = self.state.project
         store = project.store
-        total = sum(store.count(s) for s in
-                    ("pending", "translated", "skipped", "failed"))
-        translated = store.count("translated")
-        # 待审核：已翻译但未过质量门（meta.quality_passed 非 True）
+        self._dashboard_token += 1
+        self._dashboard_loading = True
+        token = self._dashboard_token
+        worker = Worker(self._collect_dashboard_stats, store)
+        # 引用必须保存（局部 worker 函数返回后 wrapper 引用丢失，
+        # finished 连接失效——同 review_page #2 实证）。
+        self._dashboard_worker = worker
+        worker.signals.finished.connect(
+            lambda stats: self._on_dashboard_stats(token, stats))
+        worker.signals.error.connect(
+            lambda err: self._on_dashboard_error(token, err))
+        QThreadPool.globalInstance().start(worker)
+
+    @staticmethod
+    def _collect_dashboard_stats(store) -> tuple:
+        """后台线程统计：#19 口径单循环（total/translated/actionable/
+        pending_review/flagged/failed），一次 get_entries 算完。
+        """
+        rows = store.get_entries()
+        total = len(rows)
+        translated = 0
+        actionable = 0
         reviewed = 0
         flagged = 0
-        for row in store.get_entries("translated"):
-            meta = row.get("meta") or {}
-            if isinstance(meta, str):
-                try:
-                    import json
-                    meta = json.loads(meta)
-                except (ValueError, TypeError):
-                    meta = {}
-            if meta.get("quality_passed") is True:
-                reviewed += 1
-            if meta.get("quality_passed") is False \
-                    or meta.get("review_status") in {"flagged", "suspicious"}:
-                flagged += 1
-        pending_review = translated - reviewed
+        failed = 0
+        for row in rows:
+            entry = HomePage._entry_from_row(row)
+            if entry.status == "translated":
+                translated += 1
+                # 待审核：已翻译但未过质量门（meta.quality_passed 非 True）
+                meta = entry.meta
+                if meta.get("quality_passed") is True:
+                    reviewed += 1
+                if meta.get("quality_passed") is False \
+                        or meta.get("review_status") in {"flagged", "suspicious"}:
+                    flagged += 1
+            elif entry.status == "failed":
+                # failed 算翻译失败数，同时保持原口径：failed 条目若
+                # 引擎会翻（is_actionable）仍计入待翻译分母（不永久卡死）
+                failed += 1
+                if is_actionable_translation(entry):
+                    actionable += 1
+            elif is_actionable_translation(entry):
+                actionable += 1
+        return (total, translated, actionable,
+                max(0, translated - reviewed), flagged, failed)
+
+    def _on_dashboard_stats(self, token: int, stats: tuple) -> None:
+        """后台统计完成：渲染数据带与英雄区（主线程）。"""
+        if token != self._dashboard_token:
+            return
+        self._dashboard_loading = False
+        total, translated, actionable, pending_review, flagged, failed = stats
         self.stat_total.setValue(total)
         self.stat_translated.setValue(translated)
-        self.stat_review.setValue(max(0, pending_review))
-        self.stat_high_risk.setValue(flagged + store.count("failed"))
+        self.stat_review.setValue(pending_review)
+        self.stat_high_risk.setValue(flagged + failed)
 
-        # 健康度（合理近似：翻译 40% / 语义 25% / 术语 20% / 格式 15%）
-        def _pct(part: int, whole: int) -> float:
-            return 100.0 * part / whole if whole else 0.0
-
-        translate_pct = _pct(translated, total)
-        review_pct = _pct(reviewed, translated)
-        format_issues = sum(1 for row in store.get_entries("translated")
-                            if "format" in str(row.get("meta", "")).lower()
-                            and "格式" in str(row.get("meta", "")))
-        format_pct = 100.0 - format_issues / translated * 100.0 if translated else 0.0
-        term_pct = review_pct  # 术语一致性近似：与审核通过率同源（无术语冲突记录时）
-        score = (translate_pct * 0.40 + review_pct * 0.25
-                 + term_pct * 0.20 + max(0.0, format_pct) * 0.15)
-        grade = ("优秀" if score >= 90 else "良好" if score >= 75
-                 else "需关注" if score >= 60 else "起步中")
-        self.health_card.update_health(
-            score, grade,
-            [("翻译完成", translate_pct), ("语义审核", review_pct),
-             ("术语一致性", term_pct), ("格式完整性", max(0.0, format_pct))])
-
-        # 任务推荐（§17）
-        if flagged + store.count("failed") > 0:
-            self.tip_icon.setColor(TOKENS.warning)
-            self.tip_text.setText(
-                f"{flagged + store.count('failed')} 条高风险文本等待人工确认，"
-                "处理后再写回更稳妥。")
-            self.tip_btn.setText("立即处理")
-            self.tip_btn.setVisible(True)
-        elif pending_review > 0:
-            self.tip_icon.setColor(TOKENS.info)
-            self.tip_text.setText(
-                f"剩余 {pending_review} 条文本等待审核，运行 AI 审核后可自动通过。")
-            self.tip_btn.setText("开始审核")
-            self.tip_btn.setVisible(True)
-        elif total > 0:
-            self.tip_icon.setColor(TOKENS.success)
-            self.tip_text.setText("全部文本已通过质量门，可以在翻译页安全写回。")
-            self.tip_btn.setText("去写回")
-            self.tip_btn.setVisible(True)
+        # 英雄区（测试桩可能无 profile/game_dir，容错显示纯统计）
+        project = self.state.project
+        profile = getattr(project, "profile", None)
+        game_dir = getattr(project, "game_dir", None)
+        name = getattr(game_dir, "name", None) or "Unity 项目"
+        if profile is not None:
+            src = getattr(profile, "source_lang", "") or "—"
+            dst = getattr(profile, "target_lang", "") or "—"
+            lang = f"{src} → {dst} · "
         else:
-            self.tip_icon.setColor(TOKENS.status_idle)
-            self.tip_text.setText("打开项目后这里会给出建议。")
-            self.tip_btn.setVisible(False)
+            lang = ""
+        translate_pct = (100.0 * translated / (translated + actionable)
+                         if (translated + actionable) else 0.0)
+        self.hero_title.setText(name)
+        self.hero_sub.setText(
+            f"{lang}共 {total} 条文本 · "
+            f"{translated} 已翻译（{translate_pct:.0f}%）")
+
+    def _on_dashboard_error(self, token: int, err: str) -> None:
+        if token != self._dashboard_token:
+            return
+        self._dashboard_loading = False
+        self.hero_sub.setText(f"统计数据读取失败：{err[:60]}")
 
     def _refresh_profile_card(self):
         self.profile_card.setHidden(False)

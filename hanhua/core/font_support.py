@@ -32,9 +32,24 @@ _WINDOWS_RESERVED_NAMES = {
     *(f"lpt{suffix}" for suffix in (*range(1, 10), "¹", "²", "³")),
 }
 
-_FONT_HEALTH_PROTOCOL_VERSION = 4
-_FONT_HEALTH_PLUGIN_VERSION = "1.3.0"
+_FONT_HEALTH_PROTOCOL_VERSION = 5
+_FONT_HEALTH_PLUGIN_VERSION = "1.4.0"
 _FONT_HEALTH_MAX_BYTES = 64 * 1024
+# Phase 3：逐 scalar 证明。health 文件超过该时长未刷新 → 陈旧 attestation
+# （STALE_RUNTIME_ATTESTATION 语义）：插件可能已退出/卡死/被删。
+_FONT_HEALTH_MAX_AGE_SECONDS = 12 * 3600
+# 明细上限：总数必须完整（恒等式），明细截断防膨胀
+_FONT_HEALTH_MAX_DETAIL = 256
+_FONT_HEALTH_FAILURE_KEYS = frozenset({
+    "stable_identity", "kind", "font_asset", "missing",
+})
+_FONT_HEALTH_GLYPH_VERIFICATION_KEYS = frozenset({
+    "snapshot_hash", "legacy_total", "legacy_covered", "legacy_missing",
+    "tmp_total", "tmp_covered", "tmp_missing", "missing_codepoints", "error",
+})
+_FONT_HEALTH_CONSUMERS_KEYS = frozenset({
+    "discovered", "chinese", "covered", "missing", "failed",
+})
 
 # BepInEx 发行包自带的根级文档文件：部署时跳过，绝不写入副本。
 # 它们与游戏自带的同名文件（如 Changelog.txt）在 Windows 大小写不敏感
@@ -104,6 +119,9 @@ class FontInstallResult:
     cleanup_pending: str = ""
     provider_id: str = ""
     payload_available: bool = False
+    #: 本次发布实际渲染字形需求集（静态替换分支附带，Phase 1；
+    #: 动态分支留空——字形由运行时插件承担，Phase 2 覆盖验证入口）
+    required_glyphs: frozenset[int] = frozenset()
 
     def __post_init__(self) -> None:
         if self.payload_deployed is None:
@@ -170,8 +188,47 @@ def _runtime_template_payload(translations: dict[str, str]) -> bytes:
     ) + "\n").encode("utf-8")
 
 
+def _required_glyphs_payload(
+        translations: dict[str, str]) -> tuple[bytes, str]:
+    """从译文集合提取运行时字形需求集 → (required-glyphs.json 字节, hash)。
+
+    Phase 3：插件逐 scalar 验证输入。码点 = 全部译文文本的非空白标量
+    （静态已写回部分不需要运行时字形，但动态兜底按全集证明最保守——
+    多余码点只是多验证，不缺）。snapshot_hash 是码点列表的稳定指纹
+    （ASCII 表示，跨端一致），插件回传、工具比对。
+    """
+    scalars = sorted({
+        ord(character)
+        for text in translations.values()
+        for character in text
+        if not character.isspace()
+    })
+    snapshot_hash = hashlib.sha256(
+        ",".join(f"U+{scalar:04X}" for scalar in scalars).encode("ascii")
+    ).hexdigest() if scalars else ""
+    payload = (
+        json.dumps(
+            {"schema_version": 1, "snapshot_hash": snapshot_hash,
+             "scalars": scalars},
+            ensure_ascii=False, sort_keys=True, separators=(",", ":"),
+        ) + "\n"
+    ).encode("utf-8")
+    return payload, snapshot_hash
+
+
 def read_font_health(path: Path) -> FontHealthResult:
-    """Validate runtime evidence emitted by the version-matched font plugin."""
+    """Validate runtime evidence emitted by the version-matched font plugin.
+
+    Phase 3（协议 v5）：从「单个代表字探测」升级为「逐 scalar 证明」：
+    - glyph_verification：需求集每个码点必须被 legacy 或 TMP 链覆盖；
+      missing_codepoints 非空即失败（单个代表字通过、另一实际字缺失
+      时必须失败）；插件扫描异常写入 error → 失败；
+    - snapshot_hash 必须与同目录 required-glyphs.json 一致（插件用的
+      需求集与本次部署相同）；
+    - session_nonce + last_seen：会话标识与刷新时间；last_seen 超龄 →
+      陈旧 attestation 拒绝（插件可能已退出/卡死/被删）；
+    - consumers 会计恒等式：covered + missing + failed == chinese。
+    """
     path = Path(path)
     try:
         if not path.is_file() or _path_is_link(path):
@@ -185,8 +242,9 @@ def read_font_health(path: Path) -> FontHealthResult:
     if not isinstance(payload, dict):
         return FontHealthResult(False, "font-health.json root must be an object")
     expected_keys = {
-        "protocol_version", "plugin_version", "adapters", "glyph_probe",
-        "applications", "translation_targets",
+        "protocol_version", "plugin_version", "session_nonce", "last_seen",
+        "scenes", "adapters", "glyph_probe", "applications",
+        "translation_targets", "glyph_verification", "consumers", "failures",
     }
     if set(payload) != expected_keys:
         return FontHealthResult(False, "font-health.json field set is invalid")
@@ -197,6 +255,105 @@ def read_font_health(path: Path) -> FontHealthResult:
         return FontHealthResult(False, "font-health protocol_version mismatch")
     if payload.get("plugin_version") != _FONT_HEALTH_PLUGIN_VERSION:
         return FontHealthResult(False, "font-health plugin_version mismatch")
+
+    # Phase 3：会话标识 / 刷新时间 / 场景
+    session_nonce = payload.get("session_nonce")
+    if not isinstance(session_nonce, str) or not session_nonce.strip():
+        return FontHealthResult(False, "font-health session_nonce is missing")
+    last_seen = payload.get("last_seen")
+    if type(last_seen) is not int or last_seen <= 0:
+        return FontHealthResult(False, "font-health last_seen is invalid")
+    if int(time.time()) - last_seen > _FONT_HEALTH_MAX_AGE_SECONDS:
+        return FontHealthResult(False, "font-health attestation is stale")
+    scenes = payload.get("scenes")
+    if not isinstance(scenes, list) or any(
+            not isinstance(scene, str) for scene in scenes):
+        return FontHealthResult(False, "font-health scenes are invalid")
+
+    # Phase 3：逐 scalar 证明（实现重点：需求集每码点必须有覆盖链）
+    verification = payload.get("glyph_verification")
+    if not isinstance(verification, dict) or (
+            set(verification) != _FONT_HEALTH_GLYPH_VERIFICATION_KEYS):
+        return FontHealthResult(False, "font-health glyph verification is invalid")
+    if verification.get("error"):
+        return FontHealthResult(
+            False, "font-health glyph verification reported errors")
+    for key in ("legacy_total", "legacy_covered", "legacy_missing",
+                "tmp_total", "tmp_covered", "tmp_missing"):
+        if type(verification.get(key)) is not int or verification[key] < 0:
+            return FontHealthResult(False, f"font-health {key} is invalid")
+    for side in ("legacy", "tmp"):
+        total = verification[f"{side}_total"]
+        covered = verification[f"{side}_covered"]
+        missing = verification[f"{side}_missing"]
+        if covered + missing != total:
+            return FontHealthResult(
+                False, f"font-health {side} glyph counts are inconsistent")
+    snapshot_hash = verification.get("snapshot_hash")
+    if not isinstance(snapshot_hash, str) or not snapshot_hash:
+        return FontHealthResult(False, "font-health snapshot_hash is missing")
+    missing_codepoints = verification.get("missing_codepoints")
+    if not isinstance(missing_codepoints, list) or any(
+            type(codepoint) is not int or codepoint <= 0
+            for codepoint in missing_codepoints):
+        return FontHealthResult(False, "font-health missing codepoints are invalid")
+    # 核心完成标准：任何一个需求码点缺失 → 证明失败（不能只验代表字）
+    if missing_codepoints:
+        return FontHealthResult(
+            False,
+            f"font-health missing codepoints: {len(missing_codepoints)}")
+    # 部署需求集比对：插件回传 hash 必须等于同目录 required-glyphs.json
+    required_glyphs_path = path.parent / "required-glyphs.json"
+    try:
+        if (not required_glyphs_path.is_file()
+                or _path_is_link(required_glyphs_path)):
+            return FontHealthResult(
+                False, "required-glyphs.json deployment is missing")
+        required_payload = json.loads(
+            required_glyphs_path.read_bytes().decode("utf-8"))
+    except (OSError, UnicodeDecodeError, json.JSONDecodeError):
+        return FontHealthResult(False, "required-glyphs.json is invalid")
+    if (not isinstance(required_payload, dict)
+            or required_payload.get("snapshot_hash") != snapshot_hash):
+        return FontHealthResult(
+            False, "font-health snapshot_hash does not match deployment")
+
+    # Phase 3：消费者统计（看见并覆盖中文消费者的证明，P0-6）
+    consumers = payload.get("consumers")
+    if not isinstance(consumers, dict) or (
+            set(consumers) != _FONT_HEALTH_CONSUMERS_KEYS):
+        return FontHealthResult(False, "font-health consumers are invalid")
+    consumer_values = {
+        key: consumers.get(key) for key in _FONT_HEALTH_CONSUMERS_KEYS}
+    if any(type(value) is not int or value < 0
+           for value in consumer_values.values()):
+        return FontHealthResult(False, "font-health consumer counts are invalid")
+    if (consumer_values["covered"] + consumer_values["missing"]
+            + consumer_values["failed"] != consumer_values["chinese"]):
+        return FontHealthResult(
+            False, "font-health consumer counts are inconsistent")
+    if consumer_values["chinese"] <= 0:
+        return FontHealthResult(
+            False, "font-health saw no chinese text consumers")
+    if consumer_values["discovered"] < consumer_values["chinese"]:
+        return FontHealthResult(
+            False, "font-health discovered counts are inconsistent")
+    failures = payload.get("failures")
+    if not isinstance(failures, list) or len(failures) > _FONT_HEALTH_MAX_DETAIL:
+        return FontHealthResult(False, "font-health failures are invalid")
+    for failure in failures:
+        if (not isinstance(failure, dict)
+                or set(failure) != _FONT_HEALTH_FAILURE_KEYS
+                or not isinstance(failure.get("stable_identity"), str)
+                or not failure["stable_identity"]
+                or not isinstance(failure.get("kind"), str)
+                or not isinstance(failure.get("font_asset"), str)
+                or not isinstance(failure.get("missing"), list)
+                or any(type(codepoint) is not int
+                       for codepoint in failure["missing"])):
+            return FontHealthResult(False, "font-health failure record is invalid")
+    if consumer_values["failed"] > 0 and not failures:
+        return FontHealthResult(False, "font-health failures are missing")
 
     adapters = payload.get("adapters")
     adapter_names = {"legacy", "tmp", "uitoolkit"}
@@ -1010,6 +1167,9 @@ def install_font_override(
         ) + "\n"
     ).encode("utf-8")
     runtime_templates_payload = _runtime_template_payload(exact_translations)
+    # Phase 3：逐 scalar 验证输入——插件按本次部署需求集证明每个码点
+    required_glyphs_payload, _snapshot_hash = _required_glyphs_payload(
+        exact_translations)
     exclude_payload = (
         json.dumps(
             sorted(excluded), ensure_ascii=False,
@@ -1038,6 +1198,8 @@ def install_font_override(
                 translations_payload)
             (plugin_dir / "runtime-templates.json").write_bytes(
                 runtime_templates_payload)
+            (plugin_dir / "required-glyphs.json").write_bytes(
+                required_glyphs_payload)
             if exclude_payload:
                 (plugin_dir / "translations-exclude.json").write_bytes(
                     exclude_payload)

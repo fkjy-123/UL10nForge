@@ -17,24 +17,22 @@ ctx 4096，固定 CPU，`--embeddings` 标志）。实测模型输出维度 **10
 from __future__ import annotations
 
 import array
-import json
 import math
 import operator
-import secrets
 import sqlite3
 import struct
-import subprocess
-import sys
 import threading
-import time
+from datetime import datetime
 from pathlib import Path
 
 import httpx
 
-from .local_model import build_server_command, discover_server
+from .local_model import discover_server
 from .model_registry import ModelRegistry, ModelSpec
-
-_RUNTIME_STATE_FILENAME = "embed_runtime.json"
+from .runtime_coordinator import (
+    build_effective_config,
+    get_coordinator,
+)
 
 # 相似度阈值（T4-3/T4-4）
 DEDUPE_SIMILARITY = 0.95      # ≥ 直接复用（质量门复查）
@@ -64,64 +62,25 @@ def _dot(a: array.array, b: array.array) -> float:
 
 
 class EmbeddingService:
-    """Embedding 本地服务：跨实例复用 + 按需启动（仿 ReviewModelService）。"""
+    """Embedding 本地服务：跨实例复用 + 按需启动（委托 RuntimeCoordinator）。
+
+    审计 Phase D（P1-10）：进程管理统一到 RuntimeCoordinator 基座——
+    authenticated probe、fixed_cpu 断言（gpu_layers 强制 0）、端口租约/
+    清场、owned PID、TTL、取消清理全部走基座；本类保留对外 API
+    （ensure_running/embed/release/stop）与 /v1/embeddings 调用。
+    """
 
     def __init__(self, app_dir: str | Path, *,
                  process_factory=None, probe=None, sleep=None,
                  token_factory=None, startup_timeout: float = 180.0):
         self.app_dir = Path(app_dir).resolve()
-        self._process_factory = process_factory or subprocess.Popen
-        self._probe = probe or self._http_probe
-        self._sleep = sleep or time.sleep
-        self._token_factory = token_factory or (
-            lambda: secrets.token_urlsafe(24))
         self.startup_timeout = max(10.0, float(startup_timeout))
-        self._process: subprocess.Popen | None = None
-        self._runtime: dict | None = None
-        self._lock = threading.RLock()
-
-    @property
-    def _state_file(self) -> Path:
-        return self.app_dir / _RUNTIME_STATE_FILENAME
-
-    def _save_state(self, port: int, api_key: str, model: str,
-                    signature: tuple) -> None:
-        try:
-            self._state_file.write_text(
-                json.dumps({
-                    "port": int(port), "api_key": api_key,
-                    "model": str(model),
-                    "signature": [str(item) for item in signature],
-                }, ensure_ascii=False), encoding="utf-8")
-        except OSError:
-            pass
-
-    def _load_state(self) -> dict | None:
-        try:
-            if not self._state_file.is_file():
-                return None
-            data = json.loads(self._state_file.read_text(encoding="utf-8"))
-            if not isinstance(data, dict) or not isinstance(data.get("port"), int):
-                return None
-            return data
-        except (OSError, ValueError):
-            return None
-
-    @staticmethod
-    def _http_probe(base: str, api_key: str, expected_model: str) -> bool:
-        try:
-            health = httpx.get(base + "/health", timeout=2)
-            if health.status_code != 200:
-                return False
-            models = httpx.get(base + "/v1/models", timeout=2)
-            if models.status_code != 200:
-                return False
-            ids = [str(m.get("id", ""))
-                   for m in models.json().get("data", [])]
-            return any(expected_model.casefold() in i.casefold()
-                       for i in ids)
-        except httpx.HTTPError:
-            return False
+        # 共享协调器：同 app_dir 复用端口租约/owned 进程；测试注入
+        # process_factory/probe 走 get_coordinator 首建者生效
+        self._coord = get_coordinator(
+            self.app_dir, process_factory=process_factory, probe=probe,
+            sleep=sleep, token_factory=token_factory,
+            startup_timeout=startup_timeout)
 
     def _spec(self) -> ModelSpec:
         return ModelRegistry(self.app_dir).by_kind("embed")
@@ -134,91 +93,14 @@ class EmbeddingService:
                 f"Embedding 模型缺失：{spec.path}"
                 f"（models/ 目录无 Qwen3-Embedding-0.6B GGUF）")
         server = discover_server("", self.app_dir)
-        ctx = context_size or spec.default_ctx
-        signature = (server, spec.path, spec.port, ctx, -1, 1)
-        with self._lock:
-            if (self._process is not None
-                    and self._process.poll() is None
-                    and self._runtime is not None):
-                return dict(self._runtime)
-        state = self._load_state()
-        if state is not None and tuple(state.get("signature", ())) == tuple(
-                str(item) for item in signature):
-            base = f"http://127.0.0.1:{int(state['port'])}"
-            if self._probe(base, str(state.get("api_key", "")),
-                           spec.path.stem):
-                with self._lock:
-                    self._runtime = {
-                        "base_url": base + "/v1",
-                        "api_key": str(state.get("api_key", "")),
-                        "port": int(state["port"]),
-                    }
-                    return dict(self._runtime)
-        if cancellation_event is not None and cancellation_event.is_set():
-            raise RuntimeError("Embedding 服务启动已取消")
-        api_key = self._token_factory()
-        cmd = build_server_command(
-            server, spec.path, port=spec.port, api_key=api_key,
-            context_size=ctx, gpu_layers=-1, parallel=1,
-            cache_reuse=512)
-        cmd.extend(("--embeddings",))
-        cmd.extend(spec.server_args)
-        self._stop_locked()
-        log_path = self.app_dir / "logs" / "embed-server.log"
-        log_path.parent.mkdir(parents=True, exist_ok=True)
-        try:
-            proc = self._process_factory(
-                cmd, cwd=str(Path(cmd[0]).parent), stdout=log_path.open(
-                    "a", encoding="utf-8", errors="replace"),
-                stderr=subprocess.STDOUT, text=True, encoding="utf-8",
-                errors="replace", creationflags=(
-                    getattr(subprocess, "CREATE_NO_WINDOW", 0)
-                    | getattr(subprocess, "CREATE_NEW_PROCESS_GROUP", 0))
-                if sys.platform == "win32" else 0)
-        except OSError as exc:
-            raise RuntimeError(f"Embedding 服务启动失败：{exc}") from exc
-        with self._lock:
-            self._process = proc
-        deadline = time.monotonic() + self.startup_timeout
-        base = f"http://127.0.0.1:{spec.port}"
-        while time.monotonic() < deadline:
-            if proc.poll() is not None:
-                tail = self._log_tail(log_path)
-                raise RuntimeError(f"Embedding 服务异常退出（{proc.returncode}）："
-                                   f"{tail[-400:]}")
-            if cancellation_event is not None and cancellation_event.is_set():
-                raise RuntimeError("Embedding 服务启动已取消")
-            if self._probe(base, api_key, spec.path.stem):
-                self._save_state(spec.port, api_key, spec.path, signature)
-                with self._lock:
-                    self._runtime = {
-                        "base_url": base + "/v1", "api_key": api_key,
-                        "port": spec.port,
-                    }
-                    return dict(self._runtime)
-            self._sleep(2.0)
-        tail = self._log_tail(log_path)
-        raise RuntimeError(f"Embedding 服务启动超时（{self.startup_timeout}s）："
-                           f"{tail[-400:]}")
-
-    @staticmethod
-    def _log_tail(path: Path, limit: int = 2000) -> str:
-        try:
-            return path.read_text(encoding="utf-8", errors="replace")[-limit:]
-        except OSError:
-            return "（无日志）"
-
-    def _stop_locked(self) -> None:
-        with self._lock:
-            proc = self._process
-            self._process = None
-            self._runtime = None
-        if proc is not None and proc.poll() is None:
-            proc.terminate()
-            try:
-                proc.wait(timeout=10)
-            except subprocess.TimeoutExpired:
-                proc.kill()
+        cfg = build_effective_config(
+            "embed", model_path=spec.path, server_path=server,
+            ctx=context_size or spec.default_ctx, parallel=1,
+            cache_reuse=512,
+            extra_args=("--embeddings",) + spec.server_args,
+            source="embed_service")
+        return self._coord.acquire(cfg,
+                                   cancellation_event=cancellation_event)
 
     # ── 嵌入 ─────────────────────────────────────────────────────
     def embed(self, texts: list[str], *, timeout: float = 120.0
@@ -238,12 +120,11 @@ class EmbeddingService:
         return [by_index.get(i, []) for i in range(len(texts))]
 
     def release(self) -> None:
-        with self._lock:
-            self._process = None
-            self._runtime = None
+        """refcount-1；常驻（ttl=0）保留给后续实例复用（基座语义）。"""
+        self._coord.release("embed")
 
     def stop(self) -> None:
-        self._stop_locked()
+        self._coord.stop("embed")
 
 
 class VectorStore:
@@ -277,7 +158,6 @@ class VectorStore:
 
     @staticmethod
     def _now() -> str:
-        from datetime import datetime
         return datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
     # ── 写入 ──

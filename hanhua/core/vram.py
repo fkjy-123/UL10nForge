@@ -5,6 +5,7 @@ KV cache 是「并发槽位 × 上下文」的显存主力 —— 槽位翻倍�
 """
 from __future__ import annotations
 
+import os
 import re
 import struct
 import subprocess
@@ -165,11 +166,18 @@ def estimate_vram(model_path: str | Path, *, context_size: int = 4096,
 
 def gpu_memory_info() -> tuple[float, float] | None:
     """返回 (total_gb, free_gb)；nvidia-smi 不可用时返回 None。"""
+    # 弹窗根因（2026-08-13 用户实证：语义审核期间终端窗口反复闪出又
+    # 消失几十次）——nvidia-smi 探测缺 CREATE_NO_WINDOW，GUI 进程每次
+    # probe_hardware（送审 ensure_running 每轮都探测）都闪控制台窗口。
+    # 与 #14 netstat/taskkill 同类缺陷，对齐补标志（行为不变）。
+    nowindow = (getattr(subprocess, "CREATE_NO_WINDOW", 0)
+                if os.name == "nt" else 0)
     try:
         result = subprocess.run(
             ["nvidia-smi", "--query-gpu=memory.total,memory.free",
              "--format=csv,noheader,nounits"],
             capture_output=True, text=True, timeout=5, check=False,
+            creationflags=nowindow,
         )
     except (OSError, subprocess.SubprocessError):
         return None

@@ -36,6 +36,14 @@ class ProfileDialog(QDialog):
         self.tone = QPlainTextEdit(profile.tone_notes)
         self.tone.setPlaceholderText("例：对话口语化、阴郁氛围；主角沉默寡言；NPC 各有口癖…")
         self.tone.setFixedHeight(90)
+        # #10：Style/Personalization——自定义翻译风格提示词（按游戏档案
+        # 编辑；非空时以【个性化风格要求】块注入翻译提示词并优先生效）
+        self.style = QPlainTextEdit(profile.prompt_style)
+        self.style.setPlaceholderText(
+            "例：本游戏术语统一音译；\"play/resume\" 等按键词必须译成"
+            "「开始/继续」；禁止出现网络用语；技能名保持两字格式…\n"
+            "留空 = 使用内置的游戏本地化专家角色提示词")
+        self.style.setFixedHeight(100)
         self.source = QComboBox()
         for lang in SOURCE_LANGS:
             self.source.addItem("自动检测" if lang == "auto" else lang, lang)
@@ -47,6 +55,7 @@ class ProfileDialog(QDialog):
         form.addRow("游戏类型", self.genre)
         form.addRow("世界观设定", self.world)
         form.addRow("文风要求", self.tone)
+        form.addRow("翻译风格要求", self.style)
         form.addRow("源语言", self.source)
         form.addRow("目标语言", QLabel("简体中文（zh-CN）"))
         lay.addLayout(form)
@@ -70,6 +79,7 @@ class ProfileDialog(QDialog):
             genre=self.genre.text().strip(),
             world_setting=self.world.toPlainText().strip(),
             tone_notes=self.tone.toPlainText().strip(),
+            prompt_style=self.style.toPlainText().strip(),
             source_lang=self.source.currentData(),
             target_lang="zh-CN",
         )

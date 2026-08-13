@@ -148,3 +148,23 @@ def test_gpu_memory_info_returns_none_without_nvidia_smi(monkeypatch):
 
     monkeypatch.setattr(subprocess, "run", fake_run)
     assert gpu_memory_info() is None
+
+
+def test_gpu_memory_info_suppresses_console_window(monkeypatch):
+    """#18 回归：nvidia-smi 探测必须带 CREATE_NO_WINDOW（2026-08-13
+    实证：审核期间终端窗口反复闪出又消失几十次）。"""
+    import os
+    import subprocess
+
+    if os.name != "nt":
+        monkeypatch.setattr(os, "name", "nt")
+    calls = {}
+
+    def fake_run(cmd, **kwargs):
+        calls.update(kwargs)
+        return type("Result", (), {"returncode": 1, "stdout": ""})()
+
+    monkeypatch.setattr(subprocess, "run", fake_run)
+    assert gpu_memory_info() is None
+    assert calls["creationflags"] == getattr(
+        subprocess, "CREATE_NO_WINDOW", 0)

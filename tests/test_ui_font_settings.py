@@ -35,15 +35,17 @@ def _state(tmp_path: Path) -> AppState:
 
 
 def test_workbench_tokens_v2_palette():
-    """token v2（UI-UX 重构规范）：青绿主色 #48E6C1、琥珀警告、珊瑚红错误、
-    暗色中性底，既有 token 字段全部保留。"""
-    assert TOKENS.primary == "#48E6C1"
+    """Aurora Forge 令牌（2026-08-13）：薄荷青主色 #58E6C2、珊瑚红错误、
+    石墨黑 canvas #090B12，旧字段名全部保留为别名。"""
+    assert TOKENS.primary == "#58E6C2"
+    assert TOKENS.accent == "#58E6C2"
     assert TOKENS.warning == "#F5B84B"
-    assert TOKENS.error == "#F06A78"
-    assert TOKENS.background == "#080D18"
-    assert TOKENS.gradient_end == "#4FB0FF"
-    assert TOKENS.ai_primary == "#A78BFA"      # §6.2 紫色=AI
-    assert TOKENS.ai_secondary == "#7C5CFC"
+    assert TOKENS.error == "#FF7285"
+    assert TOKENS.background == "#090B12"
+    assert TOKENS.canvas == "#090B12"
+    assert TOKENS.gradient_end == "#63B3FF"
+    assert TOKENS.ai_primary == "#A78BFA"      # 紫罗兰=AI
+    assert TOKENS.ai_secondary == "#8B6FF0"
     for name in (
             "background", "panel", "surface", "surface_hover", "border",
             "border_strong", "primary", "primary_hover", "primary_pressed",
@@ -71,20 +73,44 @@ def test_app_state_owns_local_model_manager(tmp_path):
 
 def test_font_settings_ui_removed_and_default_config_intact(
         qapp, tmp_path, monkeypatch):
-    """中文字体设置已从设置页移除；默认配置仍启用思源黑体，写回时自动生效。"""
+    """旧字体开关已移除；新增粗/中/细三档选择器（#24），默认档位为 medium，
+    写回时按档位选用 SDF 字体包。"""
     state = _state(tmp_path)
     page = SettingsPage(state, _Window())
 
     assert page.tabs.count() == 5
     assert [page.tabs.tabText(i) for i in range(5)] == [
-        "翻译后端", "高级设置", "术语表", "AI 审核", "关于"]
-    assert not hasattr(page, "font_enabled")
-    assert not hasattr(page, "font_save_btn")
+        "翻译服务", "模型与性能", "术语库", "AI 审核", "关于"]
+    assert not hasattr(page, "font_enabled")          # 旧字体开关已移除
+    assert hasattr(page, "font_save_btn")             # 新档位保存按钮
+    assert page.font_medium.isChecked() is True       # 默认中档
+    assert page.font_heavy.isChecked() is False
+    assert page.font_thin.isChecked() is False
 
     loaded = SettingsStore(tmp_path / "settings.json")
     loaded.load()
     assert loaded.font.enabled is True
     assert loaded.font.filename == "SimplifiedChinese/SourceHanSansSC-Regular.otf"
+    assert loaded.font.weight == "medium"
+
+
+def test_font_weight_selection_persists(qapp, tmp_path, monkeypatch):
+    """选择粗档并保存 → settings.json 写入 weight=heavy。"""
+    state = _state(tmp_path)
+    page = SettingsPage(state, _Window())
+    toasts = []
+    monkeypatch.setattr(
+        "hanhua.ui.pages.settings_page.Toast.show",
+        lambda _parent, _message, kind="info": toasts.append(kind))
+
+    page.font_heavy.setChecked(True)
+    page._save_font_weight()
+
+    loaded = SettingsStore(tmp_path / "settings.json")
+    loaded.load()
+    assert loaded.font.weight == "heavy"
+    assert state.settings.font.weight == "heavy"
+    assert toasts and toasts[-1] == "success"
 
 
 def test_advanced_local_settings_visible_only_in_local_mode_and_refresh_vram(
@@ -397,15 +423,25 @@ def test_home_scan_does_not_freeze_font_settings_before_write(
     queued = []
 
     class _Signal:
+        def __init__(self):
+            self.emitted = []
+
         def connect(self, _slot):
             pass
+
+        def emit(self, *_args):
+            self.emitted.append(_args)
 
     class _Worker:
         def __init__(self, fn, *args):
             self.fn = fn
             self.args = args
             self.signals = type(
-                "Signals", (), {"finished": _Signal(), "error": _Signal()}
+                "Signals", (), {
+                    # progress：扫描阶段事件 → rail 实时更新（#15）连接
+                    "finished": _Signal(), "error": _Signal(),
+                    "progress": _Signal(),
+                }
             )()
 
     class _Pool:
@@ -419,19 +455,24 @@ def test_home_scan_does_not_freeze_font_settings_before_write(
     monkeypatch.setattr("hanhua.ui.pages.home_page.Worker", _Worker)
     monkeypatch.setattr("hanhua.ui.pages.home_page.QThreadPool", _Pool)
     report = SimpleNamespace(text_files=4, v2_files=7)
-    monkeypatch.setattr(Project, "scan_all", lambda _self: report)
+    monkeypatch.setattr(
+        Project, "scan_all",
+        lambda _self, event_cb=None: report)
 
     game_dir = tmp_path / "game"
     game_dir.mkdir()
     page.open_dir(game_dir)
 
     assert len(queued) == 1
-    assert queued[0].args == (str(game_dir), str(state.app_dir))
+    # M1 后扫描任务以闭包封装（event_cb 延迟绑定 Worker 信号），
+    # 不再携带 (path, app_dir) 位置参数——直接执行 fn 验证：扫描
+    # 排队到后台线程（不冻结 UI）+ 字体配置在工作线程内快照。
+    assert queued[0].args == ()
 
     state.settings.font.enabled = True
     state.settings.font.filename = "联想小新黑体 常规.ttf"
 
-    project, scan_report = queued[0].fn(*queued[0].args)
+    project, scan_report = queued[0].fn()
     assert project.font_config == FontConfig(enabled=False)
     assert project.font_config is not state.settings.font
     assert scan_report is report
@@ -572,3 +613,56 @@ def test_write_result_never_reports_success_when_final_route_is_pending(
 
     assert toasts == [("写回未通过验证 · 必需步骤尚未完成", "error")]
     assert page.reveal_btn.isHidden()
+
+
+def test_write_result_shows_coverage_gate_over_font_level(
+        qapp, tmp_path, monkeypatch):
+    """Phase 4：写回结果存在 font_gate/font_coverage 时展示发布门与逐栈
+    覆盖摘要（替代旧字体层级启发式）；缺字回溯可审计。"""
+    from hanhua.ui.pages.translate_page import TranslatePage
+    state = _state(tmp_path)
+    page = TranslatePage(state, _Window())
+    state.project = type("Project", (), {"out_dir": tmp_path / "game_汉化"})()
+    state.analysis_report = SimpleNamespace(
+        unblocked=True, completable=True, route=())
+    monkeypatch.setattr(
+        "hanhua.ui.pages.translate_page.Toast.show",
+        lambda _parent, message, kind="info": None)
+
+    page._on_written({
+        "text_files": 1,
+        "font": FontInstallResult(True, "SourceHanSansSC-Regular.otf"),
+        "verification": {
+            "input_protected": True,
+            "reopen_verified": True,
+            "changed_files": 2,
+            "written_translations": 1,
+            "font_level": "runtime_fallback",
+            "warnings": [],
+            "overall": "WARN",
+            "font_gate": {"status": "WARN",
+                          "detail": "存在缺字/未覆盖消费者，候选已确认"},
+            "font_coverage": {
+                "overall": "CANDIDATE_ONLY",
+                "stack_counts": {"tmp_font": 1, "dynamic_tmp": 1},
+                "state_counts": {"COVERED": 1, "CANDIDATE_ONLY": 1},
+                "missing": [{"scalar": "设 (U+8BBE)",
+                             "consumer": "bundle#font1",
+                             "kind": "tmp_font",
+                             "locators": ["en.json:title"]}],
+            },
+            "font_bitmap": {
+                "providers": ["ngui_bmfont"],
+                "injected": 0, "audited": 1, "pending": 1,
+            },
+        },
+        "analysis_report": SimpleNamespace(completable=True, route=()),
+    })
+    log = page.log_view.toPlainText()
+    assert "字体发布门：WARN — 存在缺字/未覆盖消费者" in log
+    assert "字体覆盖：CANDIDATE_ONLY（dynamic_tmp: 1 · tmp_font: 1）" in log
+    assert "设 (U+8BBE)" in log and "bundle#font1" in log
+    assert "字体层级" not in log
+    # Phase 5：位图注入摘要行（provider/注入/审计/未注入）
+    assert "位图注入：provider 1 个（ngui_bmfont）" in log
+    assert "注入 0 · 审计 1 · 未注入 1" in log

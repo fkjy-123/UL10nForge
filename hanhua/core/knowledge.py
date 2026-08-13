@@ -8,6 +8,7 @@ import unicodedata
 from pathlib import Path
 
 from hanhua.core.placeholders import should_skip
+from hanhua.core.review_failures import failure_pattern
 
 # ────────────────────────────────────────────────────────────────────────
 # 知识库：汉化全链路（识别/翻译/写回/质量门）遇到的特殊情况的经验存储。
@@ -640,7 +641,16 @@ class KnowledgeStore:
                     ("source", "TEXT NOT NULL DEFAULT ''"),
                     ("game", "TEXT NOT NULL DEFAULT ''"),
                     ("created_at", "TEXT NOT NULL DEFAULT ''"),
-                    ("updated_at", "TEXT NOT NULL DEFAULT ''")):
+                    ("updated_at", "TEXT NOT NULL DEFAULT ''"),
+                    # #43 阶段 A（重构指令 §7 置信度/§17 生命周期/§8 来源）：
+                    # 加列全带 DEFAULT——旧行自动获得保守值（AI 生成
+                    # 0.6 / verified / priority 0），零迁移脚本
+                    ("confidence", "REAL NOT NULL DEFAULT 0.6"),
+                    ("status", "TEXT NOT NULL DEFAULT 'verified'"),
+                    ("priority", "INTEGER NOT NULL DEFAULT 0"),
+                    ("source_ref", "TEXT NOT NULL DEFAULT ''"),
+                    ("usage_count", "INTEGER NOT NULL DEFAULT 0"),
+                    ("success_count", "INTEGER NOT NULL DEFAULT 0")):
                 if col not in cols:
                     self.conn.execute(
                         f"ALTER TABLE knowledge_items ADD COLUMN {col} {ddl}")
@@ -655,14 +665,34 @@ class KnowledgeStore:
 
     # ── 写入 ──
 
+    #: 生命周期合法状态（重构指令 §17-18：candidate→verified→trusted→
+    #: locked→deprecated；不删除旧知识，deprecated 保留历史）
+    VALID_STATUS = frozenset(
+        {"candidate", "verified", "trusted", "locked", "deprecated"})
+
+    #: 来源类型（重构指令 §8：知识必须有来源，禁止「不知道哪来的」）
+    VALID_SOURCES = frozenset(
+        {"seed", "manual", "auto", "official", "imported",
+         "human_corrected", "review_confirmed"})
+
     def upsert(self, domain: str, kind: str, pattern: str, *,
                action: str = "", map_to: str = "", note: str = "",
-               hits: int = 1, source: str = "", game: str = "") -> bool:
+               hits: int = 1, source: str = "", game: str = "",
+               confidence: float = 0.6, status: str = "verified",
+               priority: int = 0, source_ref: str = "") -> bool:
         """幂等入库：已存在则 hits+1 并刷新来源备注/时间，返回是否新增。
 
-        source: seed/manual/auto（内置种子/人工沉淀/自动学习）；game:
-        沉淀来源游戏（可空）——知识可追溯、可按游戏统计（§0.4 溯源）。"""
+        source: seed/manual/auto（内置种子/人工沉淀/自动学习）或
+        official/imported/human_corrected/review_confirmed；game: 沉淀
+        来源游戏（可空）。#43 阶段 A 扩展：confidence（置信度，人工确认
+        1.0 / 人工修改 0.95 / 审核通过 0.85 / AI 生成 0.6）、status
+        （生命周期）、priority（0-10 优先级）、source_ref（来源文本/文件/
+        时间细节，可追溯）。所有扩展参数有默认值——旧调用零改动。"""
         now = self._now()
+        if status not in self.VALID_STATUS:
+            status = "verified"
+        if source and source not in self.VALID_SOURCES:
+            source = "auto"
         with self._lock:
             row = self.conn.execute(
                 "SELECT id, game FROM knowledge_items"
@@ -672,10 +702,12 @@ class KnowledgeStore:
                 self.conn.execute(
                     "INSERT INTO knowledge_items"
                     "(domain, kind, pattern, action, map_to, note, hits,"
-                    " source, game, created_at, updated_at)"
-                    " VALUES (?,?,?,?,?,?,?,?,?,?,?)",
+                    " source, game, created_at, updated_at, confidence,"
+                    " status, priority, source_ref)"
+                    " VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
                     (domain, kind, pattern, action, map_to, note, hits,
-                     source, game, now, now))
+                     source, game, now, now, confidence, status, priority,
+                     source_ref))
                 self.conn.commit()
                 return True
             prev_game = row["game"]
@@ -691,12 +723,13 @@ class KnowledgeStore:
         with self._lock:
             return [dict(r) for r in self.conn.execute(
                 "SELECT * FROM knowledge_items WHERE domain=?"
-                " ORDER BY hits DESC, id", (domain,))]
+                " ORDER BY priority DESC, hits DESC, id", (domain,))]
 
     def list_all(self) -> list[dict]:
         with self._lock:
             return [dict(r) for r in self.conn.execute(
-                "SELECT * FROM knowledge_items ORDER BY domain, kind, hits DESC")]
+                "SELECT * FROM knowledge_items"
+                " ORDER BY domain, kind, priority DESC, hits DESC")]
 
     def delete(self, domain: str, kind: str, pattern: str) -> None:
         with self._lock:
@@ -704,6 +737,52 @@ class KnowledgeStore:
                 "DELETE FROM knowledge_items"
                 " WHERE domain=? AND kind=? AND pattern=?",
                 (domain, kind, pattern))
+            self.conn.commit()
+
+    # ── #43 阶段 A：生命周期 + 冲突检测 ──
+
+    def set_status(self, domain: str, kind: str, pattern: str,
+                   status: str) -> bool:
+        """知识生命周期流转（重构指令 §17-18）：不删除旧知识，deprecated
+        保留历史。合法状态 candidate/verified/trusted/locked/deprecated；
+        未知状态拒绝（不静默吞掉调用方错误）。"""
+        if status not in self.VALID_STATUS:
+            return False
+        with self._lock:
+            cur = self.conn.execute(
+                "UPDATE knowledge_items SET status=?, updated_at=?"
+                " WHERE domain=? AND kind=? AND pattern=?",
+                (status, self._now(), domain, kind, pattern))
+            self.conn.commit()
+            return cur.rowcount > 0
+
+    def detect_conflicts(self, domain: str, kind: str, pattern: str,
+                         action: str) -> list[dict]:
+        """术语/规则冲突检测（重构指令 §9）：同 pattern 不同 action 的
+        已存在条目——不允许静默共存，返回冲突清单供上层提示用户
+        preferred / forbidden 取舍。pattern 相同而 action 不同 =
+        同一原文有两种译法/处置。"""
+        if not action:
+            return []
+        with self._lock:
+            rows = self.conn.execute(
+                "SELECT id, action, map_to, note, source, confidence,"
+                " status FROM knowledge_items"
+                " WHERE domain=? AND kind=? AND pattern=?"
+                " AND action!=? AND action!=''",
+                (domain, kind, pattern, action)).fetchall()
+            return [dict(r) for r in rows]
+
+    def mark_used(self, domain: str, kind: str, pattern: str,
+                  success: bool = True) -> None:
+        """使用计数（可观测性 §19）：检索命中 +1，成功（审校通过/人工
+        确认沿用）另计 success_count。"""
+        with self._lock:
+            self.conn.execute(
+                "UPDATE knowledge_items SET usage_count=usage_count+1,"
+                " success_count=success_count+? WHERE domain=? AND kind=?"
+                " AND pattern=?", (1 if success else 0, domain, kind,
+                                   pattern))
             self.conn.commit()
 
     def close(self):
@@ -750,6 +829,10 @@ class KnowledgeBase:
             })
         if self.store is not None:
             for row in self.store.list_by_domain("text"):
+                # #43 阶段 A：deprecated 知识退役不参与检索（保留历史，
+                # 重构指令 §17-18 生命周期）
+                if row.get("status") == "deprecated":
+                    continue
                 if row["kind"] in {"spaced_action", "uppercase_action"}:
                     continue  # 形态识别已覆盖，持久库只存精确原文对照
                 try:
@@ -784,6 +867,8 @@ class KnowledgeBase:
             for row in rows:
                 if not row["map_to"]:
                     continue
+                if row.get("status") == "deprecated":
+                    continue  # #43 阶段 A：退役知识不注入 prompt
                 lines.append(
                     f"[特殊文本] “{row['pattern']}”应译为“{row['map_to']}”"
                     f"（{row['kind']}）")
@@ -884,7 +969,7 @@ class KnowledgeBase:
     # ── fail_case 域：失败案例库（六库蓝图 2，FAIL 标准格式） ──
 
     _FAIL_TYPES = frozenset(
-        {"提取", "识别", "分类", "翻译", "写回", "显示", "崩溃"})
+        {"提取", "识别", "分类", "翻译", "写回", "显示", "崩溃", "审核"})
     _FAIL_KEYS = ("fail_no", "game", "env", "issue", "phenomenon",
                   "root_cause", "solution", "impact", "fixed_version",
                   "fail_type")
@@ -919,6 +1004,28 @@ class KnowledgeBase:
         return bool(self.store.upsert(
             "fail_case", fail_type, problem, action="apply_fix", note=note,
             source=source, game=game))
+
+    def record_review_failure(self, failure: dict, *,
+                              source: str = "auto") -> bool:
+        """审核失败结构化入库（fail_case 域，review_failure_v1 schema）。
+
+        Phase B-5（审计 P1-7）：CRITICAL/MAJOR 语义错译与 REVIEW_ERROR
+        管线错误进入失败案例闭环——错误译文/正确译文/错误类型/审核理由
+        结构化留档；match_case/search_keyword 解析 note JSON 的 original
+        字段可按原文召回同类失败作反例（KnowledgeRetrieval 接入点）。
+
+        幂等（pattern=game:locator）：同条目重审只 hits+1 并刷新 note，
+        不产生重复案例。收敛与未收敛均记录；correct_translation 是否
+        填充由 reviewer 构建时保证（仅终态 APPROVED 系）。"""
+        if self.store is None:
+            return False
+        pattern = failure_pattern(failure)
+        if not pattern:
+            return False
+        note = json.dumps(failure, ensure_ascii=False)
+        return bool(self.store.upsert(
+            "fail_case", "审核", pattern, action="apply_fix", note=note,
+            source=source, game=str(failure.get("game") or "")))
 
     def migrate_legacy_notes(self) -> tuple[int, int]:
         """旧库 fail_case note 迁移：FAIL-|键:值| 管道格式 → 结构化 JSON。

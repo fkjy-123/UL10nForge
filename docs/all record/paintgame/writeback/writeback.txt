@@ -1,0 +1,42 @@
+游戏：paintgame
+写回时间：2026-08-13 14:27:30
+输出目录：D:\游戏\paintgame_汉化
+
+文件清单：9 个
+
+- PaintGame_Data/StreamingAssets/Audio/GeneratedSoundBanks/Windows/Init.txt（19 条）
+- PaintGame_Data/StreamingAssets/Audio/GeneratedSoundBanks/Windows/Other.txt（47 条）
+- PaintGame_Data/StreamingAssets/Audio/GeneratedSoundBanks/Windows/PluginInfo.xml（2 条）
+- PaintGame_Data/StreamingAssets/Audio/GeneratedSoundBanks/Windows/SoundbanksInfo.xml（105 条）
+- PaintGame_Data/StreamingAssets/Audio/GeneratedSoundBanks/Windows/Walking.txt（20 条）
+- PaintGame_Data/StreamingAssets/desc.txt（1 条）
+- PaintGame_Data/level0（1051 条）
+- PaintGame_Data/sharedassets0.assets（79 条）
+- PaintGame_Data/Managed/Assembly-CSharp.dll（122 条）
+
+────────────────────────────────────────────────────────────────
+写回结果
+文本文件：6
+输入保护：True
+重开验证：True
+变更文件：35
+写入译文：212
+总体闸门：PASS
+字体层级：runtime_verified（LEGACY_EVIDENCE_UNSCOPED：旧协议证据，未含逐码点 attestation/覆盖证明）
+
+四态闸门明细
+  file=PASS
+  container=PASS
+  object=PASS
+  runtime=PASS
+备份：None
+清单：.hanhua-manifest.json
+
+────────────────────────────────────────────────────────────────
+二进制资源（V2）
+文件：2 · 候选：188
+
+────────────────────────────────────────────────────────────────
+字体部署
+字体： · 层级：—
+安装：True

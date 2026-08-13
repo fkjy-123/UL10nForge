@@ -9,7 +9,8 @@
 """
 
 from hanhua.core.reviewer import (ReviewItem, ReviewResult, SemanticReviewer,
-                                  _build_item_prompt, extract_term_pairs)
+                                  _REVIEW_SYSTEM_PROMPT, _build_item_prompt,
+                                  _parse_result, extract_term_pairs)
 
 
 class _FakeService:
@@ -79,7 +80,8 @@ def test_review_batch_parses_level_json():
         ReviewItem(entry_id="2", original="Start Game", translation="开始游戏",
                    text_type="按钮"),
     ]
-    results = reviewer.review_batch(items)
+    results, cancelled = reviewer.review_batch(items)
+    assert cancelled == 0
     assert len(results) == 2
     assert results["1"].level == "CRITICAL"
     assert results["1"].issue == "术语错误"
@@ -91,20 +93,42 @@ def test_review_batch_parses_level_json():
 
 
 def test_review_batch_handles_service_failure():
-    """服务异常 → 返回空 dict（调用方按全部 pass 并告警，不阻断写回）。"""
+    """服务异常 → 显式 TRANSPORT_ERROR 错误结果（fail-closed，不伪装 pass）。"""
     reviewer = _make_reviewer(_FakeService(error=RuntimeError("网络故障")))
     items = [ReviewItem(entry_id="1", original="Hi", translation="你好")]
-    assert reviewer.review_batch(items) == {}
+    results, cancelled = reviewer.review_batch(items)
+    assert cancelled == 0
+    assert len(results) == 1
+    assert results["1"].is_error
+    assert results["1"].error == "TRANSPORT_ERROR"
+    assert results["1"].reviewed is False
 
 
 def test_review_batch_handles_non_json_output():
-    """服务返回非 JSON → 兜底 PASS（reviewed=False，reason 留原文备查）。"""
+    """服务返回非 JSON → 显式 PARSE_ERROR（不得伪装成「没有发现问题」）。"""
     reviewer = _make_reviewer(_FakeService(outputs=["一段普通文本"]))
     items = [ReviewItem(entry_id="1", original="Hi", translation="你好")]
-    results = reviewer.review_batch(items)
+    results, cancelled = reviewer.review_batch(items)
+    assert cancelled == 0
     assert len(results) == 1
-    assert results["1"].level == "PASS"
+    assert results["1"].is_error
+    assert results["1"].error == "PARSE_ERROR"
     assert results["1"].reviewed is False
+
+
+def test_review_batch_cancellation_returns_cancelled_count():
+    """取消事件触发 → 剩余条目计入 cancelled_count（取消是显式终态，
+    不得归入 error 或 pass）。"""
+    import threading
+    reviewer = _make_reviewer(_FakeService(
+        outputs=['{"level": "PASS", "reason": "正确"}']))
+    items = [ReviewItem(entry_id=str(i), original=f"text{i}",
+                        translation=f"译文{i}") for i in range(5)]
+    evt = threading.Event()
+    evt.set()   # 预先置位 → 整批都应计入 cancelled
+    results, cancelled = reviewer.review_batch(items, cancellation_event=evt)
+    assert cancelled == len(items)
+    assert results == {}
 
 
 def test_extract_term_pairs():
@@ -122,3 +146,87 @@ def test_extract_term_pairs():
     assert ("Resume", "继续") in pairs
     # 语境不当不是术语类 → 不入词对
     assert len(pairs) == 2
+
+
+# ── #43 阶段 E：十维审校（重构指令 §10 / §16 知识优先级链） ─────────
+
+def test_system_prompt_has_ten_dimensions():
+    """审核系统 prompt 含十维（含幻觉/自然度/歧义/机翻痕迹）。"""
+    for dim in ("语义准确", "游戏语境", "术语一致", "自然度", "风格",
+                "完整性", "幻觉", "结构完整", "歧义", "机翻痕迹"):
+        assert dim in _REVIEW_SYSTEM_PROMPT
+    assert "overall_score" in _REVIEW_SYSTEM_PROMPT   # JSON 契约扩展
+    assert "dimensions" in _REVIEW_SYSTEM_PROMPT
+
+
+def test_parse_result_ten_dimension_fields():
+    """十维 JSON（overall_score + dimensions）→ ReviewResult 新字段。"""
+    r = _parse_result(
+        '{"level": "MAJOR", "overall_score": 62, '
+        '"dimensions": {"语义准确": 90, "自然度": 55, "术语一致": 80}, '
+        '"reason": "翻译腔重", '
+        '"issues": [{"type": "机翻痕迹", "detail": "语序直译", '
+        '"suggestion": "地道表达"}]}', "e0")
+    assert r.overall_score == 62
+    assert r.dimensions == {"语义准确": 90, "自然度": 55, "术语一致": 80}
+    assert r.level == "MAJOR"
+    assert r.issue == "机翻痕迹"
+
+
+def test_parse_result_legacy_json_compat():
+    """旧模型输出（无新字段）→ overall_score=0 / dimensions={}（零破坏）。"""
+    r = _parse_result('{"level": "PASS", "reason": "正确"}', "e0")
+    assert r.overall_score == 0
+    assert r.dimensions == {}
+    assert r.level == "PASS"
+
+
+def test_parse_result_score_clamped_and_bad_types_ignored():
+    """越界分截断 0-100；非数值/非 dict 类型安全忽略。"""
+    r = _parse_result(
+        '{"level": "PASS", "overall_score": 250, "dimensions": {"a": "x"}}',
+        "e0")
+    assert r.overall_score == 100
+    assert r.dimensions == {}
+    r2 = _parse_result('{"level": "PASS", "overall_score": "高"}', "e0")
+    assert r2.overall_score == 0
+
+
+def test_review_result_dimension_defaults():
+    """ReviewResult 默认 overall_score=0 / dimensions={}（构造兼容）。"""
+    r = ReviewResult("1", level="PASS")
+    assert r.overall_score == 0
+    assert r.dimensions == {}
+
+
+def test_build_item_prompt_injects_hints():
+    """术语参考 + 语境参考注入 prompt；旧调用（无 hint）不注入。"""
+    item = ReviewItem(entry_id="a1", original="Resume", translation="继续",
+                      text_type="按钮", term_hint="Resume=继续；Save=保存",
+                      context_hint="「继续」(context_exact, 置信 0.90)")
+    prompt = _build_item_prompt(item)
+    assert "术语参考：Resume=继续；Save=保存" in prompt
+    assert "语境参考：「继续」(context_exact, 置信 0.90)" in prompt
+    legacy = _build_item_prompt(ReviewItem(
+        entry_id="a2", original="Hi", translation="你好"))
+    # 系统 prompt 维度 3 提到「术语参考/语境参考」字样，注入形态以冒号区分
+    assert "术语参考：" not in legacy
+    assert "语境参考：" not in legacy
+
+
+def test_review_batch_ten_dimension_end_to_end():
+    """端到端：十维 JSON 输出 → 评分/维度随结果透出。"""
+    service = _FakeService(outputs=[
+        '{"level": "MINOR", "overall_score": 88, '
+        '"dimensions": {"语义准确": 95, "自然度": 80}, '
+        '"reason": "略有翻译腔"}'])
+    reviewer = _make_reviewer(service)
+    items = [ReviewItem(entry_id="1", original="Resume", translation="继续",
+                        text_type="按钮", term_hint="Resume=继续")]
+    results, cancelled = reviewer.review_batch(items)
+    assert cancelled == 0
+    assert results["1"].overall_score == 88
+    assert results["1"].dimensions["自然度"] == 80
+    assert results["1"].level == "MINOR"
+    # hint 已进送审 prompt（知识优先级链注入生效）
+    assert "术语参考：Resume=继续" in service.prompts[0]

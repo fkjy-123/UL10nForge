@@ -951,6 +951,34 @@ def test_planner_uses_bmfont_only_with_bitmap_evidence(tmp_path):
     assert {step.step_id: step for step in mono_plan}["font"].backend == "bepinex_runtime"
 
 
+def test_planner_bitmap_providers_promote_injection_to_pending(tmp_path):
+    """Phase 5：发现可注入 .fnt 资产 + bmfont 工具 verified →
+    font_injection pending（写回阶段自动审计缺字并注入）。"""
+    bitmap = fingerprint_game(_il2cpp_game(tmp_path / "bitmap", bitmap=True))
+    route = plan_backends(
+        bitmap, {"il2cpp_dumper": "verified", "bmfont": "verified"},
+        bitmap_provider_count=2)
+    by_id = {step.step_id: step for step in route}
+    injection = by_id["font_injection"]
+    assert injection.backend == "bmfont_inject"
+    assert injection.status == "pending"
+    assert injection.confidence == "high"
+    assert "2 个 BMFont 资产" in injection.reason
+    assert plan_is_unblocked(route) is True
+
+
+def test_planner_bitmap_providers_without_tool_blocks_injection(tmp_path):
+    """Phase 5：发现资产但 bmfont 工具缺失 → font_injection blocked
+    并给出工具状态原因（不假装可注入）。"""
+    bitmap = fingerprint_game(_il2cpp_game(tmp_path / "bitmap", bitmap=True))
+    route = plan_backends(
+        bitmap, {"il2cpp_dumper": "verified", "bmfont": "missing"},
+        bitmap_provider_count=1)
+    injection = {step.step_id: step for step in route}["font_injection"]
+    assert injection.status == "blocked"
+    assert "工具状态" in injection.reason
+
+
 def test_fingerprint_keeps_bundle_evidence_after_later_plain_extensionless_file(
         tmp_path):
     game = tmp_path / "Evidence Game"
@@ -977,3 +1005,43 @@ def test_fingerprint_rejects_lexical_game_reparse_before_resolving(
 
     with pytest.raises(FingerprintError, match="reparse|重解析"):
         fingerprint_game(game)
+
+
+def test_planner_marks_unverified_stack_blocked_by_publish_gate(tmp_path):
+    """Phase 4：未知渲染栈 → 静态替换降为 medium，reason 声明发布门
+    BLOCKED 不可绕过（候选确认不放行 §8.3）。"""
+    from dataclasses import replace
+
+    fingerprint = fingerprint_game(_il2cpp_game(tmp_path, version=29))
+    fingerprint = replace(fingerprint, font_stacks=("unverified_font_stack",))
+    capability = FontProviderCapability(
+        "bepinex6_il2cpp_x64", "il2cpp", "x64", False, False,
+        reason="IL2CPP x64 无动态 provider",
+        static_writeback_allowed=True,
+    )
+    route = plan_backends(
+        fingerprint, {"il2cpp_dumper": "verified", "bmfont": "verified"},
+        font_capability=capability)
+    font = {step.step_id: step for step in route}["font"]
+
+    assert font.backend == "static_replace"
+    assert font.confidence == "high"
+    assert "未知渲染栈" in font.reason
+    assert "不可绕过" in font.reason
+    assert plan_is_unblocked(route) is True
+
+
+def test_planner_runtime_fallback_hints_dynamic_attestation(tmp_path):
+    """Phase 4：Mono runtime_font_fallback 栈 → reason 注明动态消费者
+    需运行时 attestation（发布门消费）。"""
+    from dataclasses import replace
+
+    fingerprint = fingerprint_game(_mono_game(tmp_path))
+    fingerprint = replace(
+        fingerprint, font_stacks=("runtime_font_fallback",))
+    route = plan_backends(
+        fingerprint, {"il2cpp_dumper": "verified", "bmfont": "verified"})
+    font = {step.step_id: step for step in route}["font"]
+
+    assert font.backend == "bepinex_runtime"
+    assert "attestation" in font.reason

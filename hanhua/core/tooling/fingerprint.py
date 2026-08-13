@@ -36,6 +36,34 @@ class GameFingerprint:
     metadata_version: int | None
     evidence: tuple[str, ...]
     capabilities: tuple[str, ...] = ()
+    #: 存在的字体渲染栈（tmp/ugui/ngui/bitmap_font/runtime_font_fallback/
+    #: unverified_font_stack）——Phase 2 消费者清单的来源（审计 §7.2）
+    font_stacks: tuple[str, ...] = ()
+
+
+#: evidence 键 → 字体渲染栈名（字体闭环 Phase 1）
+_FONT_STACK_BY_EVIDENCE = (
+    ("tmp", "tmp"),
+    ("ugui", "ugui"),
+    ("ngui", "ngui"),
+    ("bitmap_font", "bitmap_font"),
+)
+
+
+def _derive_font_stacks(evidence: tuple[str, ...],
+                        capabilities: tuple[str, ...]) -> tuple[str, ...]:
+    """从指纹证据/能力派生字体渲染栈。
+
+    tmp/ugui/ngui/bitmap_font 来自 DLL 与 .fnt 指纹；runtime_font_fallback
+    来自 mono 运行时能力。一个栈都没识别到 → unverified_font_stack——
+    Phase 2 必须知道「栈未知」而不是假装没有字体（审计 §9 样本 7：
+    未识别对象不得静默消失）。"""
+    stacks = [name for key, name in _FONT_STACK_BY_EVIDENCE if key in evidence]
+    if "runtime_font_fallback" in capabilities:
+        stacks.append("runtime_font_fallback")
+    if not stacks:
+        stacks.append("unverified_font_stack")
+    return tuple(stacks)
 
 
 _UNITY_VERSION = re.compile(
@@ -212,6 +240,7 @@ def fingerprint_game(
             evidence=("ambiguous_player_layout", *_candidate_evidence(
                 root, candidates)),
             capabilities=(),
+            font_stacks=("unverified_font_stack",),
         )
 
     if selected is not None:
@@ -315,4 +344,6 @@ def fingerprint_game(
         metadata_version=metadata_version,
         evidence=tuple(evidence),
         capabilities=tuple(capabilities),
+        font_stacks=_derive_font_stacks(tuple(evidence),
+                                        tuple(capabilities)),
     )

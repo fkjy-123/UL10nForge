@@ -10,7 +10,7 @@ from hanhua.core.batch_translator import _rules_version
 from hanhua.core.memory import ProjectStore
 from hanhua.core.record_writer import (
     _budget_exhausted_of, _exemption_sentinels, _morphology_stats,
-    _skipped_by_reason)
+    _skipped_by_reason, _export_text_records)
 
 # 形态分类测试路径（classify_morphology 的 rel 语义）
 _UNITYSCRIPT_DLL = "Game_Data/Managed/Assembly-UnityScript.dll"   # dense
@@ -399,3 +399,104 @@ def test_summary_memory_reject_rate_no_warning_when_healthy(
     summary = (out_root / proj.game_dir.name / "summary.md").read_text(
         encoding="utf-8")
     assert "记忆拒绝率" not in summary
+
+
+def test_font_gate_and_coverage_in_records(tmp_path, monkeypatch):
+    """Phase 4：writeback.txt / summary.md 输出字体发布门 + 逐栈/逐码点
+    覆盖摘要（计划 §11 统一口径——GUI/runner 共用 verification）。"""
+    from hanhua.core.record_writer import export_records
+    from tests.test_scanner import _make_tree
+    from hanhua.core.project import Project
+
+    game_dir = _make_tree()
+    proj = Project.open_game_dir(game_dir, tmp_path / "app")
+    proj.scan()
+    monkeypatch.setattr(
+        "hanhua.core.record_writer._exemption_sentinels",
+        lambda store: [])
+    result = {
+        "text_files": 2,
+        "font": type("F", (), {
+            "family": "SourceHanSansSC-Regular.otf",
+            "level": "runtime_fallback",
+            "installed": True})(),
+        "verification": {
+            "input_protected": True,
+            "reopen_verified": True,
+            "changed_files": 3,
+            "written_translations": 1,
+            "overall": "PASS",
+            "font_level": "runtime_fallback",
+            "font_gate": {"status": "BLOCKED",
+                          "detail": "存在缺字/未覆盖消费者，默认阻断发布"},
+            "font_coverage": {
+                "overall": "CANDIDATE_ONLY",
+                "stack_counts": {"tmp_font": 2, "legacy_font": 1},
+                "state_counts": {"COVERED": 2, "CANDIDATE_ONLY": 1},
+                "missing": [{"scalar": "设 (U+8BBE)",
+                             "consumer": "bundle#font1",
+                             "kind": "tmp_font",
+                             "locators": ["en.json:title"]}],
+            },
+            "font_bitmap": {
+                "providers": ["bmfont"],
+                "injected": 1, "audited": 1, "pending": 0,
+            },
+        },
+    }
+    out_root = tmp_path / "records"
+    export_records(proj, out_root, write_result=result)
+    rec_dir = out_root / proj.game_dir.name
+    writeback = (rec_dir / "writeback" / "writeback.txt").read_text(
+        encoding="utf-8")
+    assert "发布门：BLOCKED" in writeback
+    assert "逐栈：legacy_font: 1 · tmp_font: 2" in writeback
+    assert "缺字 Top-1" in writeback
+    assert "设 (U+8BBE)" in writeback and "en.json:title" in writeback
+    assert "位图注入：provider 1 个（bmfont）· 注入 1 · 审计 1 · 未注入 0" in writeback
+    summary = (rec_dir / "summary.md").read_text(encoding="utf-8")
+    assert "字体发布门：BLOCKED" in summary
+    assert "字体覆盖：CANDIDATE_ONLY" in summary
+    assert "tmp_font: 2" in summary
+    assert "位图注入：1 个 provider · 注入 1 · 未注入 0" in summary
+
+
+def test_export_text_records_review_meta_line(tmp_path):
+    """#43 阶段 F：审校元数据透出到 translated.txt——
+    人工修正（review_outcome=APPROVED/MANUAL）与批量审核终态
+    （NEEDS_REVISION + 风险分）两种形态；无审校字段的条目不出现该行。"""
+    from hanhua.core.record_writer import export_records
+    from tests.test_scanner import _make_tree
+    from hanhua.core.project import Project
+
+    game_dir = _make_tree()
+    proj = Project.open_game_dir(game_dir, tmp_path / "app")
+    proj.scan()
+    rows = proj.store.get_entries()
+    pending = [r for r in rows if r["status"] == "pending"]
+    # 条目 A：人工修正（审校页直接编辑的落库形态）
+    proj.store.apply_manual_correction(
+        pending[0]["file_id"], pending[0]["key_path"], "人工译文A")
+    # 条目 B：批量审核终态 + 风险分（review_entries 落库形态——
+    # batch_update_translation_results 合并 meta 写终态）
+    from hanhua.core.models import TextEntry
+    p1 = pending[1]
+    proj.store.batch_update_translation_results([TextEntry(
+        file_id=p1["file_id"], key_path=p1["key_path"],
+        original=p1["original"], translation="审核译文B",
+        status="translated",
+        meta={"review_outcome": "NEEDS_REVISION", "review_level": "MAJOR",
+              "risk_score": 65, "risk_level": "HIGH",
+              "quality_passed": True})])
+    # 条目 C：无审校字段（旧记录形态，不补行）
+    proj.store.update_translation(
+        pending[2]["file_id"], pending[2]["key_path"], "普通译文C")
+    out_root = tmp_path / "records"
+    export_records(proj, out_root)
+    text = (out_root / proj.game_dir.name / "text" / "translated.txt").read_text(
+        encoding="utf-8")
+    assert "审核：APPROVED（MANUAL）" in text
+    assert "审核：NEEDS_REVISION（MAJOR） · 风险 65 HIGH" in text
+    # 条目 C 没有「审核：」行
+    assert "普通译文C" in text
+    assert text.count("审核：") == 2

@@ -113,7 +113,8 @@ def _quality_text(meta: dict) -> str:
 
 def _status_counts(store) -> dict[str, int]:
     return {status: store.count(status)
-            for status in ("pending", "translated", "failed", "skipped")}
+            for status in ("pending", "translated", "failed", "skipped",
+                           "blocked")}
 
 
 def _skipped_totals(rows: list[dict]) -> dict[tuple[str, str, object], int]:
@@ -431,6 +432,20 @@ def _export_text_records(project, out_text: Path, profile, *,
                          else quality or '—')
             opt_text = ('是（回显未翻译）' if echoed
                         else '否' if category == 'translated' else '—')
+            # #43 阶段 F：审校元数据透出（meta 有值才显示——审校页单条
+            # 重审/批量审核终态写回 meta，旧记录无字段不补行）
+            review_line = ""
+            review_level = meta.get("review_level") or ""
+            review_outcome = meta.get("review_outcome") or ""
+            if review_level or review_outcome:
+                review_line = (f"审核：{review_outcome or '—'}"
+                               + (f"（{review_level}）" if review_level
+                                  else ""))
+            risk_score = meta.get("risk_score")
+            if isinstance(risk_score, (int, float)):
+                review_line += f" · 风险 {int(risk_score)}"
+                if meta.get("risk_level"):
+                    review_line += f" {meta['risk_level']}"
             blocks += [
                 _SEPARATOR,
                 f"[{index}] {title}",
@@ -446,6 +461,8 @@ def _export_text_records(project, out_text: Path, profile, *,
                 f"需要优化：{opt_text}",
                 wb_line,
             ]
+            if review_line:
+                blocks.append(review_line)
             if detail:
                 blocks.append(f"失败详情：{_format_detail(detail)}")
             blocks.append("")
@@ -510,8 +527,43 @@ def _export_writeback(project, out_writeback: Path, profile, *,
                 "字体部署",
                 f"字体：{getattr(font, 'family', '—')} · "
                 f"层级：{getattr(font, 'level', '—')}",
-                f"安装：{getattr(font, 'installed', '—')}", "",
+                f"安装：{getattr(font, 'installed', '—')}",
             ]
+            gate = verification.get("font_gate")
+            if gate:
+                blocks.append(f"发布门：{gate.get('status')} — "
+                              f"{gate.get('detail')}")
+            bitmap = verification.get("font_bitmap")
+            if bitmap:
+                blocks.append(
+                    "位图注入：" + f"provider {len(bitmap.get('providers') or [])} 个"
+                    f"（{', '.join(bitmap.get('providers') or [])}）· "
+                    f"注入 {bitmap.get('injected')} · "
+                    f"审计 {bitmap.get('audited')} · "
+                    f"未注入 {bitmap.get('pending')}")
+            coverage = verification.get("font_coverage")
+            if coverage:
+                stacks = coverage.get("stack_counts") or {}
+                stack_text = " · ".join(
+                    f"{kind}: {n}" for kind, n in sorted(stacks.items()))
+                states = coverage.get("state_counts") or {}
+                state_text = " · ".join(
+                    f"{name}: {n}" for name, n in sorted(states.items()))
+                blocks += [
+                    f"覆盖终态：{coverage.get('overall')}",
+                    f"逐栈：{stack_text or '—'}",
+                    f"终态分布：{state_text or '—'}",
+                ]
+                missing = coverage.get("missing") or []
+                if missing:
+                    blocks.append(f"缺字 Top-{len(missing)}：")
+                    for row in missing:
+                        locators = "、".join(
+                            row.get("locators") or ()) or "—"
+                        blocks.append(
+                            f"- {row.get('scalar')} → {row.get('consumer')}"
+                            f"（{row.get('kind')}）→ {locators}")
+            blocks.append("")
     path.write_text("\n".join(blocks), encoding="utf-8")
 
 
@@ -649,6 +701,24 @@ def _write_summary(project, out_dir: Path, profile, *,
             f"- 总体闸门：{verification.get('overall')} · "
             f"字体：{font_label}",
         ]
+        gate = verification.get("font_gate")
+        if gate:
+            blocks.append(
+                f"- 字体发布门：{gate.get('status')} — {gate.get('detail')}")
+        coverage = verification.get("font_coverage")
+        if coverage:
+            stacks = coverage.get("stack_counts") or {}
+            stack_text = " · ".join(
+                f"{kind}: {n}" for kind, n in sorted(stacks.items()))
+            blocks.append(
+                f"- 字体覆盖：{coverage.get('overall')}"
+                f"（{stack_text or '无消费者'}）")
+        bitmap = verification.get("font_bitmap")
+        if bitmap:
+            blocks.append(
+                f"- 位图注入：{len(bitmap.get('providers') or [])} 个 provider"
+                f" · 注入 {bitmap.get('injected')} · "
+                f"未注入 {bitmap.get('pending')}")
     else:
         blocks.append("- 未执行")
     blocks += ["", "## 4 分析（待办）",
@@ -728,6 +798,10 @@ def _write_auto_docs(project, out_dir: Path, profile, *,
             f"- 总体闸门：{verification.get('overall')} · "
             f"字体：{verification.get('font_level')}",
         ]
+        gate = verification.get("font_gate")
+        if gate:
+            blocks.append(
+                f"- 字体发布门：{gate.get('status')} — {gate.get('detail')}")
     else:
         blocks.append("- 未执行")
     blocked = _route_blocked_steps(result)

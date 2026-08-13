@@ -47,17 +47,22 @@ def _state(tmp_path) -> AppState:
 
 
 class _FakeGlossary:
-    """记录 add_reviewed 调用的替身（C5 门禁本身由 test_glossary_c5 覆盖）。"""
+    """记录 add_reviewed 调用的替身（C5 门禁本身由 test_glossary_c5 覆盖）。
+
+    Phase B-3：add_reviewed 返回结构化 DepositResult（REJECTED/CANDIDATE
+    等），替身同样返回结构化结果。"""
 
     def __init__(self, reject: set[str]):
         self.reject = reject
         self.calls: list[tuple] = []
 
     def add_reviewed(self, term, trans, context="", game=""):
+        from hanhua.core.glossary import CANDIDATE, DepositResult, REJECTED
         self.calls.append((term, trans, context, game))
         if term in self.reject:
-            return f"单 token 高频普通词拒绝：{term}"
-        return ""
+            return DepositResult(REJECTED,
+                                 f"单 token 高频普通词拒绝：{term}", term=term)
+        return DepositResult(CANDIDATE, term=term)
 
 
 def _entries() -> list[TextEntry]:
@@ -85,7 +90,7 @@ def _fake_batch(monkeypatch, results: dict[str, ReviewResult]):
         property(lambda self: True))
     monkeypatch.setattr(
         "hanhua.core.reviewer.SemanticReviewer.review_batch",
-        lambda self, items, timeout=None: results)
+        lambda self, items, timeout=None, **kwargs: (results, 0))
 
 
 # ── review_entries：条目筛选与全过不沉淀 ──────────────────────────
@@ -95,9 +100,9 @@ def test_review_entries_skips_echo_and_non_translated():
     fake = _FakeGlossary(reject=set())
     seen: list[str] = []
 
-    def capture(self, items, timeout=None):
+    def capture(self, items, timeout=None, **kwargs):
         seen.extend(it.entry_id for it in items)
-        return {}
+        return {}, 0
 
     monkeypatch = pytest.MonkeyPatch()
     monkeypatch.setattr(
@@ -194,6 +199,25 @@ def test_review_entries_sediments_pairs_through_gate():
     assert any("送审 3" in n for n in notes)
 
 
+def test_review_entries_counts_conflict_pairs_separately():
+    """Phase B-3：同源异译 → pairs_conflict 单独记账（不并入 added）。"""
+    fake = _FakeGlossary(reject=set())
+    monkeypatch = pytest.MonkeyPatch()
+    _fake_batch(monkeypatch, {
+        "e0": ReviewResult("e0", verdict="flag", issue="术语错误",
+                           reason="Left Paddle 应译为左拨片",
+                           suggestion="Left Paddle→左拨片"),
+    })
+    summary = review_entries(_entries(), fake, game_name="G",
+                             max_send_rate=1.0)
+    monkeypatch.undo()
+    # 替身无冲突时：candidate 计入 pairs_added，冲突桶为空
+    assert summary["pairs_added"] == 1
+    assert summary["pairs_conflict"] == {}
+    assert summary["pairs_candidate"] == 1
+    assert summary["pairs_activated"] == 0
+
+
 def test_review_entries_pairs_survive_pure_chinese_suggestion():
     """建议为纯中文（无「英文→中文」分隔符）时按「短原文→建议」沉淀
     （runner 既有形态 2：'Resume' 建议 '继续'）。"""
@@ -259,7 +283,7 @@ def test_update_entry_metas_empty_noop(tmp_path):
 
 def test_review_page_has_needs_review_filter(qapp, tmp_path):
     page = ReviewPage(_state(tmp_path), _Window())
-    assert page.status_combo.findText("需要优化") >= 0
+    assert "needs_review" in page.filter_chips
 
 
 def test_review_page_needs_review_filters_by_meta(qapp, tmp_path):
@@ -272,16 +296,83 @@ def test_review_page_needs_review_filters_by_meta(qapp, tmp_path):
          "translation": "退出", "status": "translated", "locked": False,
          "meta": {}},
     ])
-    page.status_combo.setCurrentText("需要优化")
+    page.filter_chips["needs_review"].setChecked(True)
+    page._apply_filters()
     visible = [
         page.proxy.mapToSource(page.proxy.index(i, 0)).row()
         for i in range(page.proxy.rowCount())
     ]
     assert visible == [0]
     # 普通状态筛选不受影响
-    page.status_combo.setCurrentText("已翻译")
+    page.filter_chips["translated"].setChecked(True)
+    page._apply_filters()
     visible2 = [
         page.proxy.mapToSource(page.proxy.index(i, 0)).row()
         for i in range(page.proxy.rowCount())
     ]
     assert sorted(visible2) == [0, 1]
+
+
+# ── ReviewPage：#19 审校界面精简（隐藏跳过/空胶囊隐藏/高风险改「审核」） ──
+
+def test_review_page_high_risk_renamed_to_review(qapp, tmp_path):
+    """#19：高风险胶囊改名为「审核」（语义 = 需人工审核判定）。"""
+    page = ReviewPage(_state(tmp_path), _Window())
+    chip = page.filter_chips["high_risk"]
+    assert chip.text() == "审核"
+    assert chip.value == "high_risk"
+    # 行为不变：仍走 risk_only 过滤
+    page.model.setEntries([
+        {"id": 1, "file_id": "f", "key_path": "a", "original": "X",
+         "translation": "", "status": "failed", "locked": False, "meta": {}},
+        {"id": 2, "file_id": "f", "key_path": "b", "original": "Quit",
+         "translation": "退出", "status": "translated", "locked": False,
+         "meta": {"quality_passed": False}},
+        {"id": 3, "file_id": "f", "key_path": "c", "original": "OK",
+         "translation": "好的", "status": "translated", "locked": False,
+         "meta": {}},
+    ])
+    chip.setChecked(True)
+    page._apply_filters()
+    visible = {
+        page.proxy.mapToSource(page.proxy.index(i, 0)).row()
+        for i in range(page.proxy.rowCount())
+    }
+    assert visible == {0, 1}
+
+
+def test_review_page_needs_review_chip_hidden_when_empty(qapp, tmp_path):
+    """#19：无不合格条目时「待审核」胶囊隐藏，避免空胶囊空转。"""
+    page = ReviewPage(_state(tmp_path), _Window())
+    page.model.setEntries([
+        {"id": 1, "file_id": "f", "key_path": "a", "original": "Quit",
+         "translation": "退出", "status": "translated", "locked": False,
+         "meta": {}},
+    ])
+    page.reload()
+    assert page.filter_chips["needs_review"].isHidden() is True
+    # 有不合格条目时出现
+    page.model.setEntries([
+        {"id": 1, "file_id": "f", "key_path": "a", "original": "Resume",
+         "translation": "简历", "status": "translated", "locked": False,
+         "meta": {"review_issue": "术语错误"}},
+    ])
+    page._refresh_summary()
+    assert page.filter_chips["needs_review"].isHidden() is False
+
+
+def test_review_page_summary_hides_skipped(qapp, tmp_path):
+    """#19：摘要不再显示「跳过 N」统计（跳过的留档样本行仅审计用）。"""
+    page = ReviewPage(_state(tmp_path), _Window())
+    page.model.setEntries([
+        {"id": 1, "file_id": "f", "key_path": "a", "original": "X",
+         "translation": "", "status": "skipped", "locked": False,
+         "meta": {"skipped_count": 5}},
+        {"id": 2, "file_id": "f", "key_path": "b", "original": "Quit",
+         "translation": "退出", "status": "translated", "locked": False,
+         "meta": {}},
+    ])
+    page._refresh_summary()
+    text = page.summary_label.text()
+    assert "跳过" not in text
+    assert "共 2 条" in text

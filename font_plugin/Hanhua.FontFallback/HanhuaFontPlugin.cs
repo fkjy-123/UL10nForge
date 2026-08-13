@@ -55,7 +55,12 @@ namespace Hanhua.FontFallback
 
         public const string PluginGuid = "com.hanhua.fontfallback";
         public const string PluginName = "Hanhua Font Fallback";
-        public const string PluginVersion = "1.3.0";
+        public const string PluginVersion = "1.4.0";
+
+        // Phase 3 协议 v5：逐 scalar 证明（required-glyphs.json 每码点验证）
+        private const int HealthProtocolVersion = 5;
+        private const int MaxDetailRecords = 256;
+        private const int MaxScenes = 64;
 
         private const uint FrPrivate = 0x10;
         private const float ScanIntervalSeconds = 2f;
@@ -112,6 +117,30 @@ namespace Hanhua.FontFallback
         private readonly long[,] translationApplicationsByTargetAndMode =
             new long[5, 4];
         private string lastHealthPayload;
+        // ── Phase 3：逐 scalar 证明状态 ──
+        private string sessionNonce = "";
+        private readonly List<string> seenScenes = new List<string>();
+        private string requiredGlyphsHash = "";
+        private readonly List<uint> requiredGlyphs = new List<uint>();
+        private readonly HashSet<int> legacyCovered = new HashSet<int>();
+        private readonly HashSet<int> tmpCovered = new HashSet<int>();
+        private readonly List<uint> missingCodepoints = new List<uint>();
+        private int verifiedMissingTotal;
+        private long glyphLegacyTotal;
+        private long glyphLegacyCovered;
+        private long glyphLegacyMissing;
+        private long glyphTmpTotal;
+        private long glyphTmpCovered;
+        private long glyphTmpMissing;
+        private string glyphVerificationError = "";
+        // 消费者统计（看见并覆盖中文文本对象的证明）
+        private long consumersDiscovered;
+        private long consumersChinese;
+        private long consumersCovered;
+        private long consumersMissing;
+        private long consumersFailed;
+        private readonly List<string> consumerFailures =
+            new List<string>();
 
         [DllImport("gdi32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
         private static extern int AddFontResourceEx(
@@ -129,6 +158,18 @@ namespace Hanhua.FontFallback
         {
             pluginDirectory = Path.Combine(Paths.PluginPath, "HanhuaFont");
             DiscoverOptionalTextTypes();
+            sessionNonce = Guid.NewGuid().ToString("N");
+            try
+            {
+                LoadRequiredGlyphs();
+            }
+            catch (Exception exception)
+            {
+                Logger.LogError(
+                    "Required glyph manifest failed; glyph verification disabled: "
+                    + exception);
+            }
+            AddScene(SceneManager.GetActiveScene().name);
             try
             {
                 LoadExactTranslations();
@@ -234,7 +275,7 @@ namespace Hanhua.FontFallback
                 new UTF8Encoding(false, true)).Trim();
             if (family.Length == 0)
             {
-                throw new InvalidDataException("font-family.txt is empty");
+                throw new FormatException("font-family.txt is empty");
             }
 
             int installedFonts = AddFontResourceEx(fontPath, FrPrivate, IntPtr.Zero);
@@ -557,8 +598,12 @@ namespace Hanhua.FontFallback
                 ParameterInfo parameter = parameters[index];
                 Type type = parameter.ParameterType;
                 string name = parameter.Name ?? "";
-                if (parameter.HasDefaultValue)
+                if (parameter.IsOptional)
                 {
+                    // mscorlib 2.0（CLR 2.0，Unity 2018.2 及更早）没有
+                    // ParameterInfo.HasDefaultValue（.NET 4.5+）；IsOptional
+                    // 两代 CLR 都有（可选参数编译为 [Optional]），构建保持
+                    // CLR 2.0 兼容。
                     arguments[index] = parameter.DefaultValue;
                 }
                 else if (type.IsEnum)
@@ -807,7 +852,7 @@ namespace Hanhua.FontFallback
             SkipJsonWhitespace(payload, ref cursor);
             if (cursor >= payload.Length || payload[cursor] != '1')
             {
-                throw new InvalidDataException("runtime template schema mismatch");
+                throw new FormatException("runtime template schema mismatch");
             }
             cursor++;
             ExpectJsonCharacter(payload, ref cursor, ',');
@@ -832,7 +877,7 @@ namespace Hanhua.FontFallback
                     || template.sourceFragments.Count != template.slots.Count + 1
                     || template.targetFragments.Count != template.slots.Count + 1)
                 {
-                    throw new InvalidDataException("runtime template shape is invalid");
+                    throw new FormatException("runtime template shape is invalid");
                 }
                 parsed.Add(template);
                 SkipJsonWhitespace(payload, ref cursor);
@@ -851,7 +896,7 @@ namespace Hanhua.FontFallback
             SkipJsonWhitespace(payload, ref cursor);
             if (cursor != payload.Length)
             {
-                throw new InvalidDataException("runtime template JSON has trailing data");
+                throw new FormatException("runtime template JSON has trailing data");
             }
             return parsed;
         }
@@ -870,7 +915,7 @@ namespace Hanhua.FontFallback
             SkipJsonWhitespace(payload, ref cursor);
             if (cursor >= payload.Length || payload[cursor] != expected)
             {
-                throw new InvalidDataException(
+                throw new FormatException(
                     "runtime template JSON expected " + expected);
             }
             cursor++;
@@ -882,7 +927,7 @@ namespace Hanhua.FontFallback
             string actual = ReadJsonStringValue(payload, ref cursor);
             if (!string.Equals(actual, expected, StringComparison.Ordinal))
             {
-                throw new InvalidDataException(
+                throw new FormatException(
                     "runtime template JSON property mismatch");
             }
             ExpectJsonCharacter(payload, ref cursor, ':');
@@ -893,7 +938,7 @@ namespace Hanhua.FontFallback
             SkipJsonWhitespace(payload, ref cursor);
             if (cursor >= payload.Length || payload[cursor] != '"')
             {
-                throw new InvalidDataException("runtime template JSON string expected");
+                throw new FormatException("runtime template JSON string expected");
             }
             cursor++;
             StringBuilder encoded = new StringBuilder();
@@ -914,7 +959,7 @@ namespace Hanhua.FontFallback
                     encoded.Append(payload[cursor++]);
                 }
             }
-            throw new InvalidDataException("unterminated runtime template string");
+            throw new FormatException("unterminated runtime template string");
         }
 
         private static List<string> ReadJsonStringArray(
@@ -947,7 +992,7 @@ namespace Hanhua.FontFallback
             if (trimmed.Length < 2 || trimmed[0] != '{'
                 || trimmed[trimmed.Length - 1] != '}')
             {
-                throw new InvalidDataException("translations.json must be a JSON object");
+                throw new FormatException("translations.json must be a JSON object");
             }
 
             Dictionary<string, string> parsed =
@@ -973,12 +1018,12 @@ namespace Hanhua.FontFallback
                 trimmed.Length - 1 - cursor));
             if (residue.ToString().Trim(' ', '\t', '\r', '\n', ',').Length != 0)
             {
-                throw new InvalidDataException(
+                throw new FormatException(
                     "translations.json contains unsupported or malformed values");
             }
             if (trimmed != "{}" && matches.Count == 0)
             {
-                throw new InvalidDataException(
+                throw new FormatException(
                     "translations.json contains no valid string mappings");
             }
             return parsed;
@@ -997,14 +1042,14 @@ namespace Hanhua.FontFallback
                 }
                 if (++index >= value.Length)
                 {
-                    throw new InvalidDataException("Invalid JSON escape");
+                    throw new FormatException("Invalid JSON escape");
                 }
                 char escaped = value[index];
                 if (escaped == 'u')
                 {
                     if (index + 4 >= value.Length)
                     {
-                        throw new InvalidDataException("Invalid JSON unicode escape");
+                        throw new FormatException("Invalid JSON unicode escape");
                     }
                     output.Append((char)Convert.ToInt32(
                         value.Substring(index + 1, 4), 16));
@@ -1017,7 +1062,7 @@ namespace Hanhua.FontFallback
                     int escapedIndex = escapedChars.IndexOf(escaped);
                     if (escapedIndex < 0)
                     {
-                        throw new InvalidDataException("Unknown JSON escape");
+                        throw new FormatException("Unknown JSON escape");
                     }
                     output.Append(decodedChars[escapedIndex]);
                 }
@@ -1029,8 +1074,12 @@ namespace Hanhua.FontFallback
         {
             try
             {
+                long lastSeenSeconds =
+                    (long)(DateTime.UtcNow - new DateTime(1970, 1, 1, 0, 0, 0,
+                        DateTimeKind.Utc)).TotalSeconds;
                 char probe = RepresentativeGlyph();
-                bool legacyGlyph = dynamicFont != null && dynamicFont.HasCharacter(probe);
+                bool legacyGlyph = dynamicFont != null
+                    && dynamicFont.HasCharacter(probe);
                 bool tmpGlyph = requestDynamicAdd
                     ? ProbeTmpGlyph(probe)
                     : HasTmpGlyph(probe, false);
@@ -1038,8 +1087,61 @@ namespace Hanhua.FontFallback
                 long totalTranslations = totalExactTranslationApplications
                     + totalNormalizedTranslationApplications
                     + totalTemplateTranslationApplications;
-                string payload = "{\"protocol_version\":4,\"plugin_version\":\""
-                    + EscapeJson(PluginVersion) + "\",\"adapters\":{\"legacy\":{\"status\":\""
+                string missingCodepointsJson = "[]";
+                if (missingCodepoints.Count > 0)
+                {
+                    StringBuilder missingJson = new StringBuilder("[");
+                    for (int index = 0; index < missingCodepoints.Count; index++)
+                    {
+                        if (index > 0)
+                        {
+                            missingJson.Append(',');
+                        }
+                        missingJson.Append(missingCodepoints[index].ToString());
+                    }
+                    missingJson.Append(']');
+                    missingCodepointsJson = missingJson.ToString();
+                }
+                string scenesJson = "[]";
+                if (seenScenes.Count > 0)
+                {
+                    StringBuilder sceneJson = new StringBuilder("[");
+                    for (int index = 0; index < seenScenes.Count; index++)
+                    {
+                        if (index > 0)
+                        {
+                            sceneJson.Append(',');
+                        }
+                        sceneJson.Append('"');
+                        sceneJson.Append(EscapeJson(seenScenes[index]));
+                        sceneJson.Append('"');
+                    }
+                    sceneJson.Append(']');
+                    scenesJson = sceneJson.ToString();
+                }
+                string failuresJson = "[]";
+                if (consumerFailures.Count > 0)
+                {
+                    StringBuilder failureJson = new StringBuilder("[");
+                    for (int index = 0; index < consumerFailures.Count; index++)
+                    {
+                        if (index > 0)
+                        {
+                            failureJson.Append(',');
+                        }
+                        failureJson.Append(consumerFailures[index]);
+                    }
+                    failureJson.Append(']');
+                    failuresJson = failureJson.ToString();
+                }
+                string payload = "{\"protocol_version\":" + HealthProtocolVersion
+                    + ",\"plugin_version\":\""
+                    + EscapeJson(PluginVersion)
+                    + "\",\"session_nonce\":\""
+                    + EscapeJson(sessionNonce)
+                    + "\",\"last_seen\":" + lastSeenSeconds
+                    + ",\"scenes\":" + scenesJson
+                    + ",\"adapters\":{\"legacy\":{\"status\":\""
                     + EscapeJson(legacyStatus) + "\",\"error\":\""
                     + EscapeJson(legacyError) + "\",\"glyph\":"
                     + (legacyGlyph ? "true" : "false") + "},\"tmp\":{\"status\":\""
@@ -1051,7 +1153,26 @@ namespace Hanhua.FontFallback
                     + EscapeJson(uiToolkitError) + "\",\"glyph\":"
                     + (uiToolkitGlyph ? "true" : "false")
                     + "}},\"glyph_probe\":\""
-                    + EscapeJson(probe.ToString()) + "\",\"applications\":{\"tmp\":"
+                    + EscapeJson(probe.ToString())
+                    + "\",\"glyph_verification\":{\"snapshot_hash\":\""
+                    + EscapeJson(requiredGlyphsHash)
+                    + "\",\"legacy_total\":" + glyphLegacyTotal
+                    + ",\"legacy_covered\":" + glyphLegacyCovered
+                    + ",\"legacy_missing\":" + glyphLegacyMissing
+                    + ",\"tmp_total\":" + glyphTmpTotal
+                    + ",\"tmp_covered\":" + glyphTmpCovered
+                    + ",\"tmp_missing\":" + glyphTmpMissing
+                    + ",\"missing_codepoints\":" + missingCodepointsJson
+                    + ",\"missing_total\":" + verifiedMissingTotal
+                    + ",\"error\":\""
+                    + EscapeJson(glyphVerificationError)
+                    + "\"},\"consumers\":{\"discovered\":"
+                    + consumersDiscovered + ",\"chinese\":" + consumersChinese
+                    + ",\"covered\":" + consumersCovered
+                    + ",\"missing\":" + consumersMissing
+                    + ",\"failed\":" + consumersFailed
+                    + "},\"failures\":" + failuresJson
+                    + ",\"applications\":{\"tmp\":"
                     + totalTmpApplications + ",\"ui\":" + totalUiApplications
                     + ",\"uitoolkit\":" + totalUiToolkitApplications
                     + ",\"textmesh\":" + totalTextMeshApplications
@@ -1091,6 +1212,566 @@ namespace Hanhua.FontFallback
             {
                 Logger.LogWarning("Could not write font-health.json atomically: " + exception);
             }
+        }
+
+        // ── Phase 3：逐 scalar 证明与消费者统计 ──
+
+        private void LoadRequiredGlyphs()
+        {
+            requiredGlyphs.Clear();
+            requiredGlyphsHash = "";
+            string path = Path.Combine(pluginDirectory, "required-glyphs.json");
+            if (!File.Exists(path))
+            {
+                Logger.LogInfo("REQUIRED_GLYPHS_READY count=0 file=missing");
+                return;
+            }
+            string payload = File.ReadAllText(path, new UTF8Encoding(false, true));
+            int cursor = 0;
+            SkipJsonWhitespace(payload, ref cursor);
+            ExpectJsonCharacter(payload, ref cursor, '{');
+            SkipJsonWhitespace(payload, ref cursor);
+            while (cursor < payload.Length && payload[cursor] != '}')
+            {
+                string property = ReadJsonStringValue(payload, ref cursor);
+                ExpectJsonCharacter(payload, ref cursor, ':');
+                if (string.Equals(property, "scalars", StringComparison.Ordinal))
+                {
+                    requiredGlyphs.AddRange(ReadJsonUintArray(payload, ref cursor));
+                }
+                else if (string.Equals(
+                    property, "snapshot_hash", StringComparison.Ordinal))
+                {
+                    requiredGlyphsHash = ReadJsonStringValue(payload, ref cursor);
+                }
+                else
+                {
+                    SkipJsonValue(payload, ref cursor);
+                }
+                SkipJsonWhitespace(payload, ref cursor);
+                if (cursor < payload.Length && payload[cursor] == ',')
+                {
+                    cursor++;
+                    SkipJsonWhitespace(payload, ref cursor);
+                }
+                else
+                {
+                    break;
+                }
+            }
+            ExpectJsonCharacter(payload, ref cursor, '}');
+            Logger.LogInfo(
+                "REQUIRED_GLYPHS_READY count=" + requiredGlyphs.Count
+                + " hash=" + requiredGlyphsHash);
+        }
+
+        private static void SkipJsonValue(string payload, ref int cursor)
+        {
+            if (cursor >= payload.Length)
+            {
+                return;
+            }
+            char first = payload[cursor];
+            if (first == '"')
+            {
+                ReadJsonStringValue(payload, ref cursor);
+                return;
+            }
+            if (first == '[' || first == '{')
+            {
+                char closing = first == '[' ? ']' : '}';
+                int depth = 0;
+                bool inString = false;
+                while (cursor < payload.Length)
+                {
+                    char current = payload[cursor++];
+                    if (inString)
+                    {
+                        if (current == '\\')
+                        {
+                            if (cursor < payload.Length)
+                            {
+                                cursor++;
+                            }
+                        }
+                        else if (current == '"')
+                        {
+                            inString = false;
+                        }
+                        continue;
+                    }
+                    if (current == '"')
+                    {
+                        inString = true;
+                    }
+                    else if (current == first)
+                    {
+                        depth++;
+                    }
+                    else if (current == closing)
+                    {
+                        depth--;
+                        if (depth == 0)
+                        {
+                            return;
+                        }
+                    }
+                }
+                return;
+            }
+            while (cursor < payload.Length
+                && payload[cursor] != ',' && payload[cursor] != '}')
+            {
+                cursor++;
+            }
+        }
+
+        private static List<uint> ReadJsonUintArray(
+            string payload, ref int cursor)
+        {
+            List<uint> values = new List<uint>();
+            ExpectJsonCharacter(payload, ref cursor, '[');
+            SkipJsonWhitespace(payload, ref cursor);
+            while (cursor < payload.Length && payload[cursor] != ']')
+            {
+                int start = cursor;
+                while (cursor < payload.Length
+                    && payload[cursor] != ',' && payload[cursor] != ']')
+                {
+                    cursor++;
+                }
+                string text = payload.Substring(start, cursor - start).Trim();
+                uint value;
+                if (text.Length == 0 || !uint.TryParse(text, out value))
+                {
+                    throw new FormatException(
+                        "required glyph scalar is not a uint");
+                }
+                values.Add(value);
+                SkipJsonWhitespace(payload, ref cursor);
+                if (cursor < payload.Length && payload[cursor] == ',')
+                {
+                    cursor++;
+                    SkipJsonWhitespace(payload, ref cursor);
+                }
+                else
+                {
+                    break;
+                }
+            }
+            ExpectJsonCharacter(payload, ref cursor, ']');
+            return values;
+        }
+
+        private void AddScene(string sceneName)
+        {
+            if (string.IsNullOrEmpty(sceneName))
+            {
+                return;
+            }
+            foreach (string existing in seenScenes)
+            {
+                if (string.Equals(existing, sceneName, StringComparison.Ordinal))
+                {
+                    return;
+                }
+            }
+            if (seenScenes.Count < MaxScenes)
+            {
+                seenScenes.Add(sceneName);
+            }
+        }
+
+        private void VerifyRequiredGlyphs()
+        {
+            if (requiredGlyphs.Count == 0)
+            {
+                return;
+            }
+            glyphLegacyTotal = glyphTmpTotal = requiredGlyphs.Count;
+            glyphLegacyCovered = glyphLegacyMissing = 0;
+            glyphTmpCovered = glyphTmpMissing = 0;
+            List<uint> pending = new List<uint>();
+            foreach (uint scalar in requiredGlyphs)
+            {
+                bool legacyOk = legacyCovered.Contains((int)scalar);
+                bool tmpOk = tmpCovered.Contains((int)scalar);
+                if (!legacyOk && !tmpOk)
+                {
+                    legacyOk = ProbeLegacyGlyph(scalar);
+                    tmpOk = HasTmpGlyphOrTryAdd(scalar);
+                    if (legacyOk)
+                    {
+                        legacyCovered.Add((int)scalar);
+                    }
+                    if (tmpOk)
+                    {
+                        tmpCovered.Add((int)scalar);
+                    }
+                }
+                if (legacyOk)
+                {
+                    glyphLegacyCovered++;
+                }
+                else
+                {
+                    glyphLegacyMissing++;
+                }
+                if (tmpOk)
+                {
+                    glyphTmpCovered++;
+                }
+                else
+                {
+                    glyphTmpMissing++;
+                    pending.Add(scalar);
+                }
+            }
+            verifiedMissingTotal = pending.Count;
+            missingCodepoints.Clear();
+            for (int index = 0; index < pending.Count
+                && index < MaxDetailRecords; index++)
+            {
+                missingCodepoints.Add(pending[index]);
+            }
+        }
+
+        private bool ProbeLegacyGlyph(uint scalar)
+        {
+            if (dynamicFont == null)
+            {
+                return false;
+            }
+            // 非 BMP（代理对）legacy 单字符 API 无法证明，如实缺失
+            string utf16 = char.ConvertFromUtf32((int)scalar);
+            if (utf16.Length != 1)
+            {
+                return false;
+            }
+            try
+            {
+                return dynamicFont.HasCharacter(utf16[0]);
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
+
+        private bool HasTmpGlyphOrTryAdd(uint scalar)
+        {
+            if (dynamicTmpFont == null)
+            {
+                return false;
+            }
+            string utf16 = char.ConvertFromUtf32((int)scalar);
+            if (utf16.Length == 1)
+            {
+                if (HasTmpGlyph(utf16[0], true))
+                {
+                    return true;
+                }
+            }
+            else
+            {
+                // 非 BMP：无法逐字添加，如实缺失
+                return false;
+            }
+            foreach (MethodInfo method in dynamicTmpFont.GetType().GetMethods(
+                BindingFlags.Public | BindingFlags.Instance))
+            {
+                if (method.Name != "TryAddCharacter"
+                    && method.Name != "TryAddCharacters")
+                {
+                    continue;
+                }
+                ParameterInfo[] parameters = method.GetParameters();
+                if (parameters.Length == 0)
+                {
+                    continue;
+                }
+                object first;
+                Type firstType = parameters[0].ParameterType;
+                if (firstType == typeof(string))
+                {
+                    first = utf16;
+                }
+                else if (firstType == typeof(char))
+                {
+                    first = utf16[0];
+                }
+                else if (firstType == typeof(int))
+                {
+                    first = (int)scalar;
+                }
+                else if (firstType == typeof(uint))
+                {
+                    first = scalar;
+                }
+                else if (firstType == typeof(uint[]))
+                {
+                    first = new[] { scalar };
+                }
+                else
+                {
+                    continue;
+                }
+                object[] arguments = new object[parameters.Length];
+                arguments[0] = first;
+                bool compatible = true;
+                for (int index = 1; index < parameters.Length; index++)
+                {
+                    Type parameterType = parameters[index].ParameterType;
+                    if (parameterType == typeof(bool))
+                    {
+                        arguments[index] = false;
+                    }
+                    else if (parameterType.IsByRef)
+                    {
+                        Type elementType = parameterType.GetElementType();
+                        arguments[index] = elementType != null && elementType.IsValueType
+                            ? Activator.CreateInstance(elementType)
+                            : null;
+                    }
+                    else if (parameters[index].IsOptional)
+                    {
+                        // mscorlib 2.0（CLR 2.0）没有 HasDefaultValue（见
+                        // 第一处同款替换注释），IsOptional 两代 CLR 都有。
+                        arguments[index] = parameters[index].DefaultValue;
+                    }
+                    else
+                    {
+                        compatible = false;
+                        break;
+                    }
+                }
+                if (!compatible)
+                {
+                    continue;
+                }
+                try
+                {
+                    object result = method.Invoke(dynamicTmpFont, arguments);
+                    if ((result is bool && (bool)result)
+                        || HasTmpGlyph(utf16[0], false))
+                    {
+                        return true;
+                    }
+                }
+                catch (Exception)
+                {
+                }
+            }
+            return false;
+        }
+
+        private bool IsCoveredScalar(uint scalar)
+        {
+            return ProbeLegacyGlyph(scalar) || HasTmpGlyphOrTryAdd(scalar);
+        }
+
+        private void CollectConsumerEvidence()
+        {
+            consumersDiscovered = consumersChinese = 0;
+            consumersCovered = consumersMissing = consumersFailed = 0;
+            consumerFailures.Clear();
+            CollectConsumerObjectsForType(tmpTextType, "tmp");
+            CollectConsumerObjectsForType(uiTextType, "ui");
+            foreach (TextMesh textMesh in Resources.FindObjectsOfTypeAll<TextMesh>())
+            {
+                CollectConsumerObject(textMesh, "textmesh");
+            }
+            if (uiToolkitTextElementType != null)
+            {
+                foreach (object element in EnumerateUiToolkitTextElements())
+                {
+                    CollectConsumerObject(element, "uitoolkit");
+                }
+            }
+        }
+
+        private void CollectConsumerObjectsForType(Type type, string kind)
+        {
+            if (type == null)
+            {
+                return;
+            }
+            foreach (UnityEngine.Object target in FindObjectsOfOptionalType(type))
+            {
+                if (target == null)
+                {
+                    continue;
+                }
+                CollectConsumerObject(target, kind);
+            }
+        }
+
+        private void CollectConsumerObject(object target, string kind)
+        {
+            if (IsTargetUnavailable(target))
+            {
+                return;
+            }
+            string text;
+            try
+            {
+                PropertyInfo textProperty = target.GetType().GetProperty(
+                    "text", BindingFlags.Public | BindingFlags.Instance);
+                if (textProperty == null || !textProperty.CanRead
+                    || textProperty.PropertyType != typeof(string))
+                {
+                    return;
+                }
+                text = (string)textProperty.GetValue(target, null);
+            }
+            catch (Exception)
+            {
+                consumersFailed++;
+                NoteConsumerFailure(target, kind, "<read-failure>", null);
+                return;
+            }
+            consumersDiscovered++;
+            List<uint> cjk = CjkScalarsOf(text);
+            if (cjk.Count == 0)
+            {
+                return;
+            }
+            consumersChinese++;
+            List<uint> missing = new List<uint>();
+            foreach (uint scalar in cjk)
+            {
+                if (!IsCoveredScalar(scalar))
+                {
+                    missing.Add(scalar);
+                }
+            }
+            if (missing.Count == 0)
+            {
+                consumersCovered++;
+            }
+            else
+            {
+                consumersMissing++;
+                NoteConsumerFailure(target, kind, FontAssetOf(target), missing);
+            }
+        }
+
+        private static List<uint> CjkScalarsOf(string text)
+        {
+            List<uint> scalars = new List<uint>(16);
+            if (string.IsNullOrEmpty(text))
+            {
+                return scalars;
+            }
+            for (int index = 0; index < text.Length; index++)
+            {
+                uint scalar;
+                try
+                {
+                    scalar = (uint)char.ConvertToUtf32(text, index);
+                }
+                catch (ArgumentException)
+                {
+                    continue;
+                }
+                if (scalar >= 0x3400 && scalar <= 0x9fff)
+                {
+                    scalars.Add(scalar);
+                }
+                if (char.IsHighSurrogate(text[index]))
+                {
+                    index++;
+                }
+            }
+            return scalars;
+        }
+
+        private string StableIdentity(object target)
+        {
+            string name = "";
+            try
+            {
+                PropertyInfo nameProperty = target.GetType().GetProperty(
+                    "name", BindingFlags.Public | BindingFlags.Instance);
+                if (nameProperty != null && nameProperty.CanRead
+                    && nameProperty.PropertyType == typeof(string))
+                {
+                    name = (string)nameProperty.GetValue(target, null);
+                }
+            }
+            catch (Exception)
+            {
+            }
+            return target.GetType().Name
+                + (string.IsNullOrEmpty(name) ? "" : ":" + name);
+        }
+
+        private void NoteConsumerFailure(
+            object target, string kind, string fontAsset, List<uint> missing)
+        {
+            if (consumerFailures.Count >= MaxDetailRecords)
+            {
+                return;
+            }
+            string missingJson = "[]";
+            if (missing != null && missing.Count > 0)
+            {
+                StringBuilder missingText = new StringBuilder("[");
+                int limit = missing.Count < MaxDetailRecords
+                    ? missing.Count
+                    : MaxDetailRecords;
+                for (int index = 0; index < limit; index++)
+                {
+                    if (index > 0)
+                    {
+                        missingText.Append(',');
+                    }
+                    missingText.Append(missing[index].ToString());
+                }
+                missingText.Append(']');
+                missingJson = missingText.ToString();
+            }
+            consumerFailures.Add("{\"stable_identity\":\""
+                + EscapeJson(StableIdentity(target)) + "\",\"kind\":\""
+                + EscapeJson(kind) + "\",\"font_asset\":\""
+                + EscapeJson(fontAsset) + "\",\"missing\":"
+                + missingJson + "}");
+        }
+
+        private string FontAssetOf(object target)
+        {
+            foreach (string propertyName in new[] { "font", "fontAsset" })
+            {
+                try
+                {
+                    PropertyInfo property = target.GetType().GetProperty(
+                        propertyName, BindingFlags.Public | BindingFlags.Instance);
+                    if (property == null || !property.CanRead)
+                    {
+                        continue;
+                    }
+                    object value = property.GetValue(target, null);
+                    if (value == null)
+                    {
+                        continue;
+                    }
+                    PropertyInfo nameProperty = value.GetType().GetProperty(
+                        "name", BindingFlags.Public | BindingFlags.Instance);
+                    if (nameProperty == null || !nameProperty.CanRead)
+                    {
+                        continue;
+                    }
+                    string name = nameProperty.GetValue(value, null) as string;
+                    if (!string.IsNullOrEmpty(name))
+                    {
+                        return name;
+                    }
+                }
+                catch (Exception)
+                {
+                }
+            }
+            return "";
         }
 
         private char RepresentativeGlyph()
@@ -1264,8 +1945,10 @@ namespace Hanhua.FontFallback
                             ? Activator.CreateInstance(elementType)
                             : null;
                     }
-                    else if (parameters[index].HasDefaultValue)
+                    else if (parameters[index].IsOptional)
                     {
+                        // mscorlib 2.0（CLR 2.0）没有 HasDefaultValue（见
+                        // 第一处同款替换注释），IsOptional 两代 CLR 都有。
                         arguments[index] = parameters[index].DefaultValue;
                     }
                     else
@@ -1489,6 +2172,7 @@ namespace Hanhua.FontFallback
 
         private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
         {
+            AddScene(scene.name);
             SafeApplyFonts("scene:" + scene.name);
         }
 
@@ -1507,10 +2191,17 @@ namespace Hanhua.FontFallback
         {
             try
             {
+                glyphVerificationError = "";
                 ApplyFonts(reason);
             }
             catch (Exception exception)
             {
+                string detail = exception.Message;
+                if (detail.Length > 200)
+                {
+                    detail = detail.Substring(0, 200);
+                }
+                glyphVerificationError = "font-scan-failed: " + detail;
                 Logger.LogError("Font scan failed; the game will continue: " + exception);
             }
         }
@@ -1535,6 +2226,8 @@ namespace Hanhua.FontFallback
             totalUiApplications += uiCount;
             totalUiToolkitApplications += uiToolkitCount;
             totalTextMeshApplications += textMeshCount;
+            VerifyRequiredGlyphs();
+            CollectConsumerEvidence();
             WriteHealthManifest(reason == "periodic");
             if (reason != "periodic"
                 || tmpCount + uiCount + uiToolkitCount

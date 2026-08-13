@@ -12,7 +12,7 @@ def test_system_prompt_includes_profile_and_glossary():
 
 def test_system_prompt_empty_profile():
     prompt = build_system_prompt(GameProfile(), "")
-    assert "资深游戏本地化翻译专家" in prompt
+    assert "专业游戏本地化翻译专家" in prompt
     assert "【术语表" not in prompt
 
 
@@ -118,3 +118,42 @@ def test_batch_prompt_omits_glossary_line_when_no_hits():
     }])
 
     assert "[术语命中]" not in user
+
+
+# ── #10：Style/Personalization——游戏本地化角色 + 行为边界 ────
+
+def test_system_prompt_has_localization_role_and_boundaries():
+    """明确的游戏本地化角色 + 行为边界（不是普通机器翻译器）。"""
+    prompt = build_system_prompt(GameProfile(), "")
+    assert "专业游戏本地化翻译专家" in prompt
+    assert "不是普通机器翻译器" in prompt
+    assert "游戏本地化译者" in prompt
+    assert "职责边界" in prompt
+    assert "只做本地化翻译" in prompt
+
+
+def test_system_prompt_has_game_context_ambiguity_rules():
+    """play/resume 等语境词按游戏语境翻译（修复 play→播放、resume→简历）。"""
+    prompt = build_system_prompt(GameProfile(), "")
+    assert "游戏语境歧义词" in prompt
+    assert "play（游戏界面/操作）" in prompt
+    assert "不是\"播放\"" in prompt
+    assert "resume（游戏界面/操作）" in prompt
+    assert "不是\"简历\"" in prompt
+
+
+def test_system_prompt_injects_custom_style_prompt():
+    """profile.prompt_style 非空 → 个性化风格要求块优先注入。"""
+    profile = GameProfile(prompt_style="play/resume 按键词必须译成「开始/继续」；技能名保持两字格式")
+    prompt = build_system_prompt(profile, "")
+    assert "个性化风格要求" in prompt
+    assert "「开始/继续」" in prompt
+    assert "两字格式" in prompt
+    # 自定义风格要求出现在翻译规则之前（优先生效）
+    assert prompt.index("个性化风格要求") < prompt.index("翻译规则")
+
+
+def test_system_prompt_custom_style_absent_by_default():
+    """未填 prompt_style 时不出现个性化块，仅内置角色。"""
+    prompt = build_system_prompt(GameProfile(), "")
+    assert "个性化风格要求" not in prompt

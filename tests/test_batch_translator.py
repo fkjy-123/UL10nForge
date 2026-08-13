@@ -8,7 +8,7 @@ from types import SimpleNamespace
 import pytest
 
 from hanhua.core.batch_translator import BatchTranslator
-from hanhua.core.memory import ProjectStore
+from hanhua.core.memory import ProjectStore, settle_translation_memory
 from hanhua.core.models import TextEntry, is_actionable_translation
 from hanhua.core.translator import BaseClient, Usage
 
@@ -352,7 +352,12 @@ def test_echo_exempt_translation_not_added_to_memory():
 
     # 回显条目打标（写回/统计可见「模型未翻译」）
     assert echo_entry.meta.get("echo_exempt") == "proper_name"
-    # 回显不产生记忆；正常译文进记忆
+    # 回显不产生记忆；正常译文进记忆（Phase B：翻译批入 pending 桶，
+    # 审后结算（无审核终态 → 机械门即最后裁决）才提交可见）
+    assert "Crash Bandicoot" not in store.get_memory_hits(
+        ["Crash Bandicoot"], "m", "en→zh-CN")
+    settle_translation_memory(store, [echo_entry, normal_entry],
+                              "m", "en→zh-CN")
     assert "Crash Bandicoot" not in store.get_memory_hits(
         ["Crash Bandicoot"], "m", "en→zh-CN")
     assert store.get_memory_hits(["Open Door"], "m", "en→zh-CN") == {
@@ -2042,6 +2047,9 @@ def test_quality_normalized_translation_is_used_for_database_and_memory():
 
     assert entry.translation == "打开门"
     assert store.get_entries()[0]["translation"] == "打开门"
+    # Phase B：批记忆先入 pending 桶（不可见），审后结算提交才可命中
+    assert store.get_memory_hits(["Open Door"], "m", "en→zh-CN") == {}
+    settle_translation_memory(store, [entry], "m", "en→zh-CN")
     assert store.get_memory_hits(["Open Door"], "m", "en→zh-CN") == {
         "Open Door": "打开门",
     }
@@ -2085,6 +2093,9 @@ def test_bad_memory_is_evicted_and_falls_back_to_model_in_same_run():
     row = store.get_entries()[0]
     persisted_meta = json.loads(row["meta"])
     assert persisted_meta["quality_passed"] is True
+    # Phase B：坏记忆已驱逐；好译文 pending 桶经审后结算提交后可见
+    assert store.get_memory_hits(["Open Door"], "m", "en→zh-CN") == {}
+    settle_translation_memory(store, [entry], "m", "en→zh-CN")
     assert store.get_memory_hits(["Open Door"], "m", "en→zh-CN") == {
         "Open Door": "打开门",
     }
@@ -3846,6 +3857,28 @@ def test_agent_memory_rejected_direct_apply_retires(tmp_path):
     assert "agent_memory_rejected_reasons" not in entry.meta
 
 
+def test_glossary_force_excludes_reference_pairs_from_quality_gate(tmp_path):
+    """glossary_force 只作质量门强制，glossary 其余词对只做参考注入
+    （Morfosi 64 条同因全灭实证）：经验记忆词对 ('Locked','锁定') 若
+    并入强制词对，"The door is locked" 译文「门锁着」被判
+    glossary_mismatch 失败。修复：GUI/runner 只把术语库 active + 知识
+    库译例传入 glossary_force，记忆词对保留参考注入与精确直填但不
+    强制（reference_pairs 设计即「参考而非强制」）。"""
+    entry = TextEntry("f", "k", "The door is locked", meta={
+        "role": "display", "disposition": "translate", "confidence": "high"})
+    client = FakeClient(mapping={"The door is locked": "门锁着"})
+    stats = BatchTranslator(
+        client, batch_size=1, concurrency=1, memory=None,
+        lang="en→zh-CN",
+        glossary=[("Locked", "锁定")],     # 参考注入（记忆词对形态）
+        glossary_force=[("Door", "门")],    # 质量门强制仅此
+    ).run([entry])
+    assert stats.done == 1
+    assert entry.status == "translated"
+    assert entry.translation == "门锁着"
+    assert "glossary_mismatch" not in (entry.quality_reasons or ())
+
+
 def test_agent_memory_proposes_successful_translations(tmp_path):
     """模型翻译成功（质量门通过+非回显）→ 经验记忆提案。"""
     mem = _mem_store(tmp_path)
@@ -3920,6 +3953,11 @@ def test_language_source_kept_not_added_to_working_memory():
     ).run([kept_entry, normal_entry])
 
     assert kept_entry.meta.get("language_source_kept") is True
+    assert "游戏设置" not in store.get_memory_hits(
+        ["游戏设置"], "m", "en→zh-CN")
+    # Phase B：批记忆 pending 桶，审后结算提交后可见（语言保持仍排除）
+    settle_translation_memory(store, [kept_entry, normal_entry],
+                              "m", "en→zh-CN")
     assert "游戏设置" not in store.get_memory_hits(
         ["游戏设置"], "m", "en→zh-CN")
     assert store.get_memory_hits(["Open Door"], "m", "en→zh-CN") == {

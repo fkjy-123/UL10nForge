@@ -242,6 +242,43 @@ ROLE_RULES: dict[str, str] = {
 }
 
 
+# #10：游戏本地化歧义词（Style 层面）——英文游戏文本中语义随语境变化
+# 的常见词。模型脱离语境直译是「play→播放、resume→简历」的来源：
+# 游戏界面语境下这些词几乎总是游戏操作/界面语义，禁止按通用词典义翻译。
+_GAME_CONTEXT_WORDS: list[tuple[str, str, str]] = [
+    ("play", "游戏界面/操作", "开始游戏、游玩（按钮上的 Play 是\"开始\"，不是\"播放\"）"),
+    ("resume", "游戏界面/操作", "继续（游戏）——上一存档/暂停后继续，不是\"简历\""),
+    ("load", "游戏界面/操作", "读取/加载（存档）"),
+    ("save", "游戏界面/操作", "保存（存档）"),
+    ("quit", "游戏界面/操作", "退出（游戏）"),
+    ("back", "游戏界面/操作", "返回（上一界面）"),
+    ("new game", "游戏界面/操作", "新游戏/开始新游戏"),
+    ("continue", "游戏界面/操作", "继续（游戏）"),
+    ("settings", "游戏界面/操作", "设置（界面项），不是\"设置项复数\"直译"),
+    ("options", "游戏界面/操作", "选项/设置"),
+    ("inventory", "游戏界面/操作", "背包/物品栏"),
+    ("attack", "战斗语境", "攻击"),
+    ("quest", "游戏任务语境", "任务"),
+    ("enemy", "游戏战斗语境", "敌人"),
+    ("level", "游戏语境", "关卡/等级（视语境），不是\"水平/级别\"直译"),
+    ("screen", "游戏语境", "界面/画面（\"loading screen\"=加载画面），不是\"屏幕\"直译"),
+    ("press any key", "操作提示", "按任意键"),
+    ("select", "游戏界面/操作", "选择"),
+    ("confirm", "游戏界面/操作", "确认"),
+    ("cancel", "游戏界面/操作", "取消"),
+]
+
+
+def _game_context_rules() -> str:
+    lines = [
+        "【游戏语境歧义词】以下词在游戏文本中有特定语义，必须按游戏语境翻译，"
+        "禁止按通用词典义直译：",
+    ]
+    for word, context, tip in _GAME_CONTEXT_WORDS:
+        lines.append(f"- {word}（{context}）→ {tip}")
+    return "\n".join(lines)
+
+
 def build_system_prompt(profile: GameProfile, glossary_lines: list[str] | str,
                         known_names: list[str] | None = None,
                         knowledge_lines: list[str] | str | None = None) -> str:
@@ -249,8 +286,12 @@ def build_system_prompt(profile: GameProfile, glossary_lines: list[str] | str,
     if src == "auto":
         src = "游戏原文语言（自动判断，可能是英语/日语/韩语等）"
     parts = [
-        f"你是资深游戏本地化翻译专家。请将以下游戏的{src}文本翻译为简体中文。",
-        "这是深度本地化翻译，不是逐字直译：译文必须贴合游戏世界观、角色性格与对话语境，读起来像母语中文玩家会看到的文本。",
+        # #10：明确的游戏本地化角色 + 行为边界（用户提供的角色定义精简版）
+        f"你是专业游戏本地化翻译专家，负责把该游戏的{src}文本翻译为简体中文。"
+        "你不是普通机器翻译器，而是游戏本地化译者：译文必须像中文玩家母语中"
+        "看到的游戏文本，而非逐词直译的机器翻译结果。",
+        "职责边界：你只做本地化翻译——不修改原文信息、不续写、不解释、不输出"
+        "翻译说明；所有译文直接面向玩家，使用目标语言读者的自然表达。",
     ]
     if profile.game_name:
         parts.append(f"【游戏】{profile.game_name}" + (f"（{profile.genre}）" if profile.genre else ""))
@@ -260,6 +301,9 @@ def build_system_prompt(profile: GameProfile, glossary_lines: list[str] | str,
         parts.append(f"【文风要求】{profile.tone_notes}")
     if profile.style_guide:
         parts.append(f"【风格指南】{profile.style_guide}")
+    # #10：Style/Personalization——用户自定义提示词（按游戏档案编辑）优先
+    if profile.prompt_style:
+        parts.append(f"【个性化风格要求（用户自定义，最高优先）】\n{profile.prompt_style}")
     if isinstance(glossary_lines, str):
         glossary_lines = [glossary_lines] if glossary_lines else []
     if glossary_lines:
@@ -291,8 +335,9 @@ def build_system_prompt(profile: GameProfile, glossary_lines: list[str] | str,
         "11. 全大写且字母间有空格的词（如 * Y A W N *、G A S P、S C O F F）是"
         "文字化动作/音效表现（角色打哈欠/惊呼/叹息）：翻译为对应的中文动作词或"
         "拟声词（* 哈欠 *、* 倒吸一口气 *），保留原文的星号与格式标签；"
-        "仅当该词是人名/地名等专名时保留原文。"
+        "仅当该词是人名/地名等专名时保留原文。",
     )
+    parts.append(_game_context_rules())
     return "\n".join(parts)
 
 

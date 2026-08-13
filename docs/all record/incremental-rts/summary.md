@@ -38,7 +38,7 @@
 ## 3 写回
 - 文本文件：1 · 写入译文：760
 - 输入保护：True · 重开验证：True · 变更文件：36
-- 总体闸门：PASS · 字体：runtime_verified
+- 总体闸门：PASS · 字体：runtime_verified（LEGACY_EVIDENCE_UNSCOPED：旧协议证据，未含逐码点 attestation/覆盖证明）
 
 ## 3.5 语义审核（翻译质量升级）
 - 审核条数：114 · 不合格：25 · 术语沉淀：1

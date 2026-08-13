@@ -135,7 +135,8 @@ def test_write_all_installs_font_in_staging_before_commit(tmp_path, monkeypatch)
         family="Test Font",
     )
 
-    def install(game, staging, config, *, translations, exclude):
+    def install(game, staging, config, *, translations, exclude,
+                player_root=None):
         nonlocal seen_staging
         seen_staging = staging
         assert game == proj.game_dir
@@ -159,7 +160,7 @@ def test_write_all_installs_font_in_staging_before_commit(tmp_path, monkeypatch)
             assert not seen_staging.exists()
         progress.append((done, total))
 
-    monkeypatch.setattr("hanhua.core.project.install_font_override", install)
+    monkeypatch.setattr("hanhua.core.font.pipeline.install_font_override", install)
 
     result = proj.write_all(progress_cb=record_progress)
 
@@ -187,7 +188,7 @@ def test_write_all_keeps_previous_output_when_font_install_fails(tmp_path, monke
     def fail_install(*args, **kwargs):
         raise FontInstallError("synthetic font install failure")
 
-    monkeypatch.setattr("hanhua.core.project.install_font_override", fail_install)
+    monkeypatch.setattr("hanhua.core.font.pipeline.install_font_override", fail_install)
 
     with pytest.raises(FontInstallError, match="synthetic font install failure"):
         proj.write_all(progress_cb=lambda done, total: progress.append((done, total)))
@@ -216,7 +217,7 @@ def test_write_all_rejects_uninstalled_required_font_before_publish(
     marker = project.out_dir / "KEEP-ME.txt"
     marker.write_text("old output", encoding="utf-8")
     monkeypatch.setattr(
-        "hanhua.core.project.install_font_override",
+        "hanhua.core.font.pipeline.install_font_override",
         lambda *args, **kwargs: FontInstallResult(False),
     )
 
@@ -243,7 +244,7 @@ def test_write_all_keeps_static_output_when_font_provider_is_unsupported(
         unsupported_reason="IL2CPP font provider is not available",
     )
     monkeypatch.setattr(
-        "hanhua.core.project.install_font_override",
+        "hanhua.core.font.pipeline.install_font_override",
         lambda *args, **kwargs: unsupported,
     )
 
@@ -350,14 +351,16 @@ def test_write_all_v1_skips_v2_files(monkeypatch):
 
     real_render = text_writer._render
 
-    def reject_v2_render(src, file_record, entries, target_lang):
+    def reject_v2_render(src, file_record, entries, target_lang,
+                         normalize_fallback_punctuation=False):
         if file_record["format"].startswith("v2_"):
             raise AssertionError("v2 resource reached the v1 renderer")
-        return real_render(src, file_record, entries, target_lang)
+        return real_render(src, file_record, entries, target_lang,
+                           normalize_fallback_punctuation)
 
     v2_result = WriteResult(files=1, entries=1)
 
-    def capture_v2(store, game_dir, staging):
+    def capture_v2(store, game_dir, staging, typetree_generator=None):
         entries = [e for e in store.get_entries() if e["file_id"] == "v2fake"]
         assert game_dir == proj.game_dir
         assert entries[0]["translation"] == "你好世界"
@@ -1194,20 +1197,21 @@ def test_write_all_merges_rejected_sources_into_exclude(monkeypatch):
         {"original": "Settings", "translation": "设置", "meta": "{}"},
         "immutable_field_protected")                       # 写回侧拒绝
 
-    def capture_v2(store, game_dir, staging):
+    def capture_v2(store, game_dir, staging, typetree_generator=None):
         return v2_result
 
     seen_exclude = None
     font_result = FontInstallResult(
         installed=True, filename="test-font.ttf")
 
-    def install(game, staging, config, *, translations, exclude):
+    def install(game, staging, config, *, translations, exclude,
+                player_root=None):
         nonlocal seen_exclude
         seen_exclude = set(exclude)
         return font_result
 
     monkeypatch.setattr("hanhua.core.project.write_back_v2", capture_v2)
-    monkeypatch.setattr("hanhua.core.project.install_font_override", install)
+    monkeypatch.setattr("hanhua.core.font.pipeline.install_font_override", install)
 
     proj.write_all(allow_partial=True)   # 拒绝条目走 P0-2 闸门：确认后放行
 

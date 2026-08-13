@@ -1,0 +1,43 @@
+游戏：花火
+写回时间：2026-08-13 18:57:23
+输出目录：C:\Users\mingming\Downloads\密码两个1\花火_汉化
+
+文件清单：6 个
+
+- Sparkle_Data/app.info（2 条）
+- Sparkle_Data/level0（288 条）
+- Sparkle_Data/level1（416 条）
+- Sparkle_Data/sharedassets0.assets（135 条）
+- Sparkle_Data/sharedassets1.assets（111 条）
+- Sparkle_Data/Managed/Live2D.Cubism.dll（66 条）
+
+────────────────────────────────────────────────────────────────
+写回结果
+文本文件：1
+输入保护：True
+重开验证：True
+变更文件：33
+写入译文：321
+总体闸门：PASS
+字体层级：payload_deployed
+
+四态闸门明细
+  file=N/A
+  container=PASS
+  object=PASS
+  runtime=PASS
+备份：None
+清单：.hanhua-manifest.json
+
+────────────────────────────────────────────────────────────────
+二进制资源（V2）
+文件：5 · 候选：321
+
+────────────────────────────────────────────────────────────────
+字体部署
+字体：Source Han Sans SC · 层级：—
+安装：True
+发布门：PASS — 覆盖 COVERED：2 个消费者完整，0 个未覆盖，缺字 0 个码点
+覆盖终态：COVERED
+逐栈：legacy_font: 2
+终态分布：COVERED: 2

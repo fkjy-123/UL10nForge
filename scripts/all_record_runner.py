@@ -44,6 +44,7 @@ from hanhua.core.agent_memory import AgentMemory  # noqa: E402
 from hanhua.core.glossary import GlossaryStore  # noqa: E402
 from hanhua.core.knowledge import KnowledgeBase  # noqa: E402
 from hanhua.core.local_model import LocalModelManager  # noqa: E402
+from hanhua.core.memory import settle_translation_memory  # noqa: E402
 from hanhua.core.models import TextEntry  # noqa: E402
 from hanhua.core.reviewer import (ReviewResult,  # noqa: E402
                                   SemanticReviewer, review_entries)
@@ -314,6 +315,42 @@ def _export_writeback_record(project, out_writeback: Path, profile,
             *gate_lines,
             "",
         ]
+        gate = verification.get("font_gate")
+        if gate:
+            blocks += [
+                "字体发布门",
+                f"状态：{gate.get('status')}",
+                f"说明：{gate.get('detail')}",
+                "",
+            ]
+        bitmap = verification.get("font_bitmap")
+        if bitmap:
+            blocks += [
+                "位图字体注入",
+                f"provider：{', '.join(bitmap.get('providers') or []) or '—'}",
+                f"注入：{bitmap.get('injected')} · "
+                f"审计：{bitmap.get('audited')} · "
+                f"未注入：{bitmap.get('pending')}",
+                "",
+            ]
+        coverage = verification.get("font_coverage")
+        if coverage:
+            stacks = coverage.get("stack_counts") or {}
+            stack_text = " · ".join(
+                f"{kind}: {n}" for kind, n in sorted(stacks.items()))
+            blocks += [
+                "字体覆盖摘要",
+                f"终态：{coverage.get('overall')}"
+                f"（{stack_text or '无消费者'}）",
+            ]
+            missing = coverage.get("missing") or []
+            if missing:
+                blocks.append("缺字：")
+                blocks += [
+                    f"- {row.get('scalar')} → {row.get('consumer')}"
+                    f"（{row.get('kind')}）"
+                    for row in missing[:16]]
+            blocks.append("")
         # 知识库案例转规则：writeback_case 5 条理论案例 → 可执行规则
         # （规则实现清单见 knowledge.writeback_case_rules，写回链路已启用）
         from hanhua.core.knowledge import writeback_case_rules
@@ -522,28 +559,44 @@ def _register_writeback(kb: KnowledgeBase, game_name: str,
 
 def _run_semantic_review(project, entries, out_dir: Path, game_name: str,
                          glossary: GlossaryStore,
-                         skip: bool = False) -> tuple[dict[str, ReviewResult], dict]:
+                         skip: bool = False,
+                         translator=None, app_dir: Path | None = None,
+                         model_name: str = "", lang: str = "",
+                         max_send_rate: float = 0.15) \
+        -> tuple[dict[str, ReviewResult], dict]:
     """翻译后语义审核（翻译质量升级核心，2026-08-12）。
 
     对全部已翻译条目做语义级审核（术语/语境/专名/语义/风格五维），
     不合格条目标记「需要优化」并写 review 报告；术语词对自动沉淀
     全局术语库（后续游戏翻译按词对约束模型输出）。
 
+    Phase A（2026-08-13 架构审计）：通过 review_entries 统一管线把终态
+    原子落回 project.store——MAJOR/CRITICAL/blocked/审核错误不可写回
+    （project.write_all → is_write_ready 读库生效），重启后状态仍正确。
+
     返回 (review_results: {locator: ReviewResult}, summary)。
     审核服务不可用/失败 → 返回空结果（不阻断写回，控制台告警）。
     条目构建/审核/词对沉淀复用 hanhua.core.reviewer.review_entries
     （GUI 主路径同源，翻译 C6 闭口——两入口行为一致）。
+
+    max_send_rate：discretionary 送审率上限（P1-11 与 GUI 同一策略
+    映射：fast 5% / balanced 15% / strict 30%）。
     """
-    summary = {"reviewed": 0, "flagged": 0, "pairs": 0, "skipped": skip}
+    summary = {"reviewed": 0, "flagged": 0, "pairs": 0, "skipped": skip,
+               "blocked": 0, "errors": 0, "cancelled": 0,
+               "deferred_due_to_budget": 0}
     if skip:
         return {}, summary
-    reviewer = SemanticReviewer()
+    reviewer = SemanticReviewer(app_dir=app_dir or PROJECT_ROOT)
     if not reviewer.usable:
-        print("  [审核] 跳过：未配置审核凭据（~/.claude/settings.json）")
+        print("  [审核] 跳过：本地审核服务不可用（模型缺失或启动失败）")
         return {}, summary
     core = review_entries(
         entries, glossary, game_name=game_name,
-        on_note=lambda s: print(f"  [审核] {s}"))
+        on_note=lambda s: print(f"  [审核] {s}"),
+        translator=translator, memory=project.store, store=project.store,
+        app_dir=app_dir or PROJECT_ROOT, model_name=model_name, lang=lang,
+        max_send_rate=max_send_rate)
     if not core["used"]:
         print("  [审核] 无可审核条目（0 条已翻译）")
         return {}, summary
@@ -551,9 +604,23 @@ def _run_semantic_review(project, entries, out_dir: Path, game_name: str,
     results = core["results"]
     summary["reviewed"] = core["reviewed"]
     summary["flagged"] = len(flagged)
+    summary["blocked"] = core["blocked"]
+    summary["errors"] = core["errors"]
+    summary["cancelled"] = core["cancelled"]
+    summary["deferred_due_to_budget"] = core["deferred_due_to_budget"]
     added = core["pairs_added"]
     rejected = core["pairs_rejected"]
     summary["pairs"] = added
+    if core["blocked"]:
+        print(f"  [审核] 重译未收敛阻塞 {core['blocked']} 条"
+              f"（已从发布槽移除，需人工复核）")
+    if core["errors"]:
+        print(f"  [审核] 审核错误 {core['errors']} 条（不可发布）")
+    if core["cancelled"]:
+        print(f"  [审核] 取消 {core['cancelled']} 条")
+    if core["deferred_due_to_budget"]:
+        print(f"  [审核] 预算截断 {core['deferred_due_to_budget']} 条"
+              f"（人工队列）")
     if added:
         print(f"  [审核] 术语沉淀 {added} 条词对 → 全局术语库"
               f"（后续游戏自动按词对约束翻译）")
@@ -602,6 +669,24 @@ def _run_semantic_review(project, entries, out_dir: Path, game_name: str,
             encoding="utf-8")
     except Exception:  # noqa: BLE001
         pass
+    # Phase B-5（审计 P1-7）：审核失败结构化落库（fail_case 域）——
+    # CRITICAL/MAJOR 语义错误与 REVIEW_ERROR 管线错误全部记录（收敛与
+    # 未收敛均记）；正确例仅终态 APPROVED 系译文（二审收敛/人工确认）。
+    # 幂等（game:locator pattern）：同条目重审只 hits+1。知识库可按原文
+    # 召回同类失败作为反例（match_case 解析 note JSON original 字段）。
+    review_failures = core.get("review_failures") or []
+    if review_failures:
+        case_kb = KnowledgeBase(REAL_USER_DIR / "knowledge.db")
+        failure_added = 0
+        for failure in review_failures:
+            if case_kb.record_review_failure(failure):
+                failure_added += 1
+        case_kb.close()
+        if failure_added:
+            print(f"  [审核] 失败案例沉淀：{failure_added} 条审核失败"
+                  f"结构化入库（错误译文/正确译文/理由留档，"
+                  f"收敛 {sum(1 for f in review_failures if f['converged'])}"
+                  f" 条）")
     # 映射回 locator（导出标注用）
     mapped: dict[str, ReviewResult] = {}
     for r in flagged:
@@ -612,7 +697,7 @@ def _run_semantic_review(project, entries, out_dir: Path, game_name: str,
 def run_game(game_dir: Path, *, batch: int | None = None,
              do_translate: bool = True, do_writeback: bool = True,
              keep_library: bool = False,
-             do_review: bool = True,
+             do_review: bool | None = None,
              app_dir: Path | None = None,
              resume: bool = False,
              no_cleanup: bool = False) -> int:
@@ -662,6 +747,14 @@ def run_game(game_dir: Path, *, batch: int | None = None,
     settings = SettingsStore(REAL_USER_DIR / "settings.json")
     settings.load()
     api = settings.api
+    # P1-11（审计 Phase D）：GUI/headless 审核策略统一——runner 读取与
+    # GUI 相同的设置（ai_review_enabled 开关 + fast/balanced/strict 送审率
+    # 上限），CLI --no-review 为最高优先级 override（CLI > settings > 默认）
+    if do_review is None:
+        do_review = bool(api.ai_review_enabled)
+    strategy_rate = {
+        "fast": 0.05, "balanced": 0.15, "strict": 0.30,
+    }.get(str(api.ai_review_strategy or ""), 0.15)
 
     print(f"═══ 开始游戏：{game_name} ═══")
     print(f"输出：{out_dir}")
@@ -671,6 +764,10 @@ def run_game(game_dir: Path, *, batch: int | None = None,
     if resume:
         print("[1/4] 续跑：跳过扫描（使用现有项目库）")
         project = Project.open_game_dir(game_dir, app_dir)
+        # open_game_dir 不建 schema（建表在扫描/翻译流程内）——resume 直接
+        # 访问 store 会撞 "no such table"（hickory 实证：profile 表缺失）。
+        # init_schema 幂等（IF NOT EXISTS），续跑前显式补齐。
+        project.store.init_schema()
         report = None
         profile = project.profile
     else:
@@ -713,6 +810,10 @@ def run_game(game_dir: Path, *, batch: int | None = None,
     review_summary: dict = {}
     entries: list = []
     glossary: GlossaryStore | None = None
+    # Phase A：统一审核管线需要 translator（反馈重译/再审）与 lang（记忆
+    # 键）；resume 续跑不重新翻译 → 无 translator，反馈重译路径自动跳过。
+    translator = None
+    lang = ""
     if do_translate and not resume:
         print("[2/4] 翻译（真实本地模型）…")
         manager = LocalModelManager(PROJECT_ROOT, startup_timeout=180)
@@ -749,6 +850,16 @@ def run_game(game_dir: Path, *, batch: int | None = None,
         agent_memory.init_schema()
         agent_memory.session_reset()
         agent_pairs = agent_memory.reference_pairs()
+        # 知识检索统一门面（审计 Phase C，P1-1）：context/vector 证据跨
+        # 游戏沉淀——翻译前 index_outbox 让历史证据可被本次命中，翻译后
+        # 再次索引本次新沉淀（数据库与向量最终一致）
+        from hanhua.core.knowledge_retrieval import (
+            create_knowledge_retrieval)
+        knowledge_retrieval = create_knowledge_retrieval(
+            REAL_USER_DIR, game=game_name)
+        indexed0 = knowledge_retrieval.index_outbox()
+        print(f"  知识检索：{knowledge_retrieval.capability().summary()}"
+              + (f" · 已索引 {indexed0} 条" if indexed0 else ""))
 
         entries = [_entry_from_row(r) for r in project.store.get_entries()]
         collected_names = collect_known_names(
@@ -776,7 +887,19 @@ def run_game(game_dir: Path, *, batch: int | None = None,
                       for row in glossary_rows
                       if row.get("status", "active") == "active"]
                      + knowledge_pairs + agent_pairs,
+            # 质量门强制词对：术语库 active + 知识库译例；经验记忆词对
+            # 只做参考注入不做强制（reference_pairs 设计「参考而非强制」，
+            # Morfosi 64 条 ('Locked','锁定') 强制自然句全灭实证）
+            glossary_force=[(row["term"], row["translation"])
+                            for row in glossary_rows
+                            if row.get("status", "active") == "active"]
+                           + knowledge_pairs,
             agent_memory=agent_memory, agent_game=game_name,
+            # 知识检索接线（审计 Phase C，P1-1）：语境直填 + 向量相似
+            # 去重/召回在 headless 生产入口生效
+            context_store=knowledge_retrieval.context_store,
+            context_game=game_name,
+            vector_recall=knowledge_retrieval.vector_recall,
         )
         from hanhua.core.models import is_actionable_translation
         pending_count = sum(is_actionable_translation(e) for e in entries)
@@ -786,6 +909,10 @@ def run_game(game_dir: Path, *, batch: int | None = None,
         print(f"  完成：{stats.done} 条（记忆 {stats.from_memory}）"
               f" · 失败 {stats.failed} · 请求 {stats.requests}"
               f" · 耗时 {stats.elapsed:.1f}s")
+        # 翻译后：本次沉淀的共识证据入向量索引（Phase C，供下次/跨游戏复用）
+        indexed1 = knowledge_retrieval.index_outbox()
+        if indexed1:
+            print(f"  知识检索：本次沉淀 {indexed1} 条证据入向量索引")
         # 经验记忆报告：本次会话记忆活动落盘（memory-report.md 与 GUI
         # 记录文档同构）——用户可追踪记忆如何成长、哪些记忆不可信
         mem_report = agent_memory.session_report(game=game_name)
@@ -891,13 +1018,26 @@ def run_game(game_dir: Path, *, batch: int | None = None,
         try:
             review_results, review_summary = _run_semantic_review(
                 project, entries, out_dir, game_name,
-                glossary=glossary, skip=False)
+                glossary=glossary, skip=False,
+                translator=translator, app_dir=PROJECT_ROOT,
+                model_name=api.model, lang=lang,
+                max_send_rate=strategy_rate)
             if review_summary.get("flagged"):
                 print(f"  [审核] 不合格 {review_summary['flagged']} 条"
                       f"（见 review/review-report.md，需人工确认）")
         except Exception as exc:  # noqa: BLE001 - 审核失败不阻断写回
             print(f"  [审核] 失败：{exc}")
             review_results, review_summary = {}, {}
+
+    # Phase B PendingEvidence（审计 §5 P0-3）：审后记忆结算——与 GUI
+    # 同源（settle_translation_memory）：APPROVED → promote；判坏 →
+    # 撤销；无终态（--no-review / 审核器不可用）→ 机械门即最后裁决，
+    # promote。任何分支都执行（审核跳过/失败不阻断结算）。
+    settled = settle_translation_memory(
+        project.store, entries, str(api.model or ""), lang)
+    if settled.get("promoted") or settled.get("revoked"):
+        print(f"  [记忆] 审后结算：提交 {settled['promoted']} 条"
+              f" · 撤销坏记忆 {settled['revoked']} 条")
 
     # ── 3 写回（真实）──（先写回再导出，导出才能标注每条实际写回状态）
     writeback_result = None
@@ -909,6 +1049,13 @@ def run_game(game_dir: Path, *, batch: int | None = None,
                 font_config=settings.font,
                 stage_cb=lambda stage: print(
                     f"  [{stage.phase}] {stage.message}"),
+                # 批量闭环（免实机 attest，2026-08-12 指令）：确认候选字体
+                # 发布——PENDING_RUNTIME_ATTESTATION / CANDIDATE_ONLY 字体
+                # 门降级候选 WARN；对象级闸门（rejected/truncated/逻辑
+                # 验证）仍受 allow_partial=False 严格阻断（hickory 实证：
+                # 动态 TMP 字体 + 插件已部署 → PENDING，不确认则永远
+                # 无法发布闭环）。
+                allow_unverified_font_candidate=True,
             )
             print(f"  写回成功：{writeback_result.get('text_files')} 文本文件"
                   f" · {writeback_result['verification'].get('written_translations')}"
@@ -1106,8 +1253,12 @@ def _write_summary(project, report, stats, writeback_result, game_name,
             f" · 变更文件：{verification.get('changed_files')}",
             f"- 总体闸门：{verification.get('overall')}"
             f" · 字体：{verification.get('font_level')}",
-            "",
         ]
+        gate = verification.get("font_gate")
+        if gate:
+            lines.append(
+                f"- 字体发布门：{gate.get('status')} — {gate.get('detail')}")
+        lines.append("")
     else:
         lines += ["## 3 写回", "- （未写回）", ""]
     if stats is not None and review_summary:
@@ -1148,7 +1299,8 @@ def main() -> int:
     parser.add_argument("--no-writeback", action="store_true",
                         help="跳过写回")
     parser.add_argument("--no-review", action="store_true",
-                        help="跳过翻译后语义审核（默认开）")
+                        help="跳过翻译后语义审核（默认读 settings 的"
+                        " ai_review_enabled 开关，P1-11 与 GUI 一致）")
     parser.add_argument("--keep-library", action="store_true",
                         help="保留扫描中间库（调试）")
     parser.add_argument("--resume", action="store_true",
@@ -1165,7 +1317,8 @@ def main() -> int:
         do_translate=not args.no_translate,
         do_writeback=not args.no_writeback,
         keep_library=args.keep_library,
-        do_review=not args.no_review,
+        # P1-11：None → 读 settings（ai_review_enabled）；--no-review 强制关
+        do_review=False if args.no_review else None,
         resume=args.resume,
         no_cleanup=args.no_cleanup,
     )

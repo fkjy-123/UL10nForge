@@ -25,7 +25,7 @@ from pathlib import Path
 
 import httpx
 
-from .local_model import build_server_command, discover_server
+from .local_model import build_server_command, discover_server, sha256_of
 from .model_registry import ModelRegistry, ModelSpec
 
 _RUNTIME_STATE_FILENAME = "review_runtime.json"
@@ -156,7 +156,10 @@ class ReviewModelService:
         server = discover_server("", self.app_dir)
         ctx = context_size or (plan.ctx if plan else spec.default_ctx)
         gpu_layers = plan.gpu_layers if plan else -1
-        signature = (server, spec.path, spec.port, ctx, gpu_layers, 1)
+        # 审计 Phase D（P1-12）：模型 sha256 进签名——审核模型文件更新后
+        # 旧 state 签名不匹配 → 不复用旧实例（自动重启新模型）
+        signature = (server, spec.path, sha256_of(spec.path), spec.port,
+                     ctx, gpu_layers, 1)
         with self._lock:
             if (self._process is not None
                     and self._process.poll() is None
@@ -239,10 +242,16 @@ class ReviewModelService:
         杀不掉的（权限/已消失）静默继续——启动失败由现有超时/退出
         检测兜底。
         """
+        # 弹窗根因（2026-08-13 用户实证：送审时命令行窗口反复跳出又消失）
+        # ——netstat/taskkill 缺 CREATE_NO_WINDOW，每次探测失败清场都闪
+        # 控制台窗口。与 _spawn/ensure_running 的 Popen 对齐：win32 全部
+        # 加 CREATE_NO_WINDOW。
+        nowindow = (getattr(subprocess, "CREATE_NO_WINDOW", 0)
+                    if sys.platform == "win32" else 0)
         try:
             out = subprocess.run(
                 ["netstat", "-ano"], capture_output=True, text=True,
-                timeout=10).stdout
+                timeout=10, creationflags=nowindow).stdout
         except (OSError, subprocess.TimeoutExpired):
             return
         pids: set[str] = set()
@@ -255,7 +264,8 @@ class ReviewModelService:
         for pid in pids:
             try:
                 subprocess.run(["taskkill", "/F", "/PID", pid],
-                               capture_output=True, timeout=10)
+                               capture_output=True, timeout=10,
+                               creationflags=nowindow)
             except (OSError, subprocess.TimeoutExpired):
                 continue
 

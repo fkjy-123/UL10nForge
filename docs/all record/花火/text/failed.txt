@@ -1,0 +1,547 @@
+游戏：花火
+导出时间：2026-08-13 18:57:23
+翻译模型：hy-mt2-1.8b
+失败文本：37 条
+
+────────────────────────────────────────────────────────────────
+[1] 失败文本
+来源：Sparkle_Data/level0
+键位：asset#level0#4430/str/0
+原文：headdeco
+译文：headdeco
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：untranslated_text（passed=False）
+翻译评价：untranslated_text
+需要优化：—
+写回：—
+
+────────────────────────────────────────────────────────────────
+[2] 失败文本
+来源：Sparkle_Data/level0
+键位：asset#level0#5175/str/0
+原文：arm>
+译文：arm>
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：untranslated_text（passed=False）
+翻译评价：untranslated_text
+需要优化：—
+写回：—
+
+────────────────────────────────────────────────────────────────
+[3] 失败文本
+来源：Sparkle_Data/level0
+键位：asset#level0#5246/str/0
+原文：arm<
+译文：arm<
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：untranslated_text（passed=False）
+翻译评价：untranslated_text
+需要优化：—
+写回：—
+
+────────────────────────────────────────────────────────────────
+[4] 失败文本
+来源：Sparkle_Data/level0
+键位：asset#level0#5313/str/0
+原文：Finger<B
+译文：手指<B>
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：placeholder_mismatch、rich_text_mismatch（passed=False）
+翻译评价：placeholder_mismatch、rich_text_mismatch
+需要优化：—
+写回：—
+
+────────────────────────────────────────────────────────────────
+[5] 失败文本
+来源：Sparkle_Data/level0
+键位：asset#level0#5531/str/0
+原文：arm<
+译文：arm<
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：untranslated_text（passed=False）
+翻译评价：untranslated_text
+需要优化：—
+写回：—
+
+────────────────────────────────────────────────────────────────
+[6] 失败文本
+来源：Sparkle_Data/level0
+键位：asset#level0#5891/str/0
+原文：Finger<B
+译文：手指<B>
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：placeholder_mismatch、rich_text_mismatch（passed=False）
+翻译评价：placeholder_mismatch、rich_text_mismatch
+需要优化：—
+写回：—
+
+────────────────────────────────────────────────────────────────
+[7] 失败文本
+来源：Sparkle_Data/level0
+键位：asset#level0#6076/str/0
+原文：arm>
+译文：arm>
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：untranslated_text（passed=False）
+翻译评价：untranslated_text
+需要优化：—
+写回：—
+
+────────────────────────────────────────────────────────────────
+[8] 失败文本
+来源：Sparkle_Data/level1
+键位：asset#level1#3845/str/0
+原文：verginal 2
+译文：verginal 2
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：untranslated_text（passed=False）
+翻译评价：untranslated_text
+需要优化：—
+写回：—
+
+────────────────────────────────────────────────────────────────
+[9] 失败文本
+来源：Sparkle_Data/level1
+键位：asset#level1#4309/str/0
+原文：verginal 5
+译文：Verginal 5
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：untranslated_text（passed=False）
+翻译评价：untranslated_text
+需要优化：—
+写回：—
+
+────────────────────────────────────────────────────────────────
+[10] 失败文本
+来源：Sparkle_Data/level1
+键位：asset#level1#4559/str/0
+原文：verginal 2
+译文：verginal 2
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：untranslated_text（passed=False）
+翻译评价：untranslated_text
+需要优化：—
+写回：—
+
+────────────────────────────────────────────────────────────────
+[11] 失败文本
+来源：Sparkle_Data/level1
+键位：asset#level1#4636/str/0
+原文：verginal 5
+译文：Verginal 5
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：untranslated_text（passed=False）
+翻译评价：untranslated_text
+需要优化：—
+写回：—
+
+────────────────────────────────────────────────────────────────
+[12] 失败文本
+来源：Sparkle_Data/level1
+键位：asset#level1#4899/str/0
+原文：shoulder
+译文：shoulder
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：untranslated_text（passed=False）
+翻译评价：untranslated_text
+需要优化：—
+写回：—
+
+────────────────────────────────────────────────────────────────
+[13] 失败文本
+来源：Sparkle_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#154/str/0
+原文：Text Switcher Track
+译文：参考以下翻译：
+“itch”翻译为“痒”。
+置信度：medium
+原因：natural_language
+角色：display
+质量评分：explanatory_prefix、newline_mismatch、line_content_mismatch（passed=False）
+翻译评价：explanatory_prefix、newline_mismatch、line_content_mismatch
+需要优化：—
+写回：—
+
+────────────────────────────────────────────────────────────────
+[14] 失败文本
+来源：Sparkle_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#155/str/0
+原文：Text Switcher Track
+译文：参考以下翻译：
+“itch”翻译为“痒”。
+置信度：medium
+原因：natural_language
+角色：display
+质量评分：explanatory_prefix、newline_mismatch、line_content_mismatch（passed=False）
+翻译评价：explanatory_prefix、newline_mismatch、line_content_mismatch
+需要优化：—
+写回：—
+
+────────────────────────────────────────────────────────────────
+[15] 失败文本
+来源：Sparkle_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#156/str/0
+原文：Text Switcher Track
+译文：参考以下翻译：
+“itch”翻译为“痒”。
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：explanatory_prefix、newline_mismatch、line_content_mismatch（passed=False）
+翻译评价：explanatory_prefix、newline_mismatch、line_content_mismatch
+需要优化：—
+写回：—
+
+────────────────────────────────────────────────────────────────
+[16] 失败文本
+来源：Sparkle_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#157/str/0
+原文：Text Switcher Track
+译文：参考以下翻译：
+“itch”翻译为“痒”。
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：explanatory_prefix、newline_mismatch、line_content_mismatch（passed=False）
+翻译评价：explanatory_prefix、newline_mismatch、line_content_mismatch
+需要优化：—
+写回：—
+
+────────────────────────────────────────────────────────────────
+[17] 失败文本
+来源：Sparkle_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#158/str/0
+原文：Text Switcher Track
+译文：参考以下翻译：
+“itch”翻译为“痒”。
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：explanatory_prefix、newline_mismatch、line_content_mismatch（passed=False）
+翻译评价：explanatory_prefix、newline_mismatch、line_content_mismatch
+需要优化：—
+写回：—
+
+────────────────────────────────────────────────────────────────
+[18] 失败文本
+来源：Sparkle_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#159/str/0
+原文：Text Switcher Track
+译文：参考以下翻译：
+“itch”翻译为“痒”。
+置信度：medium
+原因：natural_language
+角色：display
+质量评分：explanatory_prefix、newline_mismatch、line_content_mismatch（passed=False）
+翻译评价：explanatory_prefix、newline_mismatch、line_content_mismatch
+需要优化：—
+写回：—
+
+────────────────────────────────────────────────────────────────
+[19] 失败文本
+来源：Sparkle_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#160/str/0
+原文：Text Switcher Track
+译文：参考以下翻译：
+“itch”翻译为“痒”。
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：explanatory_prefix、newline_mismatch、line_content_mismatch（passed=False）
+翻译评价：explanatory_prefix、newline_mismatch、line_content_mismatch
+需要优化：—
+写回：—
+
+────────────────────────────────────────────────────────────────
+[20] 失败文本
+来源：Sparkle_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#161/str/0
+原文：Text Switcher Track
+译文：参考以下翻译：
+“itch”翻译为“痒”。
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：explanatory_prefix、newline_mismatch、line_content_mismatch（passed=False）
+翻译评价：explanatory_prefix、newline_mismatch、line_content_mismatch
+需要优化：—
+写回：—
+
+────────────────────────────────────────────────────────────────
+[21] 失败文本
+来源：Sparkle_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#162/str/0
+原文：Text Switcher Track
+译文：参考以下翻译：
+“itch”翻译为“痒”。
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：explanatory_prefix、newline_mismatch、line_content_mismatch（passed=False）
+翻译评价：explanatory_prefix、newline_mismatch、line_content_mismatch
+需要优化：—
+写回：—
+
+────────────────────────────────────────────────────────────────
+[22] 失败文本
+来源：Sparkle_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#163/str/0
+原文：Text Switcher Track
+译文：参考以下翻译：
+“itch”翻译为“痒”。
+置信度：medium
+原因：natural_language
+角色：display
+质量评分：explanatory_prefix、newline_mismatch、line_content_mismatch（passed=False）
+翻译评价：explanatory_prefix、newline_mismatch、line_content_mismatch
+需要优化：—
+写回：—
+
+────────────────────────────────────────────────────────────────
+[23] 失败文本
+来源：Sparkle_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#164/str/0
+原文：Text Switcher Track
+译文：参考以下翻译：
+“itch”翻译为“痒”。
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：explanatory_prefix、newline_mismatch、line_content_mismatch（passed=False）
+翻译评价：explanatory_prefix、newline_mismatch、line_content_mismatch
+需要优化：—
+写回：—
+
+────────────────────────────────────────────────────────────────
+[24] 失败文本
+来源：Sparkle_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#165/str/0
+原文：Text Switcher Track
+译文：参考以下翻译：
+“itch”翻译为“痒”。
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：explanatory_prefix、newline_mismatch、line_content_mismatch（passed=False）
+翻译评价：explanatory_prefix、newline_mismatch、line_content_mismatch
+需要优化：—
+写回：—
+
+────────────────────────────────────────────────────────────────
+[25] 失败文本
+来源：Sparkle_Data/sharedassets0.assets
+键位：asset#sharedassets0.assets#166/str/0
+原文：Text Switcher Track
+译文：参考以下翻译：
+“itch”翻译为“痒”。
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：explanatory_prefix、newline_mismatch、line_content_mismatch（passed=False）
+翻译评价：explanatory_prefix、newline_mismatch、line_content_mismatch
+需要优化：—
+写回：—
+
+────────────────────────────────────────────────────────────────
+[26] 失败文本
+来源：Sparkle_Data/sharedassets1.assets
+键位：asset#sharedassets1.assets#181/str/0
+原文：Text Switcher Track
+译文：参考以下翻译：
+“itch”翻译为“痒”。
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：explanatory_prefix、newline_mismatch、line_content_mismatch（passed=False）
+翻译评价：explanatory_prefix、newline_mismatch、line_content_mismatch
+需要优化：—
+写回：—
+
+────────────────────────────────────────────────────────────────
+[27] 失败文本
+来源：Sparkle_Data/sharedassets1.assets
+键位：asset#sharedassets1.assets#182/str/0
+原文：Text Switcher Track
+译文：参考以下翻译：
+“itch”翻译为“痒”。
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：explanatory_prefix、newline_mismatch、line_content_mismatch（passed=False）
+翻译评价：explanatory_prefix、newline_mismatch、line_content_mismatch
+需要优化：—
+写回：—
+
+────────────────────────────────────────────────────────────────
+[28] 失败文本
+来源：Sparkle_Data/sharedassets1.assets
+键位：asset#sharedassets1.assets#183/str/0
+原文：Text Switcher Track
+译文：参考以下翻译：
+“itch”翻译为“痒”。
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：explanatory_prefix、newline_mismatch、line_content_mismatch（passed=False）
+翻译评价：explanatory_prefix、newline_mismatch、line_content_mismatch
+需要优化：—
+写回：—
+
+────────────────────────────────────────────────────────────────
+[29] 失败文本
+来源：Sparkle_Data/sharedassets1.assets
+键位：asset#sharedassets1.assets#184/str/0
+原文：Text Switcher Track
+译文：参考以下翻译：
+“itch”翻译为“痒”。
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：explanatory_prefix、newline_mismatch、line_content_mismatch（passed=False）
+翻译评价：explanatory_prefix、newline_mismatch、line_content_mismatch
+需要优化：—
+写回：—
+
+────────────────────────────────────────────────────────────────
+[30] 失败文本
+来源：Sparkle_Data/sharedassets1.assets
+键位：asset#sharedassets1.assets#185/str/0
+原文：Text Switcher Track
+译文：参考以下翻译：
+“itch”翻译为“痒”。
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：explanatory_prefix、newline_mismatch、line_content_mismatch（passed=False）
+翻译评价：explanatory_prefix、newline_mismatch、line_content_mismatch
+需要优化：—
+写回：—
+
+────────────────────────────────────────────────────────────────
+[31] 失败文本
+来源：Sparkle_Data/sharedassets1.assets
+键位：asset#sharedassets1.assets#186/str/0
+原文：Text Switcher Track
+译文：参考以下翻译：
+“itch”翻译为“痒”。
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：explanatory_prefix、newline_mismatch、line_content_mismatch（passed=False）
+翻译评价：explanatory_prefix、newline_mismatch、line_content_mismatch
+需要优化：—
+写回：—
+
+────────────────────────────────────────────────────────────────
+[32] 失败文本
+来源：Sparkle_Data/sharedassets1.assets
+键位：asset#sharedassets1.assets#187/str/0
+原文：Text Switcher Track
+译文：参考以下翻译：
+“itch”翻译为“痒”。
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：explanatory_prefix、newline_mismatch、line_content_mismatch（passed=False）
+翻译评价：explanatory_prefix、newline_mismatch、line_content_mismatch
+需要优化：—
+写回：—
+
+────────────────────────────────────────────────────────────────
+[33] 失败文本
+来源：Sparkle_Data/sharedassets1.assets
+键位：asset#sharedassets1.assets#188/str/0
+原文：Text Switcher Track
+译文：参考以下翻译：
+“itch”翻译为“痒”。
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：explanatory_prefix、newline_mismatch、line_content_mismatch（passed=False）
+翻译评价：explanatory_prefix、newline_mismatch、line_content_mismatch
+需要优化：—
+写回：—
+
+────────────────────────────────────────────────────────────────
+[34] 失败文本
+来源：Sparkle_Data/sharedassets1.assets
+键位：asset#sharedassets1.assets#189/str/0
+原文：Text Switcher Track
+译文：参考以下翻译：
+“itch”翻译为“痒”。
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：explanatory_prefix、newline_mismatch、line_content_mismatch（passed=False）
+翻译评价：explanatory_prefix、newline_mismatch、line_content_mismatch
+需要优化：—
+写回：—
+
+────────────────────────────────────────────────────────────────
+[35] 失败文本
+来源：Sparkle_Data/sharedassets1.assets
+键位：asset#sharedassets1.assets#190/str/0
+原文：Text Switcher Track
+译文：参考以下翻译：
+“itch”翻译为“痒”。
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：explanatory_prefix、newline_mismatch、line_content_mismatch（passed=False）
+翻译评价：explanatory_prefix、newline_mismatch、line_content_mismatch
+需要优化：—
+写回：—
+
+────────────────────────────────────────────────────────────────
+[36] 失败文本
+来源：Sparkle_Data/sharedassets1.assets
+键位：asset#sharedassets1.assets#191/str/0
+原文：Text Switcher Track
+译文：参考以下翻译：
+“itch”翻译为“痒”。
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：explanatory_prefix、newline_mismatch、line_content_mismatch（passed=False）
+翻译评价：explanatory_prefix、newline_mismatch、line_content_mismatch
+需要优化：—
+写回：—
+
+────────────────────────────────────────────────────────────────
+[37] 失败文本
+来源：Sparkle_Data/sharedassets1.assets
+键位：asset#sharedassets1.assets#192/str/0
+原文：Text Switcher Track
+译文：参考以下翻译：
+“itch”翻译为“痒”。
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：explanatory_prefix、newline_mismatch、line_content_mismatch（passed=False）
+翻译评价：explanatory_prefix、newline_mismatch、line_content_mismatch
+需要优化：—
+写回：—

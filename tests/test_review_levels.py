@@ -184,6 +184,70 @@ def test_gate_plain_passes_through():
     assert sig.priority == 0
 
 
+# ── 语境证据消歧（审计 Phase C，P1-3） ─────────────────────────────
+
+class _CtxEv:
+    """轻量语境证据（鸭子类型，与 RetrievalEvidence 同构）。"""
+
+    def __init__(self, kind, translation, confidence=0.8):
+        self.kind = kind
+        self.translation = translation
+        self.confidence = confidence
+
+
+def test_gate_context_evidence_supported_removes_polysemy():
+    """证据支持候选译文 → 多义词已消歧，不再因歧义送审。"""
+    entry = _entry(original="Press Resume now", translation="按继续键")
+    sig = evaluate_entry(
+        entry, context_evidence=[
+            _CtxEv("context_exact", "按继续键", confidence=0.9)])
+    assert sig.context == "supported"
+    # 消歧只消除多义风险，不掩盖其他信号（character_text 如实保留）
+    assert "polysemy" not in sig.signals
+    assert "context_conflict" not in sig.signals
+
+
+def test_gate_context_evidence_conflict_adds_signal():
+    """证据全部反对候选译文 → 歧义未决，追加 context_conflict 送审。"""
+    entry = _entry(original="Press Resume now", translation="按简历键")
+    sig = evaluate_entry(
+        entry, context_evidence=[
+            _CtxEv("context_exact", "按继续键", confidence=0.9)])
+    assert sig.context == "conflict"
+    assert "context_conflict" in sig.signals
+    assert sig.priority == 4                # 与 polysemy 同级
+    assert sig.risky
+
+
+def test_gate_context_evidence_low_confidence_ignored():
+    """低于直填门禁的证据只参考不裁决（polysemy 保留）。"""
+    entry = _entry(original="Press Resume now", translation="按继续键")
+    sig = evaluate_entry(
+        entry, context_evidence=[
+            _CtxEv("context_exact", "按继续键", confidence=0.1)])
+    assert sig.context == ""
+    assert "polysemy" in sig.signals
+
+
+def test_gate_context_evidence_vector_kind_ignored():
+    """向量召回证据（kind=vector）置信链较弱，不参与消歧裁决。"""
+    entry = _entry(original="Press Resume now", translation="按继续键")
+    sig = evaluate_entry(
+        entry, context_evidence=[
+            _CtxEv("vector", "按继续键", confidence=0.95)])
+    assert sig.context == ""
+    assert "polysemy" in sig.signals
+
+
+def test_gate_context_evidence_none_keeps_old_behavior():
+    """不传 context_evidence → 行为与旧版完全一致。"""
+    entry = _entry(original="Press Resume now", translation="按继续键")
+    sig = evaluate_entry(entry)
+    assert sig.context == ""
+    assert "polysemy" in sig.signals
+    assert sig.risky
+
+
 def test_gate_priority_ordering():
     # 同时命中 quality_failed + long_text → 最高优先级 6
     long_text = " ".join(f"word{i}" for i in range(70))
@@ -195,34 +259,65 @@ def test_gate_priority_ordering():
 def test_gate_entries_budget_truncation():
     # 100 条全可疑（15% 预算 = 15 条）→ 高优先级先保，低优先级截断
     entries = [_entry(original=f"Press Resume word{i}") for i in range(100)]
-    to_review, passed, stats = gate_entries(entries, max_send_rate=0.15)
+    to_review, passed, deferred, stats = gate_entries(
+        entries, max_send_rate=0.15)
     assert stats["sent"] == 15
     assert stats["truncated"] == 85
+    assert stats["deferred_due_to_budget"] == 85
     assert len(to_review) == 15
-    assert len(passed) == 85
+    assert len(passed) == 0
+    assert len(deferred) == 85          # 截断条目归入人工队列，不叫 passed
     # 全部同信号 → 信号数排序稳定，无崩溃
     assert all(e.original for e in to_review)
 
 
 def test_gate_entries_priority_preserved():
-    # failed 条目（优先级 6）必须入选，即使排在列表尾部
+    # failed 条目（优先级 6，mandatory）必须入选，即使排在列表尾部
     entries = [_entry(original=f"Press Resume word{i}") for i in range(99)]
     entries.append(_entry(original="Press Resume fail", status="failed"))
-    to_review, _passed, stats = gate_entries(entries, max_send_rate=0.15)
-    assert stats["sent"] == 15
-    # failed 优先级最高 → 排序最前（截断从低优先级开始，failed 必保）
+    to_review, _passed, _deferred, stats = gate_entries(
+        entries, max_send_rate=0.15)
+    # 1 条 mandatory（failed 强制）+ 15 条 discretionary = 16 条送审
+    assert stats["sent"] == 16
+    assert stats["mandatory"] == 1
+    # failed 优先级最高 → 排序最前（截断只作用于 discretionary）
     assert to_review[0].status == "failed"
+    assert to_review[0].original == "Press Resume fail"
+
+
+def test_gate_entries_mandatory_never_truncated():
+    """双通道（审计 §5 P0-5）：mandatory（quality_failed/glossary_conflict）
+    不受预算，预算为 0 时仍强制送审；discretionary 才受截断。"""
+    # 预算 0（显式关闭）——mandatory 仍全量送审，discretionary 全 deferred
+    entries = [_entry(original=f"Press Resume word{i}") for i in range(50)]
+    entries.append(_entry(original="Press START to begin", status="failed"))
+    to_review, passed, deferred, stats = gate_entries(
+        entries, max_send_rate=0.0)
+    assert stats["sent"] == 1
+    assert stats["mandatory"] == 1
+    assert stats["discretionary"] == 0
+    assert len(deferred) == 50
+    assert to_review[0].status == "failed"
+    # 术语硬冲突（glossary_conflict）同样强制
+    conflict = _entry(original="Press START to begin", translation="按播放键")
+    to_review2, _p, _d, stats2 = gate_entries(
+        [conflict] + entries, [("START", "开始")], max_send_rate=0.0)
+    assert stats2["sent"] == 2           # conflict + failed 都强制
+    assert stats2["mandatory"] == 2
+    assert len(to_review2) == 2
+    assert to_review2[0].status == "failed"   # 优先级 6 > 冲突的 5
 
 
 def test_gate_entries_empty():
-    to_review, passed, stats = gate_entries([])
-    assert to_review == [] and passed == []
+    to_review, passed, deferred, stats = gate_entries([])
+    assert to_review == [] and passed == [] and deferred == []
     assert stats["total"] == 0
 
 
 def test_gate_entries_rate_zero_means_nothing_sent():
     entries = [_entry(original="Resume game") for _ in range(10)]
-    to_review, _passed, stats = gate_entries(entries, max_send_rate=0.0)
+    to_review, _passed, _deferred, stats = gate_entries(
+        entries, max_send_rate=0.0)
     assert to_review == []
     assert stats["sent"] == 0
     assert stats["rate"] == 0.0
@@ -393,6 +488,47 @@ def test_review_never_reviews_failed_translation():
     assert summary["sent"] == 0
 
 
+def test_force_send_reviews_plain_entries(monkeypatch):
+    """#38：force_send 时无风险信号条目也送审（默认分流直放）。
+
+    人工「重新审核」语义是无条件再判：plain 条目默认直放（used=False），
+    若按钮不强制送审会点了没反应。PASS 判定经 apply_verdict 终态化为
+    APPROVED（translator=None 不重译）。
+    """
+    from hanhua.core.reviewer import review_entries
+
+    def _plain() -> TextEntry:
+        # 无信号条目：无多义词/否定/长句/专名，role 非 display/dialog
+        return TextEntry("f", "k1", "Loading", translation="加载中",
+                         status="translated",
+                         meta={"role": "other", "confidence": "high"})
+
+    seen: list = []
+    class _StubReviewer:
+        usable = True
+        def __init__(self, app_dir=None, service=None):
+            pass
+        def review_batch(self, items, *, on_progress=None,
+                         cancellation_event=None):
+            seen.extend(items)
+            return {it.entry_id: ReviewResult(it.entry_id, level="PASS")
+                    for it in items}, 0
+    monkeypatch.setattr("hanhua.core.reviewer.SemanticReviewer",
+                        _StubReviewer)
+
+    s_default = review_entries([_plain()], None, app_dir=".")
+    assert s_default["used"] is False          # 默认分流：plain 直放
+    assert s_default["sent"] == 0
+
+    s_force = review_entries([_plain()], None, app_dir=".",
+                             force_send=True)
+    assert s_force["used"] is True
+    assert s_force["sent"] == 1
+    assert s_force["mandatory"] == 0
+    assert s_force["outcomes"].get("APPROVED") == 1
+    assert seen, "force_send 必须真正送审（fake reviewer 被调用）"
+
+
 # ── 审核日志（T1-7） ───────────────────────────────────────────────
 def test_write_review_report(tmp_path):
     summary = {
@@ -432,3 +568,84 @@ def test_write_review_report_no_critical(tmp_path):
                "originals": {}, "locators": {}}
     path = write_review_report(summary, tmp_path / "r.md")
     assert "无（本轮无 CRITICAL 级错译）" in path.read_text(encoding="utf-8")
+
+
+def test_write_review_report_stage_f_fields(tmp_path):
+    """#43 阶段 F：风险分布/结构化失败/维度分透出（旧字段兼容）。"""
+    summary = {
+        "sent": 40, "rate": 0.12, "reviewed": 40,
+        "levels": {"PASS": 30, "MINOR": 5, "MAJOR": 3, "CRITICAL": 2,
+                   "PARSE_FAIL": 0},
+        "retranslated": 4, "converged": 3, "blocked": 1,
+        "pairs_added": 1, "pairs_rejected": {}, "flagged": [
+            ReviewResult("e1", level="CRITICAL", reason="PRESS 译成媒体",
+                         overall_score=42,
+                         dimensions={"语义准确": 40, "自然度": 60},
+                         issues=({"type": "术语错误",
+                                  "suggestion": "按开始键开始"},)),
+        ],
+        "originals": {"e1": "PRESS TO START"},
+        "locators": {"e1": "f:k1"},
+        "risk_levels": {"LOW": 30, "MEDIUM": 5, "HIGH": 3, "CRITICAL": 2},
+        "review_failures": [
+            {"game": "hickory", "locator": "f:k1", "level": "CRITICAL",
+             "original": "PRESS TO START", "wrong_translation": "媒体开始",
+             "correct_translation": "按开始键开始", "reason": "PRESS 误译"},
+        ],
+    }
+    path = write_review_report(summary, tmp_path / "rr.md", game_name="hickory")
+    text = path.read_text(encoding="utf-8")
+    assert "风险分布：LOW 30 / MEDIUM 5 / HIGH 3 / CRITICAL 2" in text
+    assert "结构化失败：1 条" in text
+    assert "综合分：42/100" in text
+    assert "维度分：语义准确 40、自然度 60" in text
+    assert "PRESS 误译" in text
+    assert "按开始键开始" in text
+    # 旧字段仍在
+    assert "送审：40 条" in text
+
+
+def test_write_review_report_legacy_summary_compat(tmp_path):
+    """旧 summary（无风险/失败/维度字段）→ 不崩溃、不出现新区块。"""
+    summary = {"sent": 1, "rate": 0.01, "reviewed": 1,
+               "levels": {"PASS": 1, "MINOR": 0, "MAJOR": 0,
+                          "CRITICAL": 0, "PARSE_FAIL": 0},
+               "retranslated": 0, "converged": 0, "blocked": 0,
+               "pairs_added": 0, "pairs_rejected": {}, "flagged": [],
+               "originals": {}, "locators": {}}
+    path = write_review_report(summary, tmp_path / "legacy.md")
+    text = path.read_text(encoding="utf-8")
+    assert "风险分布" not in text
+    assert "结构化失败" not in text
+
+
+def test_retranslate_reuses_passed_reviewer_not_cwd_builder(monkeypatch):
+    """#20：重译闭环的再审必须复用主审核 reviewer 实例——此前每轮新建
+    SemanticReviewer 且回退 cwd 找模型（#17 已修主路径，再审路径漏掉），
+    模型在 resource_dir 时再审必挂 TRANSPORT_ERROR，重译永不收敛。"""
+    calls = []
+    class _StubReviewer:
+        def review_one(self, item):
+            calls.append(item.entry_id)
+            return ReviewResult("re", level="PASS")
+    tr = _FakeTranslator([(True, "继续游戏")])
+    entry = _entry()
+    stub = _StubReviewer()
+    result = _retranslate_with_feedback(
+        tr, entry, ReviewResult("e0", level="CRITICAL", reason="错译"), None,
+        reviewer=stub)
+    assert result == "converged"
+    assert calls == ["re_e0"] or len(calls) == 1   # 走传入的 reviewer
+    # 未传 reviewer 时仍可用 app_dir 定位（不新建 cwd 实例）
+    seen = []
+    monkeypatch.setattr("hanhua.core.reviewer.SemanticReviewer",
+                        lambda app_dir=None, service=None: (
+                            seen.append(app_dir) or _StubReviewer()))
+    tr2 = _FakeTranslator([(True, "继续游戏")])
+    entry2 = _entry()
+    result2 = _retranslate_with_feedback(
+        tr2, entry2,
+        ReviewResult("e0", level="CRITICAL", reason="错译"), None,
+        app_dir="/x/models")
+    assert result2 == "converged"
+    assert seen and seen[0] == "/x/models"

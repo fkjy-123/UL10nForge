@@ -1,0 +1,99 @@
+{
+  "schema_version": 2,
+  "description": "TMP_FontAsset 字体包（思源黑体 SDF 三档），按 Unity 版本 + 粗细档位选择，用于静态字体替换路径，彻底避免游戏内缺字/豆腐块。",
+  "source": "fonts/SDF_Font_Asset/*.asset（用户导出）+ scripts/build_tmp_font_bundles.py",
+  "tmp_versions": {
+    "tmp2": "TextMeshPro 2.x/3.x（Unity 2019+）——思源黑体 SDF，中文全覆盖"
+  },
+  "weights": {
+    "heavy": "SourceHanSansSC-Heavy SDF（粗）",
+    "medium": "SourceHanSansSC-Medium SDF（中，默认）",
+    "thin": "SourceHanSansSC-Thin SDF（细）"
+  },
+  "charset_contract": {
+    "cjk_range": [
+      19968,
+      40959
+    ],
+    "min_cjk_count": 3000,
+    "ascii_range": [
+      33,
+      126
+    ],
+    "note": "每个 bundle 的字符表必须覆盖 CJK 基本区 ≥ min_cjk_count 且包含全部可打印 ASCII——Phase 2 逐码点验证基准"
+  },
+  "integrity": {
+    "sourcehan_sdf_heavy_u2019": {
+      "sha256": "a4f6f291f3684011b0d4c4003ad64a61503d86aa1a4ed5be7ab055f075fa16aa",
+      "unity": "2019 ~ 2020",
+      "tmp_layout": "tmp2",
+      "weight": "heavy"
+    },
+    "sourcehan_sdf_heavy_u2021": {
+      "sha256": "9044ae4c0c7406b05e20ed7b6d739573beba49e7ef1a26fdccefbef75bf0659a",
+      "unity": "2021",
+      "tmp_layout": "tmp2",
+      "weight": "heavy"
+    },
+    "sourcehan_sdf_heavy_u2022": {
+      "sha256": "33e3f6bb7904ed9815b8d70cd60abf28160d76f6b48760f656a8e24732e83a3a",
+      "unity": "2022",
+      "tmp_layout": "tmp2",
+      "weight": "heavy"
+    },
+    "sourcehan_sdf_heavy_u6000": {
+      "sha256": "ab6810020c4041db7702cd92d82d807f17f1388ed78dacbf482412a7e932d65f",
+      "unity": "6000.0+",
+      "tmp_layout": "tmp2",
+      "weight": "heavy"
+    },
+    "sourcehan_sdf_medium_u2019": {
+      "sha256": "65ebbf4e33a543c3db6d1f6e327a08cf4422d8559d244cf8075bb439d314e534",
+      "unity": "2019 ~ 2020",
+      "tmp_layout": "tmp2",
+      "weight": "medium"
+    },
+    "sourcehan_sdf_medium_u2021": {
+      "sha256": "d7904cc9206126c64e6d2904e289373ba6e17dccda42c8f6d52a67f724f9bfcd",
+      "unity": "2021",
+      "tmp_layout": "tmp2",
+      "weight": "medium"
+    },
+    "sourcehan_sdf_medium_u2022": {
+      "sha256": "f1bc56dde63ae265d449dfb89214e1bce9f4a3be46281dad6868fa1ef6171f20",
+      "unity": "2022",
+      "tmp_layout": "tmp2",
+      "weight": "medium"
+    },
+    "sourcehan_sdf_medium_u6000": {
+      "sha256": "595bcecb22ceaa84e869e975f297194d3f8637a237cb50096a62c756023c14d6",
+      "unity": "6000.0+",
+      "tmp_layout": "tmp2",
+      "weight": "medium"
+    },
+    "sourcehan_sdf_thin_u2019": {
+      "sha256": "a834bc54f1ec84ab1df3af6c8e83379a34f9f19a4562fa7ab488c1b6a4977d2c",
+      "unity": "2019 ~ 2020",
+      "tmp_layout": "tmp2",
+      "weight": "thin"
+    },
+    "sourcehan_sdf_thin_u2021": {
+      "sha256": "9a87224bde5c6b289ce216b73f4160134761b9ffd92434e7f97a3f40f91435d9",
+      "unity": "2021",
+      "tmp_layout": "tmp2",
+      "weight": "thin"
+    },
+    "sourcehan_sdf_thin_u2022": {
+      "sha256": "34a4e6811c768932df1455b0b933ccd41712aa16747e1cb2581871e958d9bbe1",
+      "unity": "2022",
+      "tmp_layout": "tmp2",
+      "weight": "thin"
+    },
+    "sourcehan_sdf_thin_u6000": {
+      "sha256": "f0a717a433c3050e6d69fa61bc53cbb4c1144dc3c9b6f9ab536e18c4746111e0",
+      "unity": "6000.0+",
+      "tmp_layout": "tmp2",
+      "weight": "thin"
+    }
+  }
+}

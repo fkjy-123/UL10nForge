@@ -20,6 +20,10 @@ class AppState(QObject):
     entriesChanged = Signal()        # 条目状态变化（审校/翻译后刷新）
     settingsChanged = Signal()       # 设置保存后（主窗口状态栏刷新）
     analysisChanged = Signal(object) # AnalysisReport
+    pipelinePhase = Signal(str, str, str, str)  # step_id, status, detail, metrics
+    # 任务流水线阶段广播（#15 实证：首页 rail 只在扫描完成后更新一次，
+    # 翻译/审核/写回进行中 rail 卡在旧状态）。翻译/审核/写回阶段由
+    # 各页面发射，首页 rail 订阅实时刷新节点状态与指标。
 
     def __init__(self, app_dir: Path, settings: SettingsStore,
                  resource_dir: Path | None = None,
@@ -108,6 +112,13 @@ class AppState(QObject):
         if previous is not None:
             self.projectAboutToChange.emit(previous)
         self.local_model.stop()
+        # 审计 Phase D（P1-10）：close 只停翻译模型，审核/重排/嵌入
+        # 实例残留 → 统一退出政策：全部 owned 进程终止 + 状态清理
+        try:
+            from hanhua.core.runtime_coordinator import get_coordinator
+            get_coordinator(self.app_dir).stop_all()
+        except Exception:  # noqa: BLE001 - 清理失败不阻断关闭流程
+            pass
         with self._project_lock:
             self._project_generation += 1
             self.project = None

@@ -188,9 +188,16 @@ def test_dedupe_exclude_controlled_by_caller(vstore):
 # ── EmbeddingService 单元 ─────────────────────────────────────────
 
 def test_embed_service_sig():
+    from hanhua.core.runtime_coordinator import (
+        RuntimeCoordinator, reset_coordinators,
+    )
+
+    reset_coordinators()  # 隔离共享协调器缓存
     svc = EmbeddingService("C:/tmp/app")
-    assert svc._state_file.name == "embed_runtime.json"
     assert svc.startup_timeout >= 10.0
+    # 审计 Phase D：进程管理委托 RuntimeCoordinator 基座（_state_file 已移除）
+    assert isinstance(svc._coord, RuntimeCoordinator)
+    assert svc._coord.endpoints() == {}  # 未启动时无 owned 进程
 
 
 # ── BatchTranslator 注入链（T4-3/T4-4 集成） ──────────────────────

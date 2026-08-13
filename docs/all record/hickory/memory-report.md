@@ -6,74 +6,99 @@
 prompt 参考；被拒绝的记忆降级直至退休。
 
 ## 1 本次会话
-- 提案：0（新记忆单元首条证据）
-- 证据积累：74（已有记忆再次通过质量门）
-- 晋升 active：2（≥2 次一致证据）
-- 直接应用：1 条（采纳 1 / 拒绝 0）
+- 提案：11（新记忆单元首条证据）
+- 证据积累：82（已有记忆再次通过质量门）
+- 晋升 active：6（≥2 次一致证据）
+- 直接应用：3 条（采纳 3 / 拒绝 0）
 - 退休：0（被质量门拒绝 ≥2 次，不可信）
 
 ## 2 记忆库状态（按类型 × 状态）
 
-- phrase: active 659 · pending 1843 · retired 9
+- phrase: active 706 · pending 10347 · retired 17
 
 ## 3 TOP 记忆（按命中）
 
 | 原文 | 语境 | 译文 | 证据 | 命中 | 拒绝 | 游戏 |
 |---|---|---|---|---|---|---|
-| **ANY CAMERA** | r:display | 任何相机 | 3 | 15 | 0 | happy-cat-tavern/honorplusplus |
-| Orange Goo | r:display | 橙色黏液 | 5 | 2 | 0 | force-reboot/headache |
-| Layer 1 | r:display | 第1层 | 5 | 2 | 0 | force-reboot/headache |
-| Layer 3 | r:display | 第 3 层 | 5 | 2 | 0 | force-reboot/headache |
-| Layer 2 | r:display | 第 2 层 | 4 | 2 | 0 | force-reboot/headache |
+| **ANY CAMERA** | r:display | 任何相机 | 3 | 16 | 0 | happy-cat-tavern/honorplusplus |
+| Option A | r:display | 选项 A | 6 | 8 | 0 | force-reboot/inch-by-inch/incremental-rts |
+| Floor {0} | r:display | 地面 {0} | 3 | 4 | 0 | hickory/minato |
+| GAME OVER | r:display | 游戏结束 | 5 | 3 | 0 | hickory/inch-by-inch |
+| Thank you for playing! | r:display | 谢谢您的表演！ | 5 | 3 | 0 | hickory/isolated-inhale |
 
 ## 4 冲突/待复核
 
 - ⚠️ `Function`（语境 `—`）出现 6 次不同译文——记忆未采纳新译文，需人工裁决（保留译文或人工术语表强制）
 - ⚠️ `Layer 4`（语境 `r:display`）出现 6 次不同译文——记忆未采纳新译文，需人工裁决（保留译文或人工术语表强制）
-- ⚠️ `To the extent possible under law, Christoph Peters has waived all copyright and`（语境 `r:display`）出现 3 次不同译文——记忆未采纳新译文，需人工裁决（保留译文或人工术语表强制）
+- ⚠️ `Additive with Mask`（语境 `r:display`）出现 6 次不同译文——记忆未采纳新译文，需人工裁决（保留译文或人工术语表强制）
+- ⚠️ `So much chaos! Desolo and Benjamin pulled through like always. Jonathan saw for loops in Daniel's shaders. Wirovin's pulled off amazing environments for her first jam. And 47A continues to lend her flexible voice.`（语境 `r:display`）出现 6 次不同译文——记忆未采纳新译文，需人工裁决（保留译文或人工术语表强制）
+- ⚠️ `The earliest struggle was figuring out how we wanted our character to look. At the time, she was human and we spent a lot of time arguing over her color scheme and her outfit. The Hickory Dickory Dock motif did not come until much later in development.`（语境 `r:display`）出现 6 次不同译文——记忆未采纳新译文，需人工裁决（保留译文或人工术语表强制）
+- ⚠️ `Development was quite slow in the beginning, with most of the time spent designing and arguing. Lots of placeholders were used. This was our biggest team yet, and everyone seemed to have different ideas.`（语境 `r:display`）出现 6 次不同译文——记忆未采纳新译文，需人工裁决（保留译文或人工术语表强制）
+- ⚠️ `As was tradition with most of our jam games (starting around 2022) they've always featured a boss or some sort of huge encounter. Daniel just loves making bosses for some reason. Of course Daniel can't draw like Emiliano or Coco or Yishan or Wirovin so he has to settle with a terrible doodled concept.`（语境 `r:display`）出现 6 次不同译文——记忆未采纳新译文，需人工裁决（保留译文或人工术语表强制）
+- ⚠️ `Jonathan had an idea for a robot game about maintaining your factory, which we revisited in our brainstorming when Daniel thought of merging it with the theme of a clock tower. We all wanted to do something with a clock tower vibe.`（语境 `r:display`）出现 6 次不同译文——记忆未采纳新译文，需人工裁决（保留译文或人工术语表强制）
+- ⚠️ `"But no worker can work forever. Cracks. Hairline fractures. All things break given time. And somewhere below, teeth grind through the brass and something scurries in the dark."`（语境 `r:display`）出现 6 次不同译文——记忆未采纳新译文，需人工裁决（保留译文或人工术语表强制）
+- ⚠️ `"One last worker remains. A contingency if you will. Unwound. Unused. Waiting. A little someone stirs in the wake of it all. Wake up."`（语境 `r:display`）出现 6 次不同译文——记忆未采纳新译文，需人工裁决（保留译文或人工术语表强制）
+- ⚠️ `"Three dolls, wound by its very mechanisms, are duty-bound to its maintenance. Day after day. Month after month. Year after year."`（语境 `r:display`）出现 6 次不同译文——记忆未采纳新译文，需人工裁决（保留译文或人工术语表强制）
+- ⚠️ `"High above the rooftops, wrapped in a fog that doesn't clear, looms a great clocktower. A monument that has stood longer than anybody could ever remember."`（语境 `r:display`）出现 6 次不同译文——记忆未采纳新译文，需人工裁决（保留译文或人工术语表强制）
+- ⚠️ `I don’t think I can carry you.`（语境 `r:display`）出现 6 次不同译文——记忆未采纳新译文，需人工裁决（保留译文或人工术语表强制）
+- ⚠️ `It’s ok, I’ll get us all up soon. I hope.`（语境 `r:display`）出现 6 次不同译文——记忆未采纳新译文，需人工裁决（保留译文或人工术语表强制）
+- ⚠️ `Above, the many… made whole.`（语境 `r:display`）出现 6 次不同译文——记忆未采纳新译文，需人工裁决（保留译文或人工术语表强制）
+- ⚠️ `Time Slowdown Vol Profile`（语境 `r:display`）出现 6 次不同译文——记忆未采纳新译文，需人工裁决（保留译文或人工术语表强制）
+- ⚠️ `Clockwork Scourge`（语境 `r:display`）出现 6 次不同译文——记忆未采纳新译文，需人工裁决（保留译文或人工术语表强制）
+- ⚠️ `Click the pipe pieces to change their orientation!`（语境 `r:display`）出现 6 次不同译文——记忆未采纳新译文，需人工裁决（保留译文或人工术语表强制）
+- ⚠️ `Rapidly scrub your mouse over the crystal to clean it!`（语境 `r:display`）出现 6 次不同译文——记忆未采纳新译文，需人工裁决（保留译文或人工术语表强制）
+- ⚠️ `Members of the University of Waterloo Game Development Club
+Audrey, Yulian, and Michael
+Jasmine and Matthew`（语境 `r:display`）出现 6 次不同译文——记忆未采纳新译文，需人工裁决（保留译文或人工术语表强制）
+- ⚠️ `Main Camera Profile`（语境 `r:display`）出现 5 次不同译文——记忆未采纳新译文，需人工裁决（保留译文或人工术语表强制）
+- ⚠️ `To the extent possible under law, Christoph Peters has waived all copyright and`（语境 `r:display`）出现 4 次不同译文——记忆未采纳新译文，需人工裁决（保留译文或人工术语表强制）
+- ⚠️ `PROVIDED HEREUNDER, AND DISCLAIMS LIABILITY FOR DAMAGES RESULTING FROM`（语境 `r:display`）出现 4 次不同译文——记忆未采纳新译文，需人工裁决（保留译文或人工术语表强制）
+- ⚠️ `THE USE OF THIS DOCUMENT OR THE INFORMATION OR WORKS PROVIDED`（语境 `r:display`）出现 4 次不同译文——记忆未采纳新译文，需人工裁决（保留译文或人工术语表强制）
+- ⚠️ `The laws of most jurisdictions throughout the world automatically confer`（语境 `r:display`）出现 4 次不同译文——记忆未采纳新译文，需人工裁决（保留译文或人工术语表强制）
+- ⚠️ `exclusive Copyright and Related Rights (defined below) upon the creator`（语境 `r:display`）出现 4 次不同译文——记忆未采纳新译文，需人工裁决（保留译文或人工术语表强制）
+- ⚠️ `the purpose of contributing to a commons of creative, cultural and`（语境 `r:display`）出现 4 次不同译文——记忆未采纳新译文，需人工裁决（保留译文或人工术语表强制）
+- ⚠️ `scientific works ("Commons") that the public can reliably and without fear`（语境 `r:display`）出现 4 次不同译文——记忆未采纳新译文，需人工裁决（保留译文或人工术语表强制）
+- ⚠️ `These owners may contribute to the Commons to promote the ideal of a free`（语境 `r:display`）出现 4 次不同译文——记忆未采纳新译文，需人工裁决（保留译文或人工术语表强制）
+- ⚠️ `works, or to gain reputation or greater distribution for their Work in`（语境 `r:display`）出现 4 次不同译文——记忆未采纳新译文，需人工裁决（保留译文或人工术语表强制）
+- ⚠️ `For these and/or other purposes and motivations, and without any`（语境 `r:display`）出现 4 次不同译文——记忆未采纳新译文，需人工裁决（保留译文或人工术语表强制）
+- ⚠️ `is an owner of Copyright and Related Rights in the Work, voluntarily`（语境 `r:display`）出现 4 次不同译文——记忆未采纳新译文，需人工裁决（保留译文或人工术语表强制）
+- ⚠️ `terms, with knowledge of his or her Copyright and Related Rights in the`（语境 `r:display`）出现 4 次不同译文——记忆未采纳新译文，需人工裁决（保留译文或人工术语表强制）
+- ⚠️ `protected by copyright and related or neighboring rights ("Copyright and`（语境 `r:display`）出现 4 次不同译文——记忆未采纳新译文，需人工裁决（保留译文或人工术语表强制）
+- ⚠️ `Related Rights"). Copyright and Related Rights include, but are not`（语境 `r:display`）出现 4 次不同译文——记忆未采纳新译文，需人工裁决（保留译文或人工术语表强制）
+- ⚠️ `likeness depicted in a Work;`（语境 `r:display`）出现 4 次不同译文——记忆未采纳新译文，需人工裁决（保留译文或人工术语表强制）
+- ⚠️ `subject to the limitations in paragraph 4(a), below;`（语境 `r:display`）出现 4 次不同译文——记忆未采纳新译文，需人工裁决（保留译文或人工术语表强制）
+- ⚠️ `vi. database rights (such as those arising under Directive 96/9/EC of the`（语境 `r:display`）出现 4 次不同译文——记忆未采纳新译文，需人工裁决（保留译文或人工术语表强制）
+- ⚠️ `2. Waiver. To the greatest extent permitted by, but not in contravention`（语境 `r:display`）出现 4 次不同译文——记忆未采纳新译文，需人工裁决（保留译文或人工术语表强制）
+- ⚠️ `Affirmer's Copyright and Related Rights and associated claims and causes`（语境 `r:display`）出现 4 次不同译文——记忆未采纳新译文，需人工裁决（保留译文或人工术语表强制）
+- ⚠️ `purposes (the "Waiver"). Affirmer makes the Waiver for the benefit of each`（语境 `r:display`）出现 4 次不同译文——记忆未采纳新译文，需人工裁决（保留译文或人工术语表强制）
+- ⚠️ `member of the public at large and to the detriment of Affirmer's heirs and`（语境 `r:display`）出现 4 次不同译文——记忆未采纳新译文，需人工裁决（保留译文或人工术语表强制）
+- ⚠️ `successors, fully intending that such Waiver shall not be subject to`（语境 `r:display`）出现 4 次不同译文——记忆未采纳新译文，需人工裁决（保留译文或人工术语表强制）
+- ⚠️ `equitable action to disrupt the quiet enjoyment of the Work by the public`（语境 `r:display`）出现 4 次不同译文——记忆未采纳新译文，需人工裁决（保留译文或人工术语表强制）
+- ⚠️ `as contemplated by Affirmer's express Statement of Purpose.`（语境 `r:display`）出现 4 次不同译文——记忆未采纳新译文，需人工裁决（保留译文或人工术语表强制）
+- ⚠️ `3. Public License Fallback. Should any part of the Waiver for any reason`（语境 `r:display`）出现 4 次不同译文——记忆未采纳新译文，需人工裁决（保留译文或人工术语表强制）
+- ⚠️ `extent the Waiver is so judged Affirmer hereby grants to each affected`（语境 `r:display`）出现 4 次不同译文——记忆未采纳新译文，需人工裁决（保留译文或人工术语表强制）
+- ⚠️ `irrevocable and unconditional license to exercise Affirmer's Copyright and`（语境 `r:display`）出现 4 次不同译文——记忆未采纳新译文，需人工裁决（保留译文或人工术语表强制）
+- ⚠️ `Related Rights in the Work (i) in all territories worldwide, (ii) for the`（语境 `r:display`）出现 4 次不同译文——记忆未采纳新译文，需人工裁决（保留译文或人工术语表强制）
+- ⚠️ `maximum duration provided by applicable law or treaty (including future`（语境 `r:display`）出现 4 次不同译文——记忆未采纳新译文，需人工裁决（保留译文或人工术语表强制）
+- ⚠️ `of copies, and (iv) for any purpose whatsoever, including without`（语境 `r:display`）出现 4 次不同译文——记忆未采纳新译文，需人工裁决（保留译文或人工术语表强制）
+- ⚠️ `reason be judged legally invalid or ineffective under applicable law, such`（语境 `r:display`）出现 4 次不同译文——记忆未采纳新译文，需人工裁决（保留译文或人工术语表强制）
+- ⚠️ `Rights in the Work or (ii) assert any associated claims and causes of`（语境 `r:display`）出现 4 次不同译文——记忆未采纳新译文，需人工裁决（保留译文或人工术语表强制）
+- ⚠️ `action with respect to the Work, in either case contrary to Affirmer's`（语境 `r:display`）出现 4 次不同译文——记忆未采纳新译文，需人工裁决（保留译文或人工术语表强制）
+- ⚠️ `express Statement of Purpose.`（语境 `r:display`）出现 4 次不同译文——记忆未采纳新译文，需人工裁决（保留译文或人工术语表强制）
+- ⚠️ `a. No trademark or patent rights held by Affirmer are waived, abandoned,`（语境 `r:display`）出现 4 次不同译文——记忆未采纳新译文，需人工裁决（保留译文或人工术语表强制）
+- ⚠️ `b. Affirmer offers the Work as-is and makes no representations or`（语境 `r:display`）出现 4 次不同译文——记忆未采纳新译文，需人工裁决（保留译文或人工术语表强制）
+- ⚠️ `title, merchantability, fitness for a particular purpose, non`（语境 `r:display`）出现 4 次不同译文——记忆未采纳新译文，需人工裁决（保留译文或人工术语表强制）
+- ⚠️ `c. Affirmer disclaims responsibility for clearing rights of other persons`（语境 `r:display`）出现 4 次不同译文——记忆未采纳新译文，需人工裁决（保留译文或人工术语表强制）
+- ⚠️ `that may apply to the Work or any use thereof, including without`（语境 `r:display`）出现 4 次不同译文——记忆未采纳新译文，需人工裁决（保留译文或人工术语表强制）
+- ⚠️ `limitation any person's Copyright and Related Rights in the Work.`（语境 `r:display`）出现 4 次不同译文——记忆未采纳新译文，需人工裁决（保留译文或人工术语表强制）
+- ⚠️ `Further, Affirmer disclaims responsibility for obtaining any necessary`（语境 `r:display`）出现 4 次不同译文——记忆未采纳新译文，需人工裁决（保留译文或人工术语表强制）
+- ⚠️ `party to this document and has no duty or obligation with respect to`（语境 `r:display`）出现 4 次不同译文——记忆未采纳新译文，需人工裁决（保留译文或人工术语表强制）
+- ⚠️ `this CC0 or use of the Work.`（语境 `r:display`）出现 4 次不同译文——记忆未采纳新译文，需人工裁决（保留译文或人工术语表强制）
+- ⚠️ `25,0,36 POSITION 
+78.02 SOMETHING 
+1564.879996 POSITION `（语境 `r:display`）出现 4 次不同译文——记忆未采纳新译文，需人工裁决（保留译文或人工术语表强制）
+- ⚠️ `You still look very well made, given…`（语境 `r:display`）出现 4 次不同译文——记忆未采纳新译文，需人工裁决（保留译文或人工术语表强制）
 - ⚠️ `INFORMATION ON AN "AS-IS" BASIS. CREATIVE COMMONS MAKES NO WARRANTIES`（语境 `r:display`）出现 3 次不同译文——记忆未采纳新译文，需人工裁决（保留译文或人工术语表强制）
-- ⚠️ `PROVIDED HEREUNDER, AND DISCLAIMS LIABILITY FOR DAMAGES RESULTING FROM`（语境 `r:display`）出现 3 次不同译文——记忆未采纳新译文，需人工裁决（保留译文或人工术语表强制）
-- ⚠️ `THE USE OF THIS DOCUMENT OR THE INFORMATION OR WORKS PROVIDED`（语境 `r:display`）出现 3 次不同译文——记忆未采纳新译文，需人工裁决（保留译文或人工术语表强制）
-- ⚠️ `The laws of most jurisdictions throughout the world automatically confer`（语境 `r:display`）出现 3 次不同译文——记忆未采纳新译文，需人工裁决（保留译文或人工术语表强制）
-- ⚠️ `exclusive Copyright and Related Rights (defined below) upon the creator`（语境 `r:display`）出现 3 次不同译文——记忆未采纳新译文，需人工裁决（保留译文或人工术语表强制）
-- ⚠️ `the purpose of contributing to a commons of creative, cultural and`（语境 `r:display`）出现 3 次不同译文——记忆未采纳新译文，需人工裁决（保留译文或人工术语表强制）
-- ⚠️ `scientific works ("Commons") that the public can reliably and without fear`（语境 `r:display`）出现 3 次不同译文——记忆未采纳新译文，需人工裁决（保留译文或人工术语表强制）
-- ⚠️ `These owners may contribute to the Commons to promote the ideal of a free`（语境 `r:display`）出现 3 次不同译文——记忆未采纳新译文，需人工裁决（保留译文或人工术语表强制）
-- ⚠️ `works, or to gain reputation or greater distribution for their Work in`（语境 `r:display`）出现 3 次不同译文——记忆未采纳新译文，需人工裁决（保留译文或人工术语表强制）
-- ⚠️ `For these and/or other purposes and motivations, and without any`（语境 `r:display`）出现 3 次不同译文——记忆未采纳新译文，需人工裁决（保留译文或人工术语表强制）
-- ⚠️ `is an owner of Copyright and Related Rights in the Work, voluntarily`（语境 `r:display`）出现 3 次不同译文——记忆未采纳新译文，需人工裁决（保留译文或人工术语表强制）
-- ⚠️ `terms, with knowledge of his or her Copyright and Related Rights in the`（语境 `r:display`）出现 3 次不同译文——记忆未采纳新译文，需人工裁决（保留译文或人工术语表强制）
-- ⚠️ `protected by copyright and related or neighboring rights ("Copyright and`（语境 `r:display`）出现 3 次不同译文——记忆未采纳新译文，需人工裁决（保留译文或人工术语表强制）
-- ⚠️ `Related Rights"). Copyright and Related Rights include, but are not`（语境 `r:display`）出现 3 次不同译文——记忆未采纳新译文，需人工裁决（保留译文或人工术语表强制）
-- ⚠️ `likeness depicted in a Work;`（语境 `r:display`）出现 3 次不同译文——记忆未采纳新译文，需人工裁决（保留译文或人工术语表强制）
-- ⚠️ `subject to the limitations in paragraph 4(a), below;`（语境 `r:display`）出现 3 次不同译文——记忆未采纳新译文，需人工裁决（保留译文或人工术语表强制）
-- ⚠️ `vi. database rights (such as those arising under Directive 96/9/EC of the`（语境 `r:display`）出现 3 次不同译文——记忆未采纳新译文，需人工裁决（保留译文或人工术语表强制）
-- ⚠️ `2. Waiver. To the greatest extent permitted by, but not in contravention`（语境 `r:display`）出现 3 次不同译文——记忆未采纳新译文，需人工裁决（保留译文或人工术语表强制）
-- ⚠️ `Affirmer's Copyright and Related Rights and associated claims and causes`（语境 `r:display`）出现 3 次不同译文——记忆未采纳新译文，需人工裁决（保留译文或人工术语表强制）
-- ⚠️ `purposes (the "Waiver"). Affirmer makes the Waiver for the benefit of each`（语境 `r:display`）出现 3 次不同译文——记忆未采纳新译文，需人工裁决（保留译文或人工术语表强制）
-- ⚠️ `member of the public at large and to the detriment of Affirmer's heirs and`（语境 `r:display`）出现 3 次不同译文——记忆未采纳新译文，需人工裁决（保留译文或人工术语表强制）
-- ⚠️ `successors, fully intending that such Waiver shall not be subject to`（语境 `r:display`）出现 3 次不同译文——记忆未采纳新译文，需人工裁决（保留译文或人工术语表强制）
-- ⚠️ `equitable action to disrupt the quiet enjoyment of the Work by the public`（语境 `r:display`）出现 3 次不同译文——记忆未采纳新译文，需人工裁决（保留译文或人工术语表强制）
-- ⚠️ `as contemplated by Affirmer's express Statement of Purpose.`（语境 `r:display`）出现 3 次不同译文——记忆未采纳新译文，需人工裁决（保留译文或人工术语表强制）
-- ⚠️ `3. Public License Fallback. Should any part of the Waiver for any reason`（语境 `r:display`）出现 3 次不同译文——记忆未采纳新译文，需人工裁决（保留译文或人工术语表强制）
-- ⚠️ `extent the Waiver is so judged Affirmer hereby grants to each affected`（语境 `r:display`）出现 3 次不同译文——记忆未采纳新译文，需人工裁决（保留译文或人工术语表强制）
-- ⚠️ `irrevocable and unconditional license to exercise Affirmer's Copyright and`（语境 `r:display`）出现 3 次不同译文——记忆未采纳新译文，需人工裁决（保留译文或人工术语表强制）
-- ⚠️ `Related Rights in the Work (i) in all territories worldwide, (ii) for the`（语境 `r:display`）出现 3 次不同译文——记忆未采纳新译文，需人工裁决（保留译文或人工术语表强制）
-- ⚠️ `maximum duration provided by applicable law or treaty (including future`（语境 `r:display`）出现 3 次不同译文——记忆未采纳新译文，需人工裁决（保留译文或人工术语表强制）
-- ⚠️ `of copies, and (iv) for any purpose whatsoever, including without`（语境 `r:display`）出现 3 次不同译文——记忆未采纳新译文，需人工裁决（保留译文或人工术语表强制）
-- ⚠️ `reason be judged legally invalid or ineffective under applicable law, such`（语境 `r:display`）出现 3 次不同译文——记忆未采纳新译文，需人工裁决（保留译文或人工术语表强制）
-- ⚠️ `Rights in the Work or (ii) assert any associated claims and causes of`（语境 `r:display`）出现 3 次不同译文——记忆未采纳新译文，需人工裁决（保留译文或人工术语表强制）
-- ⚠️ `action with respect to the Work, in either case contrary to Affirmer's`（语境 `r:display`）出现 3 次不同译文——记忆未采纳新译文，需人工裁决（保留译文或人工术语表强制）
-- ⚠️ `express Statement of Purpose.`（语境 `r:display`）出现 3 次不同译文——记忆未采纳新译文，需人工裁决（保留译文或人工术语表强制）
-- ⚠️ `a. No trademark or patent rights held by Affirmer are waived, abandoned,`（语境 `r:display`）出现 3 次不同译文——记忆未采纳新译文，需人工裁决（保留译文或人工术语表强制）
-- ⚠️ `b. Affirmer offers the Work as-is and makes no representations or`（语境 `r:display`）出现 3 次不同译文——记忆未采纳新译文，需人工裁决（保留译文或人工术语表强制）
-- ⚠️ `title, merchantability, fitness for a particular purpose, non`（语境 `r:display`）出现 3 次不同译文——记忆未采纳新译文，需人工裁决（保留译文或人工术语表强制）
-- ⚠️ `c. Affirmer disclaims responsibility for clearing rights of other persons`（语境 `r:display`）出现 3 次不同译文——记忆未采纳新译文，需人工裁决（保留译文或人工术语表强制）
-- ⚠️ `that may apply to the Work or any use thereof, including without`（语境 `r:display`）出现 3 次不同译文——记忆未采纳新译文，需人工裁决（保留译文或人工术语表强制）
-- ⚠️ `limitation any person's Copyright and Related Rights in the Work.`（语境 `r:display`）出现 3 次不同译文——记忆未采纳新译文，需人工裁决（保留译文或人工术语表强制）
-- ⚠️ `Further, Affirmer disclaims responsibility for obtaining any necessary`（语境 `r:display`）出现 3 次不同译文——记忆未采纳新译文，需人工裁决（保留译文或人工术语表强制）
-- ⚠️ `party to this document and has no duty or obligation with respect to`（语境 `r:display`）出现 3 次不同译文——记忆未采纳新译文，需人工裁决（保留译文或人工术语表强制）
-- ⚠️ `this CC0 or use of the Work.`（语境 `r:display`）出现 3 次不同译文——记忆未采纳新译文，需人工裁决（保留译文或人工术语表强制）
 - ⚠️ `Lunchtime Doubly So`（语境 `r:display`）出现 3 次不同译文——记忆未采纳新译文，需人工裁决（保留译文或人工术语表强制）
 - ⚠️ `buff`（语境 `r:display`）出现 3 次不同译文——记忆未采纳新译文，需人工裁决（保留译文或人工术语表强制）
 - ⚠️ `debuff`（语境 `r:display`）出现 3 次不同译文——记忆未采纳新译文，需人工裁决（保留译文或人工术语表强制）
@@ -101,32 +126,8 @@ Barrels`（语境 `r:display`）出现 3 次不同译文——记忆未采纳新
 Aim`（语境 `r:display`）出现 3 次不同译文——记忆未采纳新译文，需人工裁决（保留译文或人工术语表强制）
 - ⚠️ `Uplayable
 FOV`（语境 `r:display`）出现 3 次不同译文——记忆未采纳新译文，需人工裁决（保留译文或人工术语表强制）
-- ⚠️ `25,0,36 POSITION 
-78.02 SOMETHING 
-1564.879996 POSITION `（语境 `r:display`）出现 3 次不同译文——记忆未采纳新译文，需人工裁决（保留译文或人工术语表强制）
-- ⚠️ `Additive with Mask`（语境 `r:display`）出现 3 次不同译文——记忆未采纳新译文，需人工裁决（保留译文或人工术语表强制）
-- ⚠️ `So much chaos! Desolo and Benjamin pulled through like always. Jonathan saw for loops in Daniel's shaders. Wirovin's pulled off amazing environments for her first jam. And 47A continues to lend her flexible voice.`（语境 `r:display`）出现 3 次不同译文——记忆未采纳新译文，需人工裁决（保留译文或人工术语表强制）
-- ⚠️ `The earliest struggle was figuring out how we wanted our character to look. At the time, she was human and we spent a lot of time arguing over her color scheme and her outfit. The Hickory Dickory Dock motif did not come until much later in development.`（语境 `r:display`）出现 3 次不同译文——记忆未采纳新译文，需人工裁决（保留译文或人工术语表强制）
-- ⚠️ `Development was quite slow in the beginning, with most of the time spent designing and arguing. Lots of placeholders were used. This was our biggest team yet, and everyone seemed to have different ideas.`（语境 `r:display`）出现 3 次不同译文——记忆未采纳新译文，需人工裁决（保留译文或人工术语表强制）
-- ⚠️ `As was tradition with most of our jam games (starting around 2022) they've always featured a boss or some sort of huge encounter. Daniel just loves making bosses for some reason. Of course Daniel can't draw like Emiliano or Coco or Yishan or Wirovin so he has to settle with a terrible doodled concept.`（语境 `r:display`）出现 3 次不同译文——记忆未采纳新译文，需人工裁决（保留译文或人工术语表强制）
-- ⚠️ `Jonathan had an idea for a robot game about maintaining your factory, which we revisited in our brainstorming when Daniel thought of merging it with the theme of a clock tower. We all wanted to do something with a clock tower vibe.`（语境 `r:display`）出现 3 次不同译文——记忆未采纳新译文，需人工裁决（保留译文或人工术语表强制）
-- ⚠️ `"But no worker can work forever. Cracks. Hairline fractures. All things break given time. And somewhere below, teeth grind through the brass and something scurries in the dark."`（语境 `r:display`）出现 3 次不同译文——记忆未采纳新译文，需人工裁决（保留译文或人工术语表强制）
-- ⚠️ `"One last worker remains. A contingency if you will. Unwound. Unused. Waiting. A little someone stirs in the wake of it all. Wake up."`（语境 `r:display`）出现 3 次不同译文——记忆未采纳新译文，需人工裁决（保留译文或人工术语表强制）
-- ⚠️ `"Three dolls, wound by its very mechanisms, are duty-bound to its maintenance. Day after day. Month after month. Year after year."`（语境 `r:display`）出现 3 次不同译文——记忆未采纳新译文，需人工裁决（保留译文或人工术语表强制）
-- ⚠️ `"High above the rooftops, wrapped in a fog that doesn't clear, looms a great clocktower. A monument that has stood longer than anybody could ever remember."`（语境 `r:display`）出现 3 次不同译文——记忆未采纳新译文，需人工裁决（保留译文或人工术语表强制）
-- ⚠️ `You still look very well made, given…`（语境 `r:display`）出现 3 次不同译文——记忆未采纳新译文，需人工裁决（保留译文或人工术语表强制）
-- ⚠️ `I don’t think I can carry you.`（语境 `r:display`）出现 3 次不同译文——记忆未采纳新译文，需人工裁决（保留译文或人工术语表强制）
-- ⚠️ `It’s ok, I’ll get us all up soon. I hope.`（语境 `r:display`）出现 3 次不同译文——记忆未采纳新译文，需人工裁决（保留译文或人工术语表强制）
-- ⚠️ `Above, the many… made whole.`（语境 `r:display`）出现 3 次不同译文——记忆未采纳新译文，需人工裁决（保留译文或人工术语表强制）
-- ⚠️ `Main Camera Profile`（语境 `r:display`）出现 3 次不同译文——记忆未采纳新译文，需人工裁决（保留译文或人工术语表强制）
-- ⚠️ `Time Slowdown Vol Profile`（语境 `r:display`）出现 3 次不同译文——记忆未采纳新译文，需人工裁决（保留译文或人工术语表强制）
-- ⚠️ `Clockwork Scourge`（语境 `r:display`）出现 3 次不同译文——记忆未采纳新译文，需人工裁决（保留译文或人工术语表强制）
-- ⚠️ `Click the pipe pieces to change their orientation!`（语境 `r:display`）出现 3 次不同译文——记忆未采纳新译文，需人工裁决（保留译文或人工术语表强制）
+- ⚠️ `What – clk – happening…`（语境 `r:display`）出现 3 次不同译文——记忆未采纳新译文，需人工裁决（保留译文或人工术语表强制）
 - ⚠️ `These gears are jammed! Move to it to repair it.`（语境 `r:display`）出现 3 次不同译文——记忆未采纳新译文，需人工裁决（保留译文或人工术语表强制）
-- ⚠️ `Rapidly scrub your mouse over the crystal to clean it!`（语境 `r:display`）出现 3 次不同译文——记忆未采纳新译文，需人工裁决（保留译文或人工术语表强制）
-- ⚠️ `Members of the University of Waterloo Game Development Club
-Audrey, Yulian, and Michael
-Jasmine and Matthew`（语境 `r:display`）出现 3 次不同译文——记忆未采纳新译文，需人工裁决（保留译文或人工术语表强制）
 - ⚠️ `ATTORNEY-CLIENT RELATIONSHIP. CREATIVE COMMONS PROVIDES THIS`（语境 `r:display`）出现 2 次不同译文——记忆未采纳新译文，需人工裁决（保留译文或人工术语表强制）
 - ⚠️ `Statement of Purpose`（语境 `r:display`）出现 2 次不同译文——记忆未采纳新译文，需人工裁决（保留译文或人工术语表强制）
 - ⚠️ `of, applicable law, Affirmer hereby overtly, fully, permanently,`（语境 `r:display`）出现 2 次不同译文——记忆未采纳新译文，需人工裁决（保留译文或人工术语表强制）
@@ -196,6 +197,13 @@ aloe-digital`（语境 `r:display`）出现 2 次不同译文——记忆未采�
 - ⚠️ `+200pts`（语境 `r:display`）出现 2 次不同译文——记忆未采纳新译文，需人工裁决（保留译文或人工术语表强制）
 - ⚠️ `After enough repairs, the clock tower will calm down for a little.`（语境 `r:display`）出现 2 次不同译文——记忆未采纳新译文，需人工裁决（保留译文或人工术语表强制）
 - ⚠️ `Music and SFX`（语境 `r:display`）出现 2 次不同译文——记忆未采纳新译文，需人工裁决（保留译文或人工术语表强制）
+- ⚠️ `There is a version mismatch between the FMOD header and either the FMOD Studio library or the FMOD Low Level library.`（语境 `r:display`）出现 2 次不同译文——记忆未采纳新译文，需人工裁决（保留译文或人工术语表强制）
+- ⚠️ `A HTTP error occurred. This is a catch-all for HTTP errors not listed elsewhere.`（语境 `r:display`）出现 2 次不同译文——记忆未采纳新译文，需人工裁决（保留译文或人工术语表强制）
+- ⚠️ `[FMOD] RuntimeManager accessed outside of runtime. Do not use RuntimeManager for Editor-only functionality, create your own System objects instead.`（语境 `r:display`）出现 2 次不同译文——记忆未采纳新译文，需人工裁决（保留译文或人工术语表强制）
+- ⚠️ `[FMOD] Cannot open network port for Live Update (in-use), restarting with Live Update disabled.`（语境 `r:display`）出现 2 次不同译文——记忆未采纳新译文，需人工裁决（保留译文或人工术语表强制）
+- ⚠️ `FMOD Studio Debug`（语境 `r:display`）出现 2 次不同译文——记忆未采纳新译文，需人工裁决（保留译文或人工术语表强制）
+- ⚠️ `[FMOD] Unable to load {0} - bank already loaded. This may occur when attempting to load another localized bank before the first is unloaded, or if a bank has been loaded via the API.`（语境 `r:display`）出现 2 次不同译文——记忆未采纳新译文，需人工裁决（保留译文或人工术语表强制）
+- ⚠️ `[FMOD] Could not load bank '{0}' : {1} : {2}`（语境 `r:display`）出现 2 次不同译文——记忆未采纳新译文，需人工裁决（保留译文或人工术语表强制）
 - ⚠️ `The work is made available under the terms of the Creative Commons CC0 Public`（语境 `r:display`）出现 1 次不同译文——记忆未采纳新译文，需人工裁决（保留译文或人工术语表强制）
 - ⚠️ `Certain owners wish to permanently relinquish those rights to a Work for`（语境 `r:display`）出现 1 次不同译文——记忆未采纳新译文，需人工裁决（保留译文或人工术语表强制）
 - ⚠️ `part through the use and efforts of others.`（语境 `r:display`）出现 1 次不同译文——记忆未采纳新译文，需人工裁决（保留译文或人工术语表强制）
@@ -233,6 +241,7 @@ happens!`（语境 `r:display`）出现 1 次不同译文——记忆未采纳�
 - ⚠️ `CANCEL AFTER RESET SHOULD FAIL`（语境 `r:display`）出现 1 次不同译文——记忆未采纳新译文，需人工裁决（保留译文或人工术语表强制）
 - ⚠️ `VECTOR3 CALLBACK CALLED`（语境 `r:display`）出现 1 次不同译文——记忆未采纳新译文，需人工裁决（保留译文或人工术语表强制）
 - ⚠️ `GROUP FINISH`（语境 `r:display`）出现 1 次不同译文——记忆未采纳新译文，需人工裁决（保留译文或人工术语表强制）
+- ⚠️ `Left Hand`（语境 `r:display`）出现 1 次不同译文——记忆未采纳新译文，需人工裁决（保留译文或人工术语表强制）
 - ⚠️ `Camera Control - <#ffff00>Shift + RMB
 </color>Zoom - <#ffff00>Mouse wheel.`（语境 `r:display`）出现 1 次不同译文——记忆未采纳新译文，需人工裁决（保留译文或人工术语表强制）
 - ⚠️ `Unlockables`（语境 `r:display`）出现 1 次不同译文——记忆未采纳新译文，需人工裁决（保留译文或人工术语表强制）
@@ -278,6 +287,7 @@ happens!`（语境 `r:display`）出现 1 次不同译文——记忆未采纳�
 - ⚠️ `PRESS ESCAPE TO GO BACK`（语境 `r:display`）出现 1 次不同译文——记忆未采纳新译文，需人工裁决（保留译文或人工术语表强制）
 - ⚠️ `PRESS ESCAPE TO QUIT`（语境 `r:display`）出现 1 次不同译文——记忆未采纳新译文，需人工裁决（保留译文或人工术语表强制）
 - ⚠️ `Mug Grip`（语境 `r:display`）出现 1 次不同译文——记忆未采纳新译文，需人工裁决（保留译文或人工术语表强制）
+- ⚠️ `6000.3/staging`（语境 `r:display`）出现 1 次不同译文——记忆未采纳新译文，需人工裁决（保留译文或人工术语表强制）
 - ⚠️ `Floor {0}`（语境 `r:display`）出现 1 次不同译文——记忆未采纳新译文，需人工裁决（保留译文或人工术语表强制）
 - ⚠️ `Press SPACE to skip.`（语境 `r:display`）出现 1 次不同译文——记忆未采纳新译文，需人工裁决（保留译文或人工术语表强制）
 - ⚠️ `Get – tck – me. Out.`（语境 `r:display`）出现 1 次不同译文——记忆未采纳新译文，需人工裁决（保留译文或人工术语表强制）
@@ -409,16 +419,9 @@ Status ERROR.
 Status ERROR.<waitfor=0.2>
 Status OK.
 Loading UI...`（语境 `r:display`）出现 1 次不同译文——记忆未采纳新译文，需人工裁决（保留译文或人工术语表强制）
-- ⚠️ `There is a version mismatch between the FMOD header and either the FMOD Studio library or the FMOD Low Level library.`（语境 `r:display`）出现 1 次不同译文——记忆未采纳新译文，需人工裁决（保留译文或人工术语表强制）
 - ⚠️ `A HTTP server error occurred.`（语境 `r:display`）出现 1 次不同译文——记忆未采纳新译文，需人工裁决（保留译文或人工术语表强制）
 - ⚠️ `The HTTP request timed out.`（语境 `r:display`）出现 1 次不同译文——记忆未采纳新译文，需人工裁决（保留译文或人工术语表强制）
-- ⚠️ `A HTTP error occurred. This is a catch-all for HTTP errors not listed elsewhere.`（语境 `r:display`）出现 1 次不同译文——记忆未采纳新译文，需人工裁决（保留译文或人工术语表强制）
 - ⚠️ `Something in FMOD hasn't been implemented when it should be! contact support!`（语境 `r:display`）出现 1 次不同译文——记忆未采纳新译文，需人工裁决（保留译文或人工术语表强制）
-- ⚠️ `[FMOD] RuntimeManager accessed outside of runtime. Do not use RuntimeManager for Editor-only functionality, create your own System objects instead.`（语境 `r:display`）出现 1 次不同译文——记忆未采纳新译文，需人工裁决（保留译文或人工术语表强制）
-- ⚠️ `[FMOD] Cannot open network port for Live Update (in-use), restarting with Live Update disabled.`（语境 `r:display`）出现 1 次不同译文——记忆未采纳新译文，需人工裁决（保留译文或人工术语表强制）
-- ⚠️ `FMOD Studio Debug`（语境 `r:display`）出现 1 次不同译文——记忆未采纳新译文，需人工裁决（保留译文或人工术语表强制）
-- ⚠️ `[FMOD] Unable to load {0} - bank already loaded. This may occur when attempting to load another localized bank before the first is unloaded, or if a bank has been loaded via the API.`（语境 `r:display`）出现 1 次不同译文——记忆未采纳新译文，需人工裁决（保留译文或人工术语表强制）
-- ⚠️ `[FMOD] Could not load bank '{0}' : {1} : {2}`（语境 `r:display`）出现 1 次不同译文——记忆未采纳新译文，需人工裁决（保留译文或人工术语表强制）
 - ⚠️ `[FMOD] Max number of listeners reached : {0}.`（语境 `r:display`）出现 1 次不同译文——记忆未采纳新译文，需人工裁决（保留译文或人工术语表强制）
 - ⚠️ `MAX_DEPTH EXCEEDED`（语境 `r:display`）出现 1 次不同译文——记忆未采纳新译文，需人工裁决（保留译文或人工术语表强制）
 - ⚠️ `avg per Sample`（语境 `r:display`）出现 1 次不同译文——记忆未采纳新译文，需人工裁决（保留译文或人工术语表强制）
@@ -448,3 +451,4 @@ This setting can be overridden on a per-instance basis.
  Please use Odin's AOT generation feature to generate an AOT dll before building, and MAKE SURE that all of the following types were automatically added to the supported types list after a scan (if they were not, please REPORT AN ISSUE with the details of which exact types the scan is missing and ADD THEM MANUALLY): 
 
 `（语境 `r:display`）出现 1 次不同译文——记忆未采纳新译文，需人工裁决（保留译文或人工术语表强制）
+- ⚠️ `Option C`（语境 `r:display`）出现 1 次不同译文——记忆未采纳新译文，需人工裁决（保留译文或人工术语表强制）

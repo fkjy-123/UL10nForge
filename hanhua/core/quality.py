@@ -20,6 +20,7 @@ from hanhua.core.knowledge import (_UPPERCASE_ACTION_VERBS,
                                    _is_spaced_action,
                                    _is_uppercase_action)
 from hanhua.core.protected_spans import semantic_target_text
+from hanhua.core.review_outcome import review_publishable
 
 _DISPLAY_WORDS_CASEFOLD = {word.casefold() for word in DISPLAY_WORDS}
 # 输入设备词（方向盘/手柄/摇杆 HUD 语境标记）：原文含任一设备词 → 输入
@@ -453,41 +454,59 @@ def _label_context_match(term: str, source_text: str) -> bool:
                 and ">" not in source_text[lt:i]):
             return False  # 富文本标签内部（标记语言，非可翻译文本）
         if source_text[i:i + 1].isupper():
-            # 大写命中分两种（inch-by-inch 实证）：非句子首词大写
-            # （'Open Settings menu' 的 Settings 左邻有词 Open）是 UI
-            # 菜单词形态 → 词对适用；句子首词大写（'Time for some
-            # science!' 的 Time 在行首）只是英文句子首词大写规则 →
-            # 右邻（跳空白）是小写字母词则豁免（自然句），右邻标点/
-            # 行尾/数字才适用（'TIME' 单行计时器标签 / 'Time:' /
-            # 'Time 5' 计数）。
-            # 富文本标签透明化（2026-08-13 F11）：'<b>Full version on
-            # Steam</b>' 的 Full 语义上是句子首词，但左邻是 '>'（标签
-            # 结束）→ 当前扫描判为非句首 → 词对 (full→完整的) 误杀
-            # 译文「全版本」。句子首词判定应跳过标签段（'>' 回跳最近
-            # '<'）——标签是装饰层，不影响语境判定（VICTORY 实证）。
-            left = source_text[:i]
-            k = i - 1
-            while k >= 0:
-                c = left[k]
-                if c.isspace():
-                    k -= 1
-                    continue
-                if c == ">":
-                    # 富文本标签结尾：跳过整个标签段（</b>、<size=120%>）
-                    lt2 = left.rfind("<", 0, k)
-                    if lt2 != -1:
-                        k = lt2 - 1
+            # 全大写句子（'IT'S LOCKED.'——Morfosi 64 条同因全灭实证）：
+            # 全大写文本每个词都大写，大写不携带 UI 形态信息——"句中
+            # 大写 = 菜单词"判据失效（LOCKED 被判句中 TitleCase →
+            # (Locked→锁定) 词对误杀译文「它被锁住了。」）。判据：命中
+            # 处所在句子（最近句尾标点之后）无小写字母、且命中处右侧
+            # 紧跟句尾标点（.！？…）→ 喊话式自然句 → 走通用判定（句尾
+            # 标点豁免自然句）；'NEW GAME'/'TIME 5' 无句尾标点仍按
+            # 标签处理。
+            tail_pos = min(
+                (p for p in (source_text.find(c, j)
+                             for c in ".!?。！？…")
+                 if p != -1), default=-1)
+            head_pos = max(
+                (p for p in (source_text.rfind(c, 0, i)
+                             for c in ".!?。！？…")
+                 if p != -1), default=-1)
+            if not (tail_pos != -1 and not any(
+                    c.islower() for c in source_text[head_pos + 1:tail_pos])):
+                # 大写命中分两种（inch-by-inch 实证）：非句子首词大写
+                # （'Open Settings menu' 的 Settings 左邻有词 Open）是 UI
+                # 菜单词形态 → 词对适用；句子首词大写（'Time for some
+                # science!' 的 Time 在行首）只是英文句子首词大写规则 →
+                # 右邻（跳空白）是小写字母词则豁免（自然句），右邻标点/
+                # 行尾/数字才适用（'TIME' 单行计时器标签 / 'Time:' /
+                # 'Time 5' 计数）。
+                # 富文本标签透明化（2026-08-13 F11）：'<b>Full version on
+                # Steam</b>' 的 Full 语义上是句子首词，但左邻是 '>'（标签
+                # 结束）→ 当前扫描判为非句首 → 词对 (full→完整的) 误杀
+                # 译文「全版本」。句子首词判定应跳过标签段（'>' 回跳最近
+                # '<'）——标签是装饰层，不影响语境判定（VICTORY 实证）。
+                left = source_text[:i]
+                k = i - 1
+                while k >= 0:
+                    c = left[k]
+                    if c.isspace():
+                        k -= 1
                         continue
-                break
-            sentence_head = (k < 0) or (left[k] in ".!?。！？…")
-            if not sentence_head:
-                return True  # 左邻有词：句中 TitleCase（UI 菜单词形态）
-            # 右邻跳过空白取首个字符（'Time for' 的 Time 后是空格）
-            after = source_text[j:].lstrip(" \t\r\n")[:1] \
-                if j < len(source_text) else ""
-            if after and after.isalpha() and after.islower():
-                return False  # 句子首词大写 + 右邻小写词 = 自然句
-            return True  # 句首 + 右邻标点/行尾/数字 = 标签
+                    if c == ">":
+                        # 富文本标签结尾：跳过整个标签段（</b>、<size=120%>）
+                        lt2 = left.rfind("<", 0, k)
+                        if lt2 != -1:
+                            k = lt2 - 1
+                            continue
+                    break
+                sentence_head = (k < 0) or (left[k] in ".!?。！？…")
+                if not sentence_head:
+                    return True  # 左邻有词：句中 TitleCase（UI 菜单词形态）
+                # 右邻跳过空白取首个字符（'Time for' 的 Time 后是空格）
+                after = source_text[j:].lstrip(" \t\r\n")[:1] \
+                    if j < len(source_text) else ""
+                if after and after.isalpha() and after.islower():
+                    return False  # 句子首词大写 + 右邻小写词 = 自然句
+                return True  # 句首 + 右邻标点/行尾/数字 = 标签
         before = source_text[i - 1] if i > 0 else ""
         after = source_text[j] if j < len(source_text) else ""
         if not before or not after:
@@ -1105,7 +1124,16 @@ def validate_translation_quality(
 
 
 def is_write_ready(status: str, translation: str, meta) -> bool:
-    """只有已验且非低置信（或经人工提升）的译文可自动写回。"""
+    """只有已验、非低置信（或经人工提升）且审核终态可发布的译文可自动写回。
+
+    两道防线：
+    1. 机械质量门：status=translated、译文非空、quality_passed=True、
+       置信度非 low（或人工提升）；
+    2. 审核发布门（Phase A，2026-08-13）：review_outcome 显式终态非
+       APPROVED/APPROVED_MINOR 拒绝；旧字段 review_blocked/review_error/
+       need_revision/need_retranslate 或 review_level=MAJOR/CRITICAL 拒绝。
+       ——MAJOR/CRITICAL、审核错误、未收敛条目一律不可写回。
+    """
     if status != "translated" or not translation:
         return False
     if isinstance(meta, str):
@@ -1120,5 +1148,6 @@ def is_write_ready(status: str, translation: str, meta) -> bool:
         return False
     if evidence.get("quality_passed") is not True:
         return False
-    return (evidence.get("confidence", "medium") != "low"
-            or evidence.get("confidence_promoted") is True)
+    if evidence.get("confidence", "medium") != "low" \
+            or evidence.get("confidence_promoted") is True:
+        return review_publishable(evidence)

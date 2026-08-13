@@ -5,7 +5,7 @@ from __future__ import annotations
 import dataclasses
 from collections.abc import Iterable
 from pathlib import Path
-from typing import Callable
+from typing import Any, Callable
 from urllib.parse import quote, unquote
 
 from hanhua.core.engine_strings import (CORE_MENU_SOURCE_TERMS,
@@ -1637,16 +1637,27 @@ def _should_downgrade_pending(entry: TextEntry) -> bool:
 
 
 def extract_asset_file(path: str | Path, file_id: str | None = None,
-                       progress_cb: Callable | None = None) -> ParsedFile:
+                       progress_cb: Callable | None = None, *,
+                       typetree_generator: Any | None = None) -> ParsedFile:
     """提取一个资源文件 → ParsedFile（含文件级噪音判定）。
 
     容器：UnityPy 的 Environment.objects 自动递归 BundleFile/WebFile 嵌套
     （Addressables bundle 里的 bundle、UnityWebData 容器），seen_objects 去重。
+
+    typetree_generator：UnityPy.helpers.TypeTreeGenerator 实例（Mono 游戏
+    专用，从游戏 Managed DLL 生成脚本 typetree）。资产构建未带 typetree
+    （BuildAssetBundleOptions.DisableWriteTypeTree / Player 构建 strip）时，
+    MonoBehaviour 全部读取失败、文本只能靠 raw scan 兜底——挂上生成器后
+    脚本字段可完整读取（hickory 实证：1890/1898 失败 → 1884/1898 成功，
+    主菜单 Options/Quit 与对话文本全部字段级提取）。Mono 游戏 + Managed
+    目录由扫描管线负责构建并传入；缺省 None 时行为与旧版一致。
     """
     from UnityPy import Environment
     p = Path(path)
     fid = file_id or str(p).replace("\\", "/")
     env = Environment()
+    if typetree_generator is not None:
+        env.typetree_generator = typetree_generator
     entries: list[TextEntry] = []
     raw_items: list[tuple[str, int, bytes, set[str], str]] = []
     freq: dict[str, int] = {}

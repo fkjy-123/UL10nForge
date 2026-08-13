@@ -36,6 +36,25 @@ def test_quality_returns_stable_reasons_for_format_and_control_failures():
     }
 
 
+def test_allcaps_natural_sentence_exempts_single_token_pair():
+    """全大写自然句（'IT'S LOCKED.'）单 token 词对不强制（Morfosi 64 条
+    glossary_mismatch 全灭实证）：全大写文本大写不携带 UI 形态信息
+    （每个词都大写），句尾标点 = 喊话式自然句 → (Locked→锁定) 豁免；
+    对照：无句尾标点的全大写菜单标签（'NEW GAME'）仍按标签强制。"""
+    entry = _entry("IT'S LOCKED.")
+    result = validate_translation_quality(
+        entry, "它被锁住了。", glossary=[("Locked", "锁定")])
+    assert result.passed is True
+    assert "glossary_mismatch" not in result.reasons
+
+    # 对照：全大写无句尾标点（菜单按钮形态）→ 词对仍强制
+    label = _entry("NEW GAME")
+    result_label = validate_translation_quality(
+        label, "开始游戏", glossary=[("New", "新")])
+    assert result_label.passed is False
+    assert "glossary_mismatch" in result_label.reasons
+
+
 def test_uppercase_action_residue_rejected():
     """知识库规则：全大写动作指令译文残留原动作动词（TOSS 垃圾）判失败。"""
     entry = _entry("TOSS TRASH")

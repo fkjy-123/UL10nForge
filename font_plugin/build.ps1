@@ -259,8 +259,12 @@ try {
     $outputPath = Join-Path $outputDirectory 'Hanhua.FontFallback.dll'
     Copy-Item -LiteralPath $temporaryOutput -Destination $outputPath -Force
     $outputFile = Get-Item -LiteralPath $outputPath
+    $outputSha256 = (
+        Get-FileHash -LiteralPath $outputPath -Algorithm SHA256
+    ).Hash.ToLowerInvariant()
     Write-Host "OUTPUT=$($outputFile.FullName)"
     Write-Host "OUTPUT_SIZE=$($outputFile.Length)"
+    Write-Host "OUTPUT_SHA256=$outputSha256"
 }
 finally {
     if ($temporaryDirectory -and (Test-Path -LiteralPath $temporaryDirectory)) {

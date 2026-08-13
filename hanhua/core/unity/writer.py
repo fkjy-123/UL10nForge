@@ -705,8 +705,13 @@ def _verify_saved_bundle(
             tuple[str, int], tuple[list[str], dict[str, str]]] | None = None,
         expected_surrounding_values: dict[
             tuple[str, int], list[tuple[list[str | int], object]]] | None = None,
+        typetree_generator=None,
 ) -> None:
     """重开临时容器，确认目标对象正确且未目标对象字节不变。
+
+    typetree_generator：Mono typeless bundle 必须与补丁侧同源生成器——
+    否则重开 read_typetree 抛「Expected N bytes, only M」→ 全部按异常
+    标记 mismatched（hickory 实证 160 对象全拒），补丁字节其实往返一致。
 
     expected_immutable_values：写回前快照的不可变字段集合（key/ID/引用/
     地址/脚本绑定），重开后必须保持逐值一致——防止定位错误把标识符当
@@ -726,6 +731,8 @@ def _verify_saved_bundle(
     from UnityPy import Environment
 
     verifier = Environment()
+    if typetree_generator is not None:
+        verifier.typetree_generator = typetree_generator
     try:
         verifier.load([str(path)])
         actual: dict[tuple[str, int], bytes] = {}
@@ -890,8 +897,15 @@ def _select_write_items(items: list[tuple[dict, dict]], result: WriteResult,
 
 
 def write_back_v2(store: ProjectStore, game_dir: Path, out_dir: Path,
-                  progress_cb: Callable | None = None) -> WriteResult:
-    """写回全部 v2 类条目（资源/DLL/metadata）到 out_dir 副本。"""
+                  progress_cb: Callable | None = None,
+                  typetree_generator=None) -> WriteResult:
+    """写回全部 v2 类条目（资源/DLL/metadata）到 out_dir 副本。
+
+    typetree_generator：扫描同源生成器（Mono 游戏无内嵌 typetree 的
+    typeless bundle，写回侧必须与扫描侧一致地生成脚本 typetree，否则
+    read_typetree 失败 → 整组 typetree_unavailable 拒绝；hickory 实证
+    261 条全拒，扫描 350 条全部可读却写不回）。
+    """
     result = WriteResult()
     files = store.get_files()
     v2_files = [f for f in files if f["format"].startswith("v2_")]
@@ -933,7 +947,8 @@ def write_back_v2(store: ProjectStore, game_dir: Path, out_dir: Path,
             continue
         entries_before = result.entries
         if f["format"] == "v2_asset":
-            _patch_asset(dst, entries, result)
+            _patch_asset(dst, entries, result,
+                         typetree_generator=typetree_generator)
         elif f["format"] == "v2_mono":
             _patch_dll(dst, entries, result)
         elif f["format"] == "v2_il2cpp":
@@ -950,11 +965,14 @@ def write_back_v2(store: ProjectStore, game_dir: Path, out_dir: Path,
     return result
 
 
-def _patch_asset(path: Path, entries: list[dict], result: WriteResult):
+def _patch_asset(path: Path, entries: list[dict], result: WriteResult,
+                 typetree_generator=None):
     import gc
     import time as _time
     from UnityPy import Environment
     env = Environment()
+    if typetree_generator is not None:
+        env.typetree_generator = typetree_generator
     by_obj: dict[tuple[str, int], list[dict]] = {}
     for e in entries:
         meta = json.loads(e["meta"] or "{}")
@@ -1376,7 +1394,8 @@ def _patch_asset(path: Path, entries: list[dict], result: WriteResult):
                 _verify_saved_bundle(
                     saved, expected_raw_by_path_id, baseline_hashes,
                     expected_typetree_values, expected_immutable_values,
-                    expected_string_sequences, expected_surrounding_values)
+                    expected_string_sequences, expected_surrounding_values,
+                    typetree_generator=typetree_generator)
             except ValueError as exc:
                 # 逻辑层验证失败（含字符串序列不一致）——记录审计详情后
                 # 重新抛出：整体拒绝写回，副本保持原样，绝不落地坏产物

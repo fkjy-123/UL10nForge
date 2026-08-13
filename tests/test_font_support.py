@@ -88,9 +88,11 @@ def test_default_font_runtime_assets_are_production_payloads() -> None:
 
     plugin_payload = assets.plugin_dll.read_bytes()
     # W3 排除表支持（translations-exclude.json + IsExcludedTranslation）
-    # 重新编译后的确定性产物哈希。
+    # 重新编译后的确定性产物哈希——Phase 6 用 tiiny-ragdoll（CLR 2.0
+    # Managed）真实构建替换（InvalidDataException→FormatException、
+    # HasDefaultValue→IsOptional 两处 CLR 2.0 兼容修复后重编译）。
     assert hashlib.sha256(plugin_payload).hexdigest() == (
-        "e5c2bf02d22f27ea43fcefd93029777e3b9883b3966a459f148e6bd58d9844ae"
+        "92ce5afc16d52d25ce263559f9fc471ca3fe98687dc046a53b30bb11de0e6deb"
     )
     assert len(plugin_payload) > 0x40
     assert plugin_payload[:2] == b"MZ"
@@ -196,9 +198,19 @@ def test_plugin_health_manifest_has_versioned_fields_and_refreshes_after_scan() 
         source.index("private void WriteHealthManifest"):
         source.index("private char RepresentativeGlyph")
     ]
+    assert ("private const int HealthProtocolVersion = "
+            + str(font_support._FONT_HEALTH_PROTOCOL_VERSION) + ";") in source
     required_json_fields = {
-        '\\"protocol_version\\":4',
+        '\\"protocol_version\\":',
         '\\"plugin_version\\":\\"',
+        '\\"session_nonce\\":\\"',
+        '\\"last_seen\\":',
+        '\\"scenes\\":',
+        '\\"glyph_verification\\":{',
+        '\\"snapshot_hash\\":\\"',
+        '\\"missing_codepoints\\":',
+        '\\"consumers\\":{',
+        '\\"failures\\":',
         '\\"adapters\\":{',
         '\\"legacy\\":{',
         '\\"tmp\\":{',
@@ -599,6 +611,42 @@ def test_installer_writes_exact_translation_mapping_without_ascii_escaping(
     assert b"\\u" not in payload
 
 
+def test_installer_writes_required_glyphs_snapshot_matching_translations(
+        tmp_path: Path) -> None:
+    game_dir = _make_mono_game(tmp_path / "game")
+    out_dir = tmp_path / "output"
+    assets = _make_assets(tmp_path / "assets")
+    translations = {
+        "Settings": "设置",
+        "Quit": "退出",
+        "Health: {0}": "生命值：{0}",
+    }
+
+    install_font_override(
+        game_dir, out_dir, FontConfig(enabled=True), assets=assets,
+        translations=translations,
+    )
+
+    required_path = (out_dir / "BepInEx" / "plugins" / "HanhuaFont"
+                     / "required-glyphs.json")
+    payload = json.loads(required_path.read_text(encoding="utf-8"))
+    assert payload["schema_version"] == 1
+    scalars = payload["scalars"]
+    expected = sorted({
+        ord(character)
+        for text in translations.values()
+        for character in text
+        if not character.isspace()
+    })
+    assert scalars == expected
+    snapshot = hashlib.sha256(
+        ",".join(f"U+{scalar:04X}" for scalar in scalars).encode("ascii")
+    ).hexdigest()
+    assert payload["snapshot_hash"] == snapshot
+    # 部署的 required-glyphs.json 与插件健康文件同目录 → 运行时可比对
+    assert (required_path.parent / "required-glyphs.json").exists()
+
+
 def test_installer_writes_versioned_runtime_template_payload(
         tmp_path: Path) -> None:
     game_dir = _make_mono_game(tmp_path / "game")
@@ -655,6 +703,7 @@ def test_upgrade_replaces_only_owned_plugin_directory(tmp_path: Path) -> None:
     assert {path.name for path in owned.iterdir()} == {
         "Hanhua.FontFallback.dll", "font-family.txt", "font.ttf",
         "translations.json", "runtime-templates.json",
+        "required-glyphs.json",
     }
     assert user_plugin.read_bytes() == b"user-plugin"
     assert user_runtime.read_bytes() == b"user-runtime"
@@ -776,6 +825,7 @@ def test_owned_backup_cleanup_failure_keeps_committed_plugin_and_reports_pending
     assert {path.name for path in owned.iterdir()} == {
         "Hanhua.FontFallback.dll", "font-family.txt", "font.ttf",
         "translations.json", "runtime-templates.json",
+        "required-glyphs.json",
     }
     assert not (owned / "old.dll").exists()
 
@@ -1025,10 +1075,16 @@ def test_unknown_mono_font_capability_requires_installer_validation(
     assert capability.static_writeback_allowed is False
 
 
+_V5_SNAPSHOT_HASH = "snapshot-0001"
+
+
 def _valid_font_health() -> dict:
     return {
-        "protocol_version": 4,
-        "plugin_version": "1.3.0",
+        "protocol_version": 5,
+        "plugin_version": "1.4.0",
+        "session_nonce": "sess-0001",
+        "last_seen": int(time.time()),
+        "scenes": ["Main"],
         "adapters": {
             "legacy": {"status": "ready", "error": "", "glyph": True},
             "tmp": {"status": "ready", "error": "", "glyph": True},
@@ -1039,6 +1095,25 @@ def _valid_font_health() -> dict:
             },
         },
         "glyph_probe": "汉",
+        "glyph_verification": {
+            "snapshot_hash": _V5_SNAPSHOT_HASH,
+            "legacy_total": 1,
+            "legacy_covered": 1,
+            "legacy_missing": 0,
+            "tmp_total": 1,
+            "tmp_covered": 1,
+            "tmp_missing": 0,
+            "missing_codepoints": [],
+            "error": "",
+        },
+        "consumers": {
+            "discovered": 2,
+            "chinese": 1,
+            "covered": 1,
+            "missing": 0,
+            "failed": 0,
+        },
+        "failures": [],
         "applications": {
             "tmp": 1,
             "ui": 0,
@@ -1056,11 +1131,25 @@ def _valid_font_health() -> dict:
     }
 
 
-def test_font_health_requires_strict_versioned_runtime_evidence(
-        tmp_path: Path) -> None:
+def _write_font_health(tmp_path: Path, payload: dict | None = None) -> Path:
+    """写 font-health.json + 配套 required-glyphs.json（snapshot 一致）。"""
+    payload = _valid_font_health() if payload is None else payload
+    required = {
+        "schema_version": 1,
+        "snapshot_hash": _V5_SNAPSHOT_HASH,
+        "scalars": [0x6C49],
+    }
+    (tmp_path / "required-glyphs.json").write_text(
+        json.dumps(required, ensure_ascii=False), encoding="utf-8")
     health_path = tmp_path / "font-health.json"
     health_path.write_text(
-        json.dumps(_valid_font_health(), ensure_ascii=False), encoding="utf-8")
+        json.dumps(payload, ensure_ascii=False), encoding="utf-8")
+    return health_path
+
+
+def test_font_health_requires_strict_versioned_runtime_evidence(
+        tmp_path: Path) -> None:
+    health_path = _write_font_health(tmp_path)
 
     health = font_support.read_font_health(health_path)
 
@@ -1100,9 +1189,7 @@ def test_font_health_rejects_stale_or_incomplete_evidence(
         tmp_path: Path, mutate, reason_fragment: str) -> None:
     payload = _valid_font_health()
     mutate(payload)
-    health_path = tmp_path / "font-health.json"
-    health_path.write_text(
-        json.dumps(payload, ensure_ascii=False), encoding="utf-8")
+    health_path = _write_font_health(tmp_path, payload)
 
     health = font_support.read_font_health(health_path)
 
@@ -1116,9 +1203,7 @@ def test_font_health_accepts_one_ready_adapter_with_application_evidence(
     payload["adapters"]["tmp"].update(
         status="failed", error="TMP unavailable", glyph=False)
     payload["applications"].update(tmp=0, ui=1)
-    health_path = tmp_path / "font-health.json"
-    health_path.write_text(
-        json.dumps(payload, ensure_ascii=False), encoding="utf-8")
+    health_path = _write_font_health(tmp_path, payload)
 
     assert font_support.read_font_health(health_path).runtime_verified is True
 
@@ -1128,9 +1213,7 @@ def test_font_health_rejects_applied_tmp_without_tmp_glyph(
     payload = _valid_font_health()
     payload["adapters"]["tmp"].update(glyph=False)
     payload["applications"].update(tmp=2, ui=4)
-    health_path = tmp_path / "font-health.json"
-    health_path.write_text(
-        json.dumps(payload, ensure_ascii=False), encoding="utf-8")
+    health_path = _write_font_health(tmp_path, payload)
 
     health = font_support.read_font_health(health_path)
 
@@ -1146,9 +1229,7 @@ def test_font_health_rejects_tmp_translation_masked_by_legacy_font_success(
     payload["applications"].update(
         tmp=0, ui=2, translations=1, exact_translations=1)
     payload["translation_targets"]["tmp"]["exact"] = 1
-    health_path = tmp_path / "font-health.json"
-    health_path.write_text(
-        json.dumps(payload, ensure_ascii=False), encoding="utf-8")
+    health_path = _write_font_health(tmp_path, payload)
 
     health = font_support.read_font_health(health_path)
 
@@ -1162,9 +1243,7 @@ def test_font_health_requires_ui_toolkit_adapter_for_ui_toolkit_applications(
     payload["adapters"]["uitoolkit"].update(
         status="ready", error="", glyph=True)
     payload["applications"].update(tmp=0, uitoolkit=2)
-    health_path = tmp_path / "font-health.json"
-    health_path.write_text(
-        json.dumps(payload, ensure_ascii=False), encoding="utf-8")
+    health_path = _write_font_health(tmp_path, payload)
 
     assert font_support.read_font_health(health_path).runtime_verified is True
 
@@ -1183,9 +1262,7 @@ def test_font_health_rejects_translation_only_application_evidence(
         tmp=0, ui=0, textmesh=0, translations=3,
         exact_translations=3)
     payload["translation_targets"]["ui"]["exact"] = 3
-    health_path = tmp_path / "font-health.json"
-    health_path.write_text(
-        json.dumps(payload, ensure_ascii=False), encoding="utf-8")
+    health_path = _write_font_health(tmp_path, payload)
 
     health = font_support.read_font_health(health_path)
 
@@ -1212,12 +1289,137 @@ def test_font_provider_separates_deployed_payload_from_runtime_verification(
     assert deployed.payload_deployed is True
     assert deployed.runtime_verified is False
 
+    (plugin_dir / "required-glyphs.json").write_text(
+        json.dumps(
+            {"schema_version": 1, "snapshot_hash": _V5_SNAPSHOT_HASH,
+             "scalars": [0x6C49]},
+            ensure_ascii=False),
+        encoding="utf-8")
     (plugin_dir / "font-health.json").write_text(
         json.dumps(_valid_font_health(), ensure_ascii=False), encoding="utf-8")
     verified = font_support.resolve_font_provider(
         game_dir, "mono", assets=assets)
     assert verified.payload_deployed is True
     assert verified.runtime_verified is True
+
+
+# ── Phase 3 协议 v5 特定拒绝路径 ──
+
+
+@pytest.mark.parametrize(
+    ("mutate", "reason_fragment"),
+    [
+        (
+            lambda value: value.update(last_seen=int(time.time()) - 13 * 3600),
+            "stale",
+        ),
+        (lambda value: value.update(session_nonce=""), "session_nonce"),
+        (lambda value: value.update(scenes="Main"), "scenes"),
+        (
+            lambda value: value["glyph_verification"].update(
+                legacy_covered=0, legacy_missing=0),
+            "glyph counts",
+        ),
+        (
+            lambda value: value["glyph_verification"].update(
+                missing_codepoints=[0x6C49]),
+            "missing codepoints",
+        ),
+        (
+            lambda value: value["glyph_verification"].update(error="boom"),
+            "reported errors",
+        ),
+        (
+            lambda value: value["glyph_verification"].update(snapshot_hash="nope"),
+            "does not match deployment",
+        ),
+        (
+            lambda value: value["consumers"].update(
+                covered=0, missing=0, failed=0),
+            "inconsistent",
+        ),
+        (
+            lambda value: value["consumers"].update(chinese=0, covered=0),
+            "no chinese",
+        ),
+        (
+            lambda value: value["consumers"].update(discovered=0),
+            "discovered",
+        ),
+        (
+            lambda value: value.update(failures=[{
+                "stable_identity": "o", "kind": "ui", "font_asset": "f",
+                "missing": ["0x6C49"],
+            }]),
+            "failure record",
+        ),
+        (
+            lambda value: value.update(failures=list(range(257))),
+            "failures are invalid",
+        ),
+    ],
+)
+def test_font_health_v5_rejects_attestation_violations(
+        tmp_path: Path, mutate, reason_fragment: str) -> None:
+    payload = _valid_font_health()
+    mutate(payload)
+    health_path = _write_font_health(tmp_path, payload)
+
+    health = font_support.read_font_health(health_path)
+
+    assert health.runtime_verified is False
+    assert reason_fragment in health.reason
+
+
+def test_font_health_v5_rejects_failed_consumers_without_failures(
+        tmp_path: Path) -> None:
+    payload = _valid_font_health()
+    payload["consumers"].update(
+        chinese=2, discovered=2, covered=0, missing=1, failed=1)
+    health_path = _write_font_health(tmp_path, payload)
+
+    health = font_support.read_font_health(health_path)
+
+    assert health.runtime_verified is False
+    assert "failures are missing" in health.reason
+
+
+def test_font_health_v5_rejects_missing_required_glyphs_deployment(
+        tmp_path: Path) -> None:
+    (tmp_path / "font-health.json").write_text(
+        json.dumps(_valid_font_health(), ensure_ascii=False), encoding="utf-8")
+
+    health = font_support.read_font_health(tmp_path / "font-health.json")
+
+    assert health.runtime_verified is False
+    assert "required-glyphs.json" in health.reason
+
+
+def test_font_health_v5_rejects_stale_last_seen_type(tmp_path: Path) -> None:
+    payload = _valid_font_health()
+    payload["last_seen"] = "recent"
+    health_path = _write_font_health(tmp_path, payload)
+
+    health = font_support.read_font_health(health_path)
+
+    assert health.runtime_verified is False
+    assert "last_seen" in health.reason
+
+
+def test_font_health_v5_accepts_failure_details_within_limit(
+        tmp_path: Path) -> None:
+    payload = _valid_font_health()
+    payload["consumers"].update(chinese=2, covered=0, missing=2)
+    payload["glyph_verification"].update(
+        legacy_covered=1, legacy_missing=0)
+    payload["failures"] = [
+        {"stable_identity": f"obj-{index}", "kind": "ui",
+         "font_asset": "Arial", "missing": [0x6C49, 0x4E00]}
+        for index in range(200)
+    ]
+    health_path = _write_font_health(tmp_path, payload)
+
+    assert font_support.read_font_health(health_path).runtime_verified is True
 
 
 @pytest.mark.parametrize(

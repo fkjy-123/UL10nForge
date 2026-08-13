@@ -26,7 +26,7 @@
 变更文件：39
 写入译文：72
 总体闸门：PASS
-字体层级：runtime_verified
+字体层级：runtime_verified（LEGACY_EVIDENCE_UNSCOPED：旧协议证据，未含逐码点 attestation/覆盖证明）
 清单：.hanhua-manifest.json
 备份：None
 

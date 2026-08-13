@@ -1,9 +1,11 @@
-"""夜航工作台深色设计系统 v2：颜色 token + 全局 QSS（任务二重构）。
+"""Aurora Forge UL10nForge深色设计系统：颜色 token + 全局 QSS（2026-08-13）。
 
-设计约束（UI-UX 重构规范）：
-- 暗色中性底（#080D18）+ Surface 三级；薄荷青主色 #48E6C1。
-- 紫色只属于 AI（§6.2）：审核面板/AI 徽章/AI 状态呼吸。
-- 琥珀警告、珊瑚红仅失败；页面分区优先分隔线、留白与颜色面。
+设计约束（spec §4/§5/§8）：
+- 石墨黑中性底（canvas #090B12）+ surface/surface_raised 两级层级分组；
+  默认卡片不描边，只有输入、焦点、选中与语义状态显示清晰边框。
+- 薄荷青（accent）当前主流程与主操作；天蓝（info）检测扫描；紫罗兰
+  （ai）AI 判断；琥珀（warning）待确认；珊瑚红（error）错误；绿（success）通过。
+- 中文正文 Microsoft YaHei UI；代码/日志 Cascadia Mono。
 - QSS 不包含 transition/animation/keyframes（Qt 不支持），动效全在 Python。
 """
 from __future__ import annotations
@@ -13,21 +15,20 @@ from PySide6.QtWidgets import QApplication
 from hanhua.ui.design_system import TOKENS
 
 # ── 设计 token ──────────────────────────────────────────────
-BG = TOKENS.background
-PANEL = TOKENS.panel
-CARD = TOKENS.surface
+BG = TOKENS.background          # canvas
+PANEL = TOKENS.surface          # 主面板
+CARD = TOKENS.surface           # 卡片底（层级一）
 CARD_HOVER = TOKENS.surface_hover
-RAISED = TOKENS.surface_raised
+RAISED = TOKENS.surface_raised  # 浮层与强调卡
 BORDER = TOKENS.border
 BORDER_STRONG = TOKENS.border_strong
-ACCENT = TOKENS.primary
+ACCENT = TOKENS.accent          # 薄荷青：主流程
 ACCENT_HOVER = TOKENS.primary_hover
 ACCENT_PRESSED = TOKENS.primary_pressed
 ACCENT_BG = TOKENS.primary_muted
-ACCENT2 = TOKENS.accent2
-AI = TOKENS.ai_primary            # 紫色=AI（§6.2）
+AI = TOKENS.ai                  # 紫罗兰=AI
 AI_SECONDARY = TOKENS.ai_secondary
-AI_BG = TOKENS.ai_muted           # AI 面板/徽章低饱和底
+AI_BG = TOKENS.ai_muted
 GRAD_START = TOKENS.gradient_start
 GRAD_END = TOKENS.gradient_end
 SIDEBAR_BG = TOKENS.sidebar_bg
@@ -48,6 +49,7 @@ RADIUS_CARD = TOKENS.radius_card
 RADIUS_PANEL = TOKENS.radius_panel
 RADIUS_DIALOG = TOKENS.radius_dialog
 PRIMARY_TEXT = "#071713"  # 主按钮上的深色文字
+MONO = '"Cascadia Mono", Consolas, monospace'
 
 _QSS = f"""
 * {{
@@ -58,28 +60,13 @@ _QSS = f"""
 QWidget {{ background: transparent; }}
 QWidget#root {{ background: {BG}; }}
 
-/* ── 侧边栏（纯色 + 1px 高亮边，不套渐变） ────────────────── */
+/* ── 侧边栏（176px：图标 + 短标签 + 滑动选中指示器） ──────── */
 QFrame#sidebar {{
     background: {SIDEBAR_BG};
     border-right: 1px solid {GLASS_EDGE};
 }}
-QFrame#brandBar {{
-    background: qlineargradient(x1:0, y1:0, x2:1, y2:0,
-        stop:0 {GRAD_START}, stop:1 {GRAD_END});
-    border: none;
-    margin: 10px 30px 0 30px;
-    border-radius: 2px;
-}}
-QLabel#appTitle {{
-    font-size: 19px; font-weight: 700;
-    color: {TEXT};
-}}
+QLabel#appTitle {{ font-size: 17px; font-weight: 700; color: {TEXT}; }}
 QLabel#appSub {{ color: {TEXT_DISABLED}; font-size: 9pt; }}
-QLabel#projectCardName {{ font-size: 10pt; font-weight: 600; }}
-QLabel#projectCardPath {{
-    color: {TEXT_DISABLED}; font-size: 8pt;
-    white-space: pre-wrap;
-}}
 QListWidget#navList {{
     background: transparent;
     border: none;
@@ -87,27 +74,26 @@ QListWidget#navList {{
 }}
 QListWidget#navList::item {{
     padding: 10px 14px;
-    margin: 2px 10px;
-    border-radius: {RADIUS}px;
+    margin: 2px 12px;
+    border-radius: {RADIUS_MD}px;
     color: {TEXT_SECONDARY};
-    border-left: 3px solid transparent;
+    font-size: 10pt;
 }}
-QListWidget#navList::item:hover {{ background: {CARD}; color: {TEXT}; }}
+QListWidget#navList::item:hover {{ background: {CARD_HOVER}; color: {TEXT}; }}
 QListWidget#navList::item:selected {{
     background: {ACCENT_BG};
     color: {ACCENT};
     font-weight: 600;
 }}
 QListWidget#navList::item:disabled {{ color: {TEXT_DISABLED}; }}
-/* 导航指示条：选中项旁的 3px 主色条，切换时 180ms 滑动 */
+/* 导航指示条：选中项左缘 3px 薄荷青条，200ms 滑动 */
 QFrame#navIndicator {{
     background: {ACCENT};
-    border-radius: 1px;
+    border-radius: 2px;
     border: none;
 }}
 
-/* ── 按钮（四类全状态；圆角 §8：Button 8px） ─────────────── */
-/* 次按钮（默认） */
+/* ── 按钮（输入 10px 圆角；hover/press/focus 不改变尺寸） ─── */
 QPushButton {{
     background: {CARD};
     border: 1px solid {BORDER};
@@ -121,7 +107,7 @@ QPushButton:pressed {{ background: {RAISED}; }}
 QPushButton:disabled {{ color: {TEXT_DISABLED}; background: {PANEL}; border-color: {BORDER}; }}
 QPushButton:focus {{ border: {TOKENS.focus_width}px solid {ACCENT}; }}
 
-/* 主按钮：明亮薄荷青纯色 + 深色文字，不做渐变 */
+/* 主按钮：薄荷青纯色 + 深色文字 */
 QPushButton[primary="true"] {{
     background: {ACCENT};
     border: none;
@@ -130,11 +116,8 @@ QPushButton[primary="true"] {{
     min-height: {TOKENS.primary_height}px;
 }}
 QPushButton[primary="true"]:hover {{ background: {ACCENT_HOVER}; }}
-QPushButton[primary="true"]:pressed {{
-    background: {ACCENT_PRESSED};
-    margin-top: 1px; margin-bottom: -1px;
-}}
-QPushButton[primary="true"]:disabled {{ background: #294057; color: {TEXT_DISABLED}; }}
+QPushButton[primary="true"]:pressed {{ background: {ACCENT_PRESSED}; }}
+QPushButton[primary="true"]:disabled {{ background: #27403B; color: {TEXT_DISABLED}; }}
 
 /* 危险按钮：透明底 + 珊瑚红 */
 QPushButton[danger="true"] {{
@@ -142,8 +125,7 @@ QPushButton[danger="true"] {{
     border: 1px solid {ERROR};
     color: {ERROR};
 }}
-QPushButton[danger="true"]:hover {{ background: rgba(255, 111, 125, 0.12); }}
-QPushButton[danger="true"]:pressed {{ background: rgba(255, 111, 125, 0.20); }}
+QPushButton[danger="true"]:hover {{ background: rgba(255, 114, 133, 0.12); }}
 QPushButton[danger="true"]:disabled {{ color: {TEXT_DISABLED}; border-color: {BORDER}; }}
 
 /* 幽灵按钮：仅 hover 反馈 */
@@ -153,6 +135,37 @@ QPushButton[ghost="true"] {{
     color: {TEXT_SECONDARY};
 }}
 QPushButton[ghost="true"]:hover {{ background: {CARD}; color: {TEXT}; }}
+
+/* ── 筛选胶囊（§8 FilterChip：可键盘操作的筛选状态） ───────── */
+QPushButton[filterChip="true"] {{
+    background: transparent;
+    border: 1px solid {BORDER};
+    border-radius: 16px;
+    padding: 4px 14px;
+    min-height: 28px;
+    color: {TEXT_SECONDARY};
+    font-size: 9pt;
+}}
+QPushButton[filterChip="true"]:hover {{
+    border-color: {BORDER_STRONG};
+    color: {TEXT};
+}}
+QPushButton[filterChip="true"]:checked {{
+    background: {ACCENT_BG};
+    border-color: {ACCENT};
+    color: {ACCENT};
+    font-weight: 600;
+}}
+QPushButton[filterChip="true"][chipKind="risk"]:checked {{
+    background: rgba(255, 114, 133, 0.14);
+    border-color: {ERROR};
+    color: {ERROR};
+}}
+QPushButton[filterChip="true"][chipKind="ai"]:checked {{
+    background: {AI_BG};
+    border-color: {AI};
+    color: {AI};
+}}
 
 /* ── 输入控件 ───────────────────────────────────────────── */
 QLineEdit, QPlainTextEdit, QTextEdit, QSpinBox, QDoubleSpinBox, QComboBox {{
@@ -172,7 +185,7 @@ QSpinBox:focus, QDoubleSpinBox:focus, QComboBox:focus {{
     border: {TOKENS.focus_width}px solid {ACCENT};
 }}
 QLineEdit:disabled, QComboBox:disabled {{ color: {TEXT_DISABLED}; }}
-QComboBox::drop-down {{ border: none; width: 32px; }}
+QComboBox::drop-down {{ border: none; width: 30px; }}
 QComboBox QAbstractItemView {{
     background: {RAISED};
     border: 1px solid {BORDER};
@@ -189,7 +202,7 @@ QDoubleSpinBox::up-button, QDoubleSpinBox::down-button {{
     width: 18px;
 }}
 
-/* ── 表格（审校/术语表） ─────────────────────────────────── */
+/* ── 表格 ────────────────────────────────────────────────── */
 QTableView, QTableWidget {{
     background: {LOGGER_BG};
     alternate-background-color: {CARD};
@@ -229,7 +242,7 @@ QScrollBar::handle:horizontal {{
 QScrollBar::handle:horizontal:hover {{ background: {INFO}; }}
 QScrollBar::add-line:horizontal, QScrollBar::sub-line:horizontal {{ width: 0; }}
 
-/* ── 标签页（去 pane 外框） ──────────────────────────────── */
+/* ── 标签页 ─────────────────────────────────────────────── */
 QTabWidget::pane {{ border: none; background: transparent; top: 0; }}
 QTabBar::tab {{
     background: transparent;
@@ -245,7 +258,7 @@ QTabBar::tab:selected {{
 }}
 QTabBar::tab:hover:!selected {{ color: {TEXT}; }}
 
-/* ── 进度条（完成段使用 primary→info 短渐变） ────────────── */
+/* ── 进度条（完成段 mint→sky 渐变） ─────────────────────── */
 QProgressBar {{
     background: {CARD};
     border: none;
@@ -261,34 +274,24 @@ QProgressBar::chunk {{
     border-radius: 4px;
 }}
 
-/* ── 任务状态轨道（贯穿四页的产品记忆点） ─────────────────── */
-QFrame#brandRail {{
-    background: {CARD};
+/* ── 任务状态轨道（五步状态轨，贯穿四页的产品记忆点） ─────── */
+QFrame#statusNode {{
+    background: {PANEL};
     border: none;
-    border-radius: 3px;
-    min-height: 2px;
-    max-height: 2px;
+    border-top: 2px solid transparent;
+    border-radius: {RADIUS_CARD}px;
 }}
+QFrame#statusNode[status="running"] {{
+    border-top-color: {ACCENT};
+    background: {ACCENT_BG};
+}}
+QFrame#statusNode[status="succeeded"] {{ border-top-color: {SUCCESS}; }}
+QFrame#statusNode[status="failed"] {{ border-top-color: {ERROR}; }}
+QFrame#statusNode[status="warning"] {{ border-top-color: {WARNING}; }}
+QFrame#brandRail {{ background: {BORDER}; border: none; border-radius: 2px; }}
 QFrame#brandRail[progress="true"] {{
     background: qlineargradient(x1:0, y1:0, x2:1, y2:0,
         stop:0 {GRAD_START}, stop:1 {GRAD_END});
-}}
-QFrame#statusNode {{
-    background: {CARD};
-    border: 1px solid {BORDER};
-    border-radius: 7px;
-}}
-QFrame#statusNode[status="running"] {{
-    border-color: {ACCENT};
-}}
-QFrame#statusNode[status="succeeded"] {{
-    border-color: {SUCCESS};
-}}
-QFrame#statusNode[status="failed"] {{
-    border-color: {ERROR};
-}}
-QFrame#statusNode[status="warning"] {{
-    border-color: {WARNING};
 }}
 QLabel#statusNodeDot {{
     min-width: 8px; max-width: 8px;
@@ -305,12 +308,26 @@ QLabel#statusNodeTitle {{ font-weight: 600; font-size: 9.5pt; }}
 QLabel#statusNodeDetail {{ color: {TEXT_SECONDARY}; font-size: 8.5pt; }}
 QLabel#statusNodeMetrics {{ color: {TEXT_DISABLED}; font-size: 8pt; }}
 
-/* ── 数据舱（翻译页指标：panel 底 + 左侧 2px 语义色） ─────── */
+/* ── 数据舱（MetricTile：数值 + 标签 + 语义色值） ─────────── */
+QFrame#metricTile {{
+    background: {PANEL};
+    border: none;
+    border-left: 3px solid {BORDER_STRONG};
+    border-radius: {RADIUS_MD}px;
+}}
+QFrame#metricTile[accent="success"] {{ border-left-color: {SUCCESS}; }}
+QFrame#metricTile[accent="warning"] {{ border-left-color: {WARNING}; }}
+QFrame#metricTile[accent="error"] {{ border-left-color: {ERROR}; }}
+QFrame#metricTile[accent="info"] {{ border-left-color: {INFO}; }}
+QFrame#metricTile[accent="ai"] {{ border-left-color: {AI}; }}
+QLabel#metricTileValue {{ font-size: 17px; font-weight: 700; }}
+QLabel#metricTileLabel {{ color: {TEXT_SECONDARY}; font-size: 8.5pt; }}
+/* 旧名兼容（translate 页既有 MetricStrip） */
 QFrame#metricStrip {{
     background: {PANEL};
     border: none;
-    border-left: 2px solid {BORDER_STRONG};
-    border-radius: 0;
+    border-left: 3px solid {BORDER_STRONG};
+    border-radius: {RADIUS_MD}px;
 }}
 QFrame#metricStrip[accent="success"] {{ border-left-color: {SUCCESS}; }}
 QFrame#metricStrip[accent="warning"] {{ border-left-color: {WARNING}; }}
@@ -318,6 +335,54 @@ QFrame#metricStrip[accent="error"] {{ border-left-color: {ERROR}; }}
 QFrame#metricStrip[accent="info"] {{ border-left-color: {INFO}; }}
 QLabel#metricStripValue {{ font-size: 17px; font-weight: 700; }}
 QLabel#metricStripLabel {{ color: {TEXT_SECONDARY}; font-size: 8.5pt; }}
+
+/* ── 概览页英雄区（§6.1） ────────────────────────────────── */
+QFrame#heroCard {{
+    background: qlineargradient(x1:0, y1:0, x2:1, y2:1,
+        stop:0 {RAISED}, stop:1 {PANEL});
+    border: none;
+    border-radius: {RADIUS_CARD}px;
+}}
+QFrame#heroCard[state="scanning"] {{ border: 1px solid {INFO}; }}
+QLabel#heroTitle {{ font-size: 24px; font-weight: 700; }}
+QLabel#heroSub {{ color: {TEXT_SECONDARY}; font-size: 10pt; }}
+QFrame#dataStrip {{
+    background: {PANEL};
+    border: none;
+    border-radius: {RADIUS_CARD}px;
+}}
+QLabel#dataStripValue {{ font-size: 20px; font-weight: 700; }}
+QLabel#dataStripLabel {{ color: {TEXT_SECONDARY}; font-size: 8.5pt; }}
+
+/* ── 活动流（§8 ActivityFeed：实时事件流，限制可见条目数） ── */
+QListWidget#activityFeed {{
+    background: {LOGGER_BG};
+    border: 1px solid {BORDER};
+    border-radius: {RADIUS_CARD}px;
+    outline: none;
+    font-family: {MONO};
+    font-size: 9pt;
+}}
+QListWidget#activityFeed::item {{
+    padding: 4px 10px;
+    border: none;
+    border-bottom: 1px solid {PANEL};
+    color: {TEXT_SECONDARY};
+}}
+QListWidget#activityFeed::item:selected {{ background: transparent; color: {TEXT}; }}
+QLabel[class="feedStatus"] {{ font-weight: 600; }}
+
+/* ── 写回安全栏（§6.3：独立底部安全栏） ───────────────────── */
+QFrame#safetyBar {{
+    background: {PANEL};
+    border: none;
+    border-radius: {RADIUS_CARD}px;
+}}
+QFrame#safetyBar[status="ready"] {{ border-left: 3px solid {SUCCESS}; }}
+QFrame#safetyBar[status="blocked"] {{ border-left: 3px solid {WARNING}; }}
+QFrame#safetyBar[status="error"] {{ border-left: 3px solid {ERROR}; }}
+QLabel#safetyTitle {{ font-weight: 650; font-size: 10pt; }}
+QLabel#safetyReason {{ color: {TEXT_SECONDARY}; font-size: 9pt; }}
 
 /* ── 其它 ───────────────────────────────────────────────── */
 QToolTip {{
@@ -367,33 +432,34 @@ QStatusBar {{
     border-top: 1px solid {BORDER};
 }}
 QStatusBar::item {{ border: none; }}
+/* 语义卡（§8 SemanticCard）：带可选语义边/光晕的基础容器 */
 QFrame#card {{
     background: {PANEL};
-    border: 1px solid {BORDER};
+    border: none;
     border-radius: {RADIUS_CARD}px;
 }}
-QFrame#card:hover {{ border-color: {BORDER_STRONG}; }}
-QFrame#metricChip {{
-    background: {CARD};
-    border: 1px solid {BORDER};
-    border-radius: {RADIUS_MD}px;
-}}
+QFrame#card[accent="success"] {{ border-left: 3px solid {SUCCESS}; }}
+QFrame#card[accent="warning"] {{ border-left: 3px solid {WARNING}; }}
+QFrame#card[accent="error"] {{ border-left: 3px solid {ERROR}; }}
+QFrame#card[accent="info"] {{ border-left: 3px solid {INFO}; }}
+QFrame#card[accent="ai"] {{ border-left: 3px solid {AI}; }}
 QLabel[class="metricLabel"] {{ color: {TEXT_SECONDARY}; font-size: 9pt; }}
 QLabel[class="metricValue"] {{ color: {TEXT}; font-weight: 600; }}
 QFrame#pipelineStep {{
     background: {PANEL};
-    border: 1px solid {BORDER};
+    border: none;
+    border-top: 2px solid {BORDER};
     border-radius: {RADIUS_CARD}px;
 }}
-QFrame#pipelineStep[status="succeeded"] {{ border-color: {SUCCESS}; }}
-QFrame#pipelineStep[status="failed"] {{ border-color: {ERROR}; }}
-QFrame#pipelineStep[status="blocked"] {{ border-color: {WARNING}; }}
-QFrame#pipelineStep[status="running"] {{ border-color: {ACCENT}; }}
+QFrame#pipelineStep[status="succeeded"] {{ border-top-color: {SUCCESS}; }}
+QFrame#pipelineStep[status="failed"] {{ border-top-color: {ERROR}; }}
+QFrame#pipelineStep[status="blocked"] {{ border-top-color: {WARNING}; }}
+QFrame#pipelineStep[status="running"] {{ border-top-color: {ACCENT}; }}
 QLabel#capabilityBadge {{
     min-height: 22px; padding: 1px 8px; border-radius: 11px;
     color: {TEXT_SECONDARY}; background: {CARD};
 }}
-QLabel#capabilityBadge[status="succeeded"] {{ color: {SUCCESS}; background: #10302A; }}
+QLabel#capabilityBadge[status="succeeded"] {{ color: {SUCCESS}; background: #12312B; }}
 QLabel#capabilityBadge[status="failed"] {{ color: {ERROR}; background: #3A2024; }}
 QLabel#capabilityBadge[status="blocked"] {{ color: {WARNING}; background: #3A3020; }}
 QLabel#capabilityBadge[status="running"] {{ color: {ACCENT}; background: {ACCENT_BG}; }}
@@ -420,7 +486,6 @@ QFrame#dropZone[state="blocked"] {{
     border-style: solid;
     border-color: {WARNING};
 }}
-/* 游戏档案编辑区：左侧黄色标记，不套大卡片 */
 QFrame#profileCard {{
     background: {PANEL};
     border: none;
@@ -442,7 +507,7 @@ QPlainTextEdit#logView {{
     background: {LOGGER_BG};
     border: 1px solid {BORDER};
     border-radius: {RADIUS_CARD}px;
-    font-family: Consolas, "Cascadia Mono", monospace;
+    font-family: {MONO};
     font-size: 9.5pt;
     color: #c3cbd8;
 }}
@@ -456,99 +521,16 @@ QFrame#toast[success="true"] {{ border-left-color: {SUCCESS}; }}
 QFrame#toast[error="true"] {{ border-left-color: {ERROR}; }}
 QFrame#toast[warning="true"] {{ border-left-color: {WARNING}; }}
 
-/* ── Top Bar（§14：当前项目 + 搜索 + 通知 + 设置） ─────────── */
+/* ── Top Bar（当前项目 · 目标语言 · 切换项目） ── */
 QFrame#topBar {{
     background: {PANEL};
     border: none;
     border-bottom: 1px solid {BORDER};
 }}
-QLabel#topBarProject {{
-    font-size: 10.5pt; font-weight: 600;
-}}
+QLabel#topBarProject {{ font-size: 10.5pt; font-weight: 600; }}
 QLabel#topBarProjectSub {{ color: {TEXT_SECONDARY}; font-size: 8.5pt; }}
-QLabel#topBarSearch {{
-    background: {CARD};
-    border: 1px solid {BORDER};
-    border-radius: {RADIUS_MD}px;
-    padding: 4px 14px;
-    color: {TEXT_DISABLED};
-    font-size: 9pt;
-}}
 
-/* ── Sidebar 分组导航（§12/§13：图标+文字，分组标题，可折叠） ─ */
-QLabel#navGroup {{
-    color: {TEXT_DISABLED};
-    font-size: 8pt;
-    padding: 10px 22px 2px 22px;
-}}
-QFrame#navCollapse {{
-    background: transparent;
-    border: none;
-    border-top: 1px solid {BORDER};
-}}
-
-/* ── AI 面板（§27：紫色=AI，微玻璃） ───────────────────────── */
-QFrame#aiPanel {{
-    background: {AI_BG};
-    border: 1px solid {BORDER_STRONG};
-    border-radius: {RADIUS_PANEL}px;
-}}
-QLabel#aiPanelTitle {{
-    color: {AI};
-    font-size: 9.5pt; font-weight: 700;
-}}
-QLabel#aiDot {{
-    min-width: 8px; max-width: 8px;
-    min-height: 8px; max-height: 8px;
-    border-radius: 4px;
-    background: {AI};
-}}
-QLabel#aiScore {{ color: {AI}; font-size: 21px; font-weight: 700; }}
-QLabel#aiSectionTitle {{ color: {TEXT_SECONDARY}; font-size: 8pt; font-weight: 600; }}
-QLabel#aiReason {{
-    color: {TEXT};
-    font-size: 9pt;
-    background: {PANEL};
-    border-radius: {RADIUS_MD}px;
-    padding: 8px 10px;
-}}
-QLabel#aiCandidate {{
-    background: {PANEL};
-    border: 1px solid {BORDER};
-    border-radius: {RADIUS_MD}px;
-    padding: 6px 10px;
-    color: {TEXT_SECONDARY};
-    font-size: 9pt;
-}}
-QLabel#aiCandidate[best="true"] {{
-    border-color: {AI_SECONDARY};
-    color: {TEXT};
-}}
-
-/* ── 命令面板（§51 Ctrl+K：微玻璃 + dialog 圆角） ──────────── */
-QFrame#commandPalette {{
-    background: {RAISED};
-    border: 1px solid {BORDER_STRONG};
-    border-radius: {RADIUS_DIALOG}px;
-}}
-QListWidget#commandList {{
-    background: transparent;
-    border: none;
-    outline: none;
-}}
-QListWidget#commandList::item {{
-    padding: 9px 16px;
-    margin: 1px 6px;
-    border-radius: {RADIUS}px;
-    color: {TEXT_SECONDARY};
-}}
-QListWidget#commandList::item:hover {{ background: {CARD_HOVER}; color: {TEXT}; }}
-QListWidget#commandList::item:selected {{
-    background: {ACCENT_BG};
-    color: {ACCENT};
-}}
-
-/* ── 审校三栏工作区（§21-28：列表 25% / 翻译 50% / AI 审核 25%） ── */
+/* ── 审校三栏工作区 ─────────────────────────────────────── */
 QSplitter::handle {{
     background: transparent;
     width: 12px;
@@ -558,11 +540,11 @@ QSplitter::handle:hover {{
 }}
 QFrame#detailPanel {{
     background: {PANEL};
-    border: 1px solid {BORDER};
+    border: none;
     border-radius: {RADIUS_PANEL}px;
 }}
 QLabel#detailOriginal {{
-    background: {CARD};
+    background: {RAISED};
     border: 1px solid {BORDER};
     border-radius: {RADIUS_MD}px;
     padding: 12px 14px;
@@ -570,9 +552,10 @@ QLabel#detailOriginal {{
     font-size: 14pt;
     font-weight: 600;
 }}
+/* 编辑区域获得最高对比度 */
 QPlainTextEdit#detailEdit {{
-    background: {CARD};
-    border: 1px solid {BORDER};
+    background: {RAISED};
+    border: 1px solid {BORDER_STRONG};
     border-radius: {RADIUS_MD}px;
     padding: 10px 12px;
     color: {TEXT};
@@ -590,11 +573,12 @@ QLabel#detailContext, QLabel#detailReason {{
     color: {TEXT_SECONDARY};
     font-size: 9pt;
 }}
+QLabel#saveFeedback {{ color: {SUCCESS}; font-size: 9pt; font-weight: 600; }}
 
-/* ── 设置中心（§66：左侧分类导航 + 右侧内容） ────────────── */
+/* ── 设置中心（左侧分类导航 + 居中表单 + 右侧状态卡） ─────── */
 QListWidget#settingsNav {{
     background: {PANEL};
-    border: 1px solid {BORDER};
+    border: none;
     border-radius: {RADIUS_PANEL}px;
     padding: 8px;
     outline: none;
@@ -609,6 +593,12 @@ QListWidget#settingsNav::item:hover {{ background: {CARD_HOVER}; color: {TEXT}; 
 QListWidget#settingsNav::item:selected {{
     background: {ACCENT_BG};
     color: {ACCENT};
+}}
+QFrame#statusCard {{
+    background: {PANEL};
+    border: none;
+    border-left: 3px solid {INFO};
+    border-radius: {RADIUS_CARD}px;
 }}
 """
 

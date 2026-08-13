@@ -3,6 +3,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass, replace
 from pathlib import Path
+import hashlib
 import json
 import os
 import re
@@ -212,6 +213,25 @@ def choose_port() -> int:
         return int(sock.getsockname()[1])
 
 
+def sha256_of(path: str | Path) -> str:
+    """模型文件 sha256（审计 Phase D P1-12 固定路由）。
+
+    进签名 → 模型文件变化自动不复用旧实例；不可读返回 "unreadable"
+    标记（不阻断启动——文件存在性由调用方 is_available 检查）。
+    """
+    try:
+        digest = hashlib.sha256()
+        with open(path, "rb") as stream:
+            while True:
+                chunk = stream.read(1 << 20)
+                if not chunk:
+                    break
+                digest.update(chunk)
+        return digest.hexdigest()
+    except OSError:
+        return "unreadable"
+
+
 def _http_probe(base_url: str, api_key: str, expected_model: str) -> bool:
     try:
         headers = {"Authorization": f"Bearer {api_key}"}
@@ -336,8 +356,10 @@ class LocalModelManager:
                     "runtime_incomplete",
                     "llama.cpp 运行时不完整，缺少：" + "、".join(core_missing),
                 )
+            # 审计 Phase D（P1-12）：模型 sha256 进签名——模型文件内容
+            # 变化（更新/换量化）→ 签名不同 → 不复用旧实例（自动重启）
             signature = (
-                server, model, int(config.local_port),
+                server, model, sha256_of(model), int(config.local_port),
                 int(config.local_context_size), int(config.local_gpu_layers),
                 int(config.local_concurrency),
             )

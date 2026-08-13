@@ -2,29 +2,80 @@ from __future__ import annotations
 import re
 import sqlite3
 import threading
+from pathlib import Path
+from typing import NamedTuple
 
 from hanhua.core.knowledge import _UPPERCASE_ACTION_VERBS
-from pathlib import Path
 
 # 归一化冲突键：大小写 + 空白压缩 + 去标点。用于检测「同源不同译」：
 # "moon key" 与 "Moon Key" 是同一术语，若译名不同则模型会无所适从
 # （同一原文在 prompt 里出现两个译法 → 一致性破坏）。
 _CONFLICT_NORM = re.compile(r"[^a-z0-9一-鿿]+")
 
+# ── 审核沉淀终态（审计 Phase B-3，P1-4：C5 候选/激活/冲突统计不可信）──
+# 旧 add_reviewed 对 candidate 与 activated 都返回空串，调用方统一计入
+# pairs_added；已存在 term 的不同 translation 会被 UPDATE 覆盖，第二
+# 游戏可能把冲突词直接升级 active。现在返回结构化 DepositResult：
+#   REJECTED  门禁拒绝（高频单 token / 整句 / 富文本 / 空词对），
+#             不写入全局库
+#   CANDIDATE 新词对入 candidate 桶（参考不强制），等待跨游戏复现
+#   ACTIVATED 至少两个独立游戏、相同译法 → 升级 active（可注入/强制）
+#   CONFLICT  同（归一化 term）已有不同译法：不覆盖、不升级、不把
+#             冲突游戏计入激活证据——冲突上下文留档（人工复核）
+REJECTED = "REJECTED"
+CANDIDATE = "CANDIDATE"
+ACTIVATED = "ACTIVATED"
+CONFLICT = "CONFLICT"
+
+
+class DepositResult(NamedTuple):
+    """审核沉淀的结构化结果（Phase B-3）：调用方据此分类记账。"""
+    status: str
+    reason: str = ""
+    games: tuple = ()
+    term: str = ""
+
 # 翻译 C5：高频普通词单 token 黑名单——这些词在游戏文本里动词/名词/
 # 方向/介词用法混杂（miss=未命中/想念/错过、right=右边/正确/右拨片），
 # 审核沉淀若无语境强制全局，后续游戏同一词的其他语境会被改写（F22-4
 # 三连杀实证：miss/encore/Right 各自杀死 100+ 条正常翻译）。
 _HIGH_FREQUENCY_WORD_PAIRS = frozenset(
-    "miss right left up down play stop save load charge exit enter open "
-    "close start end back next ok yes no on off run jump attack hit "
+    "miss right left up down play stop save load locked charge exit enter "
+    "open close start end back next ok yes no on off run jump attack hit "
     "throw use talk buy sell pick drop eat drink rest savegame resume "
     "health unit damage speed power".split()
     # health 2026-08-13 实证：force-reboot 沉淀 HEALTH→健康 active，
     # incremental-rts 'Increase unit HP by {health}' 译文「生命值」被
     # 误杀——health 在游戏语境变体多（健康/生命值/血量），单 token
-    # 全局强制必误杀。unit/damage/speed/power 同族高频游戏词一并列入
+    # 全局强制必误杀。unit/damage/speed/power 同族高频游戏词一并列入。
+    # locked 2026-08-13 实证：Morfosi 64 条 "IT'S LOCKED." 被
+    # ('Locked','锁定') 全灭——locked 语境变体多（锁定/上锁/被锁住），
+    # 单 token 全局强制必误杀自然句
 )
+
+
+# 噪音专名形态（learn_proper_names 门禁，2026-08-13 Morfosi/isolated-
+# inhale 实证）：颜色码（FFC400/FFFFFF/FDFD01——UI 主题色被
+# collect_known_names 当专名收进清单）、调试占位（NULL/XXXX/JXXXX）、
+# 重复字母堆积（AAAAAGHHHHHH——拟声尖叫/键盘乱串）。专名保留映射对
+# 噪音无意义（跨游戏必不复现），学成 active 专名只污染术语表显示与
+# prompt 注入。hex 全匹配 6-8 位（F30/N64/FC801 等型号含非 hex 字母
+# 不受影响）。
+_NOISE_TERM_RE = re.compile(
+    r"^[0-9a-f]{6,8}$"                    # 颜色码（casefold 后）
+    r"|^null$"                            # 调试占位 NULL
+    r"|^(?:x{2,}|[a-z]{1,2}x{3,})$")      # XXXX / JXXXX 占位
+
+
+def _is_noise_term(term: str) -> bool:
+    if not term or not term.strip():
+        return True
+    if _NOISE_TERM_RE.match(term.strip().casefold()):
+        return True
+    letters = [c for c in term if c.isalpha()]
+    # 重复字母堆积（AAAAAGHHHHHH 长 12 仅 {A,G,H} 三字母）：拟声尖叫/
+    # 键盘乱串不是专名（GLISLYA/OMELEETETE 等真实专名 ≥4 不同字母）
+    return len(letters) >= 8 and len(set(letters)) <= 3
 
 
 class GlossaryStore:
@@ -61,10 +112,25 @@ class GlossaryStore:
                     ("forbidden_translation", "TEXT DEFAULT ''"),
                     ("part_of_speech", "TEXT DEFAULT ''"),
                     ("game_specific_meaning", "TEXT DEFAULT ''"),
-                    ("usage_example", "TEXT DEFAULT ''")):
+                    ("usage_example", "TEXT DEFAULT ''"),
+                    # Phase B-3（审计 P1-4）：唯一语义 = 归一化 term +
+                    # 语境键——"moon key" 与 "Moon Key" 视为同一术语，
+                    # 异译不覆盖而是记冲突。旧库逐行回填。
+                    ("term_norm", "TEXT DEFAULT ''"),
+                    # #43 阶段 A（重构指令 §7/§17/§8）：术语置信度 + 生命
+                    # 周期 + 优先级。全带 DEFAULT，旧行零迁移。
+                    ("confidence", "REAL DEFAULT 1.0"),
+                    ("priority", "INTEGER DEFAULT 0"),
+                    ("source_ref", "TEXT DEFAULT ''")):
                 if column not in columns:
                     self.conn.execute(
                         f"ALTER TABLE glossary ADD COLUMN {column} {ddl}")
+            for row in self.conn.execute(
+                    "SELECT id, term FROM glossary"
+                    " WHERE term_norm IS NULL OR term_norm=''"):
+                self.conn.execute(
+                    "UPDATE glossary SET term_norm=? WHERE id=?",
+                    (self._conflict_key(row["term"]), row["id"]))
             self.conn.commit()
 
     def add(self, term, translation, category="术语", note="",
@@ -74,17 +140,19 @@ class GlossaryStore:
         with self._lock:
             self.conn.execute(
                 "INSERT OR REPLACE INTO glossary"
-                "(term, translation, category, note, forbidden_translation,"
-                " part_of_speech, game_specific_meaning, usage_example)"
-                " VALUES (?,?,?,?,?,?,?,?)",
-                (term, translation, category, note, forbidden_translation,
-                 part_of_speech, game_specific_meaning, usage_example))
+                "(term, term_norm, translation, category, note,"
+                " forbidden_translation, part_of_speech,"
+                " game_specific_meaning, usage_example)"
+                " VALUES (?,?,?,?,?,?,?,?,?)",
+                (term, self._conflict_key(term), translation, category, note,
+                 forbidden_translation, part_of_speech,
+                 game_specific_meaning, usage_example))
             self.conn.commit()
 
     def add_reviewed(self, term, translation, context: str = "",
                      game: str = "", forbidden_translation: str = ""
-                     ) -> str:
-        """审核沉淀专用门禁（翻译 C5）：带语境保护的词对沉淀。
+                     ) -> DepositResult:
+        """审核沉淀专用门禁（翻译 C5 + 审计 Phase B-3）：结构化终态。
 
         F22-4 三连杀实证：审核沉淀 (miss,未命中)/(encore,安可)/(Right,右拨片)
         无门禁直写全局术语库，后续游戏强制约束把正常动词用法/外语语境
@@ -93,67 +161,134 @@ class GlossaryStore:
         事后靠 quality.py 豁免补丁而非沉淀端预防。
 
         门禁规则（只作用于审核沉淀路径，人工/专名路径不受影响）：
-        - 高频普通词单 token 词对（miss/right/play/…）：拒绝全局强制，
-          返回拒绝原因（污染源——无语境可区分动词/名词/方向用法）；
-        - 其他单 token 词对：进 candidate 桶（参考不强制），跨游戏复现
-          （第二次审核沉淀）才升级 active；
-        - 组合词对（含空格）：语境充分，直接 active；
-        - 全部条目 note 载入语境（原文例句+来源游戏+分类），不再只写
+        - 高频普通词单 token 词对（miss/right/play/…）：REJECTED——
+          污染源（无语境可区分动词/名词/方向用法），不写入全局库；
+        - 其他词对（含组合词）：CANDIDATE 进候选桶（参考不强制）；
+        - 至少两个**独立游戏、相同译法** → ACTIVATED（升级 active，
+          可注入 prompt/参与质量强制）；
+        - 同（归一化 term）已有不同译法 → CONFLICT：不覆盖、不升级，
+          冲突游戏不计入激活证据（否则第二游戏可把冲突词直接顶成
+          active——P1-4 审计问题），冲突例句留档供人工复核；
+        - 全部条目 note 载入语境（原文例句+来源游戏），不再只写
           「来源 X」。
 
-        返回 "" 表示已沉淀/激活，否则为拒绝原因（调用方记入报告）。
+        唯一语义 = 归一化 term（term_norm，大小写/空白/标点无关）+
+        语境键（Phase B-4 拆出 canonical 前，以原文例句作冲突证据，
+        不参与唯一性判定——本阶段由 detect_conflicts 与人工复核兜底）。
         """
         term_s = str(term).strip()
         trans_s = str(translation).strip()
         if not term_s or not trans_s:
-            return "空词对"
+            return DepositResult(REJECTED, "空词对", term=term_s)
+        norm = self._conflict_key(term_s)
+        if not norm:
+            # 纯标点/符号（"!!!"）无归一化身份，无法跨游戏识别
+            return DepositResult(REJECTED, f"拒绝沉淀：{term_s!r} 无归一化词形",
+                                 term=term_s)
+        # 整句/长短语拒绝（2026-08-13 isolated-inhale 多语言盲区实证）：
+        # 审核把整句（'Docke an die Sauerstoffstation an' 6 词 /
+        # 'Premi Invio per continuare...' 句尾省略号）当术语建议沉淀
+        # active——术语表只收词级术语，整句是无上下文可验证的长串
+        # （多语言盲区译文不可信，'Premi' 被误译「提交奖励」），沉淀后
+        # 强制约束后续翻译必误用。≥5 词或以句尾标点结尾 → 拒绝。
+        if (len(term_s.split()) >= 5
+                or term_s.rstrip().endswith((".", "!", "?", "…", "。",
+                                             "！", "？"))):
+            return DepositResult(
+                REJECTED,
+                f"拒绝沉淀：{term_s!r} 是整句/长短语，非词级术语"
+                f"（无上下文可验证，强制约束必误用）", term=term_s)
+        # 译文含富文本标记（</color>/</>/&gt;——isolated-inhale 实证：
+        # '高亮按钮</color>以显示可用的命令列'）→ 提取的是文本片段不是
+        # 术语译名（审核把整句上下文当译名建议）
+        if "<" in trans_s or ">" in trans_s:
+            return DepositResult(
+                REJECTED,
+                f"拒绝沉淀：{term_s!r} 的译名含富文本标记"
+                f"（{trans_s[:40]!r}——文本片段不是术语译名）", term=term_s)
         if (" " not in term_s
                 and term_s.casefold() in _HIGH_FREQUENCY_WORD_PAIRS):
-            return (f"拒绝沉淀：{term_s!r} 是高频普通词单 token 词对"
-                    f"（无语境可区分动词/名词/方向用法，全局强制会误杀"
-                    f"其他语境——F22-4 三连杀实证）")
+            return DepositResult(
+                REJECTED,
+                f"拒绝沉淀：{term_s!r} 是高频普通词单 token 词对"
+                f"（无语境可区分动词/名词/方向用法，全局强制会误杀"
+                f"其他语境——F22-4 三连杀实证）", term=term_s)
         games = [g for g in re.split(r"[,，]", game or "") if g]
-        is_combo = " " in term_s
         note = f"来源 {game or '?'}"
         if context:
             note += f" · 例句: {context[:120]}"
         with self._lock:
             row = self.conn.execute(
-                "SELECT id, translation, status, games FROM glossary"
-                " WHERE term=?", (term_s,)).fetchone()
+                "SELECT id, translation, status, games, note FROM glossary"
+                " WHERE term_norm=? ORDER BY id LIMIT 1", (norm,)).fetchone()
             if row is not None:
                 existing_games = [g for g in re.split(r"[,，]", row["games"] or "")
                                   if g]
+                same_translation = (
+                    str(row["translation"] or "").casefold()
+                    == trans_s.casefold())
+                if not same_translation:
+                    # 同源异译（Phase B-3）：不覆盖、不升级、冲突游戏
+                    # 不计数。冲突证据留档（第二例句 + 冲突源），供
+                    # detect_conflicts / 人工复核；games 保持纯净
+                    # （只含确认相同译法的游戏）。
+                    conflict_note = row["note"] or ""
+                    if context:
+                        conflict_note += (f" · 冲突例句: {context[:120]}"
+                                          f"（来源 {game or '?'}）")
+                    self.conn.execute(
+                        "UPDATE glossary SET note=? WHERE id=?",
+                        (conflict_note, row["id"]))
+                    self.conn.commit()
+                    return DepositResult(
+                        CONFLICT,
+                        f"同源异译：{term_s!r} 已有译法"
+                        f" {row['translation']!r}，本次 {trans_s!r} 不覆盖"
+                        f"（冲突游戏不计入激活证据，需人工复核）",
+                        games=tuple(existing_games), term=term_s)
                 merged = list(dict.fromkeys(existing_games + games))
                 status = row["status"] or "active"
-                if status != "active" and (is_combo or len(merged) >= 2):
+                # Phase B-3（审计 P1-4）：激活必须「至少两个独立游戏、
+                # 相同译法」——同游戏重复沉淀不升级，冲突游戏更不升级。
+                if status != "active" and len(merged) >= 2:
                     status = "active"
                 # forbidden_translation 只在传入时刷新（空值不抹已有禁止译法）
+                # #43 阶段 A：跨游戏激活（status→active）置信度升 0.95
+                # （两独立游戏同译法复现，可信度高于单次审核沉淀）
+                new_confidence = 0.95 if status == "active" else 0.85
                 if forbidden_translation:
                     self.conn.execute(
                         "UPDATE glossary SET translation=?, note=?, games=?,"
-                        " status=?, context=?, forbidden_translation=?"
-                        " WHERE id=?",
+                        " status=?, context=?, forbidden_translation=?,"
+                        " confidence=? WHERE id=?",
                         (trans_s, note, ",".join(merged), status, context,
-                         forbidden_translation, row["id"]))
+                         forbidden_translation, new_confidence, row["id"]))
                 else:
                     self.conn.execute(
                         "UPDATE glossary SET translation=?, note=?, games=?,"
-                        " status=?, context=? WHERE id=?",
+                        " status=?, context=?, confidence=? WHERE id=?",
                         (trans_s, note, ",".join(merged), status, context,
-                         row["id"]))
+                         new_confidence, row["id"]))
                 self.conn.commit()
-                return "" if status == "active" else ""
-            status = "active" if is_combo else "candidate"
+                if status == "active":
+                    return DepositResult(
+                        ACTIVATED, "", games=tuple(merged), term=term_s)
+                return DepositResult(
+                    CANDIDATE, "", games=tuple(merged), term=term_s)
+            # 新词对：一律进 candidate 桶（Phase B-3 取消组合词直通
+            # active——任何词对的激活都要求跨游戏复现同译法，杜绝
+            # 单源沉淀即强制）。#43 阶段 A：审核沉淀置信度 0.85
+            # （重构指令 §7：审核通过 = 0.85，低于人工确认 1.0）
             self.conn.execute(
                 "INSERT OR REPLACE INTO glossary"
-                "(term, translation, category, note, status, games, context,"
-                " forbidden_translation)"
-                " VALUES (?,?,?,?,?,?,?,?)",
-                (term_s, trans_s, "审核术语", note, status,
-                 ",".join(games), context, forbidden_translation))
+                "(term, term_norm, translation, category, note, status,"
+                " games, context, forbidden_translation, confidence)"
+                " VALUES (?,?,?,?,?,?,?,?,?,?)",
+                (term_s, norm, trans_s, "审核术语", note, "candidate",
+                 ",".join(games), context, forbidden_translation, 0.85))
             self.conn.commit()
-            return ""
+            return DepositResult(CANDIDATE, "", games=tuple(games),
+                                 term=term_s)
 
     def update(self, term, translation, category, note=""):
         with self._lock:
@@ -235,6 +370,11 @@ class GlossaryStore:
             if not e.meta.get("quality_passed"):
                 continue
             for n in names:
+                # 噪音形态（颜色码/占位/尖叫）不是专名：学成保留映射只
+                # 污染术语表（NULL/XXXX/FFC400/AAAAAGHHHHHH 实证——UI
+                # 主题色与调试串被收进专名清单）——跨游戏必不复现
+                if _is_noise_term(n):
+                    continue
                 # 动作动词不是专名：TOSS TRASH 的 TOSS 是动作指令文本的词，
                 # 学成专名后「TOSS → TOSS」保留映射会与知识库译例
                 # 「TOSS TRASH → 丢垃圾」在 references 里冲突，模型采纳

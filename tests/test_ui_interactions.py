@@ -27,6 +27,7 @@ from hanhua.ui.pages.review_page import ReviewPage
 from hanhua.ui.pages.translate_page import TranslatePage
 from hanhua.ui.widgets import (EmptyState, MetricStrip, PageHeader,
                                StatusBadge, StatusRail)
+from conftest import await_reload
 
 
 @pytest.fixture(scope="module")
@@ -103,23 +104,20 @@ def test_nav_click_switches_stack_and_enables_nav(qapp, tmp_path):
     assert window.current_page() == "home"
     assert not window.pages["review"].isVisible() or window.stack.currentIndex() == 0
 
-    # 逐一点击每个导航项，断言页面栈切换（分组导航：group 行为
-    # 不可选标题，页面项行号来自 _NAV_PAGE_ROWS 映射）
+    # 逐一点击每个导航项，断言页面栈切换（四项简洁导航：每行都是页面项）
     from hanhua.ui.main_window import PAGES, _NAV_PAGE_ROWS
     for row, page_index in sorted(_NAV_PAGE_ROWS.items(), key=lambda kv: kv[0]):
         window.nav.setCurrentRow(row)
         assert window.current_page() == PAGES[page_index], \
             f"row {row} 应切到 {PAGES[page_index]}"
-        # 选中项图标应为品牌青色（响应验证）
+        # 选中项图标应为品牌薄荷青（响应验证）
         selected = window.nav.item(row)
         assert selected.icon() is not None and not selected.icon().isNull()
-    # 分组标题行（row 0「文本中心」）点击后回退当前页不切页
-    current_before = window.current_page()
+    # 没有不可选的分组标题行；点击首页回到 home
+    for row in range(window.nav.count()):
+        assert window.nav.item(row).flags() & Qt.ItemIsEnabled, \
+            f"row {row} 不应是分组标题"
     window.nav.setCurrentRow(0)
-    assert window.current_page() == current_before
-    # 点击「首页」（row 1）回到 home
-    home_row = next(r for r, i in _NAV_PAGE_ROWS.items() if i == 0)
-    window.nav.setCurrentRow(home_row)
     assert window.current_page() == "home"
 
 
@@ -131,39 +129,40 @@ def test_navigate_programmatic_all_pages(qapp, tmp_path):
     for name in ("home", "review", "translate", "settings"):
         window.navigate(name)
         assert window.current_page() == name, f"navigate({name}) 未到达"
-    # 命令面板打开路径（Ctrl+K 懒加载创建）
-    window._open_palette()
-    assert window.palette is not None
     window.navigate("home")
     assert window.current_page() == "home"
 
 
 def test_nav_always_available_without_project(qapp, tmp_path):
-    """未打开游戏文件夹时导航也可用：设置/审校/翻译都允许进入页面；
-    分组标题行（group）不可选中。"""
+    """未打开游戏文件夹时导航也可用：四项导航全部可进入对应页面。"""
     state = _state(tmp_path)
     window = MainWindow(state)
-    from hanhua.ui.main_window import PAGES, _NAV_PAGE_ROWS
+    from hanhua.ui.main_window import PAGES
     for row in range(window.nav.count()):
-        item = window.nav.item(row)
-        if row in _NAV_PAGE_ROWS:
-            assert item.flags() & Qt.ItemIsEnabled, f"row {row} 无项目时也应可点"
-        else:
-            assert not (item.flags() & Qt.ItemIsEnabled), f"row {row} 是分组标题"
-    for row, page_index in _NAV_PAGE_ROWS.items():
+        assert window.nav.item(row).flags() & Qt.ItemIsEnabled, \
+            f"row {row} 无项目时也应可点"
         window.nav.setCurrentRow(row)
-        assert window.current_page() == PAGES[page_index]
+        assert window.current_page() == PAGES[row]
+
+
+def test_main_navigation_is_task_focused(qapp, tmp_path):
+    """导航为五项任务：概览 / 审校 / 运行 / 翻译 / 设置；侧栏项目卡已移除。"""
+    window = MainWindow(_state(tmp_path))
+    labels = [window.nav.item(i).text() for i in range(window.nav.count())]
+    assert labels == ["概览", "审校", "运行", "翻译", "设置"]
+    assert not hasattr(window, "project_card")
 
 
 def test_statusbar_reflects_project_and_backend(qapp, tmp_path):
     state = _state(tmp_path)
     window = MainWindow(state)
     project = _FakeProject(_store(tmp_path))
-    state.switch_project(project)  # 触发 projectOpened → 状态栏刷新
+    state.switch_project(project)  # 触发 projectOpened → 顶部栏/状态栏刷新
     text = window.statusBar().currentMessage()
     assert "game" in text  # 项目名（game_dir.name）出现在状态栏
     assert "项目" in text
-    assert not window.project_card.isHidden()
+    assert not hasattr(window, "project_card")     # 侧栏项目卡已移除
+    assert window.top_bar.project_name.text() == "game"  # 项目上下文进顶部栏
 
 
 # ─────────────────────────── 首页 ───────────────────────────
@@ -213,6 +212,7 @@ def test_review_search_shortcut_focuses_search_box(qapp, tmp_path):
     state = _state(tmp_path)
     state.project = _FakeProject(_store(tmp_path))
     page = ReviewPage(state, _Window())
+    await_reload(page)
     # Ctrl+F 快捷键已注册（offscreen 下窗口焦点不可靠，验证注册与行为函数）
     shortcuts = [s for s in page.findChildren(QShortcut)
                  if s.key().matches(QKeySequence("Ctrl+F"))]
@@ -227,6 +227,7 @@ def test_review_table_edit_persists_translation(qapp, tmp_path):
     state.project = _FakeProject(store)
     page = ReviewPage(state, _Window())
     page.reload()
+    await_reload(page)
 
     model = page.model
     assert model.rowCount() >= 2
@@ -250,11 +251,12 @@ def test_review_lock_checkbox_toggles(qapp, tmp_path):
     state.project = _FakeProject(store)
     page = ReviewPage(state, _Window())
     page.reload()
+    await_reload(page)
 
     row_idx = next(
         i for i in range(page.model.rowCount())
         if page.model._rows[i]["key_path"] == "obj/quit")
-    index = page.model.index(row_idx, 5)
+    index = page.model.index(row_idx, 6)   # 锁定列（#43 阶段 G 风险列后移）
     assert page.model.flags(index) & Qt.ItemIsUserCheckable
     assert page.model.setData(index, Qt.Checked, Qt.CheckStateRole)
     persisted = next(
@@ -268,6 +270,7 @@ def test_review_filter_updates_proxy_rows(qapp, tmp_path):
     state.project = _FakeProject(_store(tmp_path))
     page = ReviewPage(state, _Window())
     page.reload()
+    await_reload(page)
 
     assert page.proxy.rowCount() == 2
     page.search_box.setText("Quit")
@@ -290,6 +293,7 @@ def test_review_context_menu_copy_does_not_crash(qapp, tmp_path):
     state.project = _FakeProject(_store(tmp_path))
     page = ReviewPage(state, _Window())
     page.reload()
+    await_reload(page)
     # 右键菜单弹出需要真实窗口事件循环，这里直接调用菜单构建逻辑
     # 验证 _show_menu 在无命中时安全返回
     page._show_menu(QPoint(-5, -5))  # 不在表格内 → 直接返回
@@ -327,6 +331,7 @@ def test_translate_buttons_state_matrix_with_project(qapp, tmp_path):
     # 手动翻译一条 → 写回可用
     store.set_manual("ui", "obj/open", "打开门")
     page._refresh_chips()
+    await_reload(page)
     assert page.write_btn.isEnabled()
 
     # 停止按钮仅在运行中可用
@@ -341,9 +346,11 @@ def test_translate_progress_chips_refresh(qapp, tmp_path):
     # 进度统计来自 stats；已翻译计数来自 store
     page._on_progress(TranslateStats(total=2, done=1, failed=0))
     assert "1 / 2" in page.progress_label.text() or page.progress_bar.value() == 50
+    await_reload(page)                              # 节流触发的 chips 刷新
     assert page.chip_done.text() == "已翻译 0"
     store.set_manual("ui", "obj/open", "打开门")
     page._refresh_chips()
+    await_reload(page)
     assert page.chip_done.text() == "已翻译 1"
 
 
@@ -360,6 +367,35 @@ def test_translate_retry_marks_failed_as_pending(qapp, tmp_path):
         e for e in store.get_entries()
         if e["key_path"] == "obj/open")
     assert persisted["status"] == "pending"
+
+
+def test_retry_failed_clears_blocked_review_state(qapp, tmp_path):
+    """#9：失败文本自处理——重试失败清审核阻断终态，重译成功不再被
+    残留 BLOCKED 拒绝（修复前只 set_status，发布门继续 fail-closed）。"""
+    import json
+    store = _store(tmp_path)
+    store.conn.execute(
+        "UPDATE entries SET status='failed', meta=? "
+        "WHERE file_id='ui' AND key_path='obj/open'",
+        (json.dumps({
+            "review_outcome": "BLOCKED", "review_blocked": True,
+            "quality_passed": False, "review_level": "MAJOR",
+            "rejected_candidate": "坏译文",
+        }),))
+    store.conn.commit()
+    state = _state(tmp_path)
+    state.project = _FakeProject(store)
+    page = TranslatePage(state, _RecordingWindow())
+    page.start = lambda: None
+    page.retry_failed()
+    persisted = next(
+        e for e in store.get_entries()
+        if e["key_path"] == "obj/open")
+    meta = json.loads(persisted["meta"] or "{}")
+    assert persisted["status"] == "pending"
+    for field in ("review_outcome", "review_blocked", "review_level",
+                  "rejected_candidate"):
+        assert field not in meta, field
 
 
 # ─────────────────────────── 设置页 ─────────────────────────
@@ -498,3 +534,28 @@ def test_status_rail_exposes_nodes_and_state_update(qapp, tmp_path):
     assert rail.nodes[0].property("status") == "running"
     rail.set_node_state("writeback", "succeeded", "通过", "置信度 高")
     assert rail.nodes[1].property("status") == "succeeded"
+
+
+# ─────────────────────── #10 档案风格提示词 ─────────────────────
+
+def test_profile_dialog_roundtrips_prompt_style(qapp):
+    """#10：档案编辑「翻译风格要求」→ 保存 → 注入 system prompt。"""
+    from hanhua.core.models import GameProfile
+    from hanhua.core.prompts import build_system_prompt
+    from hanhua.ui.profile_dialog import ProfileDialog
+
+    dialog = ProfileDialog(GameProfile(game_name="Minato"))
+    dialog.name.setText("Minato")
+    dialog.style.setPlainText("play/resume 必须译成「开始/继续」；禁止网络用语")
+
+    profile = dialog.result_profile()
+    assert profile.prompt_style == "play/resume 必须译成「开始/继续」；禁止网络用语"
+    prompt = build_system_prompt(profile, "")
+    assert "个性化风格要求" in prompt
+    assert "「开始/继续」" in prompt
+
+    # 清空 = 回退内置角色
+    dialog.style.setPlainText("   ")
+    assert dialog.result_profile().prompt_style == ""
+    prompt = build_system_prompt(dialog.result_profile(), "")
+    assert "个性化风格要求" not in prompt

@@ -146,7 +146,14 @@ def test_generate_candidates_caps_at_limit(tmp_path):
 # ── RerankService 单元（不启动真实服务） ─────────────────────────
 
 def test_rerank_service_sig():
-    """RerankService 结构与签名（构造参数、状态文件命名）。"""
+    """RerankService 结构与签名（构造参数、基座委托）。"""
+    from hanhua.core.runtime_coordinator import (
+        RuntimeCoordinator, reset_coordinators,
+    )
+
+    reset_coordinators()  # 隔离共享协调器缓存
     svc = RerankService("C:/tmp/app")
-    assert svc._state_file.name == "rerank_runtime.json"
     assert svc.startup_timeout >= 10.0
+    # 审计 Phase D：进程管理委托 RuntimeCoordinator 基座（_state_file 已移除）
+    assert isinstance(svc._coord, RuntimeCoordinator)
+    assert svc._coord.endpoints() == {}

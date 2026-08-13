@@ -4,11 +4,13 @@ import os
 import json
 from pathlib import Path
 import threading
+import time
 
 os.environ.setdefault("QT_QPA_PLATFORM", "offscreen")
 
 import pytest
 from PySide6.QtCore import QMimeData, QPoint, Qt, QUrl
+from PySide6.QtTest import QTest
 from PySide6.QtWidgets import QApplication, QLabel, QPushButton
 
 from hanhua.core.memory import ProjectStore
@@ -26,6 +28,7 @@ from hanhua.ui.main_window import MainWindow
 from hanhua.ui.pages.home_page import HomePage, _DirectoryDropZone
 from hanhua.ui.pages.review_page import EntryFilterProxy, EntryTableModel, ReviewPage
 from hanhua.ui.pages.translate_page import TranslatePage
+from conftest import await_reload
 
 
 @pytest.fixture(scope="module")
@@ -55,6 +58,44 @@ def _state(tmp_path: Path) -> AppState:
     return AppState(tmp_path, settings)
 
 
+def test_aurora_tokens_have_distinct_semantic_accents():
+    from hanhua.ui.design_system import TOKENS
+    accents = {TOKENS.accent, TOKENS.info, TOKENS.ai,
+               TOKENS.warning, TOKENS.error}
+    assert len(accents) == 5
+    assert TOKENS.page_enter_ms <= 220
+    assert TOKENS.control_height >= 36
+
+
+def test_activity_feed_caps_visible_rows(qapp):
+    from hanhua.ui.widgets import ActivityFeed
+    feed = ActivityFeed(max_items=3)
+    for index in range(5):
+        feed.append_event("success", f"原文 {index}", f"译文 {index}")
+    assert feed.count() == 3
+    assert "原文 4" in feed.latest_text()
+
+
+def test_filter_chip_is_checkable_and_accessible(qapp):
+    from hanhua.ui.widgets import FilterChip
+    chip = FilterChip("高风险", value="high")
+    assert chip.isCheckable()
+    assert chip.accessibleName() == "筛选：高风险"
+
+
+def test_safety_bar_set_ready_drives_button_and_reason(qapp):
+    from PySide6.QtWidgets import QPushButton
+    from hanhua.ui.widgets import SafetyBar
+    bar = SafetyBar(QPushButton("写回游戏"))
+    bar.set_ready(False, "仍有 4 条翻译失败")
+    assert not bar.button.isEnabled()
+    assert "4 条" in bar.reason_label.text()
+    assert bar.property("status") == "blocked"
+    bar.set_ready(True, "全部通过质量门，可以安全写回")
+    assert bar.button.isEnabled()
+    assert bar.property("status") == "ready"
+
+
 def test_home_is_accessible_five_stage_workbench_without_emoji(qapp, tmp_path):
     page = HomePage(_state(tmp_path), _Window())
 
@@ -74,6 +115,51 @@ def test_home_is_accessible_five_stage_workbench_without_emoji(qapp, tmp_path):
         page.findChildren(QLabel) + page.findChildren(QPushButton)
     ))
     assert "📁" not in visible_text
+
+
+def test_home_project_mode_hides_large_drop_zone(qapp, tmp_path):
+    page = HomePage(_state(tmp_path), _Window())
+    page.state.project = type("Project", (), {"store": _StoreRows([])})()
+    page._refresh_dashboard()
+    assert page.project_hero.isVisibleTo(page)
+    assert not page.welcome_panel.isVisibleTo(page)
+
+
+def test_reduced_motion_disables_looping_animations(qapp, monkeypatch):
+    monkeypatch.setenv("HANHUA_REDUCED_MOTION", "1")
+    from hanhua.ui.design_system import motion_enabled
+    assert motion_enabled() is False
+
+
+def test_translate_log_is_collapsed_by_default(qapp, tmp_path):
+    page = TranslatePage(_state(tmp_path), _Window())
+    assert not page.log_view.isVisibleTo(page)
+    page.log_toggle.click()
+    assert page.log_view.isVisibleTo(page)
+
+
+def test_write_safety_bar_explains_disabled_state(qapp, tmp_path):
+    page = TranslatePage(_state(tmp_path), _Window())
+    page.write_safety.set_ready(False, "仍有 4 条翻译失败")
+    assert not page.write_btn.isEnabled()
+    assert "4 条" in page.write_safety.reason_label.text()
+
+
+def test_review_filter_chip_updates_proxy(qapp, tmp_path):
+    page = ReviewPage(_state(tmp_path), _Window())
+    page.model.setEntries([
+        {"original": "A", "translation": "", "status": "pending",
+         "file_id": "f", "key_path": "a", "locked": False, "meta": {}},
+        {"original": "B", "translation": "译", "status": "translated",
+         "file_id": "f", "key_path": "b", "locked": False, "meta": {}},
+    ])
+    page.filter_chips["pending"].click()
+    assert page.proxy.rowCount() == 1
+
+
+def test_review_save_has_inline_feedback(qapp, tmp_path):
+    page = ReviewPage(_state(tmp_path), _Window())
+    assert page.save_feedback.text() == ""
 
 
 def test_translate_page_exposes_actionable_stats_and_safe_writeback_state(
@@ -121,6 +207,7 @@ def test_translate_progress_uses_actionable_scope_and_collapses_skips(
     page = TranslatePage(state, _Window())
 
     page._refresh_chips()
+    await_reload(page)
 
     assert page.progress_label.text() == "0 / 300 条"
     assert page.progress_bar.value() == 0
@@ -246,12 +333,9 @@ def test_review_page_filters_and_explains_recognition_evidence(qapp, tmp_path):
     page = ReviewPage(state, _Window())
 
     assert EntryTableModel.COLS == [
-        "状态", "来源", "原文", "译文", "失败原因", "锁定",
+        "状态", "来源", "原文", "译文", "失败原因", "风险", "锁定",
     ]
-    for control in (
-        page.search_box, page.status_combo, page.file_combo,
-        page.translate_btn,
-    ):
+    for control in (page.search_box, page.translate_btn):
         assert control.minimumHeight() >= 44
         assert control.accessibleName()
 
@@ -283,6 +367,31 @@ def test_review_page_filters_and_explains_recognition_evidence(qapp, tmp_path):
     assert proxy.index(0, 4).data() == "structural_text"
 
 
+def test_review_risk_column_and_filter(qapp, tmp_path):
+    """#43 阶段 G：风险列显示 risk_score/risk_level；risk_only 筛选
+    命中 HIGH/CRITICAL（重构指令 §13 分流语义）。"""
+    state = _state(tmp_path)
+    rows = [
+        {"file_id": "f", "key_path": "k1", "original": "Resume",
+         "translation": "简历", "status": "translated", "locked": 0,
+         "meta": json.dumps({"risk_score": 65, "risk_level": "HIGH"})},
+        {"file_id": "f", "key_path": "k2", "original": "Hello",
+         "translation": "你好", "status": "translated", "locked": 0,
+         "meta": json.dumps({})},
+    ]
+    model = EntryTableModel(state)
+    model.setEntries(rows)
+    proxy = EntryFilterProxy()
+    proxy.setSourceModel(model)
+    # 风险列：有字段 → 「65 HIGH」；无字段 → —
+    assert model.index(0, 5).data() == "65 HIGH"
+    assert model.index(1, 5).data() == "—"
+    # risk_only 筛选：HIGH 命中，无风险行被过滤
+    proxy.setFilters(risk_only=True)
+    assert proxy.rowCount() == 1
+    assert proxy.index(0, 2).data() == "Resume"
+
+
 def test_review_context_menu_uses_table_coordinate_lookup(qapp, tmp_path):
     page = ReviewPage(_state(tmp_path), _Window())
     page._show_menu(QPoint(0, 0))
@@ -305,7 +414,7 @@ def test_review_table_can_unlock_a_checked_entry(qapp, tmp_path):
     model.setEntries([row])
 
     assert model.setData(
-        model.index(0, 5), Qt.Unchecked, Qt.CheckStateRole) is True
+        model.index(0, 6), Qt.Unchecked, Qt.CheckStateRole) is True  # 锁定列
     assert recorded == [("ui.assets", "obj/1", False)]
     assert row["locked"] is False
 
@@ -357,11 +466,13 @@ def test_review_page_auto_reloads_on_construction_and_project_opened(
     # 打开项目：projectOpened 信号自动触发 reload
     state.project = type("Project", (), {"store": store})()
     state.projectOpened.emit(state.project)
+    await_reload(page)
     assert page.model.rowCount() == 1
     assert "共 1 条" in page.summary_label.text()
 
     # 条目变化信号同样触发刷新
     state.entriesChanged.emit()
+    await_reload(page)
     assert page.model.rowCount() == 1
 
 
@@ -618,6 +729,7 @@ def test_writeback_stage_progress_and_duplicate_run_guard(
     assert page.write_btn.isEnabled() is False
     queued[0].run()
     qapp.processEvents()
+    await_reload(page)                          # 写回完成后 chips 刷新
 
     log = page.log_view.toPlainText()
     assert "正在复制原游戏" in log
@@ -696,6 +808,7 @@ def test_writeback_error_remains_visible_after_worker_drain(
     page.write_back()
     queued[0].run()
     qapp.processEvents()
+    await_reload(page)                          # 写回失败后 chips 刷新
 
     assert "写回失败：disk unavailable" in page.log_view.toPlainText()
     assert page.progress_label.text() == "写回失败：disk unavailable"
@@ -954,6 +1067,7 @@ def test_refresh_chips_pending_uses_actionable_count(qapp, tmp_path):
     page = TranslatePage(state, _Window())
     page._last_stats = None
     page._refresh_chips()
+    await_reload(page)
     assert page.chip_pending.text() == "待翻译 1"
     assert page.metric_pending.value_label.text() == "1 条"
     assert "低置信度" in page.chip_pending.toolTip()
@@ -977,6 +1091,7 @@ def test_refresh_chips_pending_without_low_entries_has_no_tooltip(
     page = TranslatePage(state, _Window())
     page._last_stats = None
     page._refresh_chips()
+    await_reload(page)
     assert page.chip_pending.text() == "待翻译 1"
     assert page.chip_pending.toolTip() == ""
 
@@ -1090,6 +1205,7 @@ def test_translate_write_uses_unblocked_route_and_real_write_ready_count(
     )
 
     page._refresh_chips()
+    await_reload(page)
     assert not page.write_btn.isEnabled()
     page.write_back()
     assert not queued
@@ -1097,6 +1213,7 @@ def test_translate_write_uses_unblocked_route_and_real_write_ready_count(
 
     row["meta"] = json.dumps({"quality_passed": True, "confidence": "high"})
     page._refresh_chips()
+    await_reload(page)
     assert page.write_btn.isEnabled()
     page.write_back()
     assert len(queued) == 1
@@ -1138,3 +1255,434 @@ def test_translate_finish_exports_fail_record_automatically(
     text = exported[0].read_text(encoding="utf-8")
     assert "Hello world" in text and "request_error" in text
     assert "失败记录已导出" in toasts[-1][0]
+
+
+# ── #13/#15 回归：流水线 rail 与首页分数实时刷新 ─────────────────
+
+def test_home_rail_follows_pipeline_phase_broadcasts(qapp, tmp_path):
+    """翻译/写回阶段广播 → rail 节点实时更新（#15：此前 rail 只在
+    _render_report 扫描完成后更新一次，翻译全程卡在旧状态）。"""
+    page = HomePage(_state(tmp_path), _Window())
+    state = page.state
+
+    state.pipelinePhase.emit(
+        "translation_quality", "running", "正在翻译…", "已完成 10 / 100 条")
+    node = next(c for c in page.pipeline_cards
+                if c.step_id == "translation_quality")
+    assert node.property("status") == "running"
+    assert "10 / 100" in node.metrics_label.text()
+
+    state.pipelinePhase.emit(
+        "writeback", "succeeded", "写回验证通过", "变更文件 3 · 写入译文 42")
+    write_node = next(c for c in page.pipeline_cards
+                      if c.step_id == "writeback")
+    assert write_node.property("status") == "succeeded"
+    assert "写入译文 42" in write_node.metrics_label.text()
+
+    # 未知节点 step_id 忽略（不崩）
+    state.pipelinePhase.emit("nonsense", "running", "x", "y")
+    assert next(c for c in page.pipeline_cards
+                if c.step_id == "writeback").property("status") == "succeeded"
+
+
+def test_home_rail_follows_scan_progress_events(qapp, tmp_path):
+    """扫描阶段 PipelineEvent → rail 实时更新（#15：扫描期间 rail 不再
+    只显示「检测 running」）。"""
+    from hanhua.core.project import PipelineEvent
+    page = HomePage(_state(tmp_path), _Window())
+
+    page._on_scan_progress(PipelineEvent(
+        "detection", "succeeded", "Mono · Unity 2022"))
+    page._on_scan_progress(PipelineEvent(
+        "text_scan", "succeeded", "结构化文本文件 12 个"))
+    page._on_scan_progress(PipelineEvent(
+        "tool_analysis", "running", "Il2CppDumper 交叉验证"))
+
+    by_id = {c.step_id: c for c in page.pipeline_cards}
+    assert by_id["detection"].property("status") == "succeeded"
+    assert by_id["text_scan"].property("status") == "succeeded"
+    assert by_id["tool_analysis"].property("status") == "running"
+
+    # 非 rail 阶段（binary_scan）忽略不崩
+    page._on_scan_progress(PipelineEvent("binary_scan", "succeeded", "x"))
+
+
+def test_translate_progress_broadcasts_refresh_throttled(qapp, tmp_path):
+    """翻译批进度广播节流（#13：每 ≥1s 才 emit entriesChanged，驱动首页
+    分数边翻边刷而不刷屏；批粒度 progress 本身照常更新）。"""
+    page = TranslatePage(_state(tmp_path), _Window())
+    page.state.project = type(
+        "Project", (), {"store": _StoreRows([])})()
+    emits = []
+    page.state.entriesChanged.connect(lambda: emits.append(1))
+
+    page._on_progress(TranslateStats(total=300, done=10))
+    page._on_progress(TranslateStats(total=300, done=20))   # 1s 内 → 节流
+    assert len(emits) == 1
+
+    page._last_phase_emit = 0.0                             # 模拟时间流逝
+    page._on_progress(TranslateStats(total=300, done=30))
+    assert len(emits) == 2
+    assert page.progress_label.text() == "30 / 300 条"      # 批粒度更新不受节流
+
+
+# ── #16 回归：审校页选中映射 / reload 保留选中 / AI 面板降级 ──────
+
+def test_review_page_selection_maps_proxy_to_source(qapp, tmp_path):
+    """proxy 筛选后选中行 → 中栏显示正确的源行（#16：mapToSource 误收
+    源模型索引导致点任意行都显示同一行——Animation Track 实证）。"""
+    page = ReviewPage(_state(tmp_path), _Window())
+    page.model.setEntries([
+        {"id": 1, "file_id": "f", "key_path": "a", "original": "Alpha",
+         "translation": "", "status": "pending", "locked": False,
+         "meta": {"role": "display"}},
+        {"id": 2, "file_id": "f", "key_path": "b", "original": "Beta",
+         "translation": "", "status": "translated", "locked": False,
+         "meta": {"role": "display"}},
+        {"id": 3, "file_id": "f", "key_path": "c", "original": "Gamma",
+         "translation": "", "status": "pending", "locked": False,
+         "meta": {"role": "display"}},
+    ])
+    # 搜索 "am" 只命中 Gamma（Alpha/Beta 均不含）→ proxy 仅 1 行
+    # （源行 2）：proxy 行号 0 ≠ 源行号 2，直接覆盖错位映射
+    page.search_box.setText("am")
+    assert page.proxy.rowCount() == 1
+
+    proxy_row = 0
+    proxy_index = page.proxy.index(proxy_row, 0)
+    page.table.selectRow(proxy_row)
+    page._on_selection_changed(
+        page.table.selectionModel().selection(), None)
+
+    src_row = page.proxy.mapToSource(proxy_index).row()
+    assert src_row == 2                # 错位：proxy 0 ≠ 源 2
+    assert page._current_row == src_row
+    assert page.detail_original.text() == page.model._rows[src_row]["original"]
+    # 选中 proxy 第 0 行（源第 2 行 Gamma）→ 中栏显示 Gamma（修复前
+    # mapToSource 收源索引会把 proxy 行 0 当源行 0 → 始终显示 Alpha）
+    assert page.detail_original.text() == "Gamma"
+
+
+def test_review_page_reload_keeps_selection(qapp, tmp_path):
+    """reload 重建模型后选中焦点保留（#16：翻译/保存触发的刷新丢选中）。"""
+    store = ProjectStore(tmp_path / "m.db")
+    store.init_schema()
+    store.add_file("f", "ui.txt", "plain", "utf-8", "lf")
+    store.upsert_entries([
+        {"file_id": "f", "key_path": "a", "original": "Alpha",
+         "translation": "", "status": "pending", "meta": {}},
+        {"file_id": "f", "key_path": "b", "original": "Beta",
+         "translation": "", "status": "pending", "meta": {}},
+    ])
+    state = _state(tmp_path)
+    page = ReviewPage(state, _Window())
+    state.project = type("Project", (), {"store": store})()
+    page.reload()
+    await_reload(page)
+
+    page.table.selectRow(1)
+    page._on_selection_changed(
+        page.table.selectionModel().selection(), None)
+    selected_before = page.model._rows[page._current_row]["key_path"]
+    assert selected_before == "b"
+
+    page.reload()                                   # 模拟 entriesChanged 刷新
+    await_reload(page)
+    assert page._current_row is not None
+    assert page.model._rows[page._current_row]["key_path"] == "b"
+    assert page.detail_original.text() == "Beta"
+
+
+def test_review_page_same_text_save_and_reload_edit_protected(qapp, tmp_path):
+    """#8：相同文本也能保存 + 编辑中 reload 不覆盖编辑框（2 秒回退修复）。
+
+    - 修复前：setData 拒绝相同文本（text == 当前译文直接 return False）→
+      手动复核保存必失败，保存后回填旧值
+    - 修复前：后台翻译批完成触发 entriesChanged → reload 重建模型 →
+      正在编辑的 detail 框 ~2 秒被 store 值打回
+    """
+    store = ProjectStore(tmp_path / "m.db")
+    store.init_schema()
+    store.add_file("f", "ui.txt", "plain", "utf-8", "lf")
+    store.upsert_entries([
+        {"file_id": "f", "key_path": "a", "original": "Alpha",
+         "translation": "", "status": "translated", "meta": {}},
+        {"file_id": "f", "key_path": "b", "original": "Beta",
+         "translation": "", "status": "pending", "meta": {}},
+    ])
+    store.update_translation("f", "a", "测试译文")  # 真实翻译写入链路
+    state = _state(tmp_path)
+    page = ReviewPage(state, _Window())
+    state.project = type("Project", (), {"store": store})()
+    page.reload()
+    await_reload(page)
+    page.table.selectRow(0)
+    page._on_selection_changed(
+        page.table.selectionModel().selection(), None)
+    assert page.detail_edit.toPlainText() == "测试译文"
+
+    # ① 相同文本直接保存成功（幂等写入，不再被拒绝）
+    page.detail_edit.setPlainText("测试译文")      # 与 store 相同
+    page._save_detail()
+    row = next(r for r in store.get_entries() if r["key_path"] == "a")
+    assert row["translation"] == "测试译文"
+    assert page._detail_dirty is False
+
+    # ② 编辑中（已改未保存）reload 挂起，编辑框不被覆盖
+    page.detail_edit.setPlainText("正在输入的新译文")
+    assert page._detail_dirty is True
+    page.reload()                                   # 模拟后台批完成触发
+    assert page._pending_reload is True             # 已挂起
+    assert page.detail_edit.toPlainText() == "正在输入的新译文"
+
+    # ③ 保存后补跑挂起 reload，store 生效、编辑框保持用户输入
+    page._save_detail()
+    assert page._pending_reload is False
+    row = next(r for r in store.get_entries() if r["key_path"] == "a")
+    assert row["translation"] == "正在输入的新译文"
+    assert page.detail_edit.toPlainText() == "正在输入的新译文"
+
+    # ④ 切行 = 放弃未保存编辑；挂起 reload 补跑并填充新行
+    page.detail_edit.setPlainText("未保存的修改")
+    assert page._detail_dirty is True
+    page.reload()
+    assert page._pending_reload is True
+    page.table.selectRow(1)
+    page._on_selection_changed(
+        page.table.selectionModel().selection(), None)
+    assert page._pending_reload is False
+    assert page.detail_original.text() == "Beta"    # 新行正常显示
+
+
+# ── #19 回归：翻译完成度用待翻译总数口径 ──────────────────────
+
+def test_home_health_translate_pct_uses_actionable_scope(qapp, tmp_path):
+    """「翻译完成」分母 = 待翻译总数（translated + actionable），排除
+    skipped 与低置信度留档（#19：此前用文本总数含 skipped 致虚低）。"""
+    rows = [
+        {"id": 1, "file_id": "ui", "key_path": "a", "original": "Resume",
+         "translation": "继续", "status": "translated", "locked": 0,
+         "meta": json.dumps({"role": "display", "confidence": "high",
+                             "quality_passed": True})},
+        {"id": 2, "file_id": "ui", "key_path": "b", "original": "Quit",
+         "translation": "", "status": "pending", "locked": 0,
+         "meta": json.dumps({"role": "display", "confidence": "high"})},
+        {"id": 3, "file_id": "code", "key_path": "s1", "original": "Method1",
+         "translation": "", "status": "skipped", "locked": 0,
+         "meta": json.dumps({"role": "structural", "confidence": "low"})},
+        # 低置信度引擎消息留档：不自动翻，不算进分母
+        {"id": 4, "file_id": "engine", "key_path": "m1", "original": "error",
+         "translation": "", "status": "pending", "locked": 0,
+         "meta": json.dumps({"role": "log", "confidence": "low"})},
+    ]
+    state = _state(tmp_path)
+    page = HomePage(state, _Window())
+    state.project = type("Project", (), {"store": _StoreRows(rows)})()
+    page._refresh_dashboard()
+    await_reload(page)
+
+    assert page.stat_total.value_label.text() == "4"  # 文本总数不变
+    # 分母 = translated(1) + actionable(1) = 2 → 完成度 50%（此前 1/4 = 25%）
+    assert "1 已翻译（50%）" in page.hero_sub.text()
+
+
+def test_home_health_translate_pct_all_done_is_100(qapp, tmp_path):
+    """全部待翻译条目完成 → 100%（低置信度留档不拖低）。"""
+    rows = [
+        {"id": 1, "file_id": "ui", "key_path": "a", "original": "Resume",
+         "translation": "继续", "status": "translated", "locked": 0,
+         "meta": json.dumps({"role": "display", "confidence": "high",
+                             "quality_passed": True})},
+        {"id": 2, "file_id": "engine", "key_path": "m1", "original": "error",
+         "translation": "", "status": "pending", "locked": 0,
+         "meta": json.dumps({"role": "log", "confidence": "low"})},
+    ]
+    state = _state(tmp_path)
+    page = HomePage(state, _Window())
+    state.project = type("Project", (), {"store": _StoreRows(rows)})()
+    page._refresh_dashboard()
+    await_reload(page)
+    assert "1 已翻译（100%）" in page.hero_sub.text()
+
+
+def test_review_page_mark_pending_clears_review_state(qapp, tmp_path):
+    """#9：审校页右键「标记为待翻译（重新翻译）」清审核阻断终态。
+
+    修复前只 set_status：BLOCKED 残留继续拒绝重译成功的译文——失败
+    文本无法通过重译自己处理，只能人工改。
+    """
+    import json
+    from hanhua.core.memory import ProjectStore
+    store = ProjectStore(tmp_path / "m.db")
+    store.init_schema()
+    store.add_file("f", "ui.txt", "plain", "utf-8", "lf")
+    store.upsert_entries([
+        {"file_id": "f", "key_path": "a", "original": "Alpha",
+         "translation": "", "status": "failed", "locked": False,
+         "meta": json.dumps({
+             "review_outcome": "BLOCKED", "review_blocked": True,
+             "quality_passed": False, "review_level": "MAJOR",
+             "rejected_candidate": "坏译文", "quality_reasons": ["semantic"],
+         })},
+    ])
+    state = _state(tmp_path)
+    page = ReviewPage(state, _Window())
+    state.project = type("Project", (), {"store": store})()
+    page.reload()
+    await_reload(page)
+    row = page.model._rows[0]
+    page._mark_pending([row])
+    persisted = next(
+        e for e in store.get_entries() if e["key_path"] == "a")
+    meta = json.loads(persisted["meta"] or "{}")
+    assert persisted["status"] == "pending"
+    for field in ("review_outcome", "review_blocked", "review_level",
+                  "rejected_candidate", "quality_reasons", "review_issue"):
+        assert field not in meta, field
+
+
+def _wait_review(page, timeout_ms=8000):
+    """#38：等单条「重新审核」worker 结束（_review_running 复位）。"""
+    deadline = time.monotonic() + timeout_ms / 1000.0
+    while page._review_running and time.monotonic() < deadline:
+        QTest.qWait(10)
+    assert not page._review_running, "单条重新审核超时"
+
+
+def test_review_page_review_button_force_reviews_and_approves(
+        qapp, tmp_path, monkeypatch):
+    """#38：审校页「重新审核」按钮——人工强制送审，PASS → APPROVED。
+
+    默认分流对无信号条目直放（按钮会点了没反应）；force_send 无条件
+    送审。translator=None：PASS 直接终态 APPROVED（写回发布门放行）。
+    """
+    import json
+    from hanhua.core.models import TextEntry
+    from hanhua.core.reviewer import ReviewResult
+    store = ProjectStore(tmp_path / "m.db")
+    store.init_schema()
+    store.add_file("f", "ui.txt", "plain", "utf-8", "lf")
+    store.upsert_entries([
+        {"file_id": "f", "key_path": "a", "original": "Loading",
+         "meta": {"role": "display", "disposition": "translate"}},
+    ])
+    # 翻译完成路径写入译文（upsert_entries 不保留译文——识别器批量语义）
+    store.batch_update_translation_results([
+        TextEntry("f", "a", "Loading", translation="加载中",
+                  status="translated", meta={"quality_passed": True}),
+    ])
+    state = _state(tmp_path)
+    page = ReviewPage(state, _Window())
+    state.project = type("Project", (), {"store": store, "name": "demo"})()
+    page.reload()
+    await_reload(page)
+
+    sent = []
+    class _FakeReviewer:
+        usable = True
+        def __init__(self, app_dir=None, service=None):
+            pass
+        def review_batch(self, items, *, on_progress=None,
+                         cancellation_event=None):
+            sent.extend(items)
+            return {it.entry_id: ReviewResult(it.entry_id, level="PASS")
+                    for it in items}, 0
+    monkeypatch.setattr("hanhua.core.reviewer.SemanticReviewer",
+                        _FakeReviewer)
+
+    # 选中 translated 行 → 「重新审核」启用
+    src = page.model.index(0, 0)
+    page.table.selectRow(page.proxy.mapFromSource(src).row())
+    QTest.qWait(20)
+    assert page.review_btn.isEnabled()
+
+    page.review_btn.click()
+    _wait_review(page)
+    await_reload(page)                       # 完成后 reload 落库刷新
+    assert sent, "按钮必须强制送审（fake reviewer 被调用）"
+    persisted = next(e for e in store.get_entries() if e["key_path"] == "a")
+    meta = json.loads(persisted["meta"] or "{}")
+    assert meta.get("review_outcome") == "APPROVED"
+    assert meta.get("review_level") == "PASS"
+    assert persisted["status"] == "translated"
+
+
+def test_review_page_review_button_major_keeps_needs_revision(
+        qapp, tmp_path, monkeypatch):
+    """#38：MAJOR 判定（translator=None）→ 终态 NEEDS_REVISION。
+
+    译文保留等待人工按审核意见修改，不自动重译、不发布。
+    """
+    import json
+    from hanhua.core.models import TextEntry
+    from hanhua.core.reviewer import ReviewResult
+    store = ProjectStore(tmp_path / "m.db")
+    store.init_schema()
+    store.add_file("f", "ui.txt", "plain", "utf-8", "lf")
+    store.upsert_entries([
+        {"file_id": "f", "key_path": "a", "original": "Loading",
+         "meta": {"role": "display", "disposition": "translate"}},
+    ])
+    store.batch_update_translation_results([
+        TextEntry("f", "a", "Loading", translation="装载",
+                  status="translated", meta={"quality_passed": True}),
+    ])
+    state = _state(tmp_path)
+    page = ReviewPage(state, _Window())
+    state.project = type("Project", (), {"store": store, "name": "demo"})()
+    page.reload()
+    await_reload(page)
+
+    class _FakeReviewer:
+        usable = True
+        def __init__(self, app_dir=None, service=None):
+            pass
+        def review_batch(self, items, *, on_progress=None,
+                         cancellation_event=None):
+            return {it.entry_id: ReviewResult(
+                it.entry_id, level="MAJOR", reason="LOADING 误译为装载",
+                suggestion="加载中") for it in items}, 0
+    monkeypatch.setattr("hanhua.core.reviewer.SemanticReviewer",
+                        _FakeReviewer)
+
+    src = page.model.index(0, 0)
+    page.table.selectRow(page.proxy.mapFromSource(src).row())
+    QTest.qWait(20)
+    page.review_btn.click()
+    _wait_review(page)
+    await_reload(page)
+    persisted = next(e for e in store.get_entries() if e["key_path"] == "a")
+    meta = json.loads(persisted["meta"] or "{}")
+    assert meta.get("review_outcome") == "NEEDS_REVISION"
+    assert meta.get("review_level") == "MAJOR"
+    assert meta.get("need_revision") is True
+    assert meta.get("quality_passed") is False     # 发布门双重拒绝
+    assert persisted["translation"] == "装载"     # 译文保留等待人工修改
+    # #38：待审核筛选必须命中未收敛终态（review_issue 死代码修复——
+    # 终态统一落 review_outcome，筛选不再只看永不写入的 review_issue）
+    page.proxy.setFilters(status="needs_review")
+    assert page.proxy.rowCount() == 1
+    assert not page.filter_chips["needs_review"].isHidden()
+
+
+def test_translate_progress_throttles_chips_keeps_progress_live(qapp, tmp_path):
+    """#6：翻译 UI 卡顿——计数刷新（全量 O(N) 查库）≥1s 节流，进度条
+    仍按批粒度实时更新。修复前每批 _refresh_chips 全量扫描（万级条目
+    × 每批一次）卡住主线程。"""
+    calls = []
+    page = TranslatePage(_state(tmp_path), _Window())
+    page.state.project = type(
+        "Project", (), {"store": _StoreRows([])})()
+    page._refresh_chips = lambda: calls.append(1)
+
+    page._on_progress(TranslateStats(total=300, done=10))
+    page._on_progress(TranslateStats(total=300, done=20))   # 1s 内 → 节流
+    assert len(calls) == 1
+    # 进度条/数字批粒度实时更新（不受节流影响）
+    assert page.progress_label.text() == "20 / 300 条"
+    assert page.progress_bar.value() == 6
+
+    page._last_chip_refresh = 0.0                           # 模拟时间流逝
+    page._on_progress(TranslateStats(total=300, done=30))
+    assert len(calls) == 2
+    assert page.progress_label.text() == "30 / 300 条"

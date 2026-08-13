@@ -2628,12 +2628,18 @@ def test_il2cpp_extract_filters_engine_noise_and_classifies():
     # skip/ 前缀条目是识别 L1 审计样本（skipped 留档），真实条目断言不含它们
     by_orig = {e.original: e for e in parsed.entries
                if not e.key_path.startswith("skip/")}
-    assert set(by_orig) == {"Press E to interact", "A buffer must be provided"}
+    # #14 之后含字母的 {0} 模板不再跳过：显示形态才 medium，普通模板
+    # （"{0} bytes processed by {1}"）→ display/low 留档可见（过滤不是删除）
+    assert set(by_orig) == {"Press E to interact", "A buffer must be provided",
+                            "{0} bytes processed by {1}"}
     prompt = by_orig["Press E to interact"]
     assert (prompt.status, prompt.meta["confidence"], prompt.meta["role"]) == (
         "pending", "medium", "display")
     sentence = by_orig["A buffer must be provided"]
     assert (sentence.status, sentence.meta["confidence"]) == ("pending", "low")
+    fmt = by_orig["{0} bytes processed by {1}"]
+    assert (fmt.status, fmt.meta["confidence"], fmt.meta["reason"]) == (
+        "pending", "low", "il2cpp_format_template")
 
 
 # ── 0.25.0 修复 3：单行代码判定 / BOM / 纯符号串 / FungusLua 整文件 ──

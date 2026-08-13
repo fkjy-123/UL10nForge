@@ -348,7 +348,8 @@ def test_selected_nested_player_writeback_preserves_source_and_sibling(
         lambda *_args, **_kwargs: SimpleNamespace(noise=True))
     source_manifest = project_module._tree_hashes(source)
     sibling_manifest = project_module._tree_hashes(source / "B")
-    real_install_font = project_module.install_font_override
+    from hanhua.core.font import pipeline as pipeline_module
+    real_install_font = pipeline_module.install_font_override
     font_roots = []
 
     def scoped_install_font(game_dir, out_dir, config, **kwargs):
@@ -356,7 +357,7 @@ def test_selected_nested_player_writeback_preserves_source_and_sibling(
         return real_install_font(game_dir, out_dir, config, **kwargs)
 
     monkeypatch.setattr(
-        project_module, "install_font_override", scoped_install_font)
+        pipeline_module, "install_font_override", scoped_install_font)
 
     assert project.scan_all().unblocked is True
     project.store.set_manual("A/Localization/en.json", "title", "玩家甲")
@@ -429,14 +430,15 @@ def test_write_all_resyncs_catalog_crc_after_static_font_replace(
         project_module.mono_extractor, "extract_dll_user_strings",
         lambda *_args, **_kwargs: SimpleNamespace(noise=True))
 
+    from hanhua.core.font import pipeline as pipeline_module
     from hanhua.core.unity.font_replace import FontReplaceResult
     replaced_paths = ["A/A_Data/StreamingAssets/aa/fonts.bundle"]
     monkeypatch.setattr(
-        project_module, "install_static_fonts",
+        pipeline_module, "install_static_fonts",
         lambda *_args, **_kwargs: FontReplaceResult(
             replaced=1, replaced_paths=list(replaced_paths)))
     monkeypatch.setattr(
-        project_module, "install_font_override",
+        pipeline_module, "install_font_override",
         lambda *_args, **_kwargs: None)
     catalog_syncs = []
     monkeypatch.setattr(
@@ -1303,7 +1305,8 @@ def test_il2cpp_v29_static_writeback_uses_static_font_replace(
         raise AssertionError("unsupported IL2CPP font installer must not run")
 
     monkeypatch.setattr(
-        "hanhua.core.project.install_font_override", reject_font_install)
+        "hanhua.core.font.pipeline.install_font_override",
+        reject_font_install)
 
     result = project.write_all()
 

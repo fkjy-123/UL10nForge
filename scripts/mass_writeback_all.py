@@ -164,6 +164,12 @@ def _writeback_single(game_dir: Path, display: str, rescan: bool) -> dict:
             "provider_id": result["font"].provider_id,
             "level": result["verification"].get("font_level"),
             "runtime_verified": result["verification"].get("font_runtime_verified"),
+            # Phase 4：统一发布门终态 + 覆盖摘要（与 GUI/runner 同口径）
+            "gate": (result["verification"].get("font_gate") or {}).get("status"),
+            "coverage": (result["verification"].get("font_coverage") or {}).get(
+                "overall"),
+            # Phase 5：位图注入摘要（provider/injected/pending）
+            "bitmap": result["verification"].get("font_bitmap"),
         }
         rec["unity_version"] = report.fingerprint.unity_version
         rec["runtime"] = report.fingerprint.runtime
@@ -205,10 +211,14 @@ def main() -> None:
             json.dumps(out, ensure_ascii=False, indent=1), encoding="utf-8")
         for rec in recs:
             font = rec.get("font", {})
+            bitmap = font.get("bitmap") or {}
+            bitmap_text = (f"bmp={bitmap.get('injected')}/{bitmap.get('pending')}"
+                           if bitmap else "")
             print(f"  ok={rec['ok']} text={rec.get('text_files')} "
                   f"v2={rec.get('v2_written')}/{rec.get('v2_attempted')} "
                   f"font={font.get('provider_id')}({font.get('level')}) "
-                  f"{rec.get('elapsed_s')}s", flush=True)
+                  f"gate={font.get('gate')}({font.get('coverage')}) "
+                  f"{bitmap_text} {rec.get('elapsed_s')}s", flush=True)
             if rec.get("no_text"):
                 print("  (零可翻译文本，跳过写回)", flush=True)
             if not rec["ok"]:

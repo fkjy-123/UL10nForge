@@ -44,6 +44,11 @@ RETIRE_MAX_REJECTS = 2     # 被质量门拒绝 N 次 → 退休（不可信）
 TERM_MAX_WORDS = 1         # 单字词（Resume/miss/Save）绝不全自动应用——
                            # 语境依赖最强、术语污染源（ffs 事故），只注入
 REPORT_TOP = 5             # 报告里展示的 TOP 记忆数
+# 人工证据权重（Phase B-2，审计 §6 P1-6）：人改即终局——人工修正
+# 直接以 active + 满证据落库，不经证据积累即满足直接应用准入
+# （evidence ≥ 3 + 零拒绝 + source=manual，见 direct_applications）。
+MANUAL_EVIDENCE = 3
+
 # 单 token 英文功能词（介词/连词/助动词/高频副词）——绝不晋升 active：
 # 做全局强制词对必然误杀自然文本（honorplusplus 实证：ON→关于/on→在/
 # off→关闭 沉淀 active 后，incremental-rts 的 'Analytics is ON.'、
@@ -228,6 +233,46 @@ class AgentMemory:
             self.propose(key, value, game, role=role, source=source,
                          type_=type_)
 
+    def upsert_manual(self, key: str, value: str, game: str, *,
+                      role: str = "", morph: str = "",
+                      type_: str = "phrase") -> None:
+        """人工修正最高权重写入：覆盖/新建记忆为 active 终态。
+
+        与 propose（同译文才积累证据、异译文记 conflicts）不同——人工
+        裁决终结冲突：已有记录（含 retired / conflicts>0）一律覆盖为
+        source=manual、evidence=MANUAL_EVIDENCE、rejects=0、
+        conflicts=0、status=active，同（type, key, context_key）自此
+        以人工译文为准（人改即终局，审计 Phase B-2）。
+        """
+        if not key or not value:
+            return
+        ckey = context_key_of(role, morph)
+        now = self._now()
+        with self._lock:
+            row = self.conn.execute(
+                "SELECT games FROM memories"
+                " WHERE type=? AND key=? AND context_key=?",
+                (type_, key, ckey)).fetchone()
+            games = sorted(self._games_of(row) | {game}) if row else [game]
+            self.conn.execute(
+                "INSERT INTO memories(type, key, context_key, value, context,"
+                " evidence_count, games, source, source_game,"
+                " created_at, updated_at)"
+                " VALUES (?,?,?,?,?,?,?,?,?,?,?)"
+                " ON CONFLICT(type, key, context_key) DO UPDATE SET"
+                " value=excluded.value, evidence_count=excluded.evidence_count,"
+                " rejects=0, conflicts=0, status='active',"
+                " source='manual', source_game=excluded.source_game,"
+                " games=excluded.games, updated_at=excluded.updated_at",
+                (type_, key, ckey, value,
+                 json.dumps({"role": role, "morph": morph},
+                            ensure_ascii=False),
+                 MANUAL_EVIDENCE, json.dumps(games, ensure_ascii=False),
+                 "manual", game, now, now))
+            self._session["manual_applied"] = \
+                self._session.get("manual_applied", 0) + 1
+            self.conn.commit()
+
     # ── 运用：翻译前直接应用（混合模式的高置信档） ───────────────────
 
     def direct_applications(self, originals: list[str],
@@ -374,7 +419,7 @@ class AgentMemory:
             counts = {s: self._session.get(s, 0) for s in (
                 "proposed", "evidence_added", "confirmed", "conflicts",
                 "direct_applied", "accepted", "rejected", "retired",
-                "blocked_function_words")}
+                "blocked_function_words", "manual_applied")}
             rows = self.conn.execute(
                 "SELECT type, status, COUNT(*) c FROM memories"
                 " GROUP BY type, status ORDER BY type, status").fetchall()

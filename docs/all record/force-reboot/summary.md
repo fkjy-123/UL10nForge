@@ -40,7 +40,7 @@
 ## 3 写回
 - 文本文件：2 · 写入译文：375
 - 输入保护：True · 重开验证：True · 变更文件：32
-- 总体闸门：WARN · 字体：runtime_verified
+- 总体闸门：WARN · 字体：runtime_verified（LEGACY_EVIDENCE_UNSCOPED：旧协议证据，未含逐码点 attestation/覆盖证明）
 
 ## 4 分析（闭环）
 - [x] 失败文本根因系统彻查（三轮修复见 fix record/fix-24-25-26-force-reboot-triple-round.md）

@@ -52,7 +52,7 @@
 变更文件：63
 写入译文：475
 总体闸门：PASS
-字体层级：runtime_verified
+字体层级：runtime_verified（LEGACY_EVIDENCE_UNSCOPED：旧协议证据，未含逐码点 attestation/覆盖证明）
 清单：.hanhua-manifest.json
 备份：None
 
@@ -131,10 +131,16 @@ rawstr 扩容写入：161 条（译文 UTF-8 字节 > 原文）
 - Potato PC → 土豆电脑（9 → 12 字节，+3）
 - play → 播放（4 → 6 字节，+2）
 - host → 主机（4 → 6 字节，+2）
-- Booting up...
-Mounting system driv → 正在启动中……
-正在挂载系统驱动器……
-正在检查系统资源……<w（936 → 981 字节，+45）
+- 
+Booting up...
+
+Mounting system driv → 
+正在启动中……
+
+正在挂载系统驱动器……
+
+正在检查系统资源……
+<w（936 → 981 字节，+45）
 …（其余 141 条）
 
 回显跳过（译文==原文，未写入）：24 条
