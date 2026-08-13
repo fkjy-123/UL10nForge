@@ -1,0 +1,2797 @@
+游戏：isolated-inhale
+导出时间：2026-08-13 12:48:55
+翻译模型：Hy-MT2-1.8B-Q6_K
+失败文本：139 条
+
+────────────────────────────────────────────────────────────────
+[1] 失败文本
+来源：Isolated Inhale_Data/level0
+键位：asset#level0#3214/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=3214）
+原文：RMB
+译文：人民币
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：key_name_mistranslated（passed=False）
+翻译评价：key_name_mistranslated
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[2] 失败文本
+来源：Isolated Inhale_Data/level0
+键位：asset#level0#3502/str/16
+对象：MonoBehaviour rawstr 数组（asset_file=level0、obj=3502）
+原文：bruuuh
+译文：bruuuh
+置信度：medium
+原因：object_has_display_evidence
+角色：display
+质量评分：untranslated_text（passed=False）
+翻译评价：untranslated_text
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[3] 失败文本
+来源：Isolated Inhale_Data/level1
+键位：asset#level1#87890/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=87890）
+原文：public void Begin()
+    {
+        Clear();
+        SceneLoader.Instance.SaveData.goingSequenceName = Name;
+
+        if (Data.started)
+        {
+            Jump(Data.stage);
+            return;
+        }
+        Data.started = true;
+
+        if (Data.ended)
+        {
+            return;
+        }
+        Next();
+    }
+译文：public void Begin() {
+    Clear();
+    SceneLoader.Instance.SaveData.goingSequenceName = Name;
+    if (Data.started) {
+        Jump(Data.阶段）；
+        返回;
+    }
+    Data.started = true;
+    if (Data.ended) {
+        return;
+    }
+    Next();
+}
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：newline_mismatch、line_content_mismatch、glossary_mismatch（passed=False）
+翻译评价：newline_mismatch、line_content_mismatch、glossary_mismatch
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[4] 失败文本
+来源：Isolated Inhale_Data/level1
+键位：asset#level1#87915/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=87915）
+原文：new protected void Awake()
+    {
+        TextData = DataParser.GetSequenceTextData(dataSignature);
+        if (TextData == null)
+        {
+            TextData = new();
+            Debug.LogWarning($"Couldn't find info for the '{Name}' sequence");
+        }
+        base.Awake();
+    }
+译文：new protected void Awake()
+    {
+        TextData = DataParser.GetSequenceTextData(dataSignature);
+        if (TextData == null)
+        {
+            TextData = new();
+            Debug.LogWarning($"无法找到‘{Name}’序列的相关信息");
+        }
+        base.Awake();
+    }
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：target_script_mismatch（passed=False）
+翻译评价：target_script_mismatch
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[5] 失败文本
+来源：Isolated Inhale_Data/level1
+键位：asset#level1#87929/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=87929）
+原文：Now enter the <color=#fad096>“Test”</color> command, for example. 
+译文：现在请输入 <color=#fad096>“Test”</color>命令。
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：glossary_mismatch（passed=False）
+翻译评价：glossary_mismatch
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[6] 失败文本
+来源：Isolated Inhale_Data/level1
+键位：asset#level1#87938/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=87938）
+原文：[SerializeField] private TextAnimator commandsTextAnimator;
+译文：[SerializeField] private TextAnimator commandsTextAnimator;
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：untranslated_text（passed=False）
+翻译评价：untranslated_text
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[7] 失败文本
+来源：Isolated Inhale_Data/level1
+键位：asset#level1#87959/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=87959）
+原文：[SerializeField] private EventReference enableSound;
+译文：[SerializeField] private EventReference enableSound;
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：untranslated_text（passed=False）
+翻译评价：untranslated_text
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[8] 失败文本
+来源：Isolated Inhale_Data/level1
+键位：asset#level1#87978/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=87978）
+原文：void OnMessageEnd()
+        {
+            Timer.Create(transform, () =>
+            {
+                               pressToContinueAnimator.AnimateText(DataParser.GetStaticTextData("MSG_CONTINUE").TranslatedData.Replace("<KeyBind>", ValueConverter.GetBindingName(GameManager.Instance.InputHandler.confirmAction)));
+            }, 2f, false);
+        }
+译文：void OnMessageEnd() {
+    Timer.Create(transform, () => {
+        pressToContinueAnimator.AnimateText(DataParser.GetStaticTextData("MSG_CONTINUE").TranslatedData.Replace("<KeyBind>", ValueConverter.GetBindingName(GameManager.Instance.InputHandler.confirmAction));
+    }, 2f, false);
+}
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：newline_mismatch、line_content_mismatch、untranslated_text（passed=False）
+翻译评价：newline_mismatch、line_content_mismatch、untranslated_text
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[9] 失败文本
+来源：Isolated Inhale_Data/level1
+键位：asset#level1#87995/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=87995）
+原文：[SerializeField] private TextAnimator commandsTextAnimator;
+译文：[SerializeField] private TextAnimator commandsTextAnimator;
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：untranslated_text（passed=False）
+翻译评价：untranslated_text
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[10] 失败文本
+来源：Isolated Inhale_Data/level1
+键位：asset#level1#88014/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=88014）
+原文：public void PlaySound(string name, Vector3 position)
+    {
+        if (string.IsNullOrEmpty(name))
+        {
+            return;
+        }
+
+        if (eventsDictionary.TryGetValue(name, out var reference))
+        {
+            RuntimeManager.PlayOneShot(reference, position);
+        }
+        else
+        {
+            Debug.LogWarning($"[SoundManager] Event name '{name}' not found.");
+        }
+    }
+
+    public EventInstance CreateInstance(string name, Transform source)
+    {
+        if (eventsDictionary.TryGetValue(name, out var reference))
+        {
+            EventInstance instance = RuntimeManager.CreateInstance(reference);
+            if (source != null)
+            {
+                instance.set3DAttributes(RuntimeUtils.To3DAttributes(source));
+            }
+            return instance;
+        }
+
+
+        Debug.LogWarning($"[SoundManager] Event name '{name}' not found.");
+        return default;
+    }
+译文：public void PlaySound(string name, Vector3 position)
+{
+    if (string.IsNullOrEmpty(name))
+    {
+        return;
+    }
+    if (eventsDictionary.TryGetValue(name, out var reference))
+    {
+        RuntimeManager.PlayOneShot(reference, position);
+    } else
+    {
+        Debug.LogWarning($"[SoundManager] 事件名称 '{name}' 未找到。”);
+    }
+}
+
+public EventInstance CreateInstance(string name, Transform source)
+{
+    if (eventsDictionary.TryGetValue(name, out var reference))
+    {
+        EventInstance instance = RuntimeManager.CreateInstance(reference);
+        if (source != null)
+            // 此处应添加创建 EventInstance 实例的代码
+    }
+}
+{
+            instance.set3DAttributes(RuntimeUtils.To3DAttributes(source));
+        }
+        return instance;
+    }
+
+        Debug.LogWarning($“[SoundManager] 事件名称‘{name}’未找到。”);
+        return default;
+    }
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：placeholder_mismatch（passed=False）
+翻译评价：placeholder_mismatch
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[11] 失败文本
+来源：Isolated Inhale_Data/level1
+键位：asset#level1#88022/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=88022）
+原文：Call sign: Unknown
+Time played: 0h 0m 0s
+Earned credits: 0
+Max creadits: 0
+Deaths: 0
+Score: 0
+译文：呼号：未知
+播放时间：0小时0分钟0秒
+获得的积分：0
+最大积分：0
+死亡次数：0
+得分：0
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：glossary_mismatch（passed=False）
+翻译评价：glossary_mismatch
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[12] 失败文本
+来源：Isolated Inhale_Data/level1
+键位：asset#level1#88030/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=88030）
+原文：public float interval = 1f;
+    public float blinkTime = 0.1f;
+译文：public float interval = 1f;
+public float blinkTime = 0.1f;
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：newline_mismatch、untranslated_text（passed=False）
+翻译评价：newline_mismatch、untranslated_text
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[13] 失败文本
+来源：Isolated Inhale_Data/level1
+键位：asset#level1#88056/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=88056）
+原文：[SerializeField] private EventReference enableSound;
+译文：[SerializeField] private EventReference enableSound;
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：untranslated_text（passed=False）
+翻译评价：untranslated_text
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[14] 失败文本
+来源：Isolated Inhale_Data/level1
+键位：asset#level1#88141/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=88141）
+原文：The normal temperature ranges from <color=#43B1F8>14°C</color> to <color=#43B1F8>32°C</color> or from <color=#43B1F8>57.2°F</color> to <color=#43B1F8>89.6°F</color>.
+
+[WIP]<color=#f11>[!]</color> Elevated temperatures combined with high oxygen concentrations create a high risk of fire.
+译文：正常温度范围在 <color=#43B1F8>14°C</color> 到 <color=#43B1F8>32°C</color>，或 <color=#43B1F8>57.2°F</color> 到 <color=#43B1F8>89.6°F</color> 之间。
+
+[WIP]<color=#f11>[!]</color> 高温加上高氧浓度会显著增加火灾风险。
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：key_name_mistranslated（passed=False）
+翻译评价：key_name_mistranslated
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[15] 失败文本
+来源：Isolated Inhale_Data/level1
+键位：asset#level1#88368/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=88368）
+原文：RMB
+译文：人民币
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：key_name_mistranslated（passed=False）
+翻译评价：key_name_mistranslated
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[16] 失败文本
+来源：Isolated Inhale_Data/level1
+键位：asset#level1#88426/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=88426）
+原文：• <color=#ff6666>2112</color> - Fuel supply request. 
+  Price: 2600 credits
+
+• <color=#ff6666>4433</color> - Oxygen supply request. 
+  Price: 1600 credits
+
+• <color=#ff6666>8585</color> - Food supply request.
+  Price: 1250 credits
+译文：• <color=#ff6666>2112</color> – 燃料供应请求。
+价格：2600信用点
+
+• <color=#ff6666>4433</color> – 氧气供应请求。
+价格：1600信用点
+
+• <color=#ff6666>8585</color> – 食物供应请求。
+价格：1250信用点
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：glossary_mismatch（passed=False）
+翻译评价：glossary_mismatch
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[17] 失败文本
+来源：Isolated Inhale_Data/level1
+键位：asset#level1#88427/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=88427）
+原文：• <color=#ff6666>2112</color> - Fuel supply request. 
+  Price: 2600 credits
+
+• <color=#ff6666>4433</color> - Oxygen supply request. 
+  Price: 1600 credits
+
+• <color=#ff6666>8585</color> - Food supply request.
+  Price: 1250 credits
+译文：• <color=#ff6666>2112</color> – 燃料供应请求。
+价格：2600信用点
+
+• <color=#ff6666>4433</color> – 氧气供应请求。
+价格：1600信用点
+
+• <color=#ff6666>8585</color> – 食物供应请求。
+价格：1250信用点
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：glossary_mismatch（passed=False）
+翻译评价：glossary_mismatch
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[18] 失败文本
+来源：Isolated Inhale_Data/level1
+键位：asset#level1#96737/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=96737）
+原文：ff&?
+译文：ff&?
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：target_script_mismatch（passed=False）
+翻译评价：target_script_mismatch
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[19] 失败文本
+来源：Isolated Inhale_Data/level1
+键位：asset#level1#96739/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=96739）
+原文：ff&?
+译文：ff&?
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：target_script_mismatch（passed=False）
+翻译评价：target_script_mismatch
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[20] 失败文本
+来源：Isolated Inhale_Data/level1
+键位：asset#level1#96745/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=level1、obj=96745）
+原文：ff&?
+译文：ff&?
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：target_script_mismatch（passed=False）
+翻译评价：target_script_mismatch
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[21] 失败文本
+来源：Isolated Inhale_Data/resources.assets
+键位：asset#resources.assets#1367/json/LBL_DIALOG_2
+对象：—（asset_file=resources.assets、obj=1367）
+原文：Now enter the <color=#fad096>“Test”</color> command, for example.
+译文：现在输入 <color=#fad096>“Test”</color> 命令，例如。
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：glossary_mismatch（passed=False）
+翻译评价：glossary_mismatch
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[22] 失败文本
+来源：Isolated Inhale_Data/resources.assets
+键位：asset#resources.assets#1367/json/TXT_END_STATS
+对象：—（asset_file=resources.assets、obj=1367）
+原文：Call sign: <0>
+Time played: <1>
+Earned credits: <2>
+Max credits: <3>
+Deaths: <4>
+Score: <5>
+译文：呼气方式：隔离式吸气
+援助：援助
+移动倾斜度：移动倾斜度
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：newline_mismatch、line_content_mismatch、glossary_mismatch（passed=False）
+翻译评价：newline_mismatch、line_content_mismatch、glossary_mismatch
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[23] 失败文本
+来源：Isolated Inhale_Data/resources.assets
+键位：asset#resources.assets#1367/json/CMD_JOB_RES
+对象：—（asset_file=resources.assets、obj=1367）
+原文：Your job is to maintain space stations. All the necessary information is contained in the <Key>task chips</>, which can be obtained from the <Key>task dispenser</>.
+
+For completing the tasks you will receive <Key>credits</>, which you can spend however you like, but keep our main <Command>goal</> in mind.
+译文：您的任务是维护空间站。所有必要的信息都存储在<Key>任务芯片</>中，这些芯片可以从<Key>任务分发器</>中获取。
+
+完成任务后，您将获得<Key>信用点</>，您可以随意使用这些信用点，但请牢记我们的主要<命令>目标》。<Command>
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：glossary_mismatch（passed=False）
+翻译评价：glossary_mismatch
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[24] 失败文本
+来源：Isolated Inhale_Data/resources.assets
+键位：asset#resources.assets#1367/json/SEQ_ANY_REWARD_THIRD
+对象：—（asset_file=resources.assets、obj=1367）
+原文：There were some technical issues last time, so I'm giving you reward for two tasks:
+• <Key><Credits></> credits;
+• <Key>One more</> ship hull upgrade.
+
+<Inactive>Performing memory calibration...</>
+Subject <Nickname> continued to perform the tasks despite the lack of a reward.
+译文：上次存在一些技术问题，因此我会给予你两项任务的奖励：
+• <Key><Credits></> 信用点；
+• <Key>再升级一艘》舰体。
+
+<Inactive>正在执行内存校准……</Nickname继续执行任务，尽管没有获得任何奖励。<Nickname>
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：placeholder_mismatch、rich_text_mismatch、newline_mismatch、line_content_mismatch、glossary_mismatch（passed=False）
+翻译评价：placeholder_mismatch、rich_text_mismatch、newline_mismatch、line_content_mismatch、glossary_mismatch
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[25] 失败文本
+来源：Isolated Inhale_Data/resources.assets
+键位：asset#resources.assets#1367/json/LBL_PILOT_MANUAL_5C
+对象：—（asset_file=resources.assets、obj=1367）
+原文：• <color=#ff6666>2112</color> - Fuel supply request.
+  Price: 2600 credits
+
+• <color=#ff6666>4433</color> - Oxygen supply request.
+  Price: 1600 credits
+
+• <color=#ff6666>8585</color> - Food supply request.
+  Price: 1250 credits
+译文：• <color=#ff6666>2112</color> - 燃料供应请求。
+价格：2600信用点
+
+• <color=#ff6666>4433</color> - 氧气供应请求。
+价格：1600信用点
+
+• <color=#ff6666>8585</color> - 食物供应请求。
+价格：1250信用点
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：glossary_mismatch（passed=False）
+翻译评价：glossary_mismatch
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[26] 失败文本
+来源：Isolated Inhale_Data/resources.assets
+键位：asset#resources.assets#1368/json/SEQ_FUEL_OBJ_REFINE
+对象：—（asset_file=resources.assets、obj=1368）
+原文：Raffinere malm
+译文：Raffinere malm
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：untranslated_text（passed=False）
+翻译评价：untranslated_text
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[27] 失败文本
+来源：Isolated Inhale_Data/resources.assets
+键位：asset#resources.assets#1368/json/LBL_SAVE
+对象：—（asset_file=resources.assets、obj=1368）
+原文：Å lagre
+译文：Å lagre
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：untranslated_text（passed=False）
+翻译评价：untranslated_text
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[28] 失败文本
+来源：Isolated Inhale_Data/resources.assets
+键位：asset#resources.assets#1368/json/LBL_DIALOG_2
+对象：—（asset_file=resources.assets、obj=1368）
+原文：Nå skrive inn <color=#fad096>“Test”</color> kommandoen for eksempel.
+译文：现在请输入例如<color=#fad096>“Test”</color>命令。
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：glossary_mismatch（passed=False）
+翻译评价：glossary_mismatch
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[29] 失败文本
+来源：Isolated Inhale_Data/resources.assets
+键位：asset#resources.assets#1368/json/ITEM_TRASH
+对象：—（asset_file=resources.assets、obj=1368）
+原文：Søppel
+译文：Søppel
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：target_script_mismatch（passed=False）
+翻译评价：target_script_mismatch
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[30] 失败文本
+来源：Isolated Inhale_Data/resources.assets
+键位：asset#resources.assets#1368/json/CMD_JOB_RES
+对象：—（asset_file=resources.assets、obj=1368）
+原文：Your job is to maintain space stations. All the necessary information is contained in the <Key>task chips</>, which can be obtained from the <Key>task dispenser</>.
+
+For completing the tasks you will receive <Key>credits</>, which you can spend however you like, but keep our main <Command>goal</> in mind.
+译文：您的任务是维护空间站。所有必要的信息都存储在<Key>任务芯片</>中，这些芯片可以从<Key>任务分发器</>中获取。
+
+完成任务后，您将获得<Key>信用点</>，您可以随意使用这些信用点，但请牢记我们的主要<命令>目标》。<Command>
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：glossary_mismatch（passed=False）
+翻译评价：glossary_mismatch
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[31] 失败文本
+来源：Isolated Inhale_Data/resources.assets
+键位：asset#resources.assets#1368/json/SEQ_ANY_REWARD_THIRD
+对象：—（asset_file=resources.assets、obj=1368）
+原文：There were some technical issues last time, so I'm giving you reward for two tasks:
+• <Key><Credits></> credits;
+• <Key>One more</> ship hull upgrade.
+
+<Inactive>Performing memory calibration...</>
+Subject <Nickname> continued to perform the tasks despite the lack of a reward.
+译文：上次存在一些技术问题，因此我会给予你两项任务的奖励：
+• <Key><Credits></> 信用点；
+• <Key>再升级一艘》舰体。
+
+<Inactive>正在执行内存校准……</Nickname继续执行任务，尽管没有获得任何奖励。<Nickname>
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：placeholder_mismatch、rich_text_mismatch、newline_mismatch、line_content_mismatch、glossary_mismatch（passed=False）
+翻译评价：placeholder_mismatch、rich_text_mismatch、newline_mismatch、line_content_mismatch、glossary_mismatch
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[32] 失败文本
+来源：Isolated Inhale_Data/resources.assets
+键位：asset#resources.assets#1368/json/LBL_PILOT_MANUAL_5C
+对象：—（asset_file=resources.assets、obj=1368）
+原文：• <color=#ff6666>2112</color> - Fuel supply request.
+  Price: 2600 credits
+
+• <color=#ff6666>4433</color> - Oxygen supply request.
+  Price: 1600 credits
+
+• <color=#ff6666>8585</color> - Food supply request.
+  Price: 1250 credits
+译文：• <color=#ff6666>2112</color> - 燃料供应请求。
+价格：2600信用点
+
+• <color=#ff6666>4433</color> - 氧气供应请求。
+价格：1600信用点
+
+• <color=#ff6666>8585</color> - 食物供应请求。
+价格：1250信用点
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：glossary_mismatch（passed=False）
+翻译评价：glossary_mismatch
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[33] 失败文本
+来源：Isolated Inhale_Data/resources.assets
+键位：asset#resources.assets#1369/json/SEQ_TUT_OBJ_LOAD
+对象：—（asset_file=resources.assets、obj=1369）
+原文：Load printed chip using the decryption table
+译文：使用解密表打印芯片负载
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：glossary_mismatch（passed=False）
+翻译评价：glossary_mismatch
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[34] 失败文本
+来源：Isolated Inhale_Data/resources.assets
+键位：asset#resources.assets#1369/json/LBL_DIALOG_2
+对象：—（asset_file=resources.assets、obj=1369）
+原文：Now enter the <color=#fad096>“Test”</color> command, for example.
+译文：现在输入 <color=#fad096>“Test”</color> 命令，例如。
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：glossary_mismatch（passed=False）
+翻译评价：glossary_mismatch
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[35] 失败文本
+来源：Isolated Inhale_Data/resources.assets
+键位：asset#resources.assets#1369/json/TXT_END_STATS
+对象：—（asset_file=resources.assets、obj=1369）
+原文：Call sign: <0>
+Time played: <1>
+Earned credits: <2>
+Max credits: <3>
+Deaths: <4>
+Score: <5>
+译文：呼气方式：隔离式吸气
+援助：援助
+移动倾斜度：移动倾斜度
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：newline_mismatch、line_content_mismatch、glossary_mismatch（passed=False）
+翻译评价：newline_mismatch、line_content_mismatch、glossary_mismatch
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[36] 失败文本
+来源：Isolated Inhale_Data/resources.assets
+键位：asset#resources.assets#1369/json/SEQ_ANY_REWARD_THIRD
+对象：—（asset_file=resources.assets、obj=1369）
+原文：There were some technical issues last time, so I'm giving you reward for two tasks:
+• <Key><Credits></> credits;
+• <Key>One more</> ship hull upgrade.
+
+<Inactive>Performing memory calibration...
+Subject <Nickname> continued to perform the tasks despite the lack of a reward.</>
+
+You have reached the required level of trust. Check the chip dispenser for the <Task>special task</>.
+译文：上次存在一些技术问题，因此我会给你两个任务的奖励：
+• <Key><Credits></> 信用点；
+• <Key>再升级一次</>船体。
+
+<Inactive>正在执行内存校准……
+用户<Nickname>尽管没有获得奖励，仍然继续完成了任务。
+
+你已经达到了所需的信任等级。请检查芯片分配器中的<Task>特殊任务</>。
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：glossary_mismatch（passed=False）
+翻译评价：glossary_mismatch
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[37] 失败文本
+来源：Isolated Inhale_Data/resources.assets
+键位：asset#resources.assets#1369/json/LBL_PILOT_MANUAL_5C
+对象：—（asset_file=resources.assets、obj=1369）
+原文：• <color=#ff6666>2112</color> - Fuel supply request.
+  Price: 2600 credits
+
+• <color=#ff6666>4433</color> - Oxygen supply request.
+  Price: 1600 credits
+
+• <color=#ff6666>8585</color> - Food supply request.
+  Price: 1250 credits
+译文：• <color=#ff6666>2112</color> - 燃料供应请求。
+价格：2600信用点
+
+• <color=#ff6666>4433</color> - 氧气供应请求。
+价格：1600信用点
+
+• <color=#ff6666>8585</color> - 食物供应请求。
+价格：1250信用点
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：glossary_mismatch（passed=False）
+翻译评价：glossary_mismatch
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[38] 失败文本
+来源：Isolated Inhale_Data/resources.assets
+键位：asset#resources.assets#1369/json/CMD_JOB_RES
+对象：—（asset_file=resources.assets、obj=1369）
+原文：Your job is to maintain space stations. All the necessary information is contained in the <Key>task chips</>, which can be obtained from the <Key>task dispenser</>.
+
+For completing the tasks you will receive <Key>credits</>, which you can spend however you like, but keep our main <Command>goal</> in mind.
+译文：您的任务是维护空间站。所有必要的信息都存储在<Key>任务芯片</>中，这些芯片可以从<Key>任务分发器</>中获取。
+
+完成任务后，您将获得<Key>信用点</>，您可以随意使用这些信用点，但请牢记我们的主要<命令>目标》。<Command>
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：glossary_mismatch（passed=False）
+翻译评价：glossary_mismatch
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[39] 失败文本
+来源：Isolated Inhale_Data/resources.assets
+键位：asset#resources.assets#1370/json/TXT_CREDITS
+对象：—（asset_file=resources.assets、obj=1370）
+原文：<Key><Credits></> Doubloons!
+译文：<Key><Credits></> doubloons!
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：untranslated_text（passed=False）
+翻译评价：untranslated_text
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[40] 失败文本
+来源：Isolated Inhale_Data/resources.assets
+键位：asset#resources.assets#1370/json/LBL_RESOLUTION
+对象：—（asset_file=resources.assets、obj=1370）
+原文：PIRATE RESOLUTION!
+译文：海盗对策！
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：glossary_mismatch（passed=False）
+翻译评价：glossary_mismatch
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[41] 失败文本
+来源：Isolated Inhale_Data/resources.assets
+键位：asset#resources.assets#1370/json/CMD_JOB_RES
+对象：—（asset_file=resources.assets、obj=1370）
+原文：Your job is to maintain space stations. All the necessary information is contained in the <Key>task chips</>, which can be obtained from the <Key>task dispenser</>.
+
+For completing the tasks you will receive <Key>credits</>, which you can spend however you like, but keep our main <Command>goal</> in mind.
+译文：您的任务是维护空间站。所有必要的信息都存储在<Key>任务芯片</>中，这些芯片可以从<Key>任务分发器</>中获取。
+
+完成任务后，您将获得<Key>信用点</>，您可以随意使用这些信用点，但请牢记我们的主要<命令>目标》。<Command>
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：glossary_mismatch（passed=False）
+翻译评价：glossary_mismatch
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[42] 失败文本
+来源：Isolated Inhale_Data/resources.assets
+键位：asset#resources.assets#1370/json/SEQ_ANY_REWARD_THIRD
+对象：—（asset_file=resources.assets、obj=1370）
+原文：There were some technical issues last time, so I'm giving you reward for two tasks:
+• <Key><Credits></> credits;
+• <Key>One more</> ship hull upgrade.
+
+<Inactive>Performing memory calibration...</>
+Subject <Nickname> continued to perform the tasks despite the lack of a reward.
+译文：上次存在一些技术问题，因此我会给予你两项任务的奖励：
+• <Key><Credits></> 信用点；
+• <Key>再升级一艘》舰体。
+
+<Inactive>正在执行内存校准……</Nickname继续执行任务，尽管没有获得任何奖励。<Nickname>
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：placeholder_mismatch、rich_text_mismatch、newline_mismatch、line_content_mismatch、glossary_mismatch（passed=False）
+翻译评价：placeholder_mismatch、rich_text_mismatch、newline_mismatch、line_content_mismatch、glossary_mismatch
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[43] 失败文本
+来源：Isolated Inhale_Data/resources.assets
+键位：asset#resources.assets#1370/json/LBL_PILOT_MANUAL_5C
+对象：—（asset_file=resources.assets、obj=1370）
+原文：• <color=#ff6666>2112</color> - Fuel supply request.
+  Price: 2600 credits
+
+• <color=#ff6666>4433</color> - Oxygen supply request.
+  Price: 1600 credits
+
+• <color=#ff6666>8585</color> - Food supply request.
+  Price: 1250 credits
+译文：• <color=#ff6666>2112</color> - 燃料供应请求。
+价格：2600信用点
+
+• <color=#ff6666>4433</color> - 氧气供应请求。
+价格：1600信用点
+
+• <color=#ff6666>8585</color> - 食物供应请求。
+价格：1250信用点
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：glossary_mismatch（passed=False）
+翻译评价：glossary_mismatch
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[44] 失败文本
+来源：Isolated Inhale_Data/resources.assets
+键位：asset#resources.assets#1371/json/SEQ_FUEL_OBJ_DOCK
+对象：—（asset_file=resources.assets、obj=1371）
+原文：Attracca nella stazione del carburante
+译文：停靠在燃料站
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：key_name_mistranslated（passed=False）
+翻译评价：key_name_mistranslated
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[45] 失败文本
+来源：Isolated Inhale_Data/resources.assets
+键位：asset#resources.assets#1371/json/SEQ_INV_DATA
+对象：—（asset_file=resources.assets、obj=1371）
+原文：Contiene informazioni conosciute del recente incidente sulla nave.
+译文：包含关于最近发生的船只事故的相关信息。
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：key_name_mistranslated（passed=False）
+翻译评价：key_name_mistranslated
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[46] 失败文本
+来源：Isolated Inhale_Data/resources.assets
+键位：asset#resources.assets#1371/json/SEQ_TUT_OBJ_PRINT
+对象：—（asset_file=resources.assets、obj=1371）
+原文：Stampa il chip del compito
+译文：打印任务的芯片
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：key_name_mistranslated（passed=False）
+翻译评价：key_name_mistranslated
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[47] 失败文本
+来源：Isolated Inhale_Data/resources.assets
+键位：asset#resources.assets#1371/json/DESC_CHIP
+对象：—（asset_file=resources.assets、obj=1371）
+原文：In genere usato per caricare una sequenza specifica di azioni del sistema d'equipaggiamento del pilota.
+译文：通常用于执行飞行员设备系统的一系列特定操作。
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：key_name_mistranslated（passed=False）
+翻译评价：key_name_mistranslated
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[48] 失败文本
+来源：Isolated Inhale_Data/resources.assets
+键位：asset#resources.assets#1371/json/LBL_ENTER_FILE_NAME
+对象：—（asset_file=resources.assets、obj=1371）
+原文：Inserisci il nome del salvataggio...
+译文：请输入拯救的名称...
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：key_name_mistranslated（passed=False）
+翻译评价：key_name_mistranslated
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[49] 失败文本
+来源：Isolated Inhale_Data/resources.assets
+键位：asset#resources.assets#1371/json/TXT_TREATMENT
+对象：—（asset_file=resources.assets、obj=1371）
+原文：Non hai bisogno del trattamento
+译文：你不需要处理这个
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：key_name_mistranslated（passed=False）
+翻译评价：key_name_mistranslated
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[50] 失败文本
+来源：Isolated Inhale_Data/resources.assets
+键位：asset#resources.assets#1371/json/LBL_DEV_WARNING
+对象：—（asset_file=resources.assets、obj=1371）
+原文：Questa è una versione in via di sviluppo del gioco che non riflette del tutto l'esperienza desiderata e potrebbe contenere gravi errori.
+译文：这是一款正在开发中的游戏版本，未能完全体现期望的游戏体验，且可能包含严重错误。
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：key_name_mistranslated（passed=False）
+翻译评价：key_name_mistranslated
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[51] 失败文本
+来源：Isolated Inhale_Data/resources.assets
+键位：asset#resources.assets#1371/json/TXT_ROW
+对象：—（asset_file=resources.assets、obj=1371）
+原文：Premi <Key><KeyBind></> per cambiare sezione. Usa la <Key>rotellina del mouse</> per controllare la distanza.
+译文：按<键><键绑定></>可以切换章节。使用鼠标滚轮按钮来控制距离。
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：placeholder_mismatch、rich_text_mismatch、key_name_mistranslated（passed=False）
+翻译评价：placeholder_mismatch、rich_text_mismatch、key_name_mistranslated
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[52] 失败文本
+来源：Isolated Inhale_Data/resources.assets
+键位：asset#resources.assets#1371/json/CMD_GOAL_RES
+对象：—（asset_file=resources.assets、obj=1371）
+原文：Per ora, il tuo obbiettivo è di preparare la tua nave per una missione importante. Secondo i miei calcoli, con lo stato dell'equipaggiamento attuale della nave, la chance di successo è all'incirca del <Key><Success>%</>.
+译文：目前，你的目标是为你的船准备一次重要的任务。根据我的计算，以当前船上的装备状况来看，成功的机会大约为 <Key><Success>%”。
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：key_name_mistranslated（passed=False）
+翻译评价：key_name_mistranslated
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[53] 失败文本
+来源：Isolated Inhale_Data/resources.assets
+键位：asset#resources.assets#1371/json/CMD_JOB_RES
+对象：—（asset_file=resources.assets、obj=1371）
+原文：Il tuo obbiettivo è di mantenere le stazioni spaziali. Tutte le informazioni necessarie sono contenute nei <Key>chip dei compiti</> che possono essere ottenuti dal <Key>distributore di compiti</>
+
+Per completare i compiti riceverai dei <Key>crediti</> che potrai spendere come vuoi, ma tenendo il nostro <Command>obbiettivo</> in mente.
+译文：你的目标是维持太空站的运行。所有必要的信息都包含在“任务芯片”中，这些芯片可以从“任务分发器”中获取。
+
+完成任务后，你将获得“信用点”，你可以随意使用，但请记住我们的“目标”。
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：placeholder_mismatch、rich_text_mismatch（passed=False）
+翻译评价：placeholder_mismatch、rich_text_mismatch
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[54] 失败文本
+来源：Isolated Inhale_Data/resources.assets
+键位：asset#resources.assets#1371/json/TXT_SUBJECT_DATA
+对象：—（asset_file=resources.assets、obj=1371）
+原文：DATI DEL SOGGETTO:
+
+Identificatore: <Key>0<Index></>
+Stato: <Command>Pronto</>
+Nominativo: <Inactive><Name></>
+译文：对象信息：
+
+标识符：<Key>0<Index></>
+状态：<Command>就绪</>
+名称：<Inactive><Name></>
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：key_name_mistranslated（passed=False）
+翻译评价：key_name_mistranslated
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[55] 失败文本
+来源：Isolated Inhale_Data/resources.assets
+键位：asset#resources.assets#1371/json/SEQ_ANY_OBJ_RWRD
+对象：—（asset_file=resources.assets、obj=1371）
+原文：Il rapporto sul completamento del compito è disponibile dal bot assistente
+译文：关于任务完成的报告可以通过助手机器人获取。
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：key_name_mistranslated（passed=False）
+翻译评价：key_name_mistranslated
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[56] 失败文本
+来源：Isolated Inhale_Data/resources.assets
+键位：asset#resources.assets#1371/json/SEQ_ANY_REWARD_THIRD
+对象：—（asset_file=resources.assets、obj=1371）
+原文：There were some technical issues last time, so I'm giving you reward for two tasks:
+• <Key><Credits></> credits;
+• <Key>One more</> ship hull upgrade.
+
+<Inactive>Performing memory calibration...</>
+Subject <Nickname> continued to perform the tasks despite the lack of a reward.
+译文：上次存在一些技术问题，因此我会给予你两项任务的奖励：
+• <Key><Credits></> 信用点；
+• <Key>再升级一艘》舰体。
+
+<Inactive>正在执行内存校准……</Nickname继续执行任务，尽管没有获得任何奖励。<Nickname>
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：placeholder_mismatch、rich_text_mismatch、newline_mismatch、line_content_mismatch、glossary_mismatch（passed=False）
+翻译评价：placeholder_mismatch、rich_text_mismatch、newline_mismatch、line_content_mismatch、glossary_mismatch
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[57] 失败文本
+来源：Isolated Inhale_Data/resources.assets
+键位：asset#resources.assets#1371/json/LBL_PILOT_MANUAL_5C
+对象：—（asset_file=resources.assets、obj=1371）
+原文：• <color=#ff6666>2112</color> - Fuel supply request.
+  Price: 2600 credits
+
+• <color=#ff6666>4433</color> - Oxygen supply request.
+  Price: 1600 credits
+
+• <color=#ff6666>8585</color> - Food supply request.
+  Price: 1250 credits
+译文：• <color=#ff6666>2112</color> - 燃料供应请求。
+价格：2600信用点
+
+• <color=#ff6666>4433</color> - 氧气供应请求。
+价格：1600信用点
+
+• <color=#ff6666>8585</color> - 食物供应请求。
+价格：1250信用点
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：glossary_mismatch（passed=False）
+翻译评价：glossary_mismatch
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[58] 失败文本
+来源：Isolated Inhale_Data/resources.assets
+键位：asset#resources.assets#1372/json/LBL_TYPE_HELP
+对象：—（asset_file=resources.assets、obj=1372）
+原文：<color=#323232>输入 'help' 来显示所有可用的命令</color>
+译文：<color=#323232>输入 'help' 可查看所有可用命令</color>
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：target_script_mismatch（passed=False）
+翻译评价：target_script_mismatch
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[59] 失败文本
+来源：Isolated Inhale_Data/resources.assets
+键位：asset#resources.assets#1373/json/LBL_TYPE_HELP
+对象：—（asset_file=resources.assets、obj=1373）
+原文：<color=#323232>введіть 'help', щоб показати всі доступні команди</color>
+译文：<color=#323232>输入 'help' 即可查看所有可用命令</color>
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：target_script_mismatch（passed=False）
+翻译评价：target_script_mismatch
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[60] 失败文本
+来源：Isolated Inhale_Data/resources.assets
+键位：asset#resources.assets#1373/json/LBL_ENERGY_ERROR
+对象：—（asset_file=resources.assets、obj=1373）
+原文：п2 > п1 > п3 > п1 > п3 > п2
+译文：п2 > п1 > п3 > п1 > п3 > п2
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：target_script_mismatch（passed=False）
+翻译评价：target_script_mismatch
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[61] 失败文本
+来源：Isolated Inhale_Data/resources.assets
+键位：asset#resources.assets#1373/json/SEQ_INV_RES_FINAL
+对象：—（asset_file=resources.assets、obj=1373）
+原文：Я оновив <Task>термінал завдань</>, тож обирай будь-яку задачу й ставай до роботи.
+
+Зачекай... Трохи не забув — на випадок космічних піратів просто натисни кнопку самознищення.
+译文：我已更新了<任务终端>，现在你可以选择任何任务并开始工作了。
+
+请稍等……我差点忘了——以防遇到太空海盗，可以直接按下自毁按钮。
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：placeholder_mismatch、rich_text_mismatch（passed=False）
+翻译评价：placeholder_mismatch、rich_text_mismatch
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[62] 失败文本
+来源：Isolated Inhale_Data/resources.assets
+键位：asset#resources.assets#1373/json/SEQ_TUT_START_REPLY
+对象：—（asset_file=resources.assets、obj=1373）
+原文：Ласкаво просимо до Суднобудівної станції, <Key><Name></>! Тепер ти один з пілотів корпорації. 
+<Inactive>Той факт що цей наступний суб'єкт може читати та ходити, вже дає мені надію...</>
+
+Твій корабель чекає на тебе у стикувальному відсіку
+
+Проте, спочатку тобі необхідно продовжити слідувати навчальному протоколу та завантажити <Task>перше завдання</>.
+译文：欢迎来到造船站，<Key><Name></>！现在你已成为公司的飞行员之一。
+<Inactive>能够阅读、行走的这个生物让我感到希望……</Inactive>
+你的飞船正在交接区等待着你。
+不过，首先你需要继续遵循训练计划，并完成<Task>第一个任务》。
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：placeholder_mismatch、rich_text_mismatch（passed=False）
+翻译评价：placeholder_mismatch、rich_text_mismatch
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[63] 失败文本
+来源：Isolated Inhale_Data/resources.assets
+键位：asset#resources.assets#1373/json/LBL_PILOT_MANUAL_5C
+对象：—（asset_file=resources.assets、obj=1373）
+原文：• <color=#ff6666>2112</color> - Fuel supply request.
+  Price: 2600 credits
+
+• <color=#ff6666>4433</color> - Oxygen supply request.
+  Price: 1600 credits
+
+• <color=#ff6666>8585</color> - Food supply request.
+  Price: 1250 credits
+译文：• <color=#ff6666>2112</color> - 燃料供应请求。
+价格：2600信用点
+
+• <color=#ff6666>4433</color> - 氧气供应请求。
+价格：1600信用点
+
+• <color=#ff6666>8585</color> - 食物供应请求。
+价格：1250信用点
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：glossary_mismatch（passed=False）
+翻译评价：glossary_mismatch
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[64] 失败文本
+来源：Isolated Inhale_Data/resources.assets
+键位：asset#resources.assets#1374/json/LBL_DIALOG_2
+对象：—（asset_file=resources.assets、obj=1374）
+原文：Now enter the <color=#fad096>“Test”</color> command, for example.
+译文：现在输入 <color=#fad096>“Test”</color> 命令，例如。
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：glossary_mismatch（passed=False）
+翻译评价：glossary_mismatch
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[65] 失败文本
+来源：Isolated Inhale_Data/resources.assets
+键位：asset#resources.assets#1374/json/TXT_END_STATS
+对象：—（asset_file=resources.assets、obj=1374）
+原文：Call sign: <0>
+Time played: <1>
+Earned credits: <2>
+Max credits: <3>
+Deaths: <4>
+Score: <5>
+译文：呼气方式：隔离式吸气
+援助：援助
+移动倾斜度：移动倾斜度
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：newline_mismatch、line_content_mismatch、glossary_mismatch（passed=False）
+翻译评价：newline_mismatch、line_content_mismatch、glossary_mismatch
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[66] 失败文本
+来源：Isolated Inhale_Data/resources.assets
+键位：asset#resources.assets#1374/json/TXT_INVESTIGATION
+对象：—（asset_file=resources.assets、obj=1374）
+原文：Der Log-Chip wurde erfolgreich ausgeliefert
+
+Deine Belohnung: <Key><Credits></> Guthaben.
+Außerdem erhältst du Zugriff auf die <Key>Werkstatt</> und die <Key>Luftschleuse</> dieser Station.
+
+Beginne nun, weitere Aufgaben über den <Task>Aufgabenverteiler</> zu erledigen.
+
+译文：日志芯片已成功交付。
+
+你的奖励：<Key><Credits></> 余额。此外，你还可以使用该站点的 <Key>维修室</> 和 <Key>气闸</>。
+
+现在开始，通过 <任务分配器>来完成其他任务。<Task>
+
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：newline_mismatch、line_content_mismatch（passed=False）
+翻译评价：newline_mismatch、line_content_mismatch
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[67] 失败文本
+来源：Isolated Inhale_Data/resources.assets
+键位：asset#resources.assets#1374/json/CMD_JOB_RES
+对象：—（asset_file=resources.assets、obj=1374）
+原文：Your job is to maintain space stations. All the necessary information is contained in the <Key>task chips</>, which can be obtained from the <Key>task dispenser</>.
+
+For completing the tasks you will receive <Key>credits</>, which you can spend however you like, but keep our main <Command>goal</> in mind.
+译文：您的任务是维护空间站。所有必要的信息都存储在<Key>任务芯片</>中，这些芯片可以从<Key>任务分发器</>中获取。
+
+完成任务后，您将获得<Key>信用点</>，您可以随意使用这些信用点，但请牢记我们的主要<命令>目标》。<Command>
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：glossary_mismatch（passed=False）
+翻译评价：glossary_mismatch
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[68] 失败文本
+来源：Isolated Inhale_Data/resources.assets
+键位：asset#resources.assets#1374/json/SEQ_ANY_REWARD_THIRD
+对象：—（asset_file=resources.assets、obj=1374）
+原文：There were some technical issues last time, so I'm giving you reward for two tasks:
+• <Key><Credits></> credits;
+• <Key>One more</> ship hull upgrade.
+
+<Inactive>Performing memory calibration...</>
+Subject <Nickname> continued to perform the tasks despite the lack of a reward.
+译文：上次存在一些技术问题，因此我会给予你两项任务的奖励：
+• <Key><Credits></> 信用点；
+• <Key>再升级一艘》舰体。
+
+<Inactive>正在执行内存校准……</Nickname继续执行任务，尽管没有获得任何奖励。<Nickname>
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：placeholder_mismatch、rich_text_mismatch、newline_mismatch、line_content_mismatch、glossary_mismatch（passed=False）
+翻译评价：placeholder_mismatch、rich_text_mismatch、newline_mismatch、line_content_mismatch、glossary_mismatch
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[69] 失败文本
+来源：Isolated Inhale_Data/resources.assets
+键位：asset#resources.assets#1374/json/LBL_PILOT_MANUAL_5C
+对象：—（asset_file=resources.assets、obj=1374）
+原文：• <color=#ff6666>2112</color> - Fuel supply request.
+  Price: 2600 credits
+
+• <color=#ff6666>4433</color> - Oxygen supply request.
+  Price: 1600 credits
+
+• <color=#ff6666>8585</color> - Food supply request.
+  Price: 1250 credits
+译文：• <color=#ff6666>2112</color> - 燃料供应请求。
+价格：2600信用点
+
+• <color=#ff6666>4433</color> - 氧气供应请求。
+价格：1600信用点
+
+• <color=#ff6666>8585</color> - 食物供应请求。
+价格：1250信用点
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：glossary_mismatch（passed=False）
+翻译评价：glossary_mismatch
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[70] 失败文本
+来源：Isolated Inhale_Data/resources.assets
+键位：asset#resources.assets#1375/json/DESC_METAL_PIPE
+对象：—（asset_file=resources.assets、obj=1375）
+原文：metāla_caurule.mp3
+译文：metāla_caurule.mp3
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：target_script_mismatch（passed=False）
+翻译评价：target_script_mismatch
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[71] 失败文本
+来源：Isolated Inhale_Data/resources.assets
+键位：asset#resources.assets#1375/json/ITEM_KIWI_JUICE
+对象：—（asset_file=resources.assets、obj=1375）
+原文：Kivi sula
+译文：Kivi sula
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：untranslated_text（passed=False）
+翻译评价：untranslated_text
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[72] 失败文本
+来源：Isolated Inhale_Data/resources.assets
+键位：asset#resources.assets#1375/json/ITEM_OXYGEN_CANDLE
+对象：—（asset_file=resources.assets、obj=1375）
+原文：Skābekļa svece
+译文：Skābekļa svece
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：untranslated_text（passed=False）
+翻译评价：untranslated_text
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[73] 失败文本
+来源：Isolated Inhale_Data/resources.assets
+键位：asset#resources.assets#1375/json/LBL_KEY_QUICK_LOAD
+对象：—（asset_file=resources.assets、obj=1375）
+原文：Ātra ielāde
+译文：Ātra ielāde
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：target_script_mismatch（passed=False）
+翻译评价：target_script_mismatch
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[74] 失败文本
+来源：Isolated Inhale_Data/resources.assets
+键位：asset#resources.assets#1375/json/LBL_KEY_QUICK_SAVE
+对象：—（asset_file=resources.assets、obj=1375）
+原文：Ātra saglabāšana
+译文：Átra saglabāšana
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：target_script_mismatch（passed=False）
+翻译评价：target_script_mismatch
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[75] 失败文本
+来源：Isolated Inhale_Data/resources.assets
+键位：asset#resources.assets#1375/json/LBL_POST_PROC
+对象：—（asset_file=resources.assets、obj=1375）
+原文：Pēcapstrāde
+译文：Pēcapstrāde
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：target_script_mismatch（passed=False）
+翻译评价：target_script_mismatch
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[76] 失败文本
+来源：Isolated Inhale_Data/resources.assets
+键位：asset#resources.assets#1375/json/LBL_TARGET_FPS
+对象：—（asset_file=resources.assets、obj=1375）
+原文：Mērķa kadru nomaiņas ātrums
+译文：Mērķa kadru nomaiņas ātrums
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：untranslated_text（passed=False）
+翻译评价：untranslated_text
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[77] 失败文本
+来源：Isolated Inhale_Data/resources.assets
+键位：asset#resources.assets#1375/json/TXT_NOT_HUNGRY
+对象：—（asset_file=resources.assets、obj=1375）
+原文：Neesi izsalcis
+译文：Neesi izsalcis
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：untranslated_text（passed=False）
+翻译评价：untranslated_text
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[78] 失败文本
+来源：Isolated Inhale_Data/resources.assets
+键位：asset#resources.assets#1375/json/SEQ_ANY_REWARD_THIRD
+对象：—（asset_file=resources.assets、obj=1375）
+原文：There were some technical issues last time, so I'm giving you reward for two tasks:
+• <Key><Credits></> credits;
+• <Key>One more</> ship hull upgrade.
+
+<Inactive>Performing memory calibration...</>
+Subject <Nickname> continued to perform the tasks despite the lack of a reward.
+译文：上次存在一些技术问题，因此我会给予你两项任务的奖励：
+• <Key><Credits></> 信用点；
+• <Key>再升级一艘》舰体。
+
+<Inactive>正在执行内存校准……</Nickname继续执行任务，尽管没有获得任何奖励。<Nickname>
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：placeholder_mismatch、rich_text_mismatch、newline_mismatch、line_content_mismatch、glossary_mismatch（passed=False）
+翻译评价：placeholder_mismatch、rich_text_mismatch、newline_mismatch、line_content_mismatch、glossary_mismatch
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[79] 失败文本
+来源：Isolated Inhale_Data/resources.assets
+键位：asset#resources.assets#1375/json/LBL_PILOT_MANUAL_5C
+对象：—（asset_file=resources.assets、obj=1375）
+原文：• <color=#ff6666>2112</color> - Fuel supply request.
+  Price: 2600 credits
+
+• <color=#ff6666>4433</color> - Oxygen supply request.
+  Price: 1600 credits
+
+• <color=#ff6666>8585</color> - Food supply request.
+  Price: 1250 credits
+译文：• <color=#ff6666>2112</color> - 燃料供应请求。
+价格：2600信用点
+
+• <color=#ff6666>4433</color> - 氧气供应请求。
+价格：1600信用点
+
+• <color=#ff6666>8585</color> - 食物供应请求。
+价格：1250信用点
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：glossary_mismatch（passed=False）
+翻译评价：glossary_mismatch
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[80] 失败文本
+来源：Isolated Inhale_Data/resources.assets
+键位：asset#resources.assets#1375/json/SEQ_FUEL_TITLE
+对象：—（asset_file=resources.assets、obj=1375）
+原文：Šķidrais zelts
+译文：Šķidrais zelts
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：untranslated_text（passed=False）
+翻译评价：untranslated_text
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[81] 失败文本
+来源：Isolated Inhale_Data/resources.assets
+键位：asset#resources.assets#1375/json/LBL_SEALED
+对象：—（asset_file=resources.assets、obj=1375）
+原文：Slēgtas telpas
+译文：Slēgtas telpas
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：untranslated_text（passed=False）
+翻译评价：untranslated_text
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[82] 失败文本
+来源：Isolated Inhale_Data/resources.assets
+键位：asset#resources.assets#1376/json/LBL_TRANSLATION
+对象：—（asset_file=resources.assets、obj=1376）
+原文：Tradução
+译文：音量
+船
+垂直同步
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：newline_mismatch、line_content_mismatch（passed=False）
+翻译评价：newline_mismatch、line_content_mismatch
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[83] 失败文本
+来源：Isolated Inhale_Data/resources.assets
+键位：asset#resources.assets#1376/json/SEQ_ANY_REWARD_THIRD
+对象：—（asset_file=resources.assets、obj=1376）
+原文：There were some technical issues last time, so I'm giving you reward for two tasks:
+• <Key><Credits></> credits;
+• <Key>One more</> ship hull upgrade.
+
+<Inactive>Performing memory calibration...</>
+Subject <Nickname> continued to perform the tasks despite the lack of a reward.
+译文：上次存在一些技术问题，因此我会给予你两项任务的奖励：
+• <Key><Credits></> 信用点；
+• <Key>再升级一艘》舰体。
+
+<Inactive>正在执行内存校准……</Nickname继续执行任务，尽管没有获得任何奖励。<Nickname>
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：placeholder_mismatch、rich_text_mismatch、newline_mismatch、line_content_mismatch、glossary_mismatch（passed=False）
+翻译评价：placeholder_mismatch、rich_text_mismatch、newline_mismatch、line_content_mismatch、glossary_mismatch
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[84] 失败文本
+来源：Isolated Inhale_Data/resources.assets
+键位：asset#resources.assets#1376/json/LBL_PILOT_MANUAL_5C
+对象：—（asset_file=resources.assets、obj=1376）
+原文：• <color=#ff6666>2112</color> - Fuel supply request.
+  Price: 2600 credits
+
+• <color=#ff6666>4433</color> - Oxygen supply request.
+  Price: 1600 credits
+
+• <color=#ff6666>8585</color> - Food supply request.
+  Price: 1250 credits
+译文：• <color=#ff6666>2112</color> - 燃料供应请求。
+价格：2600信用点
+
+• <color=#ff6666>4433</color> - 氧气供应请求。
+价格：1600信用点
+
+• <color=#ff6666>8585</color> - 食物供应请求。
+价格：1250信用点
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：glossary_mismatch（passed=False）
+翻译评价：glossary_mismatch
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[85] 失败文本
+来源：Isolated Inhale_Data/resources.assets
+键位：asset#resources.assets#1377/json/CMD_GOAL
+对象：—（asset_file=resources.assets、obj=1377）
+原文：Por ahora, tu objetivo es preparar tu nave para una misión importante. De acuerdo a mis cálculos, con el actual estado del equipo de la nave, tu probabilidad de éxito esta al rededor De <Key><Success>%</>.
+译文：目前，你的目标是为执行一项重要任务准备好飞船。根据我的计算，以当前飞船设备的状态来看，你成功的概率大约在 <Key><Success>% 之间。
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：key_name_mistranslated（passed=False）
+翻译评价：key_name_mistranslated
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[86] 失败文本
+来源：Isolated Inhale_Data/resources.assets
+键位：asset#resources.assets#1377/json/TXT_EXIT_GAME
+对象：—（asset_file=resources.assets、obj=1377）
+原文：¿Estás seguro de que quieres salir del juego?
+译文：你确定想要退出游戏吗？
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：key_name_mistranslated（passed=False）
+翻译评价：key_name_mistranslated
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[87] 失败文本
+来源：Isolated Inhale_Data/resources.assets
+键位：asset#resources.assets#1377/json/TXT_INTRO
+对象：—（asset_file=resources.assets、obj=1377）
+原文：<Task>SUJETO 01</>
+Status: <Inactive>Desconocida</>
+
+<Error>Error</>: Ejecución del protocolo no puede ser continuada. Se requiere un nuevo ejecutor.
+
+Reiniciando la ejecución del <Key>protocolo T</>. Preparando una cámara criogénica.
+ 
+<Task>SUJETO 02</>
+Status: <Command>Listo</>
+译文：<任务>SUJETO 01</>
+状态：<非活动>未知</>
+
+<错误>错误</>：无法继续执行该协议。需要新的执行者。
+
+重新启动<Key>协议 T</>的执行。正在准备冷冻相机。
+
+<任务>SUJETO 02</>
+状态：<命令>准备就绪</>
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：placeholder_mismatch、rich_text_mismatch、key_name_mistranslated（passed=False）
+翻译评价：placeholder_mismatch、rich_text_mismatch、key_name_mistranslated
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[88] 失败文本
+来源：Isolated Inhale_Data/resources.assets
+键位：asset#resources.assets#1377/json/SEQ_FUEL_DATA
+对象：—（asset_file=resources.assets、obj=1377）
+原文：Describe la rutina común del trabajador de la estación de combustible.
+译文：描述加油站工作人员的常见日常事务。
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：key_name_mistranslated（passed=False）
+翻译评价：key_name_mistranslated
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[89] 失败文本
+来源：Isolated Inhale_Data/resources.assets
+键位：asset#resources.assets#1377/json/SEQ_NRG_DATA
+对象：—（asset_file=resources.assets、obj=1377）
+原文：Describe la rutina común del trabajador de la estación solar.
+译文：描述太阳能站工作人员的常见日常。
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：key_name_mistranslated（passed=False）
+翻译评价：key_name_mistranslated
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[90] 失败文本
+来源：Isolated Inhale_Data/resources.assets
+键位：asset#resources.assets#1377/json/SEQ_OXY_DATA
+对象：—（asset_file=resources.assets、obj=1377）
+原文：Describe la rutina común del trabajador de la estación de oxígeno.
+译文：描述氧气站工人的日常工作流程。
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：key_name_mistranslated（passed=False）
+翻译评价：key_name_mistranslated
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[91] 失败文本
+来源：Isolated Inhale_Data/resources.assets
+键位：asset#resources.assets#1377/json/SEQ_OXY_OBJ_CONTROL
+对象：—（asset_file=resources.assets、obj=1377）
+原文：Ve al panel de control del sellado
+译文：现在进入封印控制面板
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：key_name_mistranslated（passed=False）
+翻译评价：key_name_mistranslated
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[92] 失败文本
+来源：Isolated Inhale_Data/resources.assets
+键位：asset#resources.assets#1377/json/LBL_MODERATION
+对象：—（asset_file=resources.assets、obj=1377）
+原文：Moderación
+译文：Moderación
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：target_script_mismatch（passed=False）
+翻译评价：target_script_mismatch
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[93] 失败文本
+来源：Isolated Inhale_Data/resources.assets
+键位：asset#resources.assets#1377/json/DESC_CHIP
+对象：—（asset_file=resources.assets、obj=1377）
+原文：Se utiliza normalmente para cargar una secuencia específica de acciones en el sistema de equipo del piloto.
+译文：通常用于在飞行员的设备系统中加载特定的操作序列。
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：key_name_mistranslated（passed=False）
+翻译评价：key_name_mistranslated
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[94] 失败文本
+来源：Isolated Inhale_Data/resources.assets
+键位：asset#resources.assets#1377/json/DESC_SPACE_SUIT
+对象：—（asset_file=resources.assets、obj=1377）
+原文：Un traje espacial para caminatas espaciales. Sellado para aislarlo del entorno externo.
+译文：一种用于太空行走的太空服。表面有涂层，可将其与外部环境隔离。
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：key_name_mistranslated（passed=False）
+翻译评价：key_name_mistranslated
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[95] 失败文本
+来源：Isolated Inhale_Data/resources.assets
+键位：asset#resources.assets#1377/json/DESC_TROPHY
+对象：—（asset_file=resources.assets、obj=1377）
+原文："Piloto del Año" Premio Otorgado al piloto con llamado Kirillfff.
+译文：“年度最佳飞行员”奖授予了名为Kirillfff的飞行员。
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：key_name_mistranslated（passed=False）
+翻译评价：key_name_mistranslated
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[96] 失败文本
+来源：Isolated Inhale_Data/resources.assets
+键位：asset#resources.assets#1377/json/LBL_DIALOG_1
+对象：—（asset_file=resources.assets、obj=1377）
+原文：Aquí se muestran todos los comandos disponibles. Su disponibilidad depende del cumplimiento de ciertas condiciones.
+
+No es necesario introducir ningún comando exactamente igual. Debe ser al menos un <color=#aaff>70% similar</color> a alguno de los comandos de la lista.
+译文：这里显示了所有可用的命令。其可用性取决于是否满足某些条件。
+
+不需要输入完全相同的命令。它必须与列表中的某个命令至少有<color=#aaff>70%</color>相似。
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：key_name_mistranslated（passed=False）
+翻译评价：key_name_mistranslated
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[97] 失败文本
+来源：Isolated Inhale_Data/resources.assets
+键位：asset#resources.assets#1377/json/LBL_ENTER_FILE_NAME
+对象：—（asset_file=resources.assets、obj=1377）
+原文：Introduzca el nombre del archivo a guardar...
+译文：请输入要保存的文件的名称...
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：key_name_mistranslated（passed=False）
+翻译评价：key_name_mistranslated
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[98] 失败文本
+来源：Isolated Inhale_Data/resources.assets
+键位：asset#resources.assets#1377/json/LBL_MUSIC_NOTE
+对象：—（asset_file=resources.assets、obj=1377）
+原文：Nota: coloca tus archivos .mp3, .wav o .ogg en esta carpeta para poder escucharlos mediante la radio del juego.
+译文：注意：请将你的 .mp3、.wav 或 .ogg 文件放入此文件夹中，以便通过游戏中的收音机来播放它们。
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：key_name_mistranslated（passed=False）
+翻译评价：key_name_mistranslated
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[99] 失败文本
+来源：Isolated Inhale_Data/resources.assets
+键位：asset#resources.assets#1377/json/LBL_DEV_WARNING
+对象：—（asset_file=resources.assets、obj=1377）
+原文：Esta es una versión en desarrollo del juego que no refleja completamente la experiencia prevista y puede contener errores críticos.
+译文：这是正在开发中的游戏版本，可能无法完全反映预期的体验，且可能包含严重错误。
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：key_name_mistranslated（passed=False）
+翻译评价：key_name_mistranslated
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[100] 失败文本
+来源：Isolated Inhale_Data/resources.assets
+键位：asset#resources.assets#1377/json/TXT_INVESTIGATION
+对象：—（asset_file=resources.assets、obj=1377）
+原文：El chip de registro se ha entregado correctamente.
+
+Tu recompensa: <Key><Credits></> créditos.
+También te otorgo acceso al <Key>taller</> y a la <Key>esclusa</> de esta estación.
+
+Ahora, comienza a completar más tareas a través del <Task>dispensador de tareas</>.
+译文：注册芯片已正确交付。
+
+你的奖励：<Key><Credits></>信用点。
+我还授予你使用本站中的<Key>机床》和<Key>气闸》的权限。
+
+现在，开始通过<任务分发器>完成更多任务吧。<Task>
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：key_name_mistranslated（passed=False）
+翻译评价：key_name_mistranslated
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[101] 失败文本
+来源：Isolated Inhale_Data/resources.assets
+键位：asset#resources.assets#1377/json/TXT_ROUTINE
+对象：—（asset_file=resources.assets、obj=1377）
+原文：Recompensa:
+• Créditos <Key><Credits></>
+• Mejora <Key>adicional del casco de la nave</>
+译文：奖励：
+• 积分 <键><积分></>
+• 提升 <舰船护甲额外增益>
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：placeholder_mismatch、rich_text_mismatch、key_name_mistranslated（passed=False）
+翻译评价：placeholder_mismatch、rich_text_mismatch、key_name_mistranslated
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[102] 失败文本
+来源：Isolated Inhale_Data/resources.assets
+键位：asset#resources.assets#1377/json/LBL_SOLAR_PANEL
+对象：—（asset_file=resources.assets、obj=1377）
+原文：Rotación del panel solar
+译文：太阳能板旋转
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：key_name_mistranslated（passed=False）
+翻译评价：key_name_mistranslated
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[103] 失败文本
+来源：Isolated Inhale_Data/resources.assets
+键位：asset#resources.assets#1377/json/CMD_GOAL_RES
+对象：—（asset_file=resources.assets、obj=1377）
+原文：Por ahora, tu objetivo es preparar tu nave para una misión importante. De acuerdo a mis cálculos, con el actual estado del equipo de la nave, tu probabilidad de éxito esta al rededor De <Key><Success>%</>.
+译文：目前，你的目标是为执行一项重要任务准备好飞船。根据我的计算，以当前飞船设备的状态来看，你成功的概率大约在 <Key><Success>% 之间。
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：key_name_mistranslated（passed=False）
+翻译评价：key_name_mistranslated
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[104] 失败文本
+来源：Isolated Inhale_Data/resources.assets
+键位：asset#resources.assets#1377/json/CMD_JOB_RES
+对象：—（asset_file=resources.assets、obj=1377）
+原文：Tu trabajo consiste en el mantenimiento de las estaciones espaciales. Toda la información necesaria se encuentra en los <Key>chips de tarea </>, que puedes obtener del <Key>dispensador de tareas </>.
+
+Al completar las tareas, recibirás <Key>créditos</>, que puedes gastar como quieras, pero recuerda nuestro <Command>objetivo principal</>.
+译文：你的工作就是维护太空站。所有必要的信息都存储在<任务芯片>中，你可以从<任务分配器>中获取这些芯片。
+
+完成任务后，你将获得<信用点>，你可以随意使用它们。但请记住我们的<主要目标>。
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：placeholder_mismatch、rich_text_mismatch、key_name_mistranslated（passed=False）
+翻译评价：placeholder_mismatch、rich_text_mismatch、key_name_mistranslated
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[105] 失败文本
+来源：Isolated Inhale_Data/resources.assets
+键位：asset#resources.assets#1377/json/SEQ_ANY_REWARD_THIRD
+对象：—（asset_file=resources.assets、obj=1377）
+原文：There were some technical issues last time, so I'm giving you reward for two tasks:
+• <Key><Credits></> credits;
+• <Key>One more</> ship hull upgrade.
+
+<Inactive>Performing memory calibration...</>
+Subject <Nickname> continued to perform the tasks despite the lack of a reward.
+译文：上次存在一些技术问题，因此我会给予你两项任务的奖励：
+• <Key><Credits></> 信用点；
+• <Key>再升级一艘》舰体。
+
+<Inactive>正在执行内存校准……</Nickname继续执行任务，尽管没有获得任何奖励。<Nickname>
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：placeholder_mismatch、rich_text_mismatch、newline_mismatch、line_content_mismatch、glossary_mismatch（passed=False）
+翻译评价：placeholder_mismatch、rich_text_mismatch、newline_mismatch、line_content_mismatch、glossary_mismatch
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[106] 失败文本
+来源：Isolated Inhale_Data/resources.assets
+键位：asset#resources.assets#1377/json/LBL_PILOT_MANUAL_5C
+对象：—（asset_file=resources.assets、obj=1377）
+原文：• <color=#ff6666>2112</color> - Fuel supply request.
+  Price: 2600 credits
+
+• <color=#ff6666>4433</color> - Oxygen supply request.
+  Price: 1600 credits
+
+• <color=#ff6666>8585</color> - Food supply request.
+  Price: 1250 credits
+译文：• <color=#ff6666>2112</color> - 燃料供应请求。
+价格：2600信用点
+
+• <color=#ff6666>4433</color> - 氧气供应请求。
+价格：1600信用点
+
+• <color=#ff6666>8585</color> - 食物供应请求。
+价格：1250信用点
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：glossary_mismatch（passed=False）
+翻译评价：glossary_mismatch
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[107] 失败文本
+来源：Isolated Inhale_Data/resources.assets
+键位：asset#resources.assets#1378/json/LBL_DIALOG_2
+对象：—（asset_file=resources.assets、obj=1378）
+原文：Now enter the <color=#fad096>“Test”</color> command, for example.
+译文：现在输入 <color=#fad096>“Test”</color> 命令，例如。
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：glossary_mismatch（passed=False）
+翻译评价：glossary_mismatch
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[108] 失败文本
+来源：Isolated Inhale_Data/resources.assets
+键位：asset#resources.assets#1378/json/TXT_END_STATS
+对象：—（asset_file=resources.assets、obj=1378）
+原文：Call sign: <0>
+Time played: <1>
+Earned credits: <2>
+Max credits: <3>
+Deaths: <4>
+Score: <5>
+译文：呼气方式：隔离式吸气
+援助：援助
+移动倾斜度：移动倾斜度
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：newline_mismatch、line_content_mismatch、glossary_mismatch（passed=False）
+翻译评价：newline_mismatch、line_content_mismatch、glossary_mismatch
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[109] 失败文本
+来源：Isolated Inhale_Data/resources.assets
+键位：asset#resources.assets#1378/json/CMD_JOB_RES
+对象：—（asset_file=resources.assets、obj=1378）
+原文：Your job is to maintain space stations. All the necessary information is contained in the <Key>task chips</>, which can be obtained from the <Key>task dispenser</>.
+
+For completing the tasks you will receive <Key>credits</>, which you can spend however you like, but keep our main <Command>goal</> in mind.
+译文：您的任务是维护空间站。所有必要的信息都存储在<Key>任务芯片</>中，这些芯片可以从<Key>任务分发器</>中获取。
+
+完成任务后，您将获得<Key>信用点</>，您可以随意使用这些信用点，但请牢记我们的主要<命令>目标》。<Command>
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：glossary_mismatch（passed=False）
+翻译评价：glossary_mismatch
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[110] 失败文本
+来源：Isolated Inhale_Data/resources.assets
+键位：asset#resources.assets#1378/json/SEQ_ANY_REWARD_THIRD
+对象：—（asset_file=resources.assets、obj=1378）
+原文：There were some technical issues last time, so I'm giving you reward for two tasks:
+• <Key><Credits></> credits;
+• <Key>One more</> ship hull upgrade.
+
+<Inactive>Performing memory calibration...</>
+Subject <Nickname> continued to perform the tasks despite the lack of a reward.
+译文：上次存在一些技术问题，因此我会给予你两项任务的奖励：
+• <Key><Credits></> 信用点；
+• <Key>再升级一艘》舰体。
+
+<Inactive>正在执行内存校准……</Nickname继续执行任务，尽管没有获得任何奖励。<Nickname>
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：placeholder_mismatch、rich_text_mismatch、newline_mismatch、line_content_mismatch、glossary_mismatch（passed=False）
+翻译评价：placeholder_mismatch、rich_text_mismatch、newline_mismatch、line_content_mismatch、glossary_mismatch
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[111] 失败文本
+来源：Isolated Inhale_Data/resources.assets
+键位：asset#resources.assets#1378/json/LBL_PILOT_MANUAL_5C
+对象：—（asset_file=resources.assets、obj=1378）
+原文：• <color=#ff6666>2112</color> - Fuel supply request.
+  Price: 2600 credits
+
+• <color=#ff6666>4433</color> - Oxygen supply request.
+  Price: 1600 credits
+
+• <color=#ff6666>8585</color> - Food supply request.
+  Price: 1250 credits
+译文：• <color=#ff6666>2112</color> - 燃料供应请求。
+价格：2600信用点
+
+• <color=#ff6666>4433</color> - 氧气供应请求。
+价格：1600信用点
+
+• <color=#ff6666>8585</color> - 食物供应请求。
+价格：1250信用点
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：glossary_mismatch（passed=False）
+翻译评价：glossary_mismatch
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[112] 失败文本
+来源：Isolated Inhale_Data/resources.assets
+键位：asset#resources.assets#1380/json/LBL_DIALOG_2
+对象：—（asset_file=resources.assets、obj=1380）
+原文：Now enter the <color=#fad096>“Test”</color> command, for example.
+译文：现在输入 <color=#fad096>“Test”</color> 命令，例如。
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：glossary_mismatch（passed=False）
+翻译评价：glossary_mismatch
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[113] 失败文本
+来源：Isolated Inhale_Data/resources.assets
+键位：asset#resources.assets#1380/json/TXT_END_STATS
+对象：—（asset_file=resources.assets、obj=1380）
+原文：Call sign: <0>
+Time played: <1>
+Earned credits: <2>
+Max credits: <3>
+Deaths: <4>
+Score: <5>
+译文：呼气方式：隔离式吸气
+援助：援助
+移动倾斜度：移动倾斜度
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：newline_mismatch、line_content_mismatch、glossary_mismatch（passed=False）
+翻译评价：newline_mismatch、line_content_mismatch、glossary_mismatch
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[114] 失败文本
+来源：Isolated Inhale_Data/resources.assets
+键位：asset#resources.assets#1380/json/CMD_JOB_RES
+对象：—（asset_file=resources.assets、obj=1380）
+原文：Your job is to maintain space stations. All the necessary information is contained in the <Key>task chips</>, which can be obtained from the <Key>task dispenser</>.
+
+For completing the tasks you will receive <Key>credits</>, which you can spend however you like, but keep our main <Command>goal</> in mind.
+译文：您的任务是维护空间站。所有必要的信息都存储在<Key>任务芯片</>中，这些芯片可以从<Key>任务分发器</>中获取。
+
+完成任务后，您将获得<Key>信用点</>，您可以随意使用这些信用点，但请牢记我们的主要<命令>目标》。<Command>
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：glossary_mismatch（passed=False）
+翻译评价：glossary_mismatch
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[115] 失败文本
+来源：Isolated Inhale_Data/resources.assets
+键位：asset#resources.assets#1380/json/SEQ_ANY_REWARD_THIRD
+对象：—（asset_file=resources.assets、obj=1380）
+原文：There were some technical issues last time, so I'm giving you reward for two tasks:
+• <Key><Credits></> credits;
+• <Key>One more</> ship hull upgrade.
+
+<Inactive>Performing memory calibration...</>
+Subject <Nickname> continued to perform the tasks despite the lack of a reward.
+译文：上次存在一些技术问题，因此我会给予你两项任务的奖励：
+• <Key><Credits></> 信用点；
+• <Key>再升级一艘》舰体。
+
+<Inactive>正在执行内存校准……</Nickname继续执行任务，尽管没有获得任何奖励。<Nickname>
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：placeholder_mismatch、rich_text_mismatch、newline_mismatch、line_content_mismatch、glossary_mismatch（passed=False）
+翻译评价：placeholder_mismatch、rich_text_mismatch、newline_mismatch、line_content_mismatch、glossary_mismatch
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[116] 失败文本
+来源：Isolated Inhale_Data/resources.assets
+键位：asset#resources.assets#1380/json/LBL_PILOT_MANUAL_5C
+对象：—（asset_file=resources.assets、obj=1380）
+原文：• <color=#ff6666>2112</color> - Fuel supply request.
+  Price: 2600 credits
+
+• <color=#ff6666>4433</color> - Oxygen supply request.
+  Price: 1600 credits
+
+• <color=#ff6666>8585</color> - Food supply request.
+  Price: 1250 credits
+译文：• <color=#ff6666>2112</color> - 燃料供应请求。
+价格：2600信用点
+
+• <color=#ff6666>4433</color> - 氧气供应请求。
+价格：1600信用点
+
+• <color=#ff6666>8585</color> - 食物供应请求。
+价格：1250信用点
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：glossary_mismatch（passed=False）
+翻译评价：glossary_mismatch
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[117] 失败文本
+来源：Isolated Inhale_Data/resources.assets
+键位：asset#resources.assets#1382/json/LBL_DIALOG_2
+对象：—（asset_file=resources.assets、obj=1382）
+原文：Now enter the <color=#fad096>“Test”</color> command, for example.
+译文：现在输入 <color=#fad096>“Test”</color> 命令，例如。
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：glossary_mismatch（passed=False）
+翻译评价：glossary_mismatch
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[118] 失败文本
+来源：Isolated Inhale_Data/resources.assets
+键位：asset#resources.assets#1382/json/TXT_END_STATS
+对象：—（asset_file=resources.assets、obj=1382）
+原文：Call sign: <0>
+Time played: <1>
+Earned credits: <2>
+Max credits: <3>
+Deaths: <4>
+Score: <5>
+译文：呼气方式：隔离式吸气
+援助：援助
+移动倾斜度：移动倾斜度
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：newline_mismatch、line_content_mismatch、glossary_mismatch（passed=False）
+翻译评价：newline_mismatch、line_content_mismatch、glossary_mismatch
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[119] 失败文本
+来源：Isolated Inhale_Data/resources.assets
+键位：asset#resources.assets#1382/json/CMD_JOB_RES
+对象：—（asset_file=resources.assets、obj=1382）
+原文：Your job is to maintain space stations. All the necessary information is contained in the <Key>task chips</>, which can be obtained from the <Key>task dispenser</>.
+
+For completing the tasks you will receive <Key>credits</>, which you can spend however you like, but keep our main <Command>goal</> in mind.
+译文：您的任务是维护空间站。所有必要的信息都存储在<Key>任务芯片</>中，这些芯片可以从<Key>任务分发器</>中获取。
+
+完成任务后，您将获得<Key>信用点</>，您可以随意使用这些信用点，但请牢记我们的主要<命令>目标》。<Command>
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：glossary_mismatch（passed=False）
+翻译评价：glossary_mismatch
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[120] 失败文本
+来源：Isolated Inhale_Data/resources.assets
+键位：asset#resources.assets#1382/json/SEQ_ANY_REWARD_THIRD
+对象：—（asset_file=resources.assets、obj=1382）
+原文：There were some technical issues last time, so I'm giving you reward for two tasks:
+• <Key><Credits></> credits;
+• <Key>One more</> ship hull upgrade.
+
+<Inactive>Performing memory calibration...</>
+Subject <Nickname> continued to perform the tasks despite the lack of a reward.
+译文：上次存在一些技术问题，因此我会给予你两项任务的奖励：
+• <Key><Credits></> 信用点；
+• <Key>再升级一艘》舰体。
+
+<Inactive>正在执行内存校准……</Nickname继续执行任务，尽管没有获得任何奖励。<Nickname>
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：placeholder_mismatch、rich_text_mismatch、newline_mismatch、line_content_mismatch、glossary_mismatch（passed=False）
+翻译评价：placeholder_mismatch、rich_text_mismatch、newline_mismatch、line_content_mismatch、glossary_mismatch
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[121] 失败文本
+来源：Isolated Inhale_Data/resources.assets
+键位：asset#resources.assets#1382/json/LBL_PILOT_MANUAL_5C
+对象：—（asset_file=resources.assets、obj=1382）
+原文：• <color=#ff6666>2112</color> - Fuel supply request.
+  Price: 2600 credits
+
+• <color=#ff6666>4433</color> - Oxygen supply request.
+  Price: 1600 credits
+
+• <color=#ff6666>8585</color> - Food supply request.
+  Price: 1250 credits
+译文：• <color=#ff6666>2112</color> - 燃料供应请求。
+价格：2600信用点
+
+• <color=#ff6666>4433</color> - 氧气供应请求。
+价格：1600信用点
+
+• <color=#ff6666>8585</color> - 食物供应请求。
+价格：1250信用点
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：glossary_mismatch（passed=False）
+翻译评价：glossary_mismatch
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[122] 失败文本
+来源：Isolated Inhale_Data/resources.assets
+键位：asset#resources.assets#1383/json/LBL_DIALOG_2
+对象：—（asset_file=resources.assets、obj=1383）
+原文：Teraz wpisz na przykład polecenie <color=#fad096>"Test"</color>.
+译文：现在，请输入例如“Test”这样的命令。
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：glossary_mismatch（passed=False）
+翻译评价：glossary_mismatch
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[123] 失败文本
+来源：Isolated Inhale_Data/resources.assets
+键位：asset#resources.assets#1383/json/SEQ_ANY_REWARD_THIRD
+对象：—（asset_file=resources.assets、obj=1383）
+原文：There were some technical issues last time, so I'm giving you reward for two tasks:
+• <Key><Credits></> credits;
+• <Key>One more</> ship hull upgrade.
+
+<Inactive>Performing memory calibration...</>
+Subject <Nickname> continued to perform the tasks despite the lack of a reward.
+译文：上次存在一些技术问题，因此我会给予你两项任务的奖励：
+• <Key><Credits></> 信用点；
+• <Key>再升级一艘》舰体。
+
+<Inactive>正在执行内存校准……</Nickname继续执行任务，尽管没有获得任何奖励。<Nickname>
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：placeholder_mismatch、rich_text_mismatch、newline_mismatch、line_content_mismatch、glossary_mismatch（passed=False）
+翻译评价：placeholder_mismatch、rich_text_mismatch、newline_mismatch、line_content_mismatch、glossary_mismatch
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[124] 失败文本
+来源：Isolated Inhale_Data/resources.assets
+键位：asset#resources.assets#1383/json/LBL_PILOT_MANUAL_5C
+对象：—（asset_file=resources.assets、obj=1383）
+原文：• <color=#ff6666>2112</color> - Fuel supply request.
+  Price: 2600 credits
+
+• <color=#ff6666>4433</color> - Oxygen supply request.
+  Price: 1600 credits
+
+• <color=#ff6666>8585</color> - Food supply request.
+  Price: 1250 credits
+译文：• <color=#ff6666>2112</color> - 燃料供应请求。
+价格：2600信用点
+
+• <color=#ff6666>4433</color> - 氧气供应请求。
+价格：1600信用点
+
+• <color=#ff6666>8585</color> - 食物供应请求。
+价格：1250信用点
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：glossary_mismatch（passed=False）
+翻译评价：glossary_mismatch
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[125] 失败文本
+来源：Isolated Inhale_Data/resources.assets
+键位：asset#resources.assets#1384/json/LBL_TRANSLATION
+对象：—（asset_file=resources.assets、obj=1384）
+原文：Tradução
+译文：音量
+船
+垂直同步
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：newline_mismatch、line_content_mismatch（passed=False）
+翻译评价：newline_mismatch、line_content_mismatch
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[126] 失败文本
+来源：Isolated Inhale_Data/resources.assets
+键位：asset#resources.assets#1384/json/SEQ_INV_RES_FINAL
+对象：—（asset_file=resources.assets、obj=1384）
+原文：Eu atualizei o <Task>distribuidor de tarefas</>, então pegue qualquer tarefa e comece-a.
+
+Espere... Eu quase esqueci — em caso de piratas espaciais, só aperte o botão de autodestruição.
+译文：我已经更新了<任务分发器>，现在可以开始任何任务了。
+
+等等……我差点忘了——如果遇到太空海盗，就按下自毁按钮吧。
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：placeholder_mismatch、rich_text_mismatch（passed=False）
+翻译评价：placeholder_mismatch、rich_text_mismatch
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[127] 失败文本
+来源：Isolated Inhale_Data/resources.assets
+键位：asset#resources.assets#1386/json/TXT_INTRO
+对象：—（asset_file=resources.assets、obj=1386）
+原文：<Task>SUBJEKT 01</>
+Staatus: <Inactive>Teadmatu</>
+
+<Error>Viga</>: Protokolli täitmist pole võimalik jätkata. Vaja uut täitjat.
+
+<Key>T protokolli</> taaskäivitamine. Krüokambrit valmistatakse ette.
+
+<Task>SUBJEKT 02</>
+Staatus: <Command>Valmisolekus</>
+译文：<任务>SUBJEKT 01</>
+状态：<不活动>Teadmatu</>
+
+<错误>Viga</>：无法继续执行协议。需要新的执行者。
+
+<关键>T协议>重新启动。准备进入休眠模式。
+
+<任务>SUBJEKT 02</>
+状态：<命令>准备就绪</>
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：placeholder_mismatch、rich_text_mismatch（passed=False）
+翻译评价：placeholder_mismatch、rich_text_mismatch
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[128] 失败文本
+来源：Isolated Inhale_Data/resources.assets
+键位：asset#resources.assets#1386/json/LBL_DIALOG_2
+对象：—（asset_file=resources.assets、obj=1386）
+原文：Now enter the <color=#fad096>“Test”</color> command, for example.
+译文：现在输入 <color=#fad096>“Test”</color> 命令，例如。
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：glossary_mismatch（passed=False）
+翻译评价：glossary_mismatch
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[129] 失败文本
+来源：Isolated Inhale_Data/resources.assets
+键位：asset#resources.assets#1386/json/TXT_END_STATS
+对象：—（asset_file=resources.assets、obj=1386）
+原文：Call sign: <0>
+Time played: <1>
+Earned credits: <2>
+Max credits: <3>
+Deaths: <4>
+Score: <5>
+译文：呼气方式：隔离式吸气
+援助：援助
+移动倾斜度：移动倾斜度
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：newline_mismatch、line_content_mismatch、glossary_mismatch（passed=False）
+翻译评价：newline_mismatch、line_content_mismatch、glossary_mismatch
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[130] 失败文本
+来源：Isolated Inhale_Data/resources.assets
+键位：asset#resources.assets#1386/json/CMD_JOB_RES
+对象：—（asset_file=resources.assets、obj=1386）
+原文：Your job is to maintain space stations. All the necessary information is contained in the <Key>task chips</>, which can be obtained from the <Key>task dispenser</>.
+
+For completing the tasks you will receive <Key>credits</>, which you can spend however you like, but keep our main <Command>goal</> in mind.
+译文：您的任务是维护空间站。所有必要的信息都存储在<Key>任务芯片</>中，这些芯片可以从<Key>任务分发器</>中获取。
+
+完成任务后，您将获得<Key>信用点</>，您可以随意使用这些信用点，但请牢记我们的主要<命令>目标》。<Command>
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：glossary_mismatch（passed=False）
+翻译评价：glossary_mismatch
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[131] 失败文本
+来源：Isolated Inhale_Data/resources.assets
+键位：asset#resources.assets#1386/json/SEQ_ANY_REWARD_THIRD
+对象：—（asset_file=resources.assets、obj=1386）
+原文：There were some technical issues last time, so I'm giving you reward for two tasks:
+• <Key><Credits></> credits;
+• <Key>One more</> ship hull upgrade.
+
+<Inactive>Performing memory calibration...</>
+Subject <Nickname> continued to perform the tasks despite the lack of a reward.
+译文：上次存在一些技术问题，因此我会给予你两项任务的奖励：
+• <Key><Credits></> 信用点；
+• <Key>再升级一艘》舰体。
+
+<Inactive>正在执行内存校准……</Nickname继续执行任务，尽管没有获得任何奖励。<Nickname>
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：placeholder_mismatch、rich_text_mismatch、newline_mismatch、line_content_mismatch、glossary_mismatch（passed=False）
+翻译评价：placeholder_mismatch、rich_text_mismatch、newline_mismatch、line_content_mismatch、glossary_mismatch
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[132] 失败文本
+来源：Isolated Inhale_Data/resources.assets
+键位：asset#resources.assets#1386/json/LBL_PILOT_MANUAL_5C
+对象：—（asset_file=resources.assets、obj=1386）
+原文：• <color=#ff6666>2112</color> - Fuel supply request.
+  Price: 2600 credits
+
+• <color=#ff6666>4433</color> - Oxygen supply request.
+  Price: 1600 credits
+
+• <color=#ff6666>8585</color> - Food supply request.
+  Price: 1250 credits
+译文：• <color=#ff6666>2112</color> - 燃料供应请求。
+价格：2600信用点
+
+• <color=#ff6666>4433</color> - 氧气供应请求。
+价格：1600信用点
+
+• <color=#ff6666>8585</color> - 食物供应请求。
+价格：1250信用点
+置信度：medium
+原因：textasset_display_text
+角色：display
+质量评分：glossary_mismatch（passed=False）
+翻译评价：glossary_mismatch
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[133] 失败文本
+来源：Isolated Inhale_Data/resources.assets
+键位：asset#resources.assets#16748/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=resources.assets、obj=16748）
+原文：The normal temperature ranges from <color=#43B1F8>14°C</color> to <color=#43B1F8>32°C</color> or from <color=#43B1F8>57.2°F</color> to <color=#43B1F8>89.6°F</color>.
+
+[WIP]<color=#f11>[!]</color> Elevated temperatures combined with high oxygen concentrations create a high risk of fire.
+译文：正常温度范围在 <color=#43B1F8>14°C</color> 到 <color=#43B1F8>32°C</color>，或 <color=#43B1F8>57.2°F</color> 到 <color=#43B1F8>89.6°F</color> 之间。
+
+[WIP]<color=#f11>[!]</color> 高温加上高氧浓度会显著增加火灾风险。
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：key_name_mistranslated（passed=False）
+翻译评价：key_name_mistranslated
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[134] 失败文本
+来源：Isolated Inhale_Data/resources.assets
+键位：asset#resources.assets#17508/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=resources.assets、obj=17508）
+原文：Score: 100.000.000.000
+译文：分数：100.000.000.000
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：glossary_mismatch（passed=False）
+翻译评价：glossary_mismatch
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[135] 失败文本
+来源：Isolated Inhale_Data/resources.assets
+键位：asset#resources.assets#17871/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=resources.assets、obj=17871）
+原文：• <color=#ff6666>2112</color> - Fuel supply request. 
+  Price: 2600 credits
+
+• <color=#ff6666>4433</color> - Oxygen supply request. 
+  Price: 1600 credits
+
+• <color=#ff6666>8585</color> - Food supply request.
+  Price: 1250 credits
+译文：• <color=#ff6666>2112</color> – 燃料供应请求。
+价格：2600信用点
+
+• <color=#ff6666>4433</color> – 氧气供应请求。
+价格：1600信用点
+
+• <color=#ff6666>8585</color> – 食物供应请求。
+价格：1250信用点
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：glossary_mismatch（passed=False）
+翻译评价：glossary_mismatch
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[136] 失败文本
+来源：Isolated Inhale_Data/resources.assets
+键位：asset#resources.assets#19029/str/0
+对象：MonoBehaviour rawstr 数组（asset_file=resources.assets、obj=19029）
+原文：ff&?
+译文：ff&?
+置信度：high
+原因：single_visible_string
+角色：display
+质量评分：target_script_mismatch（passed=False）
+翻译评价：target_script_mismatch
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[137] 失败文本
+来源：Isolated Inhale_Data/Managed/Assembly-CSharp.dll
+键位：us#1098
+对象：DLL #US 字符串（record_offset=513609）
+原文：Item's volume is too big
+译文：该项目的音量太大了
+置信度：high
+原因：mono_ui_setter
+角色：display
+质量评分：glossary_mismatch（passed=False）
+翻译评价：glossary_mismatch
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[138] 失败文本
+来源：Isolated Inhale_Data/Managed/Assembly-CSharp.dll
+键位：us#5605
+对象：DLL #US 字符串（record_offset=518116）
+原文：Added <color=#ffa555>660 credits</color>
+译文：添加了 <color=#ffa555>660 点积分</color>
+置信度：high
+原因：mono_ui_setter
+角色：display
+质量评分：glossary_mismatch（passed=False）
+翻译评价：glossary_mismatch
+需要优化：否（审核通过或未审核）
+写回：—
+
+────────────────────────────────────────────────────────────────
+[139] 失败文本
+来源：Isolated Inhale_Data/Managed/FMODUnity.dll
+键位：us#16089
+对象：DLL #US 字符串（record_offset=206076）
+原文：VOLUME: RMS = {0:f2}db
+
+译文：VOLUME: RMS = {0:f2}db
+
+置信度：medium
+原因：user_string_uppercase_ui
+角色：display
+质量评分：untranslated_text、glossary_mismatch（passed=False）
+翻译评价：untranslated_text、glossary_mismatch
+需要优化：否（审核通过或未审核）
+写回：—

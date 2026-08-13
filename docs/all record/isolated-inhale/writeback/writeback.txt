@@ -1,0 +1,932 @@
+游戏：isolated-inhale
+写回时间：2026-08-13 12:48:55
+输出目录：D:\游戏\isolated-inhale_汉化
+
+文件清单：8 个
+
+- Isolated Inhale_Data/app.info（2 条）
+- Isolated Inhale_Data/level0（985 条）
+- Isolated Inhale_Data/level1（5938 条）
+- Isolated Inhale_Data/resources.assets（11483 条）
+- Isolated Inhale_Data/sharedassets0.assets（419 条）
+- Isolated Inhale_Data/Managed/Assembly-CSharp.dll（229 条）
+- Isolated Inhale_Data/Managed/FMODUnity.dll（157 条）
+- Isolated Inhale_Data/Managed/FMODUnityResonance.dll（2 条）
+
+────────────────────────────────────────────────────────────────
+写回结果
+文本文件：1
+输入保护：True
+重开验证：True
+变更文件：34
+写入译文：9147
+总体闸门：PASS
+字体层级：runtime_verified
+清单：.hanhua-manifest.json
+备份：None
+
+四态闸门明细
+  file=PASS
+  container=PASS
+  object=PASS
+  runtime=PASS
+
+────────────────────────────────────────────────────────────────
+知识库案例转规则：5 条已启用（writeback_case → 可执行检测）
+
+- [fit_bytes_nul_padding] 固定容量池截短译文后字符串尾部带 NUL 导致逻辑判定失灵（实现：writer._fit_bytes（pad 模式容量对齐）+ 译文长度头自证（logic_audit.verify_string_l）
+- [placeholder_preserve] 写回截断把 {0} 占位符切开导致 string.Format 崩溃（实现：writer._restore_placeholders / _placeholders_intact（截断不得破坏占位符，缺失补末）
+- [textasset_encoding_preserve] TextAsset 非 UTF-8 内容被 decode-repla（实现：writer 写回按源编码/严格校验，不把非 UTF-8 当 UTF-8 重写）
+- [unityevent_binding_preserve] 替换 prefab/资源后 UnityEvent 事件绑定断裂按钮无（实现：extractor._UNITYEVENT_SIGNALS 对象信号 → structural 跳过+ logic_audit.lo）
+- [logic_key_compare] 代码把显示文本当逻辑键（按钮文字/物品名比较分发）（实现：logic_audit.LOGIC_COMPARE_WORDS 比较词表 + 代码对象联合判定（写回自动回退））
+
+────────────────────────────────────────────────────────────────
+逻辑层审计（写回逻辑敏感形态 / 扩容 / 语义回退 / 重开验证）
+
+疑似逻辑键（report，已写回需复核）：63 条
+
+- [logic_compare_word] Settings → 设置（asset#level0#3205/str/0）
+- [logic_compare_word] Delete → 删除（asset#level0#3355/str/0）
+- [logic_compare_word] Exit → 退出（asset#level0#3372/str/0）
+- [logic_compare_word] Exit → 退出（asset#level0#3376/str/0）
+- [logic_compare_word] Confirm → 确认（asset#level0#3378/str/0）
+- [logic_compare_word] Delete → 删除（asset#level0#3381/str/0）
+- [logic_compare_word] Exit → 退出（asset#level0#3382/str/0）
+- [logic_compare_word] Exit → 退出（asset#level0#3391/str/0）
+- [logic_compare_word] Cancel → 取消（asset#level0#3396/str/0）
+- [logic_compare_word] Confirm → 确认（asset#level0#3398/str/0）
+- [logic_compare_word] Load → 负载（asset#level0#3404/str/0）
+- [logic_compare_word] Settings → 设置（asset#level0#3406/str/0）
+- [short_code_word] error → 错误（asset#level0#3419/str/0）
+- [logic_compare_word] Save → 保存（asset#level0#3469/str/0）
+- [logic_compare_word] Confirm → 确认（asset#level0#3563/str/12）
+- [logic_compare_word] Pause → 暂停（asset#level0#3563/str/24）
+- [logic_compare_word] Cancel → 取消（asset#level0#3563/str/32）
+- [logic_compare_word] Select → 选择（asset#level0#3563/str/38）
+- [logic_compare_word] Back → 返回（asset#level1#87947/str/0）
+- [short_code_word] error → 错误（asset#level1#88004/str/0）
+- [logic_compare_word] Next → 接下来（asset#level1#88117/str/0）
+- [short_code_word] text → 文本（asset#level1#88134/str/0）
+- [logic_compare_word] Confirm → 确认（asset#level1#88150/str/0）
+- [logic_compare_word] Cancel → 取消（asset#level1#88151/str/0）
+- [logic_compare_word] Delete → 删除（asset#level1#88293/str/0）
+- [logic_compare_word] Exit → 退出（asset#level1#88294/str/0）
+- [logic_compare_word] Load → 负载（asset#level1#88295/str/0）
+- [logic_compare_word] Settings → 设置（asset#level1#88394/str/0）
+- [logic_compare_word] Save → 保存（asset#level1#88410/str/0）
+- [short_code_word] text → 文本（asset#level1#88522/str/0）
+…（其余 33 条）
+
+疑似逻辑字符串（warn，已写回需人工复核）：1 条
+
+- [uppercase_const] NO_DATA → 无数据（us#3459）
+
+短词/常见按钮文本（note，正常可译）：9 条（抽样：['warning', 'error', 'error', 'text', 'text', 'text', 'text', 'text']）
+
+rawstr 扩容写入：591 条（译文 UTF-8 字节 > 原文）
+
+- Movement tilt → 移动倾斜度（13 → 15 字节，+2）
+- Endless → 无尽的（7 → 9 字节，+2）
+- Save files → 保存文件（10 → 12 字节，+2）
+- Mouse → 鼠标（5 → 6 字节，+1）
+- Auto → 汽车（4 → 6 字节，+2）
+- Autosaving → 自动保存（10 → 12 字节，+2）
+- Key binds → 键位映射（9 → 12 字节，+3）
+- World → 世界（5 → 6 字节，+1）
+- Are you sure you want to do somethin → 你确定要执行某件事吗？只是一些用于测试填充情况的额外文本而已。（81 → 93 字节，+12）
+- Game mode → 游戏模式（9 → 12 字节，+3）
+- VSync → 垂直同步（5 → 12 字节，+7）
+- HUGE THANKS → 非常感谢（11 → 12 字节，+1）
+- Music → 音乐（5 → 6 字节，+1）
+- Console → 控制台（7 → 9 字节，+2）
+- New game → 新游戏（8 → 9 字节，+1）
+- Press any key... → 按任意键……（16 → 18 字节，+2）
+- Enter value... → 输入值……（14 → 15 字节，+1）
+- Swedish → 瑞典语（7 → 9 字节，+2）
+- Note: all 4 key binds for movement a → 注意：所有与移动相关的按键组合都按顺序分配了对应的功能。（60 → 84 字节，+24）
+- Spacecraft ID: 378451 → 航天器识别号：378451（21 → 27 字节，+6）
+…（其余 571 条）
+
+回显跳过（译文==原文，未写入）：745 条
+
+- Isolated Inhale_Data/level0:asset#level0#3195/str/0：TokenBro11400       <color=#FF9788>Patreon Tier II</color>
+M
+- Isolated Inhale_Data/level0:asset#level0#3212/str/0：SFX
+- Isolated Inhale_Data/level0:asset#level0#3268/str/0：Zoom
+- Isolated Inhale_Data/level0:asset#level0#3293/str/0：Tab
+- Isolated Inhale_Data/level0:asset#level0#3320/str/0：Ctrl
+- Isolated Inhale_Data/level0:asset#level0#3322/str/0：LMB
+- Isolated Inhale_Data/level0:asset#level0#3346/str/0：English
+- Isolated Inhale_Data/level0:asset#level0#3363/str/0：Tab
+- Isolated Inhale_Data/level0:asset#level0#3448/str/0：X: ???
+Y: ???
+- Isolated Inhale_Data/level0:asset#level0#3451/str/0：Tab
+- Isolated Inhale_Data/level0:asset#level0#3454/str/0：Shift
+- Isolated Inhale_Data/level0:asset#level0#3502/str/2：FPEBBLESFAN!!
+- Isolated Inhale_Data/level0:asset#level0#3502/str/9：Sophie Kesler
+- Isolated Inhale_Data/level0:asset#level0#3502/str/13：Kirillfff
+- Isolated Inhale_Data/level0:asset#level0#3502/str/15：Xnomolos
+- Isolated Inhale_Data/level0:asset#level0#3502/str/19：Goober
+- Isolated Inhale_Data/level0:asset#level0#3502/str/23：Dieterdb
+- Isolated Inhale_Data/level0:asset#level0#3563/str/28：Zoom
+- Isolated Inhale_Data/level1:asset#level1#87911/str/0：27.2% <color=#B8FFC9>(OK)</color>
+160V <color=#B8FFC9>(OK)</
+- Isolated Inhale_Data/level1:asset#level1#87937/str/0：27.2% <color=#B8FFC9>(OK)</color>
+160V <color=#B8FFC9>(OK)</
+- Isolated Inhale_Data/level1:asset#level1#87973/str/0：Translation
+- Isolated Inhale_Data/level1:asset#level1#87982/str/0：ID:
+- Isolated Inhale_Data/level1:asset#level1#87989/str/0：X: ???
+Y: ???
+- Isolated Inhale_Data/level1:asset#level1#88121/str/0：Dock
+- Isolated Inhale_Data/level1:asset#level1#88122/str/0：Dock
+- Isolated Inhale_Data/level1:asset#level1#88148/str/0：LMB
+- Isolated Inhale_Data/level1:asset#level1#88160/str/0：Afterburner
+- Isolated Inhale_Data/level1:asset#level1#88161/str/0：Ctrl
+- Isolated Inhale_Data/level1:asset#level1#88282/str/0：0 / S
+- Isolated Inhale_Data/level1:asset#level1#88289/str/0：12 / s
+- Isolated Inhale_Data/level1:asset#level1#88296/str/0：English
+- Isolated Inhale_Data/level1:asset#level1#88320/str/0：Zoom
+- Isolated Inhale_Data/level1:asset#level1#88376/str/0：SFX
+- Isolated Inhale_Data/level1:asset#level1#88404/str/0：AIRLOCK
+- Isolated Inhale_Data/level1:asset#level1#88405/str/0：AIRLOCK
+- Isolated Inhale_Data/level1:asset#level1#88406/str/0：AIRLOCK
+- Isolated Inhale_Data/level1:asset#level1#88407/str/0：AIRLOCK
+- Isolated Inhale_Data/level1:asset#level1#88408/str/0：AIRLOCK
+- Isolated Inhale_Data/level1:asset#level1#88409/str/0：AIRLOCK
+- Isolated Inhale_Data/level1:asset#level1#88449/str/0：Tab
+- Isolated Inhale_Data/level1:asset#level1#88483/str/0：HUD
+
+- Isolated Inhale_Data/level1:asset#level1#88542/str/0：Shift
+- Isolated Inhale_Data/level1:asset#level1#88554/str/0：Afterburner
+- Isolated Inhale_Data/level1:asset#level1#88563/str/0：Tab
+- Isolated Inhale_Data/level1:asset#level1#88656/str/0：0 / S
+- Isolated Inhale_Data/level1:asset#level1#88692/str/0：Afterburner
+- Isolated Inhale_Data/level1:asset#level1#88693/str/0：Afterburner
+- Isolated Inhale_Data/level1:asset#level1#88737/str/0：s2 > s1 > s3 > s1 > s3 > s2
+- Isolated Inhale_Data/level1:asset#level1#88775/str/0：13K / 18K
+- Isolated Inhale_Data/level1:asset#level1#88777/str/0：Tab
+- Isolated Inhale_Data/level1:asset#level1#88809/str/0：AIRLOCK
+- Isolated Inhale_Data/level1:asset#level1#89745/str/0：CRATE
+- Isolated Inhale_Data/level1:asset#level1#89754/str/0：CRATE
+- Isolated Inhale_Data/level1:asset#level1#89755/str/0：CRATE
+- Isolated Inhale_Data/level1:asset#level1#89756/str/0：CRATE
+- Isolated Inhale_Data/level1:asset#level1#89757/str/0：CRATE
+- Isolated Inhale_Data/level1:asset#level1#89758/str/0：CRATE
+- Isolated Inhale_Data/level1:asset#level1#89759/str/0：CRATE
+- Isolated Inhale_Data/level1:asset#level1#89760/str/0：CRATE
+- Isolated Inhale_Data/level1:asset#level1#89761/str/0：CRATE
+- Isolated Inhale_Data/level1:asset#level1#89762/str/0：CRATE
+- Isolated Inhale_Data/level1:asset#level1#89763/str/0：CRATE
+- Isolated Inhale_Data/level1:asset#level1#90736/str/0：LAMP
+- Isolated Inhale_Data/level1:asset#level1#90737/str/0：LAMP
+- Isolated Inhale_Data/level1:asset#level1#90740/str/0：LAMP
+- Isolated Inhale_Data/level1:asset#level1#94183/str/8：Red Velvet
+- Isolated Inhale_Data/level1:asset#level1#95249/str/0：ORE
+- Isolated Inhale_Data/level1:asset#level1#95263/str/0：ORE
+- Isolated Inhale_Data/level1:asset#level1#95277/str/0：ORE
+- Isolated Inhale_Data/level1:asset#level1#95283/str/0：ORE
+- Isolated Inhale_Data/level1:asset#level1#95322/str/0：ORE
+- Isolated Inhale_Data/level1:asset#level1#95325/str/0：ORE
+- Isolated Inhale_Data/level1:asset#level1#95326/str/0：ORE
+- Isolated Inhale_Data/level1:asset#level1#95331/str/0：ORE
+- Isolated Inhale_Data/level1:asset#level1#95339/str/0：ORE
+- Isolated Inhale_Data/level1:asset#level1#95348/str/0：ORE
+- Isolated Inhale_Data/level1:asset#level1#96544/str/0：CHIP
+- Isolated Inhale_Data/level1:asset#level1#96545/str/0：CHIP
+- Isolated Inhale_Data/level1:asset#level1#96735/str/0：CHIP
+- Isolated Inhale_Data/level1:asset#level1#98876/str/0：BRUSH
+- Isolated Inhale_Data/level1:asset#level1#98879/str/0：BRUSH
+- Isolated Inhale_Data/level1:asset#level1#98884/str/0：BRUSH
+- Isolated Inhale_Data/level1:asset#level1#98885/str/0：BRUSH
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1367/json/LBL_KEY_ZOOM：Zoom
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1367/json/LBL_AFTERBURNER：Afterburner
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1368/json/LBL_AUDIO：Lyd
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1368/json/LBL_HARMLESS：Ufarlig
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1368/json/ITEM_SKULL：Skalle
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1368/json/LBL_BRIGHTNESS：Lysstyrke
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1368/json/LBL_DAMAGE_COEF：Skadekoeffisient
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1368/json/LBL_DISABLED：Deaktivert
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1368/json/LBL_ENERGY_ERROR：s2 > s1 > s3 > s1 > s3 > s2
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1368/json/LBL_FUEL：Brensel
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1368/json/LBL_KEY_ZOOM：Zoom
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1368/json/LBL_AFTERBURNER：Afterburner
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1369/json/LBL_TRANSLATION：Translation
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1369/json/LBL_KEY_ZOOM：Zoom
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1369/json/LBL_AFTERBURNER：Afterburner
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1370/json/LBL_HARMLESS：SWABBIE
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1370/json/LBL_LANGUAGE：TOUNGES
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1370/json/LBL_KEY_BACKWARD：AFT!
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1370/json/LBL_WINDOWED：PORTHOLED
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1370/json/TXT_SOURCE：<Key>SOURCE</>
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1370/json/LBL_AFTERBURNER：Afterburner
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1371/json/LBL_HARMLESS：Innocuo
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1371/json/ITEM_BRUSH：Spazzola
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1371/json/ITEM_ROCK：Roccia
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1371/json/ITEM_SKULL：Teschio
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1371/json/ITEM_TRASH：Immondizia
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1371/json/LBL_CASH：Soldi
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1371/json/LBL_HINTS：Indizi
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1371/json/LBL_KEY_INTERACT：Interagisci
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1371/json/LBL_KEY_SPRINT：Corsa
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1371/json/LBL_KEY_ZOOM：Zoom
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1371/json/LBL_ROOMS：Stanze
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1371/json/LBL_VIGNETTE：Vignetta
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1371/json/LBL_KEYS：Tasti
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1371/json/LBL_SHADOWS：Ombre
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1371/json/LBL_WORLD：Mondo
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1371/json/LBL_MASS：Massa
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1371/json/LBL_NEXT：Prossimo
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1371/json/LBL_LOAD：Carica
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1371/json/LBL_PRINTED：Stampato
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1371/json/LBL_AFTERBURNER：Afterburner
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/CMD_COMPLETED：任务已结束。
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/CMD_GOAL：目前，你的目标是为一项重要任务做好准备。根据我的计算，以你目前的舰船装备状况，任务成功的几率约为 <Key> <Succ
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/CMD_NOT_FOUND：无法执行给与的命令：
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/CMD_SCAN_FAIL：找不到任何要扫描的物品。
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/CMD_STOP_FAIL：<Error>错误：</>找不到要停止的序列。
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_CRYO_POD：冷冻舱
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_DECRYPTER：解密表
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_DISPENSER：任务分配器
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/TXT_COMP_INV：完成调查任務以获取访问权限
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/TXT_EXIT_GAME：您确定要退出游戏吗？
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/TXT_NO_DATA：无数据
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/TXT_NO_REPAIR：这里没有任何东西需要修复
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_NO_SEEDS：没有种子了
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/TXT_NO_SOIL：附近没有土壤
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/TXT_PLANTED：这个槽位已经种植了
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/TXT_SAVE_NOT_EXIST：这保存文件不存在
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/TXT_SAVE_OVERRIDE：同名的保存文件已经存在。您想要覆盖它吗？
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/TXT_TEMP：临时访问限制
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/TXT_AIRLOCK：进入空间站的气闸系统
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/TXT_CREDITS：<Key><Credits></> 积分
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/TXT_POSTER：独特的海报
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/TXT_WORKSHOP：访问造船厂空间站的 <Key>工作坊</>
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/SEQ_FUEL_DATA：关于加油空间站工作人员的日常工作流程的描述。
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/SEQ_FUEL_OBJ_DOCK：停靠燃料空间站
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/SEQ_FUEL_OBJ_ENTER：进入精炼厂
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/SEQ_FUEL_OBJ_PRODUCE：生产一桶燃料
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/SEQ_FUEL_OBJ_REFINE：精炼矿石
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/SEQ_FUEL_OBJ_START：启动钻头
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/SEQ_FUEL_OBJ_TURN：打开熔炉
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/SEQ_INV_DATA：包含有关最近发生的飞船事故的已知信息。
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/SEQ_INV_OBJ_ENTER：进入被摧毁的飞船
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/SEQ_INV_OBJ_EQUIP：装备太空服
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/SEQ_INV_OBJ_EXIT：进入开放空间
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/SEQ_INV_OBJ_FIND：查找日志芯片
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/SEQ_INV_OBJ_FLY：飞得足够靠近被摧毁的飞船
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/SEQ_INV_OBJ_UNDOCK：脱离停靠空间站
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/SEQ_INV_RES_FAIL：<Error>错误：</>缺少日志芯片。
+无法执行验证。
+
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/SEQ_INV_TITLE：意外调查
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/SEQ_NRG_DATA：关于太阳能空间站工作人员的日常工作流程的描述。
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/SEQ_NRG_OBJ_ADJUST：调整太阳能电板的旋转角度并至少达到10%的发电量
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/SEQ_NRG_OBJ_CLEAN：清洁太阳板
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/SEQ_NRG_OBJ_DOCK：停靠太阳能空间站
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/SEQ_NRG_OBJ_EXIT：退出空间站
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/SEQ_NRG_OBJ_FIND：找到一个清洁刷子
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/SEQ_NRG_OBJ_PRODUCE：生产一个能量电池
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/SEQ_NRG_TITLE：清洁能源
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/SEQ_OXY_DATA：关于氧气空间站工作人员的日常工作流程的描述。
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/SEQ_OXY_OBJ_CONTROL：前往密封控制面板
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/SEQ_OXY_OBJ_DOCK：停靠氧气空间站
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/SEQ_OXY_OBJ_FIND：寻找或购买种子包
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/SEQ_OXY_OBJ_PLANT：种植足够的花就能够解除一个额外的房间的密封
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/SEQ_OXY_OBJ_PRODUCE：生产一个氧气罐
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/SEQ_OXY_OBJ_UNSEAL：使用控制面板解除任何温室的密封
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/SEQ_OXY_TITLE：生态学家的责任
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/SEQ_TUT_DATA：关于如何使用特定命令与机器人通信的说明。
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/SEQ_TUT_OBJ_FIND：寻找任务分配器
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/SEQ_TUT_OBJ_LOAD：使用解码桌加载已打印的芯片
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/SEQ_TUT_OBJ_MEET：与助手机器人见面
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/SEQ_TUT_OBJ_PRINT：打印任务芯片
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/SEQ_TUT_OBJ_SAVE：使用冷冻仓保存您的进度
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/SEQ_TUT_TITLE：一个男人的一个小步
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/TXT_PIN：按 <Key>[1-9]</> 来输入代码。
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_AUDIO：音频
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_CANCEL：取消
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_CONFIRM：确认
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_CONTINUE：继续
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_CONTROLS：控件
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_ENDLESS：无尽
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_ENTER：回车键
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_EXIT：退出
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_EXPERT：专家
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_GAMEPLAY：游戏玩法
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_HARMLESS：无害
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_LANGUAGE：语言
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_LAST_SAVE：上次进行的保存
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_MAIN_MENU：主菜单
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_NORMAL：普通
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_SAVE：保存
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_SAVE_LOAD：保存/加载
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_SETTINGS：设置
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_STORY：故事
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_SURVIVAL：生存
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_VIDEO：视频
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_ASSIST：协助
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_GAME：游戏
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_MODERATION：审核
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_SUPPORT：资金支持
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_TESTING：测试人员
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_TRANSLATION：翻译人员
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/DESC_BACKPACK：总共可以持有8个物品。
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/DESC_BOMB：爆炸物。
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/DESC_CEREAL_BOX：由太空谷物制成。听起来很酷，但它仍然只是谷物。
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/DESC_CHIP：通常用于将特定操作序列上传到飞行员的装备系统。
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/DESC_CHIP_STAND：用来方便储存芯片的物品。
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/DESC_CRATE：设计用于携带多个物品。
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/DESC_ENCODED_BOX：这些内容已隐藏。它有一股难闻的气味。
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/DESC_ENERGY_DRINK：加快步行速度，减少困倦感，略微满足饥饿感。
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/DESC_GRANOLA_BAR：一个清淡的零食，可以稍微满足你的饥饿感。
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/DESC_HYENA_PLUSH：如果物品没被钉牢，一些东西可能会被偷走。
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/DESC_KIWI_JUICE：它似乎是最健康的饮料。
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/DESC_LAMP：便携式无限光源。
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/DESC_MEATBALLS_PACK：这是实验室培育的肉，但它仍然是肉。
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/DESC_ORE：从小行星上提取的一块普通的固体矿物块。
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/DESC_OXYGEN_CANDLE：使空气中都充满可供呼吸的氧气。
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/DESC_ROCK：一块含有可用于制造燃料的物质的岩石。
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/DESC_SKULL：它的拥有者比你不幸得多。
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/DESC_SPACE_SUIT：用于太空行走的宇航服。与外部环境完全密封。
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/DESC_TABLET_MANUAL：含有关于核心系统的信息：燃料、氧气、能源和温度。
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/DESC_TABLET_PILOT：包含关于飞船控制的基本信息。
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/DESC_TRASH：没用的垃圾。包装起来才值钱。
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/DESC_TRASH_BOX：已包装垃圾。
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/DESC_TROPHY：“年度最佳飞行员”奖。授予称号为 Kirillfff 的飞行员。
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/DESC_WEIRD_BOX：它不会说话，不会威胁要刺你，也不会感到疼痛。
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_DIALOG_0：这是对话菜单，用于通过输入的命令与机器人交流。
+
+按 <color=#ffcc>高亮按钮</color> 来显示可用的命
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_DIALOG_1：这里显示所有当前可用的命令。它们的可用性取决于是否满足某些条件。
+
+您无需输入完全相同的命令。它至少应与列表中某个命令有
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_DIALOG_2：现在输入 <color=#fad096>“测试”</color> 命令。
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_DIALOG_3：别忘了查看命令列表，看看是否有<color=#ffaaff>新选项</color>。
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_ENTER_CMD：输入命令……
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_ENTER_FILE_NAME：输入保存文件名称……
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/ITEM_BACKPACK：背包
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/ITEM_BELT：腰带
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/ITEM_BELT_TETHER：系绳
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/ITEM_BOMB：炸弹
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/ITEM_BROKEN_TABLET：破损的平板
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/ITEM_BRUSH：刷子
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/ITEM_CANNED_FISH：鱼罐头
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/ITEM_CEREAL_BOX：麦片盒
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/ITEM_CHIP：芯片
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/ITEM_CHIP_STAND：芯片架
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/ITEM_CRATE：板条箱
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/ITEM_CURE_POTION：治疗药水
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/ITEM_ENCODED_BOX：已编码箱子
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/ITEM_ENERGY_CELL：能量电池
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/ITEM_ENERGY_DRINK：能量饮料
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/ITEM_FIRST_AID_KIT：急救包
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/ITEM_FIRST_AID_PACK：急救套件
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/ITEM_FUEL_BARREL：燃料桶
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/ITEM_GRANOLA_BAR：燕麦棒
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/ITEM_HARVESTED_PLANT：已收获的植物
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/ITEM_HYENA_PLUSH：鬣狗毛绒
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/ITEM_KIWI_JUICE：奇异果汁
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/ITEM_LAMP：照明灯
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/ITEM_MEATBALLS_PACK：肉丸包
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/ITEM_METAL_PIPE：金属管
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/ITEM_ORE：矿石
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/ITEM_OXYGEN_CANDLE：氧烛
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/ITEM_OXYGEN_CYLINDER：氧气瓶
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/ITEM_PILOT_SUIT：飞行员宇航服
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/ITEM_RADIO：收音机
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/ITEM_REPAIR_KIT：修理包
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/ITEM_RICH_ORE：富矿石
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/ITEM_ROCK：石头
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/ITEM_SEED_PACK：种子包
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/ITEM_SKULL：头骨
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/ITEM_SPACE_SUIT：太空服
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/ITEM_TABLET：平板
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/ITEM_TRASH：垃圾
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/ITEM_TRASH_BOX：垃圾箱
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/ITEM_TROPHY：奖杯
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/ITEM_WEIRD_BOX：奇怪的盒子
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_AMB_OCC：环境光遮蔽
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_AUTOSAVING：自动保存
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_BACK：返回
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_BREAKAGE_FRQ：断裂频率
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_BRIGHTNESS：亮度
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_BUFF_COLD：低环境温度
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_BUFF_ENERGY：肾上腺素和皮质醇水平升高
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_BUFF_HEAT：高环境温度
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_BUFF_HUNGER：糖原不足
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_BUFF_OXYGEN：氧气浓度过高
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_BUFF_SLEEP：皮质醇不足
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_BUFF_SUFFOCATION：氧气浓度不足
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_CASH：现金：
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_CHARGE_CONS：充电消耗
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_CONSUMERS：消费者
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_CONSUMPTION：消耗量
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/TXT_CONTINUE：按下Enter键继续……
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_COORDINATES：坐标：
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_CROSSHAIR：准星
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_CULL_INTERIORS：禁用内部
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_CURRENT：当前：
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_CURRENT_TASK：当前任务：
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_DAMAGE_COEF：损坏系数
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_DECELERATION：减速：
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_DISABLED：禁用
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_ENABLED：启用
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_END_MSG：故事线暂时告一段落。后续更新敬请期待！这个项目能够继续下去，全赖大家的支持 <3
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/TXT_END_STATS：呼号：<0>
+游戏时间：<1>
+已赚取的积分：<2>
+最高拥有的积分：<3>
+死亡数：<4>
+得分：<5>
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_END_THANK：感谢您的游玩！
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_ENERGY：能量
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_ENERGY_CONS：能量消耗
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_ENERGY_ERROR：s2 > s1 > s3 > s1 > s3 > s2
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_ENGINES：引擎
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_ENV_SHADOWS：环境阴影
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_EVENTS_FRQ：事件频率
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_FOV：视场角
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_FUEL：燃料
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_FUEL_CONS：燃料消耗
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_GENERATION：生成：
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_GRAVITY_MULT：重力倍增器
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_HINTS：提示
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_INFRASOUND：次声波
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_INFRASOUND_NOTE：在可怕的部分添加微妙的隆隆声以增加不安。
+这种效果只有在使用较好的扬声器或耳机时才会有明显的感觉。
+<color=#F3
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_INIT：初始化
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_INTERIOR_MODE：内部模式
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_INV_ROT：反转旋转
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_INV_SCRL：反转滚动
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_KEY_BACKWARD：后退
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_KEY_CROUCH：蹲伏
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_KEY_FLASHLIGHT：手电筒
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_KEY_FORWARD：前进
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_KEY_GRAB：抓取
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_KEY_INTERACT：交互
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_KEY_INVENTORY：物品栏
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_KEY_JUMP：跳跃
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_KEY_LEFT：左边
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_KEY_QUICK_LOAD：快捷读档
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_KEY_QUICK_SAVE：快速存档
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_KEY_RIGHT：右边
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_KEY_ROTATE：旋转
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_KEY_SLOT：栏位 1
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_KEY_SPRINT：冲刺
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_KEY_THROW：投掷
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_KEY_ZOOM：缩放
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_LABELS：标签
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_LIFE_FORMS：检测到的生命形式：
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_LIFE_THREAT：生命威胁
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_LOADING：加载中
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_MOTION_BLUR：动态模糊
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_MOVE_SHAKE：移动晃动
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_MOVE_TILT：移动晃动
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_MUSIC：音乐
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_MUSIC_FOLDER：自定义音乐文件夹
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_MUSIC_NOTE：注意：将您的.mp3、.wav 或 .ogg 文件放入这个文件夹，以便能在游戏内的无线电听到这些自定义音乐。
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_OBJ_SHADOWS：物体阴影
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_OXYGEN：氧气
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_OXYGEN_CONS：氧气消耗
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_PATH：路径：
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_PLEASE_WAIT：请稍等……
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_POST_PROC：后处理
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_PRICE：价格
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_PRICES_COEF：价格系数
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_RADIO_EFFECT：无线电效果
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_REACH_RANGE：达到范围
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_RENDER_SCALE：渲染比例
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_RESOLUTION：分辨率
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_ROOMS：房间
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_ROOM_TEMP：室温：
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_ROTATION：旋转
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_SATIETY_CONS：饱腹消耗
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_SCANNING：正在扫描……
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_SCREEN_SHAKE：屏幕晃动
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_SCRL_SENSITIVITY：滚动灵敏度
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_SENSITIVITY：灵敏度
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_SFX：音效
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_SHOW_FPS：显示帧率
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_SPACE_DRAG：在空间中拖拽
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_SPEED：速度
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_STABILIZATION：稳定性：
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_STORAGE：存储
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_STRUCTURE：结构
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_SUIT：服装
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_TARGET：目标：
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_TARGET_COORDS：目标坐标：
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_TARGET_FPS：目标帧率
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_TGL_CROUCH：切换蹲伏
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_TGL_GRAB：切换抓取
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_TGL_SPRINT：切换冲刺
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_UPGRADES：升级
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_VERT_INV：垂直反转
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_VIGNETTE：晕影
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_VSYNC：垂直同步
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_WINDOWED：窗口化
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/TXT_ERR_FUEL：<Error>错误</>：临界燃料值
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/TXT_MESSAGE：<Key>消息</>：
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/TXT_MSG_CODE：飞船停靠时这代码无法执行
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/TXT_SOURCE：<Key>来源</>：
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/TXT_TTL_EMERGENCY：应急管理系统
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/TXT_BACKPACK_EQUIPPED：已经装备了背包
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/TXT_BELT_EQUIPPED：已经装备了腰带
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/TXT_CANNOT_DRINK：穿着隔离服时不能饮用饮品
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/TXT_CANNOT_EAT：穿着隔离服时不能食用食品
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/TXT_MULTIPLE_SEQ：不能启动多个序列
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/TXT_NOT_HUNGRY：你还不饿
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_REBINDING：重新绑定按键：
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_SLEEP_SUIT：不能在穿着服装的情况下睡觉
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_START_GAME：启动游戏后即可更改这些设置
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/TXT_SUIT_EQUIPPED：已经装备了服装
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_TRANSLATION_NOTE：如果您发现了翻译错误，或者希望将您的语言添加到游戏中，请访问我们的 Crowdin 项目
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/TXT_TREATMENT：您现在不需要治疗
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/TXT_UNDOCK_FAIL：取消停靠对接失败
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_DEV_WARNING：这是游戏的开发版本，并不能完全反映预期的完整版游戏体验，并且可能包含严重错误。
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/TXT_INVESTIGATION：日志芯片已成功送达。
+
+您的奖励：<Key><Credits></> 积分。
+
+我还授予您进入此空间站的 <Key>工作
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/TXT_ROUTINE：奖励：
+• <Key><Credits> 积分
+• 额外 <Key>船体升级</>
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/SEQ_FUEL_TITLE：黄金液体
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/SEQ_INV_OBJ_TALK：与助手机器人交谈
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/SEQ_INV_OBJ_UPGRADE：升级您的飞船
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/SEQ_NOTE_TITLE：观察笔记
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_DOCKER：停泊对接系统
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/TXT_FLASHLIGHT：按 <Key>[<KeyBind>]</> 来控制手电筒的开关。
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/TXT_ROW：按 <Key>[<KeyBind>]</> 可更改选择。使用 <Key>滚动滚轮</> 控制距离。
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_ASSISTANCE：协助
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_COMMANDS：指令
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_CONSOLE：控制台
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_CREDITS_MENTION：<color=#C173FF>积分</color>
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_CRITICAL_ERROR：严重错误
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_DIFFICULTY：难度
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_EFFECTS：效果
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_ERROR：错误
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_GAME_MODE：游戏模式
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_INHALE：孤寂之息
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_INTERFACE：界面
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_KEYS：按键
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_KEY_BINDS：按键绑定
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_MOUSE：滑鼠
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_MSG_LOG：消息日志
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_NEW_GAME：新建游戏
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_OTHER：其它
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_PAUSE_MENU：暂停菜单
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_PLAYER：玩家
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_RENDER：渲染
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_REWARD：奖励
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_SAVE_FILES：保存文件
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_SHADOWS：阴影
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_SOLAR_PANEL：太阳能板旋转
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_TEMPERATURE：温度
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_THANKS：极大的致谢
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_VOLUME：音量
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_WARNING：警告
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_WORLD：世界
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_RESET：重置
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_RESET_DATA：重置数据
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/CMD_GOAL_RES：目前，你的目标是为一项重要任务做好准备。根据我的计算，以你目前的舰船装备状况，任务成功的几率约为 <Key> <Succ
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/CMD_JOB_RES：您的任务是维护空间站。所有必要信息都包含在 <Key>任务芯片</> 中，可以从 <Key>任务发布器</> 获取。
+
+
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/CMD_SCAN_RES0：以下是我检测到的物品的描述：
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/CMD_STOP_RES0：当前序列已停止。
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/CMD_TEST_RES：所有系统运行正常。
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/CMDS_DELIVERED：已送达
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/CMDS_COMPLETED：已完成
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/CMDS_GOAL：目标
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/CMDS_JOB：工作
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/CMDS_PIN：PIN码
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/CMDS_SCAN：扫描
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/CMDS_TEST：测试
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/CMDS_STOP：停止任务
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/CMDS_SPECIAL：特殊任务
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_SOUND：音乐/音效
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/DESC_BELT：可以持有2件物品。
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/DESC_BELT_TETHER：可以持有4件物品。
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/DESC_BROKEN_TABLET：无法运作。
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/DESC_CANNED_FISH：由人工养殖的​​太空鱼制成，保质期极长。
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/DESC_MASS_MEMORY_UNIT：用于持久化存储大量数据。
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/DESC_CURE_POTION：散发出特殊药用植物的香味。
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/DESC_FIRST_AID_KIT：治愈伤口。可使用 <color=#ffa555>5</color> 次。
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/DESC_HARVESTED_GREEN：通常用于制药行业。
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/DESC_HARVESTED_LIME：最常用于太空食品。
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/DESC_HARVESTED_PINK：它最受重视的用途是作为制造润滑剂的材料。
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/DESC_PILOT_SUIT：被飞行员广泛使用。配有内置显示面板。
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/DESC_PIPE_JOINT：适用于绝缘任何管道的连接。
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/DESC_RADIO：飞行员用它来播放自己的音乐。
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/DESC_RICH_ORE：用于生产燃料的纯净材料。
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_ENTER_SIGN：请输入您的呼号……
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/ITEM_MASS_MEMORY_UNIT：大容量存储单元
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/ITEM_CARDBOARD_BOX：纸箱
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/ITEM_PIPE_JOINT：管道接合节点
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_NEW_PILOT：新飞行员
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/TXT_SUBJECT_DATA：主体数据：
+
+标识符：<Key>0<Index></>
+状态：<Command>就绪</>
+呼号：<Inactive><
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/TXT_REGISTERED：您已成功注册为 <Key><Name></> 。
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_BIO_DATA：需要提供生物识别数据才能继续进行
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_SPLIT_VEL：飞船速度分量
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_ITEM_VOL：物品具有体积
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_PAUSED：已暂停
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_DETECTED_RES：检测到资源容器
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_BIND_NOTE：注意：所有 4 个移动按键绑定是按顺序分配的
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_EMPTY：空的
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_MASS：重量
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_NEW_PILOT_HINT：致新飞行员：
+
+<color=#ffffff>穿上飞行员服，查看更多操作说明。
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_SEALED：已密封的房间
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_UNSEALED：未密封的房间
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_AVLB_UNSEALS：可用密封解除
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_NEXT：下一个
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_LOAD：加载
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_DROP：掉落
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_LOCKED：已锁定
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_BUY：购买
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_REFUEL_STATION：加油站
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_OXY_REF_STATION：氧气补充站
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_OXY_CONC：氧气浓度
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_SELECT：选择
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_SELECTED：已选择
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_CURR_AMNT：当前数量
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_REF_AMNT：补充数量
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_POSITION：位置
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_FILL_PROGRRESS：填充进度
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_GEN_POWER：发电
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_LAST_OUTPUT：最后值
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_CHARGE_PROGRESS：充能进度
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_CURRENT_ANGLE：当前角度
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_TARGET_ANGLE：目标角度
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_PRINTED：已打印
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_STARTED：已开始
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_FINISHED：已结束
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_PRINT：打印
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_VERSION：版本
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/TXT_MSG_FOOD_SUPPLY：食品供应已送达。
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/TXT_MSG_FUEL_SUPPLY：燃料供应已送达。
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/TXT_MSG_OXY_SUPPLY：氧气供应已送达。
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/TXT_MSG_SUPPLY_COST：您的账户已被扣除 <Key><Value></> 个积分
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_NO_CHIPS：<Key>无可用芯片！</>
+
+请从侧面插入新芯片进行恢复。
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_DEATH_SCREEN：=(
+发生了一个错误。操作系统需要重启。
+
+请稍候……
+
+请勿关闭您的飞行员控制面板！
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/TXT_DATA_EXISTS：呼号为 <Key><Value></> 的游戏数据已经存在。是​​否要覆盖它？
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/TXT_RESET_DATA_WARN：您确定要重置互动数据吗？提示和介绍将再次显示。
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/SEQ_ANY_OBJ_RWRD：向助手机器人报告任务完成情况
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/SEQ_FUEL_OBJ_BACK：到后院去
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_WELCOME：欢迎！
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/TXT_HOLE_JET_WARN：<Error>警告</>：已检测到辐射水平升高。黑洞喷流正在接近。请待在室内。关闭船上所有设备。代码 03-57。
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_AIRLOCK：气闸
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_SIGNAL_LOST：信号丢失
+
+正在重新连接……
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/SEQ_CONT_INTRO：您的下一个目标是 <Task>容器</> 区域。它的坐标标注在我给您的 <Key>平板电脑</> 上。
+
+把标有 <Ke
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/SEQ_CONT_WRONG：<Error>错误</>：无法检测到所需的容器。
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/SEQ_CONT_REWARD：干得好， <Nickname>。我将给您 <Key><Credits></> 积分和最后一个船体升级。
+
+你现在没有工作
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/SEQ_CONT_OBJ_DELIVER：将容器交给助手机器人
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/SEQ_CONT_OBJ_TAKE：拿走定位平板电脑
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/SEQ_CONT_OBJ_FIND：找到集装箱堆放区，并飞得足够靠近它
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/SEQ_INV_OBJ_DELIVER：将存储单元交给助手机器人
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/TXT_LENS：镜片
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/TXT_MSG_NOTE_CHIPS：很快你就不会孤身一人待在船上了。我在 <Task>氧气空间站</> 、 <Task>燃料空间站</> 和 <Task>太
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_BEHIND：在后面……
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_CONFIRM_NOTE：注意：确认后，即表示您同意我们进一步存储和处理您的数据。您将无法要求删除您的数据。
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_CALL_SIGN_NOTE：注意：呼号由 16 个字母组成，不能包含特殊字符、空格或数字。
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_NAME：名字
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/ITEM_LORD_PLUSH：星爵毛绒玩具
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/DESC_LORD_PLUSH：一位出自早期太空电视剧的知名角色。
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/ITEM_DIETER_PLUSH：迪特毛绒玩具
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/DESC_DIETER_PLUSH：这个玩具见证过世界末日！
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/ITEM_RAIN_PLUSH：雨中毛绒玩具
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/DESC_RAIN_PLUSH：把您的能量饮料放在她够不到的地方……
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/DESC_SHIP_MANUAL_TABLET：包含关于飞船的核心信息。
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/DESC_PILOT_MANUAL_TABLET：包含关于控制飞船的基本信息。
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/DESC_NOTEPAD_TABLET：允许您自己做笔记。
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/ITEM_NOTEPAD_TABLET：记事本平板电脑
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/ITEM_SHIP_MANUAL_TABLET：飞船手册平板电脑
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/ITEM_PILOT_MANUAL_TABLET：飞行员手册平板电脑
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/TXT_DEATH_NOTE：继续下去已经没有意义了。孤独感和做出这个选择时感受到的责任重担越来越沉重地压在我身上。
+
+我现在应该死了。
+
+我必须死了
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/TXT_COORDS_NOTE：主空间站坐标：
+
+造船厂空间站 [0.0, 0.0]
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/TXT_OPERATION：继续行动
+[			]
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/SEQ_ANY_REWARD_FIRST：尽管困难重重，你还是成功生存下来并完成了你的第一个任务。
+
+您的奖励如下：
+• <Key><Credits></> 积分
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/SEQ_ANY_REWARD_THIRD：上次出现了一些技术问题，所以这次我给你两项任务的奖励：
+• <Key><Credits></> 积分；
+• <Key>多
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/SEQ_INV_RES_FINAL：我已经更新了 <Task>任务分配器</> ，所以随便选个任务就开始吧。
+
+等等……我差点忘了——万一遇到太空海盗，直接
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/SEQ_INV_RES_START：我最近收到我们一艘飞船发出的遇险信号。飞过去取回 <Task>大容量存储单元</>。
+
+这里有一份 <Tutorial>
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/SEQ_INV_RES_SUCCESS：大容量存储单元已成功交付。
+<Inactive>备注：目标未能摧毁飞船……</>
+
+正在执行解密……
+进行验证中……
+
+
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/SEQ_NOTE_00：备注 1：起初，我注意到飞船上出现了一些异常情况。<Key>食物</> 开始消失。我清楚地记得离开飞船前我没有关闭任何设
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/SEQ_NOTE_01：备注 2：它是个有感知能力的生物。它似乎不喜欢我厨房里的 <Key>脏乱</>，所以搬进了卧室。现在我都不敢进去了……我
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/SEQ_NOTE_02：备注 3：它把我的肉丸全吃光了！我尽量 <Key>远离</> 它，不想招惹它。看来我的做法让它不那么具有攻击性了。我猜它
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/SEQ_TUT_START_REPLY：欢迎来到造船厂空间站，<Key><Name></>！您现在是公司的一名飞行员。
+<Inactive>下一个实验对象能够阅
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_SHIP：飞船
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_OPEN：打开
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_CHANGE：更改
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_ACCELERATION：加速度
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/DESC_TABLET：可以存储信息。
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/DESC_HARVESTED_PLANT：可用作制造各种产品的材料。
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_ALARM：警报
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_REFILLING：补充中
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_VELOCITY：速度
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_VECTOR：向量
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_DOCKING_AREA：停靠区
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_DOCKING_NOTE：控制已锁定，请按停靠/脱离按钮
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_STATUS：状况
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_ENTRY_DENIED：拒绝进入
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_LOAD_GAME：载入游戏
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_UNLOCKED：已脱离
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_DYNAMIC：动态
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_STATIC：静态
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/OBJ_BUTTON：按钮
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/OBJ_SWITCH：按钮
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_WAIT：请稍等……
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_AFTERBURNER：加力燃烧器
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_OUTSIDE：外部。
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/TXT_THE_END：结尾
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/TXT_HIDE： 躲藏 。
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/TXT_SURVIVE： 活下来 。
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/TXT_FIND_ME： 找到我 。
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/TXT_SYSTEM：系统
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/TXT_CENCELING_TASK：找不到目标点。正在取消当前序列……
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/TXT_NULL_EXCEPTION：<Error>空引用异常</>
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_PILOT_MANUAL_2A：<color=#bbffbb>减速</color> 会在当没有前进方向的输入信号的时候逐渐减慢飞船速度
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_PILOT_MANUAL_2B：<color=#bbffbb>稳定化</color> 将在无旋转输入信号时抵消旋转速度
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_PILOT_MANUAL_3：如果飞船位于空间站的 <color=#FFCF83>停泊对接区</color> 内，则控制权被锁定。在这种状态下，只能执
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_PILOT_MANUAL_4A：<b>飞行员服</b>
+
+专为方便操作 <color=#8BDFFF>飞行员界面</color> 而设计。可保暖，但内部
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_PILOT_MANUAL_4B：<b>太空服</b>
+
+专为在太空环境里行走而设计。<color=#8BDFFF>与周围环境隔离</color>。可承受
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_PILOT_MANUAL_5A：如遇紧急情况，请执行以下 <color=#8BDFFF>代码</color> 进行物资申请：
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_PILOT_MANUAL_5B：（参见“Pilot面板”页面上的“代码面板”）
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_PILOT_MANUAL_5D：注意：如果您的资金不足，您的余额将变为负数。
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_PILOT_MANUAL_6B：仅在必要时或确定燃料充足时才使用加力燃烧器
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_CREDITS：<color=#C173FF>积分</color>
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/TXT_BUTTON：按钮
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/TXT_SWITCH：开关
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1372/json/LBL_FILL_PROGRESS：填充进度
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1373/json/LBL_AFTERBURNER：Afterburner
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1374/json/LBL_KEY_ZOOM：Zoom
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1374/json/LBL_KEY_BINDS：Tastenbelegungen
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1374/json/LBL_MOUSE：Maus
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1374/json/LBL_AFTERBURNER：Afterburner
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1375/json/LBL_CANCEL：Atcelt
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1375/json/LBL_CONTINUE：Turpināt
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1375/json/LBL_EXIT：Iziet
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1375/json/LBL_HARMLESS：Nekaitīgs
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1375/json/LBL_SAVE：Saglabāt
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1375/json/LBL_SETTINGS：Iestatījumi
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1375/json/LBL_STORY：Stāsts
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1375/json/ITEM_BELT：Josta
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1375/json/ITEM_BRUSH：Birste
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1375/json/ITEM_ROCK：Akmens
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1375/json/ITEM_SKULL：Galvaskauss
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1375/json/LBL_BACK：Atpakaļ
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1375/json/LBL_BREAKAGE_FRQ：Bojāšanās biežums
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1375/json/LBL_BRIGHTNESS：Spilgtums
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1375/json/LBL_CURRENT：Pašreizējais
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1375/json/LBL_ENABLED：Ieslēgts
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1375/json/LBL_ENGINES：Dzinēji
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1375/json/LBL_FUEL_CONS：Degvielas patēriņš
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1375/json/LBL_GENERATION：Ģenerācija
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1375/json/LBL_INFRASOUND：Infraskaņa
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1375/json/LBL_INV_SCRL：Invertēt ritināšanu
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1375/json/LBL_KEY_BACKWARD：Iet atpakaļ
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1375/json/LBL_KEY_CROUCH：Pietupties
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1375/json/LBL_KEY_INTERACT：Mijiedarboties
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1375/json/LBL_KEY_ROTATE：Pagriezt
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1375/json/LBL_KEY_THROW：Mest
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1375/json/LBL_LOADING：Ielādēšana
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1375/json/LBL_OXYGEN：Skābeklis
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1375/json/LBL_SCRL_SENSITIVITY：Ritināšanas jutība
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1375/json/LBL_SPEED：Ātrums
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1375/json/LBL_SUIT：Tērps
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1375/json/LBL_TGL_SPRINT：Pārslēgt skriešanu
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1375/json/LBL_VIGNETTE：Vinjete
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1375/json/TXT_SOURCE：<Key>Avots</>:
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1375/json/LBL_SLEEP_SUIT：Nevar gulēt tērpā
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1375/json/TXT_UNDOCK_FAIL：Atvienošana neizdevās
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1375/json/LBL_DIFFICULTY：Grūtības pakāpe
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1375/json/LBL_OTHER：Citi
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1375/json/LBL_SHADOWS：Ēnas
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1375/json/LBL_SUMMARY：<color=#C173FF>Kopsavilkums</color>
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1375/json/LBL_WORLD：Pasaule
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1375/json/DESC_CARDBOARD_BOX：Satur <color=#ffa555>nejaušu</color> priekšmetu.
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1375/json/LBL_EMPTY：Tukšs
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1375/json/LBL_AVLB_UNSEALS：Pieejamie atbloķējumi
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1375/json/LBL_DROP：Nomest
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1375/json/LBL_BUY：Pirkt
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1375/json/LBL_PRINT：Izdrukāt
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1375/json/LBL_AFTERBURNER：Afterburner
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1376/json/LBL_EXIT：Sair
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1376/json/ITEM_BELT：Cinto
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1376/json/ITEM_CHIP：Chipe
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1376/json/ITEM_LAMP：Candeeiro
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1376/json/ITEM_SKULL：Caveira
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1376/json/LBL_HINTS：Dicas
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1376/json/LBL_INFRASOUND：Infrassom
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1376/json/LBL_KEY_ROTATE：Rodar
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1376/json/LBL_WINDOWED：Modo Janela
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1376/json/LBL_KEYS：Chaves
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1376/json/LBL_MOUSE：Rato
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1376/json/LBL_MASS：Massa
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1376/json/LBL_PRINTED：Imprimido
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1376/json/LBL_NAME：Nome
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1376/json/ITEM_DIETER_PLUSH：Peluche Dieter
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1376/json/LBL_AFTERBURNER：Afterburner
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1377/json/LBL_TRANSLATION：Traducciones
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1377/json/ITEM_CRATE：Caja
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1377/json/LBL_BRIGHTNESS：Brillo
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1377/json/LBL_ENERGY_ERROR：s2 > s1 > s3 > s1 > s3 > s2
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1377/json/LBL_KEY_FLASHLIGHT：Linterna
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1377/json/LBL_KEY_INTERACT：Interactuar
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1377/json/LBL_KEY_THROW：Lanzar
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1377/json/LBL_KEY_ZOOM：Zoom
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1377/json/LBL_PATH：Camino:
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1377/json/LBL_ROOMS：Salas
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1377/json/LBL_VOLUME：Volumen
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1377/json/LBL_AFTERBURNER：Afterburner
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1378/json/LBL_TRANSLATION：Translation
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1378/json/LBL_KEY_ZOOM：Zoom
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1378/json/LBL_AFTERBURNER：Afterburner
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1380/json/LBL_TRANSLATION：Translation
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1380/json/LBL_KEY_ZOOM：Zoom
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1380/json/LBL_AFTERBURNER：Afterburner
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1382/json/LBL_TRANSLATION：Translation
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1382/json/LBL_KEY_ZOOM：Zoom
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1382/json/LBL_AFTERBURNER：Afterburner
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1383/json/LBL_MODERATION：Moderacja
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1383/json/ITEM_ORE：Ruda
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1383/json/LBL_ENERGY_ERROR：s2 > s1 > s3 > s1 > s3 > s2
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1383/json/LBL_HINTS：Podpowiedzi
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1383/json/LBL_KEY_SPRINT：Bieg
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1383/json/LBL_ROOMS：Pomieszczenia
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1383/json/LBL_AFTERBURNER：Afterburner
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1384/json/LBL_EXIT：Sair
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1384/json/LBL_SAVE_LOAD：Salvar/Carregar
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1384/json/ITEM_BELT：Cinto
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1384/json/LBL_HINTS：Dicas
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1384/json/LBL_INFRASOUND：Infrassom
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1384/json/LBL_KEY_ZOOM：Zoom
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1384/json/LBL_ROOMS：Salas
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1384/json/LBL_MASS：Massa
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1384/json/LBL_NAME：Nome
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1384/json/LBL_SHIP：Nave
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1386/json/LBL_TRANSLATION：Translation
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1386/json/LBL_KEY_ZOOM：Zoom
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#1386/json/LBL_AFTERBURNER：Afterburner
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#16305/str/0：12 / s
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#17086/str/0：0 / S
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#17446/str/0：ID:
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#18177/str/8：Red Velvet
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#18822/str/0：0 / S
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#19289/str/0：13K / 18K
+- Isolated Inhale_Data/resources.assets:asset#resources.assets#19421/str/0：s2 > s1 > s3 > s1 > s3 > s2
+- Isolated Inhale_Data/Managed/Assembly-CSharp.dll:us#8658：{0} / S
+- Isolated Inhale_Data/Managed/Assembly-CSharp.dll:us#8904：X:
+Y:
+- Isolated Inhale_Data/Managed/Assembly-CSharp.dll:us#23603：TXT_YOU_DESERVE
+- Isolated Inhale_Data/Managed/Assembly-CSharp.dll:us#23635：TXT_TO_BREATHE
+- Isolated Inhale_Data/Managed/FMODUnity.dll:us#14093：[FMOD] {0} : {1}
+- Isolated Inhale_Data/Managed/FMODUnity.dll:us#16019：CHANNELS: real = {0}, total = {1}
+
+

@@ -1,0 +1,14 @@
+asset#level1#87915/str/0 | new protected void Awake()⏎⏎    {⏎⏎        TextData = DataParser.GetSequenceText → new protected void Awake()⏎    {⏎        TextData = DataPars
+asset#level1#96737/str/0 | ff&? → ff&?
+asset#level1#96739/str/0 | ff&? → ff&?
+asset#level1#96745/str/0 | ff&? → ff&?
+asset#resources.assets#1368/json/ITEM_TRASH | Søppel → Søppel
+asset#resources.assets#1372/json/LBL_TYPE_HELP | <color=#323232>输入 'help' 来显示所有可用的命令</color> → <color=#323232>输入 'help' 可查看所有可用命令</color>
+asset#resources.assets#1373/json/LBL_TYPE_HELP | <color=#323232>введіть 'help', щоб показати всі доступні команди</color> → <color=#323232>输入 'help' 即可查看所有可用命令</color>
+asset#resources.assets#1373/json/LBL_ENERGY_ERROR | п2 > п1 > п3 > п1 > п3 > п2 → п2 > п1 > п3 > п1 > п3 > п2
+asset#resources.assets#1375/json/DESC_METAL_PIPE | metāla_caurule.mp3 → metāla_caurule.mp3
+asset#resources.assets#1375/json/LBL_KEY_QUICK_LOAD | Ātra ielāde → Ātra ielāde
+asset#resources.assets#1375/json/LBL_KEY_QUICK_SAVE | Ātra saglabāšana → Átra saglabāšana
+asset#resources.assets#1375/json/LBL_POST_PROC | Pēcapstrāde → Pēcapstrāde
+asset#resources.assets#1377/json/LBL_MODERATION | Moderación → Moderación
+asset#resources.assets#19029/str/0 | ff&? → ff&?
