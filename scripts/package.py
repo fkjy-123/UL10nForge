@@ -35,11 +35,17 @@ INCLUDE_TOP = [
     "fonts",            # 字体链（SDF/中文/TMP bundle）
     "resources",        # tools_manifest.json + font_override 插件载荷
     "tools",            # bmfont + Il2CppDumper（exe/config）
+    "scripts",          # 仅 headless 生产入口（文件级白名单裁剪）
     "main.py",
     "requirements.txt",
     "启动UL10nForge.bat",
     "README.md",
 ]
+
+# scripts 目录文件级白名单（2026-08-15）：只带 all_record_runner.py
+# （README 宣传的命令行一键闭环入口，仅依赖 hanhua/stdlib）——
+# 其余 50+ 开发/排查脚本不入发行包（避免内部调试内容外泄）
+SCRIPTS_FILES_ONLY = {"all_record_runner.py"}
 
 # 隐私扫描跳过目录：runtime 是官方 Python 发行物 + 第三方库
 # （pip/httpx 等文档示例含 password= 等形态，非用户数据）
@@ -110,6 +116,10 @@ def _walk_include() -> list[Path]:
                 if name in GLOBAL_EXCLUDE_FILES \
                         or any(name.endswith(ext) for ext in
                                (".pyc",)):
+                    continue
+                # scripts 文件级白名单：只带 headless 生产入口
+                if rel.parts and rel.parts[0] == "scripts" \
+                        and name not in SCRIPTS_FILES_ONLY:
                     continue
                 # Il2CppDumper 白名单
                 if rel.parts[:2] == ("tools", "Il2CppDumper") \
