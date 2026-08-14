@@ -17,7 +17,8 @@ from PySide6.QtWidgets import (QFileDialog, QFrame, QHBoxLayout, QLabel,
                                QProgressBar, QPushButton, QStackedWidget,
                                QVBoxLayout, QWidget)
 
-from hanhua.core.models import TextEntry, is_actionable_translation
+from hanhua.core.models import (TextEntry, entry_from_row,
+                                is_actionable_translation)
 from hanhua.core.project import Project
 from hanhua.ui.app_state import AppState
 from hanhua.ui.design_system import TOKENS
@@ -444,22 +445,8 @@ class HomePage(QWidget):
 
     @staticmethod
     def _entry_from_row(row: dict) -> TextEntry:
-        """与翻译页同源的 row → TextEntry（健康度口径一致）。"""
-        raw_meta = row.get("meta", {})
-        if isinstance(raw_meta, str):
-            try:
-                meta = json.loads(raw_meta)
-            except (json.JSONDecodeError, TypeError):
-                meta = {}
-        else:
-            meta = dict(raw_meta) if isinstance(raw_meta, dict) else {}
-        return TextEntry(
-            file_id=row["file_id"], key_path=row["key_path"],
-            original=row["original"], translation=row.get("translation", ""),
-            status=row.get("status", "pending"), locked=bool(row.get("locked", 0)),
-            id=row.get("id"), meta=meta,
-            confidence=str(meta.get("confidence", "medium")),
-        )
+        """与翻译页同源（统一口径见 models.entry_from_row）。"""
+        return entry_from_row(row)
 
     # ── 双态切换（§16：项目打开后隐藏大拖放框） ─────────────
     def _refresh_dashboard(self):

@@ -765,6 +765,134 @@ def _glossary_keep_echo(original: str, translation: str, glossary) -> bool:
 
 
 
+# ── 数字一致性（Q1 P2 缺口）：数字是数据不是文风，数值与百分比标记
+# 必须保留。「造成 15 点伤害」（原文 50）、「提升 10」（原文 10%）、
+# 「得分：15」（原文 1.5）都是数字失真——写回进游戏就是错误数值。
+# 允许等价转换：50→五十/五十点、10%→百分之十、3.5→三点五、100→一百。
+_CN_NUM_DIGITS = {
+    "零": 0, "〇": 0, "一": 1, "二": 2, "两": 2, "三": 3, "四": 4,
+    "五": 5, "六": 6, "七": 7, "八": 8, "九": 9,
+}
+_CN_NUM_UNITS = {"十": 10, "百": 100, "千": 1000,
+                 "万": 10000, "亿": 100000000}
+_CN_NUM_CHARS = "零〇一二两三四五六七八九十百千万亿"
+# 提取顺序：千分位（1,500）→ 普通小数 → % 允许空格分离（"10 %"）→
+# 百分之中文百分比 → X折/X成（五折=50%）→ X点Y小数 → 半 → 普通中文数字
+_NUMBER_TOKEN_RE = re.compile(
+    r"\d{1,3}(?:,\d{3})+(?:\.\d+)?\s*%"
+    r"|\d{1,3}(?:,\d{3})+(?:\.\d+)?"
+    r"|\d+(?:\.\d+)?\s*%"
+    r"|\d+(?:\.\d+)?"
+    rf"|百分之[{_CN_NUM_CHARS}]+"
+    rf"|[{_CN_NUM_CHARS}]+[折成]"
+    rf"|[{_CN_NUM_CHARS}]+点[{_CN_NUM_CHARS}]+"
+    r"|半"
+    rf"|[{_CN_NUM_CHARS}]+"
+)
+
+
+def _parse_cn_number(text: str) -> int | float | None:
+    """中文数字 → 数值：支持 0~亿级组合、零占位、『点』小数。"""
+    if not text:
+        return None
+    whole, _, frac = text.partition("点")
+    value = 0.0
+    section = 0.0
+    digit = 0
+    for ch in whole:
+        if ch in _CN_NUM_DIGITS:
+            digit = _CN_NUM_DIGITS[ch]
+        elif ch in _CN_NUM_UNITS:
+            unit = _CN_NUM_UNITS[ch]
+            if unit >= 10000:
+                section = (section + digit) * unit
+                value += section
+                section = 0.0
+            else:
+                section += (digit or 1) * unit
+            digit = 0
+        else:
+            return None
+    value += section + digit
+    if frac:
+        for i, ch in enumerate(frac):
+            if ch not in _CN_NUM_DIGITS:
+                return None
+            value += _CN_NUM_DIGITS[ch] * 10 ** -(i + 1)
+    return value
+
+
+_ASCII_ALNUM = frozenset(
+    "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_")
+# 'X of Y' 结构（'Wave 3 of 5' / 'Level 2 of 8'）：总量数字（分母 Y）
+# 是范围说明，译文「第 3 波」省略总量是常见合理译法——Y 标记 soft
+_OF_DENOM_RE = re.compile(
+    r"\d+(?:\.\d+)?\s+of\s+(\d+(?:\.\d+)?)", re.I)
+
+
+def _number_tokens(text: str) -> list[tuple[float, bool, bool]]:
+    """数字 token 序列（值, 是否百分比, 分母 soft）——原文/译文同口径。
+
+    紧贴 ASCII 字母/下划线的 token 是标识符成分（text0、3D、0x1F、
+    v1.2.3、MP3）——技术键名/格式代号，数字无独立数据语义，不参与
+    强制。中文前缀不豁免（「有百分之五十」是自然语义数字）。
+    """
+    soft_spans = [m.start(1) for m in _OF_DENOM_RE.finditer(text)]
+    tokens: list[tuple[float, bool, bool]] = []
+    for match in _NUMBER_TOKEN_RE.finditer(text):
+        start, end = match.span()
+        if (start > 0 and text[start - 1] in _ASCII_ALNUM) \
+                or (end < len(text) and text[end] in _ASCII_ALNUM):
+            continue
+        raw = match.group(0)
+        soft = start in soft_spans  # '3 of 5' 的分母 5 → 可省略
+        if raw.endswith("%"):
+            tokens.append((float(raw.rstrip(" %")), True, soft))
+        elif "百分之" in raw:
+            value = _parse_cn_number(raw[3:])
+            if value is not None:
+                tokens.append((float(value), True, soft))
+        elif raw == "半":
+            tokens.append((0.5, False, soft))
+        elif raw.endswith(("折", "成")):
+            value = _parse_cn_number(raw[:-1])
+            if value is not None:
+                tokens.append((float(value) * 10, True, soft))
+        elif "点" in raw:
+            value = _parse_cn_number(raw)
+            if value is not None:
+                tokens.append((float(value), False, soft))
+        else:
+            value = _parse_cn_number(raw)
+            if value is None:
+                value = float(raw.replace(",", ""))
+            tokens.append((float(value), False, soft))
+    return tokens
+
+
+def _numeric_mismatch(original: str, normalized: str) -> bool:
+    """数字一致性检查：原文每个数字 token 必须按序在译文中可匹配
+    （数值相同、百分比标记相同）。'X of Y' 分母 soft 可省略（「第 3
+    波」省略总量是合理译法）；译文多出的数字不追究（"1-2"→「一到二」
+    两边都有；"Press 1 or 2" 的序号回显在两侧一致）。"""
+    src_tokens = _number_tokens(original)
+    if not src_tokens:
+        return False
+    dst_tokens = _number_tokens(normalized)
+    pos = 0
+    for value, pct, soft in src_tokens:
+        found = False
+        while pos < len(dst_tokens):
+            d_value, d_pct, _ = dst_tokens[pos]
+            pos += 1
+            if d_value == value and d_pct == pct:
+                found = True
+                break
+        if not found and not soft:
+            return True
+    return False
+
+
 def validate_translation_quality(
     entry: TextEntry,
     translation: str,
@@ -943,6 +1071,16 @@ def validate_translation_quality(
                         for alias in _KEY_ZH_ALIASES.get(key, ()))):
                 reasons.append("key_name_mistranslated")
                 break
+    # 数字一致性（Q1 P2）：原文含数字（含百分比）时译文必须保留相同
+    # 数值——数字是玩家可验证的数据（伤害/价格/概率/坐标），失真进
+    # 游戏就是错误。允许中文等价（50→五十/五十点、10%→百分之十）。
+    # 日志/格式模板豁免：模板数字多为格式说明（%d）与索引（wave 3），
+    # 且 _is_log_template/_is_format_template 内的数字本来可自由改
+    # 写（译文的 %d 不换数字）；占位符 {0} 的 0 两侧一致不受影响。
+    if (not is_log_template(entry.original)
+            and not _is_format_template(entry.original)
+            and _numeric_mismatch(entry.original, normalized)):
+        reasons.append("numeric_mismatch")
     # 全大写 ≤3 字母缩写回显（MAX/SFX/UI/OK）：单 token 缩写是界面
     # 标准术语，1.8B 模型稳定回显（count-my-coins 'SFX' 实证；proper_name
     # echo 侧已有同规则 1847 行，本门补一致；driftapocalypse 'MAX' ×3

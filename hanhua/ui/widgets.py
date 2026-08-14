@@ -546,6 +546,7 @@ class WorkerSignals(QObject):
     error = Signal(str)
     progress = Signal(object)
     log = Signal(str)
+    review = Signal(int, int)   # 语义审核进度 (done, total) 实时刷新
 
 
 class Worker(QRunnable):

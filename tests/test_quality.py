@@ -918,3 +918,75 @@ def test_f13_dialogue_script_exempts_single_token_pairs():
         _entry("* item one\n* item two"), "* 项目一\n* 项目二",
         glossary=[("ITEM", "条目")])
     assert "glossary_mismatch" not in md.reasons
+
+
+# ── Q1 P2：数字一致性（numeric_mismatch） ──────────────────────
+
+
+def test_numeric_mismatch_detects_changed_values():
+    """验收报告三案例：数值改动必须判 numeric_mismatch。"""
+    for original, translation in (
+        ("Deal 50 damage", "造成 15 点伤害"),
+        ("10% boost", "提升 10"),
+        ("Score: 1.5", "得分：15"),
+    ):
+        result = validate_translation_quality(_entry(original), translation)
+        assert result.passed is False, (original, translation)
+        assert "numeric_mismatch" in result.reasons, (original, translation)
+
+
+def test_numeric_equivalents_accepted():
+    """中文等价转换放行：50→五十/五十点、10%→百分之十/10%、1.5→一点五。"""
+    for original, translation in (
+        ("Deal 50 damage", "造成五十点伤害"),
+        ("10% boost", "提升 10%"),
+        ("10% boost", "提升百分之十"),
+        ("Score: 1.5", "得分：一点五"),
+        ("5 coins", "五枚金币"),
+        ("Level 3", "第三关"),
+        ("1,500 gold", "一千五百金币"),
+        ("10 minutes", "十分钟"),
+        ("100", "一百"),
+    ):
+        result = validate_translation_quality(_entry(original), translation)
+        assert result.passed is True, (original, translation, result.reasons)
+        assert "numeric_mismatch" not in result.reasons, (original, translation)
+
+
+def test_numeric_consistency_normal_translations():
+    """常规翻译数字原样保留：不得误杀。"""
+    for original, translation in (
+        ("Press 2 for Level 5", "按 2 进入等级 5"),
+        ("50% off sale", "50% 折扣"),
+        ("50% off sale", "五折"),
+        ("v1.2.3 patch", "版本 1.2.3 补丁"),
+        ("12:30 PM", "下午 12:30"),
+        ("Take 3 steps back", "向后退三步"),
+        ("ID 404 not found", "未找到 ID 404"),
+    ):
+        result = validate_translation_quality(_entry(original), translation)
+        assert result.passed is True, (original, translation, result.reasons)
+        assert "numeric_mismatch" not in result.reasons, (original, translation)
+
+
+def test_numeric_mismatch_missing_number_rejected():
+    """原文数字被译文整体吞掉（无对应）→ 判失败。"""
+    result = validate_translation_quality(
+        _entry("Gain 3 health"), "恢复生命")
+    assert "numeric_mismatch" in result.reasons
+
+
+def test_numeric_check_exempts_log_and_format_templates():
+    """日志/格式模板豁免：%d 等格式说明数字自由改写；占位符 {0} 两侧
+    一致不受影响；数字保留的正常波次文本照常通过。"""
+    for original, translation in (
+        ("Player %d joined", "玩家 %d 加入"),
+        ("{0} kg of gold", "{0} 千克黄金"),
+        ("Wave 3 of 5 begins", "第 3 波开始"),
+    ):
+        result = validate_translation_quality(_entry(original), translation)
+        assert "numeric_mismatch" not in result.reasons, (original, translation)
+    # 对照：波次数字改写（3→5）仍判失败——数字是语义数据
+    changed = validate_translation_quality(
+        _entry("Wave 3 of 5 begins"), "第 5 波开始")
+    assert "numeric_mismatch" in changed.reasons

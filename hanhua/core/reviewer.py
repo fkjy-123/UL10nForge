@@ -547,6 +547,7 @@ def _failed_reason(entry: TextEntry) -> str:
 
 def review_entries(entries, glossary, *, game_name: str = "",
                    on_note: Callable[[str], None] | None = None,
+                   on_progress: Callable[[int, int], None] | None = None,
                    translator=None, memory=None, store=None,
                    app_dir: str | Path | None = None,
                    model_name: str = "", lang: str = "zh-CN",
@@ -745,12 +746,14 @@ def review_entries(entries, glossary, *, game_name: str = "",
             term_hint=term_hint, context_hint=ctx_hint))
 
     def _progress(done: int, total: int) -> None:
-        # 节流：约每 10% 一条日志 + 末条必报（不刷屏）
-        if on_note is None:
-            return
-        step = max(1, total // 10)
-        if done == total or done % step == 0:
-            on_note(f"语义审核：{done}/{total} 条…")
+        # 节流：约每 10% 一条日志 + 末条必报（不刷屏）；
+        # on_progress 由 GUI 接进度信号做实时 UI 反馈（不刷屏由调用方节流）
+        if on_note is not None:
+            step = max(1, total // 10)
+            if done == total or done % step == 0:
+                on_note(f"语义审核：{done}/{total} 条…")
+        if on_progress is not None:
+            on_progress(done, total)
 
     results, cancelled_count = reviewer.review_batch(
         review_items, on_progress=_progress,

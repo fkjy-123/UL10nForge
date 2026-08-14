@@ -21,7 +21,7 @@ from hanhua.core.glossary import GlossaryStore
 from hanhua.core.knowledge import KnowledgeBase
 from hanhua.core.local_model import LocalModelError, sanitize_exception
 from hanhua.core.memory import settle_translation_memory
-from hanhua.core.models import (GameProfile, TextEntry,
+from hanhua.core.models import (GameProfile, TextEntry, entry_from_row,
                                 is_actionable_translation)
 from hanhua.core.prompts import build_system_prompt, collect_known_names
 from hanhua.core.quality import is_write_ready
@@ -114,6 +114,8 @@ class TranslatePage(QWidget):
         self._write_terminal_message = ""
         self._last_stats = None
         self._stream_last_done = 0
+        self._last_review: tuple[int, int] | None = None
+        self._last_review_emit = 0.0
         # 进度节流（#13 实证：home 分数与流水线 rail 只在全部完成后才
         # 更新，翻译时「突然一下完成几十条」——批粒度 progress 直接
         # emit entriesChanged 会让首页 O(N) 重扫刷屏）。每 ≥1s 才广播
@@ -390,6 +392,10 @@ class TranslatePage(QWidget):
             lambda line, p=project, g=generation:
             self.log_view.appendPlainText(line)
             if self.state.is_current_project(p, g) else None)
+        worker.signals.review.connect(
+            lambda done, total, p=project, g=generation:
+            self._on_review_progress(done, total)
+            if self.state.is_current_project(p, g) else None)
         worker.signals.finished.connect(
             lambda stats, p=project, g=generation:
             self._on_finished(stats)
@@ -619,9 +625,18 @@ class TranslatePage(QWidget):
                 try:
                     review_summary = None
                     if self.state.api.ai_review_enabled:
+                        # 审核进度实时可见（用户实证：翻译完成后界面无
+                        # 反馈，2.6GB 审核模型首次启动 30-120 秒 + 逐条
+                        # 判定期间 UI 像卡死、写回被锁）——启动提示先于
+                        # review_entries 广播，逐条进度走 signals.review
                         self.state.pipelinePhase.emit(
                             "translation_quality", "running",
                             "正在语义审核…", "")
+                        self.activity_feed.append_event(
+                            "running", "正在启动语义审核模型"
+                            "（首次约 30-120 秒，逐条进度实时刷新）…")
+                        on_log("语义审核：正在启动本地审核模型"
+                               "（Qwen3.5-4B，首次加载约 30-120 秒）…")
                         strategy_rate = {
                             "fast": 0.05, "balanced": 0.15, "strict": 0.30,
                         }.get(self.state.api.ai_review_strategy, 0.15)
@@ -629,6 +644,8 @@ class TranslatePage(QWidget):
                             entries, learn_g,
                             game_name=str(profile.game_name or ""),
                             on_note=on_log,
+                            on_progress=lambda done, total:
+                            signals.review.emit(done, total),
                             translator=translator,
                             memory=store,
                             store=store,
@@ -732,24 +749,8 @@ class TranslatePage(QWidget):
 
     @staticmethod
     def _entry_from_row(row: dict) -> TextEntry:
-        raw_meta = row.get("meta", {})
-        if isinstance(raw_meta, str):
-            try:
-                meta = json.loads(raw_meta)
-            except (json.JSONDecodeError, TypeError):
-                meta = {}
-        else:
-            meta = dict(raw_meta) if isinstance(raw_meta, dict) else {}
-        reasons = meta.get("quality_reasons", [])
-        return TextEntry(
-            file_id=row["file_id"], key_path=row["key_path"],
-            original=row["original"], translation=row.get("translation", ""),
-            status=row.get("status", "pending"), locked=bool(row.get("locked", 0)),
-            id=row.get("id"), meta=meta,
-            confidence=str(meta.get("confidence", "medium")),
-            quality_reasons=tuple(str(reason) for reason in reasons)
-            if isinstance(reasons, list) else (),
-        )
+        """DB 行 → TextEntry（统一口径见 models.entry_from_row）。"""
+        return entry_from_row(row)
 
     def _update_progress_widgets(self, stats):
         """进度条/数字按批粒度实时更新（O(1)，不进全量刷新节流）。"""
@@ -799,6 +800,27 @@ class TranslatePage(QWidget):
                 "translation_quality", "running", "正在翻译…",
                 f"已完成 {done + stats.failed} / {stats.total} 条"
                 f" · {stats.rate_per_minute:.0f} 条/分")
+
+    def _on_review_progress(self, done: int, total: int):
+        """语义审核进度（worker 线程经 signals.review 回主线程）。
+
+        逐条判定期间界面必须实时推进（审核在翻译 worker 内同步执行，
+        无反馈 = 用户看到「卡住不动」且写回被锁）。标签逐条更新，
+        activity_feed 按 ≥5 条节流一次，末条必报。
+        """
+        self._last_review = (done, total)
+        if total > 0:
+            self.progress_label.setText(
+                f"语义审核 {done}/{total} 条…")
+            self.stream_status.setText(
+                f"◐ 语义审核 {done}/{total} 条")
+        now = time.monotonic()
+        if done >= total or now - self._last_review_emit >= 0.8:
+            self._last_review_emit = now
+            self.activity_feed.append_event(
+                "info" if done < total else "success",
+                f"语义审核：{done}/{total} 条"
+                + ("" if done < total else " · 完成"))
 
     def _on_finished(self, stats):
         self._running = False
@@ -1334,16 +1356,21 @@ class TranslatePage(QWidget):
         self.chip_failed.setText(f"失败 {failed}")
         self.chip_skipped.setText(f"跳过 {skipped}")
         self.metric_pending.setValue(f"{actionable} 条")
-        if s is None:
-            # 未开始翻译：进度显示按可翻译总数口径（TranslateStats 未
-            # 导入，直接传轻量代理对象——_update_progress_widgets 只用
-            # total/done/failed 三个字段）。#2：写回失败等终端消息已
-            # 显示时跳过——异步 chips 回调不得覆盖（_on_write_drained
-            # 用 _write_terminal_message 恢复，回调时序在其后）。
+        if s is None or not self._running:
+            # 未开始 / 翻译已结束：进度显示切回全量口径（TranslateStats
+            # 未导入，直接传轻量代理对象——_update_progress_widgets 只用
+            # total/done/failed 三个字段）。#2：翻译完成后 progress_sub
+            # 残留最后一批的「剩余 X 条」导致左右计数不符——这里用
+            # store 全量刷新：剩余 = actionable（待翻译，含失败可重试），
+            # 失败 = failed。翻译进行中（_running）保持批粒度由
+            # _on_progress 实时维护，不覆盖。写回失败等终端消息已显示
+            # 时跳过——异步 chips 回调不得覆盖（_on_write_drained 用
+            # _write_terminal_message 恢复，回调时序在其后）。
             if not self._write_terminal_message:
                 self._update_progress_widgets(type(
                     "_StatsProxy", (), {
-                        "total": actionable, "done": 0, "failed": 0})())
+                        "total": actionable + translated,
+                        "done": translated, "failed": failed})())
         if reasons:
             summary = " · ".join(f"{reason} {count}" for reason, count in sorted(reasons.items()))
             self.quality_reason_label.setText(f"质量门失败原因：{summary}")
@@ -1389,6 +1416,7 @@ class TranslatePage(QWidget):
         self._worker = None
         self._last_stats = None
         self._stream_last_done = 0
+        self._last_review = None
         self.start_btn.setEnabled(self._active_run is None)
         self.stop_btn.setEnabled(False)
         self.retry_btn.setEnabled(False)

@@ -157,6 +157,30 @@ def test_review_filter_chip_updates_proxy(qapp, tmp_path):
     assert page.proxy.rowCount() == 1
 
 
+def test_review_pending_chip_excludes_low_archive(qapp, tmp_path):
+    """#8：跳过/留档文本不进「待翻译」——low 置信度留档（引擎消息/
+    噪音，不可自动翻译）在待翻译胶囊与 summary 计数中都不显示，
+    与翻译页 chips 同源口径（is_actionable_translation）。"""
+    rows = [
+        {"original": "Hello", "translation": "", "status": "pending",
+         "file_id": "f", "key_path": "a", "locked": False,
+         "meta": json.dumps({"confidence": "high"})},
+        {"original": "Address already in use", "translation": "",
+         "status": "pending", "file_id": "f", "key_path": "b",
+         "locked": False,
+         "meta": json.dumps({"confidence": "low",
+                             "reason": "il2cpp_sentence"})},
+        {"original": "Locked", "translation": "", "status": "pending",
+         "file_id": "f", "key_path": "c", "locked": True, "meta": {}},
+    ]
+    page = ReviewPage(_state(tmp_path), _Window())
+    page.model.setEntries(rows)
+    page.filter_chips["pending"].click()
+    assert page.proxy.rowCount() == 1, "待翻译胶囊只显示可翻译条目"
+    page._refresh_summary()
+    assert "待翻译 1" in page.summary_label.text()
+
+
 def test_review_save_has_inline_feedback(qapp, tmp_path):
     page = ReviewPage(_state(tmp_path), _Window())
     assert page.save_feedback.text() == ""
@@ -209,7 +233,10 @@ def test_translate_progress_uses_actionable_scope_and_collapses_skips(
     page._refresh_chips()
     await_reload(page)
 
-    assert page.progress_label.text() == "0 / 300 条"
+    # #2：未开始翻译时进度切全量口径 = 可处理总数（actionable 待翻译 +
+    # 已翻译），与 chips 同源：1 已翻译 / 301 可处理（1700 跳过与
+    # low 留档不计入）。
+    assert page.progress_label.text() == "1 / 301 条"
     assert page.progress_bar.value() == 0
     assert page.chip_done.text() == "已翻译 1"
     assert page.chip_skipped.isHidden()
@@ -1072,8 +1099,9 @@ def test_refresh_chips_pending_uses_actionable_count(qapp, tmp_path):
     assert page.metric_pending.value_label.text() == "1 条"
     assert "低置信度" in page.chip_pending.toolTip()
     assert "1" in page.chip_pending.toolTip()      # 留档 1 条
-    # 进度条与计数同源（未运行时 done=0）：1 / 1
-    assert page.progress_label.text() == "0 / 1 条"
+    # 进度条与计数同源（未运行时切全量口径）：可处理 2 条（1 待翻译 +
+    # 1 已翻译）全部处理完 → 2 / 2；low 留档（k2/k4）不计入
+    assert page.progress_label.text() == "2 / 2 条"
 
 
 def test_refresh_chips_pending_without_low_entries_has_no_tooltip(

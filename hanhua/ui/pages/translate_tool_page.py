@@ -17,6 +17,7 @@ from PySide6.QtWidgets import (QComboBox, QHBoxLayout, QLabel,
                                QPlainTextEdit, QPushButton, QSplitter,
                                QVBoxLayout, QWidget)
 
+from hanhua.core.local_model import LocalModelError, discover_model
 from hanhua.core.prompts import build_system_prompt
 from hanhua.core.translator import create_client
 from hanhua.ui.app_state import AppState
@@ -38,6 +39,8 @@ class TranslateToolPage(QWidget):
         self.window = window
         self._worker: Worker | None = None
         self._running = False
+        self._last_warn_ts = 0.0        # 失败提示防连点刷屏（同页 2 秒只弹一条）
+        self._active_local_model = ""   # 本次翻译的本地模型名（历史记录用）
         self._history: list[dict] = []
         self._history_path = Path(state.app_dir) / _HISTORY_FILENAME
         self._load_history()
@@ -141,6 +144,7 @@ class TranslateToolPage(QWidget):
         lay.addLayout(ops)
 
         self._refresh_model_label()
+        self.state.settingsChanged.connect(self._refresh_model_label)
         self._refresh_history_combo()
 
     @staticmethod
@@ -166,8 +170,14 @@ class TranslateToolPage(QWidget):
     def _refresh_model_label(self):
         api = self.state.api
         if api.mode == "local":
-            name = Path(api.local_model_path).name if api.local_model_path else "未配置"
-            self.model_label.setText(f"本地模型：{name}")
+            try:
+                # 本地模型路径可为空：settings 不存路径，按 models/ 目录自动发现
+                model = discover_model(api.local_model_path,
+                                       self.state.resource_dir)
+                self.model_label.setText(f"本地模型：{model.stem}")
+            except LocalModelError:
+                self.model_label.setText(
+                    "本地模型：未找到（点击右上角「模型设置」）")
         elif api.base_url and api.api_key and api.model:
             self.model_label.setText(f"API 模型：{api.model}")
         else:
@@ -175,19 +185,29 @@ class TranslateToolPage(QWidget):
 
     # ── 翻译执行（后台 worker，长文本分块） ──────────────────
     def _translate(self):
-        text = self.src_edit.toPlainText().strip()
-        if not text:
-            Toast.show(self, "请输入要翻译的文本", "warning")
-            return
         if self._running:
             return
+        text = self.src_edit.toPlainText().strip()
+        if not text:
+            self._warn("请输入要翻译的文本")
+            return
         api = self.state.api
-        if api.mode == "api" and not (api.base_url and api.api_key and api.model):
-            Toast.show(self, "请先在设置中配置 API 模型", "warning")
+        if api.mode == "api" and not (api.base_url and api.api_key
+                                      and api.model):
+            self._warn("请先在设置中配置 API 模型")
             return
-        if api.mode == "local" and not api.local_model_path:
-            Toast.show(self, "请先在设置中配置本地模型", "warning")
-            return
+        if api.mode == "local":
+            try:
+                # 与 LocalModelManager 同一发现逻辑：路径可为空，
+                # 从 models/ 目录自动发现（模型已启动场景不应误报未配置）
+                model = discover_model(api.local_model_path,
+                                       self.state.resource_dir)
+            except LocalModelError as exc:
+                self._warn(f"未找到本地模型：{exc}")
+                return
+            self._active_local_model = model.stem
+        else:
+            self._active_local_model = ""
         system = self.prompt_edit.toPlainText().strip() \
             or self._default_prompt()
         blocks = self._split_blocks(text)
@@ -206,6 +226,14 @@ class TranslateToolPage(QWidget):
             lambda out: self._on_done(out, blocks))
         worker.signals.error.connect(self._on_error)
         QThreadPool.globalInstance().start(worker)
+
+    def _warn(self, message: str):
+        """失败提示：2 秒内同页只弹一条（连点不叠加多条消息）。"""
+        now = time.monotonic()
+        if now - self._last_warn_ts < 2.0:
+            return
+        self._last_warn_ts = now
+        Toast.show(self, message, "warning")
 
     @staticmethod
     def _run_blocks(api, system: str, blocks: list[str],
@@ -248,8 +276,9 @@ class TranslateToolPage(QWidget):
         self.dst_edit.setPlainText("\n".join(parts))
         self.status_label.setText(f"完成 · {len(parts)} 段")
         api = self.state.api
-        model = (Path(api.local_model_path).name if api.mode == "local"
-                 else api.model or "")
+        model = ((self._active_local_model
+                  or Path(api.local_model_path).stem)
+                 if api.mode == "local" else api.model or "")
         self._append_history(
             self.src_edit.toPlainText().strip(),
             "\n".join(parts),

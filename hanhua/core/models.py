@@ -1,4 +1,5 @@
 from __future__ import annotations
+import json
 from dataclasses import dataclass, field
 
 STATUS_PENDING = "pending"
@@ -43,6 +44,33 @@ def is_actionable_translation(entry: TextEntry) -> bool:
             and role not in {"structural", "code", "key"}
             and (confidence != "low"
                  or entry.meta.get("confidence_promoted") is True))
+
+
+def entry_from_row(row: dict) -> TextEntry:
+    """DB 行 → TextEntry：首页/翻译页/审校页共用的单一口径。
+
+    此前三页各自复制一份解析（meta 字符串/字典兼容），口径漂移是
+    「待翻译计数不一致」的根源（#2/#8）：审校页曾用裸 status 计数，
+    把 low 置信度留档条目（引擎消息/噪音，不可自动翻译）算进待翻译。
+    """
+    raw_meta = row.get("meta", {})
+    if isinstance(raw_meta, str):
+        try:
+            meta = json.loads(raw_meta)
+        except (json.JSONDecodeError, TypeError):
+            meta = {}
+    else:
+        meta = dict(raw_meta) if isinstance(raw_meta, dict) else {}
+    reasons = meta.get("quality_reasons", [])
+    return TextEntry(
+        file_id=row["file_id"], key_path=row["key_path"],
+        original=row["original"], translation=row.get("translation", ""),
+        status=row.get("status", "pending"), locked=bool(row.get("locked", 0)),
+        id=row.get("id"), meta=meta,
+        confidence=str(meta.get("confidence", "medium")),
+        quality_reasons=tuple(str(reason) for reason in reasons)
+        if isinstance(reasons, list) else (),
+    )
 
 
 @dataclass

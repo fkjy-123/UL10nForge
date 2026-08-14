@@ -23,7 +23,8 @@ from PySide6.QtWidgets import (QAbstractItemView, QButtonGroup, QCheckBox,
 
 from hanhua.core.agent_memory import AgentMemory
 from hanhua.core.manual_correction import manual_correction
-from hanhua.core.models import TextEntry
+from hanhua.core.models import (TextEntry, entry_from_row,
+                                is_actionable_translation)
 from hanhua.core.reviewer import review_entries
 from hanhua.ui.app_state import AppState
 from hanhua.ui import theme
@@ -309,6 +310,13 @@ class EntryFilterProxy(QSortFilterProxyModel):
             # REVIEW_ERROR，Phase A 统一落 review_outcome）或遗留
             # review_issue（C6 历史语义），与 store 状态无关
             if not _needs_review(_row_meta(r)):
+                return False
+        elif self.status == "pending":
+            # #2/#8：待翻译 = 引擎实际会翻的条目（与翻译页 chips 同源
+            # 口径 is_actionable_translation）。low 置信度留档（引擎消息/
+            # 疑似噪音，跳过翻译）与 locked/structural 等不显示在待翻译
+            # 胶囊——跳过的文本不进「待翻译」。
+            if not is_actionable_translation(entry_from_row(r)):
                 return False
         elif self.status and r["status"] != self.status:
             return False
@@ -898,9 +906,13 @@ class ReviewPage(QWidget):
         #19：隐藏跳过统计；待审核胶囊在无不合格条目时隐藏（空胶囊
         会让用户以为存在待办而逐个翻找，实则空转）。计数基于模型行
         （与 store 同源，项目未接入时也能自洽）。
+        #2/#8：待翻译用 is_actionable_translation 口径（与翻译页 chips
+        一致）——low 置信度留档（引擎消息/噪音，跳过翻译）不计入，
+        与翻译页「待翻译」数字一致，跳过的文本不显示在待翻译里。
         """
         rows = self.model._rows
-        pending = sum(1 for r in rows if r["status"] == "pending")
+        pending = sum(1 for r in rows
+                      if is_actionable_translation(entry_from_row(r)))
         translated = sum(1 for r in rows if r["status"] == "translated")
         failed = sum(1 for r in rows if r["status"] == "failed")
         failed_s = f" · 失败 {failed}" if failed else ""

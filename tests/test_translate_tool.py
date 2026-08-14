@@ -149,6 +149,61 @@ def test_tool_page_local_model_starts_service(qapp, tmp_path, monkeypatch):
     assert client.config.model == "local-model"
 
 
+def test_tool_page_local_auto_discover_model(qapp, tmp_path, monkeypatch):
+    """本地模式自动发现：settings 不存模型路径也能翻译（模型已启动场景）。"""
+    import struct
+
+    models_dir = tmp_path / "models"
+    models_dir.mkdir()
+    header = b"GGUF" + struct.pack("<IQQ", 3, 1, 1)
+    (models_dir / "Hy-MT2-1.8B-Q6_K.gguf").write_bytes(
+        header + b"\x00" * (1024 * 1024 - len(header)))
+
+    class _FakeLocalModel:
+        def ensure_running(self, config, cancellation_event=None):
+            return type("Runtime", (), {
+                "endpoint": "http://127.0.0.1:9999",
+                "api_key": "local-key",
+                "model": "Hy-MT2-1.8B-Q6_K",
+            })()
+
+    client = _FakeClient()
+    monkeypatch.setattr("hanhua.ui.pages.translate_tool_page.create_client",
+                        _fake_client_factory(client))
+    state = _state(tmp_path)
+    state.settings.api.mode = "local"        # local_model_path 保持空
+    state.local_model = _FakeLocalModel()
+    page = TranslateToolPage(state, _Window())
+    # 标签按自动发现显示模型名，不再误报「未配置」
+    assert "Hy-MT2-1.8B" in page.model_label.text()
+    page.src_edit.setPlainText("Hello")
+    page.translate_btn.click()
+    _run_until_idle(page)
+    await_reload(page)
+    assert page.dst_edit.toPlainText() == "译：Hello"
+    assert client.calls, "必须调用翻译客户端"
+    history_path = Path(state.app_dir) / "quick_translate_history.json"
+    data = json.loads(history_path.read_text(encoding="utf-8"))
+    assert data[0]["model"] == "Hy-MT2-1.8B-Q6_K"
+
+
+def test_tool_page_warning_dedup_on_repeated_click(qapp, tmp_path, monkeypatch):
+    """连点翻译：失败提示只弹一条，不叠加多条消息。"""
+    from hanhua.ui.widgets import Toast
+    calls = []
+    monkeypatch.setattr("hanhua.ui.pages.translate_tool_page.create_client",
+                        lambda config, transport_factory=None: calls.append(1))
+    page = TranslateToolPage(_state(tmp_path), _Window())
+    page.src_edit.setPlainText("Hello")
+    base = len(Toast._stack)
+    page.translate_btn.click()
+    QTest.qWait(50)
+    page.translate_btn.click()
+    QTest.qWait(50)
+    assert len(Toast._stack) - base == 1, "连点应只弹一条提示"
+    assert calls == []
+
+
 def test_tool_page_split_blocks_keeps_lines():
     """长文本按行分块（行不拆分，块 ≤ _BLOCK_CHARS）。"""
     lines = ["x" * 500 + str(i) for i in range(20)]
