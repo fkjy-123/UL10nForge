@@ -728,19 +728,29 @@ class SettingsPage(QWidget):
                     for kind, future in futures.items()}
 
     def _refresh_model_states(self) -> None:
-        """异步刷新四卡片状态（2026-08-14 卡顿修复：切页不再 UI 线程
-        串行探测——4×0.6s 同步会卡 2.4s+；改后台并行 + 完成回调）。
+        """异步刷新四卡片状态 + 右侧显存（2026-08-14 卡顿修复：切页不再
+        UI 线程串行探测——4×0.6s 同步会卡 2.4s+；改后台并行 + 完成回调）。
+
+        显存即时刷新（2026-08-14 用户实证「即时显存显示还是有问题」：
+        状态卡只在 settingsChanged/构建时刷一次——翻译跑多久显存数字
+        就多久不更新；环境页激活期间 3s 定时器只刷四卡片）。gpu 查询
+        并入同一 worker（后台线程 + vram 2s TTL 缓存，不卡 UI），每次
+        轮询顺带更新右侧「显存」行。
 
         token 防竞态：3s 轮询 + 手动刷新并发时，过期回调不得覆盖
         新结果（慢探测结果晚到会回退按钮状态）。"""
         self._state_token = getattr(self, "_state_token", 0) + 1
         token = self._state_token
-        worker = Worker(self._probe_all)
+        worker = Worker(self._probe_all_with_gpu)
         worker.signals.finished.connect(
-            lambda states, t=token: self._apply_model_states(states, t))
+            lambda data, t=token: self._apply_model_states(data, t))
         worker.signals.error.connect(
             lambda _err: self._apply_model_states({}, token))
         self._spawn(worker)
+
+    def _probe_all_with_gpu(self) -> dict:
+        """四端口探测 + 显存信息（后台线程；显存查询失败不阻断）。"""
+        return {"states": self._probe_all(), "gpu": gpu_memory_info()}
 
     @staticmethod
     def _set_card_button(card: dict, running: bool) -> None:
@@ -755,25 +765,44 @@ class SettingsPage(QWidget):
         btn.style().unpolish(btn)
         btn.style().polish(btn)
 
-    def _apply_model_states(self, states: dict, token: int) -> None:
+    def _apply_model_states(self, data, token: int) -> None:
+        """应用探测结果：四卡片状态 + 右侧显存行。
+
+        data 双形态兼容：{"states": …, "gpu": …}（worker 探测）或
+        直接 states dict（旧调用/错误路径）。token 防竞态：过期回调
+        （更慢的旧探测晚到）直接丢弃。
+        """
         if token != self._state_token:
-            return  # 过期回调（更慢的旧探测晚到）
+            return
+        if isinstance(data, dict) and "states" in data:
+            states, gpu = data["states"], data.get("gpu")
+        else:
+            states, gpu = data, None   # 旧形态：states dict（测试/错误路径）
         for kind, card in self.model_cards.items():
             running = bool(states.get(kind))
             card["status"].setText(
                 f"状态：运行中 · 端口 {card['port']}" if running
                 else "状态：未启动")
             self._set_card_button(card, running)
+        if gpu:
+            total, free = gpu
+            self.status_vram.setText(f"{free:.1f} / {total:.1f} GB 可用")
 
     def _on_probe_error(self, _err: str) -> None:
         """探测异常：按全部未启动恢复（按钮保持可点）。"""
         self._apply_model_states({}, self._state_token)
 
     def _on_env_tab_shown(self, index: int) -> None:
-        """切回环境设置页时刷新四模型状态（index 0 恒为环境设置）；
-        环境页激活期间 3s 定时轮询，离开停止（省资源）。"""
+        """切回环境设置页时刷新四模型状态与显存总览（index 0 恒为
+        环境设置）；环境页激活期间 3s 定时轮询，离开停止（省资源）。
+
+        显存总览刷新（2026-08-14 用户实证「即时显存显示还是有问题」）：
+        总览行此前只在 settingsChanged/构建时更新——切回页面先刷一次
+        最新值，激活期间的 3s 轮询由 _apply_model_states 顺带刷右侧
+        「显存」行（probe_hardware 走 vram 2s TTL 缓存，不卡 UI）。"""
         if index == 0:
             self._refresh_model_states()
+            self._refresh_vram_estimates()
             if not self._state_timer.isActive():
                 self._state_timer.start()
         else:

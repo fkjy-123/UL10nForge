@@ -78,26 +78,31 @@ _REVIEW_SYSTEM_PROMPT = """你是游戏本地化质量审核员。审核必须�
   增义、含义完全不同），译文不可用
 
 输出严格 JSON 对象，不要输出任何其他文字（包括思考、解释）：
-{"level": "PASS|MINOR|MAJOR|CRITICAL", "overall_score": 0-100,
-"dimensions": {"语义准确": 90, "自然度": 80, ...}, "decision": "<PASS 或 问题摘要>",
-"reason": "<一句话中文理由>",
-"issues": [{"type": "<错误类型>", "detail": "<详情>", "suggestion": "<建议译文>"}]}
-overall_score 为译文综合质量分（0-100，≥90 才可 PASS）；dimensions 为
-各维度分（0-100，缺失维度可省略）；level 必须与分数一致（低分不能
-给 PASS）。PASS/MINOR 时 issues 可为空数组。"""
+{"level": "PASS|MINOR|MAJOR|CRITICAL", "reason": "<一句话：问题摘要+修正要点，≤50 字>"}
+reason 必须包含修正要点供自动重译直接使用（如「Resume 误译为简历，
+应译为继续」）；PASS 时 reason 写「正确」。
+（2026-08-14 提速：输出 token 是审核吞吐瓶颈——4B 逐 token 生成，
+精简为 level+reason 两项，评审判定信息完整；旧字段 overall_score/
+dimensions/issues 可选，解析器仍兼容）"""
 
 # 批量审核输出要求（2026-08-14 全量送审提速：一次给多条，模型逐条
 # 独立判定输出数组——上下文共享，减少往返；缺失/坏条目外层逐条兜底）。
+# 元素精简为 level+reason（2026-08-14 二次提速：每条 overall_score/
+# issues/suggestion 多出 50-150 token × 20 条 ≈ 2-3k 输出 token，4B
+# 生成它们要几十秒——评审判定只需级别+理由，修正要点并入 reason）。
 _REVIEW_BATCH_OUTPUT = (
     "本次一次给出 {n} 条待审核条目，请逐条独立审核（每条按同样十维"
     "标准），输出严格 JSON 数组，数组元素与条目一一对应，不得遗漏"
     "任何一条、不得合并、不得输出任何其他文字（包括思考、解释）：\n"
     '[{{"entry_id": "<该条 ID>", "level": "PASS|MINOR|MAJOR|CRITICAL", '
-    '"overall_score": 0-100, "reason": "<一句话中文理由>", '
-    '"issues": [{{"type": "...", "detail": "...", '
-    '"suggestion": "..."}}]}}]')
+    '"reason": "<一句话：问题摘要+修正要点，≤50 字；PASS 写正确>"}}]')
 
 _LEVELS = ("PASS", "MINOR", "MAJOR", "CRITICAL")
+
+# 组批输入 token 预算（2026-08-14 提速）：条目段估算累计超限即拆组。
+# 系统 prompt ~1400 + 组输入 ≤4500 + 输出 ~800 ≈ 6.7k < ctx 8192 安全；
+# 显存紧张档（planner 可能降 4096）下组更小、逐条兜底仍正确不截断。
+_GROUP_INPUT_TOKEN_BUDGET = 4500
 
 # 旧二值审核词形 → 四级映射（兼容历史模型输出）
 _LEGACY_FLAG_VALUES = frozenset({
@@ -248,18 +253,27 @@ def _build_item_prompt(item: ReviewItem) -> str:
     #43 阶段 E（重构指令 §16 知识优先级链）：term_hint/context_hint
     为调用方检索注入的知识库参考（术语表 + 语境证据摘要），空串跳过
     ——旧调用方（不传 hint）行为与旧版完全一致。
+
+    截断 220/120（2026-08-14 提速）：600+600+400 字符 × 20 条 ≈ 万级
+    token 远超 ctx 8192——llama-server 静默截断 prompt 尾部，后半批
+    模型根本没看到 → 输出缺失 → 逐条兜底（每条 10-30s），「半分钟
+    一批」的真凶之一。220 字符足够语义判定（长文本本就按行翻译）。
     """
-    parts = [
-        _REVIEW_SYSTEM_PROMPT,
-        f"\n类型：{item.text_type or '未知'}",
-        f"\n原文：{item.original[:600]}",
-        f"\n译文：{item.translation[:600]}",
-    ]
-    if item.term_hint:
-        parts.append(f"\n术语参考：{item.term_hint[:400]}")
-    if item.context_hint:
-        parts.append(f"\n语境参考：{item.context_hint[:400]}")
-    return "".join(parts)
+    return _REVIEW_SYSTEM_PROMPT + _build_item_body(item)
+
+
+def _estimate_prompt_tokens(item: ReviewItem) -> int:
+    """估算单条审核 prompt 的输入 token（中文 1 tok/字、英文 0.25）。
+
+    组批预算拆组用（2026-08-14 提速）：llama-server 对超 ctx 的 prompt
+    静默截断尾部——按估算累加拆组，保证任意组必然放得下，后半批不再
+    丢失。截断口径与 _build_item_prompt 一致。
+    """
+    text = ((item.original or "")[:220] + (item.translation or "")[:220]
+            + (item.term_hint or "")[:120]
+            + (item.context_hint or "")[:120])
+    cjk = sum(1 for ch in text if "一" <= ch <= "鿿")
+    return int(cjk + (len(text) - cjk) * 0.25) + 40   # +40 类型/格式行
 
 
 def _parse_result(raw: str, entry_id: str) -> ReviewResult | None:
@@ -359,6 +373,27 @@ def _parse_batch_result(raw: str,
     return out
 
 
+def _build_item_body(item: ReviewItem, title: bool = False) -> str:
+    """条目段（类型/原文/译文 + 术语/语境参考），单条与批量共用。
+
+    截断 220/120（2026-08-14 提速，见 _build_item_prompt）：单条/批量
+    必须同口径——批量此前漏改仍用 600/400，与 _estimate_prompt_tokens
+    的估算（220/120）不一致会让预算拆组失真。title=True 时带
+    「### 条目」标题（批量数组输出需要条目标识；单条路径保持旧格式）。
+    """
+    head = f"\n### 条目 {item.entry_id}\n" if title else "\n"
+    parts = [
+        head + f"类型：{item.text_type or '未知'}\n"
+        f"原文：{item.original[:220]}\n"
+        f"译文：{item.translation[:220]}",
+    ]
+    if item.term_hint:
+        parts.append(f"术语参考：{item.term_hint[:120]}")
+    if item.context_hint:
+        parts.append(f"语境参考：{item.context_hint[:120]}")
+    return "".join(parts)
+
+
 def _build_batch_prompt(items: list) -> str:
     """构造批量审核 prompt（十维系统提示 + N 条目独立段 + 数组输出要求）。
 
@@ -369,15 +404,7 @@ def _build_batch_prompt(items: list) -> str:
     core = _REVIEW_SYSTEM_PROMPT.split("输出严格 JSON 对象", 1)[0].rstrip()
     parts = [core, _REVIEW_BATCH_OUTPUT.format(n=len(items))]
     for item in items:
-        parts.append(
-            f"\n### 条目 {item.entry_id}\n"
-            f"类型：{item.text_type or '未知'}\n"
-            f"原文：{item.original[:600]}\n"
-            f"译文：{item.translation[:600]}")
-        if item.term_hint:
-            parts.append(f"术语参考：{item.term_hint[:400]}")
-        if item.context_hint:
-            parts.append(f"语境参考：{item.context_hint[:400]}")
+        parts.append(_build_item_body(item, title=True))
     return "".join(parts)
 
 
@@ -481,9 +508,25 @@ class SemanticReviewer:
                 if on_progress is not None:
                     on_progress(index, len(items))
             return out, cancelled_count
-        # 组批路径
-        for start in range(0, len(items), batch_size):
-            group = items[start:start + batch_size]
+        # 组批路径：batch_size 是组内条数上限，另按估算 token 预算拆组
+        # （2026-08-14 提速：超 ctx 的 prompt 被 llama-server 静默截断
+        # 尾部，后半批模型没看到 → 输出缺失 → 逐条兜底翻倍慢——预算
+        # 拆组保证任意组必然放得下，截断与兜底不再出现）。
+        groups: list[list[ReviewItem]] = []
+        current: list[ReviewItem] = []
+        current_tokens = 0
+        for item in items:
+            tokens = _estimate_prompt_tokens(item)
+            if current and (len(current) >= batch_size
+                            or current_tokens + tokens
+                            > _GROUP_INPUT_TOKEN_BUDGET):
+                groups.append(current)
+                current, current_tokens = [], 0
+            current.append(item)
+            current_tokens += tokens
+        if current:
+            groups.append(current)
+        for group in groups:
             if (cancellation_event is not None
                     and cancellation_event.is_set()):
                 cancelled_count = len(items) - done
@@ -491,8 +534,12 @@ class SemanticReviewer:
             try:
                 content = self.service.chat(
                     _build_batch_prompt(group),
+                    # 输出上限收紧（2026-08-14 提速）：此前
+                    # 1024×len(group)（20 条 = 20480）是话痨放大器——
+                    # 4B 一旦长输出就到分钟级且截断即全组兜底。精简
+                    # 输出后每条 ~40-80 token，128/条 + 256 余量足够
                     max_tokens=max(self.config.max_tokens,
-                                   self.config.max_tokens * max(4, len(group))),
+                                   min(4096, 128 * len(group) + 256)),
                     timeout=self.config.timeout)
                 results = _parse_batch_result(content, group)
             except Exception:  # noqa: BLE001 传输/服务错误 → 整组逐条兜底

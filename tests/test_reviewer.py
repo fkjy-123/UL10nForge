@@ -20,10 +20,12 @@ class _FakeService:
         self.outputs = list(outputs or [])
         self.error = error
         self.prompts = []
+        self.max_tokens_calls = []
 
     def chat(self, prompt, *, max_tokens=1024, temperature=0.1,
              timeout=120.0):
         self.prompts.append(prompt)
+        self.max_tokens_calls.append(max_tokens)
         if self.error is not None:
             raise self.error
         return self.outputs.pop(0) if len(self.outputs) > 1 \
@@ -348,3 +350,85 @@ def test_review_batch_grouped_batch_size_one_unchanged():
     assert len(results) == 2
     assert len(service.prompts) == 2                 # 逐条 2 次请求
     assert all(p.startswith("你是游戏本地化质量审核员") for p in service.prompts)
+
+
+# ── 2026-08-14 二次提速：输出精简 + 预算拆组 + max_tokens 收紧 ──
+
+def test_review_prompt_trimmed_fields_and_shorter_cutoffs():
+    """输出要求精简为 level+reason；原文/译文截断降到 220、术语 120。
+
+    提速依据：20 条 × (600+600+400 字符) ≈ 万级 token 超 ctx 8192 →
+    llama-server 静默截断 prompt 尾部 → 后半批输出缺失 → 逐条兜底
+    （每条 10-30s）——「半分钟一批」的真凶；输出每项多出 score/issues/
+    suggestion ≈ 50-150 token × 20 条，4B 生成它们要几十秒。
+    """
+    from hanhua.core.reviewer import (
+        _REVIEW_BATCH_OUTPUT, _REVIEW_SYSTEM_PROMPT, _build_batch_prompt,
+        _build_item_prompt)
+    # 系统/批量输出要求不再要求旧臃肿字段（解析器仍兼容旧模型输出；
+    # 兼容说明会提到字段名，故断言「要求格式」而非字段名不存在）
+    assert '"overall_score": 0-100' not in _REVIEW_SYSTEM_PROMPT
+    assert '"dimensions"' not in _REVIEW_BATCH_OUTPUT
+    assert '"issues"' not in _REVIEW_BATCH_OUTPUT
+    assert "修正要点" in _REVIEW_SYSTEM_PROMPT
+    # 截断收紧：600+ 字符原文只保留前 220（长文本按行翻译，足够判定）
+    item = ReviewItem(entry_id="a1", original="x" * 900,
+                      translation="译" * 900, term_hint="术" * 900)
+    prompt = _build_item_prompt(item)
+    assert "x" * 220 in prompt
+    assert "x" * 221 not in prompt
+    batch = _build_batch_prompt([item])
+    assert "术" * 120 in batch
+    assert "术" * 121 not in batch
+
+
+def test_review_batch_splits_by_token_budget():
+    """组批按估算 token 预算拆组（batch_size 是上限）——超 ctx 的
+    prompt 会被 llama-server 静默截断尾部，预算拆组保证放得下。
+
+    估算口径与 prompt 截断一致（译文/术语各 220/120 中文字符）：每条
+    中文长文本 ≈ 380 token，batch_size=20 时 14 条 ≈ 5.3k 超 4500
+    预算 → 拆成 [11, 3] 两组（20 条短文本约 1.3k 仍在预算内不拆）。
+    """
+    from hanhua.core.reviewer import ReviewConfig
+    import json
+
+    def group_json(ids):
+        return json.dumps([{"entry_id": str(i), "level": "PASS",
+                            "reason": "正确"} for i in ids],
+                          ensure_ascii=False)
+    service = _FakeService(outputs=[
+        group_json(range(1, 12)), group_json(range(12, 15))])
+    reviewer = SemanticReviewer(
+        service=service, config=ReviewConfig(batch_size=20))
+    items = [ReviewItem(entry_id=str(i), original="text",
+                        translation="译" * 2000,
+                        term_hint="术语参考" * 30) for i in range(1, 15)]
+    results, cancelled = reviewer.review_batch(items)
+    assert cancelled == 0
+    assert len(results) == 14
+    assert len(service.prompts) == 2                 # [11, 3] 两组
+    # 组一未超预算（4500），组二不含前组条目（不截断不串组；
+    # 「条目 1」是「条目 12」的子串，用完整 id 断言）
+    assert "### 条目 1\n" in service.prompts[0]
+    assert "### 条目 11\n" in service.prompts[0]
+    assert "### 条目 12\n" in service.prompts[1]
+    assert "### 条目 11\n" not in service.prompts[1]
+
+
+def test_review_batch_max_tokens_capped():
+    """组批 max_tokens 收紧：128/条 + 256 余量、封顶 4096（此前
+    1024×20=20480 是话痨放大器——长输出到分钟级且截断即全组兜底）。"""
+    from hanhua.core.reviewer import ReviewConfig
+    service = _FakeService(outputs=[
+        '[{"entry_id": "1", "level": "PASS", "reason": "正确"}, '
+        '{"entry_id": "2", "level": "PASS", "reason": "正确"}]',
+    ])
+    reviewer = SemanticReviewer(
+        service=service, config=ReviewConfig(batch_size=2))
+    items = [ReviewItem(entry_id=str(i), original=f"text{i}",
+                        translation=f"译文{i}") for i in (1, 2)]
+    results, _cancelled = reviewer.review_batch(items)
+    assert len(results) == 2
+    assert service.max_tokens_calls == [max(1024, min(4096, 128 * 2 + 256))]
+    assert service.max_tokens_calls[0] == 1024      # 1024 保底生效

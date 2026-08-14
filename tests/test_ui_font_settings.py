@@ -899,3 +899,24 @@ def test_env_tab_state_timer_and_token(qapp, tmp_path):
     assert card["status"].text() == "状态：未启动"
     assert card["btn"].text() == "启动"
     assert card["btn"].property("danger") is False
+
+
+def test_apply_model_states_gpu_form_updates_vram(qapp, tmp_path):
+    """#43（2026-08-14）：worker 探测双形态——{states, gpu} 同时更新
+    四卡片与右侧「显存」行（3s 轮询顺带即时刷新显存）。"""
+    page = SettingsPage(_state(tmp_path), _Window())
+    card = page.model_cards["translate"]
+    card["status"].setText("状态：未启动")
+    # worker 新形态：states + gpu 同车返回（初始可能已有真实 GPU 值，
+    # 只断言更新到新值）
+    page._apply_model_states(
+        {"states": {"translate": True}, "gpu": (24.0, 8.5)},
+        page._state_token)
+    assert card["status"].text().startswith("状态：运行中")
+    assert page.status_vram.text() == "8.5 / 24.0 GB 可用"
+    # gpu 为 None（无 nvidia-smi）→ 显存行保持原值，卡片仍生效
+    page._apply_model_states(
+        {"states": {"translate": False}, "gpu": None},
+        page._state_token)
+    assert card["status"].text() == "状态：未启动"
+    assert page.status_vram.text() == "8.5 / 24.0 GB 可用"
