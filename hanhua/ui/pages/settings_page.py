@@ -4,7 +4,7 @@ from __future__ import annotations
 from dataclasses import replace
 from pathlib import Path
 
-from PySide6.QtCore import Qt, QThreadPool
+from PySide6.QtCore import QTimer, Qt, QThreadPool
 from PySide6.QtGui import QBrush, QColor, QIcon
 from PySide6.QtWidgets import (QCheckBox, QComboBox, QFormLayout, QFrame,
                                QGroupBox, QHBoxLayout, QHeaderView, QLabel,
@@ -69,7 +69,18 @@ class SettingsPage(QWidget):
         self.tabs.tabBar().setVisible(False)  # §66：左侧分类导航切换
         # 切回环境设置页时刷新四模型状态（端口探测；tabs 在此才创建完成）
         self.tabs.currentChanged.connect(self._on_env_tab_shown)
+        # 2026-08-14 实时刷新：环境页激活时 3s 轮询——审核等流程后台
+        # 启停模型不再「必须手动启停某个模型才刷新」（用户实证）。
+        self._state_timer = QTimer(self)
+        self._state_timer.setInterval(3000)
+        self._state_timer.timeout.connect(self._refresh_model_states)
+        self._state_token = 0
         self._refresh_model_states()
+        # 初始 tab 即环境设置（currentChanged 不会为初始页触发）——直接
+        # 启动轮询，否则打开设置页后 3s 实时刷新永远不生效（2026-08-14
+        # 实证：只有手动启停模型才刷新）。
+        if self.tabs.currentIndex() == 0:
+            self._state_timer.start()
 
         # ── 左侧分类导航（§6.4：分类设置中心，不把所有设置堆一页） ──
         body = QHBoxLayout()
@@ -174,18 +185,16 @@ class SettingsPage(QWidget):
         form.setSpacing(14)
         self.review_enabled = QCheckBox("翻译完成后自动进行 AI 语义审核")
         self.review_enabled.setMinimumHeight(44)
-        strategy_box = QWidget()
-        s_lay = QVBoxLayout(strategy_box)
-        s_lay.setContentsMargins(0, 0, 0, 0)
-        s_lay.setSpacing(8)
-        self.review_fast = QRadioButton("快速 —— 约 5% 最高风险文本送审")
-        self.review_balanced = QRadioButton("平衡（推荐）—— 约 15% 最高风险文本送审")
-        self.review_strict = QRadioButton("严格 —— 约 30% 最高风险文本送审")
-        for r in (self.review_fast, self.review_balanced, self.review_strict):
-            r.setMinimumHeight(34)
-            s_lay.addWidget(r)
+        # 2026-08-14 全量送审：抽样（5-30%）会让多数问题译文漏网——汉化
+        # 游戏少数不准是常态，只有扫完所有译文才能揪出语境错误。取消
+        # 三档抽样 radio，改为全量说明（保留 ai_review_strategy 字段兼容
+        # 旧配置，不再参与送审）。
+        self.review_scope_label = QLabel(
+            "审核范围：<b>全部译文</b>（不再抽样送审）")
+        self.review_scope_label.setMinimumHeight(34)
+        self.review_scope_label.setWordWrap(True)
         form.addRow("自动审核", self.review_enabled)
-        form.addRow("审核策略", strategy_box)
+        form.addRow("审核范围", self.review_scope_label)
         self.review_save_btn = QPushButton("保存 AI 审核设置")
         self.review_save_btn.setProperty("primary", True)
         self.review_save_btn.setMinimumHeight(44)
@@ -199,15 +208,16 @@ class SettingsPage(QWidget):
         head = QLabel("语义审核说明")
         head.setProperty("class", "pageTitle")
         hint = QLabel(
-            "翻译完成后，本地审核模型按风险评分对最可疑的译文做四级判定"
+            "翻译完成后，审核模型对<b>全部译文</b>逐条做四级判定"
             "（通过 / 轻微 / 较大问题 / 严重）：\n\n"
-            "· 严重问题 —— 自动重译并再次复核（最多 2 轮收敛）；\n"
+            "· 严重问题 —— 自动按审核意见重译并再次复核（最多 2 轮收敛）；\n"
             "· 较大问题 —— 按审核建议修正后放行；\n"
             "· 审核不通过的条目在「文本审校」页标为「需要优化」，"
+            "重译过的译文可在审校页「已重译」中复查，"
             "审核词对经语境门禁沉淀后跨游戏复用。\n\n"
             "审核全程本地运行（llama.cpp · Qwen3.5-4B 审核模型），"
-            "数据不出本机。送审率是硬约束上限：只对分流器挑出的最高"
-            "风险条目送审，宁缺毋滥。")
+            "数据不出本机。全量送审耗时随条目数线性增长——"
+            "逐条进度实时可见，可随时停止。")
         hint.setProperty("class", "subtitle")
         hint.setWordWrap(True)
         right_lay.addWidget(head)
@@ -222,23 +232,12 @@ class SettingsPage(QWidget):
     def _load_review_ui(self):
         api = self.state.api
         self.review_enabled.setChecked(api.ai_review_enabled)
-        strategy = getattr(api, "ai_review_strategy", "balanced")
-        self.review_fast.setChecked(strategy == "fast")
-        self.review_balanced.setChecked(strategy == "balanced")
-        self.review_strict.setChecked(strategy == "strict")
-        if not (self.review_fast.isChecked() or self.review_balanced.isChecked()
-                or self.review_strict.isChecked()):
-            self.review_balanced.setChecked(True)
 
     def _save_review(self):
         cfg = replace(self.state.api)
         cfg.ai_review_enabled = self.review_enabled.isChecked()
-        if self.review_fast.isChecked():
-            cfg.ai_review_strategy = "fast"
-        elif self.review_strict.isChecked():
-            cfg.ai_review_strategy = "strict"
-        else:
-            cfg.ai_review_strategy = "balanced"
+        # 2026-08-14 全量送审：ai_review_strategy 保留兼容（旧配置可读），
+        # 不再参与送审——全部译文都审，抽样率固定 100%。
         self._commit_api_config(cfg)
         Toast.show(self, "AI 审核设置已保存，下次翻译生效", "success")
 
@@ -711,10 +710,17 @@ class SettingsPage(QWidget):
 
     def _refresh_model_states(self) -> None:
         """异步刷新四卡片状态（2026-08-14 卡顿修复：切页不再 UI 线程
-        串行探测——4×0.6s 同步会卡 2.4s+；改后台并行 + 完成回调）。"""
+        串行探测——4×0.6s 同步会卡 2.4s+；改后台并行 + 完成回调）。
+
+        token 防竞态：3s 轮询 + 手动刷新并发时，过期回调不得覆盖
+        新结果（慢探测结果晚到会回退按钮状态）。"""
+        self._state_token = getattr(self, "_state_token", 0) + 1
+        token = self._state_token
         worker = Worker(self._probe_all)
-        worker.signals.finished.connect(self._apply_model_states)
-        worker.signals.error.connect(self._on_probe_error)
+        worker.signals.finished.connect(
+            lambda states, t=token: self._apply_model_states(states, t))
+        worker.signals.error.connect(
+            lambda _err: self._apply_model_states({}, token))
         self._pool.start(worker)
 
     @staticmethod
@@ -730,7 +736,9 @@ class SettingsPage(QWidget):
         btn.style().unpolish(btn)
         btn.style().polish(btn)
 
-    def _apply_model_states(self, states: dict) -> None:
+    def _apply_model_states(self, states: dict, token: int) -> None:
+        if token != self._state_token:
+            return  # 过期回调（更慢的旧探测晚到）
         for kind, card in self.model_cards.items():
             running = bool(states.get(kind))
             card["status"].setText(
@@ -740,12 +748,17 @@ class SettingsPage(QWidget):
 
     def _on_probe_error(self, _err: str) -> None:
         """探测异常：按全部未启动恢复（按钮保持可点）。"""
-        self._apply_model_states({})
+        self._apply_model_states({}, self._state_token)
 
     def _on_env_tab_shown(self, index: int) -> None:
-        """切回环境设置页时刷新四模型状态（index 0 恒为环境设置）。"""
+        """切回环境设置页时刷新四模型状态（index 0 恒为环境设置）；
+        环境页激活期间 3s 定时轮询，离开停止（省资源）。"""
         if index == 0:
             self._refresh_model_states()
+            if not self._state_timer.isActive():
+                self._state_timer.start()
+        else:
+            self._state_timer.stop()
 
     def _refresh_vram_estimates(self) -> None:
         """四卡片占用预估 + 顶部可用显存/内存总览（直观对照调节）。

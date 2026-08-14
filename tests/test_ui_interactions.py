@@ -493,23 +493,22 @@ def test_settings_nav_switches_tabs(qapp, tmp_path):
 
 
 def test_settings_review_strategy_persists(qapp, tmp_path):
-    """§68：AI 审核开关与策略（快速/平衡/严格）保存并持久化。"""
+    """#47：AI 审核改为全量送审——策略三档（快速/平衡/严格）已移除，
+    审核范围固定「全部译文」；开关仍保存并持久化。"""
     from hanhua.ui.pages.settings_page import SettingsPage
     state = _state(tmp_path)
     page = SettingsPage(state, _RecordingWindow())
     assert page.review_enabled.isChecked()  # 默认开启
-    assert page.review_balanced.isChecked()  # 默认平衡
-    page.review_strict.setChecked(True)
-    page._save_review()
-    assert state.api.ai_review_strategy == "strict"
-    assert state.api.ai_review_enabled is True
+    assert not hasattr(page, "review_balanced")   # 抽样策略已移除
+    assert not hasattr(page, "review_strict")
+    assert "全部译文" in page.review_scope_label.text()  # 全量范围文案
     page.review_enabled.setChecked(False)
     page._save_review()
     assert state.api.ai_review_enabled is False
     # 重新加载页面，配置还原（持久化验证）
     page2 = SettingsPage(state, _RecordingWindow())
     assert not page2.review_enabled.isChecked()
-    assert page2.review_strict.isChecked()
+    assert "全部译文" in page2.review_scope_label.text()
 
 
 def test_settings_glossary_add_edit_delete(qapp, tmp_path):

@@ -315,30 +315,62 @@ def test_review_page_needs_review_filters_by_meta(qapp, tmp_path):
 
 # ── ReviewPage：#19 审校界面精简（隐藏跳过/空胶囊隐藏/高风险改「审核」） ──
 
-def test_review_page_high_risk_renamed_to_review(qapp, tmp_path):
-    """#19：高风险胶囊改名为「审核」（语义 = 需人工审核判定）。"""
+def test_review_page_needs_review_merged_chip(qapp, tmp_path):
+    """#47：「审核」「待审核」两胶囊展示同集合 → 合并为单一「待审核」。
+
+    口径 = 未收敛终态（NEEDS_REVISION/BLOCKED/REVIEW_ERROR）∪ 遗留
+    review_issue ∪ 机械失败；已收敛（APPROVED）与普通已翻译不显示。
+    """
     page = ReviewPage(_state(tmp_path), _Window())
-    chip = page.filter_chips["high_risk"]
-    assert chip.text() == "审核"
-    assert chip.value == "high_risk"
-    # 行为不变：仍走 risk_only 过滤
+    assert "needs_review" in page.filter_chips
+    assert "high_risk" not in page.filter_chips        # 已合并删除
     page.model.setEntries([
         {"id": 1, "file_id": "f", "key_path": "a", "original": "X",
          "translation": "", "status": "failed", "locked": False, "meta": {}},
         {"id": 2, "file_id": "f", "key_path": "b", "original": "Quit",
          "translation": "退出", "status": "translated", "locked": False,
-         "meta": {"quality_passed": False}},
+         "meta": {"review_outcome": "NEEDS_REVISION",
+                  "quality_passed": False}},
         {"id": 3, "file_id": "f", "key_path": "c", "original": "OK",
          "translation": "好的", "status": "translated", "locked": False,
+         "meta": {"review_outcome": "APPROVED", "quality_passed": True}},
+        {"id": 4, "file_id": "f", "key_path": "d", "original": "Hello",
+         "translation": "你好", "status": "translated", "locked": False,
          "meta": {}},
     ])
-    chip.setChecked(True)
+    page.filter_chips["needs_review"].setChecked(True)
     page._apply_filters()
     visible = {
         page.proxy.mapToSource(page.proxy.index(i, 0)).row()
         for i in range(page.proxy.rowCount())
     }
     assert visible == {0, 1}
+
+
+def test_review_page_retranslated_chip(qapp, tmp_path):
+    """#47：重译收敛条目落「已重译」筛选（有问题的文本重返审校确认）。"""
+    page = ReviewPage(_state(tmp_path), _Window())
+    assert "retranslated" in page.filter_chips
+    page.model.setEntries([
+        {"id": 1, "file_id": "f", "key_path": "a", "original": "Play",
+         "translation": "开始游戏", "status": "translated", "locked": False,
+         "meta": {"retranslated": True, "review_outcome": "APPROVED"}},
+        {"id": 2, "file_id": "f", "key_path": "b", "original": "Quit",
+         "translation": "退出", "status": "translated", "locked": False,
+         "meta": {"review_outcome": "APPROVED"}},
+    ])
+    page.filter_chips["retranslated"].setChecked(True)
+    page._apply_filters()
+    visible = {
+        page.proxy.mapToSource(page.proxy.index(i, 0)).row()
+        for i in range(page.proxy.rowCount())
+    }
+    assert visible == {0}
+    # 已重译条目状态列显示「已重译」而非机械态「已翻译」
+    page.filter_chips["all"].setChecked(True)
+    page._apply_filters()
+    assert page.model.index(0, 0).data() == "retranslated"
+    assert page.model.index(1, 0).data() == "approved"
 
 
 def test_review_page_needs_review_chip_hidden_when_empty(qapp, tmp_path):

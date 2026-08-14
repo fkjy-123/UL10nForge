@@ -644,9 +644,10 @@ class TranslatePage(QWidget):
                             if online_audit else
                             "语义审核：正在启动本地审核模型"
                             "（Qwen3.5-4B，首次加载约 30-120 秒）…")
-                        strategy_rate = {
-                            "fast": 0.05, "balanced": 0.15, "strict": 0.30,
-                        }.get(self.state.api.ai_review_strategy, 0.15)
+                        # 2026-08-14 全量送审：抽样（5-30%）让多数问题译文
+                        # 漏网——汉化游戏少数不准是常态，只有扫完所有译文
+                        # 才能揪出语境错误（用户实证「自动重译没生效」根因）。
+                        # ai_review_strategy 不再参与（设置页已改全量说明）。
                         review_summary = review_entries(
                             entries, learn_g,
                             game_name=str(profile.game_name or ""),
@@ -662,7 +663,10 @@ class TranslatePage(QWidget):
                             app_dir=self.state.resource_dir,
                             model_name=api.model,
                             lang=lang,
-                            max_send_rate=strategy_rate,
+                            max_send_rate=1.0,   # 全量送审（2026-08-14）
+                            # 一次给多条（用户「节约时间，上下文不少」）：
+                            # 4 条一批共享上下文，缺失/坏条目自动逐条兜底
+                            review_batch_size=4,
                             cancellation_event=cancel,
                             # 在线 API 模式：审核走云端端点（对应 kind 配置；
                             # Service 内部判完整性，缺项自动回退本地）
@@ -765,11 +769,17 @@ class TranslatePage(QWidget):
         return entry_from_row(row)
 
     def _update_progress_widgets(self, stats):
-        """进度条/数字按批粒度实时更新（O(1)，不进全量刷新节流）。"""
+        """进度条/数字按批粒度实时更新（O(1)，不进全量刷新节流）。
+
+        口径（2026-08-14 用户实证「剩余/待翻译/失败总数打架」统一）：
+        - 剩余 = total - done（done 只计成功译出；失败可重试仍属待翻译
+          ——与顶部 chips「待翻译」同源，失败不再从剩余中扣除，两侧
+          数字恒一致）；
+        - 失败单独显示（可重试，归入剩余但不重复计数）。"""
         if stats is None:
             return
         n_total = stats.total
-        n_done = stats.done + stats.failed
+        n_done = stats.done
         n_failed = stats.failed
         if self.progress_bar.maximum() == 0:
             self.progress_bar.setRange(0, 100)

@@ -324,6 +324,48 @@ def _restore_placeholders(original: str, translation: str) -> str:
     return translation + "".join(missing)
 
 
+def _restore_placeholders_capped(original: str, translation: str,
+                                 capacity: int, encoding: str) -> bytes | None:
+    """占位符机械恢复（容量感知）：缺失的原文占位符补末尾。
+
+    实证（2026-08-14 Minato 24 条拒绝）：_restore_placeholders 补的
+    {n} 在 _fit_bytes 二次截断时被削掉（UTF-16 从末尾截）→
+    _placeholders_intact 仍失败 → reject。本函数把「补占位符」与
+    「容量」合并处理：从译文正文尾部腾空间（省略号提示与冗余正文
+    优先让位，占位符完整性 > 正文尾字——string.Format 缺参即崩溃，
+    正文少一两字只是截断，游戏仍可运行）。
+
+    返回恢复后的编码字节（≤ capacity）；占位符总长超过容量（物理
+    不可能）时返回 None，由上层 reject（不写坏译文）。
+    """
+    unit = 2 if encoding == "utf-16-le" else 1
+    limit = capacity // unit
+    found = _FORMAT_PLACEHOLDER.findall(original)
+    if not found:
+        data = translation.encode(encoding)
+        return data if len(data) <= capacity else data[:capacity]
+    missing = [placeholder for placeholder in found
+               if placeholder not in translation]
+    if not missing:
+        data = translation.encode(encoding)
+        return data if len(data) <= capacity else data[:capacity]
+    tail = "".join(missing)
+    if len(tail) > limit:
+        return None  # 占位符本身超容量：物理不可能
+    body = translation
+    # 剥掉 _fit_bytes 截断附加的省略号（截断提示 < 占位符完整性）
+    if body.endswith(TRUNCATION_ELLIPSIS):
+        body = body[:-1]
+    # 从正文尾部剥码元腾空间（按编码后实际字节计——UTF-8 汉字 3 字节
+    # 不能按字符数算；UTF-16 每码元 2 字节，统一走 encode 长度）
+    while len(body.encode(encoding)) + len(tail.encode(encoding)) > capacity \
+            and body:
+        body = body[:-1]
+    if not body:
+        return None
+    return (body + tail).encode(encoding)
+
+
 def _placeholders_intact(original: str, translation: str) -> bool:
     """F2：截断/省略号不得破坏原文的 {n} 占位符（string.Format 崩溃防护）。
 
@@ -1582,14 +1624,16 @@ def _patch_dll(path: Path, entries: list[dict], result: WriteResult):
         if truncated:
             result.note_truncated(e["original"], e["translation"])
         # F2：占位符完整性全量校验——缺失时机械恢复（补末尾，string.Format
-        # 按索引取参位置无关），恢复后按容量重新收尾（UTF-16 从头截，
-        # 补在末尾的 {n} 必然保留）。模型漏写 {n} 是稳定行为，机械补回
-        # 后好译文正常写回，不再 reject 丢弃。
-        restored = _restore_placeholders(
-            e["original"], payload.decode("utf-16-le", errors="replace"))
-        if restored != payload.decode("utf-16-le", errors="replace"):
-            payload, _ = _fit_bytes(
-                restored, capacity, "utf-16-le", pad=False)
+        # 按索引取参位置无关），恢复与容量合并处理：从正文尾部腾空间保
+        # 占位符（Minato 24 条实证：旧路径补丁被二次截断削掉仍 reject）。
+        # 物理放不下（占位符超容量）才拒绝，不写坏译文。
+        restored = _restore_placeholders_capped(
+            e["original"], payload.decode("utf-16-le", errors="replace"),
+            capacity, "utf-16-le")
+        if restored is None:
+            result.note_rejected(e, "译文缺失 {n} 占位符")
+            continue
+        payload = restored
         if not _placeholders_intact(
                 e["original"], payload.decode("utf-16-le", errors="replace")):
             result.note_rejected(e, "译文缺失 {n} 占位符")
@@ -1690,13 +1734,15 @@ def _patch_metadata(path: Path, entries: list[dict], result: WriteResult):
         if truncated:
             result.note_truncated(e["original"], e["translation"])
         # F2：占位符完整性全量校验——缺失时机械恢复（补末尾，string.Format
-        # 按索引取参位置无关）。容量充足时（常见场景）恢复后不截断，{n}
-        # 完整保留；容量也不足的双问题场景 UTF-8 从尾截会再次削掉 {n}，
-        # 由下方校验兜底 reject（不写坏译文）。
-        restored = _restore_placeholders(
-            e["original"], payload.decode("utf-8", errors="replace"))
-        if restored != payload.decode("utf-8", errors="replace"):
-            payload, _ = _fit_bytes(restored, capacity, "utf-8", pad=False)
+        # 按索引取参位置无关）。恢复与容量合并处理：从正文尾部腾空间保
+        # 占位符（UTF-8 同 Minato 场景），物理放不下才拒绝。
+        restored = _restore_placeholders_capped(
+            e["original"], payload.decode("utf-8", errors="replace"),
+            capacity, "utf-8")
+        if restored is None:
+            result.note_rejected(e, "译文缺失 {n} 占位符")
+            continue
+        payload = restored
         if not _placeholders_intact(e["original"], payload.decode("utf-8")):
             result.note_rejected(e, "译文缺失 {n} 占位符")
             continue

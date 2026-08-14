@@ -868,3 +868,34 @@ def test_env_tab_vram_estimate_shows_missing_model(qapp, tmp_path,
     page._refresh_vram_estimates()
 
     assert "模型缺失" in page.model_cards["review"]["vram"].text()
+
+
+def test_env_tab_state_timer_and_token(qapp, tmp_path):
+    """#17：设置页模型状态实时刷新——环境页激活期间 3s 轮询、切走停止；
+    token 防竞态：过期回调不得覆盖新结果（停止按钮红色样式重算）。"""
+    state = _state(tmp_path)
+    page = SettingsPage(state, _Window())
+    # 初始：环境 tab（index 0）激活 → timer 运行 + 首次刷新已发出
+    assert page.tabs.currentIndex() == 0
+    assert page._state_timer.isActive()
+    # 切到其他 tab → timer 停止（省资源）
+    page.tabs.setCurrentIndex(1)
+    assert not page._state_timer.isActive()
+    # 切回环境 tab → timer 重启
+    page.tabs.setCurrentIndex(0)
+    assert page._state_timer.isActive()
+    # token 防竞态：旧探测结果晚到被丢弃（按钮保持当前态）
+    card = page.model_cards["translate"]
+    card["status"].setText("状态：未启动")
+    page._apply_model_states({}, page._state_token - 1)   # 过期 token
+    assert card["status"].text() == "状态：未启动"
+    # 新 token 结果正常生效
+    page._apply_model_states({"translate": True}, page._state_token)
+    assert card["status"].text().startswith("状态：运行中")
+    assert card["btn"].text() == "停止"
+    assert card["btn"].property("danger") is True
+    # 停止态回退
+    page._apply_model_states({"translate": False}, page._state_token)
+    assert card["status"].text() == "状态：未启动"
+    assert card["btn"].text() == "启动"
+    assert card["btn"].property("danger") is False

@@ -86,6 +86,17 @@ overall_score 为译文综合质量分（0-100，≥90 才可 PASS）；dimensio
 各维度分（0-100，缺失维度可省略）；level 必须与分数一致（低分不能
 给 PASS）。PASS/MINOR 时 issues 可为空数组。"""
 
+# 批量审核输出要求（2026-08-14 全量送审提速：一次给多条，模型逐条
+# 独立判定输出数组——上下文共享，减少往返；缺失/坏条目外层逐条兜底）。
+_REVIEW_BATCH_OUTPUT = (
+    "本次一次给出 {n} 条待审核条目，请逐条独立审核（每条按同样十维"
+    "标准），输出严格 JSON 数组，数组元素与条目一一对应，不得遗漏"
+    "任何一条、不得合并、不得输出任何其他文字（包括思考、解释）：\n"
+    '[{{"entry_id": "<该条 ID>", "level": "PASS|MINOR|MAJOR|CRITICAL", '
+    '"overall_score": 0-100, "reason": "<一句话中文理由>", '
+    '"issues": [{{"type": "...", "detail": "...", '
+    '"suggestion": "..."}}]}}]')
+
 _LEVELS = ("PASS", "MINOR", "MAJOR", "CRITICAL")
 
 # 旧二值审核词形 → 四级映射（兼容历史模型输出）
@@ -279,14 +290,21 @@ def _parse_result(raw: str, entry_id: str) -> ReviewResult | None:
         return ReviewResult(entry_id=entry_id, level=_parse_level(""),
                             reason="审核模型输出非 JSON 对象",
                             reviewed=False, error=PARSE_ERROR)
+    return _review_result_from_dict(data, entry_id)
+
+
+def _review_result_from_dict(data: dict, entry_id: str) -> ReviewResult:
+    """dict → ReviewResult（单条与批量数组元素共用解析）。
+
+    #43 阶段 E（重构指令 §10）：十维审校 JSON 字段——overall_score
+    综合分 + dimensions 维度分。容错：缺失/非法值 → 默认（0/{}），
+    旧模型输出（仅 level/reason/issues）零破坏。
+    """
     issues_raw = data.get("issues") or []
     issues = tuple(
         {str(k): str(v) for k, v in item.items() if isinstance(item, dict)}
         for item in issues_raw if isinstance(item, dict)) \
         if isinstance(issues_raw, list) else ()
-    # #43 阶段 E（重构指令 §10）：十维审校 JSON 字段——overall_score
-    # 综合分 + dimensions 维度分。容错：缺失/非法值 → 默认（0/{}），
-    # 旧模型输出（仅 level/reason/issues）零破坏。
     overall_score, dimensions = 0, {}
     score_raw = data.get("overall_score")
     if isinstance(score_raw, (int, float)) and not isinstance(score_raw, bool):
@@ -304,6 +322,63 @@ def _parse_result(raw: str, entry_id: str) -> ReviewResult | None:
         overall_score=overall_score,
         dimensions=dimensions,
     )
+
+
+def _parse_batch_result(raw: str,
+                        group_items: list) -> dict[str, ReviewResult]:
+    """解析批量审核 JSON 数组 → {entry_id: ReviewResult}。
+
+    只返回成功解析的条目；缺失/非法元素不进 dict（调用方对缺失条目
+    逐条兜底 review_one，降级不降质）。整体非数组/JSON 失败 → 空
+    dict（全部逐条兜底，绝不整组伪装 PASS）。
+    """
+    text = raw.strip()
+    if text.startswith("```"):
+        body = text[3:]
+        if "```" in body:
+            body = body.split("```", 1)[0]
+        body = body.strip()
+        if body.startswith("json"):
+            body = body[4:].strip()
+        text = body
+    try:
+        data = json.loads(text)
+    except (json.JSONDecodeError, AttributeError):
+        return {}
+    if not isinstance(data, list):
+        return {}
+    ids = {item.entry_id for item in group_items}
+    out: dict[str, ReviewResult] = {}
+    for element in data:
+        if not isinstance(element, dict):
+            continue
+        eid = str(element.get("entry_id") or "")
+        if eid not in ids or eid in out:
+            continue
+        out[eid] = _review_result_from_dict(element, eid)
+    return out
+
+
+def _build_batch_prompt(items: list) -> str:
+    """构造批量审核 prompt（十维系统提示 + N 条目独立段 + 数组输出要求）。
+
+    条目段逐条自带术语/语境参考（检索结果按条目注入，组批不混）。
+    系统提示的单条「输出 JSON 对象」指令在输出段剥离——批量要求
+    数组输出，两条指令并存会让模型困惑。
+    """
+    core = _REVIEW_SYSTEM_PROMPT.split("输出严格 JSON 对象", 1)[0].rstrip()
+    parts = [core, _REVIEW_BATCH_OUTPUT.format(n=len(items))]
+    for item in items:
+        parts.append(
+            f"\n### 条目 {item.entry_id}\n"
+            f"类型：{item.text_type or '未知'}\n"
+            f"原文：{item.original[:600]}\n"
+            f"译文：{item.translation[:600]}")
+        if item.term_hint:
+            parts.append(f"术语参考：{item.term_hint[:400]}")
+        if item.context_hint:
+            parts.append(f"语境参考：{item.context_hint[:400]}")
+    return "".join(parts)
 
 
 class SemanticReviewer:
@@ -372,11 +447,16 @@ class SemanticReviewer:
                      on_progress: Callable[[int, int], None] | None = None,
                      cancellation_event=None) -> tuple[dict[str, ReviewResult],
                                                        int]:
-        """逐条审核一批（4B 单实例并发 1，串行送审）。
+        """审核一批（config.batch_size > 1 时组批，一次给模型多条）。
 
-        on_progress(done, total) 每完成一条回调——GUI/runner 借此实时
-        展示审核进度（2026-08-13 用户实证：送审期间界面无任何反馈，
-        只有全部完成后一条总结）。
+        批量（2026-08-14 全量送审提速：上下文共享、往返减半；用户
+        「一次给多个节约时间」）：组内一次 chat 输出 JSON 数组；缺失/
+        坏条目逐条 review_one 兜底（降级不降质）；请求异常 → 整组逐条
+        （保留错误语义）。batch_size=1（默认）时与旧版逐条路径一致。
+
+        on_progress(done, total) 每完成一组（逐条时每条）回调——
+        GUI/runner 借此实时展示审核进度（2026-08-13 用户实证：送审
+        期间界面无任何反馈，只有全部完成后一条总结）。
         cancellation_event：取消时提前终止，剩余条目计入 cancelled_count
         （取消是显式终态，不得归入 error 或 pass）。
 
@@ -387,15 +467,44 @@ class SemanticReviewer:
         if not items:
             return out, 0
         cancelled_count = 0
-        for index, item in enumerate(items, 1):
+        done = 0
+        batch_size = max(1, int(getattr(self.config, "batch_size", 1) or 1))
+        if batch_size <= 1:
+            # 逐条路径（与旧版逐字节一致，测试/单条 force_send 走此）
+            for index, item in enumerate(items, 1):
+                if (cancellation_event is not None
+                        and cancellation_event.is_set()):
+                    cancelled_count = len(items) - index + 1
+                    break
+                out[item.entry_id] = self.review_one(item)
+                done = index
+                if on_progress is not None:
+                    on_progress(index, len(items))
+            return out, cancelled_count
+        # 组批路径
+        for start in range(0, len(items), batch_size):
+            group = items[start:start + batch_size]
             if (cancellation_event is not None
                     and cancellation_event.is_set()):
-                cancelled_count = len(items) - index + 1
+                cancelled_count = len(items) - done
                 break
-            result = self.review_one(item)
-            out[item.entry_id] = result
+            try:
+                content = self.service.chat(
+                    _build_batch_prompt(group),
+                    max_tokens=max(self.config.max_tokens,
+                                   self.config.max_tokens * max(4, len(group))),
+                    timeout=self.config.timeout)
+                results = _parse_batch_result(content, group)
+            except Exception:  # noqa: BLE001 传输/服务错误 → 整组逐条兜底
+                results = {}
+            for item in group:
+                result = results.get(item.entry_id)
+                if result is None:
+                    result = self.review_one(item)  # 组内缺失逐条兜底
+                out[item.entry_id] = result
+            done += len(group)
             if on_progress is not None:
-                on_progress(index, len(items))
+                on_progress(done, len(items))
         return out, cancelled_count
 
 
@@ -553,10 +662,11 @@ def review_entries(entries, glossary, *, game_name: str = "",
                    translator=None, memory=None, store=None,
                    app_dir: str | Path | None = None,
                    model_name: str = "", lang: str = "zh-CN",
-                   max_send_rate: float = 0.15,
+                   max_send_rate: float = 1.0,
                    cancellation_event=None,
                    force_send: bool = False,
-                   online_review_cfg=None) -> dict:
+                   online_review_cfg=None,
+                   review_batch_size: int | None = None) -> dict:
     # 在线 API 模式（2026-08-14 环境设置页 per-kind 配置）：传入审核的
     # ApiConfig——审核走云端端点（不启动本地 4B）。None = 本地路径
     #（现有行为）。语境证据检索（embed/rerank）恒本地 0.6B 轻量运行。
@@ -654,7 +764,9 @@ def review_entries(entries, glossary, *, game_name: str = "",
         _persist_early(failed_without_candidate)
         return summary
     reviewer = SemanticReviewer(
-        app_dir=app_dir or Path.cwd(), online_cfg=online_review_cfg)
+        app_dir=app_dir or Path.cwd(), online_cfg=online_review_cfg,
+        config=ReviewConfig(batch_size=review_batch_size or 1)
+        if review_batch_size else None)
     if not reviewer.usable:
         if on_note:
             on_note("语义审核跳过：本地审核服务不可用（模型缺失或启动失败）")
@@ -1007,6 +1119,13 @@ def _retranslate_with_feedback(translator, entry: TextEntry,
             outcome = APPROVED if re_result.level == "PASS" else APPROVED_MINOR
             apply_outcome(entry, outcome, level=re_result.level,
                           reason=re_result.reason)
+            # #47（2026-08-14 全量审校）：重译收敛后打「已重译」标记——
+            # 审校页「已重译」筛选可查（有问题的文本重返审校确认，人工
+            # 确认/修改后即可发布；不设硬门：已过两轮再审收敛，发布资格
+            # 与普通 APPROVED 相同）。apply_outcome 后写：其 _safe_meta
+            # 拷贝过 dict，标记不丢。
+            entry.meta = dict(entry.meta)
+            entry.meta["retranslated"] = True
             # P0-4：机械失败条目收敛后恢复可发布状态（重译输出已过机械门；
             # 状态不恢复则写回门因 status != translated 永久拒绝）
             entry.status = STATUS_TRANSLATED

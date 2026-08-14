@@ -36,6 +36,20 @@ import threading
 from pathlib import Path
 
 from hanhua.core.placeholders import FUNCTION_WORDS
+from hanhua.core.prompts import _GAME_CONTEXT_WORDS
+from hanhua.core.translator import BUILTIN_UI_REFERENCES
+
+# 单字词保护集（2026-08-14 全量审校实证：play→播放 污染事故）：
+# 内置 UI 术语（BUILTIN_UI_REFERENCES）与游戏语境歧义词
+# （_GAME_CONTEXT_WORDS）的正确译法由人工维护、随 prompt 注入；
+# 自动沉淀的记忆单字对若与之冲突，几乎总是错的那个（Play→播放
+# 记忆注入 prompt 参考后覆盖了内置 play→开始游戏 规则）。reference
+# 注入前过滤冲突单字词——内置规则胜出。与「术语污染教训」一致：
+# 单字对是污染源，组合词对才可全局注入（非冲突单字词如 Reroll→重掷
+# 不受影响）。
+_PROTECTED_SINGLE_WORDS = frozenset(
+    {str(s).casefold() for s, _ in BUILTIN_UI_REFERENCES}
+    | {str(s).casefold() for s, _, _ in _GAME_CONTEXT_WORDS})
 
 # ── 阈值（记忆生命周期） ─────────────────────────────────────────────
 ACTIVE_MIN_EVIDENCE = 2    # pending → active 的证据门槛（参与注入）
@@ -340,12 +354,21 @@ class AgentMemory:
 
         term 型（≤2 词）与 phrase 型都注入（模型在完整语境中判断，
         优于 glossary 强制约束——参考而非强制）。hits 高的靠前。
+
+        2026-08-14（play→播放 事故）：与内置人工规则（BUILTIN_UI_
+        REFERENCES / _GAME_CONTEXT_WORDS）冲突的单字词记忆不注入——
+        内置规则随 prompt 恒在，冲突记忆只会覆盖正确规则（参考译例
+        对模型比规则更显眼）。非冲突单字词（Reroll→重掷）与组合词
+        对照常注入。
         """
         rows = self.conn.execute(
             "SELECT key, value, hits FROM memories"
             " WHERE status='active' ORDER BY hits DESC, evidence_count DESC"
         ).fetchall()
-        pairs = [(r["key"], r["value"]) for r in rows]
+        pairs = [(r["key"], r["value"]) for r in rows
+                 if (len(str(r["key"]).split()) > TERM_MAX_WORDS
+                     or str(r["key"]).casefold()
+                     not in _PROTECTED_SINGLE_WORDS)]
         if limit > 0:
             pairs = pairs[:limit]
         return pairs

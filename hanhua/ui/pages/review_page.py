@@ -62,6 +62,24 @@ def _needs_review(meta: dict) -> bool:
             or bool(meta.get("review_issue")))
 
 
+def _display_status(row: dict) -> str:
+    """状态列显示：审核态优先（#47 全量审校后状态真相在终态而非机械态）。
+
+    优先级：已重译（重译收敛待人工确认）→ 已通过（APPROVED 系）→
+    待审核（未收敛终态）→ 机械状态。修复「受限/已翻译」无法区分
+    BLOCKED/待确认的显示盲区（原状态列只有 4 个机械态）。
+    """
+    meta = _row_meta(row)
+    if meta.get("retranslated"):
+        return "retranslated"
+    outcome = meta.get("review_outcome")
+    if outcome in ("APPROVED", "APPROVED_MINOR"):
+        return "approved"
+    if outcome in _REVIEW_PENDING_OUTCOMES:
+        return "needs_review"
+    return row["status"]
+
+
 def _is_sample_row(row: dict) -> bool:
     """留档样本行（识别 L1/R5）：meta 含 skipped_count（提取器限量
     样本标志，回写后仍保留）。样本无 file_offset/定位键，写回永远
@@ -161,7 +179,8 @@ class EntryTableModel(QAbstractTableModel):
         col = index.column()
         if role == Qt.DisplayRole:
             if col == 0:
-                return row["status"]
+                # #47：审核态优先（已重译/已通过/待审核），无审核证据回退机械态
+                return _display_status(row)
             if col == 1:
                 # 来源列显示短路径，完整路径放 tooltip
                 source = meta.get("source", row["file_id"])
@@ -278,15 +297,12 @@ class EntryFilterProxy(QSortFilterProxyModel):
         self.status = ""
         self.file_id = ""
         self.locked_only = False
-        self.risk_only = False
 
-    def setFilters(self, search="", status="", file_id="", locked_only=False,
-                   risk_only=False):
+    def setFilters(self, search="", status="", file_id="", locked_only=False):
         self.search = search.lower()
         self.status = status
         self.file_id = file_id
         self.locked_only = locked_only
-        self.risk_only = risk_only
         self.beginFilterChange()
         self.endFilterChange(QSortFilterProxyModel.Direction.Rows)
 
@@ -296,20 +312,17 @@ class EntryFilterProxy(QSortFilterProxyModel):
         if self.search and self.search not in r["original"].lower() \
                 and self.search not in (r["translation"] or "").lower():
             return False
-        if self.risk_only:
-            # 高风险：翻译失败，或已翻译但质量门未通过 / 被审核标记 /
-            # #43 阶段 G：风险评分 HIGH/CRITICAL（重构指令 §13 分流）
+        if self.status == "needs_review":
+            # #47：待审核 = 未收敛终态（NEEDS_REVISION/BLOCKED/
+            # REVIEW_ERROR）∪ 遗留 review_issue ∪ 机械失败——原「审核」
+            # 胶囊并入（质量门未过/被标记/高风险最终都落未收敛终态，
+            # 两胶囊展示同一集合，重复展示合并为单一胶囊）
             meta = _row_meta(r)
-            if r["status"] != "failed" \
-                    and meta.get("quality_passed") is not False \
-                    and meta.get("review_status") not in {"flagged", "suspicious"} \
-                    and meta.get("risk_level") not in {"HIGH", "CRITICAL"}:
+            if not (_needs_review(meta) or r["status"] == "failed"):
                 return False
-        elif self.status == "needs_review":
-            # #38：待审核 = 审核终态未收敛（NEEDS_REVISION/BLOCKED/
-            # REVIEW_ERROR，Phase A 统一落 review_outcome）或遗留
-            # review_issue（C6 历史语义），与 store 状态无关
-            if not _needs_review(_row_meta(r)):
+        elif self.status == "retranslated":
+            # #47：重译收敛待人工确认（有问题的文本重返审校）
+            if not _row_meta(r).get("retranslated"):
                 return False
         elif self.status == "pending":
             # #2/#8：待翻译 = 引擎实际会翻的条目（与翻译页 chips 同源
@@ -378,8 +391,12 @@ class ReviewPage(QWidget):
             ("all", "全部", ""),
             ("pending", "待翻译", ""),
             ("translated", "已翻译", ""),
+            # #47（2026-08-14）：「审核」「待审核」两胶囊展示同集合
+            # （未收敛终态 ≈ 质量门未过/被标记），合并为单一「待审核」——
+            # 含机械失败（失败条目不审即留，等同待办）。「已重译」为
+            # 重译收敛待人工确认的新增筛选（有问题的文本重返审校）。
             ("needs_review", "待审核", ""),
-            ("high_risk", "审核", "risk"),
+            ("retranslated", "已重译", ""),
             ("failed", "失败", ""),
             ("locked", "已锁定", ""),
         ):
@@ -608,7 +625,7 @@ class ReviewPage(QWidget):
         if self.detail_edit.hasFocus() or self._detail_dirty:
             return
         meta = _row_meta(row)
-        self.detail_badge.setStatus(row["status"])
+        self.detail_badge.setStatus(_display_status(row))
         source = meta.get("source", row["file_id"])
         name = Path(source).name if isinstance(source, str) and source else str(source)
         self.detail_source.setText(name)
@@ -659,6 +676,11 @@ class ReviewPage(QWidget):
             parts.append(text)
         if meta.get("review_blocked"):
             parts.append("⚠ 审核阻断：多轮未通过")
+        # #47：BLOCKED 时坏译文在 rejected_candidate（发布译文已清空）——
+        # 人工复核需对照原坏译文判断，不展示则无从下手
+        candidate = meta.get("rejected_candidate")
+        if candidate:
+            parts.append("✗ 原译文：" + str(candidate)[:80])
         # #43 阶段 G（重构指令 §13）：风险评分/等级透出（有字段才显示）
         score = meta.get("risk_score")
         rlevel = meta.get("risk_level") or ""
@@ -804,24 +826,16 @@ class ReviewPage(QWidget):
     def _apply_filters(self):
         if self._loading:
             return
-        # 胶囊即唯一状态真相：high_risk 走 risk_only，locked 走锁定，
-        # 其余状态键直接映射到 proxy.status
+        # 胶囊即唯一状态真相：locked 走锁定，其余状态键直接映射到 proxy.status
         checked = next(
             (key for key, chip in self.filter_chips.items() if chip.isChecked()),
             "all")
-        if checked == "high_risk":
-            status, locked, risk = "", False, True
-        elif checked == "locked":
-            status, locked, risk = "", True, False
-        elif checked == "all":
-            status, locked, risk = "", False, False
-        else:
-            status, locked, risk = checked, False, False
+        status, locked = ("", True) if checked == "locked" else (
+            "", False) if checked == "all" else (checked, False)
         self.proxy.setFilters(
             search=self.search_box.text(),
             status=status,
-            locked_only=locked,
-            risk_only=risk)
+            locked_only=locked)
         self._refresh_summary()
 
     def reload(self):
@@ -914,6 +928,8 @@ class ReviewPage(QWidget):
         #2/#8：待翻译用 is_actionable_translation 口径（与翻译页 chips
         一致）——low 置信度留档（引擎消息/噪音，跳过翻译）不计入，
         与翻译页「待翻译」数字一致，跳过的文本不显示在待翻译里。
+        #47：待审核 = 未收敛 ∪ 机械失败（与筛选口径一致）；已重译胶囊
+        同样无条目时隐藏。
         """
         rows = self.model._rows
         pending = sum(1 for r in rows
@@ -924,10 +940,17 @@ class ReviewPage(QWidget):
         self.summary_label.setText(
             f"共 {self.proxy.rowCount()} 条 · 待翻译 {pending} · "
             f"已翻译 {translated}{failed_s}")
-        needs_review = sum(1 for r in rows if _needs_review(_row_meta(r)))
+        needs_review = sum(
+            1 for r in rows
+            if _needs_review(_row_meta(r)) or r["status"] == "failed")
         chip = self.filter_chips.get("needs_review")
         if chip is not None:
             chip.setVisible(needs_review > 0)
+        retranslated = sum(
+            1 for r in rows if _row_meta(r).get("retranslated"))
+        chip = self.filter_chips.get("retranslated")
+        if chip is not None:
+            chip.setVisible(retranslated > 0)
 
     # ── 右键菜单（多选批量生效） ──
     def _show_menu(self, pos):

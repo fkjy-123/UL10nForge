@@ -227,3 +227,23 @@ def test_games_dedup_across_same_game(tmp_path):
     assert row["evidence_count"] == 4
     assert json.loads(row["games"]) == ["only-game"]
     assert mem.direct_applications(["Go go go"]) == {}  # 单游戏不直接应用
+
+
+def test_reference_pairs_filters_conflicting_single_word(tmp_path):
+    """2026-08-14 play→播放 污染事故防护：与内置人工规则冲突的单字词
+    记忆不注入参考（内置 play→开始游戏 规则恒在，冲突记忆只覆盖它）；
+    非冲突单字词与组合词对照常注入。"""
+    mem = _mem(tmp_path)
+    # 冲突单字词：Play（内置 _GAME_CONTEXT_WORDS 规则 = 开始游戏）
+    _grow(mem, "Play", "播放", ["game-a", "game-b"])
+    # 冲突单字词：Settings（内置 BUILTIN_UI_REFERENCES = 设置）
+    _grow(mem, "Settings", "设定项", ["game-a", "game-b"])
+    # 非冲突单字词：Reroll 不在内置规则里 → 照常注入
+    _grow(mem, "Reroll", "重掷", ["game-a", "game-b"])
+    # 组合词对：Play with me（>1 词）→ 照常注入
+    _grow(mem, "Play with me", "和我一起玩", ["game-a", "game-b"])
+    pairs = dict(mem.reference_pairs())
+    assert "Play" not in pairs, "与内置规则冲突的单字词不得注入"
+    assert "Settings" not in pairs
+    assert pairs.get("Reroll") == "重掷"
+    assert pairs.get("Play with me") == "和我一起玩"

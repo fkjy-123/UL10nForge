@@ -1259,3 +1259,37 @@ def test_format_placeholder_escaped_braces_not_matched(tmp_path):
     from hanhua.core.unity.writer import _placeholders_intact, _restore_placeholders
     assert _placeholders_intact("{{literal}}", "{{字面}}") is True
     assert _restore_placeholders("{{literal}}", "{{字面}}") == "{{字面}}"
+
+
+def test_restore_placeholders_capped_tight_capacity_keeps_placeholder(tmp_path):
+    """C8（2026-08-14 Minato 24 条实证）：译文超容量 + 缺占位符——
+    旧路径补丁被二次截断削掉仍 reject；容量感知恢复从正文尾部腾空间，
+    占位符完整写回（UTF-16 与 UTF-8 两条写回路径同规则）。"""
+    from hanhua.core.unity.writer import (
+        _placeholders_intact, _restore_placeholders_capped)
+    # UTF-16：#US 记录场景——容量 12 码元，译文 12 字（满）且丢 {0}
+    original = "HP {0}/{1}"
+    translation = "生命值生命值生命值"      # 12 码元 = 容量满，且无占位符
+    restored = _restore_placeholders_capped(
+        original, translation, capacity=24, encoding="utf-16-le")
+    assert restored is not None
+    assert len(restored) == 24                      # 不超容量
+    text = restored.decode("utf-16-le")
+    assert _placeholders_intact(original, text) is True   # 占位符保住
+    assert text.startswith("生命值")                # 正文尾部腾空间而非砍头
+    assert text.endswith("{0}{1}")
+    # UTF-8：metadata 场景——容量 20 字节，译文 6 个汉字（18B）丢 {w=1.5}
+    original2 = "Wait {w=1.5}"
+    translation2 = "等待等待等待"                   # 18 字节，满 20 预算
+    restored2 = _restore_placeholders_capped(
+        original2, translation2, capacity=20, encoding="utf-8")
+    assert restored2 is not None
+    assert len(restored2) <= 20
+    assert _placeholders_intact(original2, restored2.decode("utf-8")) is True
+    # 物理不可能：占位符总长 > 容量 → None（上层 reject）
+    assert _restore_placeholders_capped(
+        "A {b}", "甲", capacity=4, encoding="utf-8") is None
+    # 容量充足：直接补末尾，正文不动
+    assert _restore_placeholders_capped(
+        "HP {0}/{1}", "生命值", capacity=64, encoding="utf-8") == \
+        "生命值{0}{1}".encode("utf-8")

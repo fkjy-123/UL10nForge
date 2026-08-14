@@ -1,5 +1,5 @@
 游戏：minato
-写回时间：2026-08-14 01:20:36
+写回时间：2026-08-14 18:28:08
 输出目录：D:\游戏\minato_汉化
 
 文件清单：7 个
@@ -10,35 +10,8 @@
 - Minato_Data/sharedassets0.assets（92 条）
 - Minato_Data/StreamingAssets/aa/StandaloneWindows64/localization-locales_assets_all.bundle（15 条）
 - Minato_Data/StreamingAssets/aa/StandaloneWindows64/localization-string-tables-english(en)_assets_all.bundle（461 条）
-- Minato_Data/il2cpp_data/Metadata/global-metadata.dat（5294 条）
+- Minato_Data/il2cpp_data/Metadata/global-metadata.dat（7387 条）
 
 ────────────────────────────────────────────────────────────────
-写回结果
-文本文件：1
-输入保护：True
-重开验证：True
-变更文件：7
-写入译文：588
-总体闸门：WARN
-字体层级：unsupported
-
-四态闸门明细
-  file=PASS
-  container=PASS
-  object=PASS
-  runtime=WARN
-警告：无译文条目：Minato_Data/il2cpp_data/Metadata/global-metadata.dat
-警告：IL2CPP x64 字体 provider 未提供经验证的 BepInEx 6/Il2CppInterop 载荷
-备份：None
-清单：.hanhua-manifest.json
-
-────────────────────────────────────────────────────────────────
-二进制资源（V2）
-文件：5 · 候选：587
-警告：无译文条目：Minato_Data/il2cpp_data/Metadata/global-metadata.dat
-
-────────────────────────────────────────────────────────────────
-字体部署
-字体： · 层级：—
-安装：False
-发布门：WARN — 无可用字体 provider（unsupported）
+写回失败：写回失败
+详情：写回存在被拒绝条目（拒绝 24 条），已阻断默认发布。Minato_Data/il2cpp_data/Metadata/global-metadata.dat:meta#26938: 译文缺失 {n} 占位符；Minato_Data/il2cpp_data/Metadata/global-metadata.dat:meta#45485: 译文缺失 {n} 占位符；Minato_Data/il2cpp_data/Metadata/global-metadata.dat:meta#79586: 译文缺失 {n} 占位符；Minato_Data/il2cpp_data/Metadata/global-metadata.dat:meta#115737: 译文缺失 {n} 占位符；Minato_Data/il2cpp_data/Metadata/global-metadata.dat:meta#154523: 译文缺失 {n} 占位符如需强制发布请在界面勾选“允许部分写入并发布”

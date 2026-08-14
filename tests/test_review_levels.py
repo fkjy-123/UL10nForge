@@ -439,6 +439,8 @@ def test_convergence_after_one_round(monkeypatch):
     assert tr.calls == 1
     assert entry.meta["review_level"] == "PASS"
     assert "review_blocked" not in entry.meta
+    # #47：重译收敛 → 已重译标记（审校页「已重译」筛选 + 状态列透出）
+    assert entry.meta.get("retranslated") is True
 
 
 def test_convergence_minor_after_retranslate(monkeypatch):
@@ -506,7 +508,8 @@ def test_force_send_reviews_plain_entries(monkeypatch):
     seen: list = []
     class _StubReviewer:
         usable = True
-        def __init__(self, app_dir=None, service=None, online_cfg=None):
+        def __init__(self, app_dir=None, service=None, online_cfg=None,
+                     config=None):
             pass
         def review_batch(self, items, *, on_progress=None,
                          cancellation_event=None):

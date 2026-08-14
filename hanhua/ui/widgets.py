@@ -22,6 +22,11 @@ STATUS_TEXT = {
     "warning": "待确认",
     "locked": "锁定",
     "blocked": "受限",
+    # #47（2026-08-14）：审校页状态列透出审核态（不再是机械态受限）——
+    # 已重译（重译收敛待人工确认）/已通过（APPROVED 系）/待审核（未收敛）
+    "retranslated": "已重译",
+    "approved": "已通过",
+    "needs_review": "待审核",
 }
 STATUS_COLOR = {
     "pending": theme.TEXT_DISABLED,
@@ -34,6 +39,9 @@ STATUS_COLOR = {
     "succeeded": theme.SUCCESS,
     "warning": theme.WARNING,
     "blocked": theme.WARNING,
+    "retranslated": theme.ACCENT,
+    "approved": theme.SUCCESS,
+    "needs_review": theme.WARNING,
 }
 
 

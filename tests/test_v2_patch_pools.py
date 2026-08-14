@@ -451,21 +451,31 @@ def test_patch_dll_equal_length_keeps_prefix_width(tmp_path):
     assert blob[6] == 1                           # 中文 → flag 1
 
 
-def test_patch_dll_rejects_truncated_placeholder(tmp_path):
-    """F2（#US 侧）：译文超容量截断且破坏 {0} → 拒绝，文件零改动。"""
+def test_patch_dll_preserves_placeholder_when_truncating(tmp_path):
+    """#20（F2 #US 侧）：译文超容量截断时占位符优先保留（容量感知修剪，
+    不再整条拒绝）——Minato 24 条「缺失 {n} 占位符」写回拒绝的根因。"""
     original = "Press {0} to continue"
     heap = _us_heap([(original.encode("utf-16-le"), 0)])
     path = tmp_path / "Assembly-CSharp.dll"
     path.write_bytes(heap)
     result = WriteResult()
-    # 译文超容量（60 字节 > 42），截断到 20 字符 + …，{0} 位于 25 字符后
+    # 译文超容量（60 字节 > 42 = 20 字符），占位符 {0} 位于 25 字符后——
+    # 旧行为机械追加补丁被截断掉 → 拒绝；新行为从 body 尾部修剪
+    # 到容量内，{0} 保留在末尾（格式不被破坏），截断写入
     _patch_dll(path, [
         _us_entry(1, 42, original, "X" * 25 + " {0}"),
     ], result)
-    assert result.written == 0
-    assert len(result.rejected) == 1
-    assert "占位符" in result.rejected[0].reason
-    assert path.read_bytes() == heap
+    assert result.written == 1
+    assert result.truncated == 1
+    assert len(result.rejected) == 0
+    blob = path.read_bytes()
+    # 记录布局：offset 1 = ln(1B) + 文本(UTF-16) + flag(1B)；容量 42 字节
+    # = 21 字符：占位符 tail "{0}"（3 字符，不含相邻空格）优先保留，
+    # body 修剪到 21-3=18 字符 → "X"*18 + "{0}"
+    text = blob[2:-1].decode("utf-16-le")
+    assert text == "X" * 18 + "{0}"
+    assert text.endswith("{0}")                 # 占位符保留在末尾
+    assert blob[-1] == 0                         # ASCII flag
 
 
 def test_patch_dll_multiple_entries_verify_all(tmp_path):

@@ -395,8 +395,9 @@ def test_review_page_filters_and_explains_recognition_evidence(qapp, tmp_path):
 
 
 def test_review_risk_column_and_filter(qapp, tmp_path):
-    """#43 阶段 G：风险列显示 risk_score/risk_level；risk_only 筛选
-    命中 HIGH/CRITICAL（重构指令 §13 分流语义）。"""
+    """#43 阶段 G：风险列显示 risk_score/risk_level；#47 合并后风险标记
+    不单独成筛选——只有未收敛终态/机械失败进「待审核」（全量送审后
+    终态才是真相，risk 列仍逐行透出）。"""
     state = _state(tmp_path)
     rows = [
         {"file_id": "f", "key_path": "k1", "original": "Resume",
@@ -413,10 +414,9 @@ def test_review_risk_column_and_filter(qapp, tmp_path):
     # 风险列：有字段 → 「65 HIGH」；无字段 → —
     assert model.index(0, 5).data() == "65 HIGH"
     assert model.index(1, 5).data() == "—"
-    # risk_only 筛选：HIGH 命中，无风险行被过滤
-    proxy.setFilters(risk_only=True)
-    assert proxy.rowCount() == 1
-    assert proxy.index(0, 2).data() == "Resume"
+    # #47：「待审核」只看终态——仅带风险标记（无未收敛终态）不进
+    proxy.setFilters(status="needs_review")
+    assert proxy.rowCount() == 0
 
 
 def test_review_context_menu_uses_table_coordinate_lookup(qapp, tmp_path):
@@ -1100,8 +1100,11 @@ def test_refresh_chips_pending_uses_actionable_count(qapp, tmp_path):
     assert "低置信度" in page.chip_pending.toolTip()
     assert "1" in page.chip_pending.toolTip()      # 留档 1 条
     # 进度条与计数同源（未运行时切全量口径）：可处理 2 条（1 待翻译 +
-    # 1 已翻译）全部处理完 → 2 / 2；low 留档（k2/k4）不计入
-    assert page.progress_label.text() == "2 / 2 条"
+    # 1 已翻译），done 只计成功译出 → 1 / 2（2026-08-14 口径统一：失败
+    # 可重试仍属待翻译，不再计入 done，剩余 = total - done 与「待翻译」
+    # chips 恒一致）；low 留档（k2/k4）不计入
+    assert page.progress_label.text() == "1 / 2 条"
+    assert "剩余 1 条" in page.progress_sub.text()
 
 
 def test_refresh_chips_pending_without_low_entries_has_no_tooltip(
@@ -1608,7 +1611,7 @@ def test_review_page_review_button_force_reviews_and_approves(
     sent = []
     class _FakeReviewer:
         usable = True
-        def __init__(self, app_dir=None, service=None, online_cfg=None):
+        def __init__(self, app_dir=None, service=None, online_cfg=None, config=None):
             pass
         def review_batch(self, items, *, on_progress=None,
                          cancellation_event=None):
@@ -1663,7 +1666,7 @@ def test_review_page_review_button_major_keeps_needs_revision(
 
     class _FakeReviewer:
         usable = True
-        def __init__(self, app_dir=None, service=None, online_cfg=None):
+        def __init__(self, app_dir=None, service=None, online_cfg=None, config=None):
             pass
         def review_batch(self, items, *, on_progress=None,
                          cancellation_event=None):

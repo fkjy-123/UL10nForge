@@ -230,3 +230,121 @@ def test_review_batch_ten_dimension_end_to_end():
     assert results["1"].level == "MINOR"
     # hint 已进送审 prompt（知识优先级链注入生效）
     assert "术语参考：Resume=继续" in service.prompts[0]
+
+
+# ── 批量审核（2026-08-14 全量送审提速：一次给多条，缺失/坏条目逐条兜底） ──
+
+def test_review_batch_grouped_parses_array():
+    """batch_size>1 → 组批一次 chat，解析 JSON 数组（与条目一一对应）。"""
+    from hanhua.core.reviewer import ReviewConfig, _build_batch_prompt
+    service = _FakeService(outputs=['''
+        [{"entry_id": "1", "level": "CRITICAL", "reason": "否定被吞",
+          "overall_score": 30,
+          "issues": [{"type": "语义错误", "detail": "not 被吞",
+                      "suggestion": "不是"}]},
+         {"entry_id": "2", "level": "PASS", "reason": "正确",
+          "overall_score": 95},
+         {"entry_id": "3", "level": "MAJOR", "reason": "术语误用",
+          "overall_score": 70}]
+    '''])
+    reviewer = SemanticReviewer(
+        service=service, config=ReviewConfig(batch_size=3))
+    items = [ReviewItem(entry_id=str(i), original=f"text{i}",
+                        translation=f"译文{i}") for i in (1, 2, 3)]
+    results, cancelled = reviewer.review_batch(items)
+    assert cancelled == 0
+    assert len(results) == 3
+    assert results["1"].level == "CRITICAL"
+    assert results["1"].overall_score == 30
+    assert results["1"].needs_optimization is True
+    assert results["2"].level == "PASS"
+    assert results["3"].level == "MAJOR"
+    assert len(service.prompts) == 1                 # 只发一次请求（组批）
+    assert "### 条目 1" in service.prompts[0]
+    assert "### 条目 3" in service.prompts[0]
+    batch = _build_batch_prompt(items)
+    assert "JSON 数组" in batch                       # 数组输出要求
+    assert "输出严格 JSON 对象" not in batch.split("本次一次给出")[0]
+
+
+def test_review_batch_grouped_missing_entry_falls_back_per_item():
+    """组批数组缺条目 → 缺失条目逐条兜底（降级不降质，不伪装 PASS）。"""
+    from hanhua.core.reviewer import ReviewConfig
+    # 第一次调用（组批）：返回数组只含 1 号；后续逐条兜底返回单对象
+    service = _FakeService(outputs=[
+        '[{"entry_id": "1", "level": "PASS", "reason": "正确"}]',
+        '{"entry_id": "2", "level": "MAJOR", "reason": "翻译腔"}',
+    ])
+    reviewer = SemanticReviewer(
+        service=service, config=ReviewConfig(batch_size=3))
+    items = [ReviewItem(entry_id=str(i), original=f"text{i}",
+                        translation=f"译文{i}") for i in (1, 2)]
+    results, cancelled = reviewer.review_batch(items)
+    assert cancelled == 0
+    assert len(results) == 2
+    assert results["1"].level == "PASS"
+    assert results["2"].level == "MAJOR"             # 兜底判定成功
+    assert len(service.prompts) == 2                 # 1 组批 + 1 兜底
+
+
+def test_review_batch_grouped_array_parse_failure_all_fallback():
+    """组批输出非数组（模型输出单对象/乱码）→ 全部逐条兜底。"""
+    from hanhua.core.reviewer import ReviewConfig
+    service = _FakeService(outputs=[
+        '{"level": "PASS", "reason": "旧格式单对象"}',          # 组批调用（非数组 → 全组兜底）
+        '{"level": "PASS", "reason": "逐条兜底判定"}',
+        '{"level": "CRITICAL", "reason": "逐条兜底判定2"}',
+        '{"level": "MINOR", "reason": "逐条兜底判定3"}',
+    ])
+    reviewer = SemanticReviewer(
+        service=service, config=ReviewConfig(batch_size=3))
+    items = [ReviewItem(entry_id=str(i), original=f"text{i}",
+                        translation=f"译文{i}") for i in (1, 2, 3)]
+    results, cancelled = reviewer.review_batch(items)
+    assert cancelled == 0
+    assert len(results) == 3
+    assert results["1"].level == "PASS"              # 兜底单对象解析成功
+    assert results["2"].level == "CRITICAL"
+    assert results["3"].level == "MINOR"
+    assert len(service.prompts) == 4                 # 1 组批 + 3 兜底
+
+
+def test_review_batch_grouped_progress_and_cancel():
+    """组批进度按组回调；取消时剩余组计入 cancelled_count。"""
+    import threading
+    from hanhua.core.reviewer import ReviewConfig
+    service = _FakeService(outputs=[
+        '[{"entry_id": "1", "level": "PASS", "reason": "正确"}, '
+        '{"entry_id": "2", "level": "PASS", "reason": "正确"}]',
+    ])
+    reviewer = SemanticReviewer(
+        service=service, config=ReviewConfig(batch_size=2))
+    items = [ReviewItem(entry_id=str(i), original=f"text{i}",
+                        translation=f"译文{i}") for i in (1, 2, 3, 4)]
+    seen = []
+    evt = threading.Event()
+    evt.set()   # 预先置位 → 第一组也应全部计入 cancelled（组前检查）
+    results, cancelled = reviewer.review_batch(
+        items, on_progress=lambda d, t: seen.append((d, t)),
+        cancellation_event=evt)
+    assert cancelled == 4
+    assert results == {}
+    assert seen == []
+
+
+def test_review_batch_grouped_batch_size_one_unchanged():
+    """batch_size=1 → 逐条路径（旧版行为不变，调用次数 = 条目数）。"""
+    from hanhua.core.reviewer import ReviewConfig
+    service = _FakeService(outputs=[
+        '{"level": "PASS", "reason": "正确"}',
+        '{"level": "MINOR", "reason": "语序"}',
+    ])
+    reviewer = SemanticReviewer(
+        service=service, config=ReviewConfig(batch_size=1))
+    items = [ReviewItem(entry_id=str(i), original=f"text{i}",
+                        translation=f"译文{i}") for i in (1, 2)]
+    results, cancelled = reviewer.review_batch(items)
+    assert cancelled == 0
+    assert len(results) == 2
+    assert len(service.prompts) == 2                 # 逐条 2 次请求
+    assert all(p.startswith("你是游戏本地化质量审核员") for p in service.prompts)
