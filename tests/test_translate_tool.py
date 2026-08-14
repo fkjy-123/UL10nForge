@@ -302,3 +302,33 @@ def test_default_prompt_greeting_rule_always_present(qapp, tmp_path):
     prompt = page._default_prompt()
     assert "问候语" in prompt
     assert "禁止原样回显英文" in prompt
+
+
+def test_default_prompt_token_budget_limits_injection(qapp, tmp_path):
+    """#42（2026-08-14 用户实证「19987 token 超过上下文限制」）：全量
+    注入跨游戏积累的词对会撑爆 llama-server ctx——限量 + 预算兜底后
+    任意库规模下 prompt 估算不超预算，且只注入最近词对。"""
+    from hanhua.ui.pages.translate_tool_page import (
+        _SYSTEM_TOKEN_BUDGET, _estimate_prompt_tokens)
+    # 大库：300 术语 + 200 记忆（evidence 2 晋升 active）
+    glossary = GlossaryStore(tmp_path / "glossary.db")
+    glossary.init_schema()
+    for i in range(300):
+        glossary.add(f"term{i}", f"译名{i}")
+    glossary.close()
+    agent = AgentMemory(tmp_path / "agent_memory.db")
+    agent.init_schema()
+    for i in range(200):
+        agent.propose(f"phrase {i}", f"译句{i}", game="t")
+        agent.propose(f"phrase {i}", f"译句{i}", game="t")
+    agent.close()
+    page = TranslateToolPage(_state(tmp_path), _Window())
+    prompt = page._default_prompt()
+    assert _estimate_prompt_tokens(prompt) <= _SYSTEM_TOKEN_BUDGET
+    # 限量生效：最近词对（term299）在，最早（term0）不在
+    assert "term299 → 译名299" in prompt
+    assert "term0 → 译名0" not in prompt
+    # 记忆参考对同样限量注入（≤40 条；hits 排序无 tiebreak，
+    # 只断言数量不断言具体条目）
+    assert prompt.count("phrase ") <= 40
+    assert prompt.count("phrase ") >= 30

@@ -32,6 +32,21 @@ _HISTORY_LIMIT = 50          # 落盘上限
 _HISTORY_SHOWN = 20          # 下拉展示条数
 _BLOCK_CHARS = 2000          # 长文本单块字符上限（行不拆分）
 
+# 词对注入限量（2026-08-14 用户实证「19987 token 超过上下文限制」：
+# 全量注入跨游戏积累的词对 → system prompt 上万 token 超 llama-server
+# ctx 被拒。取「最新贴近当前需求」尾部词对；超预算自动减半重取）
+_GLOSSARY_LIMIT = 80         # 术语库最近 80 条
+_MEMORY_LIMIT = 40           # 经验记忆按 hits 取前 40 条
+_KNOWLEDGE_LIMIT = 10        # 知识库规则最新 10 条（含内置 2 行）
+_SYSTEM_TOKEN_BUDGET = 5000  # 估算上限：ctx 8192 - 输入块 ~2000
+                             # - 输出余量 ~400 - 安全余量
+
+
+def _estimate_prompt_tokens(text: str) -> int:
+    """粗略估算 token（中文 1 字符≈1 token，英文 ≈0.25）。"""
+    cjk = sum(1 for ch in text if "一" <= ch <= "鿿")
+    return int(cjk + (len(text) - cjk) * 0.25)
+
 
 class TranslateToolPage(QWidget):
     """轻量翻译应用页：模型信息 + 可编辑提示词 + 原文/译文 + 历史。"""
@@ -166,21 +181,43 @@ class TranslateToolPage(QWidget):
         （translate_page 模式：GlossaryStore + KnowledgeBase +
         AgentMemory.reference_pairs），并显式约束问候语必须译为中文。
         库故障不阻断工具页（降级为仅档案提示词）。
+
+        注入规模控制（2026-08-14 用户实证「19987 token 超过上下文
+        限制」：全量注入跨游戏积累的词对后 system prompt 可上万 token，
+        远超 llama-server ctx 8192 被拒——工具页必须限量 + 预算兜底，
+        任意库规模下可用；限量取「最新贴近当前需求」的尾部词对）。
         """
         app_dir = Path(self.state.app_dir)
+        glossary_limit, memory_limit, knowledge_limit = (
+            _GLOSSARY_LIMIT, _MEMORY_LIMIT, _KNOWLEDGE_LIMIT)
+        for _attempt in range(2):
+            prompt = self._build_enhanced_prompt(
+                app_dir, glossary_limit, memory_limit, knowledge_limit)
+            if _estimate_prompt_tokens(prompt) <= _SYSTEM_TOKEN_BUDGET:
+                return prompt
+            # 超预算兜底：限量减半重取（极端大的库最多一次降档）
+            glossary_limit //= 2
+            memory_limit //= 2
+            knowledge_limit //= 2
+        return prompt
+
+    def _build_enhanced_prompt(self, app_dir: Path, glossary_limit: int,
+                               memory_limit: int,
+                               knowledge_limit: int) -> str:
+        """按给定限量取三库词对构造提示词（预算重试用）。"""
         glossary_lines: list[str] = []
         known_names: list[str] = []
         knowledge_lines: list[str] = []
         try:
             glossary = GlossaryStore(app_dir / "glossary.db")
             glossary.init_schema()
-            prompt_text = glossary.format_for_prompt()
+            prompt_text = glossary.format_for_prompt(limit=glossary_limit)
             glossary_lines = ([prompt_text] if prompt_text else [])
             known_names = glossary.known_names_for(set())
             glossary.close()
             agent = AgentMemory(app_dir / "agent_memory.db")
             agent.init_schema()
-            agent_pairs = agent.reference_pairs()
+            agent_pairs = agent.reference_pairs(limit=memory_limit)
             if agent_pairs:
                 # 参考译例（→ 分隔行）并入术语区——batch 流程经
                 # BatchTranslator glossary 注入，工具页走 prompt 行
@@ -190,7 +227,8 @@ class TranslateToolPage(QWidget):
             pass
         try:
             knowledge = KnowledgeBase(app_dir / "knowledge.db")
-            knowledge_lines = knowledge.format_for_prompt()
+            knowledge_lines = knowledge.format_for_prompt(
+                limit=knowledge_limit)
             knowledge.close()
         except Exception:  # noqa: BLE001
             knowledge_lines = []
