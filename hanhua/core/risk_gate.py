@@ -306,7 +306,9 @@ def gate_entries(entries: list[TextEntry],
       - mandatory（quality_failed / glossary_conflict）不受配额，全部送审；
       - discretionary（polysemy / long_text / negation_conditional /
         character_text）受 max_send_rate 预算（默认 15%），超限条目归入
-        deferred_due_to_budget（人工队列），绝不再命名为 passed。
+        deferred_due_to_budget（人工队列），绝不再命名为 passed；
+      - max_send_rate >= 1.0（全量送审，2026-08-14）：连无风险直放
+        条目也进 4B 复核——「全部译文」承诺与设置页文案一致。
 
     error_patterns_by_id（#43 阶段 D）：{entry_id: 错误模式命中列表}——
     调用方（review 流程）负责检索，本函数保持纯函数（无 IO）。
@@ -361,6 +363,20 @@ def gate_entries(entries: list[TextEntry],
     discretionary.sort(key=lambda item: (item[0], item[1]))
     to_review = [item[2] for item in mandatory]
     stats["mandatory"] = len(mandatory)
+    # 预算 100%（max_send_rate >= 1.0）= 全量送审（2026-08-14 用户实证
+    # 「送审 171/641 不是全审」：语境错误常藏在无风险信号条目里，直放
+    # 让多数译文没被 4B 看过——设置页「审核范围：全部译文」文案与之一
+    # 致。全审 = 直放条目也进 4B 复核，语义不变（4B 判定仍走质量门）。
+    if max_send_rate >= 1.0:
+        to_review.extend(item[2] for item in discretionary)
+        to_review.extend(passed)
+        passed = []
+        stats["discretionary"] = len(discretionary)
+        stats["deferred_due_to_budget"] = 0
+        stats["truncated"] = 0
+        stats["sent"] = len(to_review)
+        stats["rate"] = 1.0   # discretionary 送审率 = 100%（预算内全送）
+        return to_review, passed, [], stats
     # discretionary 预算：rate>0 时至少 1 条（小批量场景 round 到 0 会让
     # 小游戏完全跳过审核）；rate==0（显式关闭）或无可送 discretionary → 0。
     if max_send_rate <= 0 or not discretionary:
@@ -374,6 +390,10 @@ def gate_entries(entries: list[TextEntry],
     stats["deferred_due_to_budget"] = len(deferred)
     stats["truncated"] = len(deferred)
     stats["sent"] = len(to_review)
+    # rate = discretionary 实际送审 / discretionary 总数（2026-08-14 口径
+    # 修正：此前分母用全量条目，641 条里送审 160 条 discretionary 显示成
+    # 25%——真实送审率是 100%，日志误导「没全审」）
     stats["rate"] = round(
-        len(disc_to_review) / len(entries), 4) if entries else 0.0
+        len(disc_to_review) / len(discretionary), 4) \
+        if discretionary else 0.0
     return to_review, passed, deferred, stats

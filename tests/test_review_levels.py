@@ -496,6 +496,11 @@ def test_force_send_reviews_plain_entries(monkeypatch):
     人工「重新审核」语义是无条件再判：plain 条目默认直放（used=False），
     若按钮不强制送审会点了没反应。PASS 判定经 apply_verdict 终态化为
     APPROVED（translator=None 不重译）。
+
+    2026-08-14 全量送审变更：review_entries 默认 max_send_rate=1.0 即
+    全量送审（无风险直放条目也进 4B——设置页「全部译文」承诺）——
+    plain 条目默认也送审；force_send 仍强制无条件再判（语义等价，
+    前者也覆盖直放）。
     """
     from hanhua.core.reviewer import review_entries
 
@@ -520,9 +525,11 @@ def test_force_send_reviews_plain_entries(monkeypatch):
                         _StubReviewer)
 
     s_default = review_entries([_plain()], None, app_dir=".")
-    assert s_default["used"] is False          # 默认分流：plain 直放
-    assert s_default["sent"] == 0
+    assert s_default["used"] is True           # 默认 100% 预算：全量送审
+    assert s_default["sent"] == 1              # 直放条目也进 4B
+    assert seen, "全量送审下 plain 条目必须送审"
 
+    seen.clear()
     s_force = review_entries([_plain()], None, app_dir=".",
                              force_send=True)
     assert s_force["used"] is True

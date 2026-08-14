@@ -209,3 +209,41 @@ def test_gate_entries_key_fallback_file_keypath():
         max_send_rate=0.5)
     assert e1 in to_review
     assert stats["signals"].get("error_pattern_hit") == 1
+
+
+# ── 2026-08-14 全量送审（max_send_rate>=1.0）与 rate 口径 ────────
+
+def test_gate_entries_full_rate_sends_everything():
+    """预算 100% = 全量送审（2026-08-14 用户实证「送审 171/641 不是
+    全审」：语境错误常藏在无风险信号条目里，直放让多数译文没被 4B 看
+    过——设置页「审核范围：全部译文」承诺与之一致）。"""
+    e1 = _entry("Resume")                     # polysemy → risky
+    e2 = _entry("open door", "打开门")         # 无信号（小写避开专名）
+    e3 = _entry("Save or not", "保存或否", role="dialogue")  # risky
+    to_review, passed, deferred, stats = gate_entries(
+        [e1, e2, e3], max_send_rate=1.0)
+    assert sorted(to_review, key=id) == sorted([e1, e2, e3], key=id)
+    assert passed == []                       # 无直放
+    assert deferred == []
+    assert stats["sent"] == 3
+    assert stats["rate"] == 1.0               # discretionary 送审率 100%
+    assert stats["mandatory"] == 0
+    # 通道统计只数有信号条目（e1/e3）；直放条目（e2）无信号不入通道，
+    # 全审语义下也送 4B（计入 sent）
+    assert stats["discretionary"] == 2
+
+
+def test_gate_entries_rate_denominator_is_discretionary():
+    """rate 统计口径（2026-08-14 修正）：分母 = discretionary 总数，
+    不是全量条目——此前 641 条里送审 160 条 discretionary 显示成 25%，
+    日志误导「没全审」（真实送审率 100%）。"""
+    e1 = _entry("Resume")                     # polysemy
+    e2 = _entry("Save or not", role="dialogue")
+    e3 = _entry("open door", "打开门")         # 无信号 → 直放
+    _to_review, passed, deferred, stats = gate_entries(
+        [e1, e2, e3], max_send_rate=0.5)
+    # 2 条 discretionary，预算 max(1, 2×0.5)=1 → 送 1 条
+    assert len(passed) == 1
+    assert stats["discretionary"] == 1
+    assert stats["rate"] == pytest.approx(0.5)   # 1/2，而非 1/3
+    assert len(deferred) == 1

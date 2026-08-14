@@ -675,8 +675,10 @@ class TranslatePage(QWidget):
                             lang=lang,
                             max_send_rate=1.0,   # 全量送审（2026-08-14）
                             # 一次给多条（用户「节约时间，上下文不少」）：
-                            # 4 条一批共享上下文，缺失/坏条目自动逐条兜底
-                            review_batch_size=4,
+                            # 12 条一批共享上下文（max_tokens 随组放大，
+                            # 缺失/坏条目自动逐条兜底；2026-08-14 全量
+                            # 送审提速：批越大 4B 往返越少）
+                            review_batch_size=12,
                             cancellation_event=cancel,
                             # 在线 API 模式：审核走云端端点（对应 kind 配置；
                             # Service 内部判完整性，缺项自动回退本地）
