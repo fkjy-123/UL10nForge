@@ -476,8 +476,11 @@ class SettingsPage(QWidget):
             combo.addItem("CPU", "cpu")
             combo.addItem("GPU", "gpu")
             combo.setToolTip(
-                "自动：优先 GPU，显存放不下时把部分层分到 CPU；"
-                "GPU：全层强制用显存；CPU：纯处理器运行")
+                "自动（推荐）：优先显卡，显存放不下时把部分层分给 CPU 分担"
+                "——新手不用管硬件，选这个就对了。\n"
+                "GPU：全层强制用显存，速度最快——仅显存很充裕（8GB+）时选；"
+                "显存不够会启动失败。\n"
+                "CPU：纯处理器运行，最慢但最省显存——没有显卡或显存不足时选")
         combo.setMinimumHeight(32)
         choice = self.state.settings.model_runtime_choice(kind)
         combo.setCurrentIndex(max(0, combo.findData(choice)))
@@ -1216,17 +1219,20 @@ class SettingsPage(QWidget):
         self.advanced_mode_hint.setProperty("class", "subtitle")
         self.advanced_mode_hint.setWordWrap(True)
         hint = QLabel(
-            "并发槽位：同时开几条翻译线路。显卡一次只能干一件事，"
+            "【并发槽位】同时开几条翻译线路。显卡一次只能干一件事，"
             "多槽只是排队交替，速度并不会成倍变快，显存却会成倍占用"
             "（每槽一份独立缓存）——新手直接用「自动 · 单槽」最省心；"
-            "显存 8GB 以上且想微调可试 2 槽。\n\n"
-            "上下文长度：模型一次能记住的文本量。8192 已覆盖常规游戏"
-            "文本；机器内存紧张（8GB 以下）可选 4096 省内存，"
-            "几乎不影响翻译质量。\n\n"
-            "每批条数：一次打包翻译多少条文本。打包越多，每条分到的"
-            "翻译空间越少，长文本（成段的剧情对话）容易出错——"
-            "短文本为主的游戏选 16~32；长文本多的游戏选 4~8。\n\n"
-            "显存预估是参考值，实际占用以运行时为准。")
+            "显存 8GB 以上想微调可试 2 槽，再高收益很小。\n\n"
+            "【上下文长度】模型一次能记住的文本量（token）。"
+            "8192 已覆盖常规游戏文本，直接用默认值即可；"
+            "机器内存紧张（8GB 以下）可选 4096 省内存，几乎不影响"
+            "翻译质量。显存不足时工具会自动降档，无需手动改。\n\n"
+            "【每批条数】一次打包翻译多少条文本。打包越多，每条分到"
+            "的翻译空间越少，长文本（成段剧情对话）容易出错——"
+            "短文本为主的游戏（按钮/标签）选 16~32；"
+            "长文本多的游戏（对话/文档）选 4~8。\n\n"
+            "显存预估与估算速度随上面的选择实时变化，"
+            "都是参考值，实际占用以运行时为准。")
         hint.setProperty("class", "subtitle")
         hint.setWordWrap(True)
         right_lay.addWidget(head)
