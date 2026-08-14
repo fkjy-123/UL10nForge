@@ -45,7 +45,7 @@ def _spawn(cmd: list[str], log_path: Path) -> subprocess.Popen:
 
 
 class ReviewModelService:
-    """审核模型本地服务：跨实例复用 + 按需启动 + 失败告警。
+    """审核模型服务：本地 llama.cpp 或在线 API 端点（二选一）。
 
     用法（SemanticReviewer 内部调用）：
         svc = ReviewModelService(app_dir)
@@ -53,13 +53,16 @@ class ReviewModelService:
         result = svc.chat(prompt)     # 直接对话（内部走 /v1/chat/completions）
         svc.release()                 # 不杀进程：保留给后续实例复用
 
-    ensure_running 成功启动的服务不随实例销毁（与 LocalModelManager
-    的「需要哪个留哪个」一致），状态写 review_runtime.json 供复用。
+    online_cfg（2026-08-14 在线 API 模式）：传入 ApiConfig 且
+    base_url/api_key/model 齐全时走「在线端点」——ensure_running 直接
+    返回配置端点，不启动/探测本地进程（在线模式不多跑本地模型）；
+    缺任一项则回退本地启动路径（现有行为不变）。
     """
 
     def __init__(self, app_dir: str | Path, *,
                  process_factory=None, probe=None, sleep=None,
-                 token_factory=None, startup_timeout: float = 180.0):
+                 token_factory=None, startup_timeout: float = 180.0,
+                 online_cfg=None):
         self.app_dir = Path(app_dir).resolve()
         self._process_factory = process_factory or subprocess.Popen
         self._probe = probe or self._http_probe
@@ -71,6 +74,14 @@ class ReviewModelService:
         self._log_handle = None
         self._runtime: dict | None = None      # {"base_url", "api_key"}
         self._lock = threading.RLock()
+        self._online: dict | None = None
+        if online_cfg is not None and online_cfg.base_url \
+                and online_cfg.api_key and online_cfg.model:
+            self._online = {
+                "base_url": str(online_cfg.base_url).rstrip("/"),
+                "api_key": str(online_cfg.api_key),
+                "model": str(online_cfg.model),
+            }
 
     # ── 跨实例运行时状态（review_runtime.json，独立于翻译实例） ────
     @property
@@ -142,7 +153,11 @@ class ReviewModelService:
         gpu_choice（环境设置页四模型卡片）：auto → hardware_planner
         决策；cpu → gpu_layers=0 强制 CPU；gpu → 999 强制全层
         （llama.cpp 对超层数 clamp 到全部层，绕过 planner 的 -1 接管）。
+        在线模式（构造时 online_cfg 完整）：直接返回外部端点——
+        不探测本地端口、不启动 llama-server（不多跑本地模型）。
         """
+        if self._online is not None:
+            return dict(self._online)
         spec = self._spec()
         if not spec.is_available:
             raise RuntimeError(
@@ -317,7 +332,7 @@ class ReviewModelService:
         resp = httpx.post(
             info["base_url"] + "/chat/completions",
             headers={"Authorization": f"Bearer {info['api_key']}"},
-            json={"model": "local",
+            json={"model": info.get("model", "local"),
                   "messages": [{"role": "user", "content": prompt}],
                   "temperature": temperature, "max_tokens": max_tokens},
             timeout=timeout, trust_env=False, verify=False)
@@ -331,5 +346,11 @@ class ReviewModelService:
             self._runtime = None
 
     def stop(self) -> None:
-        """终止本实例启动的审核服务进程（清理场景用）。"""
+        """终止本实例启动的审核服务进程（清理场景用）。
+
+        在线模式无本地进程（online_cfg 时 _process 恒 None）：外部端点
+        不在本地管理范围，no-op（_online 保留——服务「恒在」）。
+        """
+        if self._online is not None:
+            return
         self._stop_locked()

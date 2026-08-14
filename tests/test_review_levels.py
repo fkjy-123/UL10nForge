@@ -506,7 +506,7 @@ def test_force_send_reviews_plain_entries(monkeypatch):
     seen: list = []
     class _StubReviewer:
         usable = True
-        def __init__(self, app_dir=None, service=None):
+        def __init__(self, app_dir=None, service=None, online_cfg=None):
             pass
         def review_batch(self, items, *, on_progress=None,
                          cancellation_event=None):
@@ -639,7 +639,8 @@ def test_retranslate_reuses_passed_reviewer_not_cwd_builder(monkeypatch):
     # 未传 reviewer 时仍可用 app_dir 定位（不新建 cwd 实例）
     seen = []
     monkeypatch.setattr("hanhua.core.reviewer.SemanticReviewer",
-                        lambda app_dir=None, service=None: (
+                        lambda app_dir=None, service=None,
+                        online_cfg=None: (
                             seen.append(app_dir) or _StubReviewer()))
     tr2 = _FakeTranslator([(True, "继续游戏")])
     entry2 = _entry()

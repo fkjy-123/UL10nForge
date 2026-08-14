@@ -312,11 +312,19 @@ class SettingsPage(QWidget):
     # 在线 API 才出现 Base URL / Key / 模型表单。选择持久化到
     # SettingsStore.model_runtime，启动时按 kind 应用。
     _MODEL_CARDS = (
-        # (kind, 显示名, 端口, 模型线索, 描述)
-        ("translate", "翻译模型", 8080, "hy-mt2", "Hy-MT2-1.8B —— 翻译主模型"),
-        ("review", "语义审核", 8081, "qwen3.5-4b", "Qwen3.5-4B —— 四级判定 + 反馈重译"),
-        ("rerank", "语境重排", 8082, "reranker", "Qwen3-Reranker-0.6B —— 语料相关度排序"),
-        ("embed", "向量检索", 8083, "embedding", "Qwen3-Embedding-0.6B —— 语境记忆检索"),
+        # (kind, 显示名, 端口, 模型线索, 描述——保持简短，细则进 tooltip)
+        ("translate", "翻译模型", 8080, "hy-mt2",
+         "Hy-MT2 1.8B · 翻译主模型",
+         "翻译主模型：Hy-MT2 1.8B，本地离线运行，数据不出本机"),
+        ("review", "语义审核", 8081, "qwen3.5-4b",
+         "Qwen3.5-4B · 审核判定",
+         "语义审核：Qwen3.5-4B，四级判定（通过/轻微/较大/严重）+ 反馈重译"),
+        ("rerank", "语境重排", 8082, "reranker",
+         "Qwen3-Reranker 0.6B · 重排",
+         "语料相关度重排：Qwen3-Reranker 0.6B，固定 CPU 毫秒级任务"),
+        ("embed", "向量检索", 8083, "embedding",
+         "Qwen3-Embedding 0.6B · 检索",
+         "语境向量记忆检索：Qwen3-Embedding 0.6B，固定 CPU 毫秒级任务"),
     )
     _GPU_LAYERS_BY_CHOICE = {"auto": -1, "cpu": 0, "gpu": 999}
 
@@ -343,58 +351,47 @@ class SettingsPage(QWidget):
         mode_row.addWidget(self.backend_mode, 1)
         left_lay.addLayout(mode_row)
 
-        # 在线 API 表单（切换为在线 API 才显示）
+        # 在线 API 模式：四模型各自一张卡片（2026-08-14 每模型对应
+        # 自己的在线服务商 / 端点 / 模型，不是一份配置共用）
+        self.api_cards: dict[str, dict] = {}
         self.mode_api_widget = QWidget()
-        api_form = QFormLayout(self.mode_api_widget)
-        api_form.setContentsMargins(0, 6, 0, 0)
-        api_form.setSpacing(14)
-        self.api_provider = QComboBox()
-        self.api_provider.addItem("OpenAI 兼容", "openai")
-        self.api_provider.addItem("Anthropic 原生", "anthropic")
-        self.api_url = QLineEdit()
-        self.api_url.setPlaceholderText("https://api.openai.com/v1 或代理地址")
-        self.api_key = QLineEdit()
-        self.api_key.setEchoMode(QLineEdit.Password)
-        self.api_key.setPlaceholderText("sk-…")
-        self.api_model = QLineEdit()
-        self.api_model.setPlaceholderText("如 gpt-4o / claude-sonnet-4 / deepseek-chat")
-        for field in (self.api_provider, self.api_url, self.api_key,
-                      self.api_model):
-            field.setMinimumHeight(42)
-        api_form.addRow("提供商", self.api_provider)
-        api_form.addRow("Base URL", self.api_url)
-        api_form.addRow("API Key", self.api_key)
-        api_form.addRow("模型", self.api_model)
-        api_btns = QHBoxLayout()
-        self.test_btn = QPushButton("测试连接")
-        self.test_btn.setProperty("primary", True)
-        self.save_btn = QPushButton("保存")
-        api_btns.addWidget(self.test_btn)
-        api_btns.addWidget(self.save_btn)
-        api_btns.addStretch(1)
-        api_form.addRow("", api_btns)
+        api_lay = QVBoxLayout(self.mode_api_widget)
+        api_lay.setContentsMargins(0, 4, 0, 0)
+        api_lay.setSpacing(12)
+        api_overview = QLabel(
+            "在线模式：翻译与审核各自指向云端服务（修改自动保存）；"
+            "重排与检索保持本地 0.6B 轻量运行")
+        api_overview.setProperty("class", "subtitle")
+        api_overview.setWordWrap(True)
+        api_lay.addWidget(api_overview)
+        for kind, title, port, hint, desc, tooltip in self._MODEL_CARDS:
+            # 只提供翻译/审核的在线 API（用户拍板：重排/检索恒本地）
+            if kind not in ("translate", "review"):
+                continue
+            api_lay.addWidget(self._build_api_card(kind, title, tooltip, desc))
+        api_lay.addStretch(1)
         left_lay.addWidget(self.mode_api_widget)
 
         # 本地模式：四模型卡片（启动/停止 + GPU/CPU 选择 + 状态）
         self.mode_local_widget = QWidget()
         local_lay = QVBoxLayout(self.mode_local_widget)
         local_lay.setContentsMargins(0, 4, 0, 0)
-        local_lay.setSpacing(10)
+        local_lay.setSpacing(12)
         # 总览行：可用显存 / 系统内存（直观对照卡片占用）
         self.vram_overview = QLabel("可用显存 — · 内存 —")
         self.vram_overview.setProperty("class", "subtitle")
         self.vram_overview.setTextFormat(Qt.RichText)
         local_lay.addWidget(self.vram_overview)
         self.model_cards: dict[str, dict] = {}
-        for kind, title, port, hint, desc in self._MODEL_CARDS:
+        for kind, title, port, hint, desc, tooltip in self._MODEL_CARDS:
             local_lay.addWidget(self._build_model_card(
-                kind, title, port, hint, desc))
+                kind, title, port, tooltip, desc))
         local_lay.addStretch(1)
         left_lay.addWidget(self.mode_local_widget)
         left_lay.addStretch(1)
-        root.addWidget(left, 6)
+        root.addWidget(left, 7)
 
-        # 右 4：连接状态与说明
+        # 右 3：连接状态与说明
         right = QWidget()
         right_lay = QVBoxLayout(right)
         right_lay.setContentsMargins(0, 0, 0, 0)
@@ -417,29 +414,34 @@ class SettingsPage(QWidget):
         right_lay.addSpacing(10)
         right_lay.addWidget(self.env_hint)
         right_lay.addStretch(1)
-        root.addWidget(right, 4)
+        root.addWidget(right, 3)
 
         self._load_api_ui()
         self.backend_mode.currentIndexChanged.connect(self._sync_backend_mode)
         self.stop_local_btn.clicked.connect(self._stop_all_models)
         self.test_btn.clicked.connect(self.test_connection)
-        self.save_btn.clicked.connect(self._save_api)
         self._sync_backend_mode()
         self._refresh_vram_estimates()
         return tab
 
     def _build_model_card(self, kind: str, title: str, port: int,
                           hint: str, desc: str) -> QWidget:
-        """单个模型的管理卡片：名称 / 模型文件 / 端口 / 运行方式 / 状态 /
-        启动停止按钮。rerank/embed 固定 CPU（fixed_cpu 硬约束）不可改。"""
+        """单个模型的管理卡片（3 行：标题 / 端口·方式·状态·按钮 / 预估）。
+
+        2026-08-14 布局疏朗化：预估占用从操作行拆出为独立行——原 2 行
+        布局把「端口+运行方式+预估双值+状态+按钮」挤进一行 456px，
+        文字被截断（用户实证「文字很挤，有的字没显示全」）。
+        rerank/embed 固定 CPU（fixed_cpu 硬约束）不可改。
+        """
         card = QFrame()
         card.setObjectName("modelCard")
         lay = QVBoxLayout(card)
-        lay.setContentsMargins(14, 10, 14, 10)
-        lay.setSpacing(6)
+        lay.setContentsMargins(16, 12, 16, 12)
+        lay.setSpacing(8)
 
+        # 行 1：名称 + 短描述（细则进 tooltip）
         head = QHBoxLayout()
-        head.setSpacing(8)
+        head.setSpacing(10)
         name = QLabel(title)
         name.setProperty("class", "cardTitle")
         head.addWidget(name)
@@ -447,13 +449,14 @@ class SettingsPage(QWidget):
         model_label.setProperty("class", "subtitle")
         model_label.setToolTip(hint)
         head.addWidget(model_label, 1)
+        head.addStretch(1)
+        lay.addLayout(head)
         self.model_cards[kind] = {
             "frame": card, "status": None, "btn": None, "combo": None,
             "port": port, "hint": hint,
         }
-        head.addStretch(1)
-        lay.addLayout(head)
 
+        # 行 2：端口 / 运行方式 / 状态 / 启动按钮（4 元素 + stretch，宽松）
         row = QHBoxLayout()
         row.setSpacing(10)
         port_label = QLabel(f"端口 {port}")
@@ -480,11 +483,6 @@ class SettingsPage(QWidget):
         combo.setEnabled(not fixed_cpu)
         self.model_cards[kind]["combo"] = combo
         row.addWidget(combo)
-        # 预估占用：GPU 全层 / CPU 内存双值，当前选择高亮（直观调节）
-        vram = QLabel("预估 —")
-        vram.setProperty("class", "subtitle")
-        vram.setTextFormat(Qt.RichText)
-        row.addWidget(vram)
         row.addStretch(1)
         status = QLabel("状态：未启动")
         status.setProperty("class", "subtitle")
@@ -496,9 +494,170 @@ class SettingsPage(QWidget):
         row.addWidget(btn)
         self.model_cards[kind]["status"] = status
         self.model_cards[kind]["btn"] = btn
-        self.model_cards[kind]["vram"] = vram
         lay.addLayout(row)
+
+        # 行 3：预估占用整行独立（GPU 全层 / CPU 内存双值，当前选择高亮）
+        vram = QLabel("预估 —")
+        vram.setProperty("class", "subtitle")
+        vram.setTextFormat(Qt.RichText)
+        self.model_cards[kind]["vram"] = vram
+        lay.addWidget(vram)
         return card
+
+    def _build_api_card(self, kind: str, title: str, hint: str,
+                        desc: str) -> QWidget:
+        """在线模式单模型 API 卡片：提供商 / Base URL / Key / 模型 + 测试。
+
+        修改即存（写 SettingsStore.api_configs[kind]，切换模式或重启
+        立即生效）；状态角标显示「已配置 / 未配置」。控件 objectName
+        apiProvider_{kind} / apiUrl_{kind} / apiKey_{kind} /
+        apiModel_{kind} / apiTest_{kind}（测试与自动化可定位）。
+        """
+        card = QFrame()
+        card.setObjectName("modelCard")
+        lay = QVBoxLayout(card)
+        lay.setContentsMargins(16, 12, 16, 12)
+        lay.setSpacing(8)
+
+        # 行 1：名称 + 短描述 + 配置状态
+        head = QHBoxLayout()
+        head.setSpacing(10)
+        name = QLabel(title)
+        name.setProperty("class", "cardTitle")
+        head.addWidget(name)
+        model_label = QLabel(desc)
+        model_label.setProperty("class", "subtitle")
+        model_label.setToolTip(hint)
+        head.addWidget(model_label, 1)
+        status = QLabel("未配置")
+        status.setProperty("class", "subtitle")
+        head.addWidget(status)
+        self.api_cards[kind] = {
+            "frame": card, "provider": None, "url": None, "key": None,
+            "model": None, "test_btn": None, "status": status, "hint": hint,
+        }
+        lay.addLayout(head)
+
+        # 行 2：提供商 + Base URL
+        row1 = QHBoxLayout()
+        row1.setSpacing(10)
+        provider_tag = QLabel("提供商")
+        provider_tag.setProperty("class", "metricLabel")
+        row1.addWidget(provider_tag)
+        provider = QComboBox()
+        provider.setObjectName(f"apiProvider_{kind}")
+        provider.addItem("OpenAI 兼容", "openai")
+        provider.addItem("Anthropic 原生", "anthropic")
+        provider.setMinimumHeight(34)
+        row1.addWidget(provider)
+        url_tag = QLabel("Base URL")
+        url_tag.setProperty("class", "metricLabel")
+        row1.addWidget(url_tag)
+        url = QLineEdit()
+        url.setObjectName(f"apiUrl_{kind}")
+        url.setPlaceholderText("https://api.openai.com/v1 或代理地址")
+        url.setMinimumHeight(34)
+        row1.addWidget(url, 1)
+        lay.addLayout(row1)
+
+        # 行 3：API Key + 模型
+        row2 = QHBoxLayout()
+        row2.setSpacing(10)
+        key_tag = QLabel("API Key")
+        key_tag.setProperty("class", "metricLabel")
+        row2.addWidget(key_tag)
+        key = QLineEdit()
+        key.setObjectName(f"apiKey_{kind}")
+        key.setEchoMode(QLineEdit.Password)
+        key.setPlaceholderText("sk-…")
+        key.setMinimumHeight(34)
+        row2.addWidget(key, 1)
+        model_tag = QLabel("模型")
+        model_tag.setProperty("class", "metricLabel")
+        row2.addWidget(model_tag)
+        model = QLineEdit()
+        model.setObjectName(f"apiModel_{kind}")
+        model.setPlaceholderText("如 gpt-4o / claude-sonnet-4 / deepseek-chat")
+        model.setMinimumHeight(34)
+        row2.addWidget(model, 1)
+        lay.addLayout(row2)
+
+        # 行 4：测试按钮 + 自动保存提示
+        row3 = QHBoxLayout()
+        row3.setSpacing(10)
+        test_btn = QPushButton("测试连接")
+        test_btn.setObjectName(f"apiTest_{kind}")
+        test_btn.setProperty("primary", True)
+        test_btn.setMinimumHeight(32)
+        test_btn.clicked.connect(lambda _c, k=kind: self.test_api_card(k))
+        row3.addWidget(test_btn)
+        saved_hint = QLabel("修改自动保存")
+        saved_hint.setProperty("class", "subtitle")
+        row3.addWidget(saved_hint)
+        row3.addStretch(1)
+        lay.addLayout(row3)
+        self.api_cards[kind].update(
+            provider=provider, url=url, key=key, model=model,
+            test_btn=test_btn)
+        # 即改即存：任一字段变化 → 写 store（无 Toast 打扰）
+        provider.currentIndexChanged.connect(
+            lambda _i, k=kind: self._persist_api_card(k))
+        url.textChanged.connect(lambda _t, k=kind: self._persist_api_card(k))
+        key.textChanged.connect(lambda _t, k=kind: self._persist_api_card(k))
+        model.textChanged.connect(lambda _t, k=kind: self._persist_api_card(k))
+        return card
+
+    def _persist_api_card(self, kind: str) -> None:
+        """在线 API 卡片改动 → 写 store（即改即存）。"""
+        card = self.api_cards.get(kind)
+        if card is None or card["provider"] is None:
+            return
+        self.state.settings.set_api_config(
+            kind, provider=card["provider"].currentData(),
+            base_url=card["url"].text().strip(),
+            api_key=card["key"].text().strip(),
+            model=card["model"].text().strip())
+        ok = bool(card["url"].text().strip() and card["key"].text().strip()
+                  and card["model"].text().strip())
+        card["status"].setText("已配置" if ok else "未配置")
+
+    def test_api_card(self, kind: str) -> None:
+        """单卡测试：先落盘当前表单，再后台调云端端点。"""
+        card = self.api_cards.get(kind)
+        if card is None:
+            return
+        url = card["url"].text().strip()
+        key = card["key"].text().strip()
+        model = card["model"].text().strip()
+        if not (url and key and model):
+            Toast.show(self, f"{self._model_title(kind)}："
+                             "请先填写 URL / Key / 模型", "warning")
+            return
+        self._persist_api_card(kind)
+        btn = card["test_btn"]
+        btn.setEnabled(False)
+        btn.setText("测试中…")
+        provider = card["provider"].currentData()
+        worker = Worker(self._test_worker, provider, url, key, model)
+        worker.signals.finished.connect(
+            lambda reply, k=kind: self._on_api_test_ok(k, reply))
+        worker.signals.error.connect(
+            lambda err, k=kind: self._on_api_test_err(k, err))
+        self._pool.start(worker)
+
+    def _on_api_test_ok(self, kind: str, _reply: str) -> None:
+        card = self.api_cards.get(kind)
+        if card is not None:
+            card["test_btn"].setEnabled(True)
+            card["test_btn"].setText("测试连接")
+        Toast.show(self, f"{self._model_title(kind)}：连接正常", "success")
+
+    def _on_api_test_err(self, kind: str, err: str) -> None:
+        card = self.api_cards.get(kind)
+        if card is not None:
+            card["test_btn"].setEnabled(True)
+            card["test_btn"].setText("测试连接")
+        Toast.show(self, f"{self._model_title(kind)} 测试失败：{err}", "error")
 
     def _on_runtime_choice(self, kind: str) -> None:
         """运行方式选择持久化；运行中切换 → 下次重启生效（签名含
@@ -523,25 +682,54 @@ class SettingsPage(QWidget):
 
     @staticmethod
     def _probe_port(port: int) -> bool:
-        """探测本地模型端口（真实网络探测：反映包括外部进程的实例）。"""
+        """探测本地模型端口（真实网络探测：反映包括外部进程的实例）。
+
+        timeout 0.6s（2026-08-14 UI 卡顿实证：正常 llama-server /health
+        <100ms 返回；超时只是兜底 SYN 被防火墙丢弃的场景——同步探测
+        只出现在按钮点击路径，必须短）。
+        """
         try:
             import httpx
             return httpx.get(
-                f"http://127.0.0.1:{port}/health", timeout=1.5,
+                f"http://127.0.0.1:{port}/health", timeout=0.6,
                 trust_env=False, verify=False).status_code == 200
         except Exception:  # noqa: BLE001 - 未启动/探测失败 → 未运行
             return False
 
+    def _probe_all(self) -> dict:
+        """并行探测四端口（后台线程调用）：总耗时 = 最慢单个，非四倍。"""
+        from concurrent.futures import ThreadPoolExecutor
+        ports = {kind: card["port"]
+                 for kind, card in self.model_cards.items()}
+        if not ports:
+            return {}
+        with ThreadPoolExecutor(max_workers=min(4, len(ports))) as pool:
+            futures = {kind: pool.submit(self._probe_port, port)
+                       for kind, port in ports.items()}
+            return {kind: future.result()
+                    for kind, future in futures.items()}
+
     def _refresh_model_states(self) -> None:
+        """异步刷新四卡片状态（2026-08-14 卡顿修复：切页不再 UI 线程
+        串行探测——4×0.6s 同步会卡 2.4s+；改后台并行 + 完成回调）。"""
+        worker = Worker(self._probe_all)
+        worker.signals.finished.connect(self._apply_model_states)
+        worker.signals.error.connect(self._on_probe_error)
+        self._pool.start(worker)
+
+    def _apply_model_states(self, states: dict) -> None:
         for kind, card in self.model_cards.items():
-            running = self._probe_port(card["port"])
+            running = bool(states.get(kind))
             card["status"].setText(
                 f"状态：运行中 · 端口 {card['port']}" if running
                 else "状态：未启动")
             card["btn"].setText("停止" if running else "启动")
-            card["btn"].setProperty(
-                "danger", running)
+            card["btn"].setProperty("danger", running)
             card["btn"].setProperty("primary", not running)
+
+    def _on_probe_error(self, _err: str) -> None:
+        """探测异常：按全部未启动恢复（按钮保持可点）。"""
+        self._apply_model_states({})
 
     def _on_env_tab_shown(self, index: int) -> None:
         """切回环境设置页时刷新四模型状态（index 0 恒为环境设置）。"""
@@ -729,20 +917,31 @@ class SettingsPage(QWidget):
         Toast.show(self, "全部本地模型已停止", "success")
 
     def _refresh_env_status(self):
-        """右列连接状态卡：汇总四个模型运行数。"""
-        running = [k for k in self.model_cards
-                   if self._probe_port(self.model_cards[k]["port"])]
+        """右列连接状态卡：后台汇总四个模型运行数（不阻塞 UI）。"""
+        worker = Worker(self._env_status_worker)
+        worker.signals.finished.connect(self._apply_env_status)
+        worker.signals.error.connect(self._on_probe_error)
+        self._pool.start(worker)
+
+    def _env_status_worker(self):
+        try:
+            gpu = gpu_memory_info()
+        except Exception:  # noqa: BLE001
+            gpu = None
+        return {"states": self._probe_all(), "gpu": gpu}
+
+    def _apply_env_status(self, data: dict) -> None:
+        running = [k for k, running in data.get("states", {}).items()
+                   if running]
         if not running:
             self.local_status.setText("本地服务：未启动")
         else:
             names = "、".join(self._model_title(k) for k in running)
             self.local_status.setText(f"本地服务：运行中 · {names}")
-        total, free = 0.0, 0.0
-        try:
-            total, free = gpu_memory_info()
+        gpu = data.get("gpu")
+        if gpu:
+            total, free = gpu
             self.status_vram.setText(f"{free:.1f} / {total:.1f} GB 可用")
-        except Exception:  # noqa: BLE001 无 GPU 信息时显示占位
-            pass
         self.state.settingsChanged.emit()
 
     # ── 字体设置（2026-08-14 从翻译服务表单拆出独立页） ────────────
@@ -827,11 +1026,32 @@ class SettingsPage(QWidget):
         api = self.state.api
         mode_idx = self.backend_mode.findData(api.mode)
         self.backend_mode.setCurrentIndex(max(0, mode_idx))
-        idx = self.api_provider.findData(api.provider)
-        self.api_provider.setCurrentIndex(max(0, idx))
-        self.api_url.setText(api.base_url)
-        self.api_key.setText(api.api_key)
-        self.api_model.setText(api.model)
+        # 四张在线 API 卡片：从 store.api_configs 填充（translate 与
+        # self.api 同对象，配置一次填齐；旧版顶层 api 已迁移）。
+        # 填充期间屏蔽「即改即存」信号——逐个控件 setValue 的中间态
+        # 不能污染 store（provider 先填而 url 未填 → 空值覆盖源数据）
+        for kind, card in self.api_cards.items():
+            cfg = self.state.settings.api_config(kind)
+            fields = (card["provider"], card["url"], card["key"],
+                      card["model"])
+            for field in fields:
+                field.blockSignals(True)
+            card["provider"].setCurrentIndex(max(
+                0, card["provider"].findData(cfg.provider)))
+            card["url"].setText(cfg.base_url)
+            card["key"].setText(cfg.api_key)
+            card["model"].setText(cfg.model)
+            for field in fields:
+                field.blockSignals(False)
+            ok = bool(cfg.base_url and cfg.api_key and cfg.model)
+            card["status"].setText("已配置" if ok else "未配置")
+        # 旧接口别名（兼容既有测试/调用方）：translate 卡即「全局 API
+        # 表单」——翻译消费链全部走 self.state.api，与卡片同对象
+        self.api_provider = self.api_cards["translate"]["provider"]
+        self.api_url = self.api_cards["translate"]["url"]
+        self.api_key = self.api_cards["translate"]["key"]
+        self.api_model = self.api_cards["translate"]["model"]
+        self.test_btn = self.api_cards["translate"]["test_btn"]
         self.local_concurrency.setCurrentIndex(max(
             0, self.local_concurrency.findData(int(api.local_concurrency))))
         self.local_ctx.setCurrentIndex(max(
@@ -841,8 +1061,8 @@ class SettingsPage(QWidget):
         self._refresh_vram()
 
     def _sync_backend_mode(self):
-        """模式切换：本地 → 显示四模型卡片，隐藏 API 表单；
-        在线 API → 反之。高级设置独立 Tab 联动置灰。"""
+        """模式切换：本地 → 四模型卡片；在线 API → 四张 API 卡片。
+        高级设置独立 Tab 联动置灰。"""
         local = self.backend_mode.currentData() == "local"
         self.mode_local_widget.setVisible(local)
         self.mode_api_widget.setVisible(not local)
@@ -857,13 +1077,14 @@ class SettingsPage(QWidget):
             "本地模式：四模型全部离线运行，数据不出本机。"
             "「自动」优先 GPU，显存放不下时自动把部分层分到 CPU；"
             "「GPU」强制全层用显存，「CPU」则只走处理器。\n\n"
-            "在线 API：填写 Base URL / Key / 模型后「测试连接」验证。"
-            "切换回本地模式后，API 配置不参与运行。"
+            "在线 API：翻译与审核各自填写云端服务后「测试连接」验证，"
+            "修改自动保存。切换回本地模式后，API 配置不参与运行。"
             if local else
-            "在线 API 模式：翻译与审核走云端模型"
-            "（OpenAI 兼容 / Anthropic 原生）。\n\n"
-            "本地四模型卡片在切换回「本地 llama.cpp」后可用；"
-            "在线模式下已启动的本地模型不会被自动停止。")
+            "在线 API 模式：翻译与审核两个模型各自指向云端"
+            "（OpenAI 兼容 / Anthropic 原生），用各自的接口与模型名；"
+            "未配置的模型在线模式下不可用。\n\n"
+            "重排与检索保持本地 0.6B 轻量运行（毫秒级任务不上云端）。"
+            "在线模式下本地模型不会被自动启动。")
         self._refresh_vram()
 
     # ── 高级设置（本地模型） ──
@@ -993,6 +1214,7 @@ class SettingsPage(QWidget):
     def _config_from_form(self):
         api = replace(self.state.api)
         api.mode = self.backend_mode.currentData()
+        # 在线配置来自 translate 卡（旧接口别名即该卡控件）
         api.provider = self.api_provider.currentData()
         api.base_url = self.api_url.text().strip()
         api.api_key = self.api_key.text().strip()
@@ -1004,6 +1226,8 @@ class SettingsPage(QWidget):
 
     def _commit_api_config(self, config) -> None:
         self.state.settings.api = replace(config)
+        # translate 卡与 self.api 同对象——replace 后同步引用防脱钩
+        self.state.settings.api_configs["translate"] = self.state.settings.api
         self.state.settings.save()
         self.state.settingsChanged.emit()
 
@@ -1020,8 +1244,6 @@ class SettingsPage(QWidget):
             return
         self.test_btn.setEnabled(False)
         self.test_btn.setText("启动中…" if local else "测试中…")
-        if local:
-            self.save_btn.setEnabled(False)
         cfg = self._config_from_form()
         self._pending_test_config = cfg
         if local:
@@ -1068,7 +1290,6 @@ class SettingsPage(QWidget):
         self.test_btn.setText("启动并测试" if local else "测试连接")
         if local:
             runtime = reply["runtime"]
-            self.save_btn.setEnabled(True)
             self.local_status.setText(
                 f"本地服务：已启动 · {runtime.backend.upper()} · 端口 {runtime.port}")
             reply_text = reply["reply"]
@@ -1083,7 +1304,6 @@ class SettingsPage(QWidget):
         local = self.backend_mode.currentData() == "local"
         self.test_btn.setText("启动并测试" if local else "测试连接")
         if local:
-            self.save_btn.setEnabled(True)
             self.local_status.setText("本地服务：启动失败")
         Toast.show(self, f"连接失败：{err}", "error")
 

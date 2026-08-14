@@ -428,6 +428,56 @@ def test_settings_save_persists_config(qapp, tmp_path):
     assert state.api.base_url == "https://example.com/v1"
 
 
+def test_settings_online_mode_shows_translate_review_api_cards(qapp, tmp_path):
+    """在线 API 模式：只有翻译/审核两张卡（重排/检索恒本地无卡片）。"""
+    from hanhua.ui.pages.settings_page import SettingsPage
+    page = SettingsPage(_state(tmp_path), _RecordingWindow())
+    assert set(page.api_cards) == {"translate", "review"}
+    assert page.api_cards["translate"]["test_btn"].text() == "测试连接"
+    # 默认 API 模式：在线卡片可见、本地四卡隐藏
+    assert page.mode_api_widget.isHidden() is False
+    assert page.mode_local_widget.isHidden() is True
+    # 切本地：在线卡片隐藏
+    page.backend_mode.setCurrentIndex(page.backend_mode.findData("local"))
+    assert page.mode_api_widget.isHidden() is True
+
+
+def test_settings_api_card_edit_persists_immediately(qapp, tmp_path):
+    """在线 API 卡片即改即存：改字段立即写入 store（无保存按钮）。"""
+    from hanhua.ui.pages.settings_page import SettingsPage
+    state = _state(tmp_path)
+    page = SettingsPage(state, _RecordingWindow())
+    card = page.api_cards["review"]
+    card["url"].setText("https://review.example.com/v1")
+    assert state.settings.api_config(
+        "review").base_url == "https://review.example.com/v1"
+    assert card["status"].text() == "未配置"     # key/model 仍空
+    card["key"].setText("sk-review")
+    card["model"].setText("claude-sonnet-4")
+    assert card["status"].text() == "已配置"
+    assert card["provider"].currentData() == "openai"   # 缺省提供商
+    # translate 卡（self.api 别名）不受 review 卡影响
+    assert state.settings.api_config("translate").base_url == ""
+
+
+def test_settings_api_card_load_restores_persisted_config(qapp, tmp_path):
+    """四卡 UI 从 store 恢复持久化配置（含 provider）。"""
+    from hanhua.ui.pages.settings_page import SettingsPage
+    state = _state(tmp_path)
+    state.settings.set_api_config(
+        "review", provider="anthropic", base_url="https://r/v1",
+        api_key="k", model="claude-sonnet-4")
+    page = SettingsPage(state, _RecordingWindow())
+    card = page.api_cards["review"]
+    assert card["provider"].currentData() == "anthropic"
+    assert card["url"].text() == "https://r/v1"
+    assert card["key"].text() == "k"
+    assert card["model"].text() == "claude-sonnet-4"
+    assert card["status"].text() == "已配置"
+    # 加载填充不污染 store（屏蔽信号：值不变）
+    assert state.settings.api_config("review").model == "claude-sonnet-4"
+
+
 def test_settings_nav_switches_tabs(qapp, tmp_path):
     """§66：左侧分类导航驱动右侧内容（tabBar 隐藏）。"""
     from hanhua.ui.pages.settings_page import SettingsPage

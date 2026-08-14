@@ -632,11 +632,18 @@ class TranslatePage(QWidget):
                         self.state.pipelinePhase.emit(
                             "translation_quality", "running",
                             "正在语义审核…", "")
+                        online_audit = api.mode == "api"
                         self.activity_feed.append_event(
-                            "running", "正在启动语义审核模型"
-                            "（首次约 30-120 秒，逐条进度实时刷新）…")
-                        on_log("语义审核：正在启动本地审核模型"
-                               "（Qwen3.5-4B，首次加载约 30-120 秒）…")
+                            "running",
+                            "正在连接语义审核模型…"
+                            "（本地首次约 30-120 秒，逐条进度实时刷新）"
+                            if not online_audit else
+                            "正在调用云端语义审核接口…")
+                        on_log(
+                            "语义审核：正在调用云端审核接口…"
+                            if online_audit else
+                            "语义审核：正在启动本地审核模型"
+                            "（Qwen3.5-4B，首次加载约 30-120 秒）…")
                         strategy_rate = {
                             "fast": 0.05, "balanced": 0.15, "strict": 0.30,
                         }.get(self.state.api.ai_review_strategy, 0.15)
@@ -656,7 +663,12 @@ class TranslatePage(QWidget):
                             model_name=api.model,
                             lang=lang,
                             max_send_rate=strategy_rate,
-                            cancellation_event=cancel)
+                            cancellation_event=cancel,
+                            # 在线 API 模式：审核走云端端点（对应 kind 配置；
+                            # Service 内部判完整性，缺项自动回退本地）
+                            online_review_cfg=(
+                                self.state.settings.api_config("review")
+                                if api.mode == "api" else None))
                     if review_summary and review_summary["used"]:
                         flagged = review_summary["flagged"]
                         added = review_summary["pairs_added"]

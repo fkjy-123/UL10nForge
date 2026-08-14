@@ -315,10 +315,12 @@ class SemanticReviewer:
 
     def __init__(self, config: ReviewConfig | None = None,
                  service: ReviewModelService | None = None,
-                 app_dir: str | Path | None = None):
+                 app_dir: str | Path | None = None,
+                 online_cfg=None):
         self.config = config or ReviewConfig()
         self.service = service or ReviewModelService(
-            Path(app_dir or Path.cwd()).resolve())
+            Path(app_dir or Path.cwd()).resolve(),
+            online_cfg=online_cfg)
 
     @property
     def usable(self) -> bool:
@@ -553,7 +555,11 @@ def review_entries(entries, glossary, *, game_name: str = "",
                    model_name: str = "", lang: str = "zh-CN",
                    max_send_rate: float = 0.15,
                    cancellation_event=None,
-                   force_send: bool = False) -> dict:
+                   force_send: bool = False,
+                   online_review_cfg=None) -> dict:
+    # 在线 API 模式（2026-08-14 环境设置页 per-kind 配置）：传入审核的
+    # ApiConfig——审核走云端端点（不启动本地 4B）。None = 本地路径
+    #（现有行为）。语境证据检索（embed/rerank）恒本地 0.6B 轻量运行。
     """翻译后深审闭环核心（runner 与 GUI 共用；翻译 C6 闭口升级版）。
 
     Phase A（2026-08-13 架构审计）后成为统一审核管线接口：GUI/headless
@@ -647,7 +653,8 @@ def review_entries(entries, glossary, *, game_name: str = "",
     if not items:
         _persist_early(failed_without_candidate)
         return summary
-    reviewer = SemanticReviewer(app_dir=app_dir or Path.cwd())
+    reviewer = SemanticReviewer(
+        app_dir=app_dir or Path.cwd(), online_cfg=online_review_cfg)
     if not reviewer.usable:
         if on_note:
             on_note("语义审核跳过：本地审核服务不可用（模型缺失或启动失败）")
@@ -1012,10 +1019,12 @@ def _retranslate_with_feedback(translator, entry: TextEntry,
 
 
 def _re_review(entry: TextEntry, reviewer: SemanticReviewer | None = None,
-               app_dir: str | Path | None = None) -> ReviewResult | None:
+               app_dir: str | Path | None = None,
+               online_cfg=None) -> ReviewResult | None:
     """再审一次（收敛判定）。失败返回 None（保守放行）。"""
     if reviewer is None:
-        reviewer = SemanticReviewer(app_dir=app_dir or Path.cwd())
+        reviewer = SemanticReviewer(app_dir=app_dir or Path.cwd(),
+                                    online_cfg=online_cfg)
     return reviewer.review_one(ReviewItem(
         entry_id=f"re_{entry.id or entry.key_path}",
         original=str(entry.original)[:600],

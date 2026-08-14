@@ -1608,7 +1608,7 @@ def test_review_page_review_button_force_reviews_and_approves(
     sent = []
     class _FakeReviewer:
         usable = True
-        def __init__(self, app_dir=None, service=None):
+        def __init__(self, app_dir=None, service=None, online_cfg=None):
             pass
         def review_batch(self, items, *, on_progress=None,
                          cancellation_event=None):
@@ -1663,7 +1663,7 @@ def test_review_page_review_button_major_keeps_needs_revision(
 
     class _FakeReviewer:
         usable = True
-        def __init__(self, app_dir=None, service=None):
+        def __init__(self, app_dir=None, service=None, online_cfg=None):
             pass
         def review_batch(self, items, *, on_progress=None,
                          cancellation_event=None):

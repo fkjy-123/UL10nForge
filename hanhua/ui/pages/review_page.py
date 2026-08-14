@@ -739,8 +739,12 @@ class ReviewPage(QWidget):
         token = self._review_token
         self.review_btn.setEnabled(False)
         self.review_btn.setText("审核中…")
+        # 在线 API 模式：审核走云端端点（对应 kind 配置）
+        online_review_cfg = (
+            self.state.settings.api_config("review")
+            if self.state.api.mode == "api" else None)
         worker = Worker(self._run_single_review, entry, store,
-                        app_dir, game_name)
+                        app_dir, game_name, online_review_cfg)
         self._review_worker = worker
         worker.signals.finished.connect(
             lambda r: self._on_review_done(token, r))
@@ -749,14 +753,15 @@ class ReviewPage(QWidget):
         QThreadPool.globalInstance().start(worker)
 
     @staticmethod
-    def _run_single_review(entry: TextEntry, store, app_dir, game_name: str):
+    def _run_single_review(entry: TextEntry, store, app_dir, game_name: str,
+                           online_review_cfg=None):
         """后台线程：单条强制送审。translator=None → 不触发反馈重译，
         判定结果直接终态化（人工再审语义）。"""
         return review_entries(
             [entry], None, game_name=game_name,
             translator=None, memory=store, store=store,
             app_dir=app_dir, model_name="", lang="zh-CN",
-            force_send=True)
+            force_send=True, online_review_cfg=online_review_cfg)
 
     def _on_review_done(self, token: int, result) -> None:
         if token != self._review_token:

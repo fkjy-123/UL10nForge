@@ -9,6 +9,8 @@ import os
 import re
 import struct
 import subprocess
+import threading
+import time
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -171,12 +173,25 @@ def estimate_vram(model_path: str | Path, *, context_size: int = 4096,
     )
 
 
+_GPU_INFO_CACHE: list = [0.0, None]       # [probed_at, (total, free)]
+_GPU_INFO_LOCK = threading.Lock()
+_GPU_INFO_TTL = 2.0                       # 2 秒内复用，避免高频子进程
+
 def gpu_memory_info() -> tuple[float, float] | None:
-    """返回 (total_gb, free_gb)；nvidia-smi 不可用时返回 None。"""
-    # 弹窗根因（2026-08-13 用户实证：语义审核期间终端窗口反复闪出又
-    # 消失几十次）——nvidia-smi 探测缺 CREATE_NO_WINDOW，GUI 进程每次
-    # probe_hardware（送审 ensure_running 每轮都探测）都闪控制台窗口。
-    # 与 #14 netstat/taskkill 同类缺陷，对齐补标志（行为不变）。
+    """返回 (total_gb, free_gb)；nvidia-smi 不可用时返回 None。
+
+    2 秒 TTL 缓存（2026-08-14 UI 卡顿实证：环境设置页切换/预估刷新/
+    审核 ensure_running 每轮都调 nvidia-smi 子进程——Windows 下子进程
+    启动 ~200-500ms，UI 线程串行调用可见卡顿；显存 2 秒内视为不变）。
+    弹窗根因（2026-08-13 用户实证：语义审核期间终端窗口反复闪出又
+    消失几十次）——nvidia-smi 探测缺 CREATE_NO_WINDOW，GUI 进程每次
+    probe_hardware（送审 ensure_running 每轮都探测）都闪控制台窗口。
+    与 #14 netstat/taskkill 同类缺陷，对齐补标志（行为不变）。
+    """
+    with _GPU_INFO_LOCK:
+        probed_at, cached = _GPU_INFO_CACHE
+        if cached is not None and time.monotonic() - probed_at < _GPU_INFO_TTL:
+            return cached
     nowindow = (getattr(subprocess, "CREATE_NO_WINDOW", 0)
                 if os.name == "nt" else 0)
     try:
@@ -194,6 +209,9 @@ def gpu_memory_info() -> tuple[float, float] | None:
     if len(parts) < 2:
         return None
     try:
-        return float(parts[0]) / 1024, float(parts[1]) / 1024
+        value = float(parts[0]) / 1024, float(parts[1]) / 1024
     except ValueError:
         return None
+    with _GPU_INFO_LOCK:
+        _GPU_INFO_CACHE[:] = [time.monotonic(), value]
+    return value
