@@ -31,6 +31,10 @@ fonts/SimplifiedChinese/*
 # 每次汉化自动导出的失败记录（生成产物，不入库）
 docs/fail record/
 
+# 各游戏闭环记录与游戏文本样本导出（本地数据，含游戏原文文本，
+# 不入库防版权/隐私泄露——开发实证文档保留本地）
+docs/all record/
+
 # 识别/覆盖率调查脚本输出（可随时重跑 scripts/*survey*.py 再生成，核心代码 0 引用）
 survey_out/
 
