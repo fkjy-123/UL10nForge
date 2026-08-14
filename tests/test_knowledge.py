@@ -335,8 +335,10 @@ def test_builtin_rules_shape():
         assert rule["action"]
 
 
-def test_prompt_injection_via_build_system_prompt(tmp_path):
-    """runner/GUI 注入链路：knowledge_lines → build_system_prompt 块。"""
+def test_prompt_not_injected_via_build_system_prompt(tmp_path):
+    """2026-08-14 用户要求「检索命中才加入」：知识不再全量拼 system_prompt
+    （25 条对照 ≈ 884 tokens 膨胀上下文）——由 BatchTranslator 按原文
+    match_text 命中注入（knowledge_hits，见 test_ctx_budget）。"""
     from hanhua.core.models import GameProfile
     from hanhua.core.prompts import build_system_prompt
     kb = KnowledgeBase(tmp_path / "knowledge.db")
@@ -344,11 +346,9 @@ def test_prompt_injection_via_build_system_prompt(tmp_path):
                     action="translate", map_to="丢垃圾")
     system = build_system_prompt(GameProfile(), "", known_names=None,
                                  knowledge_lines=kb.format_for_prompt())
-    assert "【特殊情况规则·优先遵守】" in system
-    assert "TOSS TRASH" in system
+    assert "【特殊情况规则" not in system
+    assert "TOSS TRASH" not in system
     kb.close()
-    # 不传知识库 → 无该块（默认行为不变）
-    assert "【特殊情况规则" not in build_system_prompt(GameProfile(), "")
 
 
 def test_writeback_case_rules_all_implemented():

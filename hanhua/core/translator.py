@@ -165,6 +165,38 @@ class LocalOpenAIClient(OpenAIClient):
 
     accepts_plain_single = True
 
+    _probed_ctx: int | None = None   # 实际可用上下文（探测一次缓存）
+
+    def probe_context_size(self) -> int | None:
+        """查询服务端实际可用上下文。
+
+        2026-08-14 用户实证：request (2889 tokens) exceeds context (2048)
+        ——配置 --ctx-size 6144 但实际 2048。llama-server 在 KV 显存不足
+        时启动自动降级 ctx（--parallel 3 × 6144 放不下 → 每槽 6144/3=
+        2048），客户端按配置组装 prompt 必超限。组装前探测实际值，按
+        实际预算（见 BatchTranslator）。失败返回 None（调用方回退配置
+        值）；探测一次缓存，避免每批请求都查。
+        """
+        if self._probed_ctx is not None:
+            # -1 = 失败缓存：继续返回 None（契约：失败一律 None，
+            # 调用方回退配置值；只返回正数实际 ctx）
+            return self._probed_ctx if self._probed_ctx > 0 else None
+        try:
+            base = self.url.rsplit("/chat/completions", 1)[0].rstrip("/")
+            with self._factory() as client:
+                resp = client.get(base + "/props", timeout=10, headers={
+                    "Authorization": f"Bearer {self.config.api_key}"})
+            if resp.status_code == 200:
+                ctx = (resp.json().get("default_generation_settings")
+                       or {}).get("n_ctx")
+                if isinstance(ctx, int) and ctx > 0:
+                    self._probed_ctx = ctx
+                    return ctx
+        except Exception:  # noqa: BLE001 探测失败不阻断（回退配置值）
+            pass
+        self._probed_ctx = -1   # 失败标记，不再重试
+        return None
+
     _TARGET_LANGUAGE_NAMES = {
         "zh-cn": "Simplified Chinese",
         "zh-hans": "Simplified Chinese",

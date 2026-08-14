@@ -2812,17 +2812,16 @@ def test_collect_known_names():
     assert collect_known_names([]) == []
 
 
-def test_known_names_injected_into_system_prompt():
-    """known_names 必须实际注入 system prompt（曾长期未生效）。"""
+def test_known_names_not_injected_into_system_prompt():
+    """2026-08-14 用户要求「大大精简提示词」：专名全量块移除——专名
+    一致性由 BatchTranslator 条目级 glossary_hits 命中注入与确定性
+    直填保证（曾全量注入 50 个专名 ≈ 数百 tokens 膨胀上下文）。"""
     from hanhua.core.prompts import build_system_prompt
     from hanhua.core.models import GameProfile
     profile = GameProfile(game_name="Test Game")
     sys = build_system_prompt(profile, "", known_names=["GLISLYA", "WRECCA"])
-    assert "【已确认专名·全游戏保持一致】" in sys
-    assert "GLISLYA" in sys and "WRECCA" in sys
-    # 未传 known_names 时不应注入该段
-    sys2 = build_system_prompt(profile, "")
-    assert "【已确认专名" not in sys2
+    assert "【已确认专名" not in sys
+    assert "GLISLYA" not in sys and "WRECCA" not in sys
 
 
 def test_learn_proper_names_keeps_and_skips():

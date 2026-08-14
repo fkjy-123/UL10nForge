@@ -831,17 +831,23 @@ def run_game(game_dir: Path, *, batch: int | None = None,
 
         glossary = GlossaryStore(REAL_USER_DIR / "glossary.db")
         glossary.init_schema()
-        glossary_prompt = glossary.format_for_prompt()
+        # 2026-08-14 用户要求「大大精简提示词」：术语/专名/知识不再
+        # 全量拼 system_prompt（296 条术语 ≈ 2800 tokens 是 request
+        # exceeds context 根因）——全部改为按条目检索命中注入：
+        # glossary_hits / knowledge_hits / 向量召回（见 build_batch_user_prompt
+        # 与 batch_translator._build_item）；全量词对仍经 glossary 参数
+        # 供条目级命中匹配与确定性直填
         glossary_rows = glossary.list_all()
 
         # 知识库：跨游戏沉淀的特殊情况规则（全大写动作指令/间隔动作词等
         # 「该翻未翻」模式 + 处置策略），注入翻译，跑完 learn 再积累。
+        # 2026-08-14 用户要求：不再全量拼 system_prompt——知识对照由
+        # BatchTranslator 按原文 match_text 命中注入（knowledge 实例
+        # 全程存活至 run 结束），内置形态规则已由翻译规则 6/11 覆盖。
         # format_reference_pairs 的译例并入 glossary——native 降级重试
         # （Hy-MT2 无 system prompt）靠 references 的 terms 机制带出译例
         knowledge = KnowledgeBase(REAL_USER_DIR / "knowledge.db")
-        knowledge_prompt = knowledge.format_for_prompt()
         knowledge_pairs = knowledge.format_reference_pairs()
-        knowledge.close()
         # 经验记忆（AgentMemory）：跨游戏持久、证据驱动。本次运行前
         # 重置会话统计；active 记忆译例并入 glossary（混合运用参考档）；
         # 高置信短语由 BatchTranslator 翻译前直接应用（仍过质量门复查，
@@ -864,11 +870,9 @@ def run_game(game_dir: Path, *, batch: int | None = None,
         entries = [_entry_from_row(r) for r in project.store.get_entries()]
         collected_names = collect_known_names(
             [str(e.original or "") for e in entries])
-        system = build_system_prompt(
-            profile, glossary_prompt,
-            known_names=glossary.known_names_for(collected_names),
-            knowledge_lines=knowledge_prompt,
-        )
+        # 2026-08-14：system_prompt 只含角色+精简规则（术语/专名/知识
+        # 全量块已移除，全部按条目检索命中注入）
+        system = build_system_prompt(profile, "")
         client = create_client(api)
         lang = f"{profile.source_lang or 'auto'}→{profile.target_lang or 'zh-CN'}"
         batch_size = batch if batch is not None else max(1, int(api.local_batch_size))
@@ -900,6 +904,10 @@ def run_game(game_dir: Path, *, batch: int | None = None,
             context_store=knowledge_retrieval.context_store,
             context_game=game_name,
             vector_recall=knowledge_retrieval.vector_recall,
+            # 2026-08-14：按原文 match_text 精确命中注入历史特殊文本规则
+            # （每条约 884 tokens 的全量对照改为只注入命中的几条，配合
+            # 术语 limit=100 消除 ctx 2048 下的 request 超限）
+            knowledge=knowledge,
         )
         from hanhua.core.models import is_actionable_translation
         pending_count = sum(is_actionable_translation(e) for e in entries)
@@ -909,6 +917,11 @@ def run_game(game_dir: Path, *, batch: int | None = None,
         print(f"  完成：{stats.done} 条（记忆 {stats.from_memory}）"
               f" · 失败 {stats.failed} · 请求 {stats.requests}"
               f" · 耗时 {stats.elapsed:.1f}s")
+        # 命中注入用的 knowledge 实例已用完，关闭（learn 用新实例）
+        try:
+            knowledge.close()
+        except Exception:  # noqa: BLE001 关闭失败不阻断闭环
+            pass
         # 翻译后：本次沉淀的共识证据入向量索引（Phase C，供下次/跨游戏复用）
         indexed1 = knowledge_retrieval.index_outbox()
         if indexed1:

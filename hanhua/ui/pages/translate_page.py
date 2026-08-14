@@ -453,19 +453,21 @@ class TranslatePage(QWidget):
             glossary = GlossaryStore(self.state.app_dir / "glossary.db")
             glossary.init_schema()
             glossary_rows = glossary.list_all()
-            glossary_prompt = glossary.format_for_prompt()
-            # 知识库：跨游戏沉淀的特殊情况规则（「该翻未翻」模式 + 处置策略）。
-            # 译例并入 glossary——native 降级重试（Hy-MT2 无 system prompt）
-            # 靠 references 的 terms 机制带出译例
+            # 2026-08-14 用户要求「大大精简提示词」：术语/专名/知识不再
+            # 全量拼 system_prompt（296 条术语 ≈ 2800 tokens + 25 条知识
+            # 对照 ≈ 884 tokens 是 request exceeds context 根因）——
+            # 全部改为按条目检索命中注入：术语 glossary_hits、知识
+            # knowledge_hits（match_text 精确命中）、向量/语境参考
+            # _context_reference_lines（Top-3），见 build_batch_user_prompt
+            # 与 batch_translator._build_item。译例（knowledge_pairs）并入
+            # glossary——native 降级重试（Hy-MT2 无 system prompt）靠
+            # references 的 terms 机制带出译例
             knowledge = KnowledgeBase(self.state.app_dir / "knowledge.db")
-            knowledge_prompt = knowledge.format_for_prompt()
             knowledge_pairs = knowledge.format_reference_pairs()
-            knowledge.close()
-            # 专名注入：当前项目收集的专名 + 全局术语库积累的专名（跨游戏复用）
+            # 专名收集仅用于翻译后术语库学习（learn_proper_names）
             entries0 = [self._entry_from_row(r) for r in store.get_entries()]
             collected_names = collect_known_names(
                 [str(e.original or "") for e in entries0])
-            known_names = glossary.known_names_for(collected_names)
             glossary.close()
             # 经验记忆（AgentMemory）：跨游戏持久。本次运行前重置会话统计；
             # 记忆的参考译例并入 glossary（active 记忆，混合运用参考档）；
@@ -517,9 +519,9 @@ class TranslatePage(QWidget):
                 run.secrets.append(runtime.api_key)
                 on_log(
                     f"本地服务已就绪：{runtime.backend.upper()} · 端口 {runtime.port}")
-            system = build_system_prompt(
-                profile, glossary_prompt, known_names=known_names,
-                knowledge_lines=knowledge_prompt)
+            # 2026-08-14：system_prompt 只含角色+精简规则（术语/专名/知识
+            # 全量块已移除，全部按条目检索命中注入）
+            system = build_system_prompt(profile, "")
             if cancel.is_set():
                 raise RuntimeError("translation cancelled")
             if not self.state.is_current_project(project, generation):
@@ -565,6 +567,11 @@ class TranslatePage(QWidget):
                     context_store=knowledge_retrieval.context_store,
                     context_game=agent_game,
                     vector_recall=knowledge_retrieval.vector_recall,
+                    # 知识命中注入（2026-08-14 用户要求：按文本检索相关
+                    # 才注入，不全量拼 prompt——match_text 按原文精确
+                    # 命中历史规则）。knowledge 实例全程存活至 run 结束
+                    # （_build_item 每批查询），close 在翻译完成后
+                    knowledge=knowledge,
                     cancellation_event=cancel)
                 run.attach_translator(translator)
                 entries = [self._entry_from_row(r) for r in store.get_entries()]
@@ -608,6 +615,13 @@ class TranslatePage(QWidget):
                     store.reset_to_pending(row["file_id"], row["key_path"])
                     reset += 1
                 on_log(f"已将 {reset} 条失败重置为待翻译，继续…")
+            # 知识命中注入结束——knowledge 实例完成使命后关闭
+            # （2026-08-14 起全程存活供 _build_item 每批查询，此前
+            # 构造前即 close）
+            try:
+                knowledge.close()
+            except Exception:  # noqa: BLE001
+                pass
             on_log(f"翻译完成：{stats.done} 条已翻译"
                    f"（记忆命中 {stats.from_memory}），失败 {stats.failed} 条，"
                    f"请求 {stats.requests} 次")

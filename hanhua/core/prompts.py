@@ -270,18 +270,31 @@ _GAME_CONTEXT_WORDS: list[tuple[str, str, str]] = [
 
 
 def _game_context_rules() -> str:
-    lines = [
-        "【游戏语境歧义词】以下词在游戏文本中有特定语义，必须按游戏语境翻译，"
-        "禁止按通用词典义直译：",
-    ]
-    for word, context, tip in _GAME_CONTEXT_WORDS:
-        lines.append(f"- {word}（{context}）→ {tip}")
-    return "\n".join(lines)
+    """游戏语境歧义词：20 词压缩为一行「词→核心译名」映射。
+
+    2026-08-14 用户要求「大大精简提示词」：原格式每条带语境列与长说明
+    （≈800 字符），压缩后 ≈300 字符；防直译提示（play 不是"播放"、
+    resume 不是"简历"）保留在规则头。
+    """
+    pairs = "、".join(
+        f"{word}→{tip.split('（')[0].split('(')[0].strip()}"
+        for word, context, tip in _GAME_CONTEXT_WORDS)
+    return ("【游戏语境歧义词】按游戏语境翻译，禁止按通用词典义直译"
+            f"（play 不是\"播放\"、resume 不是\"简历\"）：{pairs}")
 
 
 def build_system_prompt(profile: GameProfile, glossary_lines: list[str] | str,
                         known_names: list[str] | None = None,
                         knowledge_lines: list[str] | str | None = None) -> str:
+    """精简版 system_prompt（2026-08-14 用户要求：大大精简提示词）。
+
+    只保留：本地化角色 + 精炼翻译规则 + 语境歧义词。术语表/专名/知识库
+    不再全量注入——由 BatchTranslator 按条目检索命中注入（user prompt 内
+    glossary_hits / knowledge_hits + 向量召回 _context_reference_lines，
+    见 build_batch_user_prompt 与 batch_translator._build_item）。全量注入
+    是 request exceeds context（--ctx-size 6144 实际 2048 实证）与注意力
+    稀释的根因。参数保留仅为调用方兼容，不再渲染。
+    """
     src = profile.source_lang
     if src == "auto":
         src = "游戏原文语言（自动判断，可能是英语/日语/韩语等）"
@@ -304,38 +317,19 @@ def build_system_prompt(profile: GameProfile, glossary_lines: list[str] | str,
     # #10：Style/Personalization——用户自定义提示词（按游戏档案编辑）优先
     if profile.prompt_style:
         parts.append(f"【个性化风格要求（用户自定义，最高优先）】\n{profile.prompt_style}")
-    if isinstance(glossary_lines, str):
-        glossary_lines = [glossary_lines] if glossary_lines else []
-    if glossary_lines:
-        parts.append("【术语表·必须严格遵守】\n" + "\n".join(glossary_lines))
-    if known_names:
-        parts.append("【已确认专名·全游戏保持一致】\n" + "、".join(known_names[:50]))
-    if isinstance(knowledge_lines, str):
-        knowledge_lines = [knowledge_lines] if knowledge_lines else []
-    if knowledge_lines:
-        # 知识库特殊情况规则：跨游戏沉淀的「该翻未翻」模式与处置策略
-        parts.append("【特殊情况规则·优先遵守】\n" + "\n".join(knowledge_lines))
     parts.append(
         "【翻译规则】\n"
-        "1. 必须原样保留所有占位符与格式标签（如 {0}、{name}、%s、<b>、<color=...>、[b]、\\n），不得增删改序。\n"
-        "2. 术语表中的专名、人名、地名、道具名必须严格使用指定译名，不得自创译名。\n"
-        "3. 短文本（UI 按钮、菜单项）保持简短自然，符合界面习惯用语（如\"开始游戏\"而非\"启动游戏之旅\"）。\n"
-        "4. 对话文本口语化、符合角色身份；拒绝翻译腔和欧化句式。\n"
-        "5. 语境不明时可利用相邻文本推断，保持同一批内语气与用词一致。\n"
-        "6. 全大写文本（对话字幕、UI 标题、[ S K I P ] 式标签）照常翻译成自然中文："
-        "全大写只表示强调语气，中文没有大小写，不要因原文是大写而保留英文。"
-        "但专名与品牌名（游戏名、公司名、平台名如 Playstation/Steam/Xbox）保留原文。\n"
-        "7. 无论原文是何种语言（英语/日语/俄语/意大利语/韩语等），一律翻译为简体中文；"
-        "不得输出英文或其他语言的改写。\n"
-        "8. 每一句都要翻译：除专名、品牌名、按键名外，任何英文单词或短语（包括 "
-        "hello、back、press any key 这类短文本）都必须译为中文，禁止原样回显。\n"
-        "9. 严格对照原文翻译：不得添加原文没有的句子或段落（不得续写、不得自行补全），"
-        "不得改变行数，换行符保持原文形式（\\r\\n 与 \\n 不得相互转换）。\n"
-        "10. 只输出 JSON，不要输出任何其他文字或代码块标记。\n"
-        "11. 全大写且字母间有空格的词（如 * Y A W N *、G A S P、S C O F F）是"
-        "文字化动作/音效表现（角色打哈欠/惊呼/叹息）：翻译为对应的中文动作词或"
-        "拟声词（* 哈欠 *、* 倒吸一口气 *），保留原文的星号与格式标签；"
-        "仅当该词是人名/地名等专名时保留原文。",
+        "1. 原样保留所有占位符与格式标签（如 {0}、{name}、%s、<b>、<color=...>、[b]、\\n），不得增删改序。\n"
+        "2. 全大写文本（字幕、UI 标题、[ S K I P ] 式标签）照常翻译成自然中文，"
+        "不要因原文是大写而保留英文；但专名与品牌名（Playstation/Steam/Xbox 等）保留原文。\n"
+        "3. 除专名、品牌名、按键名外，任何英文单词或短语（含 hello、back、press any key "
+        "等短文本）都必须译为中文，禁止原样回显。\n"
+        "4. 严格对照原文：不得续写、不得自行补全，不得改变行数，"
+        "换行符保持原文形式（\\r\\n 与 \\n 不得相互转换）。\n"
+        "5. 只输出 JSON，不要输出任何其他文字或代码块标记。\n"
+        "6. 全大写且字母间有空格的词（如 * Y A W N *、G A S P、S C O F F）是文字化动作/"
+        "音效表现（打哈欠/惊呼/叹息）：译为中文动作词或拟声词（* 哈欠 *、* 倒吸一口气 *），"
+        "保留原文的星号与格式标签；仅当是人名/地名等专名时保留原文。",
     )
     parts.append(_game_context_rules())
     return "\n".join(parts)
@@ -381,6 +375,17 @@ def build_batch_user_prompt(items: list[dict]) -> str:
             lines.append(
                 "[术语命中] 本条原文包含以下术语，译文必须使用指定译名：" +
                 "；".join(f"{s} → {t}" for s, t in glossary_hits))
+        knowledge_hits = it.get("knowledge_hits")
+        if knowledge_hits:
+            # 2026-08-14 知识检索注入：只注入本条原文命中的知识对照
+            # （match_text 精确命中），不再全量拼 system_prompt——全量
+            # 注入稀释注意力且膨胀上下文（request exceeds context 根因
+            # 之一）。格式与 format_for_prompt 一致（""译名"应译为…"）。
+            lines.append(
+                "[知识命中] 本条原文命中历史特殊文本规则：" +
+                "；".join(
+                    f"“{p}”应译为“{t}”"
+                    for p, t, *_ in knowledge_hits))
         input_tokens = it.get("input_tokens")
         if input_tokens:
             lines.append(

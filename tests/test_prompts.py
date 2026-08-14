@@ -2,11 +2,15 @@ from hanhua.core.models import GameProfile
 from hanhua.core.prompts import build_system_prompt, build_batch_user_prompt
 
 
-def test_system_prompt_includes_profile_and_glossary():
+def test_system_prompt_includes_profile_but_not_full_glossary():
+    """术语/专名不再全量注入 system_prompt（2026-08-14 用户要求「大大
+    精简」：全量 296 条术语 ≈ 2800 tokens 是 request exceeds context
+    根因）——由 BatchTranslator 按条目检索命中注入（glossary_hits /
+    knowledge_hits，见 test_ctx_budget）。"""
     profile = GameProfile(game_name="Echoes", genre="RPG", world_setting="幽谷世界", tone_notes="口语化")
     prompt = build_system_prompt(profile, ["Aria → 艾莉亚（人名）"], known_names=["Aria", "Orin"])
     assert "Echoes" in prompt and "RPG" in prompt and "幽谷世界" in prompt
-    assert "艾莉亚" in prompt and "Aria" in prompt and "Orin" in prompt
+    assert "艾莉亚" not in prompt and "Orin" not in prompt   # 全量块移除
     assert "占位符" in prompt
 
 
@@ -133,12 +137,16 @@ def test_system_prompt_has_localization_role_and_boundaries():
 
 
 def test_system_prompt_has_game_context_ambiguity_rules():
-    """play/resume 等语境词按游戏语境翻译（修复 play→播放、resume→简历）。"""
+    """play/resume 等语境词按游戏语境翻译（修复 play→播放、resume→简历）。
+
+    2026-08-14 精简：20 词压缩为一行「词→核心译名」映射（原格式每条
+    带语境列 ≈ 800 字符 → ≈ 300 字符）。
+    """
     prompt = build_system_prompt(GameProfile(), "")
     assert "游戏语境歧义词" in prompt
-    assert "play（游戏界面/操作）" in prompt
+    assert "play→开始游戏" in prompt
     assert "不是\"播放\"" in prompt
-    assert "resume（游戏界面/操作）" in prompt
+    assert "resume→继续" in prompt
     assert "不是\"简历\"" in prompt
 
 

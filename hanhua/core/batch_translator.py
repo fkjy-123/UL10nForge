@@ -405,8 +405,18 @@ class BatchTranslator:
                  glossary=(), glossary_force=(), cancellation_event=None,
                  agent_memory=None, agent_game: str = "",
                  context_store=None, context_game: str = "",
-                 vector_recall=None):
+                 vector_recall=None, knowledge=None):
         self.client = client
+        # 服务端实际可用上下文（2026-08-14 用户实证：--ctx-size 6144
+        # 实际 2048——llama-server 在 KV 显存不足时启动自动降级
+        # （--parallel 3 → 每槽 6144/3）；客户端按配置组装 prompt 必超
+        # 限被拒。探测一次，组装前按实际预算；探测失败回退配置值。
+        cfg = getattr(client, "config", None)
+        cfg_ctx = int(getattr(cfg, "local_context_size", 0) or 0) or 8192
+        probe = getattr(client, "probe_context_size", None)
+        self.actual_ctx = probe() if callable(probe) else None
+        if not self.actual_ctx or self.actual_ctx <= 0:
+            self.actual_ctx = cfg_ctx
         self.batch_size = max(1, batch_size)
         self.concurrency = max(1, concurrency)
         self.memory = memory
@@ -438,6 +448,11 @@ class BatchTranslator:
         # 向量检索（阶段 4）：相似去重（≥0.95 复用译文）+ 相似召回
         # （≥0.8 注入参考）。服务不可用由 VectorRecall 内部降级为空。
         self.vector_recall = vector_recall
+        # 知识库（KnowledgeBase 实例，2026-08-14 用户要求：按文本检索
+        # 命中注入，不再全量拼 system_prompt——全量注入膨胀上下文且
+        # 稀释注意力；_build_item 按原文 match_text 精确命中才注入）。
+        # 不传（runner/旧调用方）→ 无知识注入，行为与旧版一致。
+        self.knowledge = knowledge
         self.references = merge_translation_references(self.glossary)
         # Q1 语义门对照表。三条件：
         # 1) source 必须内置于参考表（_BUILTIN_UI_EXACT）——用户自定义术语
@@ -1068,6 +1083,12 @@ class BatchTranslator:
         batch = active
         items = [self._build_item(batch, i, context_window) for i in range(len(batch))]
         user = self._build_chat_user_prompt(items)
+        # 实际 ctx 预算（2026-08-14 用户实证：--ctx-size 6144 实际
+        # 2048——KV 显存不足启动自动降级；按配置组装必超限被拒）。
+        # 估算（中文 1 字 ≈ 1.5 token、英文 ≈ 3 字符/token 保守）：
+        # system + user 超 70% ctx → 整批逐条降级（单条 user 显著更短）。
+        if self._prompt_over_budget(self.system_prompt, user):
+            return kept + self._chat_each(batch, context_window)
         try:
             content, usage = self.client.chat(
                 self.system_prompt, [{"role": "user", "content": user}])
@@ -1083,6 +1104,25 @@ class BatchTranslator:
                 self._mark_failed(entry, "invalid_response", raw_output=content)
             return kept + [(e, "", False) for e in batch]
         return kept + self._validate(batch, arr)
+
+    def _prompt_over_budget(self, system: str, user: str) -> bool:
+        """组装前预算检查：system+user 估算 tokens 是否超服务端实际 ctx。
+
+        2026-08-14 用户实证：request (2889 tokens) exceeds context (2048)
+        ——配置 --ctx-size 6144 但 llama-server 因 KV 显存不足自动降级
+        实际 2048（--parallel 3）。估算保守（中文 1.5 token/字、英文
+        3.5 字符/token），上限取实际 ctx 的 70%（留输出与结构余量）——
+        宁可多降级也不发出必被拒的请求。
+        """
+        if not self.actual_ctx or self.actual_ctx <= 0:
+            return False
+        est = 0
+        for text in (system, user):
+            if not text:
+                continue
+            cjk = sum(1 for ch in text if "一" <= ch <= "鿿")
+            est += int(cjk * 1.5 + (len(text) - cjk) / 3.5) + 24
+        return est > self.actual_ctx * 0.7
 
     @staticmethod
     def _obj_key(entry: TextEntry) -> str:
@@ -1202,6 +1242,12 @@ class BatchTranslator:
                 else:
                     user = self._build_chat_user_prompt([
                         self._build_item(batch, i, context_window, single=True)])
+                    # 单条也超预算（system_prompt 本身巨大——全量术语/
+                    # 知识注入场景）→ 明确失败原因 context_overflow，
+                    # 不再笼统 request_error（2026-08-14 实证）
+                    if self._prompt_over_budget(self.system_prompt, user):
+                        self._mark_failed(e, "context_overflow")
+                        return e, "", False
                     content, usage = self.client.chat(
                         self.system_prompt, [{"role": "user", "content": user}])
             except Exception as exc:  # noqa: BLE001
@@ -2264,6 +2310,27 @@ class BatchTranslator:
             if source_term_applies(str(source), e.original)
             and str(target).strip()
         ]
+        # 知识命中（2026-08-14 用户要求：自动检索相关文本再注入，不
+        # 全量拼 prompt）。match_text 按原文精确匹配（内置形态函数 +
+        # 持久库精确原文对照，re.search pattern），只注入 map_to 有值
+        # 的对照（形态规则已在 system_prompt 规则 6/11 覆盖，重复注入
+        # 无益）；上限 3 条防单条膨胀。
+        knowledge_hits: list[tuple[str, str]] = []
+        if self.knowledge is not None:
+            try:
+                for rule in self.knowledge.match_text(e.original):
+                    pattern = str(rule.get("pattern") or "")
+                    map_to = str(rule.get("map_to") or "")
+                    if not pattern or not map_to:
+                        continue
+                    if rule.get("kind") in {"spaced_action",
+                                            "uppercase_action"}:
+                        continue  # 形态识别，非精确对照
+                    knowledge_hits.append((pattern, map_to))
+                    if len(knowledge_hits) >= 3:
+                        break
+            except Exception:  # noqa: BLE001 知识检索故障不阻断翻译
+                pass
         return {"id": _entry_id(e), "text": e.original,
                 "file": e.file_id, "key_path": e.key_path,
                 "role": str(e.meta.get("role", "display")),
@@ -2273,6 +2340,7 @@ class BatchTranslator:
                 "short": len(e.original) <= 12, "budget": budget,
                 "input_tokens": list(interaction_input_tokens(e.original)),
                 "glossary_hits": glossary_hits,
+                "knowledge_hits": knowledge_hits,
                 "ctx_before": list(e.meta.get("ctx_before", [])),
                 "ctx_after": list(e.meta.get("ctx_after", []))}
 

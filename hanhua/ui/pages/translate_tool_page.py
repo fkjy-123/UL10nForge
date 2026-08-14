@@ -232,9 +232,21 @@ class TranslateToolPage(QWidget):
             knowledge.close()
         except Exception:  # noqa: BLE001
             knowledge_lines = []
-        prompt = build_system_prompt(
-            self.state.profile, glossary_lines,
-            known_names=known_names, knowledge_lines=knowledge_lines)
+        # 2026-08-14：build_system_prompt 已精简（角色+规则，不再渲染
+        # 术语/专名/知识全量块——批量翻译按条目检索命中注入）。工具页
+        # 是单条人工翻译且提示词用户可见，保留限量注入：注入块由本方法
+        # 自行拼接（限量 + 预算兜底已在 _default_prompt）
+        prompt = build_system_prompt(self.state.profile, "")
+        if glossary_lines:
+            prompt += "\n【术语表·必须严格遵守】\n" + "\n".join(glossary_lines)
+        if known_names:
+            prompt += ("\n【已确认专名·全游戏保持一致】\n"
+                       + "、".join(known_names[:50]))
+        if knowledge_lines:
+            # format_for_prompt 返回单个多行字符串（非逐条 list）——
+            # 整体追加，不得 join（join 会把整串逐字符拆行）
+            prompt += ("\n【特殊情况规则·优先遵守】\n"
+                       + str(knowledge_lines))
         # 2026-08-14 用户实证 hello/hi 返回原文：问候语是 UI 高频短词，
         # 4B 对超短词默认回显——工具页是裸 chat（无 batch 流程的
         # _GREETING_WORDS 逻辑），靠 prompt 显式约束兜底
