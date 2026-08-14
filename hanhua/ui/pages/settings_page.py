@@ -17,6 +17,7 @@ from hanhua.ui.icons import LineIcon
 from hanhua.ui.design_system import TOKENS
 from hanhua.core.glossary import GlossaryStore
 from hanhua.core.local_model import LocalModelError, discover_model
+from hanhua.core.model_registry import ModelRegistry
 from hanhua.core.translator import create_client
 from hanhua.core.vram import estimate_vram, gpu_memory_info
 from hanhua.ui.app_state import AppState
@@ -44,26 +45,31 @@ class SettingsPage(QWidget):
 
         lay.addWidget(PageHeader(
             "设置",
-            "分类设置中心 · 翻译服务 / 模型与性能 / AI 审核 / 术语库 / 关于",
+            "分类设置中心 · 环境设置 / 字体设置 / 模型与性能 / AI 审核 / 术语库 / 关于",
         ))
 
         # 构建顺序：高级 tab 先建（API tab 的 _load_api_ui/_sync_backend_mode
         # 引用其控件），再按显示顺序 addTab
         advanced_tab = self._build_advanced_tab()
-        api_tab = self._build_api_tab()
+        env_tab = self._build_env_tab()
+        font_tab = self._build_font_tab()
         glossary_tab = self._build_glossary_tab()
         review_tab = self._build_review_tab()
         about_tab = self._build_about_tab()
         self.tabs = QTabWidget()
-        self.tabs.addTab(api_tab, "翻译服务")
+        self.tabs.addTab(env_tab, "环境设置")
+        self.tabs.addTab(font_tab, "字体设置")
         self.tabs.addTab(advanced_tab, "模型与性能")
         self.tabs.addTab(glossary_tab, "术语库")
         self.tabs.addTab(review_tab, "AI 审核")
         self.tabs.addTab(about_tab, "关于")
         for index, icon_name in enumerate(
-                ("rocket", "tool", "database", "shield", "brand")):
+                ("rocket", "pen", "tool", "database", "shield", "brand")):
             self.tabs.setTabIcon(index, QIcon(LineIcon.pixmap(icon_name, 16)))
         self.tabs.tabBar().setVisible(False)  # §66：左侧分类导航切换
+        # 切回环境设置页时刷新四模型状态（端口探测；tabs 在此才创建完成）
+        self.tabs.currentChanged.connect(self._on_env_tab_shown)
+        self._refresh_model_states()
 
         # ── 左侧分类导航（§6.4：分类设置中心，不把所有设置堆一页） ──
         body = QHBoxLayout()
@@ -72,11 +78,12 @@ class SettingsPage(QWidget):
         self.settings_nav.setObjectName("settingsNav")
         self.settings_nav.setFixedWidth(180)
         for title, tab_index, icon_name in (
-                ("翻译服务", 0, "rocket"),
-                ("模型与性能", 1, "tool"),
-                ("AI 审核", 3, "shield"),
-                ("术语库", 2, "database"),
-                ("关于", 4, "brand")):
+                ("环境设置", 0, "rocket"),
+                ("字体设置", 1, "pen"),
+                ("模型与性能", 2, "tool"),
+                ("AI 审核", 4, "shield"),
+                ("术语库", 3, "database"),
+                ("关于", 5, "brand")):
             item = QListWidgetItem(
                 QIcon(LineIcon.pixmap(icon_name, 16)), title)
             item.setData(Qt.UserRole, tab_index)
@@ -97,6 +104,7 @@ class SettingsPage(QWidget):
         body.addWidget(self._build_status_card())
         lay.addLayout(body, 1)
         state.settingsChanged.connect(self._refresh_status_card)
+        state.settingsChanged.connect(self._refresh_vram_estimates)
         self._refresh_status_card()
 
     # ── 右侧实时状态卡（§6.4） ────────────────────────────
@@ -299,25 +307,47 @@ class SettingsPage(QWidget):
         root.addWidget(right, 5)
         return tab
 
-    # ── API 配置 ──
-    def _build_api_tab(self) -> QWidget:
+    # ── 环境设置（四模型管理 + 在线 API 切换，2026-08-14 重构） ────
+    # 本地模式：四模型卡片（启动/停止 + GPU/CPU 选择 + 状态）；切换
+    # 在线 API 才出现 Base URL / Key / 模型表单。选择持久化到
+    # SettingsStore.model_runtime，启动时按 kind 应用。
+    _MODEL_CARDS = (
+        # (kind, 显示名, 端口, 模型线索, 描述)
+        ("translate", "翻译模型", 8080, "hy-mt2", "Hy-MT2-1.8B —— 翻译主模型"),
+        ("review", "语义审核", 8081, "qwen3.5-4b", "Qwen3.5-4B —— 四级判定 + 反馈重译"),
+        ("rerank", "语境重排", 8082, "reranker", "Qwen3-Reranker-0.6B —— 语料相关度排序"),
+        ("embed", "向量检索", 8083, "embedding", "Qwen3-Embedding-0.6B —— 语境记忆检索"),
+    )
+    _GPU_LAYERS_BY_CHOICE = {"auto": -1, "cpu": 0, "gpu": 999}
+
+    def _build_env_tab(self) -> QWidget:
         tab = QWidget()
         root = QHBoxLayout(tab)
         root.setContentsMargins(28, 24, 28, 18)
         root.setSpacing(24)
 
-        # 左 4：表单（表单 + 独立「中文字体档位」小设置卡片，见下方）
+        # 左 6：模式切换 + 在线表单 + 四模型卡片
         left = QWidget()
         left_lay = QVBoxLayout(left)
         left_lay.setContentsMargins(0, 0, 0, 0)
-        left_lay.setSpacing(18)
-        form = QFormLayout()
-        form.setContentsMargins(0, 0, 0, 0)
-        form.setSpacing(14)
-        left_lay.addLayout(form)
+        left_lay.setSpacing(14)
+        mode_row = QHBoxLayout()
+        mode_row.setSpacing(10)
+        mode_tag = QLabel("运行模式")
+        mode_tag.setProperty("class", "metricLabel")
+        mode_row.addWidget(mode_tag)
         self.backend_mode = QComboBox()
+        self.backend_mode.addItem("本地 llama.cpp（四模型离线）", "local")
         self.backend_mode.addItem("在线 API", "api")
-        self.backend_mode.addItem("本地 Hy-MT2（llama.cpp）", "local")
+        self.backend_mode.setMinimumHeight(40)
+        mode_row.addWidget(self.backend_mode, 1)
+        left_lay.addLayout(mode_row)
+
+        # 在线 API 表单（切换为在线 API 才显示）
+        self.mode_api_widget = QWidget()
+        api_form = QFormLayout(self.mode_api_widget)
+        api_form.setContentsMargins(0, 6, 0, 0)
+        api_form.setSpacing(14)
         self.api_provider = QComboBox()
         self.api_provider.addItem("OpenAI 兼容", "openai")
         self.api_provider.addItem("Anthropic 原生", "anthropic")
@@ -328,24 +358,404 @@ class SettingsPage(QWidget):
         self.api_key.setPlaceholderText("sk-…")
         self.api_model = QLineEdit()
         self.api_model.setPlaceholderText("如 gpt-4o / claude-sonnet-4 / deepseek-chat")
-        for field in (self.backend_mode, self.api_provider, self.api_url,
-                      self.api_key, self.api_model):
-            field.setMinimumHeight(44)
-        form.addRow("翻译后端", self.backend_mode)
-        form.addRow("提供商", self.api_provider)
-        form.addRow("Base URL", self.api_url)
-        form.addRow("API Key", self.api_key)
-        form.addRow("模型", self.api_model)
-        row = QHBoxLayout()
+        for field in (self.api_provider, self.api_url, self.api_key,
+                      self.api_model):
+            field.setMinimumHeight(42)
+        api_form.addRow("提供商", self.api_provider)
+        api_form.addRow("Base URL", self.api_url)
+        api_form.addRow("API Key", self.api_key)
+        api_form.addRow("模型", self.api_model)
+        api_btns = QHBoxLayout()
         self.test_btn = QPushButton("测试连接")
         self.test_btn.setProperty("primary", True)
         self.save_btn = QPushButton("保存")
-        row.addWidget(self.test_btn)
-        row.addWidget(self.save_btn)
+        api_btns.addWidget(self.test_btn)
+        api_btns.addWidget(self.save_btn)
+        api_btns.addStretch(1)
+        api_form.addRow("", api_btns)
+        left_lay.addWidget(self.mode_api_widget)
+
+        # 本地模式：四模型卡片（启动/停止 + GPU/CPU 选择 + 状态）
+        self.mode_local_widget = QWidget()
+        local_lay = QVBoxLayout(self.mode_local_widget)
+        local_lay.setContentsMargins(0, 4, 0, 0)
+        local_lay.setSpacing(10)
+        # 总览行：可用显存 / 系统内存（直观对照卡片占用）
+        self.vram_overview = QLabel("可用显存 — · 内存 —")
+        self.vram_overview.setProperty("class", "subtitle")
+        self.vram_overview.setTextFormat(Qt.RichText)
+        local_lay.addWidget(self.vram_overview)
+        self.model_cards: dict[str, dict] = {}
+        for kind, title, port, hint, desc in self._MODEL_CARDS:
+            local_lay.addWidget(self._build_model_card(
+                kind, title, port, hint, desc))
+        local_lay.addStretch(1)
+        left_lay.addWidget(self.mode_local_widget)
+        left_lay.addStretch(1)
+        root.addWidget(left, 6)
+
+        # 右 4：连接状态与说明
+        right = QWidget()
+        right_lay = QVBoxLayout(right)
+        right_lay.setContentsMargins(0, 0, 0, 0)
+        right_lay.setSpacing(10)
+        status_head = QLabel("连接状态")
+        status_head.setProperty("class", "pageTitle")
+        self.local_status = QLabel("本地服务：未启动")
+        self.local_status.setProperty("class", "subtitle")
+        self.local_status.setWordWrap(True)
+        self.stop_local_btn = QPushButton("停止全部本地模型")
+        self.stop_local_btn.setProperty("danger", True)
+        self.stop_local_btn.setMinimumHeight(44)
+        self.env_hint = QLabel("")
+        self.env_hint.setProperty("class", "subtitle")
+        self.env_hint.setWordWrap(True)
+        right_lay.addWidget(status_head)
+        right_lay.addWidget(self.local_status)
+        right_lay.addSpacing(4)
+        right_lay.addWidget(self.stop_local_btn)
+        right_lay.addSpacing(10)
+        right_lay.addWidget(self.env_hint)
+        right_lay.addStretch(1)
+        root.addWidget(right, 4)
+
+        self._load_api_ui()
+        self.backend_mode.currentIndexChanged.connect(self._sync_backend_mode)
+        self.stop_local_btn.clicked.connect(self._stop_all_models)
+        self.test_btn.clicked.connect(self.test_connection)
+        self.save_btn.clicked.connect(self._save_api)
+        self._sync_backend_mode()
+        self._refresh_vram_estimates()
+        return tab
+
+    def _build_model_card(self, kind: str, title: str, port: int,
+                          hint: str, desc: str) -> QWidget:
+        """单个模型的管理卡片：名称 / 模型文件 / 端口 / 运行方式 / 状态 /
+        启动停止按钮。rerank/embed 固定 CPU（fixed_cpu 硬约束）不可改。"""
+        card = QFrame()
+        card.setObjectName("modelCard")
+        lay = QVBoxLayout(card)
+        lay.setContentsMargins(14, 10, 14, 10)
+        lay.setSpacing(6)
+
+        head = QHBoxLayout()
+        head.setSpacing(8)
+        name = QLabel(title)
+        name.setProperty("class", "cardTitle")
+        head.addWidget(name)
+        model_label = QLabel(desc)
+        model_label.setProperty("class", "subtitle")
+        model_label.setToolTip(hint)
+        head.addWidget(model_label, 1)
+        self.model_cards[kind] = {
+            "frame": card, "status": None, "btn": None, "combo": None,
+            "port": port, "hint": hint,
+        }
+        head.addStretch(1)
+        lay.addLayout(head)
+
+        row = QHBoxLayout()
+        row.setSpacing(10)
+        port_label = QLabel(f"端口 {port}")
+        port_label.setProperty("class", "metricLabel")
+        row.addWidget(port_label)
+        fixed_cpu = kind in ("rerank", "embed")
+        combo = QComboBox()
+        combo.setObjectName(f"modelRuntime_{kind}")
+        if fixed_cpu:
+            combo.addItem("固定 CPU", "auto")
+            combo.setToolTip("轻量任务固定 CPU（0.6B 毫秒级，不上 GPU）")
+        else:
+            combo.addItem("自动（推荐）", "auto")
+            combo.addItem("CPU", "cpu")
+            combo.addItem("GPU", "gpu")
+            combo.setToolTip(
+                "自动：优先 GPU，显存放不下时把部分层分到 CPU；"
+                "GPU：全层强制用显存；CPU：纯处理器运行")
+        combo.setMinimumHeight(32)
+        choice = self.state.settings.model_runtime_choice(kind)
+        combo.setCurrentIndex(max(0, combo.findData(choice)))
+        combo.currentIndexChanged.connect(
+            lambda _i, k=kind: self._on_runtime_choice(k))
+        combo.setEnabled(not fixed_cpu)
+        self.model_cards[kind]["combo"] = combo
+        row.addWidget(combo)
+        # 预估占用：GPU 全层 / CPU 内存双值，当前选择高亮（直观调节）
+        vram = QLabel("预估 —")
+        vram.setProperty("class", "subtitle")
+        vram.setTextFormat(Qt.RichText)
+        row.addWidget(vram)
         row.addStretch(1)
-        form.addRow("", row)
-        # ── 中文字体档位（独立小设置卡片，2026-08-14：从翻译服务表单
-        # 拆出——三档挤在 API 表单里「粗」显示不全）──
+        status = QLabel("状态：未启动")
+        status.setProperty("class", "subtitle")
+        row.addWidget(status)
+        btn = QPushButton("启动")
+        btn.setProperty("primary", True)
+        btn.setMinimumHeight(32)
+        btn.clicked.connect(lambda _c, k=kind: self._toggle_model(k))
+        row.addWidget(btn)
+        self.model_cards[kind]["status"] = status
+        self.model_cards[kind]["btn"] = btn
+        self.model_cards[kind]["vram"] = vram
+        lay.addLayout(row)
+        return card
+
+    def _on_runtime_choice(self, kind: str) -> None:
+        """运行方式选择持久化；运行中切换 → 下次重启生效（签名含
+        gpu_layers，重新启动即按新选择运行）。"""
+        card = self.model_cards[kind]
+        choice = card["combo"].currentData()
+        self.state.settings.set_model_runtime(kind, choice)
+        self._refresh_vram_estimates()   # 高亮切换到当前选择
+        if card["status"].text() != "状态：未启动":
+            Toast.show(
+                self, f"{self._model_title(kind)}：运行方式已保存，"
+                      f"重新启动按 {choice} 运行", "success")
+
+    @staticmethod
+    def _model_title(kind: str) -> str:
+        return {"translate": "翻译模型", "review": "语义审核",
+                "rerank": "语境重排", "embed": "向量检索"}.get(kind, kind)
+
+    def _model_port(self, kind: str) -> int:
+        card = self.model_cards.get(kind)
+        return card["port"] if card else 8080
+
+    @staticmethod
+    def _probe_port(port: int) -> bool:
+        """探测本地模型端口（真实网络探测：反映包括外部进程的实例）。"""
+        try:
+            import httpx
+            return httpx.get(
+                f"http://127.0.0.1:{port}/health", timeout=1.5,
+                trust_env=False, verify=False).status_code == 200
+        except Exception:  # noqa: BLE001 - 未启动/探测失败 → 未运行
+            return False
+
+    def _refresh_model_states(self) -> None:
+        for kind, card in self.model_cards.items():
+            running = self._probe_port(card["port"])
+            card["status"].setText(
+                f"状态：运行中 · 端口 {card['port']}" if running
+                else "状态：未启动")
+            card["btn"].setText("停止" if running else "启动")
+            card["btn"].setProperty(
+                "danger", running)
+            card["btn"].setProperty("primary", not running)
+
+    def _on_env_tab_shown(self, index: int) -> None:
+        """切回环境设置页时刷新四模型状态（index 0 恒为环境设置）。"""
+        if index == 0:
+            self._refresh_model_states()
+
+    def _refresh_vram_estimates(self) -> None:
+        """四卡片占用预估 + 顶部可用显存/内存总览（直观对照调节）。
+
+        触发：combo 运行方式切换、模式切换、高级设置保存（ctx/并发
+        变化）、设置页构建完成。
+        """
+        try:
+            total, free = gpu_memory_info()
+            overview = f"可用显存 <b>{free:.1f} / {total:.1f} GB</b>"
+        except Exception:  # noqa: BLE001 - 无 GPU 信息显示占位
+            overview = "可用显存 —"
+        try:
+            from hanhua.core.hardware_planner import probe_hardware
+            ram = probe_hardware().ram_gb
+            if ram:
+                overview += f" · 内存 <b>{ram:.1f} GB</b>"
+        except Exception:  # noqa: BLE001
+            pass
+        self.vram_overview.setText(overview)
+        for kind in self.model_cards:
+            self.model_cards[kind]["vram"].setText(
+                self._vram_estimate_text(kind))
+
+    def _vram_estimate_text(self, kind: str) -> str:
+        """单卡预估：GPU 全层显存 / CPU 内存双值，当前选择加粗高亮。
+
+        GPU 值 = 权重 + KV + 计算缓冲（llama.cpp 全层时 KV/计算都在
+        显存）；CPU 值 = 权重 + KV（CPU 推理驻内存，无计算缓冲）。
+        部分卸载（auto 中间态）介于两端之间，由 llama.cpp 实际分配。
+        """
+        card = self.model_cards.get(kind)
+        if card is None:
+            return "预估 —"
+        try:
+            spec = ModelRegistry(self.state.resource_dir).by_kind(kind)
+            ctx = (int(self.state.api.local_context_size)
+                   if kind == "translate" else spec.default_ctx)
+            slots = (max(1, int(self.state.api.local_concurrency) or 1)
+                     if kind == "translate" else 1)
+            est = estimate_vram(spec.path, context_size=ctx, slots=slots)
+        except (LocalModelError, OSError, ValueError, KeyError):
+            return "预估 —"
+        if not est:
+            return "预估 —"
+        if est.model_gb <= 0:
+            return "预估 —（模型缺失）"
+        gpu = est.total_gb
+        cpu = est.model_gb + est.kv_gb
+        choice = card["combo"].currentData() if card["combo"] else "auto"
+        if choice == "cpu":
+            gpu_html, cpu_html = f"{gpu:.1f}G", f"<b>{cpu:.1f}G</b>"
+        else:
+            gpu_html, cpu_html = f"<b>{gpu:.1f}G</b>", f"{cpu:.1f}G"
+        return (f"预估 GPU <span style='color:{TOKENS.primary}'>"
+                f"{gpu_html}</span>"
+                f" / CPU <span style='color:#8b949e'>{cpu_html}</span>")
+
+    def _toggle_model(self, kind: str) -> None:
+        card = self.model_cards[kind]
+        if self._probe_port(card["port"]):
+            self._stop_model(kind)
+        else:
+            self._start_model(kind)
+
+    def _start_model(self, kind: str) -> None:
+        card = self.model_cards[kind]
+        choice = card["combo"].currentData()
+        card["status"].setText("状态：启动中…")
+        card["btn"].setEnabled(False)
+        worker = Worker(self._start_model_worker, kind, choice)
+        worker.signals.finished.connect(self._on_model_started)
+        worker.signals.error.connect(self._on_model_error)
+        self._pool.start(worker)
+
+    def _start_model_worker(self, kind: str, choice: str):
+        """后台启动对应模型服务（与翻译/审核/重排/嵌入正式链路同源）。"""
+        if kind == "translate":
+            cfg = replace(self.state.api)
+            cfg.mode = "local"
+            cfg.local_gpu_layers = self._GPU_LAYERS_BY_CHOICE.get(choice, -1)
+            runtime = self.state.local_model.ensure_running(cfg)
+            return {"kind": kind, "port": runtime.port}
+        if kind == "review":
+            from hanhua.core.review_server import ReviewModelService
+            svc = ReviewModelService(self.state.resource_dir)
+            info = svc.ensure_running(gpu_choice=choice)
+            return {"kind": kind, "port": int(info["port"])}
+        if kind == "rerank":
+            from hanhua.core.rerank_gate import RerankService
+            svc = RerankService(self.state.resource_dir)
+            info = svc.ensure_running()
+            return {"kind": kind, "port": int(info["port"])}
+        if kind == "embed":
+            from hanhua.core.vector_store import EmbeddingService
+            svc = EmbeddingService(self.state.resource_dir)
+            info = svc.ensure_running()
+            return {"kind": kind, "port": int(info["port"])}
+        raise RuntimeError(f"未知模型：{kind}")
+
+    def _on_model_started(self, result: dict):
+        kind = result.get("kind", "") if isinstance(result, dict) else ""
+        if not kind:
+            return
+        card = self.model_cards.get(kind)
+        if card is None:
+            return
+        card["btn"].setEnabled(True)
+        card["status"].setText(f"状态：运行中 · 端口 {card['port']}")
+        card["btn"].setText("停止")
+        card["btn"].setProperty("danger", True)
+        self._refresh_env_status()
+        Toast.show(self, f"{self._model_title(kind)} 已启动", "success")
+
+    def _on_model_error(self, err: str):
+        # Worker.error 信号不带 kind → 从启动中状态恢复（置灰按钮）
+        for card in self.model_cards.values():
+            if not card["btn"].isEnabled():
+                card["btn"].setEnabled(True)
+                card["status"].setText("状态：启动失败")
+        self._refresh_env_status()
+        Toast.show(self, f"模型启动失败：{err}", "error")
+
+    def _stop_model(self, kind: str) -> None:
+        card = self.model_cards[kind]
+        card["status"].setText("状态：停止中…")
+        card["btn"].setEnabled(False)
+        worker = Worker(self._stop_model_worker, kind)
+        worker.signals.finished.connect(self._on_model_stopped)
+        worker.signals.error.connect(self._on_model_error)
+        self._pool.start(worker)
+
+    def _stop_model_worker(self, kind: str):
+        from hanhua.core.runtime_coordinator import get_coordinator
+        if kind == "translate":
+            self.state.local_model.stop()
+        elif kind == "review":
+            from hanhua.core.review_server import ReviewModelService
+            ReviewModelService(self.state.resource_dir).stop()
+            get_coordinator(self.state.resource_dir).stop("review")
+        elif kind == "rerank":
+            from hanhua.core.rerank_gate import RerankService
+            RerankService(self.state.resource_dir).stop()
+        elif kind == "embed":
+            from hanhua.core.vector_store import EmbeddingService
+            EmbeddingService(self.state.resource_dir).stop()
+        return {"kind": kind}
+
+    def _on_model_stopped(self, result: dict):
+        kind = result.get("kind", "")
+        card = self.model_cards.get(kind)
+        if card is not None:
+            card["btn"].setEnabled(True)
+            card["status"].setText("状态：未启动")
+            card["btn"].setText("启动")
+            card["btn"].setProperty("primary", True)
+            card["btn"].setProperty("danger", False)
+        self._refresh_env_status()
+        if kind:
+            Toast.show(self, f"{self._model_title(kind)} 已停止", "success")
+
+    def _stop_all_models(self):
+        self.stop_local_btn.setEnabled(False)
+        self.local_status.setText("本地服务：正在停止全部模型…")
+        worker = Worker(self._stop_all_worker)
+        worker.signals.finished.connect(self._on_all_stopped)
+        worker.signals.error.connect(self._on_local_stop_error)
+        self._pool.start(worker)
+
+    def _stop_all_worker(self):
+        from hanhua.core.runtime_coordinator import stop_all_coordinators
+        self.state.local_model.stop()
+        return {"count": stop_all_coordinators()}
+
+    def _on_all_stopped(self, _result):
+        self.stop_local_btn.setEnabled(True)
+        self.local_status.setText("本地服务：已全部停止")
+        self._refresh_model_states()
+        self.state.settingsChanged.emit()
+        Toast.show(self, "全部本地模型已停止", "success")
+
+    def _refresh_env_status(self):
+        """右列连接状态卡：汇总四个模型运行数。"""
+        running = [k for k in self.model_cards
+                   if self._probe_port(self.model_cards[k]["port"])]
+        if not running:
+            self.local_status.setText("本地服务：未启动")
+        else:
+            names = "、".join(self._model_title(k) for k in running)
+            self.local_status.setText(f"本地服务：运行中 · {names}")
+        total, free = 0.0, 0.0
+        try:
+            total, free = gpu_memory_info()
+            self.status_vram.setText(f"{free:.1f} / {total:.1f} GB 可用")
+        except Exception:  # noqa: BLE001 无 GPU 信息时显示占位
+            pass
+        self.state.settingsChanged.emit()
+
+    # ── 字体设置（2026-08-14 从翻译服务表单拆出独立页） ────────────
+    def _build_font_tab(self) -> QWidget:
+        tab = QWidget()
+        root = QHBoxLayout(tab)
+        root.setContentsMargins(28, 24, 28, 18)
+        root.setSpacing(24)
+
+        left = QWidget()
+        lay = QVBoxLayout(left)
+        lay.setContentsMargins(0, 0, 0, 0)
+        lay.setSpacing(12)
         font_group = QGroupBox("中文字体档位")
         f_lay = QVBoxLayout(font_group)
         f_lay.setContentsMargins(16, 14, 16, 14)
@@ -366,45 +776,32 @@ class SettingsPage(QWidget):
         self.font_save_btn.setProperty("primary", True)
         self.font_save_btn.setMinimumHeight(40)
         f_lay.addWidget(self.font_save_btn)
-        left_lay.addWidget(font_group)
-        left_lay.addStretch(1)
+        lay.addWidget(font_group)
+        lay.addStretch(1)
         root.addWidget(left, 4)
 
-        # 右 6：连接状态与本地服务
         right = QWidget()
         right_lay = QVBoxLayout(right)
         right_lay.setContentsMargins(0, 0, 0, 0)
         right_lay.setSpacing(10)
-        status_head = QLabel("连接状态")
-        status_head.setProperty("class", "pageTitle")
-        self.local_status = QLabel("本地服务：未启动")
-        self.local_status.setProperty("class", "subtitle")
-        self.local_status.setWordWrap(True)
-        self.stop_local_btn = QPushButton("停止本地服务")
-        self.stop_local_btn.setProperty("danger", True)
-        self.stop_local_btn.setMinimumHeight(44)
-        hint = QLabel(
-            "本地模式（Hy-MT2）离线运行，数据不出本机；\n"
-            "在线 API 模式需要可用的 Base URL 与 Key。\n"
-            "「启动并测试」会先保存配置，再验证连通性。")
-        hint.setProperty("class", "subtitle")
-        hint.setWordWrap(True)
-        right_lay.addWidget(status_head)
-        right_lay.addWidget(self.local_status)
-        right_lay.addSpacing(4)
-        right_lay.addWidget(self.stop_local_btn)
-        right_lay.addSpacing(10)
-        right_lay.addWidget(hint)
+        head = QLabel("字体替换说明")
+        head.setProperty("class", "pageTitle")
+        font_hint = QLabel(
+            "社区方案（XUnity）遇到的口口乱码，本工具走「替换字体 + "
+            "完整性验证」链：写入游戏的字体需通过逐码点验证（所需字形"
+            " → 字符表 → 字形表 → 图集 → 回退链），缺失码点如实报告"
+            "而非静默替换——防止「汉化了但全是口口」的假成功。\n\n"
+            "档位影响显示粗细：思源黑体细 / 中 / 粗三档 SDF，"
+            "写回时按所选档位替换 TMP 字体。")
+        font_hint.setProperty("class", "subtitle")
+        font_hint.setWordWrap(True)
+        right_lay.addWidget(head)
+        right_lay.addWidget(font_hint)
         right_lay.addStretch(1)
         root.addWidget(right, 6)
 
-        self._load_api_ui()
-        self.backend_mode.currentIndexChanged.connect(self._sync_backend_mode)
-        self.stop_local_btn.clicked.connect(self._stop_local)
-        self.test_btn.clicked.connect(self.test_connection)
-        self.save_btn.clicked.connect(self._save_api)
+        self._load_font_weight_ui()
         self.font_save_btn.clicked.connect(self._save_font_weight)
-        self._sync_backend_mode()
         return tab
 
     def _load_font_weight_ui(self):
@@ -428,7 +825,6 @@ class SettingsPage(QWidget):
 
     def _load_api_ui(self):
         api = self.state.api
-        self._load_font_weight_ui()
         mode_idx = self.backend_mode.findData(api.mode)
         self.backend_mode.setCurrentIndex(max(0, mode_idx))
         idx = self.api_provider.findData(api.provider)
@@ -445,10 +841,11 @@ class SettingsPage(QWidget):
         self._refresh_vram()
 
     def _sync_backend_mode(self):
+        """模式切换：本地 → 显示四模型卡片，隐藏 API 表单；
+        在线 API → 反之。高级设置独立 Tab 联动置灰。"""
         local = self.backend_mode.currentData() == "local"
-        for widget in (self.api_provider, self.api_url, self.api_key,
-                       self.api_model):
-            widget.setEnabled(not local)
+        self.mode_local_widget.setVisible(local)
+        self.mode_api_widget.setVisible(not local)
         self.stop_local_btn.setEnabled(local)
         # 高级设置独立 Tab：本地模式可调，API 模式置灰并提示
         for widget in (self.local_concurrency, self.local_ctx, self.local_batch,
@@ -456,6 +853,17 @@ class SettingsPage(QWidget):
             widget.setEnabled(local)
         self.advanced_mode_hint.setVisible(not local)
         self.test_btn.setText("启动并测试" if local else "测试连接")
+        self.env_hint.setText(
+            "本地模式：四模型全部离线运行，数据不出本机。"
+            "「自动」优先 GPU，显存放不下时自动把部分层分到 CPU；"
+            "「GPU」强制全层用显存，「CPU」则只走处理器。\n\n"
+            "在线 API：填写 Base URL / Key / 模型后「测试连接」验证。"
+            "切换回本地模式后，API 配置不参与运行。"
+            if local else
+            "在线 API 模式：翻译与审核走云端模型"
+            "（OpenAI 兼容 / Anthropic 原生）。\n\n"
+            "本地四模型卡片在切换回「本地 llama.cpp」后可用；"
+            "在线模式下已启动的本地模型不会被自动停止。")
         self._refresh_vram()
 
     # ── 高级设置（本地模型） ──
@@ -576,26 +984,11 @@ class SettingsPage(QWidget):
             self.vram_label.setText(f"显存预估：{head} ≈ {est.total_gb:.2f}G")
             self.vram_label.setStyleSheet("")
 
-    def _stop_local(self):
-        self.stop_local_btn.setEnabled(False)
-        self.local_status.setText("本地服务：正在停止…")
-        worker = Worker(self.state.local_model.stop)
-        worker.signals.finished.connect(self._on_local_stopped)
-        worker.signals.error.connect(self._on_local_stop_error)
-        self._pool.start(worker)
-
-    def _on_local_stopped(self, _result):
-        self.stop_local_btn.setEnabled(
-            self.backend_mode.currentData() == "local")
-        self.local_status.setText("本地服务：已停止")
-        self.state.settingsChanged.emit()
-        Toast.show(self, "本地模型服务已停止", "success")
-
     def _on_local_stop_error(self, err: str):
-        self.stop_local_btn.setEnabled(
-            self.backend_mode.currentData() == "local")
+        self.stop_local_btn.setEnabled(True)
         self.local_status.setText("本地服务：停止失败")
-        Toast.show(self, f"停止本地服务失败：{err}", "error")
+        self._refresh_model_states()
+        Toast.show(self, f"停止本地模型失败：{err}", "error")
 
     def _config_from_form(self):
         api = replace(self.state.api)

@@ -600,6 +600,19 @@ QFrame#statusCard {{
     border-left: 3px solid {INFO};
     border-radius: {RADIUS_CARD}px;
 }}
+QFrame#modelCard {{
+    background: {PANEL};
+    border: 1px solid {BORDER};
+    border-radius: {RADIUS_CARD}px;
+}}
+QFrame#modelCard:hover {{
+    border: 1px solid {BORDER_STRONG};
+}}
+QLabel[class="cardTitle"] {{
+    color: {TEXT};
+    font-weight: 600;
+    font-size: 13px;
+}}
 """
 
 

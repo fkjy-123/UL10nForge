@@ -41,3 +41,61 @@ def test_local_model_config_defaults_and_roundtrip(tmp_path):
     loaded = SettingsStore(tmp_path / "settings.json")
     loaded.load()
     assert loaded.api == store.api
+
+
+# ── 四模型运行方式（环境设置页 model_runtime 持久化） ───────────
+
+def test_model_runtime_choice_defaults_to_auto(tmp_path):
+    store = SettingsStore(tmp_path / "settings.json")
+    for kind in ("translate", "review", "rerank", "embed"):
+        assert store.model_runtime_choice(kind) == "auto"
+
+
+def test_model_runtime_set_and_roundtrip(tmp_path):
+    store = SettingsStore(tmp_path / "settings.json")
+    store.set_model_runtime("translate", "gpu")
+    store.set_model_runtime("review", "cpu")
+    store.save()
+
+    loaded = SettingsStore(tmp_path / "settings.json")
+    loaded.load()
+    assert loaded.model_runtime_choice("translate") == "gpu"
+    assert loaded.model_runtime_choice("review") == "cpu"
+    assert loaded.model_runtime_choice("embed") == "auto"
+
+
+def test_model_runtime_auto_pops_entry(tmp_path):
+    store = SettingsStore(tmp_path / "settings.json")
+    store.set_model_runtime("translate", "gpu")
+    assert "translate" in store.model_runtime
+    store.set_model_runtime("translate", "auto")
+    assert "translate" not in store.model_runtime
+    assert store.model_runtime_choice("translate") == "auto"
+
+
+def test_model_runtime_fixed_cpu_kinds_ignored(tmp_path):
+    """rerank/embed 固定 CPU（fixed_cpu 硬约束）：写入被忽略，恒为 auto。"""
+    store = SettingsStore(tmp_path / "settings.json")
+    store.set_model_runtime("rerank", "gpu")
+    store.set_model_runtime("embed", "cpu")
+    store.save()
+    assert store.model_runtime == {}
+    loaded = SettingsStore(tmp_path / "settings.json")
+    loaded.load()
+    assert loaded.model_runtime_choice("rerank") == "auto"
+    assert loaded.model_runtime_choice("embed") == "auto"
+
+
+def test_model_runtime_ignores_unknown_kind_and_choice(tmp_path):
+    store = SettingsStore(tmp_path / "settings.json")
+    store.set_model_runtime("nonsense", "gpu")     # 未知 kind 忽略
+    store.set_model_runtime("translate", "turbo")  # 未知取值忽略
+    assert store.model_runtime == {}
+    # load 端同样过滤（手写脏 JSON）
+    (tmp_path / "settings.json").write_text(
+        '{"model_runtime": {"translate": "gpu", "review": "banana", '
+        '"evil": "cpu"}}', encoding="utf-8")
+    loaded = SettingsStore(tmp_path / "settings.json")
+    loaded.load()
+    assert loaded.model_runtime_choice("translate") == "gpu"
+    assert loaded.model_runtime_choice("review") == "auto"

@@ -404,16 +404,18 @@ def test_settings_backend_switch_enables_local_fields(qapp, tmp_path):
     from hanhua.ui.pages.settings_page import SettingsPage
     page = SettingsPage(_state(tmp_path), _RecordingWindow())
 
-    # 默认 API 模式：本地操作禁用
+    # 默认 API 模式：API 表单可见、本地卡片隐藏
     assert page.backend_mode.currentData() == "api"
     assert not page.stop_local_btn.isEnabled()
-    assert page.api_url.isEnabled()
+    assert page.mode_api_widget.isHidden() is False
+    assert page.mode_local_widget.isHidden() is True
 
-    # 切到本地：本地操作启用，API 字段禁用
+    # 切到本地：四模型卡片可见，API 表单隐藏（2026-08-14 重构语义）
     page.backend_mode.setCurrentIndex(
         page.backend_mode.findData("local"))
     assert page.stop_local_btn.isEnabled()
-    assert not page.api_url.isEnabled()
+    assert page.mode_local_widget.isHidden() is False
+    assert page.mode_api_widget.isHidden() is True
     assert page.test_btn.text() == "启动并测试"
 
 
@@ -432,10 +434,12 @@ def test_settings_nav_switches_tabs(qapp, tmp_path):
     page = SettingsPage(_state(tmp_path), _RecordingWindow())
     assert not page.tabs.tabBar().isVisible()
     assert page.tabs.currentIndex() == 0
-    page.settings_nav.setCurrentRow(2)  # AI 审核
-    assert page.tabs.currentIndex() == 3
-    page.settings_nav.setCurrentRow(3)  # 术语表
+    # 2026-08-14 重构：环境/字体/模型与性能/术语库/AI审核/关于 6 页，
+    # 导航行 2 = 模型与性能(2)、行 3 = AI 审核(4)
+    page.settings_nav.setCurrentRow(2)
     assert page.tabs.currentIndex() == 2
+    page.settings_nav.setCurrentRow(3)
+    assert page.tabs.currentIndex() == 4
 
 
 def test_settings_review_strategy_persists(qapp, tmp_path):

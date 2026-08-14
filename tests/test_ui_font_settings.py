@@ -78,9 +78,9 @@ def test_font_settings_ui_removed_and_default_config_intact(
     state = _state(tmp_path)
     page = SettingsPage(state, _Window())
 
-    assert page.tabs.count() == 5
-    assert [page.tabs.tabText(i) for i in range(5)] == [
-        "翻译服务", "模型与性能", "术语库", "AI 审核", "关于"]
+    assert page.tabs.count() == 6
+    assert [page.tabs.tabText(i) for i in range(6)] == [
+        "环境设置", "字体设置", "模型与性能", "术语库", "AI 审核", "关于"]
     assert not hasattr(page, "font_enabled")          # 旧字体开关已移除
     assert hasattr(page, "font_save_btn")             # 新档位保存按钮
     assert page.font_medium.isChecked() is True       # 默认中档
@@ -119,7 +119,7 @@ def test_advanced_local_settings_visible_only_in_local_mode_and_refresh_vram(
     page = SettingsPage(state, _Window())
 
     # API 模式：高级设置独立 Tab 可见但置灰
-    assert page.tabs.indexOf(page.advanced_tab) == 1
+    assert page.tabs.indexOf(page.advanced_tab) == 2
     assert page.local_concurrency.isEnabled() is False
     assert not page.advanced_mode_hint.isHidden()   # API 模式显示"仅本地生效"提示
     # 初始值来自配置（默认 local_concurrency=0 自动 / 8192 / 8）
@@ -183,8 +183,8 @@ def test_settings_can_select_and_persist_local_backend_without_api_key(
     )
 
     page.backend_mode.setCurrentIndex(page.backend_mode.findData("local"))
-    assert not page.api_url.isEnabled()
-    assert not page.api_key.isEnabled()
+    assert page.mode_api_widget.isHidden()       # 本地模式隐藏 API 表单
+    assert page.mode_local_widget.isHidden() is False   # 四模型卡片出现
     assert page.stop_local_btn.isEnabled()
 
     page._save_api()
@@ -261,7 +261,7 @@ def test_settings_stop_local_service_runs_off_ui_thread(
     )
     page.backend_mode.setCurrentIndex(page.backend_mode.findData("local"))
 
-    page._stop_local()
+    page._stop_all_models()
 
     assert len(queued) == 1
     assert stopped == []
@@ -269,7 +269,7 @@ def test_settings_stop_local_service_runs_off_ui_thread(
     assert "正在停止" in page.local_status.text()
 
     queued[0].fn()
-    page._on_local_stopped(None)
+    page._on_all_stopped(None)
     assert stopped == [True]
     assert page.stop_local_btn.isEnabled() is True
 
@@ -666,3 +666,205 @@ def test_write_result_shows_coverage_gate_over_font_level(
     # Phase 5：位图注入摘要行（provider/注入/审计/未注入）
     assert "位图注入：provider 1 个（ngui_bmfont）" in log
     assert "注入 0 · 审计 1 · 未注入 1" in log
+
+
+# ── 环境设置页：四模型卡片（2026-08-14 重构） ─────────────────
+
+def test_env_tab_four_model_cards_with_runtime_choices(qapp, tmp_path):
+    """环境设置页含四张模型卡片；translate/review 可选 auto/cpu/gpu，
+    rerank/embed 固定 CPU（fixed_cpu 硬约束）禁用下拉。"""
+    state = _state(tmp_path)
+    page = SettingsPage(state, _Window())
+
+    assert set(page.model_cards) == {"translate", "review", "rerank", "embed"}
+    for kind, card in page.model_cards.items():
+        assert card["btn"] is not None
+        assert card["status"] is not None
+        assert card["combo"] is not None
+    # 运行方式项
+    assert [page.model_cards["translate"]["combo"].itemData(i)
+            for i in range(page.model_cards["translate"]["combo"].count())] \
+        == ["auto", "cpu", "gpu"]
+    assert [page.model_cards["review"]["combo"].itemData(i)
+            for i in range(page.model_cards["review"]["combo"].count())] \
+        == ["auto", "cpu", "gpu"]
+    assert page.model_cards["rerank"]["combo"].count() == 1
+    assert page.model_cards["rerank"]["combo"].itemData(0) == "auto"
+    assert page.model_cards["rerank"]["combo"].isEnabled() is False
+    assert page.model_cards["embed"]["combo"].isEnabled() is False
+    # 卡片控件对象名（可被 UI 测试/自动化定位）
+    assert page.model_cards["translate"]["combo"].objectName() == \
+        "modelRuntime_translate"
+
+
+def test_env_tab_runtime_choice_persists_to_settings(qapp, tmp_path):
+    """切换运行方式 → settings.model_runtime 持久化（含重新加载）。"""
+    state = _state(tmp_path)
+    page = SettingsPage(state, _Window())
+
+    combo = page.model_cards["translate"]["combo"]
+    combo.setCurrentIndex(combo.findData("gpu"))
+    combo = page.model_cards["review"]["combo"]
+    combo.setCurrentIndex(combo.findData("cpu"))
+
+    assert state.settings.model_runtime_choice("translate") == "gpu"
+    assert state.settings.model_runtime_choice("review") == "cpu"
+    loaded = SettingsStore(tmp_path / "settings.json")
+    loaded.load()
+    assert loaded.model_runtime_choice("translate") == "gpu"
+    assert loaded.model_runtime_choice("review") == "cpu"
+
+
+def test_probe_port_reflects_real_http_server(qapp, tmp_path):
+    """端口探测走真实 HTTP（反映包括外部进程的实例）：200 → 运行中。"""
+    state = _state(tmp_path)
+    page = SettingsPage(state, _Window())
+    from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
+    import threading
+
+    class _H(BaseHTTPRequestHandler):
+        def do_GET(self):
+            body = b"ok"
+            self.send_response(200)
+            self.send_header("Content-Length", str(len(body)))
+            self.end_headers()
+            self.wfile.write(body)
+
+        def log_message(self, *args):
+            pass
+
+    server = ThreadingHTTPServer(("127.0.0.1", 0), _H)
+    threading.Thread(target=server.serve_forever, daemon=True).start()
+    try:
+        assert page._probe_port(server.server_address[1]) is True
+        assert page._probe_port(1) is False   # 未监听端口快速失败
+    finally:
+        server.shutdown()
+
+
+def test_start_model_worker_maps_gpu_choice(monkeypatch, tmp_path):
+    """启动 worker：translate 按 auto/cpu/gpu → gpu_layers -1/0/999，
+    走 state.local_model.ensure_running（与正式翻译链路同源）。"""
+    state = _state(tmp_path)
+    page = SettingsPage(state, _Window())
+    runs = []
+    monkeypatch.setattr(
+        state.local_model, "ensure_running",
+        lambda cfg: runs.append(cfg) or SimpleNamespace(port=8080))
+    monkeypatch.setattr(
+        "hanhua.ui.pages.settings_page.gpu_memory_info",
+        lambda: (12.0, 10.0))
+
+    for choice, expect in (("auto", -1), ("cpu", 0), ("gpu", 999)):
+        result = page._start_model_worker("translate", choice)
+        assert result == {"kind": "translate", "port": 8080}
+        cfg = runs[-1]
+        assert cfg.mode == "local"
+        assert cfg.local_gpu_layers == expect
+
+
+def test_start_model_worker_other_kinds(monkeypatch, tmp_path):
+    """review/rerank/embed 走各自服务 ensure_running（同正式链路）。"""
+    state = _state(tmp_path)
+    page = SettingsPage(state, _Window())
+    monkeypatch.setattr(
+        "hanhua.ui.pages.settings_page.gpu_memory_info",
+        lambda: (12.0, 10.0))
+
+    started = {}
+
+    class _ReviewStub:
+        def __init__(self, _app_dir):
+            pass
+
+        def ensure_running(self, gpu_choice=None):
+            started["review"] = gpu_choice
+            return {"port": 8081}
+
+    class _Stub:
+        def __init__(self, _app_dir):
+            pass
+
+        def ensure_running(self):
+            started.setdefault("other", []).append(self)
+            return {"port": 8082}
+
+    monkeypatch.setattr(
+        "hanhua.core.review_server.ReviewModelService", _ReviewStub)
+    svc = page._start_model_worker("review", "cpu")
+    assert svc == {"kind": "review", "port": 8081}
+    assert started["review"] == "cpu"
+
+    monkeypatch.setattr("hanhua.core.rerank_gate.RerankService", _Stub)
+    monkeypatch.setattr(
+        "hanhua.core.vector_store.EmbeddingService",
+        lambda _app_dir: SimpleNamespace(
+            ensure_running=lambda: {"port": 8083}))
+    assert page._start_model_worker("rerank", "auto") == {
+        "kind": "rerank", "port": 8082}
+    assert page._start_model_worker("embed", "auto") == {
+        "kind": "embed", "port": 8083}
+    with pytest.raises(RuntimeError, match="未知模型"):
+        page._start_model_worker("nope", "auto")
+
+
+def test_stop_model_worker_stops_translate_via_local_model(
+        monkeypatch, tmp_path):
+    state = _state(tmp_path)
+    page = SettingsPage(state, _Window())
+    stopped = []
+    monkeypatch.setattr(state.local_model, "stop",
+                        lambda: stopped.append(True))
+    assert page._stop_model_worker("translate") == {"kind": "translate"}
+    assert stopped == [True]
+
+
+def test_env_tab_vram_estimates_show_gpu_cpu_and_highlight_choice(
+        qapp, tmp_path, monkeypatch):
+    """卡片显示 GPU/CPU 双值预估；切换运行方式 → 高亮随选择移动。"""
+    from hanhua.core.vram import VramEstimate
+
+    state = _state(tmp_path)
+    page = SettingsPage(state, _Window())
+    monkeypatch.setattr(
+        "hanhua.ui.pages.settings_page.gpu_memory_info",
+        lambda: (12.0, 10.0))
+    monkeypatch.setattr(
+        "hanhua.ui.pages.settings_page.estimate_vram",
+        lambda _path, context_size=8192, slots=1: VramEstimate(
+            model_gb=3.0, kv_gb=0.5, kv_per_slot_gb=0.5,
+            compute_gb=1.0, total_gb=4.5, layers=36))
+    page._refresh_vram_estimates()
+
+    assert "可用显存" in page.vram_overview.text()
+    assert "10.0 / 12.0" in page.vram_overview.text()
+
+    text = page.model_cards["review"]["vram"].text()
+    assert "GPU" in text and "CPU" in text
+    assert "<b>4.5G</b>" in text        # auto 默认高亮 GPU 全层
+    assert "<b>3.5G</b>" not in text    # CPU 值未加粗
+
+    # 切到 CPU → 高亮移动到 CPU 值
+    combo = page.model_cards["review"]["combo"]
+    combo.setCurrentIndex(combo.findData("cpu"))
+    text = page.model_cards["review"]["vram"].text()
+    assert "<b>3.5G</b>" in text
+    assert "<b>4.5G</b>" not in text
+
+
+def test_env_tab_vram_estimate_shows_missing_model(qapp, tmp_path,
+                                                   monkeypatch):
+    """模型文件缺失（读取不到权重）→ 显示「模型缺失」而非假数值。"""
+    state = _state(tmp_path)
+    page = SettingsPage(state, _Window())
+    monkeypatch.setattr(
+        "hanhua.ui.pages.settings_page.gpu_memory_info",
+        lambda: (12.0, 10.0))
+    monkeypatch.setattr(
+        "hanhua.ui.pages.settings_page.estimate_vram",
+        lambda _path, context_size=8192, slots=1: SimpleNamespace(
+            model_gb=0.0, kv_gb=0.5, kv_per_slot_gb=0.5, compute_gb=1.0,
+            total_gb=1.5))
+    page._refresh_vram_estimates()
+
+    assert "模型缺失" in page.model_cards["review"]["vram"].text()

@@ -108,9 +108,41 @@ def _fits_gpu(spec, *, free_gb: float, ctx: int, parallel: int) -> bool:
     return estimate.total_gb <= free_gb * _GPU_FREE_RATIO
 
 
+def _partial_offload(spec, *, free_gb: float, ctx: int,
+                     parallel: int) -> ModelPlan | None:
+    """全量 GPU 放不下时：按剩余显存可容纳的层数做部分 GPU 卸载。
+
+    2026-08-14 用户要求（自动档语义）：优先 GPU，GPU 塞不下就分部分
+    到 CPU。权重按层线性分摊（embedding/输出层近似忽略），KV cache 与
+    计算缓冲固定占 GPU——llama.cpp 部分卸载时 KV/计算仍在 GPU 侧。
+
+    返回 None 表示放弃（层数未知 / 连 KV+计算都放不下 / 可卸载层数
+    不足 50% —— 收益太小不如干净的全 CPU）。
+    """
+    est = estimate_vram(spec.path, context_size=ctx, slots=parallel)
+    layers = est.layers
+    if layers <= 0 or est.model_gb <= 0:
+        return None
+    per_layer_gb = est.model_gb / layers
+    overhead_gb = est.kv_gb + est.compute_gb
+    budget = free_gb * _GPU_FREE_RATIO
+    if overhead_gb >= budget or per_layer_gb <= 0:
+        return None
+    offload = int((budget - overhead_gb) / per_layer_gb)
+    if offload < layers * 0.5:
+        return None
+    offload = max(1, min(layers, offload))
+    return ModelPlan(
+        name=spec.name, kind=spec.kind, backend="gpu", gpu_layers=offload,
+        ctx=ctx, keep_alive=0, parallel=parallel,
+        rationale=f"全量 GPU 放不下 → 部分卸载 {offload}/{layers} 层到"
+                  f" GPU，其余 CPU（按需加载）")
+
+
 def _gpu_or_cpu(spec, *, free_gb: float, preferred_ctx: int,
                 tight: bool, used_gb: float = 0.0) -> ModelPlan:
-    """按显存预估决定 GPU 方案；放不下时降 ctx/并发，仍不行回退 CPU。
+    """按显存预估决定 GPU 方案；放不下时降 ctx/并发，仍不行部分卸载
+    到 CPU，再不行全 CPU。
 
     tight=True（4~6GB 档）：4B 审核直接降 --ctx-size 4096 / --parallel 1
     （审核单条逐条审，不需并行槽；实施计划 §4.4）。
@@ -134,9 +166,12 @@ def _gpu_or_cpu(spec, *, free_gb: float, preferred_ctx: int,
             name=spec.name, kind=spec.kind, backend="gpu", gpu_layers=-1,
             ctx=4096, keep_alive=-1, parallel=1,
             rationale=f"默认 ctx{preferred_ctx} 超限 → 降 ctx4096/p1 后 GPU 可容纳")
-    # 按需模式再试：模型只在请求期间驻留显存（keep_alive=0），
-    # 计算缓冲仍在但权重换入换出——对放不下常驻但仍可能一次性加载的
-    # 场景（如 4GB 卡边缘）不再尝试，直接 CPU（本地模型失败回退链兜底）
+    # 部分卸载：全量放不下但能容纳 ≥50% 层 → 分部分层到 CPU（优先 GPU）
+    partial = _partial_offload(
+        spec, free_gb=free_gb - used_gb, ctx=ctx, parallel=parallel)
+    if partial is not None:
+        return partial
+    # 仍不行 → 全 CPU（本地模型失败回退链兜底）
     return ModelPlan(
         name=spec.name, kind=spec.kind, backend="cpu", gpu_layers=0,
         ctx=ctx, keep_alive=0, parallel=1,

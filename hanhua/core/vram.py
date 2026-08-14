@@ -17,9 +17,14 @@ _COMPUTE_BUFFER_GB = 1.0
 
 
 def read_gguf_metadata(path: str | Path) -> dict:
-    """读取 GGUF v2/v3 元数据为扁平 dict（数值/字符串/数组值）。"""
+    """读取 GGUF v2/v3 元数据为扁平 dict（数值/字符串/数组值）。
+
+    只读文件头（1MiB 足够覆盖全部 metadata KV）——GGUF 权重区从头部
+    之后才开始，全文件 read_bytes 对大模型（1GB+）白白读入内存。
+    """
     try:
-        raw = Path(path).read_bytes()
+        with open(path, "rb") as fh:
+            raw = fh.read(1 << 20)
     except OSError:
         return {}
     if raw[:4] != b"GGUF" or len(raw) < 24:
@@ -127,6 +132,8 @@ class VramEstimate:
     kv_per_slot_gb: float
     compute_gb: float        # 计算缓冲经验值
     total_gb: float
+    layers: int = 0          # transformer 层数（GGUF block_count；部分
+                             # 卸载按层分摊权重用，几何未知为 0）
 
     def __bool__(self) -> bool:
         return self.total_gb > 0
@@ -160,7 +167,7 @@ def estimate_vram(model_path: str | Path, *, context_size: int = 4096,
     return VramEstimate(
         model_gb=model_gb, kv_gb=kv_gb,
         kv_per_slot_gb=kv_per_slot / 2**30, compute_gb=compute_gb,
-        total_gb=model_gb + kv_gb + compute_gb,
+        total_gb=model_gb + kv_gb + compute_gb, layers=layers,
     )
 
 
