@@ -612,3 +612,55 @@ def test_profile_dialog_roundtrips_prompt_style(qapp):
     assert dialog.result_profile().prompt_style == ""
     prompt = build_system_prompt(dialog.result_profile(), "")
     assert "个性化风格要求" not in prompt
+
+
+# ─────────────────── 2026-08-14 卡死/闪退修复 ───────────────────
+
+class _FakePool:
+    def __init__(self, started):
+        self.started = started
+
+    def start(self, worker):
+        self.started.append(worker)
+
+
+def test_settings_spawn_keeps_worker_reference(qapp, tmp_path):
+    """_spawn 保存 worker 引用防 GC（2026-08-14 闪退修复：局部 worker
+    被 GC 后 signals 连接失效——按钮卡「测试中/启动中」+ 潜在崩溃，
+    同各页「引用必须保存」实证）。完成/出错后自动从引用表移除。"""
+    from hanhua.ui.pages.settings_page import SettingsPage
+    from hanhua.ui.widgets import Worker
+    page = SettingsPage(_state(tmp_path), _RecordingWindow())
+    started = []
+    page._pool = _FakePool(started)
+    worker = Worker(lambda: "ok")
+    page._spawn(worker)
+    assert worker in page._workers          # 引用已保存（防 GC）
+    assert started == [worker]              # 已提交线程池
+    worker.signals.finished.emit("ok")      # 完成 → 自动清理
+    assert worker not in page._workers
+    worker2 = Worker(lambda: "err")
+    page._spawn(worker2)
+    worker2.signals.error.emit("boom")      # 出错 → 同样清理
+    assert worker2 not in page._workers
+
+
+def test_worker_signals_note_delivers(qapp):
+    """WorkerSignals.note：worker 线程活动流消息专用通道（2026-08-14
+    闪退修复：worker 内直接操作 QWidget 崩溃——消息必须经信号回主线程）。"""
+    from hanhua.ui.widgets import Worker
+    worker = Worker(lambda: None)
+    got = []
+    worker.signals.note.connect(lambda s, t: got.append((s, t)))
+    worker.signals.note.emit("running", "正在连接语义审核模型…")
+    assert got == [("running", "正在连接语义审核模型…")]
+
+
+def test_translate_worker_no_direct_activity_feed_access():
+    """防回归：worker 线程执行体不得直接操作 activity_feed（跨线程
+    UI 访问崩溃，2026-08-14 实证修复）——必须经 note 信号回主线程。"""
+    import inspect
+    from hanhua.ui.pages.translate_page import TranslatePage
+    src = inspect.getsource(TranslatePage._translate_with_lease)
+    assert "activity_feed.append_event" not in src
+    assert "signals.note.emit" in src

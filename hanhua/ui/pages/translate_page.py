@@ -399,6 +399,13 @@ class TranslatePage(QWidget):
             lambda done, total, p=project, g=generation:
             self._on_review_progress(done, total)
             if self.state.is_current_project(p, g) else None)
+        # worker 线程活动流消息（2026-08-14 闪退修复：worker 内直接调
+        # activity_feed.append_event 是跨线程 UI 访问，Windows 上未定义
+        # 行为会崩溃——统一经 note 信号回主线程）
+        worker.signals.note.connect(
+            lambda status, text, p=project, g=generation:
+            self.activity_feed.append_event(status, text)
+            if self.state.is_current_project(p, g) else None)
         worker.signals.finished.connect(
             lambda stats, p=project, g=generation:
             self._on_finished(stats)
@@ -636,7 +643,7 @@ class TranslatePage(QWidget):
                             "translation_quality", "running",
                             "正在语义审核…", "")
                         online_audit = api.mode == "api"
-                        self.activity_feed.append_event(
+                        signals.note.emit(
                             "running",
                             "正在连接语义审核模型…"
                             "（本地首次约 30-120 秒，逐条进度实时刷新）"

@@ -555,6 +555,8 @@ class WorkerSignals(QObject):
     progress = Signal(object)
     log = Signal(str)
     review = Signal(int, int)   # 语义审核进度 (done, total) 实时刷新
+    note = Signal(str, str)     # 活动流消息 (status, text)——worker 线程
+                                # 不得直接操作 QWidget，经此信号回主线程
 
 
 class Worker(QRunnable):

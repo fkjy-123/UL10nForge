@@ -35,6 +35,10 @@ class SettingsPage(QWidget):
         self.state = state
         self.window = window
         self._pool = QThreadPool.globalInstance()
+        # 后台任务引用表（2026-08-14 闪退/卡死修复：Worker 局部变量被
+        # GC 后 signals 连接失效——按钮卡「测试中/启动中」+ 潜在崩溃；
+        # 各页实证同 review_page #2，统一 _spawn 提交并自动清理）
+        self._workers: list = []
         self._glossary: GlossaryStore | None = None
         self._glossary_loading = False
         self._pending_test_config = None
@@ -642,7 +646,7 @@ class SettingsPage(QWidget):
             lambda reply, k=kind: self._on_api_test_ok(k, reply))
         worker.signals.error.connect(
             lambda err, k=kind: self._on_api_test_err(k, err))
-        self._pool.start(worker)
+        self._spawn(worker)
 
     def _on_api_test_ok(self, kind: str, _reply: str) -> None:
         card = self.api_cards.get(kind)
@@ -669,6 +673,21 @@ class SettingsPage(QWidget):
             Toast.show(
                 self, f"{self._model_title(kind)}：运行方式已保存，"
                       f"重新启动按 {choice} 运行", "success")
+
+    def _spawn(self, worker: Worker) -> None:
+        """统一提交后台任务：保存引用防 GC（信号连接失效/潜在崩溃），
+        完成后自动从引用表移除。"""
+        self._workers.append(worker)
+
+        def _release(*_args, **_kwargs):
+            try:
+                self._workers.remove(worker)
+            except ValueError:
+                pass
+
+        worker.signals.finished.connect(_release)
+        worker.signals.error.connect(_release)
+        self._pool.start(worker)
 
     @staticmethod
     def _model_title(kind: str) -> str:
@@ -721,7 +740,7 @@ class SettingsPage(QWidget):
             lambda states, t=token: self._apply_model_states(states, t))
         worker.signals.error.connect(
             lambda _err: self._apply_model_states({}, token))
-        self._pool.start(worker)
+        self._spawn(worker)
 
     @staticmethod
     def _set_card_button(card: dict, running: bool) -> None:
@@ -832,7 +851,7 @@ class SettingsPage(QWidget):
         worker = Worker(self._start_model_worker, kind, choice)
         worker.signals.finished.connect(self._on_model_started)
         worker.signals.error.connect(self._on_model_error)
-        self._pool.start(worker)
+        self._spawn(worker)
 
     def _start_model_worker(self, kind: str, choice: str):
         """后台启动对应模型服务（与翻译/审核/重排/嵌入正式链路同源）。"""
@@ -888,7 +907,7 @@ class SettingsPage(QWidget):
         worker = Worker(self._stop_model_worker, kind)
         worker.signals.finished.connect(self._on_model_stopped)
         worker.signals.error.connect(self._on_model_error)
-        self._pool.start(worker)
+        self._spawn(worker)
 
     def _stop_model_worker(self, kind: str):
         from hanhua.core.runtime_coordinator import get_coordinator
@@ -923,7 +942,7 @@ class SettingsPage(QWidget):
         worker = Worker(self._stop_all_worker)
         worker.signals.finished.connect(self._on_all_stopped)
         worker.signals.error.connect(self._on_local_stop_error)
-        self._pool.start(worker)
+        self._spawn(worker)
 
     def _stop_all_worker(self):
         from hanhua.core.runtime_coordinator import stop_all_coordinators
@@ -942,7 +961,7 @@ class SettingsPage(QWidget):
         worker = Worker(self._env_status_worker)
         worker.signals.finished.connect(self._apply_env_status)
         worker.signals.error.connect(self._on_probe_error)
-        self._pool.start(worker)
+        self._spawn(worker)
 
     def _env_status_worker(self):
         try:
@@ -1275,7 +1294,7 @@ class SettingsPage(QWidget):
                 cfg.api_key, cfg.model)
         worker.signals.finished.connect(self._on_test_ok)
         worker.signals.error.connect(self._on_test_err)
-        self._pool.start(worker)
+        self._spawn(worker)
 
     def _test_local_worker(self, config):
         runtime = self.state.local_model.ensure_running(config)
