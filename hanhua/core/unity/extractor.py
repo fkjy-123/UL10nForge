@@ -1262,16 +1262,30 @@ def _raw_string_entries(file_id: str, obj_path_id: int, raw: bytes,
             # Unity VisualState 引擎文本，即使在本按钮对象中也不翻译
             # （hotel-paradise 真实误伤：按钮对象的 Normal 被错误放行）
             in_control_state = stripped.casefold() in control_states
+            # 对象名共享词（2026-08-15 多游戏实证：写回后按键 UI 失灵、
+            # 游戏卡住无法推进——按钮对象 m_Name="Start" 与 m_text=
+            # "Start" 同值，rawstr 无字段身份，两处一起被翻译写回，
+            # 对象名被改 → 代码 Find("Start")/事件按名引用断裂）。
+            # 代码对象 + UI 证据 + 白名单词 + 同值重复（≥2 处）=
+            # 名字+文本共享词结构——全组跳过保留原文（宁漏勿坏；
+            # 此类词几乎都有本地化表副本可翻）。单次出现不跳
+            # （hotel-paradise 静态按钮文本场景）。
+            shared_with_name = (
+                has_ui_evidence and not in_control_state
+                and stripped.casefold() in DISPLAY_WORDS
+                and counts.get(stripped, 1) >= 2)
             if (_has_sentence_shape(stripped)
                     or (has_ui_evidence and not in_control_state
-                        and stripped.casefold() in DISPLAY_WORDS)):
+                        and stripped.casefold() in DISPLAY_WORDS
+                        and not shared_with_name)):
                 reason = ("natural_language_in_code_object"
                           if _has_sentence_shape(stripped)
                           else "code_heavy_display_word")
                 confidence, role = "medium", "display"
             else:
                 entry.status = STATUS_SKIPPED
-                reason = "code_heavy_identifier"
+                reason = ("object_name_shared_word" if shared_with_name
+                          else "code_heavy_identifier")
                 confidence, role = "low", "structural"
         elif ((is_core_menu_collection or is_core_menu_control)
               and stripped.casefold() in CORE_MENU_SOURCE_TERMS):
@@ -1291,7 +1305,12 @@ def _raw_string_entries(file_id: str, obj_path_id: int, raw: bytes,
                     and stripped.casefold() not in control_states
                     and (direct_code_signal_count >= 1
                          or ui_control_signal
-                         or ui_word_signal)):
+                         or ui_word_signal)
+                    # 对象名共享词保护（2026-08-15 多游戏实证：按钮对象
+                    # m_Name 与 m_text 同值重复——同值 ≥2 处全组跳过
+                    # 保留原文，防写回改对象名致按钮失灵/游戏卡住；
+                    # 单次出现照常翻译）
+                    and counts.get(stripped, 1) < 2):
                 # 显示词白名单仅在「真实组件对象」中优先于通用标识符规则
                 # （0.25.0 地毯式实证：a-catfiends 的 Save/Load/Rewind 按钮
                 # 在「单显示词+类型引用」对象（MonoBehaviour 组件实例）里被
@@ -1308,7 +1327,10 @@ def _raw_string_entries(file_id: str, obj_path_id: int, raw: bytes,
             else:
                 entry.status = STATUS_SKIPPED
                 entry.meta["obj_is_key_list"] = True
-                reason = "identifier_without_display_evidence"
+                reason = ("object_name_shared_word"
+                          if (stripped.casefold() in DISPLAY_WORDS
+                              and counts.get(stripped, 1) >= 2)
+                          else "identifier_without_display_evidence")
                 confidence, role = "low", "structural"
         else:
             reason = "display_phrase"

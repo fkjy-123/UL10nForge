@@ -201,3 +201,46 @@ def test_static_button_object_still_display(tmp_path, monkeypatch):
     save = [e for e in pf.entries if e.original == "Save"][0]
     assert save.status == "pending"
     assert save.meta["role"] == "display"
+
+
+def test_button_object_shared_name_word_skipped(tmp_path, monkeypatch):
+    """2026-08-15 多游戏实证「写回后按键 UI 失灵/游戏卡住」：按钮对象
+    m_Name 与 m_text 同值（"Exit" ×2）+ Button 类型引用——两处一起
+    翻译写回会改对象名，代码按名查找断裂。修复：同值 ≥2 处的共享词
+    全组跳过保留原文（宁漏勿坏）。用 Exit（非 Unity 生命周期词——
+    Start 会被既有 lifecycle_method 规则先行跳过）。"""
+    raw = (_with_len("Exit") + _with_len("Exit")
+           + _with_len("UnityEngine.UI.Button, UnityEngine.UI"))
+    pf = _extract(tmp_path, [_input_obj(None, raw)], monkeypatch)
+    exits = [e for e in pf.entries if e.original == "Exit"]
+    assert len(exits) == 2
+    for e in exits:
+        assert e.status == "skipped"
+        assert e.meta["reason"] == "object_name_shared_word"
+
+
+def test_code_heavy_button_shared_name_word_skipped(tmp_path, monkeypatch):
+    """code_heavy 变体（多类型引用 + 控件状态）：UI 证据对象里的共享
+    白名单词同样跳过（is_code_heavy 分支的共享词保护）。"""
+    raw = (_with_len("Settings") + _with_len("Settings")
+           + _with_len("Normal") + _with_len("Highlighted")
+           + _with_len("Pressed")
+           + _with_len("UnityEngine.UI.Button, UnityEngine.UI")
+           + _with_len("TMPro.TMP_Text, Unity.TextMeshPro"))
+    pf = _extract(tmp_path, [_input_obj(None, raw)], monkeypatch)
+    settings = [e for e in pf.entries if e.original == "Settings"]
+    assert len(settings) == 2
+    for e in settings:
+        assert e.status == "skipped"
+        assert e.meta["reason"] == "object_name_shared_word"
+
+
+def test_static_button_single_word_still_display(tmp_path, monkeypatch):
+    """对照组（hotel-paradise 静态按钮）：白名单词单次出现照常放行。"""
+    raw = (_with_len("Save") + _with_len("Normal")
+           + _with_len("Highlighted") + _with_len("Pressed")
+           + _with_len("Some.UI.Button, UnityEngine.UI"))
+    pf = _extract(tmp_path, [_input_obj(None, raw)], monkeypatch)
+    save = [e for e in pf.entries if e.original == "Save"][0]
+    assert save.status == "pending"
+    assert save.meta["role"] == "display"

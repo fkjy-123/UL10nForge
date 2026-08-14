@@ -146,6 +146,17 @@ def logic_key_evidence(stripped: str, meta: dict,
                  or pattern in ("camel_case", "snake_case",
                                 "uppercase_const", "lowercode_word"))):
         return "revert", f"logic_key_in_code_object:{pattern or low}"
+    # 3b. 代码对象中放行的白名单显示词 + 对象内同值重复（≥2 处）——
+    #     按钮对象 m_Name 与 m_text 同值（"Start"/"Settings"/"Exit"），
+    #     rawstr 无字段身份，两处一起写回必改对象名 → 代码按名查找
+    #     断裂（2026-08-15 多游戏实证：按键 UI 失灵、游戏卡住无法
+    #     推进）。写回侧兜底（提取器漏判时仍安全）：全组保留原文
+    #     （宁漏勿坏）。单次出现不 revert（静态按钮文本场景）。
+    if (obj_reason == "code_heavy_display_word"
+            and low in LOGIC_COMPARE_WORDS
+            and obj_strings is not None
+            and obj_strings.count(stripped) >= 2):
+        return "revert", "display_word_shared_with_object_name"
     # 疑似（report）：
     # 4. camel/snake/upper 形态本身是标识符形态（未知对象上下文时）。
     if pattern in ("camel_case", "snake_case", "uppercase_const",

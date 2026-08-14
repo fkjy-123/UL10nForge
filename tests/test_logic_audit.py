@@ -403,3 +403,47 @@ class TestWritebackAuditSeverityLink:
             "meta": '{"obj_is_key_list": true}',
         }])
         assert records and records[0]["severity"] == "note"
+
+    def test_display_word_shared_with_name_reverts(self):
+        """2026-08-15 多游戏实证「写回后按键 UI 失灵」：code_heavy 对象
+        里放行的白名单显示词 + 对象内同值 ≥2 处（m_Name 与 m_text 同值）
+        → 写回侧确定性回退保留原文，防改对象名断查找。"""
+        from hanhua.core.unity.logic_audit import logic_key_evidence
+        verdict = logic_key_evidence(
+            "exit", {"reason": "code_heavy_display_word",
+                     "role": "display"},
+            obj_strings=["exit", "exit", "Normal", "Pressed"])
+        assert verdict and verdict[0] == "revert"
+        assert verdict[1] == "display_word_shared_with_object_name"
+
+    def test_display_word_single_occurrence_not_reverted(self):
+        """单次出现的白名单词（静态按钮文本 hotel-paradise 场景）不回退：
+        至多 report 级（照常写入 + 审计留档），绝不 revert。"""
+        from hanhua.core.unity.logic_audit import logic_key_evidence
+        verdict = logic_key_evidence(
+            "save", {"reason": "code_heavy_display_word",
+                     "role": "display"},
+            obj_strings=["save", "Normal", "Pressed"])
+        assert verdict is None or verdict[0] == "report"
+
+    def test_shared_word_consistency_reverts_group(self):
+        """提取层 object_name_shared_word（structural）+ 同对象同原文组内
+        有翻译条目 → audit_repeat_consistency 全组回退（译文+原文混排
+        防断链，写回侧兜底联动）。"""
+        from hanhua.core.unity.logic_audit import audit_repeat_consistency
+        items = [
+            ({"original": "Exit", "translation": "Exit", "status": "skipped",
+              "key_path": "str/0"},
+             {"obj": 7, "role": "structural",
+              "reason": "object_name_shared_word"}),
+            ({"original": "Exit", "translation": "退出", "status": "translated",
+              "key_path": "str/1"},
+             {"obj": 7, "role": "display", "reason": "display_phrase"}),
+        ]
+        reverted: list[dict] = []
+        records = audit_repeat_consistency(
+            items, on_revert=lambda e, r: reverted.append((e, r)))
+        # 全组保留原文：翻译条目被回退
+        assert any(e["key_path"] == "str/1" and e["translation"] == "Exit"
+                   for e, _ in reverted)
+        assert records
