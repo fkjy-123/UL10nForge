@@ -116,6 +116,9 @@ class TranslatePage(QWidget):
         self._stream_last_done = 0
         self._last_review: tuple[int, int] | None = None
         self._last_review_emit = 0.0
+        # 审核阶段进度条重置标记（2026-08-15：审核首条回调时把翻译
+        # 满条进度条归零，之后逐条推进；翻译开始时复位）
+        self._review_bar_reset = False
         # 进度节流（#13 实证：home 分数与流水线 rail 只在全部完成后才
         # 更新，翻译时「突然一下完成几十条」——批粒度 progress 直接
         # emit entriesChanged 会让首页 O(N) 重扫刷屏）。每 ≥1s 才广播
@@ -370,6 +373,8 @@ class TranslatePage(QWidget):
         # 2026-08-14 卡顿优化：广播级标志——审校页在翻译中挂起
         # entriesChanged 全量重建，翻译结束广播自然补跑
         self.state.translation_running = True
+        # 审核阶段进度条重置标记复位（新一次运行审核首条时归零进度条）
+        self._review_bar_reset = False
         self.start_btn.setEnabled(False)
         self.stop_btn.setEnabled(True)
         self.retry_btn.setEnabled(False)
@@ -502,7 +507,7 @@ class TranslatePage(QWidget):
             # 流水线 rail（#15）：翻译阶段开始即广播，首页 rail 实时转
             # running（此前 rail 全程停在扫描后的旧状态）。
             self.state.pipelinePhase.emit(
-                "translation_quality", "running", "正在准备翻译环境…", "")
+                "translation", "running", "正在准备翻译环境…", "")
             if api.mode == "local":
                 on_log("正在启动本地 Hy-MT2 模型服务…")
                 if cancel.is_set():
@@ -658,7 +663,7 @@ class TranslatePage(QWidget):
                         # 判定期间 UI 像卡死、写回被锁）——启动提示先于
                         # review_entries 广播，逐条进度走 signals.review
                         self.state.pipelinePhase.emit(
-                            "translation_quality", "running",
+                            "review", "running",
                             "正在语义审核…", "")
                         online_audit = api.mode == "api"
                         signals.note.emit(
@@ -689,6 +694,11 @@ class TranslatePage(QWidget):
                             # resource_dir，不在 ~/.hanhua——此前传 app_dir
                             # 导致「审核模型缺失」→ TRANSPORT_ERROR）
                             app_dir=self.state.resource_dir,
+                            # 数据根分离：语境/向量检索库（context.db/
+                            # vector.db）在 ~/.hanhua，与翻译阶段沉淀
+                            # 同库——否则审校在资源根建空库，按需检索
+                            # 注入拿不到任何证据（2026-08-14）
+                            data_dir=self.state.app_dir,
                             model_name=api.model,
                             lang=lang,
                             max_send_rate=1.0,   # 全量送审（2026-08-14）
@@ -737,6 +747,19 @@ class TranslatePage(QWidget):
                         # 完成时同步经 review_summary 信号回主线程弹
                         # Toast + 活动流（worker 线程不得直接碰 UI）
                         signals.review_summary.emit(line)
+                        # 2026-08-15 流水线重做：审校终态广播到「审校」
+                        # rail 节点（此前与翻译共用「翻译质量」节点）
+                        self.state.pipelinePhase.emit(
+                            "review",
+                            ("succeeded"
+                             if not flagged
+                             and not review_summary["errors"] else "warning"),
+                            (f"审校完成：不合格 {len(flagged)} 条"
+                             if flagged else "审校完成：全部通过"),
+                            f"重译收敛 {review_summary['converged']}"
+                            f" · 阻塞 {review_summary['blocked']}"
+                            if review_summary.get("retranslated")
+                            else "")
                         # #43 阶段 F：审核报告落盘（reviews/ 目录，风险
                         # 分布 + 失败明细；失败降级不阻断——报告是留档，
                         # 不是主流程）
@@ -761,6 +784,9 @@ class TranslatePage(QWidget):
                         signals.review_summary.emit(
                             "语义审核：未送审（无风险条目直放，"
                             "或审核服务不可用，见日志）")
+                        self.state.pipelinePhase.emit(
+                            "review", "warning", "审校未送审",
+                            "无风险条目直放或审核服务不可用")
                 except Exception as exc:  # noqa: BLE001
                     on_log(f"语义审核失败：{exc}")
                     # 2026-08-14 用户实证「审核完成只有完成二字」：
@@ -771,6 +797,9 @@ class TranslatePage(QWidget):
                     signals.review_summary.emit(
                         f"语义审核失败：{str(exc)[:160]}"
                         f"（译文保持原状态，可在审校页重新审核）")
+                    self.state.pipelinePhase.emit(
+                        "review", "failed", "审校失败",
+                        str(exc)[:60])
                 # Phase B PendingEvidence（审计 §5 P0-3）：审后记忆结算——
                 # APPROVED → promote（pending 记忆可命中）；判坏 → 撤销
                 # （坏译连 pending 都不留）；审核关闭/不可用（无终态）→
@@ -872,7 +901,7 @@ class TranslatePage(QWidget):
             self._last_phase_emit = now
             self.state.entriesChanged.emit()
             self.state.pipelinePhase.emit(
-                "translation_quality", "running", "正在翻译…",
+                "translation", "running", "正在翻译…",
                 f"已完成 {done + stats.failed} / {stats.total} 条"
                 f" · {stats.rate_per_minute:.0f} 条/分")
 
@@ -882,9 +911,18 @@ class TranslatePage(QWidget):
         逐条判定期间界面必须实时推进（审核在翻译 worker 内同步执行，
         无反馈 = 用户看到「卡住不动」且写回被锁）。标签逐条更新，
         activity_feed 按 ≥5 条节流一次，末条必报。
+
+        2026-08-15 修复：进度条此前只由翻译/写回阶段驱动——审核期间
+        停留在翻译完成时的满条（用户实证「审核时进度条还是翻译的
+        满条」）。审核首条回调重置进度条，之后逐条推进到审核 100%。
         """
         self._last_review = (done, total)
         if total > 0:
+            if not self._review_bar_reset:
+                self._review_bar_reset = True
+                self.progress_bar.setRange(0, 100)
+                self.progress_bar.setValue(0)
+            self.progress_bar.setValue(int(done / total * 100))
             self.progress_label.setText(
                 f"语义审核 {done}/{total} 条…")
             self.stream_status.setText(
@@ -921,7 +959,7 @@ class TranslatePage(QWidget):
         self._set_primary(self.write_btn)
         self.state.entriesChanged.emit()
         self.state.pipelinePhase.emit(
-            "translation_quality",
+            "translation",
             "succeeded" if stats.failed == 0 else "warning",
             (f"翻译完成 {stats.done} 条"
              + (f" · 失败 {stats.failed} 条" if stats.failed else "")),
@@ -1005,7 +1043,7 @@ class TranslatePage(QWidget):
         self.stream_status.setText("○ 已停止")
         self.progress_label.setText("翻译出错")
         self.state.pipelinePhase.emit(
-            "translation_quality", "failed", "翻译出错", err[:60])
+            "translation", "failed", "翻译出错", err[:60])
         diagnostic = sanitize_exception(RuntimeError(str(err)), secrets)
         Toast.show(self, f"翻译出错：{json.dumps(diagnostic, ensure_ascii=False)}", "error")
         export_path = self._export_fail_record(
@@ -1122,14 +1160,21 @@ class TranslatePage(QWidget):
         with self.state.project_lease(project, generation) as acquired:
             if not acquired:
                 return None
+            # 免实机闭环（2026-08-12 用户指令：后续游戏不做实机测试）：
+            # 字体候选默认确认（PENDING_RUNTIME_ATTESTATION/CANDIDATE_ONLY
+            # → WARN 放行），否则每次写回都被 runtime 门 BLOCKED、只能
+            # 手动勾「允许部分写入」。条目完整性（rejected/truncated/
+            # 逻辑验证）仍受 allow_partial 严格约束，不因本参数放宽。
             if signals is None:
                 return project.write_all(
                     font_config=font_config,
-                    allow_partial=allow_partial)
+                    allow_partial=allow_partial,
+                    allow_unverified_font_candidate=True)
             return project.write_all(
                 font_config=font_config,
                 stage_cb=signals.progress.emit,
                 allow_partial=allow_partial,
+                allow_unverified_font_candidate=True,
             )
 
     def _on_write_stage(self, stage) -> None:
@@ -1211,6 +1256,12 @@ class TranslatePage(QWidget):
             "writeback", "succeeded" if verified else "warning",
             result_label,
             f"变更文件 {changed_files} · 写入译文 {written_translations}")
+        # 2026-08-15 流水线重做：发布验证节点随写回终态
+        self.state.pipelinePhase.emit(
+            "verify",
+            "succeeded" if verified else "pending",
+            "发布副本验证通过" if verified else "写回未通过验证，待重试",
+            "")
         self.log_view.appendPlainText(f"{result_label}：{'，'.join(parts)} → {out}")
         self.log_view.appendPlainText(
             f"验证摘要：变更文件 {changed_files} · 实际写入译文 "

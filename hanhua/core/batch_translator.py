@@ -791,14 +791,22 @@ class BatchTranslator:
         native_client = callable(getattr(self.client, "translate_text", None))
         if native_client:
             completed_representatives = 0
+            # 进度触发计数（2026-08-15 用户实证：开头批「一批几十条」
+            # + 卡顿感——同文本分组（Button ×几十）共享一次模型调用，
+            # 按「代表条目数攒批」emit 时一个代表一次 done+几十，显示
+            # 成虚批几十条且长时间无进度。改为按成员完成数（真实条数）
+            # + 时间节流触发：批粒度与设置 batch_size 对齐，卡顿感消失）
+            done_since_emit = 0
+            last_emit_ts = 0.0
 
             def consume_native_result(
                     result: tuple[TextEntry, str, bool]) -> None:
-                nonlocal completed_representatives
+                nonlocal completed_representatives, done_since_emit
+                nonlocal last_emit_ts
                 en, tr, good = result
                 candidate = en.translation or tr
-                for index, member in enumerate(
-                        group_by_representative[id(en)]):
+                group = group_by_representative[id(en)]
+                for index, member in enumerate(group):
                     member_good = (
                         good if index == 0
                         else (self._apply_quality(member, candidate)
@@ -829,7 +837,14 @@ class BatchTranslator:
                             en.original, en.translation, self.agent_game,
                             role=str(en.meta.get("role", "")))
                 completed_representatives += 1
-                if completed_representatives % self.batch_size == 0:
+                done_since_emit += len(group)
+                now = time.monotonic()
+                if (done_since_emit >= self.batch_size
+                        or now - last_emit_ts >= 1.5
+                        or completed_representatives
+                        == len(representatives)):
+                    done_since_emit = 0
+                    last_emit_ts = now
                     flush()
                     emit_stats()
 
@@ -1570,6 +1585,9 @@ class BatchTranslator:
         prompt 在常规单条翻译基础上追加 [审核反馈] 段（上次译文 +
         问题 + 建议译文），单条调用翻译模型 → 过质量门复查
         （_apply_quality，通过即落盘 entry.translation）。
+        质量门检查豁免批内一致性（skip_consistency=True，2026-08-14
+        minato 实证）：翻译阶段缓存的坏译文会以 consistency_mismatch
+        拒绝正确的重译，重译链路整体失效。
 
         预算：重译经 _record_failure_attempt 计入 attempt_count，与
         现有失败链共享类别预算（默认 2 次），防死循环（实施计划
@@ -1582,6 +1600,8 @@ class BatchTranslator:
         user += (
             "\n\n[审核反馈] 上次译文：{0}；问题：{1}。"
             "请针对上述问题修正译文，只输出修正后的译文，不要解释。"
+            "译文必须完整保留原文的全部占位符（{{0}}、%s、<b>…</b> 等）、"
+            "全部数字和换行结构，不得增删改位。"
             .format(entry.translation or "（无）", feedback))
         # 2026-08-14 用户实证「审核完成后苦等无提示」：重译走默认
         # timeout（120s）——审核服务异常/1.8B 换入失败时单条挂满 120
@@ -1611,7 +1631,7 @@ class BatchTranslator:
             return False, ""
         entry.meta = dict(entry.meta)
         entry.meta["review_round"] = int(round_no)
-        good = self._apply_quality(entry, candidate)
+        good = self._apply_quality(entry, candidate, skip_consistency=True)
         if not good:
             _record_failure_attempt(entry, "model_behavior")
         return good, candidate
@@ -2372,7 +2392,8 @@ class BatchTranslator:
             results.append((e, tr, good))
         return results
 
-    def _apply_quality(self, entry: TextEntry, translation: str) -> bool:
+    def _apply_quality(self, entry: TextEntry, translation: str,
+                       skip_consistency: bool = False) -> bool:
         # P0-3 证据留存：保存模型原始输出（自愈/修复前的原文样），
         # 供质量门审校与复盘；修复后的归一化输出存 normalized_output
         # （两者相同则省略，避免冗余）。写回只允许 quality_passed=True
@@ -2590,7 +2611,17 @@ class BatchTranslator:
             consistency_key = (entry.original, role)
             with self._consistency_lock:
                 previous = self._consistent_translations.get(consistency_key)
-                if previous is None:
+                if skip_consistency:
+                    # 反馈重译豁免（2026-08-14 minato 实证）：翻译阶段
+                    # 已把坏译文缓存进批内一致性表——重译的目的正是替换
+                    # 坏译文，若按 consistency_mismatch 拒绝「与坏译文
+                    # 不同的正确重译」（Pan 先生→左滑、Hearts 心脏→爱心
+                    # 全部被杀），重译永不可能收敛，只能 BLOCKED 留人工。
+                    # 重译通过后把新译文写入缓存（同原文其他条目后续
+                    # 保持一致锚定）。
+                    self._consistent_translations[consistency_key] = (
+                        result.normalized_translation)
+                elif previous is None:
                     self._consistent_translations[consistency_key] = (
                         result.normalized_translation)
                 elif previous != result.normalized_translation:

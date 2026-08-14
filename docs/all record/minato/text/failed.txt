@@ -1,8 +1,0 @@
-游戏：minato
-导出时间：2026-08-14 18:28:08
-翻译模型：hy-mt2-1.8b
-失败文本：0 条
-
-────────────────────────────────────────────────────────────────
-写回失败：写回失败
-详情：写回存在被拒绝条目（拒绝 24 条），已阻断默认发布。Minato_Data/il2cpp_data/Metadata/global-metadata.dat:meta#26938: 译文缺失 {n} 占位符；Minato_Data/il2cpp_data/Metadata/global-metadata.dat:meta#45485: 译文缺失 {n} 占位符；Minato_Data/il2cpp_data/Metadata/global-metadata.dat:meta#79586: 译文缺失 {n} 占位符；Minato_Data/il2cpp_data/Metadata/global-metadata.dat:meta#115737: 译文缺失 {n} 占位符；Minato_Data/il2cpp_data/Metadata/global-metadata.dat:meta#154523: 译文缺失 {n} 占位符如需强制发布请在界面勾选“允许部分写入并发布”

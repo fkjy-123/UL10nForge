@@ -51,12 +51,23 @@ _REVIEW_SYSTEM_PROMPT = """你是游戏本地化质量审核员。审核必须�
    （if/unless/only/因为/所以）、数量（50 HP 译成 60 HP 是 CRITICAL）、
    时间（时态/早晚/先后）
 2. 游戏语境：译文是否符合本条文本类型与游戏场景（按钮动词/对话口语/
-   剧情叙述/系统提示各有规范；UI 文本与剧情文本译法不同）
+   剧情叙述/系统提示各有规范；UI 文本与剧情文本译法不同）。
+   短标签专项（≤2 词原文）：单字/单词标签（Pan/Hearts/Gold…）的
+   译文必须与单词本义相符——Pan 译「先生」、Charge 译「等级」这类
+   与词义无关的输出是幻觉，直接 CRITICAL；不确定词义时按常见游戏
+   用语判断（Pan=平移/摇镜、Mine=地雷、Charge=充能、Heart=爱心/
+   生命），不得因原文短就默认译文正确
 3. 术语一致：游戏术语与 UI 标准词必须用行业标准译法——
    Resume=继续（不是简历/恢复）、Start=开始（不是播放）、Save=保存、
    Load=读取、Quit=退出、Options=选项、New Game=新游戏、
    Main Menu=主菜单、Back=返回、Settings=设置、Continue=继续。
-   若提示词给出「术语参考/语境参考」，译文必须与其一致
+   若提示词给出「术语参考/语境参考」，译文必须与其一致。
+   硬规则（2026-08-14 minato 实证）：术语参考只约束其中列出的词条，
+   未列出的英文单词翻译成中文是正确行为——普通英文 UI 词
+   （Button=按钮、Menu=菜单、Exit=退出）译成中文绝不判「违反术语
+   一致性、应保留原文」；「X=保留原文」标记只表示 X 这一个专名
+   需保留，不得推广到其他词。不得用「应保留原文」作为判错理由，
+   除非该词确实是游戏专名/代号且术语参考明确列出
 4. 自然度：译文是否通顺自然、符合中文表达习惯，无生硬直译
 5. 风格：语气/正式度与原文和文本类型匹配（按钮简短、对话口语、
    剧情书面，形容词/感叹词传神）
@@ -118,6 +129,43 @@ _LEGACY_FLAG_VALUES = frozenset({
     "flag", "fail", "incorrect", "bad", "wrong", "poor", "failed",
     "不合格", "错误", "需优化", "需要优化", "不通过", "改进",
 })
+
+# 批审幻觉防护（2026-08-14 minato 实证）：4B 批量审校成段输出
+# 「译文缺失，仅保留术语参考」的罐头理由——实际译文非空且正确
+# （时间/心脏/黄金 30+ 条）。「译文缺失」是可验证主张：译文明明
+# 非空却报缺失 → 判定不可信 → 逐条重审兜底（单条路径噪声少、
+# 无批内互相干扰）。
+_MISSING_TRANSLATION_CLAIMS = (
+    "译文缺失", "译文为空", "未翻译原文", "仅保留术语", "仅列出术语",
+    "界面空白", "按钮失效", "按钮无效", "按钮功能失效",
+)
+
+
+def _reason_claims_missing_translation(reason: str) -> bool:
+    """reason 是否声称译文缺失/未翻译（可验证主张）。"""
+    r = reason or ""
+    return any(p in r for p in _MISSING_TRANSLATION_CLAIMS)
+
+
+def _repair_multiline_candidate(original: str, candidate: str) -> str:
+    """单行原文的多行候选 → 取首个非空行（2026-08-14 minato 实证：
+    4B/1.8B 反馈重译稳定输出双候选「左滑\n左移」——原文单行时
+    newline_mismatch + line_content_mismatch 恒败，正确译文被机械门
+    杀死 → BLOCKED 留人工）。
+
+    仅做单行原文修复（多行原文截断有信息丢失风险，留给重试/人工）；
+    首行非空才修；修复结果与候选不同才返回（否则空串）。
+    """
+    if not candidate or len(re.split(r"\\n|\r\n|\r|\n", original)) != 1:
+        return ""
+    lines = [line.strip() for line in re.split(
+        r"\\n|\r\n|\r|\n", candidate.strip())]
+    if len(lines) <= 1:
+        return ""
+    first = next((line for line in lines if line), "")
+    if not first or first == candidate.strip():
+        return ""
+    return first
 
 
 def _parse_level(raw: str | None) -> str:
@@ -565,7 +613,8 @@ class SemanticReviewer:
 
     def retranslate_with_feedback(
             self, original: str, translation: str, feedback: str,
-            *, max_tokens: int = 1024) -> str:
+            *, max_tokens: int = 1024, text_type: str = "",
+            term_hint: str = "", context_hint: str = "") -> str:
         """4B 反馈式重译（2026-08-14 request_error 根因修复）。
 
         用户实证：不合格条目的反馈重译走翻译服务（1.8B）——但 6~8GB
@@ -575,18 +624,33 @@ class SemanticReviewer:
         重译——零模型切换、无显存冲突。
 
         固定游戏本地化角色（_RETRANSLATE_ROLE，2026-08-14 用户要求：
-        任何翻译路径必须带角色，至少是游戏翻译者）。
+        任何翻译路径必须带角色，至少是游戏翻译者）。text_type 注入
+        文本类型语境（按钮动词/对话口语…，消歧 Play=开始 vs 游玩）；
+        term_hint/context_hint 注入首审阶段按需检索的参考（2026-08-14
+        用户要求：审校途中的重译同样检索向量知识库，找与文本相关的
+        术语/语境参考注入翻译——与批量翻译的按需检索同源）。
 
         调用方（_retranslate_with_feedback）对输出再过机械质量门 +
         再审收敛判定；本方法只负责产出译文，请求失败抛异常由调用方
         回退 translator（1.8B/API）通道。
         """
+        type_line = f"文本类型：{text_type}\n" if text_type else ""
+        term_line = f"术语参考：{term_hint}\n" if term_hint else ""
+        ctx_line = f"语境参考：{context_hint}\n" if context_hint else ""
+        # 结构硬约束（2026-08-15 minato 实证：重译候选被机械门以
+        # placeholder_mismatch/numeric_mismatch/newline_mismatch 拒——
+        # 模型重译时丢占位符/改数字/改行结构，反馈本身没提，模型不会
+        # 主动保留。显式列出与原文一致的结构要求，从源头防机械门失败）
         user = (
             f"{_RETRANSLATE_ROLE}\n\n"
             "请根据下面的审核反馈，修正这条游戏文本的译文，"
             "只输出修正后的译文，不要解释：\n"
+            f"{type_line}{term_line}{ctx_line}"
             f"原文：{original}\n上次译文：{translation}\n"
-            f"审核反馈：{feedback}")
+            f"审核反馈：{feedback}\n"
+            "输出要求：译文必须完整保留原文的全部占位符"
+            "（{0}、%s、<b>…</b> 等）、全部数字和换行结构，"
+            "不得增删改位；只输出译文本身。")
         content = self.service.chat(
             user, max_tokens=max_tokens, timeout=self.config.timeout)
         return str(content or "").strip()
@@ -680,8 +744,16 @@ def _extract_term_pairs_impl(results: list[ReviewResult],
 
 # ── 主入口：翻译后深审闭环 ─────────────────────────────────────────
 
-def _active_glossary_pairs(glossary) -> list[tuple[str, str]]:
-    """术语库 active 词对（candidate 只参考不强制，不参与分流信号）。"""
+def _active_glossary_pairs(glossary, game: str = "") -> list[tuple[str, str]]:
+    """术语库 active 词对（candidate 只参考不强制，不参与分流信号）。
+
+    game 过滤（2026-08-14 minato 实证）：术语库跨游戏积累，词对带
+    games 归属（逗号分隔）。审校/分流只取本游戏词对 + 无归属词对
+    （games 空 = 通用沉淀）；明确归属其他游戏的词对不参与——否则
+    其他游戏的「英文=英文」保留型专名（GLISLYA=GLISLYA 等）注入
+    minato 审校，教唆 4B 把 Button→按钮 这类正确翻译判为「违反术语
+    一致性，应保留原文」。
+    """
     try:
         rows = glossary.list_all()
     except Exception:  # noqa: BLE001 - 术语库异常不阻断审核
@@ -691,8 +763,13 @@ def _active_glossary_pairs(glossary) -> list[tuple[str, str]]:
         status = str(row.get("status") or "active")
         term = str(row.get("term") or "")
         trans = str(row.get("translation") or "")
-        if status == "active" and term and trans:
-            pairs.append((term, trans))
+        if status != "active" or not term or not trans:
+            continue
+        games = [g.strip() for g in re.split(
+            r"[,，]", str(row.get("games") or "")) if g.strip()]
+        if games and game and game not in games:
+            continue
+        pairs.append((term, trans))
     return pairs
 
 
@@ -742,11 +819,37 @@ def _failed_reason(entry: TextEntry) -> str:
     return f"机械质量门最终失败（{detail}）且无候选译文可诊断"
 
 
+# 机械失败原因 → 重译修正指引（2026-08-15 minato 实证：4B 判 PASS 但
+# 机械门 failed 的条目强制重译时，反馈只有干巴巴的原因列表——模型
+# 不知道具体修什么，重译输出再被同一机械门拒 → BLOCKED 留人工）
+_QUALITY_FIX_HINTS = (
+    ("newline_mismatch", "保持与原文完全一致的换行行数与结构"),
+    ("line_content_mismatch", "保持与原文一致的行内容分布（不合并不拆行）"),
+    ("placeholder_mismatch", "完整保留原文全部占位符（{0}、%s 等），不得增删"),
+    ("rich_text_mismatch", "完整保留原文全部富文本标签（<b>…</b> 等）"),
+    ("numeric_mismatch", "译文必须包含原文的全部数字且数值不变"),
+    ("untranslated_text", "必须译成中文，不得保留大段原文英文"),
+    ("target_script_mismatch", "只输出简体中文译文，不混入其他文字"),
+)
+
+
+def _quality_fix_hints(reasons) -> str:
+    """机械失败原因 → 重译反馈的具体修正指引。"""
+    seen: list[str] = []
+    for name, hint in _QUALITY_FIX_HINTS:
+        if name in tuple(reasons) and hint not in seen:
+            seen.append(hint)
+    if not seen:
+        return "请按原文语义重译出合格译文"
+    return "；".join(seen) + "；请重译出合格译文"
+
+
 def review_entries(entries, glossary, *, game_name: str = "",
                    on_note: Callable[[str], None] | None = None,
                    on_progress: Callable[[int, int], None] | None = None,
                    translator=None, memory=None, store=None,
                    app_dir: str | Path | None = None,
+                   data_dir: str | Path | None = None,
                    model_name: str = "", lang: str = "zh-CN",
                    max_send_rate: float = 1.0,
                    cancellation_event=None,
@@ -858,7 +961,8 @@ def review_entries(entries, glossary, *, game_name: str = "",
             on_note("语义审核跳过：本地审核服务不可用（模型缺失或启动失败）")
         return summary
     # 风险分流：mandatory 强制送审 + discretionary 预算送审
-    pairs = _active_glossary_pairs(glossary) if glossary is not None else []
+    pairs = (_active_glossary_pairs(glossary, game=game_name)
+             if glossary is not None else [])
     # #43 阶段 D（重构指令 Case 5 / §16）：错误模式 + 语境证据检索。
     # 历史错误命中（error_patterns.db）→ 提高风险识别；语境证据 →
     # 多义词消歧（支持候选 → 直放；全部反对 → context_conflict 送审）
@@ -867,9 +971,15 @@ def review_entries(entries, glossary, *, game_name: str = "",
     # （人工强制送审时术语/语境同样作参考）。
     error_patterns_by_id: dict[str, list] = {}
     context_evidence_by_id: dict[str, list] = {}
+    # 数据根/资源根分离（2026-08-14）：app_dir 是模型资源根
+    # （models/*.gguf 与 embed_runtime.json 所在地，GUI 传
+    # resource_dir），data_dir 是数据根（context.db/vector.db/
+    # error_patterns.db 所在地，GUI 传 ~/.hanhua）——此前检索库在
+    # 资源根建空库，审校的按需检索注入打不到翻译阶段沉淀的语境证据。
+    data_root = Path(data_dir or app_dir or Path.cwd())
     try:
         from hanhua.core.error_patterns import ErrorPatternStore
-        ep_path = Path(app_dir or Path.cwd()) / "error_patterns.db"
+        ep_path = data_root / "error_patterns.db"
         if ep_path.exists():
             ep_store = ErrorPatternStore(ep_path)
             for e in item_entries:
@@ -884,7 +994,9 @@ def review_entries(entries, glossary, *, game_name: str = "",
         from hanhua.core.knowledge_retrieval import (
             create_knowledge_retrieval)
         kr = create_knowledge_retrieval(
-            Path(app_dir or Path.cwd()), game=game_name)
+            data_root,
+            service_dir=Path(app_dir or data_root),
+            game=game_name)
         if kr.usable:
             for e in item_entries:
                 evidence = kr.query(
@@ -933,7 +1045,29 @@ def review_entries(entries, glossary, *, game_name: str = "",
     # #43 阶段 E（重构指令 §16 知识优先级链）：送审条目注入术语参考
     # （active 词对）与语境证据摘要（context_exact/similar/rerank 前三）。
     # 证据在阶段 D 已检索（context_evidence_by_id），此处仅格式化。
-    term_hint = "；".join(f"{t}={trans}" for t, trans in pairs[:20])
+    # 2026-08-14 minato 实证修复：术语参考必须按条目注入（只注入
+    # 词对 term 在本条原文中命中的词对，≤5 条）——此前全局前 20 条
+    # active 词对注入每条审校 prompt，其中大量其他游戏的「英文=英文」
+    # 保留型专名（GLISLYA=GLISLYA…），4B 被教唆「英文应保留原文」，
+    # 把 Button→按钮 / Menu→菜单 等正确翻译批量误判 CRITICAL；同时
+    # 无命中词对的条目不再带噪声参考，批审幻觉（「译文缺失，仅保留
+    # 术语参考」）随之消失。
+    def _term_hint_for(original: str, hint_pairs) -> str:
+        hits: list[str] = []
+        for t, trans in hint_pairs:
+            if re.search(rf"(?<![A-Za-z0-9]){re.escape(t)}(?![A-Za-z0-9])",
+                         original, re.IGNORECASE):
+                # 保留型词对（term==translation）加语义标注，避免 4B
+                # 误读为「该词应翻译成英文」（其实是专名保留原文）；
+                # 标注「译中文通称不判错」与质量门豁免对齐（FPS→帧率
+                # 是合理译法，backrooms 实证）
+                hits.append(f"{t}={trans}"
+                            if t.casefold() != trans.casefold()
+                            else f"{t}=专名保留原文（译中文通称不判错）")
+                if len(hits) >= 5:
+                    break
+        return "；".join(hits)
+
     review_items: list[ReviewItem] = []
     for it, e in zip(items, item_entries):
         if e not in to_review:
@@ -948,7 +1082,8 @@ def review_entries(entries, glossary, *, game_name: str = "",
         review_items.append(ReviewItem(
             entry_id=it.entry_id, original=it.original,
             translation=it.translation, text_type=it.text_type,
-            term_hint=term_hint, context_hint=ctx_hint))
+            term_hint=_term_hint_for(str(it.original), pairs),
+            context_hint=ctx_hint))
 
     def _progress(done: int, total: int) -> None:
         # 节流：约每 10% 一条日志 + 末条必报（不刷屏）；
@@ -963,6 +1098,25 @@ def review_entries(entries, glossary, *, game_name: str = "",
     results, cancelled_count = reviewer.review_batch(
         review_items, on_progress=_progress,
         cancellation_event=cancellation_event)
+    # 批审幻觉防护（2026-08-14 minato 实证：4B 批量审校成段输出
+    # 「译文缺失，仅保留术语参考」罐头理由——译文实为非空且正确，
+    # Time→时间/Hearts→心脏 30+ 条被误判 CRITICAL）：「译文缺失」是
+    # 可验证主张，与事实矛盾（译文非空且 ≠ 原文）→ 逐条重审一次
+    # （单条路径噪声少、无批内互相干扰）。重审结果不再防护（防循环）；
+    # 每条目至多一次兜底（批量/单条路径统一在此处理）。
+    for eid, r in list(results.items()):
+        if r.is_error or not _reason_claims_missing_translation(r.reason):
+            continue
+        item = next((it for it in review_items
+                     if it.entry_id == eid), None)
+        if item is None or not str(item.translation or "").strip():
+            continue
+        if str(item.translation).strip() == str(item.original).strip():
+            continue
+        if on_note:
+            on_note(f"语义审核：条目 {eid} 判定与事实矛盾（译文非空却报"
+                    f"缺失）→ 逐条重审")
+        results[eid] = reviewer.review_one(item)
     # P0-4：机械失败条目（quality_failed 强制通道）——任何判定级别都不能
     # 让机械拒绝的候选直接发布；4B 与机械门意见相左（PASS/MINOR）时以
     # 机械证据为准，强制进入反馈重译（重译输出再过机械门才可 APPROVED）。
@@ -986,12 +1140,26 @@ def review_entries(entries, glossary, *, game_name: str = "",
     # 错误译文必须在处置分发前定格（错误例 = 重译前的坏译文）
     wrong_by_id = {it.entry_id: e.translation
                    for it, e in zip(items, item_entries)}
+    # 报告错译栏数据源（2026-08-14 提速后审核输出只含 level+reason，
+    # suggestion 恒空——报告 CRITICAL 明细的错译栏不能再依赖
+    # result.suggestion，改从本快照取）
+    summary["wrong_translations"] = dict(wrong_by_id)
     # 处置分发 + 反馈重译闭环 + 终态化（Phase A）
     # 2026-08-14 用户实证「审核完成后到最终结果出来之间什么提示都
     # 没有」：判定（review_batch）有逐条进度，处置阶段（反馈重译 +
     # 再审收敛，逐条串行 2-30 秒/条）完全静默——UI 停在「N/N 条
     # 完成」后界面静止数分钟。判定完成先广播阶段切换，处置期间按
     # ≥5 条节流广播，让等待有可见进度。
+    # 参考注入映射（2026-08-14 用户要求：审校途中的重译同样按需
+    # 检索注入——首审阶段检索的术语命中（词对）+ 语境证据（向量
+    # 知识库/语境库，context_exact/similar/rerank）随条目带入重译
+    # 与再审，翻译模型看到与本条文本相关的参考译例）
+    hints_by_id = {it.entry_id: (it.term_hint, it.context_hint)
+                   for it in review_items}
+
+    def _hint_for_entry(eid: str) -> tuple[str, str]:
+        return hints_by_id.get(eid, ("", ""))
+
     dispatch_total = len(results)
     if on_note:
         on_note(f"语义审核：判定完成（{dispatch_total} 条），正在处置"
@@ -1051,11 +1219,18 @@ def review_entries(entries, glossary, *, game_name: str = "",
                 continue
             extra = ""
             if r.level in ("PASS", "MINOR"):
-                # 4B 认为可用但机械门判失败：以机械证据为准，强制修正
-                extra = _failed_reason(entry) + "，请重译出合格译文"
+                # 4B 认为可用但机械门判失败：以机械证据为准，强制修正。
+                # 反馈带具体修正指引（2026-08-15 minato 实证：原因列表
+                # 干巴巴，模型重译再被同一机械门拒 → BLOCKED）
+                reasons = entry.quality_reasons or (entry.meta or {}).get(
+                    "quality_reasons") or ()
+                extra = (_failed_reason(entry) + "；"
+                         + _quality_fix_hints(reasons))
+            hint = _hint_for_entry(r.entry_id)
             outcome = _retranslate_with_feedback(
                 translator, entry, r, on_note, extra_feedback=extra,
-                reviewer=reviewer, app_dir=app_dir)
+                reviewer=reviewer, app_dir=app_dir,
+                term_hint=hint[0], context_hint=hint[1])
             if outcome == "converged":
                 summary["converged"] += 1
             elif outcome == "blocked":
@@ -1070,9 +1245,11 @@ def review_entries(entries, glossary, *, game_name: str = "",
         action = r.apply_verdict(entry)
         if action in ("revise", "retranslate"):
             if translator is not None:
+                hint = _hint_for_entry(r.entry_id)
                 outcome = _retranslate_with_feedback(
                     translator, entry, r, on_note,
-                    reviewer=reviewer, app_dir=app_dir)
+                    reviewer=reviewer, app_dir=app_dir,
+                    term_hint=hint[0], context_hint=hint[1])
                 if outcome == "converged":
                     summary["converged"] += 1
                 elif outcome == "blocked":
@@ -1203,12 +1380,28 @@ def _entry_for(items: list[ReviewItem], entries: list[TextEntry],
     return None
 
 
+def _apply_quality_compat(translator, entry: TextEntry, candidate: str,
+                          skip_consistency: bool = False) -> bool:
+    """_apply_quality 兼容封装：新 BatchTranslator 支持 skip_consistency
+    （反馈重译豁免批内一致性）；旧实现/测试桩无该参数 → TypeError
+    且错误信息含参数名时回退普通调用（只回退参数缺失，不吞内部错误）。"""
+    try:
+        return bool(translator._apply_quality(
+            entry, candidate, skip_consistency=skip_consistency))
+    except TypeError as exc:
+        if "skip_consistency" not in str(exc):
+            raise
+        return bool(translator._apply_quality(entry, candidate))
+
+
 def _retranslate_with_feedback(translator, entry: TextEntry,
                                result: ReviewResult,
                                on_note: Callable[[str], None] | None,
                                max_rounds: int = 2,
                                extra_feedback: str = "",
-                               reviewer=None, app_dir=None) -> str:
+                               reviewer=None, app_dir=None,
+                               term_hint: str = "",
+                               context_hint: str = "") -> str:
     """T1-4/T1-5 反馈式重译 + 再审收敛（上限 2 轮）。
 
     注入审核理由重译 → 过质量门 → 再审（若再审器可用）→
@@ -1247,14 +1440,36 @@ def _retranslate_with_feedback(translator, entry: TextEntry,
                 candidate = reviewer.retranslate_with_feedback(
                     str(entry.original)[:600],
                     str(entry.translation or "")[:600],
-                    feedback, max_tokens=1024)
+                    feedback, max_tokens=1024,
+                    text_type=text_type_for(entry.meta),
+                    term_hint=term_hint[:120],
+                    context_hint=context_hint[:120])
             except Exception:  # noqa: BLE001 - 4B 通道失败回退 translator
                 candidate = ""
         ok, translation = False, ""
         if candidate:
             if translator is not None:
-                ok = translator._apply_quality(entry, candidate)
+                # 反馈重译豁免批内一致性（2026-08-14 minato 实证：
+                # 翻译阶段缓存的坏译文以 consistency_mismatch 拒绝
+                # 正确重译——Pan 先生→左滑、Hearts 心脏→爱心 全被杀，
+                # 重译收敛率 45% 的直接根因）
+                ok = _apply_quality_compat(
+                    translator, entry, candidate, skip_consistency=True)
                 translation = entry.translation if ok else ""
+                if not ok:
+                    # 多行候选确定性修复（minato 实证：4B 稳定输出
+                    # 「左滑\n左移」双候选，单行原文下 newline 恒败）
+                    entry.translation = last_translation
+                    repaired = _repair_multiline_candidate(
+                        str(entry.original), candidate)
+                    if repaired:
+                        ok = _apply_quality_compat(
+                            translator, entry, repaired,
+                            skip_consistency=True)
+                        translation = entry.translation if ok else ""
+                        if ok and on_note:
+                            on_note(f"重译候选多行修复："
+                                    f"{candidate!r} → {repaired!r}")
             else:
                 entry.translation = candidate
                 ok = True
@@ -1267,6 +1482,23 @@ def _retranslate_with_feedback(translator, entry: TextEntry,
             try:
                 ok, translation = translator.retranslate_with_feedback(
                     entry, feedback, round_no=round_no)
+                if not ok and translator is not None:
+                    # 1.8B 兜底候选同样做多行修复重验（其内部已过门
+                    # 失败，返回的 candidate 保留在 translation 参数）
+                    entry.translation = last_translation
+                    raw_candidate = translation or ""
+                    repaired = _repair_multiline_candidate(
+                        str(entry.original), raw_candidate)
+                    if repaired:
+                        ok = _apply_quality_compat(
+                            translator, entry, repaired,
+                            skip_consistency=True)
+                        translation = entry.translation if ok else ""
+                        if ok and on_note:
+                            on_note(f"重译候选多行修复："
+                                    f"{raw_candidate!r} → {repaired!r}")
+                        if not ok:
+                            entry.translation = last_translation
             except Exception:  # noqa: BLE001 - 重译失败 → BLOCKED 终止循环
                 ok, translation = False, ""
         if not ok or not translation:
@@ -1283,7 +1515,11 @@ def _retranslate_with_feedback(translator, entry: TextEntry,
         # #20：复用主审核的 reviewer/app_dir——此前每轮新建 SemanticReviewer
         # 且回退 cwd 找模型（#17 已修主路径，再审路径漏掉），模型在
         # resource_dir 时再审必挂 TRANSPORT_ERROR → 重译永不收敛
-        re_result = _re_review(entry, reviewer=reviewer, app_dir=app_dir)
+        # 2026-08-14：再审与首审注入同一术语/语境参考（此前再审无
+        # hint，同一译文两次判定输入不一致，收敛判定波动）
+        re_result = _re_review(entry, reviewer=reviewer, app_dir=app_dir,
+                               term_hint=term_hint,
+                               context_hint=context_hint)
         if re_result is None or re_result.is_error:
             apply_outcome(entry, REVIEW_ERROR,
                           level=re_result.level if re_result else "RETRANSLATED",
@@ -1317,8 +1553,13 @@ def _retranslate_with_feedback(translator, entry: TextEntry,
 
 def _re_review(entry: TextEntry, reviewer: SemanticReviewer | None = None,
                app_dir: str | Path | None = None,
-               online_cfg=None) -> ReviewResult | None:
-    """再审一次（收敛判定）。失败返回 None（保守放行）。"""
+               online_cfg=None, term_hint: str = "",
+               context_hint: str = "") -> ReviewResult | None:
+    """再审一次（收敛判定）。失败返回 None（保守放行）。
+
+    term_hint/context_hint 与首审一致（2026-08-14：同一译文两次
+    判定输入一致，收敛判定不因参考缺失而波动）。
+    """
     if reviewer is None:
         reviewer = SemanticReviewer(app_dir=app_dir or Path.cwd(),
                                     online_cfg=online_cfg)
@@ -1327,6 +1568,8 @@ def _re_review(entry: TextEntry, reviewer: SemanticReviewer | None = None,
         original=str(entry.original)[:600],
         translation=str(entry.translation)[:600],
         text_type=text_type_for(entry.meta),
+        term_hint=term_hint[:120],
+        context_hint=context_hint[:120],
     ))
 
 
@@ -1398,12 +1641,23 @@ def write_review_report(summary: dict, report_path: str | Path,
     lines += ["", "## CRITICAL 明细（语义错译，需人工复核）", ""]
     if not criticals:
         lines.append("无（本轮无 CRITICAL 级错译）。")
+    # 终译对照（2026-08-14 修复）：重译收敛条目的最终译文按 locator
+    # 关联，与错译并列展示——人工复核可直接判断「重译是否修复」。
+    final_by_loc = {
+        str(d.get("locator") or ""): d
+        for d in (summary.get("detail") or [])}
     for r in criticals:
         loc = locators.get(r.entry_id, "")
         lines.append(f"### {loc or r.entry_id}")
         lines.append(f"- 原文：{originals.get(r.entry_id, '')}")
-        lines.append(f"- 错译：{_translation_of(r)}")
+        lines.append(f"- 错译：{_translation_of(r, summary)}")
         lines.append(f"- 审核理由：{r.reason}")
+        fin = final_by_loc.get(str(loc), {})
+        if fin.get("final_translation"):
+            lines.append(f"- 重译后：{fin['final_translation']}"
+                         f"（终态 {fin.get('outcome', '')}"
+                         f"{' · 轮次 ' + str(fin['review_round'])
+                          if fin.get('review_round') else ''}）")
         # #43 阶段 E：LLM 综合分/维度分透出（有值才显示）
         if r.overall_score:
             lines.append(f"- 综合分：{r.overall_score}/100")
@@ -1485,6 +1739,15 @@ def write_review_report(summary: dict, report_path: str | Path,
     return path
 
 
-def _translation_of(result: ReviewResult) -> str:
-    """从 results 关联取错译文本（summary 不存译文时取 suggestion 首个）。"""
+def _translation_of(result: ReviewResult,
+                    summary: dict | None = None) -> str:
+    """取错译文本（2026-08-14 修复：审核输出提速为 level+reason 后
+    suggestion 恒空，错译栏曾全部显示「（无译文记录）」——改为从
+    summary["wrong_translations"] 送审快照取；快照缺失时回退
+    suggestion 兼容旧数据）。"""
+    if summary is not None:
+        wrong = (summary.get("wrong_translations") or {}).get(
+            result.entry_id, "")
+        if wrong:
+            return str(wrong)
     return result.suggestion or "（无译文记录）"

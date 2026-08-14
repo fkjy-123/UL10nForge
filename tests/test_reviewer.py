@@ -452,7 +452,7 @@ class _FakeTranslator:
         entry.translation = "开始游戏（1.8B）"
         return True, entry.translation
 
-    def _apply_quality(self, entry, candidate):
+    def _apply_quality(self, entry, candidate, skip_consistency: bool = False):
         self.apply_calls.append(candidate)
         if not self.apply_ok:
             return False
@@ -545,3 +545,226 @@ def test_retranslate_4b_output_rejected_by_gate_falls_back():
     assert translator.retranslate_calls             # 回退 1.8B
     assert outcome == "converged"
     assert entry.translation == "开始游戏（1.8B）"
+
+
+# ── 2026-08-14 minato 实证：审校管线四根因回归测试 ──────────────
+
+def test_retranslate_skips_consistency_gate():
+    """反馈重译豁免批内一致性：翻译阶段缓存的坏译文不得以
+    consistency_mismatch 拒绝正确重译（Pan 先生→左滑 全被杀的根因）。
+    """
+    from hanhua.core.batch_translator import BatchTranslator
+    from hanhua.core.reviewer import _retranslate_with_feedback
+
+    class _DummyClient:
+        pass
+
+    translator = BatchTranslator(client=_DummyClient())
+    entry = TextEntry(file_id="f", key_path="k", original="Pan",
+                      translation="先生", status="translated",
+                      meta={"kind": "rawstr", "role": "display"})
+    assert translator._apply_quality(entry, "先生")   # 坏译文入缓存
+    service = _FakeService(outputs=[
+        "左滑",                                       # 4B 重译输出
+        '{"level": "PASS", "reason": "正确"}',        # 再审收敛
+    ])
+    reviewer = _make_reviewer(service)
+    result = ReviewResult("e0", level="CRITICAL",
+                          reason="Pan 译为先生严重错误，应为左滑")
+    outcome = _retranslate_with_feedback(
+        translator, entry, result, None, reviewer=reviewer,
+        app_dir=Path("."))
+    assert outcome == "converged"
+    assert entry.translation == "左滑"
+
+
+def test_retranslate_repairs_multiline_candidate():
+    """多行候选确定性修复：单行原文 + 双候选输出「左滑\n左移」不再
+    newline 恒败——取首行修复后过门收敛。"""
+    from hanhua.core.batch_translator import BatchTranslator
+    from hanhua.core.reviewer import _retranslate_with_feedback
+
+    class _DummyClient:
+        pass
+
+    translator = BatchTranslator(client=_DummyClient())
+    entry = TextEntry(file_id="f", key_path="k", original="Hearts",
+                      translation="心脏", status="translated",
+                      meta={"kind": "rawstr", "role": "display"})
+    translator._apply_quality(entry, "心脏")
+    service = _FakeService(outputs=[
+        "爱心\n红心",                                 # 4B 多行双候选
+        '{"level": "PASS", "reason": "正确"}',        # 再审收敛
+    ])
+    reviewer = _make_reviewer(service)
+    result = ReviewResult("e0", level="CRITICAL",
+                          reason="Hearts 语境下应译为爱心")
+    outcome = _retranslate_with_feedback(
+        translator, entry, result, None, reviewer=reviewer,
+        app_dir=Path("."))
+    assert outcome == "converged"
+    assert entry.translation == "爱心"
+
+
+def test_reason_claims_missing_translation():
+    """批审幻觉防护判据：可验证主张「译文缺失」与译文字面矛盾。"""
+    from hanhua.core.reviewer import _reason_claims_missing_translation
+    assert _reason_claims_missing_translation(
+        "译文缺失，仅保留术语参考，未翻译原文'Time'，导致界面空白。")
+    assert _reason_claims_missing_translation("仅列出术语表，未翻译原文")
+    assert not _reason_claims_missing_translation("术语翻译准确，可直接入库。")
+    assert not _reason_claims_missing_translation("")
+
+
+def test_batch_hallucination_falls_back_to_single_review(monkeypatch):
+    """审校输出声称「译文缺失」但译文非空 → 逐条重审兜底（防罐头理由）。
+    防护统一在 review_entries 层（单条/批量路径都覆盖，每条目至多一次）。"""
+    import hanhua.core.reviewer as rev
+
+    class _HalluReviewer:
+        usable = True
+        one_calls = 0
+
+        def __init__(self, app_dir=None, config=None, online_cfg=None):
+            pass
+
+        def review_batch(self, items, on_progress=None,
+                         cancellation_event=None):
+            return {it.entry_id: ReviewResult(
+                it.entry_id, level="CRITICAL",
+                reason="译文缺失，仅保留术语参考，未翻译原文") for it in items}, 0
+
+        def review_one(self, item):
+            type(self).one_calls += 1
+            return ReviewResult(item.entry_id, level="PASS", reason="正确")
+
+        def retranslate_with_feedback(self, *a, **k):
+            return "x"
+
+    monkeypatch.setattr(rev, "SemanticReviewer", _HalluReviewer)
+
+    class _Glossary:
+        def list_all(self):
+            return []
+
+    class _Store:
+        def batch_update_translation_results(self, rows):
+            pass
+
+    entries = [TextEntry(id=1, file_id="f", key_path="k", original="Time",
+                         translation="时间", status="translated",
+                         meta={"kind": "textasset", "role": "display"})]
+    summary = rev.review_entries(
+        entries, _Glossary(), game_name="minato",
+        translator=None, memory=None, store=_Store(),
+        app_dir=Path("."), model_name="qwen", max_send_rate=1.0)
+    assert _HalluReviewer.one_calls == 1          # 兜底重审一次
+    assert summary["results"]["e0"].level == "PASS"
+
+
+def test_report_wrong_translation_from_snapshot():
+    """报告错译栏取送审快照（suggestion 恒空后不再显示「无译文记录」）。"""
+    from hanhua.core.reviewer import _translation_of
+    r = ReviewResult("e7", level="CRITICAL",
+                     reason="Charges 误译为等级降低")
+    assert _translation_of(r) == "（无译文记录）"   # 无快照时兼容
+    summary = {"wrong_translations": {"e7": "等级会降低"}}
+    assert _translation_of(r, summary) == "等级会降低"
+
+
+def test_strip_prompt_echo():
+    """工具页输出清洗：提示词/原文回显剥除，正常译文零影响。"""
+    from hanhua.core.translator import strip_prompt_echo
+    system = "你是专业游戏本地化翻译专家，把游戏文本翻译为简体中文。"
+    # 提示词全文回显 + 原文 + 译文
+    out = strip_prompt_echo(system + "\n\nhello world\n\n你好，世界",
+                            system, "hello world")
+    assert out == "你好，世界"
+    # 仅回显提示词 + 原文（未翻译）→ 剩空串
+    assert strip_prompt_echo(system + "\n" + "abc", system, "abc") == ""
+    # 正常译文不受影响
+    assert strip_prompt_echo("你好，世界", system, "hello world") == "你好，世界"
+    # 译文恰好以原文开头（部分保留）→ 剥原文前缀
+    assert strip_prompt_echo("hello world\n你好", system, "hello world") == "你好"
+
+
+def test_review_entries_term_hint_only_matching_pairs(monkeypatch):
+    """审校术语参考按条目命中注入 + 按游戏过滤（minato 实证：全局
+    前 20 条跨游戏词对注入教唆 4B「英文应保留原文」，Button→按钮
+    被判 CRITICAL——修复后无命中词对的条目零注入）。"""
+    import hanhua.core.reviewer as rev
+    captured = {}
+
+    class _FakeReviewer:
+        usable = True
+
+        def __init__(self, app_dir=None, config=None, online_cfg=None):
+            pass
+
+        def review_batch(self, items, on_progress=None,
+                         cancellation_event=None):
+            captured["items"] = items
+            return {it.entry_id: ReviewResult(
+                it.entry_id, level="PASS", reason="正确") for it in items}, 0
+
+        def retranslate_with_feedback(self, *a, **k):
+            return "x"
+
+    monkeypatch.setattr(rev, "SemanticReviewer", _FakeReviewer)
+
+    class _FakeGlossary:
+        def list_all(self):
+            return [
+                {"status": "active", "term": "SCP-173",
+                 "translation": "SCP-173", "games": ""},
+                {"status": "active", "term": "GLISLYA",
+                 "translation": "GLISLYA", "games": "other"},
+                {"status": "active", "term": "FPS",
+                 "translation": "FPS", "games": ""},
+            ]
+
+    class _FakeStore:
+        def batch_update_translation_results(self, rows):
+            pass
+
+    entries = [
+        TextEntry(id=1, file_id="f", key_path="a", original="Button",
+                  translation="按钮", status="translated",
+                  meta={"kind": "textasset", "role": "display"}),
+        TextEntry(id=2, file_id="f", key_path="b",
+                  original="Show FPS counter",
+                  translation="显示 FPS 计数器", status="translated",
+                  meta={"kind": "textasset", "role": "display"}),
+    ]
+    rev.review_entries(
+        entries, _FakeGlossary(), game_name="minato",
+        translator=None, memory=None, store=_FakeStore(),
+        app_dir=Path("."), model_name="qwen",
+        max_send_rate=1.0)
+    by_orig = {it.original: it for it in captured["items"]}
+    # 无命中词对 → 不注入术语参考（此前注入 20 条跨游戏词对）
+    assert by_orig["Button"].term_hint == ""
+    # 命中词对注入 + 保留型词对带语义标注
+    assert "FPS=专名保留原文" in by_orig["Show FPS counter"].term_hint
+    # 未命中/其他游戏词对不注入
+    assert "SCP-173" not in by_orig["Show FPS counter"].term_hint
+    assert "GLISLYA" not in by_orig["Show FPS counter"].term_hint
+
+
+def test_active_glossary_pairs_game_filter():
+    """术语词对按游戏过滤：明确归属其他游戏的词对不参与本游戏审校。"""
+    from hanhua.core.reviewer import _active_glossary_pairs
+
+    class _G:
+        def list_all(self):
+            return [
+                {"status": "active", "term": "A", "translation": "甲",
+                 "games": ""},
+                {"status": "active", "term": "B", "translation": "乙",
+                 "games": "other"},
+                {"status": "candidate", "term": "C", "translation": "丙",
+                 "games": ""},
+            ]
+
+    pairs = _active_glossary_pairs(_G(), game="minato")
+    assert pairs == [("A", "甲")]        # 无归属通用 + 本游戏；candidate 排除

@@ -432,6 +432,51 @@ class AnthropicClient(BaseClient):
         return Usage(u.get("input_tokens", 0), u.get("output_tokens", 0))
 
 
+def strip_prompt_echo(text: str, system: str, source: str) -> str:
+    """清洗模型输出中的提示词/原文回显（2026-08-14/15 用户实证：难翻译
+    内容——乱码/纯符号/格式串——小模型把整个 prompt（提示词+原文）
+    当作输出回显，工具页译文栏直接出现提示词全文）。
+
+    三层清洗（空白归一后比较，剥除量以 system/source 长度为上限）：
+    ① 提示词前缀（输出以 system 开头 → 模型整体回显了提示词）；
+    ② 提示词整行回显（输出中逐行复述提示词的长行 → 删行）；
+    ③ 原文前缀（输出以原文开头 → 模型回显原文后跟译文）。
+    正常译文与提示词/原文无公共前缀/整行重合，零影响；「模型只回显
+    原文未翻译」时剥完剩空串（比把提示词塞给用户安全）。
+    """
+
+    def _common_prefix_len(a: str, b: str) -> int:
+        n = 0
+        for ca, cb in zip(a, b):
+            if ca != cb:
+                break
+            n += 1
+        return n
+
+    t = str(text or "").strip()
+    sys_text = str(system or "").strip()
+    if sys_text and len(sys_text) > 20:
+        n = _common_prefix_len(t, sys_text)
+        if n >= 20:                     # 至少 20 字符公共前缀，防误伤
+            t = t[min(n, len(sys_text)):].strip()
+        # 整行回显（模型逐行复述提示词再跟译文/解释）
+        sys_lines = {line.strip() for line in sys_text.splitlines()
+                     if len(line.strip()) >= 15}
+        if sys_lines:
+            kept = [line for line in t.splitlines()
+                    if not any(line.strip() == s or
+                               line.strip().startswith(s + "：")
+                               for s in sys_lines)]
+            if len(kept) != len(t.splitlines()):
+                t = "\n".join(kept).strip()
+    src_text = str(source or "").strip()
+    if src_text:
+        n = _common_prefix_len(t, src_text)
+        if n >= 3 and n >= len(src_text) * 0.6:
+            t = t[min(n, len(src_text)):].strip()
+    return t
+
+
 def create_client(config: ApiConfig, transport_factory: Callable | None = None) -> BaseClient:
     if config.mode == "local":
         return LocalOpenAIClient(config, transport_factory)

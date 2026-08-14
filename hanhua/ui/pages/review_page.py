@@ -21,11 +21,16 @@ from PySide6.QtWidgets import (QAbstractItemView, QButtonGroup, QCheckBox,
                                QSplitter, QStackedLayout, QStyledItemDelegate,
                                QTableView, QVBoxLayout, QWidget)
 
+from dataclasses import replace
+
 from hanhua.core.agent_memory import AgentMemory
 from hanhua.core.manual_correction import manual_correction
+from hanhua.core import models
 from hanhua.core.models import (TextEntry, entry_from_row,
                                 is_actionable_translation)
+from hanhua.core.prompts import build_system_prompt
 from hanhua.core.reviewer import review_entries
+from hanhua.core.translator import create_client, strip_prompt_echo
 from hanhua.ui.app_state import AppState
 from hanhua.ui import theme
 from hanhua.ui.design_system import TOKENS
@@ -51,15 +56,16 @@ def _row_meta(row: dict) -> dict:
     return value if isinstance(value, dict) else {}
 
 
-# #38：审核待处理终态（Phase A 统一落 review_outcome；C6 时代遗留
-# review_issue 字段仍兼容）。「待审核」筛选/胶囊以此为准。
-_REVIEW_PENDING_OUTCOMES = {"NEEDS_REVISION", "BLOCKED", "REVIEW_ERROR"}
+# 审核待处理终态（#38/#47）：「待审核」筛选/胶囊以此为准。
+# 2026-08-15 数字关系统一：口径收敛到 models.REVIEW_PENDING_OUTCOMES /
+# models.needs_review（概览「待人工」卡与审校页胶囊同一套判定），
+# 此处保留别名兼容既有引用。
+_REVIEW_PENDING_OUTCOMES = set(models.REVIEW_PENDING_OUTCOMES)
 
 
 def _needs_review(meta: dict) -> bool:
     """待审核判定：review_outcome 终态未收敛，或遗留 review_issue。"""
-    return (meta.get("review_outcome") in _REVIEW_PENDING_OUTCOMES
-            or bool(meta.get("review_issue")))
+    return models.needs_review(meta)
 
 
 def _display_status(row: dict) -> str:
@@ -360,6 +366,9 @@ class ReviewPage(QWidget):
         self._review_token = 0
         self._review_running = False
         self._review_worker = None
+        # AI 翻译填充（2026-08-15）：防重入 + worker 引用保存
+        self._ai_translating = False
+        self._ai_translate_worker = None
 
         lay = QVBoxLayout(self)
         lay.setContentsMargins(26, 22, 26, 18)
@@ -560,6 +569,15 @@ class ReviewPage(QWidget):
         self.copy_tr_btn.setMinimumHeight(TOKENS.control_height)
         self.copy_tr_btn.clicked.connect(
             lambda: self._copy(self.detail_edit.toPlainText()))
+        # 2026-08-15 用户要求：失败文本的 AI 翻译填充——与复制按钮
+        # 平行，用翻译模型对原文直接翻译并填充译文框（提示词与批量
+        # 翻译一致：build_system_prompt 精简角色），人工确认后保存。
+        self.ai_translate_btn = QPushButton("AI 翻译")
+        self.ai_translate_btn.setMinimumHeight(TOKENS.control_height)
+        self.ai_translate_btn.setToolTip(
+            "用翻译模型对原文直接翻译并填充译文框"
+            "（提示词与批量翻译一致，人工确认后保存）")
+        self.ai_translate_btn.clicked.connect(self._ai_translate_current)
         self.lock_check = QCheckBox("锁定（不翻译）")
         self.lock_check.setMinimumHeight(TOKENS.control_height)
         self.lock_check.toggled.connect(self._toggle_detail_lock)
@@ -574,7 +592,7 @@ class ReviewPage(QWidget):
         self.review_btn.clicked.connect(self._review_current)
         self.review_btn.setEnabled(False)
         for w in (self.save_btn, self.copy_src_btn, self.copy_tr_btn,
-                  self.lock_check, self.review_btn):
+                  self.ai_translate_btn, self.lock_check, self.review_btn):
             ops.addWidget(w)
         lay.addLayout(ops)
 
@@ -754,6 +772,13 @@ class ReviewPage(QWidget):
             return
         if self._review_running:
             return
+        # 2026-08-15 用户实证「翻译时点审校会卡」：翻译进行中 1.8B 常驻
+        # 显存，此时启动 4B 审核模型换入显存不足 → 启动慢/失败，界面
+        # 卡数分钟。翻译期间拒绝送审并提示（翻译完成后自动/手动重审）。
+        if self.state.translation_running:
+            Toast.show(self, "翻译进行中：审核模型与翻译模型争用显存，"
+                             "请等翻译完成后再审核", "warning")
+            return
         row = self.model._rows[self._current_row]
         if not row.get("translation") or row["status"] != "translated":
             return
@@ -767,6 +792,7 @@ class ReviewPage(QWidget):
         )
         store = self.state.project.store
         app_dir = self.state.resource_dir
+        data_dir = self.state.app_dir
         game_name = (self.state.project.name
                      if hasattr(self.state.project, "name") else "") or ""
         self._review_running = True
@@ -779,7 +805,8 @@ class ReviewPage(QWidget):
             self.state.settings.api_config("review")
             if self.state.api.mode == "api" else None)
         worker = Worker(self._run_single_review, entry, store,
-                        app_dir, game_name, online_review_cfg)
+                        app_dir, game_name, online_review_cfg,
+                        data_dir)
         self._review_worker = worker
         worker.signals.finished.connect(
             lambda r: self._on_review_done(token, r))
@@ -789,14 +816,83 @@ class ReviewPage(QWidget):
 
     @staticmethod
     def _run_single_review(entry: TextEntry, store, app_dir, game_name: str,
-                           online_review_cfg=None):
+                           online_review_cfg=None, data_dir=None):
         """后台线程：单条强制送审。translator=None → 不触发反馈重译，
         判定结果直接终态化（人工再审语义）。"""
         return review_entries(
             [entry], None, game_name=game_name,
             translator=None, memory=store, store=store,
-            app_dir=app_dir, model_name="", lang="zh-CN",
+            app_dir=app_dir, data_dir=data_dir,
+            model_name="", lang="zh-CN",
             force_send=True, online_review_cfg=online_review_cfg)
+
+    # ── AI 翻译填充（2026-08-15 用户要求：失败文本一键 AI 翻译） ──
+
+    def _ai_translate_current(self):
+        """用翻译模型翻译当前选中条目的原文，填充译文框（不自动保存）。"""
+        if self._current_row is None or self._ai_translating:
+            return
+        # 翻译进行中 1.8B 单槽被批量翻译占用，此处请求排队且进度不可见
+        # （2026-08-15 卡顿治理）：拒绝并提示等翻译完成
+        if self.state.translation_running:
+            Toast.show(self, "翻译进行中：翻译模型正被批量翻译占用，"
+                             "请等翻译完成后再用 AI 翻译", "warning")
+            return
+        row = self.model._rows[self._current_row]
+        original = str(row.get("original") or "").strip()
+        if not original:
+            Toast.show(self, "原文为空，无需翻译", "warning")
+            return
+        api = self.state.api
+        if api.mode == "api" and not (api.base_url and api.api_key
+                                      and api.model):
+            Toast.show(self, "请先在设置中配置 API 模型", "warning")
+            return
+        # 提示词与批量翻译一致（translate_page 同款精简角色）
+        system = build_system_prompt(self.state.profile, "")
+        self._ai_translating = True
+        self.ai_translate_btn.setEnabled(False)
+        self.ai_translate_btn.setText("翻译中…")
+        worker = Worker(
+            self._run_ai_translate, api, system, original,
+            self.state.local_model, self.state.resource_dir)
+        self._ai_translate_worker = worker
+        worker.signals.finished.connect(self._on_ai_translate_done)
+        worker.signals.error.connect(self._on_ai_translate_error)
+        QThreadPool.globalInstance().start(worker)
+
+    @staticmethod
+    def _run_ai_translate(api, system: str, original: str,
+                          local_model, resource_dir: Path):
+        """后台线程：本地模式先确保服务运行，再单条翻译（与工具页同源，
+        输出经 strip_prompt_echo 清洗提示词回显）。"""
+        if api.mode == "local":
+            runtime = local_model.ensure_running(api)
+            api = replace(api, base_url=runtime.endpoint,
+                          api_key=runtime.api_key, model=runtime.model)
+        client = create_client(api)
+        out, _usage = client.chat(
+            system, [{"role": "user", "content": original}])
+        return strip_prompt_echo(out, system, original)
+
+    def _on_ai_translate_done(self, result) -> None:
+        self._ai_translating = False
+        self.ai_translate_btn.setEnabled(True)
+        self.ai_translate_btn.setText("AI 翻译")
+        out = str(result or "").strip()
+        if not out:
+            Toast.show(self, "模型未产出译文（可能仅回显原文或拒绝翻译），"
+                             "请人工填写", "warning")
+            return
+        self.detail_edit.setPlainText(out)
+        self._detail_dirty = True
+        Toast.show(self, "AI 译文已填充，确认无误后点「保存译文」", "success")
+
+    def _on_ai_translate_error(self, err: str) -> None:
+        self._ai_translating = False
+        self.ai_translate_btn.setEnabled(True)
+        self.ai_translate_btn.setText("AI 翻译")
+        Toast.show(self, f"AI 翻译失败：{err}", "error")
 
     def _on_review_done(self, token: int, result) -> None:
         if token != self._review_token:

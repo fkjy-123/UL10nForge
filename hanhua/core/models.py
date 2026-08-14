@@ -46,6 +46,22 @@ def is_actionable_translation(entry: TextEntry) -> bool:
                  or entry.meta.get("confidence_promoted") is True))
 
 
+# 审核待处理终态（Phase A 统一落 review_outcome；C6 时代遗留
+# review_issue 字段仍兼容）。审校页「待审核」胶囊与概览页「待人工」
+# 统计共用此口径（2026-08-15 数字关系统一：此前两处各算各的，显示
+# 互相矛盾）。
+REVIEW_PENDING_OUTCOMES = frozenset(
+    {"NEEDS_REVISION", "BLOCKED", "REVIEW_ERROR"})
+
+
+def needs_review(meta: dict) -> bool:
+    """待审核判定：review_outcome 终态未收敛，或遗留 review_issue。
+
+    与审校页筛选「待审核」同源（入口统一在 models，两页共用）。"""
+    return (meta.get("review_outcome") in REVIEW_PENDING_OUTCOMES
+            or bool(meta.get("review_issue")))
+
+
 def entry_from_row(row: dict) -> TextEntry:
     """DB 行 → TextEntry：首页/翻译页/审校页共用的单一口径。
 

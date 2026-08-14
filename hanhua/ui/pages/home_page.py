@@ -17,6 +17,7 @@ from PySide6.QtWidgets import (QFileDialog, QFrame, QHBoxLayout, QLabel,
                                QProgressBar, QPushButton, QStackedWidget,
                                QVBoxLayout, QWidget)
 
+from hanhua.core import models
 from hanhua.core.models import (TextEntry, entry_from_row,
                                 is_actionable_translation)
 from hanhua.core.project import Project
@@ -99,6 +100,8 @@ class HomePage(QWidget):
         self.state = state
         self.window = window
         self._scanning = False
+        # 合并节点「识别」的当前状态（扫描子阶段合并，2026-08-15）
+        self._scan_node_state = ""
 
         outer = QVBoxLayout(self)
         outer.setContentsMargins(28, 22, 28, 18)
@@ -231,22 +234,27 @@ class HomePage(QWidget):
         hero.addWidget(self.hero_btn)
         lay.addWidget(self.project_hero)
 
-        # 数据带（§17）：四指标一排
+        # 数据带（2026-08-15 重做：用户要求去掉文本总数/待审核/高风险，
+        # 只保留已翻译 + 选取重要信息——失败数与待人工处理数。待人工
+        # 口径与审校页「待审核」胶囊同源（models.needs_review），两处
+        # 数字不再互相矛盾）
         self.data_strip = QFrame()
         self.data_strip.setObjectName("dataStrip")
         strip = QHBoxLayout(self.data_strip)
         strip.setContentsMargins(16, 14, 16, 14)
         strip.setSpacing(10)
-        self.stat_total = StatCard("文本总数", 0)
         self.stat_translated = StatCard("已翻译", 0)
-        self.stat_review = StatCard("待审核", 0)
-        self.stat_high_risk = StatCard("高风险", 0)
-        for card in (self.stat_total, self.stat_translated,
-                     self.stat_review, self.stat_high_risk):
+        self.stat_failed = StatCard("失败", 0)
+        self.stat_needs_work = StatCard("待人工处理", 0)
+        for card in (self.stat_translated, self.stat_failed,
+                     self.stat_needs_work):
             strip.addWidget(card, 1)
         lay.addWidget(self.data_strip)
 
-        # 五步任务状态轨道（横向节点 + 连接线）
+        # 任务流水线（2026-08-15 重做：识别 → 翻译 → 审校 → 写回 →
+        # 发布验证。原五节点「游戏检测/文本扫描/自动工具分析」合并为
+        # 「识别」单节点；翻译与审校拆开，随 pipelinePhase 广播即时
+        # 更新，不再共用「翻译质量」模糊节点）
         rail_head = QHBoxLayout()
         rail_title = QLabel("任务流水线")
         rail_title.setProperty("class", "pageTitle")
@@ -254,11 +262,11 @@ class HomePage(QWidget):
         rail_head.addStretch(1)
         lay.addLayout(rail_head)
         definitions = (
-            ("detection", "1 游戏检测", "scan"),
-            ("text_scan", "2 文本扫描", "folder"),
-            ("tool_analysis", "3 自动工具分析", "tool"),
-            ("translation_quality", "4 翻译质量", "translate"),
-            ("writeback", "5 写回验证", "shield"),
+            ("scan", "1 识别", "scan"),
+            ("translation", "2 翻译", "translate"),
+            ("review", "3 审校", "shield"),
+            ("writeback", "4 写回", "shield"),
+            ("verify", "5 发布验证", "shield"),
         )
         self.pipeline_rail = StatusRail(definitions)
         # 兼容既有测试：pipeline_cards 指向节点列表（每项含 step_id）
@@ -352,19 +360,32 @@ class HomePage(QWidget):
         return proj, report
 
     def _on_scan_progress(self, event) -> None:
-        """扫描阶段事件 → rail 实时更新（检测/文本扫描/工具分析）。"""
+        """扫描阶段事件 → rail 实时更新。2026-08-15 流水线重做：
+        detection/text_scan/tool_analysis/binary_scan 全部映射到合并
+        节点「识别」——状态取最严重（failed > running > succeeded）。"""
         phase = getattr(event, "phase", "") or ""
         status = getattr(event, "status", "") or ""
         message = getattr(event, "message", "") or ""
         if not phase or not status:
             return
-        step_id = phase if phase in {
-            "detection", "text_scan", "tool_analysis", "binary_scan",
-        } else None
-        if step_id is None:
+        if phase not in {"detection", "text_scan", "tool_analysis",
+                         "binary_scan"}:
             return
+        self._scan_node_state = self._merge_scan_state(
+            self._scan_node_state, status)
         self.pipeline_rail.set_node_state(
-            step_id, status, message, "")
+            "scan", self._scan_node_state, message, "")
+
+    @staticmethod
+    def _merge_scan_state(current: str, incoming: str) -> str:
+        """合并扫描子阶段状态：failed 最严重，running 次之，其余取
+        succeeded。"""
+        order = {"failed": 0, "running": 1, "succeeded": 2, "pending": 3}
+        rank = {v: k for k, v in order.items()}
+        cur_rank = order.get(current, 99)
+        inc_rank = order.get(incoming, 99)
+        best = min(cur_rank, inc_rank)
+        return rank.get(best, current or incoming)
 
     def _on_pipeline_phase(self, step_id: str, status: str,
                            detail: str, metrics: str) -> None:
@@ -395,7 +416,7 @@ class HomePage(QWidget):
     def _on_scan_error(self, err: str):
         self._set_busy(False)
         self.pipeline_rail.set_node_state(
-            "detection", "failed", err[:80], "置信度 low")
+            "scan", "failed", err[:80], "置信度 low")
         Toast.show(self, f"扫描失败：{err}", "error")
 
     def _set_busy(self, busy: bool):
@@ -406,8 +427,10 @@ class HomePage(QWidget):
         self.dz_title.setText(
             "正在扫描文本与二进制资源…" if busy else "将游戏文件夹拖到此处")
         if busy:
+            # 2026-08-15 流水线重做：检测节点合并进「识别」
+            self._scan_node_state = "running"
             self.pipeline_rail.set_node_state(
-                "detection", "running", "正在读取 Unity 布局证据", "置信度 —")
+                "scan", "running", "正在读取 Unity 布局证据", "置信度 —")
 
     def _render_report(self, report):
         fingerprint = report.fingerprint
@@ -418,30 +441,56 @@ class HomePage(QWidget):
         self.tool_value.setValue(status_text)
         tool_by_id = {item.tool_id: item for item in report.tool_results}
         route = {step.step_id: step for step in report.route}
-        for node in self.pipeline_rail.nodes:
-            if node.step_id == "writeback":
-                step = route.get("writeback")
-                font_block = next((item for item in report.route
-                                   if item.required and item.status in {"blocked", "failed"}
-                                   and item.step_id in {"font", "font_injection"}), None)
-                if font_block is not None:
-                    step = font_block
+        # 2026-08-15 流水线重做：原生 route step（detection/text_scan/
+        # tool_analysis/translation_quality/font/writeback）映射到新五
+        # 节点（识别/翻译/审校/写回/发布验证）
+        scan_steps = [route.get(sid) for sid in
+                      ("detection", "text_scan", "tool_analysis")
+                      if route.get(sid) is not None]
+        if scan_steps:
+            worst = min(scan_steps, key=lambda s: (
+                {"failed": 0, "blocked": 1, "running": 2,
+                 "pending": 3}.get(s.status, 4)))
+            self._render_route_node("scan", worst, tool_by_id)
+        tq = route.get("translation_quality")
+        if tq is not None:
+            # 扫描完成时翻译/审校均为 pending（运行期由 pipelinePhase
+            # 实时广播驱动）；翻译质量步骤的终态渲染到「翻译」节点，
+            # 「审校」节点留给 pipelinePhase 的 review 广播
+            self._render_route_node("translation", tq, tool_by_id)
+        wb = route.get("writeback")
+        if wb is not None:
+            font_block = next((item for item in report.route
+                               if item.required
+                               and item.status in {"blocked", "failed"}
+                               and item.step_id in {"font", "font_injection"}),
+                              None)
+            if font_block is not None:
+                self._render_route_node("writeback", font_block, tool_by_id)
             else:
-                step = route.get(node.step_id)
-            if step is None:
-                continue
-            tool = tool_by_id.get(step.backend)
-            # tool_results 的 tool_id 与 route.backend 非同一命名空间
-            # （检测= native_fingerprint / 质量门= quality_gate / 写回=
-            # native_atomic_writer），Mono 游戏 tool_results 甚至为空——
-            # 必须判空，否则扫描完成必崩（C1）
-            cache = ("命中" if tool is not None and tool.cache_hit is True
-                     else "未命中" if tool is not None
-                     and tool.cache_hit is False else "—")
-            elapsed = f"{tool.elapsed_ms} ms" if tool and tool.elapsed_ms else "—"
-            metrics = f"置信度 {step.confidence} · 缓存 {cache} · 耗时 {elapsed}"
+                self._render_route_node("writeback", wb, tool_by_id)
+            # 发布验证：写回成功 → PASS；否则跟随写回状态
             self.pipeline_rail.set_node_state(
-                node.step_id, step.status, step.reason, metrics)
+                "verify",
+                "succeeded" if wb.status == "succeeded" else "pending",
+                "发布副本验证通过" if wb.status == "succeeded"
+                else "等待写回完成",
+                "")
+
+    def _render_route_node(self, step_id: str, step, tool_by_id) -> None:
+        """单个 route 步骤 → rail 节点渲染（与原 _render_report 口径一致）。"""
+        tool = tool_by_id.get(step.backend)
+        # tool_results 的 tool_id 与 route.backend 非同一命名空间
+        # （检测= native_fingerprint / 质量门= quality_gate / 写回=
+        # native_atomic_writer），Mono 游戏 tool_results 甚至为空——
+        # 必须判空，否则扫描完成必崩（C1）
+        cache = ("命中" if tool is not None and tool.cache_hit is True
+                 else "未命中" if tool is not None
+                 and tool.cache_hit is False else "—")
+        elapsed = f"{tool.elapsed_ms} ms" if tool and tool.elapsed_ms else "—"
+        metrics = f"置信度 {step.confidence} · 缓存 {cache} · 耗时 {elapsed}"
+        self.pipeline_rail.set_node_state(
+            step_id, step.status, step.reason, metrics)
 
     @staticmethod
     def _entry_from_row(row: dict) -> TextEntry:
@@ -479,48 +528,41 @@ class HomePage(QWidget):
 
     @staticmethod
     def _collect_dashboard_stats(store) -> tuple:
-        """后台线程统计：#19 口径单循环（total/translated/actionable/
-        pending_review/flagged/failed），一次 get_entries 算完。
-        """
+        """后台线程统计：2026-08-15 数据带重做——只算（已翻译 / 失败 /
+        待人工处理）。待人工口径与审校页「待审核」胶囊同源
+        （models.needs_review ∪ status=failed），两处数字一致。"""
         rows = store.get_entries()
         total = len(rows)
         translated = 0
         actionable = 0
-        reviewed = 0
-        flagged = 0
         failed = 0
+        needs_work = 0
         for row in rows:
             entry = HomePage._entry_from_row(row)
             if entry.status == "translated":
                 translated += 1
-                # 待审核：已翻译但未过质量门（meta.quality_passed 非 True）
-                meta = entry.meta
-                if meta.get("quality_passed") is True:
-                    reviewed += 1
-                if meta.get("quality_passed") is False \
-                        or meta.get("review_status") in {"flagged", "suspicious"}:
-                    flagged += 1
+                if models.needs_review(entry.meta):
+                    needs_work += 1
             elif entry.status == "failed":
                 # failed 算翻译失败数，同时保持原口径：failed 条目若
                 # 引擎会翻（is_actionable）仍计入待翻译分母（不永久卡死）
                 failed += 1
+                needs_work += 1
                 if is_actionable_translation(entry):
                     actionable += 1
             elif is_actionable_translation(entry):
                 actionable += 1
-        return (total, translated, actionable,
-                max(0, translated - reviewed), flagged, failed)
+        return (total, translated, actionable, failed, needs_work)
 
     def _on_dashboard_stats(self, token: int, stats: tuple) -> None:
         """后台统计完成：渲染数据带与英雄区（主线程）。"""
         if token != self._dashboard_token:
             return
         self._dashboard_loading = False
-        total, translated, actionable, pending_review, flagged, failed = stats
-        self.stat_total.setValue(total)
+        total, translated, actionable, failed, needs_work = stats
         self.stat_translated.setValue(translated)
-        self.stat_review.setValue(pending_review)
-        self.stat_high_risk.setValue(flagged + failed)
+        self.stat_failed.setValue(failed)
+        self.stat_needs_work.setValue(needs_work)
 
         # 英雄区（测试桩可能无 profile/game_dir，容错显示纯统计）
         project = self.state.project

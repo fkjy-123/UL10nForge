@@ -170,3 +170,34 @@ def test_unrelated_class_leaves_classification_to_pool(tmp_path, monkeypatch):
     move = [e for e in pf.entries if e.original == "Jump"][0]
     assert move.meta.get("reason") != "input_system_object"
     assert move.meta.get("script_class") == "PlayerController"
+
+
+def test_code_driven_object_name_not_display(tmp_path, monkeypatch):
+    """minato 实证「no translation found for 音频」（2026-08-15）：
+    对象 [Minato(对象名), audio(子对象名), TMPro.TMP_Text(类型引用),
+    SetText(代码驱动方法)]——SetText 说明文本由代码运行时设置，audio
+    是 GameObject 名不是静态显示文本。此前 SetText 被引擎串过滤不
+    贡献 code 信号（白名单词 + 单类型引用即放行 display），audio 被
+    译成「音频」写回，游戏按名查找失败。修复：代码驱动方法名计入
+    code 信号 → is_code_heavy → 白名单词按 code 对象跳过。"""
+    raw = (_with_len("Minato") + _with_len("audio")
+           + _with_len("TMPro.TMP_Text, Unity.TextMeshPro")
+           + _with_len("SetText"))
+    pf = _extract(tmp_path, [_input_obj(None, raw)], monkeypatch)
+    audio = [e for e in pf.entries if e.original == "audio"][0]
+    assert audio.status == "skipped"
+    assert audio.meta["reason"] == "code_heavy_identifier"
+    assert audio.meta["obj_is_code_heavy"] is True
+
+
+def test_static_button_object_still_display(tmp_path, monkeypatch):
+    """对照组（hotel-paradise 按钮对象形态）：无代码驱动方法、含控件
+    状态证据（Normal/Highlighted/Pressed）+ 组件类型引用——白名单
+    显示词照常放行，修复不误伤静态按钮文本。"""
+    raw = (_with_len("Save") + _with_len("Normal")
+           + _with_len("Highlighted") + _with_len("Pressed")
+           + _with_len("Some.UI.Button, UnityEngine.UI"))
+    pf = _extract(tmp_path, [_input_obj(None, raw)], monkeypatch)
+    save = [e for e in pf.entries if e.original == "Save"][0]
+    assert save.status == "pending"
+    assert save.meta["role"] == "display"

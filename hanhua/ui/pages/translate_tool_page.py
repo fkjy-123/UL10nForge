@@ -17,12 +17,9 @@ from PySide6.QtWidgets import (QComboBox, QHBoxLayout, QLabel,
                                QPlainTextEdit, QPushButton, QSplitter,
                                QVBoxLayout, QWidget)
 
-from hanhua.core.agent_memory import AgentMemory
-from hanhua.core.glossary import GlossaryStore
-from hanhua.core.knowledge import KnowledgeBase
 from hanhua.core.local_model import LocalModelError, discover_model
 from hanhua.core.prompts import build_system_prompt
-from hanhua.core.translator import create_client
+from hanhua.core.translator import create_client, strip_prompt_echo
 from hanhua.ui.app_state import AppState
 from hanhua.ui.design_system import TOKENS
 from hanhua.ui.widgets import PageHeader, Toast, Worker
@@ -31,21 +28,6 @@ _HISTORY_FILENAME = "quick_translate_history.json"
 _HISTORY_LIMIT = 50          # 落盘上限
 _HISTORY_SHOWN = 20          # 下拉展示条数
 _BLOCK_CHARS = 2000          # 长文本单块字符上限（行不拆分）
-
-# 词对注入限量（2026-08-14 用户实证「19987 token 超过上下文限制」：
-# 全量注入跨游戏积累的词对 → system prompt 上万 token 超 llama-server
-# ctx 被拒。取「最新贴近当前需求」尾部词对；超预算自动减半重取）
-_GLOSSARY_LIMIT = 80         # 术语库最近 80 条
-_MEMORY_LIMIT = 40           # 经验记忆按 hits 取前 40 条
-_KNOWLEDGE_LIMIT = 10        # 知识库规则最新 10 条（含内置 2 行）
-_SYSTEM_TOKEN_BUDGET = 5000  # 估算上限：ctx 8192 - 输入块 ~2000
-                             # - 输出余量 ~400 - 安全余量
-
-
-def _estimate_prompt_tokens(text: str) -> int:
-    """粗略估算 token（中文 1 字符≈1 token，英文 ≈0.25）。"""
-    cjk = sum(1 for ch in text if "一" <= ch <= "鿿")
-    return int(cjk + (len(text) - cjk) * 0.25)
 
 
 class TranslateToolPage(QWidget):
@@ -173,89 +155,12 @@ class TranslateToolPage(QWidget):
 
     # ── 提示词 ───────────────────────────────────────────────
     def _default_prompt(self) -> str:
-        """按当前游戏档案 + 全局沉淀词对生成游戏本地化角色提示词。
-
-        2026-08-14 用户实证（play 仍译「播放」、hello/hi 回显原文）：
-        工具页此前只注入档案、不注入术语库/知识库/经验记忆——批量翻译
-        里生效的沉淀词对在工具页完全不生效。现与批量翻译同源注入
-        （translate_page 模式：GlossaryStore + KnowledgeBase +
-        AgentMemory.reference_pairs），并显式约束问候语必须译为中文。
-        库故障不阻断工具页（降级为仅档案提示词）。
-
-        注入规模控制（2026-08-14 用户实证「19987 token 超过上下文
-        限制」：全量注入跨游戏积累的词对后 system prompt 可上万 token，
-        远超 llama-server ctx 8192 被拒——工具页必须限量 + 预算兜底，
-        任意库规模下可用；限量取「最新贴近当前需求」的尾部词对）。
-        """
-        app_dir = Path(self.state.app_dir)
-        glossary_limit, memory_limit, knowledge_limit = (
-            _GLOSSARY_LIMIT, _MEMORY_LIMIT, _KNOWLEDGE_LIMIT)
-        for _attempt in range(2):
-            prompt = self._build_enhanced_prompt(
-                app_dir, glossary_limit, memory_limit, knowledge_limit)
-            if _estimate_prompt_tokens(prompt) <= _SYSTEM_TOKEN_BUDGET:
-                return prompt
-            # 超预算兜底：限量减半重取（极端大的库最多一次降档）
-            glossary_limit //= 2
-            memory_limit //= 2
-            knowledge_limit //= 2
-        return prompt
-
-    def _build_enhanced_prompt(self, app_dir: Path, glossary_limit: int,
-                               memory_limit: int,
-                               knowledge_limit: int) -> str:
-        """按给定限量取三库词对构造提示词（预算重试用）。"""
-        glossary_lines: list[str] = []
-        known_names: list[str] = []
-        knowledge_lines: list[str] = []
-        try:
-            glossary = GlossaryStore(app_dir / "glossary.db")
-            glossary.init_schema()
-            prompt_text = glossary.format_for_prompt(limit=glossary_limit)
-            glossary_lines = ([prompt_text] if prompt_text else [])
-            known_names = glossary.known_names_for(set())
-            glossary.close()
-            agent = AgentMemory(app_dir / "agent_memory.db")
-            agent.init_schema()
-            agent_pairs = agent.reference_pairs(limit=memory_limit)
-            if agent_pairs:
-                # 参考译例（→ 分隔行）并入术语区——batch 流程经
-                # BatchTranslator glossary 注入，工具页走 prompt 行
-                glossary_lines += [f"{k} → {v}"
-                                   for k, v in agent_pairs]
-        except Exception:  # noqa: BLE001 沉淀词对故障不阻断工具页
-            pass
-        try:
-            knowledge = KnowledgeBase(app_dir / "knowledge.db")
-            knowledge_lines = knowledge.format_for_prompt(
-                limit=knowledge_limit)
-            knowledge.close()
-        except Exception:  # noqa: BLE001
-            knowledge_lines = []
-        # 2026-08-14：build_system_prompt 已精简（角色+规则，不再渲染
-        # 术语/专名/知识全量块——批量翻译按条目检索命中注入）。工具页
-        # 是单条人工翻译且提示词用户可见，保留限量注入：注入块由本方法
-        # 自行拼接（限量 + 预算兜底已在 _default_prompt）
-        prompt = build_system_prompt(self.state.profile, "")
-        if glossary_lines:
-            prompt += "\n【术语表·必须严格遵守】\n" + "\n".join(glossary_lines)
-        if known_names:
-            prompt += ("\n【已确认专名·全游戏保持一致】\n"
-                       + "、".join(known_names[:50]))
-        if knowledge_lines:
-            # format_for_prompt 返回单个多行字符串（非逐条 list）——
-            # 整体追加，不得 join（join 会把整串逐字符拆行）
-            prompt += ("\n【特殊情况规则·优先遵守】\n"
-                       + str(knowledge_lines))
-        # 2026-08-14 用户实证 hello/hi 返回原文：问候语是 UI 高频短词，
-        # 4B 对超短词默认回显——工具页是裸 chat（无 batch 流程的
-        # _GREETING_WORDS 逻辑），靠 prompt 显式约束兜底
-        prompt += ("\n【补充规则】\n"
-                   "1. 问候语（hello/hi/hey 等）必须译为中文"
-                   "（你好/嗨/嘿），禁止原样回显英文。\n"
-                   "2. 参考译例（→ 分隔的行）仅作参考，与术语表冲突时"
-                   "以术语表为准。")
-        return prompt
+        """精简纯翻译提示词（2026-08-15 用户要求：工具页就是纯翻译
+        小工具，不注入术语库/知识库/经验记忆——默认提示词与批量翻译
+        的精简角色同款（build_system_prompt 2026-08-14 精简版），
+        长度固定不随库膨胀，不再出现「提示词上万 token 超 ctx」）。
+        提示词仍可自由编辑（用户自定义要求）。"""
+        return build_system_prompt(self.state.profile, "")
 
     def _reset_prompt(self):
         self.prompt_edit.setPlainText(self._default_prompt())
@@ -347,7 +252,7 @@ class TranslateToolPage(QWidget):
         for block in blocks:
             text, _usage = client.chat(
                 system, [{"role": "user", "content": block}])
-            parts.append(text.strip())
+            parts.append(strip_prompt_echo(text, system, block))
         return parts
 
     @staticmethod
@@ -372,7 +277,17 @@ class TranslateToolPage(QWidget):
         self._running = False
         self.translate_btn.setEnabled(True)
         self.translate_btn.setText("翻译")
-        self.dst_edit.setPlainText("\n".join(parts))
+        joined = "\n".join(parts)
+        self.dst_edit.setPlainText(joined)
+        # 2026-08-15 用户实证：难翻译内容模型直接不输出（全空）或
+        # 仅回显原文被剥空——译文区一片空白无提示，用户以为卡死。
+        # 空结果显式提示（回显剥空同理），并跳过空历史记录。
+        if not any(str(p).strip() for p in parts):
+            self.status_label.setText("完成 · 模型未产出译文（可能无法翻译"
+                                      "或仅回显原文，可尝试简化输入）")
+            Toast.show(self, "模型未产出译文：可能无法翻译或仅回显原文，"
+                             "可尝试简化输入", "warning")
+            return
         self.status_label.setText(f"完成 · {len(parts)} 段")
         api = self.state.api
         model = ((self._active_local_model
@@ -380,7 +295,7 @@ class TranslateToolPage(QWidget):
                  if api.mode == "local" else api.model or "")
         self._append_history(
             self.src_edit.toPlainText().strip(),
-            "\n".join(parts),
+            joined,
             model,
             self.prompt_edit.toPlainText().strip())
         self._refresh_history_combo()

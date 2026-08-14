@@ -58,6 +58,19 @@ _LIFECYCLE_METHODS = frozenset({
     "Awake", "Start", "Update", "FixedUpdate", "LateUpdate",
     "OnEnable", "OnDisable", "OnDestroy", "Reset",
 })
+# 代码驱动 UI 方法名（2026-08-15 minato 实证「no translation found
+# for 音频」）：level0 obj 3311 是 [Minato(对象名), audio(子对象名),
+# TMPro.TMP_Text(类型引用), SetText(方法名)]——audio 被白名单词规则
+# 放行翻译成「音频」，写回后游戏按对象名查找失败。SetText 此前在
+# 引擎串过滤中（不贡献 code 信号），导致 direct_code_signal_count
+# 只计到 1（TMPro 类型引用），is_code_heavy 判定不足。这些方法名
+# 说明该对象文本由代码运行时设置——对象内其余单词是名字/引用，
+# 不是静态显示文本（静态按钮对象的 Save/Load 不含这些方法，仍按
+# has_ui_evidence 正常放行，不误伤）。
+_CODE_DRIVEN_METHODS = frozenset({
+    "SetText", "SetActive", "SetActiveGameObject", "SendMessage",
+    "SetTextMeshProText", "set_text",
+})
 _UNITY_CONTROL_STATE_NAMES = frozenset({
     "normal", "highlighted", "pressed", "selected", "disabled",
 })
@@ -1077,6 +1090,7 @@ def _raw_string_entries(file_id: str, obj_path_id: int, raw: bytes,
         has_marker
     direct_code_signal_count = sum(
         _structural_reason(s) in ("method_name", "type_reference")
+        or s.strip() in _CODE_DRIVEN_METHODS
         for _, _, s in scanned
     )
     lifecycle_signal_count = sum(

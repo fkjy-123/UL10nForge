@@ -165,15 +165,23 @@ def _glossary_mismatch(entry: TextEntry, pairs: list[tuple[str, str]]) -> str:
     """术语冲突：active 词对命中原文（词边界）但标准译法不在译文中。
 
     返回命中的词对译法（用于审核参考），无命中返回空串。
+
+    保留型词对豁免（2026-08-14，与 quality.py 对齐）：term→term
+    （FPS→FPS 等专名保留映射）命中原文但译文含中文翻译时不算冲突
+    ——「FPS 译成帧率」优于强制保留（backrooms 实证：FPS→FPS 沉淀
+    后质量门曾拒绝更忠实的「输入自定义帧率…」）。
     """
     original = entry.original
     translation = str(entry.translation or "")
+    has_chinese = bool(re.search(r"[一-鿿]", translation))
     for term, trans in pairs:
         if not term or not trans:
             continue
         if re.search(rf"(?<![A-Za-z]){re.escape(term)}(?![A-Za-z])",
                      original, re.IGNORECASE):
             if trans not in translation:
+                if (trans.casefold() == term.casefold() and has_chinese):
+                    continue
                 return trans
     return ""
 

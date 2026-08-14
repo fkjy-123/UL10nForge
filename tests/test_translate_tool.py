@@ -254,63 +254,34 @@ def test_main_window_has_translate_tool_page(qapp, tmp_path):
 
 # ── #38/#39（2026-08-14 用户实证）：工具页默认提示词注入 ──────────
 
-def test_default_prompt_injects_glossary_knowledge_memory(qapp, tmp_path):
-    """工具页默认提示词与批量翻译同源注入术语库/知识库/经验记忆。
-
-    2026-08-14 用户实证（play 仍译「播放」、hello/hi 回显原文）：
-    此前 _default_prompt 只注入档案（build_system_prompt(profile, [])），
-    沉淀词对在工具页完全不生效。现注入 GlossaryStore + KnowledgeBase
-    + AgentMemory.reference_pairs，并追加问候语必须译中文的补充规则。
-    """
-    # 种数据：play→开始（术语库）、text 域规则（知识库）、
-    # Start game→开始游戏（经验记忆，evidence 2 达 ACTIVE_MIN_EVIDENCE
-    # 晋升 active；组合词——单字词 hello 在 _PROTECTED_SINGLE_WORDS
-    # 被过滤是 play 污染事故后的设计行为，问候语由补充规则兜底）
-    glossary = GlossaryStore(tmp_path / "glossary.db")
-    glossary.init_schema()
-    glossary.add("play", "开始", category="术语")
-    glossary.close()
-    knowledge = KnowledgeBase(tmp_path / "knowledge.db")
-    knowledge.store.upsert(domain="text", kind="规则", pattern="play",
-                           map_to="开始", source="manual", confidence=1.0)
-    knowledge.close()
-    agent = AgentMemory(tmp_path / "agent_memory.db")
-    agent.init_schema()
-    agent.propose("Start game", "开始游戏", game="t", type_="phrase")
-    agent.propose("Start game", "开始游戏", game="t", type_="phrase")
-    agent.close()
-
+def test_default_prompt_is_lean_pure_translation(qapp, tmp_path):
+    """2026-08-15 用户要求：工具页就是纯翻译小工具——默认提示词
+    精简为批量翻译同款 build_system_prompt（角色+规则），不注入
+    术语库/知识库/经验记忆（此前注入上万 token 撑爆 ctx）。"""
     page = TranslateToolPage(_state(tmp_path), _Window())
     prompt = page._default_prompt()
-    # 术语注入（play→开始 是用户实证的污染词对）
-    assert "play" in prompt
-    assert "开始" in prompt
-    # 知识库规则行（map_to 有值才注入）
-    assert "应译为" in prompt
-    # 经验记忆参考对（→ 分隔行）
-    assert "Start game → 开始游戏" in prompt
-    # 问候语必须译中文（#39：hello/hi 回显原文的兜底指令）
-    assert "问候语" in prompt
-    assert "你好/嗨/嘿" in prompt
-    # 参考译例优先级说明（与术语表冲突时以术语表为准）
-    assert "与术语表冲突时" in prompt
+    # 精简角色提示词恒在（批量翻译同源）
+    assert "本地化" in prompt
+    # 不再注入三库大块（术语表/知识库/记忆参考均已移除）
+    assert "【术语表" not in prompt
+    assert "【特殊情况规则" not in prompt
+    assert "【补充规则" not in prompt
+    assert len(prompt) < 1500
 
 
-def test_default_prompt_greeting_rule_always_present(qapp, tmp_path):
-    """空库（无任何沉淀）时补充规则与参考译例说明仍恒在。"""
+def test_default_prompt_empty_library_constant(qapp, tmp_path):
+    """空库（无任何沉淀）时提示词与满库完全一致——纯翻译提示词
+    不随库规模变化（2026-08-15 精简后无注入，长度恒定）。"""
     page = TranslateToolPage(_state(tmp_path), _Window())
-    prompt = page._default_prompt()
-    assert "问候语" in prompt
-    assert "禁止原样回显英文" in prompt
+    p1 = page._default_prompt()
+    assert p1.strip()
+    # 同一档案下重复生成结果一致（无随机库注入）
+    assert page._default_prompt() == p1
 
 
-def test_default_prompt_token_budget_limits_injection(qapp, tmp_path):
-    """#42（2026-08-14 用户实证「19987 token 超过上下文限制」）：全量
-    注入跨游戏积累的词对会撑爆 llama-server ctx——限量 + 预算兜底后
-    任意库规模下 prompt 估算不超预算，且只注入最近词对。"""
-    from hanhua.ui.pages.translate_tool_page import (
-        _SYSTEM_TOKEN_BUDGET, _estimate_prompt_tokens)
-    # 大库：300 术语 + 200 记忆（evidence 2 晋升 active）
+def test_default_prompt_never_grows_with_library(qapp, tmp_path):
+    """2026-08-15 用户要求：纯翻译小工具——大库规模下提示词长度
+    恒定（不注入词对，无预算膨胀问题）。"""
     glossary = GlossaryStore(tmp_path / "glossary.db")
     glossary.init_schema()
     for i in range(300):
@@ -324,11 +295,6 @@ def test_default_prompt_token_budget_limits_injection(qapp, tmp_path):
     agent.close()
     page = TranslateToolPage(_state(tmp_path), _Window())
     prompt = page._default_prompt()
-    assert _estimate_prompt_tokens(prompt) <= _SYSTEM_TOKEN_BUDGET
-    # 限量生效：最近词对（term299）在，最早（term0）不在
-    assert "term299 → 译名299" in prompt
-    assert "term0 → 译名0" not in prompt
-    # 记忆参考对同样限量注入（≤40 条；hits 排序无 tiebreak，
-    # 只断言数量不断言具体条目）
-    assert prompt.count("phrase ") <= 40
-    assert prompt.count("phrase ") >= 30
+    assert len(prompt) < 1500
+    assert "term299" not in prompt
+    assert "phrase " not in prompt
