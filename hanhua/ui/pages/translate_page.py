@@ -406,6 +406,10 @@ class TranslatePage(QWidget):
             lambda status, text, p=project, g=generation:
             self.activity_feed.append_event(status, text)
             if self.state.is_current_project(p, g) else None)
+        worker.signals.review_summary.connect(
+            lambda line, p=project, g=generation:
+            self._on_review_summary(line)
+            if self.state.is_current_project(p, g) else None)
         worker.signals.finished.connect(
             lambda stats, p=project, g=generation:
             self._on_finished(stats)
@@ -714,6 +718,11 @@ class TranslatePage(QWidget):
                         if rejected_n:
                             line += f" · C5 门禁拒绝 {rejected_n} 条"
                         on_log(line)
+                        # 2026-08-14 用户实证「只有完成二字，过了两分钟
+                        # 才出现反馈」：汇总此前只进默认折叠的日志面板——
+                        # 完成时同步经 review_summary 信号回主线程弹
+                        # Toast + 活动流（worker 线程不得直接碰 UI）
+                        signals.review_summary.emit(line)
                         # #43 阶段 F：审核报告落盘（reviews/ 目录，风险
                         # 分布 + 失败明细；失败降级不阻断——报告是留档，
                         # 不是主流程）
@@ -857,6 +866,18 @@ class TranslatePage(QWidget):
                 "info" if done < total else "success",
                 f"语义审核：{done}/{total} 条"
                 + ("" if done < total else " · 完成"))
+
+    def _on_review_summary(self, line: str):
+        """审核完成汇总弹窗（signals.review_summary 回主线程）。
+
+        2026-08-14 用户实证「审核完成只有完成二字，过了两分钟才出现
+        反馈」：汇总此前只进默认折叠的日志面板。完成时立即 Toast +
+        活动流。长消息按「 · 」拆分换行（Toast 单行不换行会撑出屏幕），
+        驻留 8 秒保证看完。
+        """
+        self.activity_feed.append_event("success", line)
+        Toast.show(self, line.replace(" · ", "\n"), "success",
+                   duration_ms=8000)
 
     def _on_finished(self, stats):
         self._running = False

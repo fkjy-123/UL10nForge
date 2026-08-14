@@ -1892,9 +1892,25 @@ class Project:
                     f"{name}={item['status']}"
                     for name, item in gates.items()
                     if item["status"] == "BLOCKED"]
+                # 2026-08-14 用户实证「写回还是出错」：runtime=BLOCKED
+                # （字体候选未实机验证）的错误只有状态没有原因与指引。
+                # 免实机闭环下 PENDING_RUNTIME_ATTESTATION/CANDIDATE_ONLY
+                # 是常态——勾选「允许部分写入」确认候选即放行（WARN）；
+                # IL2CPP 无 provider/未知渲染栈（detail 带「不可绕过」）
+                # 是硬阻断，候选确认不可放行，需修复后重试。
+                hint = ""
+                runtime_gate = gates.get("runtime") or {}
+                if runtime_gate.get("status") == "BLOCKED":
+                    detail = runtime_gate.get("detail") or ""
+                    if "不可绕过" in detail:
+                        hint = ("。字体覆盖当前无法自动保证"
+                                "（候选确认不可绕过），详见发布报告")
+                    else:
+                        hint = ("。字体候选未实机验证：可勾选翻译页"
+                                "「允许部分写入」确认候选后重试")
                 raise RuntimeError(
                     f"写回闸门 BLOCKED（{'、'.join(blocked_parts)}），"
-                    "已拒绝发布副本。详见发布报告")
+                    f"已拒绝发布副本。详见发布报告{hint}")
             route = _set_route_status(
                 route, "writeback", "succeeded",
                 "写回、输入保护、重开验证与四态闸门通过"

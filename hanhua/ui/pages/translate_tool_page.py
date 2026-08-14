@@ -17,6 +17,9 @@ from PySide6.QtWidgets import (QComboBox, QHBoxLayout, QLabel,
                                QPlainTextEdit, QPushButton, QSplitter,
                                QVBoxLayout, QWidget)
 
+from hanhua.core.agent_memory import AgentMemory
+from hanhua.core.glossary import GlossaryStore
+from hanhua.core.knowledge import KnowledgeBase
 from hanhua.core.local_model import LocalModelError, discover_model
 from hanhua.core.prompts import build_system_prompt
 from hanhua.core.translator import create_client
@@ -86,7 +89,7 @@ class TranslateToolPage(QWidget):
         self.reset_prompt_btn = QPushButton("使用当前游戏档案提示词")
         self.reset_prompt_btn.setMinimumHeight(TOKENS.control_height)
         self.reset_prompt_btn.setToolTip(
-            "按当前游戏档案（游戏名/世界观/文风/个性化要求）重新生成")
+            "按当前游戏档案 + 术语库/知识库/经验记忆词对重新生成")
         self.reset_prompt_btn.clicked.connect(self._reset_prompt)
         prompt_row.addWidget(self.reset_prompt_btn)
         prompt_row.addStretch(1)
@@ -155,8 +158,54 @@ class TranslateToolPage(QWidget):
 
     # ── 提示词 ───────────────────────────────────────────────
     def _default_prompt(self) -> str:
-        """按当前游戏档案生成游戏本地化角色提示词（#10 个性化入口）。"""
-        return build_system_prompt(self.state.profile, [])
+        """按当前游戏档案 + 全局沉淀词对生成游戏本地化角色提示词。
+
+        2026-08-14 用户实证（play 仍译「播放」、hello/hi 回显原文）：
+        工具页此前只注入档案、不注入术语库/知识库/经验记忆——批量翻译
+        里生效的沉淀词对在工具页完全不生效。现与批量翻译同源注入
+        （translate_page 模式：GlossaryStore + KnowledgeBase +
+        AgentMemory.reference_pairs），并显式约束问候语必须译为中文。
+        库故障不阻断工具页（降级为仅档案提示词）。
+        """
+        app_dir = Path(self.state.app_dir)
+        glossary_lines: list[str] = []
+        known_names: list[str] = []
+        knowledge_lines: list[str] = []
+        try:
+            glossary = GlossaryStore(app_dir / "glossary.db")
+            glossary.init_schema()
+            prompt_text = glossary.format_for_prompt()
+            glossary_lines = ([prompt_text] if prompt_text else [])
+            known_names = glossary.known_names_for(set())
+            glossary.close()
+            agent = AgentMemory(app_dir / "agent_memory.db")
+            agent.init_schema()
+            agent_pairs = agent.reference_pairs()
+            if agent_pairs:
+                # 参考译例（→ 分隔行）并入术语区——batch 流程经
+                # BatchTranslator glossary 注入，工具页走 prompt 行
+                glossary_lines += [f"{k} → {v}"
+                                   for k, v in agent_pairs]
+        except Exception:  # noqa: BLE001 沉淀词对故障不阻断工具页
+            pass
+        try:
+            knowledge = KnowledgeBase(app_dir / "knowledge.db")
+            knowledge_lines = knowledge.format_for_prompt()
+            knowledge.close()
+        except Exception:  # noqa: BLE001
+            knowledge_lines = []
+        prompt = build_system_prompt(
+            self.state.profile, glossary_lines,
+            known_names=known_names, knowledge_lines=knowledge_lines)
+        # 2026-08-14 用户实证 hello/hi 返回原文：问候语是 UI 高频短词，
+        # 4B 对超短词默认回显——工具页是裸 chat（无 batch 流程的
+        # _GREETING_WORDS 逻辑），靠 prompt 显式约束兜底
+        prompt += ("\n【补充规则】\n"
+                   "1. 问候语（hello/hi/hey 等）必须译为中文"
+                   "（你好/嗨/嘿），禁止原样回显英文。\n"
+                   "2. 参考译例（→ 分隔的行）仅作参考，与术语表冲突时"
+                   "以术语表为准。")
+        return prompt
 
     def _reset_prompt(self):
         self.prompt_edit.setPlainText(self._default_prompt())

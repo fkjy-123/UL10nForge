@@ -557,6 +557,10 @@ class WorkerSignals(QObject):
     review = Signal(int, int)   # 语义审核进度 (done, total) 实时刷新
     note = Signal(str, str)     # 活动流消息 (status, text)——worker 线程
                                 # 不得直接操作 QWidget，经此信号回主线程
+    review_summary = Signal(str)  # 审核完成汇总——2026-08-14 用户实证
+                                # 「只有完成二字，两分钟后才出反馈」：
+                                # 汇总此前只进默认折叠的日志面板，完成
+                                # 时须经此信号回主线程弹 Toast/活动流
 
 
 class Worker(QRunnable):

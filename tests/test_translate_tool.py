@@ -13,6 +13,9 @@ import pytest
 from PySide6.QtTest import QTest
 from PySide6.QtWidgets import QApplication
 
+from hanhua.core.agent_memory import AgentMemory
+from hanhua.core.glossary import GlossaryStore
+from hanhua.core.knowledge import KnowledgeBase
 from hanhua.core.settings import SettingsStore
 from hanhua.ui.app_state import AppState
 from hanhua.ui.main_window import MainWindow, PAGES
@@ -247,3 +250,55 @@ def test_main_window_has_translate_tool_page(qapp, tmp_path):
     assert window.pages["translate_tool"] is not None
     window.navigate("translate_tool")
     assert window.current_page() == "translate_tool"
+
+
+# ── #38/#39（2026-08-14 用户实证）：工具页默认提示词注入 ──────────
+
+def test_default_prompt_injects_glossary_knowledge_memory(qapp, tmp_path):
+    """工具页默认提示词与批量翻译同源注入术语库/知识库/经验记忆。
+
+    2026-08-14 用户实证（play 仍译「播放」、hello/hi 回显原文）：
+    此前 _default_prompt 只注入档案（build_system_prompt(profile, [])），
+    沉淀词对在工具页完全不生效。现注入 GlossaryStore + KnowledgeBase
+    + AgentMemory.reference_pairs，并追加问候语必须译中文的补充规则。
+    """
+    # 种数据：play→开始（术语库）、text 域规则（知识库）、
+    # Start game→开始游戏（经验记忆，evidence 2 达 ACTIVE_MIN_EVIDENCE
+    # 晋升 active；组合词——单字词 hello 在 _PROTECTED_SINGLE_WORDS
+    # 被过滤是 play 污染事故后的设计行为，问候语由补充规则兜底）
+    glossary = GlossaryStore(tmp_path / "glossary.db")
+    glossary.init_schema()
+    glossary.add("play", "开始", category="术语")
+    glossary.close()
+    knowledge = KnowledgeBase(tmp_path / "knowledge.db")
+    knowledge.store.upsert(domain="text", kind="规则", pattern="play",
+                           map_to="开始", source="manual", confidence=1.0)
+    knowledge.close()
+    agent = AgentMemory(tmp_path / "agent_memory.db")
+    agent.init_schema()
+    agent.propose("Start game", "开始游戏", game="t", type_="phrase")
+    agent.propose("Start game", "开始游戏", game="t", type_="phrase")
+    agent.close()
+
+    page = TranslateToolPage(_state(tmp_path), _Window())
+    prompt = page._default_prompt()
+    # 术语注入（play→开始 是用户实证的污染词对）
+    assert "play" in prompt
+    assert "开始" in prompt
+    # 知识库规则行（map_to 有值才注入）
+    assert "应译为" in prompt
+    # 经验记忆参考对（→ 分隔行）
+    assert "Start game → 开始游戏" in prompt
+    # 问候语必须译中文（#39：hello/hi 回显原文的兜底指令）
+    assert "问候语" in prompt
+    assert "你好/嗨/嘿" in prompt
+    # 参考译例优先级说明（与术语表冲突时以术语表为准）
+    assert "与术语表冲突时" in prompt
+
+
+def test_default_prompt_greeting_rule_always_present(qapp, tmp_path):
+    """空库（无任何沉淀）时补充规则与参考译例说明仍恒在。"""
+    page = TranslateToolPage(_state(tmp_path), _Window())
+    prompt = page._default_prompt()
+    assert "问候语" in prompt
+    assert "禁止原样回显英文" in prompt
