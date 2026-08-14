@@ -717,15 +717,26 @@ class SettingsPage(QWidget):
         worker.signals.error.connect(self._on_probe_error)
         self._pool.start(worker)
 
+    @staticmethod
+    def _set_card_button(card: dict, running: bool) -> None:
+        """按钮运行态样式：运行中 → 红色「停止」，未运行 → 主色「启动」。
+
+        动态 setProperty 后必须 unpolish/polish 才会重算 QSS（否则
+        danger 属性形同虚设，按钮停在薄荷青）。"""
+        btn = card["btn"]
+        btn.setText("停止" if running else "启动")
+        btn.setProperty("danger", running)
+        btn.setProperty("primary", not running)
+        btn.style().unpolish(btn)
+        btn.style().polish(btn)
+
     def _apply_model_states(self, states: dict) -> None:
         for kind, card in self.model_cards.items():
             running = bool(states.get(kind))
             card["status"].setText(
                 f"状态：运行中 · 端口 {card['port']}" if running
                 else "状态：未启动")
-            card["btn"].setText("停止" if running else "启动")
-            card["btn"].setProperty("danger", running)
-            card["btn"].setProperty("primary", not running)
+            self._set_card_button(card, running)
 
     def _on_probe_error(self, _err: str) -> None:
         """探测异常：按全部未启动恢复（按钮保持可点）。"""
@@ -844,8 +855,7 @@ class SettingsPage(QWidget):
             return
         card["btn"].setEnabled(True)
         card["status"].setText(f"状态：运行中 · 端口 {card['port']}")
-        card["btn"].setText("停止")
-        card["btn"].setProperty("danger", True)
+        self._set_card_button(card, True)
         self._refresh_env_status()
         Toast.show(self, f"{self._model_title(kind)} 已启动", "success")
 
@@ -889,9 +899,7 @@ class SettingsPage(QWidget):
         if card is not None:
             card["btn"].setEnabled(True)
             card["status"].setText("状态：未启动")
-            card["btn"].setText("启动")
-            card["btn"].setProperty("primary", True)
-            card["btn"].setProperty("danger", False)
+            self._set_card_button(card, False)
         self._refresh_env_status()
         if kind:
             Toast.show(self, f"{self._model_title(kind)} 已停止", "success")
