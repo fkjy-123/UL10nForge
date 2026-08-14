@@ -159,13 +159,15 @@ def test_native_scheduler_never_multiplies_outer_and_inner_concurrency(
 
 
 @pytest.mark.parametrize(("source", "wrong"), [
-    ("Settings", "설정"),
+    # 2026-08-14：内置 UI 词（Settings/Quit/…）已被确定性直填短路，
+    # wrong-script 重试链改用非内置词验证
+    ("Mission Briefing", "설정"),
     ("ゲーム設定", "ゲーム設定"),
     ("게임 설정", "設定です"),
-    ("Settings", "设置 Настройки"),
-    ("Settings", "设置 الإعدادات"),
-    ("Settings", "设置 설정"),
-    ("Settings", "设置 Menu"),
+    ("Mission Briefing", "设置 Настройки"),
+    ("Mission Briefing", "设置 الإعدادات"),
+    ("Mission Briefing", "设置 설정"),
+    ("Mission Briefing", "设置 Menu"),
 ])
 def test_chinese_target_retries_wrong_script_output(source, wrong):
     class WrongThenChinese:
@@ -1429,19 +1431,21 @@ def test_native_actionable_ui_uses_builtin_references_and_retries_only_once():
 
         def translate_text(self, source, target_lang, glossary):
             self.calls.append((source, target_lang, tuple(glossary)))
-            result = "QUIT" if len(self.calls) == 1 else "退出"
+            result = "PAUSE MENU" if len(self.calls) == 1 else "暂停菜单"
             return result, Usage(5, 2)
 
     client = EchoThenTranslateClient()
+    # 2026-08-14：内置 UI 词（QUIT）已被确定性直填短路，回显重试链
+    # 改用非内置词验证
     entry = _to_model([{
-        "file_id": "ui", "key_path": "menu/quit", "original": "QUIT",
+        "file_id": "ui", "key_path": "menu/pause", "original": "PAUSE MENU",
         "meta": {"role": "ui", "disposition": "translate"},
     }])[0]
 
     stats = BatchTranslator(client, batch_size=1, concurrency=1).run([entry])
 
     assert stats.done == 1 and stats.failed == 0 and stats.requests == 2
-    assert entry.translation == "退出"
+    assert entry.translation == "暂停菜单"
     assert len(client.calls) == 2
     expected = {
         ("Settings", "设置"), ("Quit", "退出"),
@@ -1569,8 +1573,11 @@ def test_native_actionable_retry_stops_after_first_response_cancels():
             return source, Usage(1, 1)
 
     client = CancellingEchoClient()
+    # 2026-08-14：内置 UI 词（SFX）已被确定性直填短路，取消链改用
+    # 非内置词验证
     entry = _to_model([{"file_id": "ui", "key_path": "menu/sfx",
-                        "original": "SFX", "meta": {"role": "ui"}}])[0]
+                        "original": "TAP TO CONTINUE",
+                        "meta": {"role": "ui"}}])[0]
     stats = BatchTranslator(
         client, batch_size=1, concurrency=1,
         cancellation_event=cancelled,
@@ -1596,8 +1603,11 @@ def test_native_actionable_retry_response_cancel_does_not_mutate_entry():
             return source, Usage(1, 1)
 
     client = RetryCancellingClient()
+    # 2026-08-14：内置 UI 词（Settings）已被确定性直填短路，取消链
+    # 改用非内置词验证
     entry = _to_model([{"file_id": "ui", "key_path": "menu/settings",
-                        "original": "Settings", "meta": {"role": "ui"}}])[0]
+                        "original": "TAP TO CONTINUE",
+                        "meta": {"role": "ui"}}])[0]
     stats = BatchTranslator(client, batch_size=1, concurrency=1,
                             cancellation_event=cancelled).run([entry])
 
@@ -1615,21 +1625,24 @@ def test_chat_batch_and_single_fallback_include_builtin_ui_references():
 
         def chat(self, _system, messages):
             self.prompts.append(messages[0]["content"])
-            translation = "QUIT" if len(self.prompts) == 1 else "退出"
+            translation = ("EXIT TO MENU" if len(self.prompts) == 1
+                           else "返回主菜单")
             return json.dumps([{
                 "id": "menu/quit@ui", "translation": translation,
             }], ensure_ascii=False), Usage(5, 2)
 
     client = EchoThenTranslateChatClient()
+    # 2026-08-14：内置 UI 词（QUIT）已被确定性直填短路，回显重试链
+    # 改用非内置词验证
     entry = _to_model([{
-        "file_id": "ui", "key_path": "menu/quit", "original": "QUIT",
+        "file_id": "ui", "key_path": "menu/quit", "original": "EXIT TO MENU",
         "meta": {"role": "ui", "disposition": "translate"},
     }])[0]
 
     stats = BatchTranslator(client, batch_size=1, concurrency=1).run([entry])
 
     assert stats.done == 1 and stats.failed == 0 and stats.requests == 2
-    assert entry.translation == "退出" and len(client.prompts) == 2
+    assert entry.translation == "返回主菜单" and len(client.prompts) == 2
     for prompt in client.prompts:
         assert "Reference the following translations:" in prompt
         for source, target in (
@@ -3787,6 +3800,43 @@ def test_builtin_ui_gate_respects_user_glossary_override():
                   status="pending",
                   meta={"role": "display", "disposition": "translate"})
     assert bt._apply_quality(e, "恢复")
+
+
+# ── 2026-08-14 用户实证：play 反复译「播放」——确定性直填 ─────────
+
+def test_play_filled_deterministically_without_model_call():
+    """play→播放 根因修复：原文精确命中内置 UI 引用（Play→开始）→
+    确定性直填权威译文，零模型调用。
+
+    prompt 注入（references）与 Q1 质量门都只能「引导/拦截标记」——
+    4B/1.8B 仍可能无视引用输出「播放」、或重试复败。直填表
+    （_glossary_exact 并入 builtin_ui_exact）保证精确命中时根本不
+    经过模型，结果必然正确。"""
+    from hanhua.core.batch_translator import BatchTranslator
+    from hanhua.core.models import TextEntry
+    client = FakeClient()
+    entry = TextEntry(file_id="f", key_path="k", original="Play",
+                      status="pending",
+                      meta={"role": "display", "disposition": "translate",
+                            "confidence": "high"})
+    stats = BatchTranslator(client, batch_size=1, concurrency=1,
+                            lang="en→zh-CN").run([entry])
+    assert client.calls == 0, "内置 UI 引用直填必须零模型调用"
+    assert stats.done == 1 and stats.failed == 0
+    assert entry.status == "translated"
+    assert entry.translation == "开始"
+
+
+def test_play_mismatch_translation_still_gated_by_q1():
+    """play 加内置引用后 Q1 语义门同步生效：译「播放」必被拦。"""
+    from hanhua.core.batch_translator import BatchTranslator
+    from hanhua.core.models import TextEntry
+    bt = BatchTranslator(FakeClient())
+    e = TextEntry(file_id="f", key_path="k", original="Play",
+                  status="pending",
+                  meta={"role": "display", "disposition": "translate"})
+    assert not bt._apply_quality(e, "播放")
+    assert e.meta["quality_reasons"] == ["builtin_ui_mismatch"]
 
 
 # ── AgentMemory 集成（2026-08-12 记忆模块） ──────────────────────────

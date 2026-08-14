@@ -313,6 +313,9 @@ def test_translation_start_log_uses_same_zero_actionable_scope(
     signals = type("Signals", (), {
         "progress": type("Signal", (), {"emit": lambda _self, _value: None})(),
         "log": type("Signal", (), {"emit": lambda _self, value: logs.append(value)})(),
+        # 2026-08-14 新增：审核完成/失败都经 review_summary 回主线程
+        "review_summary": type(
+            "Signal", (), {"emit": lambda _self, value: logs.append(value)})(),
     })()
     stats = page._translate_worker(page._active_run, signals)
 

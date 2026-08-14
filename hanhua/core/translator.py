@@ -30,6 +30,11 @@ BUILTIN_UI_REFERENCES = (
     ("SFX", "音效"),
     ("Volume", "音量"),
     ("Resume", "继续"),
+    # 2026-08-14 用户实证：play 被译「播放」且多次报告——此前不在
+    # 内置引用表，模型自由发挥最常见义「播放」；按钮/菜单语境下
+    # Play 指「开始游戏」。入表后 prompt 注入 + Q1 语义门 + 主循环
+    # 确定性替换三重生效（审核系统提示术语段同源：Start=开始）
+    ("Play", "开始"),
     ("Controls", "控制"),
     # 高频回显词（真实语料：cell-machine/final-shot 'back'、faerie-afterlight
     # 'hello'、deepest-sword 'press any key'、hybrid-presence 'Default' 模型

@@ -8,6 +8,9 @@
 （服务实例注入 fake，不真实启动）。
 """
 
+from pathlib import Path
+
+from hanhua.core.models import TextEntry
 from hanhua.core.reviewer import (ReviewItem, ReviewResult, SemanticReviewer,
                                   _REVIEW_SYSTEM_PROMPT, _build_item_prompt,
                                   _parse_result, extract_term_pairs)
@@ -432,3 +435,113 @@ def test_review_batch_max_tokens_capped():
     assert len(results) == 2
     assert service.max_tokens_calls == [max(1024, min(4096, 128 * 2 + 256))]
     assert service.max_tokens_calls[0] == 1024      # 1024 保底生效
+
+
+# ── 2026-08-14 用户实证：request_error 全批——4B 反馈重译通道 ──────
+
+class _FakeTranslator:
+    """假翻译器：记录调用；_apply_quality 默认放行（可切换拒绝）。"""
+
+    def __init__(self, apply_ok: bool = True):
+        self.apply_ok = apply_ok
+        self.retranslate_calls: list[tuple] = []
+        self.apply_calls: list[str] = []
+
+    def retranslate_with_feedback(self, entry, feedback, round_no=1):
+        self.retranslate_calls.append((entry.original, feedback, round_no))
+        entry.translation = "开始游戏（1.8B）"
+        return True, entry.translation
+
+    def _apply_quality(self, entry, candidate):
+        self.apply_calls.append(candidate)
+        if not self.apply_ok:
+            return False
+        entry.translation = candidate
+        return True
+
+
+def test_semantic_reviewer_retranslate_prompt_has_role_and_fields():
+    """4B 反馈重译必须带固定游戏本地化角色（2026-08-14 用户要求：
+    任何翻译路径必须给模型固定角色，至少是游戏翻译者）。"""
+    service = _FakeService(outputs=["开始游戏"])
+    reviewer = _make_reviewer(service)
+    out = reviewer.retranslate_with_feedback(
+        "Play", "播放", "Play 在按钮语境应译为开始，不是播放")
+    assert out == "开始游戏"
+    prompt = service.prompts[0]
+    assert "游戏本地化翻译专家" in prompt
+    assert "原文：Play" in prompt
+    assert "上次译文：播放" in prompt
+    assert "审核反馈" in prompt
+
+
+def test_retranslate_prefers_4b_channel():
+    """request_error 根因修复：反馈重译优先 4B 通道（审核模型已在
+    显存——6~8GB 档 1.8B 换入 OOM 导致全批 request_error）；4B 输出
+    过机械质量门（translator._apply_quality）后再审收敛；1.8B 通道
+    不被调用。"""
+    from hanhua.core.reviewer import _retranslate_with_feedback
+    service = _FakeService(outputs=[
+        "开始",                                # 4B 重译输出
+        '{"level": "PASS", "reason": "正确"}',  # 再审收敛
+    ])
+    reviewer = _make_reviewer(service)
+    translator = _FakeTranslator()
+    entry = TextEntry(file_id="f", key_path="k", original="Play",
+                      translation="播放", status="translated",
+                      meta={"role": "display"})
+    result = ReviewResult("e0", level="CRITICAL",
+                          reason="Play 误译播放，应译为开始")
+    outcome = _retranslate_with_feedback(
+        translator, entry, result, None, reviewer=reviewer,
+        app_dir=Path("."))
+    assert outcome == "converged"
+    assert translator.retranslate_calls == []   # 4B 成功，1.8B 不调
+    assert translator.apply_calls == ["开始"]   # 机械门复查 4B 输出
+    assert entry.status == "translated"
+    assert entry.translation == "开始"
+    assert entry.meta.get("review_outcome") == "APPROVED"
+    assert entry.meta.get("retranslated") is True
+
+
+def test_retranslate_4b_failure_falls_back_to_translator():
+    """4B 通道请求失败 → 回退 1.8B 通道（网络/服务故障不阻断重译）。"""
+    from hanhua.core.reviewer import _retranslate_with_feedback
+    service = _FakeService(error=RuntimeError("4B 服务故障"))
+    reviewer = _make_reviewer(service)
+    translator = _FakeTranslator()
+    entry = TextEntry(file_id="f", key_path="k", original="Play",
+                      translation="播放", status="translated",
+                      meta={"role": "display"})
+    result = ReviewResult("e0", level="MAJOR", reason="语气不符")
+    outcome = _retranslate_with_feedback(
+        translator, entry, result, None, reviewer=reviewer,
+        app_dir=Path("."))
+    assert translator.retranslate_calls          # 回退 1.8B 生效
+    # 再审走同一故障服务 → fail-closed REVIEW_ERROR（不伪装收敛）
+    assert outcome == "error"
+    assert entry.meta.get("review_outcome") == "REVIEW_ERROR"
+
+
+def test_retranslate_4b_output_rejected_by_gate_falls_back():
+    """4B 输出未过机械质量门 → 恢复原译文并回退 1.8B 通道（防污染
+    「上次译文」反馈）。"""
+    from hanhua.core.reviewer import _retranslate_with_feedback
+    service = _FakeService(outputs=[
+        "播放播放播放",                              # 4B 输出：含未翻译
+        '{"level": "PASS", "reason": "正确"}',      # 再审收敛
+    ])
+    reviewer = _make_reviewer(service)
+    translator = _FakeTranslator(apply_ok=False)   # 机械门拒绝 4B 输出
+    entry = TextEntry(file_id="f", key_path="k", original="Play",
+                      translation="播放", status="translated",
+                      meta={"role": "display"})
+    result = ReviewResult("e0", level="MAJOR",
+                          reason="术语不一致，应译为开始")
+    outcome = _retranslate_with_feedback(
+        translator, entry, result, None, reviewer=reviewer,
+        app_dir=Path("."))
+    assert translator.apply_calls == ["播放播放播放"]
+    assert translator.retranslate_calls             # 回退 1.8B
+    assert outcome == "converged"
+    assert entry.translation == "开始游戏（1.8B）"

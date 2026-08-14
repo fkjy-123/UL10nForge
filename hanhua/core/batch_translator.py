@@ -472,6 +472,15 @@ class BatchTranslator:
         # learn 沉淀的 single_lexicon_word、AgentMemory 词对、人工术语
         # 全在此表；质量门复查兜底词对污染（不合规 → 拒绝走模型链）。
         self._glossary_exact: dict[str, str] = {}
+        # 内置 UI 引用并入精确直填表（2026-08-14 用户实证：play 反复译
+        # 「播放」——prompt 注入/Q1 语义门只能拦截标记失败，重试仍可能
+        # 复败；原文精确命中内置引用源时直接落权威译文，零模型调用且
+        # 质量门必然通过）。保留型（target==source，itch）跳过——直填
+        # 即回显，无意义。用户词对在下方循环后写入，覆盖内置（用户
+        # 意愿优先）。
+        for _src, _tgt in self.builtin_ui_exact.items():
+            if _tgt.casefold() != _src:
+                self._glossary_exact[_src] = _tgt
         for item in self.glossary:
             if isinstance(item, (tuple, list)) and len(item) >= 2:
                 src, tgt = item[0], item[1]
@@ -818,6 +827,40 @@ class BatchTranslator:
             finalize_elapsed()
             return stats
 
+        # 内置 UI 引用/词对确定性直填（2026-08-14 用户实证：play 反复
+        # 译「播放」——此前直填只在 _chat_each 降级路径，非 native 批量
+        # 路径先白调一次模型失败后才兜底命中）。run 分批前先填：原文
+        # 精确命中 _glossary_exact（内置引用 + 用户词对）→ 直接落译文
+        # 零模型请求，质量门复查兜底词对污染（不合规 → 恢复走模型链）。
+        filled_reps: list[TextEntry] = []
+        for rep in representatives:
+            exact_zh = self._glossary_exact.get(
+                rep.original.strip().casefold())
+            if not exact_zh:
+                filled_reps.append(rep)
+                continue
+            direct_state = (rep.translation, rep.status,
+                            rep.quality_reasons, dict(rep.meta))
+            if self._apply_quality(rep, exact_zh):
+                for member in group_by_representative[id(rep)]:
+                    member.translation = exact_zh
+                    member.status = STATUS_TRANSLATED
+                    member.quality_reasons = ()
+                    member.meta = dict(member.meta)
+                    _clear_review_state(member.meta)
+                    member.meta["quality_passed"] = True
+                    member.meta["quality_reasons"] = []
+                    member.meta["deterministic_fill"] = "glossary_pair"
+                    stats.done += 1
+                    self._record_obj_result(member, member.translation)
+                    changed.append(member)
+                flush()
+                emit_stats()
+                continue
+            (rep.translation, rep.status, rep.quality_reasons,
+             rep.meta) = direct_state
+            filled_reps.append(rep)
+        representatives = filled_reps
         batches = [
             representatives[i:i + self.batch_size]
             for i in range(0, len(representatives), self.batch_size)
@@ -1494,6 +1537,15 @@ class BatchTranslator:
             "\n\n[审核反馈] 上次译文：{0}；问题：{1}。"
             "请针对上述问题修正译文，只输出修正后的译文，不要解释。"
             .format(entry.translation or "（无）", feedback))
+        # 2026-08-14 用户实证「审核完成后苦等无提示」：重译走默认
+        # timeout（120s）——审核服务异常/1.8B 换入失败时单条挂满 120
+        # 秒 × 全批条目 = 用户等几分钟到几十分钟且零反馈。重译单条
+        # 用降级短超时（与 _chat_each 同口径），失败快速进兜底/标记
+        # request_error，不让用户干等。
+        config = getattr(self.client, "config", None)
+        old_timeout = getattr(config, "timeout", None) if config else None
+        if old_timeout:
+            config.timeout = min(old_timeout, self.FALLBACK_TIMEOUT)
         try:
             content, usage = self.client.chat(
                 self.system_prompt, [{"role": "user", "content": user}])
@@ -1501,6 +1553,9 @@ class BatchTranslator:
             self._record_usage(None)
             self._mark_request_failed(entry, exc)
             return False, ""
+        finally:
+            if old_timeout:
+                config.timeout = old_timeout
         self._record_usage(usage)
         if self._is_cancelled():
             return False, ""

@@ -99,6 +99,15 @@ _REVIEW_BATCH_OUTPUT = (
 
 _LEVELS = ("PASS", "MINOR", "MAJOR", "CRITICAL")
 
+# 4B 反馈重译固定角色（2026-08-14 用户要求：任何翻译路径必须给模型
+# 固定角色，至少是游戏翻译者——4B 审核模型承担反馈重译时，prompt 无
+# 角色会输出解释/直译腔；与 prompts.build_system_prompt 的角色段同源
+# 精简版）
+_RETRANSLATE_ROLE = (
+    "你是专业游戏本地化翻译专家，负责把游戏文本翻译为简体中文。"
+    "译文要像中文玩家母语中看到的游戏文本，不要逐词直译、不要续写、"
+    "不要解释，只输出译文。")
+
 # 组批输入 token 预算（2026-08-14 提速）：条目段估算累计超限即拆组。
 # 系统 prompt ~1400 + 组输入 ≤4500 + 输出 ~800 ≈ 6.7k < ctx 8192 安全；
 # 显存紧张档（planner 可能降 4096）下组更小、逐条兜底仍正确不截断。
@@ -554,6 +563,34 @@ class SemanticReviewer:
                 on_progress(done, len(items))
         return out, cancelled_count
 
+    def retranslate_with_feedback(
+            self, original: str, translation: str, feedback: str,
+            *, max_tokens: int = 1024) -> str:
+        """4B 反馈式重译（2026-08-14 request_error 根因修复）。
+
+        用户实证：不合格条目的反馈重译走翻译服务（1.8B）——但 6~8GB
+        档审核 4B 常驻后 1.8B 换入显存不足 OOM（llama-server 502/
+        崩溃），重译请求全批失败（request_error），简单文本也落入
+        人工层。审核模型 4B 已在显存且是通用指令模型，直接承担反馈
+        重译——零模型切换、无显存冲突。
+
+        固定游戏本地化角色（_RETRANSLATE_ROLE，2026-08-14 用户要求：
+        任何翻译路径必须带角色，至少是游戏翻译者）。
+
+        调用方（_retranslate_with_feedback）对输出再过机械质量门 +
+        再审收敛判定；本方法只负责产出译文，请求失败抛异常由调用方
+        回退 translator（1.8B/API）通道。
+        """
+        user = (
+            f"{_RETRANSLATE_ROLE}\n\n"
+            "请根据下面的审核反馈，修正这条游戏文本的译文，"
+            "只输出修正后的译文，不要解释：\n"
+            f"原文：{original}\n上次译文：{translation}\n"
+            f"审核反馈：{feedback}")
+        content = self.service.chat(
+            user, max_tokens=max_tokens, timeout=self.config.timeout)
+        return str(content or "").strip()
+
 
 # ── 文本类型推断 ────────────────────────────────────────────────────
 
@@ -948,11 +985,25 @@ def review_entries(entries, glossary, *, game_name: str = "",
     wrong_by_id = {it.entry_id: e.translation
                    for it, e in zip(items, item_entries)}
     # 处置分发 + 反馈重译闭环 + 终态化（Phase A）
+    # 2026-08-14 用户实证「审核完成后到最终结果出来之间什么提示都
+    # 没有」：判定（review_batch）有逐条进度，处置阶段（反馈重译 +
+    # 再审收敛，逐条串行 2-30 秒/条）完全静默——UI 停在「N/N 条
+    # 完成」后界面静止数分钟。判定完成先广播阶段切换，处置期间按
+    # ≥5 条节流广播，让等待有可见进度。
+    dispatch_total = len(results)
+    if on_note:
+        on_note(f"语义审核：判定完成（{dispatch_total} 条），正在处置"
+                f"不合格条目（反馈重译 + 再审收敛）…")
+    dispatched = 0
     persisted: list[TextEntry] = []
     for r in results.values():
         entry = _entry_for(items, item_entries, r.entry_id)
         if entry is None:
             continue
+        dispatched += 1
+        if on_note and (dispatched == dispatch_total
+                        or dispatched % 5 == 0):
+            on_note(f"语义审核：处置中 {dispatched}/{dispatch_total} 条…")
         if r.is_error:
             # 审核错误：显式 REVIEW_ERROR 终态，不得转 PASS、不沉淀
             apply_outcome(entry, REVIEW_ERROR, level=r.level,
@@ -1131,14 +1182,39 @@ def _retranslate_with_feedback(translator, entry: TextEntry,
                     if feedback else f"建议译文：{result.suggestion}")
     last_translation = entry.translation
     for round_no in range(1, max_rounds + 1):
-        try:
-            ok, translation = translator.retranslate_with_feedback(
-                entry, feedback, round_no=round_no)
-        except Exception:  # noqa: BLE001 - 重译失败 → BLOCKED 终止循环
-            apply_outcome(entry, BLOCKED, level=result.level,
-                          rejected_candidate=last_translation,
-                          rounds=round_no, clear_translation=True)
-            return "blocked"
+        # 4B 通道优先（2026-08-14 用户实证：request_error 全批——审核
+        # 4B 常驻后翻译 1.8B 换入 OOM，反馈重译必败；4B 已在显存且带
+        # 固定游戏本地化角色，承担重译零切换、质量通常更高）。4B 输出
+        # 仍过机械质量门（translator._apply_quality，纯本地计算）——
+        # 门不过回退 1.8B 通道再试，两者都败才 BLOCKED。
+        candidate = ""
+        if reviewer is not None:
+            try:
+                candidate = reviewer.retranslate_with_feedback(
+                    str(entry.original)[:600],
+                    str(entry.translation or "")[:600],
+                    feedback, max_tokens=1024)
+            except Exception:  # noqa: BLE001 - 4B 通道失败回退 translator
+                candidate = ""
+        ok, translation = False, ""
+        if candidate:
+            if translator is not None:
+                ok = translator._apply_quality(entry, candidate)
+                translation = entry.translation if ok else ""
+            else:
+                entry.translation = candidate
+                ok = True
+                translation = candidate
+            if not ok:
+                # 4B 输出被机械门拒绝 → 恢复原译文，防污染下一通道的
+                # 「上次译文」反馈（_apply_quality 已就地改 entry）
+                entry.translation = last_translation
+        if not ok or not translation:
+            try:
+                ok, translation = translator.retranslate_with_feedback(
+                    entry, feedback, round_no=round_no)
+            except Exception:  # noqa: BLE001 - 重译失败 → BLOCKED 终止循环
+                ok, translation = False, ""
         if not ok or not translation:
             apply_outcome(entry, BLOCKED, level=result.level,
                           rejected_candidate=last_translation,
@@ -1148,6 +1224,7 @@ def _retranslate_with_feedback(translator, entry: TextEntry,
         entry.translation = translation
         entry.meta = dict(entry.meta)
         entry.meta["review_level"] = "RETRANSLATED"
+        entry.meta["review_round"] = int(round_no)
         # 再审（1 轮内判定收敛；再审失败 → 显式错误，不得转 PASS）
         # #20：复用主审核的 reviewer/app_dir——此前每轮新建 SemanticReviewer
         # 且回退 cwd 找模型（#17 已修主路径，再审路径漏掉），模型在

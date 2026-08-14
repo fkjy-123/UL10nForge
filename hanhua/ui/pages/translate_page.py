@@ -739,8 +739,24 @@ class TranslatePage(QWidget):
                                 game_name=str(profile.game_name or ""))
                         except Exception:  # noqa: BLE001
                             pass
+                    elif review_summary is not None \
+                            and not review_summary.get("used"):
+                        # 未送审（分流直放/审核服务不可用）——同样要
+                        # 回主线程给汇总提示，不能「审核结束却零反馈」
+                        #（2026-08-14 用户实证：只有进度「完成」二字）
+                        signals.review_summary.emit(
+                            "语义审核：未送审（无风险条目直放，"
+                            "或审核服务不可用，见日志）")
                 except Exception as exc:  # noqa: BLE001
                     on_log(f"语义审核失败：{exc}")
+                    # 2026-08-14 用户实证「审核完成只有完成二字」：
+                    # 汇总此前只在 review_entries 正常返回时 emit——管线
+                    # 异常时 except 只进日志面板（默认折叠），用户看到
+                    # 进度「完成」后无任何汇总。失败也要广播（Toast +
+                    # 活动流），说明失败原因与后续动作，不静默。
+                    signals.review_summary.emit(
+                        f"语义审核失败：{str(exc)[:160]}"
+                        f"（译文保持原状态，可在审校页重新审核）")
                 # Phase B PendingEvidence（审计 §5 P0-3）：审后记忆结算——
                 # APPROVED → promote（pending 记忆可命中）；判坏 → 撤销
                 # （坏译连 pending 都不留）；审核关闭/不可用（无终态）→

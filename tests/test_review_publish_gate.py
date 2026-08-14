@@ -65,6 +65,12 @@ def _fake_review(monkeypatch, results: dict[str, ReviewResult]):
     monkeypatch.setattr(
         "hanhua.core.reviewer.SemanticReviewer.review_batch",
         lambda self, items, timeout=None, **kwargs: (results, 0))
+    # 4B 重译通道禁用（2026-08-14 起 _retranslate_with_feedback 4B 优先
+    # 且 reviewer 已 usable——本文件验证发布门语义，必须走 translator
+    # fake 确定性路径；否则本地 4B 模型运行时会真实重译，断言不稳）
+    monkeypatch.setattr(
+        "hanhua.core.reviewer.SemanticReviewer.retranslate_with_feedback",
+        lambda self, original, translation, feedback, **kwargs: "")
 
 
 def _entry(original="Press Resume to continue", translation="按下继续继续游戏",
