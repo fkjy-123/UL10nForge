@@ -36,6 +36,11 @@ class AppState(QObject):
         self.local_model = LocalModelManager(
             self.resource_dir, state_dir=self.app_dir)
         self.project: Project | None = None
+        # 翻译进行中标志（2026-08-14 卡顿优化）：translate 页 start 置位、
+        # 完成/出错复位。审校页据此挂起 entriesChanged 广播触发的全量
+        # 重建（翻译中每 ≥1s 一次万行模型重建是 UI 卡顿头号来源）——
+        # 翻译结束广播自然补跑，无需新信号。
+        self.translation_running = False
         self._project_generation = 0
         self._project_lock = threading.RLock()
         self._project_leases: dict[int, int] = {}

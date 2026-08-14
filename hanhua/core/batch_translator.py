@@ -553,23 +553,27 @@ class BatchTranslator:
                 self.agent_memory.flush()
 
         def emit_stats():
-            """降级逐条期间实时上报进度（重算当前计数）。"""
+            """实时上报进度（2026-08-14 卡顿优化：去掉每批 O(N) 重算）。
+
+            done 由各成功路径增量累加（记忆命中/直填/批量/降级全覆盖，
+            run_scope 无 pre-translated 条目——is_actionable 只认 pending/
+            failed，与重算语义严格等价），直接使用；failed 保留全量重算
+            （C4 预算耗尽的历史 failed 条目不在 run_scope 也不在本轮
+            changed，增量会漏计——chips 显示口径含它们，进度必须一致，
+            纯 status 判断的轻遍历每批一次可接受）。
+            """
             if progress_cb is None:
                 # 无监听者零成本（#13 卡顿实证：runner 无 UI 场景每批
-                # O(N) 全扫 run_scope 白算）。计数由各路径递增（含 C4
-                # 预算耗尽 failed 补记），此处仅维护 tokens/requests 最终
-                # 统计（O(1)）——统计语义与重算完全等价。
+                # O(N) 全扫 run_scope 白算）。仅维护 tokens/requests
+                # 最终统计（O(1)）。
                 with self._metrics_lock:
                     stats.requests = self._requests
                     stats.input_tokens = self._input_tokens
                     stats.output_tokens = self._output_tokens
                 return
-            stats.done = sum(
-                1 for entry in run_scope
-                if entry.status == STATUS_TRANSLATED)
-            # C4：failed 按 entries 全量统计——预算耗尽的条目不在 run_scope
-            # （本轮不再尝试），但记忆拒绝置 failed 后必须统计可见，
-            # 否则又是「该翻未翻」的黑洞（只算进 pending/失败计数之外）。
+            # C4：failed 按 entries 全量统计——预算耗尽的条目不在
+            # run_scope（本轮不再尝试），但记忆拒绝置 failed 后必须
+            # 统计可见，否则又是「该翻未翻」的黑洞。
             stats.failed = sum(
                 1 for entry in entries if entry.status == STATUS_FAILED)
             with self._metrics_lock:

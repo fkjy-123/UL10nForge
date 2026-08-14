@@ -27,6 +27,16 @@ class ProjectStore:
         )
         try:
             connection.row_factory = sqlite3.Row
+            # 2026-08-14 卡顿优化：WAL + synchronous=NORMAL。journal 模式
+            # 每 commit 一次 fsync——翻译每批 2 次 commit（结果+记忆），
+            # 万级条目约 5000 次 fsync，磁盘等待阻塞 worker 与所有 DB
+            # 访问（单连接 RLock 串行）；WAL 下 commit 免逐次 fsync、
+            # checkpoint 批量落盘。写不阻塞读，读不阻塞写。
+            try:
+                connection.execute("PRAGMA journal_mode=WAL")
+                connection.execute("PRAGMA synchronous=NORMAL")
+            except sqlite3.OperationalError:
+                pass   # 文件系统不支持 WAL（网络盘等）→ 保持默认 journal
             self.conn = connection
         except Exception:
             connection.close()

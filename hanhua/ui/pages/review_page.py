@@ -428,6 +428,9 @@ class ReviewPage(QWidget):
         # PySide6 中 closeEditor 信号在 itemDelegate 上（view 上同名属性是
         # protected 方法，不是信号）。
         self._pending_reload = False
+        # 2026-08-14 卡顿优化：页面不可见期间广播触发的 reload 置脏，
+        # 切回页面（showEvent）时补跑——隐藏页全量重建纯浪费
+        self._reload_dirty = False
         self.table.itemDelegate().closeEditor.connect(self._on_editor_closed)
         self.table.setAlternatingRowColors(True)
         self.table.setSelectionBehavior(QTableView.SelectRows)
@@ -485,7 +488,7 @@ class ReviewPage(QWidget):
             self._on_selection_changed)
 
         self.state.projectOpened.connect(lambda _p: self.reload())
-        self.state.entriesChanged.connect(self.reload)
+        self.state.entriesChanged.connect(self._auto_reload)
         self.reload()
 
     # ── 中栏构建 ───────────────────────────────────────────
@@ -837,6 +840,32 @@ class ReviewPage(QWidget):
             status=status,
             locked_only=locked)
         self._refresh_summary()
+
+    def _auto_reload(self):
+        """entriesChanged 广播触发的自动刷新（翻译页每 ≥1s 广播一次）。
+
+        2026-08-14 卡顿优化：翻译进行中（state.translation_running）挂起
+        全量重建（万级行 × 筛选在广播频率下持续卡主线程——用户实证
+        「翻译时工具明显卡顿」）——挂起后由翻译结束的广播自然补跑；
+        页面不可见时置脏跳过，showEvent 切回时补跑。用户主动操作
+        （锁定/标记/保存/切行）走 reload() 直跑，不受此守卫影响。
+        """
+        if self.state.translation_running:
+            self._pending_reload = True
+            return
+        if not self.isVisible():
+            self._reload_dirty = True
+            return
+        self.reload()
+
+    def showEvent(self, event):
+        """切回页面时补跑置脏/挂起的 reload（挂起编辑不在此补，由
+        closeEditor 路径负责——避免覆盖正在编辑的内容）。"""
+        super().showEvent(event)
+        if (self._reload_dirty or self._pending_reload) \
+                and not self.state.translation_running:
+            self._reload_dirty = False
+            self.reload()
 
     def reload(self):
         if self.state.project is None:

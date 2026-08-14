@@ -46,6 +46,9 @@ def test_store_passes_configured_timeout_to_sqlite(tmp_path, monkeypatch):
     class Connection:
         row_factory = None
 
+        def execute(self, *_args):
+            return None
+
         def close(self):
             pass
 
@@ -59,6 +62,20 @@ def test_store_passes_configured_timeout_to_sqlite(tmp_path, monkeypatch):
     store.close()
 
     assert captured["timeout"] == 0.25
+
+
+def test_project_store_enables_wal_mode(tmp_path):
+    """2026-08-14 卡顿优化：WAL + synchronous=NORMAL——journal 模式每
+    commit 一次 fsync（翻译每批 2 次 commit，万级条目约 5000 次 fsync
+    阻塞 worker 与所有 DB 访问）；WAL 下 commit 免逐次 fsync、
+    checkpoint 批量落盘。"""
+    store = ProjectStore(tmp_path / "project.db")
+    store.init_schema()
+    mode = store.conn.execute("PRAGMA journal_mode").fetchone()[0]
+    assert mode == "wal"
+    sync = store.conn.execute("PRAGMA synchronous").fetchone()[0]
+    assert sync == 1            # NORMAL
+    store.close()
 
 
 def test_schema_tables_reports_initialized_project_tables():

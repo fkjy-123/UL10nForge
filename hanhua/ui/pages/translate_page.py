@@ -367,6 +367,9 @@ class TranslatePage(QWidget):
         self._active_run = run
         self.log_view.clear()
         self._running = True
+        # 2026-08-14 卡顿优化：广播级标志——审校页在翻译中挂起
+        # entriesChanged 全量重建，翻译结束广播自然补跑
+        self.state.translation_running = True
         self.start_btn.setEnabled(False)
         self.stop_btn.setEnabled(True)
         self.retry_btn.setEnabled(False)
@@ -846,6 +849,8 @@ class TranslatePage(QWidget):
 
     def _on_finished(self, stats):
         self._running = False
+        # 先复位再广播：审校页挂起的 reload 由本次 entriesChanged 补跑
+        self.state.translation_running = False
         self.start_btn.setEnabled(True)
         self.stop_btn.setEnabled(False)
         self.retry_btn.setEnabled(stats.failed > 0)
@@ -927,9 +932,13 @@ class TranslatePage(QWidget):
 
     def _on_error(self, err: str, secrets=()):
         self._running = False
+        self.state.translation_running = False
         self.start_btn.setEnabled(True)
         self.stop_btn.setEnabled(False)
         self._refresh_chips()
+        # 翻译出错同样广播：审校页挂起的 reload 补跑（否则错误后
+        # 页面停在翻译前快照，用户看不到失败状态）
+        self.state.entriesChanged.emit()
         self._set_primary(self.write_btn)
         self.stream_status.setText("○ 已停止")
         self.progress_label.setText("翻译出错")
@@ -1434,6 +1443,7 @@ class TranslatePage(QWidget):
         if self.state.project is None:
             return
         self._running = False
+        self.state.translation_running = False
         self._write_terminal_message = ""
         self._worker = None
         self._last_stats = None

@@ -10,6 +10,7 @@ os.environ.setdefault("QT_QPA_PLATFORM", "offscreen")
 
 import pytest
 from PySide6.QtCore import QMimeData, QPoint, Qt, QUrl
+from PySide6.QtGui import QShowEvent
 from PySide6.QtTest import QTest
 from PySide6.QtWidgets import QApplication, QLabel, QPushButton
 
@@ -501,6 +502,122 @@ def test_review_page_auto_reloads_on_construction_and_project_opened(
     state.entriesChanged.emit()
     await_reload(page)
     assert page.model.rowCount() == 1
+
+
+def test_review_page_suspends_broadcast_reload_while_translating(
+        qapp, tmp_path):
+    """2026-08-14 卡顿优化：翻译进行中（state.translation_running）广播
+    重载挂起——万级行全量重建在 1s 广播频率下持续卡主线程；翻译结束
+    广播自然补跑（translate 页先复位标志再 emit）。"""
+    store = ProjectStore(tmp_path / "project.db")
+    store.init_schema()
+    store.add_file("ui.assets", "ui.assets", "v2_asset", "binary", "")
+    store.upsert_entries([{
+        "file_id": "ui.assets", "key_path": "obj/1",
+        "original": "Continue", "meta": {"confidence": "high"},
+    }])
+    state = _state(tmp_path)
+    state.project = type("Project", (), {"store": store})()
+    page = ReviewPage(state, _Window())
+    await_reload(page)
+    assert page.model.rowCount() == 1
+
+    # 翻译进行中：广播不触发重建（页面未显示 → 挂起优先于可见性分支）
+    state.translation_running = True
+    state.entriesChanged.emit()
+    QTest.qWait(50)
+    assert page._pending_reload is True
+    assert page.model.rowCount() == 1
+
+    # 翻译结束（页面不可见）：广播置脏；切回页面补跑
+    state.translation_running = False
+    state.entriesChanged.emit()
+    QTest.qWait(50)
+    assert page._reload_dirty is True
+    page.showEvent(QShowEvent())
+    await_reload(page)
+    assert page._pending_reload is False
+    assert page.model.rowCount() == 1
+
+
+def test_review_page_defers_broadcast_reload_when_hidden(qapp, tmp_path):
+    """页面不可见时广播不重建（隐藏页全量重建纯浪费）；切回页面补跑。"""
+    store = ProjectStore(tmp_path / "project.db")
+    store.init_schema()
+    store.add_file("ui.assets", "ui.assets", "v2_asset", "binary", "")
+    store.upsert_entries([{
+        "file_id": "ui.assets", "key_path": "obj/1",
+        "original": "Continue", "meta": {"confidence": "high"},
+    }])
+    state = _state(tmp_path)
+    state.project = type("Project", (), {"store": store})()
+    page = ReviewPage(state, _Window())
+    await_reload(page)
+    assert page.model.rowCount() == 1
+
+    # 库新增条目后广播——页面未显示 → 不重建、置脏
+    store.upsert_entries([{
+        "file_id": "ui.assets", "key_path": "obj/2",
+        "original": "Quit", "meta": {"confidence": "high"},
+    }])
+    state.entriesChanged.emit()
+    QTest.qWait(50)
+    assert page._reload_dirty is True
+    assert page.model.rowCount() == 1          # 旧数据未重建
+
+    # showEvent（切回页面）→ 补跑，拿到新条目
+    page.showEvent(QShowEvent())
+    await_reload(page)
+    assert page.model.rowCount() == 2
+    assert page._reload_dirty is False
+
+
+def test_review_page_broadcast_reload_refreshes_when_visible(qapp, tmp_path):
+    """页面可见 + 非翻译中：广播照常重建（回归：挂起守卫不放行时也
+    不能吞掉正常刷新）。"""
+    store = ProjectStore(tmp_path / "project.db")
+    store.init_schema()
+    store.add_file("ui.assets", "ui.assets", "v2_asset", "binary", "")
+    store.upsert_entries([{
+        "file_id": "ui.assets", "key_path": "obj/1",
+        "original": "Continue", "meta": {"confidence": "high"},
+    }])
+    state = _state(tmp_path)
+    state.project = type("Project", (), {"store": store})()
+    page = ReviewPage(state, _Window())
+    page.show()
+    QTest.qWait(30)
+    await_reload(page)
+    assert page.isVisible()
+    assert page.model.rowCount() == 1
+
+    store.upsert_entries([{
+        "file_id": "ui.assets", "key_path": "obj/2",
+        "original": "Quit", "meta": {"confidence": "high"},
+    }])
+    state.entriesChanged.emit()
+    await_reload(page)
+    assert page.model.rowCount() == 2
+    assert page._reload_dirty is False
+
+
+def test_translate_page_toggles_translation_running_flag(qapp, tmp_path):
+    """2026-08-14 卡顿优化：翻译页维护 AppState.translation_running——
+    _on_finished 先复位再广播（审校页挂起补跑）；_on_error 复位并广播
+    （错误后审校页可见失败状态，不再停在翻译前快照）。"""
+    state = _state(tmp_path)
+    page = TranslatePage(state, _Window())
+    assert state.translation_running is False
+
+    # 结束路径：先复位标志，再广播
+    state.translation_running = True
+    page._on_finished(TranslateStats(total=2, done=2))
+    assert state.translation_running is False
+
+    # 出错路径：复位 + 广播（审校页挂起的 reload 由此补跑）
+    state.translation_running = True
+    page._on_error("boom")
+    assert state.translation_running is False
 
 
 def test_home_enters_review_when_scan_is_unblocked_but_not_complete(
