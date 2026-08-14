@@ -660,3 +660,61 @@ def test_retranslate_reuses_passed_reviewer_not_cwd_builder(monkeypatch):
         app_dir="/x/models")
     assert result2 == "converged"
     assert seen and seen[0] == "/x/models"
+
+
+def test_write_review_report_detail_section(tmp_path):
+    """#48：全量送审明细章节——每条原文/译文/AI 判定/未通过原因/终态。"""
+    summary = {
+        "sent": 2, "rate": 0.2, "reviewed": 2,
+        "levels": {"PASS": 1, "MINOR": 0, "MAJOR": 1, "CRITICAL": 0,
+                   "PARSE_FAIL": 0},
+        "retranslated": 1, "converged": 1, "blocked": 0,
+        "pairs_added": 0, "pairs_rejected": {}, "flagged": [],
+        "originals": {}, "locators": {},
+        "detail": [
+            {"locator": "f:k1", "text_type": "UI 显示文本",
+             "original": "Removes 5 <b>clicks</b> at the start of each "
+                         "<b>stage</b>.",
+             "translation": "移除每个阶段开头的 5 次点击。",
+             "final_translation": "移除每个阶段开头的 5 <b>次点击</b>。",
+             "level": "MAJOR", "reason": "标签缺失",
+             "suggestion": "保留 <b> 标签", "issues": [],
+             "overall_score": 0, "dimensions": {}, "error": "",
+             "quality_reasons": ["rich_text_mismatch"],
+             "outcome": "APPROVED_MINOR", "review_round": 1},
+            {"locator": "f:k2", "text_type": "游戏文本",
+             "original": "Good job", "translation": "干得好",
+             "final_translation": "", "level": "PASS", "reason": "",
+             "suggestion": "", "issues": [],
+             "overall_score": 88, "dimensions": {"语义准确": 90,
+                                                 "自然度": 86},
+             "error": "", "quality_reasons": [],
+             "outcome": "APPROVED", "review_round": None},
+        ],
+    }
+    path = write_review_report(summary, tmp_path / "detail.md")
+    text = path.read_text(encoding="utf-8")
+    assert "## 全量送审明细（2 条）" in text
+    assert "Removes 5 <b>clicks</b>" in text          # 原文保留标签
+    assert "送审译文：移除每个阶段开头的 5 次点击。" in text
+    assert "终译（重译收敛）：移除每个阶段开头的 5 <b>次点击</b>。" in text
+    assert "AI 判定：较大问题" in text
+    assert "未通过原因（机械质量门）：rich_text_mismatch" in text
+    assert "终态：APPROVED_MINOR · 重译轮次：1" in text
+    assert "干得好" in text
+    assert "AI 判定：通过（88/100）" in text
+    assert "维度分：语义准确 90、自然度 86" in text
+    assert "终态：APPROVED" in text
+
+
+def test_write_review_report_legacy_summary_no_detail(tmp_path):
+    """旧 summary（无 detail）→ 不输出全量明细章节（零破坏）。"""
+    summary = {"sent": 1, "rate": 0.01, "reviewed": 1,
+               "levels": {"PASS": 1, "MINOR": 0, "MAJOR": 0,
+                          "CRITICAL": 0, "PARSE_FAIL": 0},
+               "retranslated": 0, "converged": 0, "blocked": 0,
+               "pairs_added": 0, "pairs_rejected": {}, "flagged": [],
+               "originals": {}, "locators": {}}
+    path = write_review_report(summary, tmp_path / "legacy2.md")
+    text = path.read_text(encoding="utf-8")
+    assert "全量送审明细" not in text

@@ -284,3 +284,46 @@ def test_record_review_failure_cross_game_distinct(tmp_path):
     kb.record_review_failure(_failure(game="g2"))
     rows = kb.store.list_by_domain("fail_case")
     assert len(rows) == 2
+
+
+# ── #48 全量送审明细（审校后完整记录） ─────────────────────────────
+
+def test_review_entries_collects_full_detail(monkeypatch):
+    """#48：审校后输出完整记录——每条待审核文本的原文（保留富文本
+    标签）/送审译文/AI 判定/机械未通过原因/终态/重译轮次全收集，
+    与审核模型输入的原文一致。"""
+    _fake_review(monkeypatch, {
+        "e0": ReviewResult("e0", level="MAJOR", reason="标签缺失",
+                           suggestion="保留 <b> 标签"),
+    })
+    entry = _entry(
+        original="Removes 5 <b>clicks</b> at the start of each "
+                 "<b>stage</b>.",
+        translation="移除每个阶段开头的 5 次点击。", key_path="k1")
+    entry.meta = dict(entry.meta)
+    entry.meta["quality_reasons"] = ["rich_text_mismatch"]
+    monkeypatch.setattr(
+        "hanhua.core.reviewer._re_review",
+        lambda entry, reviewer=None, app_dir=None:
+        ReviewResult("re", level="MINOR", reason="已收敛"))
+    tr = _FakeTranslator([(True, "移除每个阶段开头的 5 <b>次点击</b>。")])
+    summary = review_entries([entry], _FakeGlossary(), game_name="G",
+                             translator=tr, max_send_rate=1.0)
+    monkeypatch.undo()
+
+    detail = summary["detail"]
+    assert len(detail) == 1
+    d = detail[0]
+    # 原文保留富文本标签（与审核模型 prompt 输入一致）
+    assert d["original"] == (
+        "Removes 5 <b>clicks</b> at the start of each <b>stage</b>.")
+    assert d["translation"] == "移除每个阶段开头的 5 次点击。"  # 送审快照
+    assert d["final_translation"] == "移除每个阶段开头的 5 <b>次点击</b>。"
+    assert d["level"] == "MAJOR"
+    assert d["reason"] == "标签缺失"
+    assert d["suggestion"] == "保留 <b> 标签"
+    assert d["quality_reasons"] == ["rich_text_mismatch"]  # 机械未通过原因
+    assert d["text_type"] == "UI 显示文本"
+    assert d["outcome"] in ("APPROVED", "APPROVED_MINOR")
+    assert d["review_round"] == 1
+    assert d["locator"] == "f:k1"

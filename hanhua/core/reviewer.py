@@ -608,10 +608,12 @@ def text_type_for(meta: dict) -> str:
     role = str(meta.get("role") or "")
     if "button" in role or role == "display" and len(role) < 12:
         return "UI 显示文本"
-    if "log" in role or "debug" in role:
-        return "调试日志"
+    # 对话分支先于日志分支：「dialog」含子串「log」，顺序颠倒会误判
+    # 对话文本为调试日志（2026-08-14 全量记录实证）
     if "dialog" in role or "conv" in role or "chat" in role:
         return "对话文本"
+    if "log" in role or "debug" in role:
+        return "调试日志"
     return "游戏文本"
 
 
@@ -1004,6 +1006,27 @@ def review_entries(entries, glossary, *, game_name: str = "",
         if on_note and (dispatched == dispatch_total
                         or dispatched % 5 == 0):
             on_note(f"语义审核：处置中 {dispatched}/{dispatch_total} 条…")
+        if on_note:
+            # 2026-08-14 用户要求：审校逐条日志——所有需审核文本的
+            # 原文/译文/判定/理由/建议全量输出（与翻译日志同风格，
+            # 供人工追溯；「莫名未通过」必须有痕可查）
+            orig = summary["originals"].get(r.entry_id, "")
+            if r.is_error:
+                # 只输出日志，不 continue——错误处置走下方 is_error 分支
+                on_note(f"[审核] 审核错误（{r.error}）：{orig}")
+            level_zh = {"PASS": "通过", "MINOR": "轻微问题",
+                        "MAJOR": "较大问题",
+                        "CRITICAL": "严重问题"}.get(r.level, r.level)
+            reason = r.reason or "；".join(
+                str(i.get("detail") or "") for i in r.issues
+                if i.get("detail"))
+            suggestion = r.suggestion or "；".join(
+                str(i.get("suggestion") or "") for i in r.issues
+                if i.get("suggestion"))
+            on_note(f"[审核] 原文：{orig}")
+            on_note(f"[审核] 译文：{wrong_by_id.get(r.entry_id, '')}")
+            on_note(f"[审核] 判定：{level_zh} · 理由：{reason}"
+                    + (f" · 建议：{suggestion}" if suggestion else ""))
         if r.is_error:
             # 审核错误：显式 REVIEW_ERROR 终态，不得转 PASS、不沉淀
             apply_outcome(entry, REVIEW_ERROR, level=r.level,
@@ -1099,6 +1122,37 @@ def review_entries(entries, glossary, *, game_name: str = "",
             final_outcome=outcome,
             locator=summary["locators"].get(r.entry_id, r.entry_id)))
     summary["review_failures"] = failures
+    # #48（2026-08-14 用户要求「审校后输出记录，记录所有待审核文本
+    # 信息」）：全量送审明细——每条送审文本的原文/译文/AI 判定/未通过
+    # 原因/终态全部留档（write_review_report 全量章节）。PASS 也记录，
+    # 不只看不合格项；原文保留富文本标签（与审核模型输入一致）。
+    text_types = {it.entry_id: it.text_type for it in items}
+    detail: list[dict] = []
+    for r in results.values():
+        entry = _entry_for(items, item_entries, r.entry_id)
+        if entry is None:
+            continue
+        outcome = entry.meta.get("review_outcome") or "PENDING"
+        detail.append({
+            "locator": summary["locators"].get(r.entry_id, r.entry_id),
+            "text_type": text_types.get(r.entry_id, ""),
+            "original": summary["originals"].get(r.entry_id, ""),
+            "translation": wrong_by_id.get(r.entry_id, ""),
+            "final_translation": (
+                entry.translation if outcome in (APPROVED, APPROVED_MINOR)
+                else ""),
+            "level": r.level,
+            "reason": r.reason,
+            "suggestion": r.suggestion,
+            "issues": [dict(i) for i in r.issues],
+            "overall_score": r.overall_score,
+            "dimensions": dict(r.dimensions),
+            "error": r.error,
+            "quality_reasons": list(entry.meta.get("quality_reasons") or ()),
+            "outcome": outcome,
+            "review_round": entry.meta.get("review_round"),
+        })
+    summary["detail"] = detail
     # 术语词对沉淀（C5 语境保护门禁链；只对 VERDICT flagged，错误不沉淀）
     if flagged:
         originals = summary["originals"]
@@ -1331,6 +1385,16 @@ def write_review_report(summary: dict, report_path: str | Path,
         lines.append(f"- 结构化失败：{len(failures)} 条"
                      f"（MAJOR/CRITICAL 语义错误 + 审核管线错误，"
                      f"知识库 fail_case 域已记录反例）")
+    # C5 门禁拒绝清单（术语沉淀时产生；runner 报告并入统一格式）
+    rejected = summary.get("pairs_rejected") or {}
+    if rejected and isinstance(rejected, dict):
+        lines += [
+            "## C5 门禁拒绝清单（高频普通词单 token，无语境强制会"
+            "误杀其他语境，不入全局库）", "",
+        ]
+        lines += [f"- `{term}`：{reason}"
+                  for term, reason in sorted(rejected.items())]
+        lines += [""]
     lines += ["", "## CRITICAL 明细（语义错译，需人工复核）", ""]
     if not criticals:
         lines.append("无（本轮无 CRITICAL 级错译）。")
@@ -1366,6 +1430,56 @@ def write_review_report(summary: dict, report_path: str | Path,
                          f"{fail.get('reason', '')[:120]}")
             if fail.get("game") and fail.get("locator"):
                 lines.append(f"  来源：{fail['game']}:{fail['locator']}")
+            lines.append("")
+    # #48（2026-08-14 用户要求）：全量送审明细——每条待审核文本的
+    # 原文/译文/AI 判定/未通过原因/终态完整留档（PASS 也记录，供
+    # 人工逐条追溯；原文保留富文本标签，与审核模型输入一致）。
+    # 旧 summary（无 detail 字段）输出与旧版完全一致（零破坏）。
+    detail = summary.get("detail") or []
+    if detail:
+        level_zh = {"PASS": "通过", "MINOR": "轻微问题",
+                    "MAJOR": "较大问题", "CRITICAL": "严重问题",
+                    "REVIEW_ERROR": "审核错误"}
+        lines += [f"## 全量送审明细（{len(detail)} 条）", ""]
+        for d in detail:
+            head = f"### {d.get('locator') or d.get('entry_id', '')}"
+            if d.get("text_type"):
+                head += f"（{d['text_type']}）"
+            lines.append(head)
+            lines.append(f"- 原文：{d.get('original', '')}")
+            wrong = d.get("translation", "")
+            if wrong:
+                lines.append(f"- 送审译文：{wrong}")
+            final_t = d.get("final_translation", "")
+            if final_t and final_t != wrong:
+                lines.append(f"- 终译（重译收敛）：{final_t}")
+            level = level_zh.get(d.get("level", ""), d.get("level", ""))
+            reason = d.get("reason", "")
+            if d.get("error"):
+                lines.append(f"- AI 判定：{d.get('error')} · {reason}")
+            else:
+                line = f"- AI 判定：{level}"
+                if d.get("overall_score"):
+                    line += f"（{d['overall_score']}/100）"
+                lines.append(line)
+                if reason:
+                    lines.append(f"  理由：{reason}")
+            if d.get("suggestion"):
+                lines.append(f"  建议：{d['suggestion']}")
+            dims = d.get("dimensions") or {}
+            if dims:
+                lines.append("  维度分：" + "、".join(
+                    f"{k} {v}" for k, v in list(dims.items())[:5]))
+            qreasons = d.get("quality_reasons") or []
+            if qreasons:
+                lines.append(f"- 未通过原因（机械质量门）："
+                             f"{'、'.join(str(r) for r in qreasons)}")
+            outcome = d.get("outcome", "")
+            if outcome:
+                tail = f"- 终态：{outcome}"
+                if d.get("review_round"):
+                    tail += f" · 重译轮次：{d['review_round']}"
+                lines.append(tail)
             lines.append("")
     path.write_text("\n".join(lines).rstrip() + "\n", encoding="utf-8")
     return path

@@ -205,6 +205,11 @@ class EntryTableModel(QAbstractTableModel):
                 return level or "—"
         if role == Qt.EditRole and col == 3:
             return row["translation"]
+        if role == Qt.TextFormatRole and col in (2, 3):
+            # #48：原文/译文含富文本标签时 AutoText 会渲染成粗体，
+            # 与真实文本（审校模型输入的原文）不一致——强制纯文本
+            # 原样显示，标签结构可核对。
+            return Qt.PlainText
         if role == Qt.CheckStateRole and col == 6:
             return Qt.Checked if row["locked"] else Qt.Unchecked
         if role == Qt.ToolTipRole and col == 1:
@@ -513,6 +518,11 @@ class ReviewPage(QWidget):
         self.detail_original.setObjectName("detailOriginal")
         self.detail_original.setWordWrap(True)
         self.detail_original.setTextInteractionFlags(Qt.TextSelectableByMouse)
+        # #48：原文含富文本标签（<b>…</b>），AutoText 会把标签渲染成
+        # 粗体——用户看到「无标签原文」误以为审校模型看到的也是纯文本
+        #（实际模型 prompt 带标签）。强制 PlainText 原样显示，与模型
+        # 输入一致，标签结构可核对。
+        self.detail_original.setTextFormat(Qt.PlainText)
         lay.addWidget(self.detail_original)
 
         lay.addWidget(self._section_label("译文"))

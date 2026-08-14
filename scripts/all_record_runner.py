@@ -627,37 +627,20 @@ def _run_semantic_review(project, entries, out_dir: Path, game_name: str,
     if rejected:
         print(f"  [审核] C5 门禁拒绝 {len(rejected)} 条污染风险词对"
               f"（高频普通词单 token，无语境区分）→ 不写入全局术语库")
-    # 审核报告
+    # 审核报告（2026-08-14 用户要求「审校后输出记录」：统一走
+    # write_review_report——汇总 + CRITICAL 明细 + 全量送审明细，
+    # 每条待审核文本的原文（保留富文本标签）/译文/AI 判定/未通过
+    # 原因/终态完整留档，PASS 也记录，可逐条追溯）
     originals = core["originals"]
     locators = core["locators"]
     review_dir = out_dir / "review"
     review_dir.mkdir(parents=True, exist_ok=True)
-    by_issue: dict[str, int] = {}
-    for r in flagged:
-        by_issue[r.issue or "其他"] = by_issue.get(r.issue or "其他", 0) + 1
-    issue_text = "、".join(f"{k} {v} 条" for k, v in by_issue.items()) or "无"
-    (review_dir / "review-report.md").write_text(
-        "\n".join([
-            f"# {game_name} 语义审核报告", "",
-            f"- 审核模型：{reviewer.model_name}",
-            f"- 审核条数：{summary['reviewed']}（跳过回显/未翻译）",
-            f"- 不合格：{len(flagged)} 条（{issue_text}）",
-            f"- 术语沉淀：{added} 条词对 → 全局术语库"
-            f"（C5 门禁拒绝 {len(rejected)} 条污染风险词对）", "",
-            "## C5 门禁拒绝清单（高频普通词单 token，无语境强制会误杀"
-            "其他语境，不入全局库）", "",
-        ] + [
-            f"- `{term}`：{reason}"
-            for term, reason in sorted(rejected.items())
-        ] + [""] + [
-            "## 不合格清单", "",
-        ] + [
-            f"[{r.entry_id}] {locators.get(r.entry_id, r.entry_id)}\n"
-            f"  原文：{originals.get(r.entry_id, '')[:120]}\n"
-            f"  译文：{r.suggestion or '（无建议）'}\n"
-            f"  问题：{r.issue}——{r.reason}"
-            for r in flagged
-        ] + [""]), encoding="utf-8")
+    try:
+        from hanhua.core.reviewer import write_review_report
+        write_review_report(core, review_dir / "review-report.md",
+                            game_name=game_name)
+    except Exception:  # noqa: BLE001 - 报告失败不阻断主流程
+        pass
     try:
         (review_dir / "review.json").write_text(
             json.dumps([{
