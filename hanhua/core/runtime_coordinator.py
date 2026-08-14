@@ -34,12 +34,14 @@ ReviewModelService / LocalModelManager 复用 effective_signature 增强
 from __future__ import annotations
 
 import json
+import os
 import secrets
 import socket
 import subprocess
 import sys
 import threading
 import time
+from contextlib import contextmanager
 from dataclasses import dataclass, field
 from pathlib import Path
 
@@ -228,11 +230,11 @@ class RuntimeCoordinator:
         """
         headers = {"Authorization": f"Bearer {api_key}"}
         try:
-            health = httpx.get(base + "/health", timeout=2)
+            health = httpx.get(base + "/health", timeout=2, trust_env=False, verify=False)
             if health.status_code != 200:
                 return False
             models = httpx.get(base + "/v1/models", timeout=2,
-                               headers=headers)
+                               headers=headers, trust_env=False, verify=False)
             if models.status_code != 200:
                 return False
             ids = [str(m.get("id", ""))
@@ -298,7 +300,12 @@ class RuntimeCoordinator:
 
     @staticmethod
     def _kill_port_owner(port: int) -> None:
-        """按监听端口终止占用进程（Windows netstat + taskkill）。"""
+        """按监听端口终止占用进程（Windows netstat + taskkill）。
+
+        只回收 llama-server 形态的残留（2026-08-14 孤儿累积实证）——
+        专用端口被本工具 llama-server 的旧会话实例占用才杀；非
+        llama-server（用户手动服务/其他程序）不动，避免误杀。
+        """
         if sys.platform != "win32":
             return
         try:
@@ -313,11 +320,90 @@ class RuntimeCoordinator:
                         and parts[3] == "LISTENING":
                     pids.add(parts[4])
             for pid in pids:
-                if pid.isdigit() and int(pid) > 0:
-                    _sp.run(["taskkill", "/PID", pid, "/F"],
-                            capture_output=True)
+                if not (pid.isdigit() and int(pid) > 0):
+                    continue
+                try:
+                    rows = _sp.check_output(
+                        ["tasklist", "/FI", f"PID eq {pid}",
+                         "/FO", "CSV", "/NH"],
+                        text=True, errors="replace")
+                    name = rows.split(",")[0].strip('"') if rows else ""
+                    if name.lower() != "llama-server.exe":
+                        continue
+                except (OSError, subprocess.SubprocessError):
+                    continue
+                _sp.run(["taskkill", "/PID", pid, "/F"],
+                        capture_output=True)
         except (OSError, subprocess.SubprocessError):
             pass
+
+    # ── 跨进程启动互斥（并行 runner 竞态兜底） ─────────────────────
+    @contextmanager
+    def _start_lock(self, kind: str, timeout: float = 30.0):
+        """kind 级启动锁（锁文件 O_EXCL 原子抢占）。
+
+        并行 runner/多 GUI 同时启动同 kind → 双实例竞态（都读不到
+        state → 都启动）。锁内复查复用（其他进程已写好 state → 探测
+        复用）。持有者进程已死（崩溃残留）→ 删锁重抢；锁超时 → 放弃
+        互斥继续（探测兜底仍有效，不阻塞用户）。
+        """
+        lock_path = self.app_dir / "locks" / f"{kind}.lock"
+        try:
+            lock_path.parent.mkdir(parents=True, exist_ok=True)
+        except OSError:
+            yield
+            return
+        deadline = time.monotonic() + timeout
+        acquired = False
+        while not acquired:
+            try:
+                fd = os.open(lock_path, os.O_CREAT | os.O_EXCL | os.O_WRONLY)
+                os.write(fd, str(os.getpid()).encode("utf-8"))
+                os.close(fd)
+                acquired = True
+            except FileExistsError:
+                if not self._lock_stale(lock_path):
+                    if time.monotonic() >= deadline:
+                        break  # 超时放弃互斥，不阻塞用户
+                    self._sleep(0.3)
+                    continue
+                try:
+                    lock_path.unlink()
+                except OSError:
+                    self._sleep(0.3)
+        try:
+            yield
+        finally:
+            if acquired:
+                try:
+                    lock_path.unlink(missing_ok=True)
+                except OSError:
+                    pass
+
+    @staticmethod
+    def _lock_stale(lock_path: Path) -> bool:
+        """锁持有者进程是否已死（崩溃残留 → 可抢占）。"""
+        try:
+            pid = int(lock_path.read_text(encoding="utf-8").strip() or "0")
+        except (OSError, ValueError):
+            return True
+        if pid <= 0:
+            return True
+        if sys.platform != "win32":
+            try:
+                os.kill(pid, 0)
+                return False
+            except (OSError, ProcessLookupError):
+                return True
+        try:
+            out = subprocess.run(
+                ["tasklist", "/FI", f"PID eq {pid}", "/NH"],
+                capture_output=True, text=True, timeout=5,
+                creationflags=getattr(subprocess, "CREATE_NO_WINDOW", 0),
+            ).stdout
+            return str(pid) not in out
+        except (OSError, subprocess.TimeoutExpired, subprocess.SubprocessError):
+            return False
 
     # ── 主入口 ────────────────────────────────────────────────────
     def acquire(self, config: EffectiveRunConfig, *,
@@ -326,8 +412,9 @@ class RuntimeCoordinator:
 
         1) 本协调器已拥有同签名存活进程 → refcount+1 复用；
         2) 跨实例复用：state 文件同签名 → authenticated probe 通过则复用；
-        3) 否则启动：fixed_cpu 断言 → 端口清场 → 命令构建 → 启动 →
-           探测成功落盘；失败/取消 → 终止进程 + 清租约（不留孤儿）。
+        3) 否则启动：fixed_cpu 断言 → 启动互斥锁（锁内复查复用）→
+           端口清场 → 命令构建 → 启动 → 探测成功落盘；失败/取消 →
+           终止进程 + 清租约（不留孤儿）。
 
         返回 {"base_url", "api_key", "port", "pid", "model", "kind"}。
         """
@@ -349,80 +436,106 @@ class RuntimeCoordinator:
                 # 签名变化（模型更新/端口变化）或进程已死 → 旧实例失管，
                 # 终止回收；否则新实例会覆盖 _owned 造成进程泄漏
                 self._drop_owned(cfg.kind)
-        # 跨实例复用（同签名 + probe 通过）
-        state = self._load_state(cfg.kind)
-        if state is not None and tuple(state.get("signature", ())) \
-                == tuple(str(item) for item in cfg.signature()):
-            base = f"http://127.0.0.1:{int(state['port'])}"
-            if self._probe(base, str(state.get("api_key", "")),
-                           Path(cfg.model_path).stem):
-                with self._lock:
-                    self._owned.pop(cfg.kind, None)  # 借用外部实例
-                return {
-                    "base_url": base + "/v1",
-                    "api_key": str(state.get("api_key", "")),
-                    "port": int(state["port"]),
-                    "pid": None,
-                    "model": cfg.model_path,
-                    "kind": cfg.kind,
-                }
+        # 跨实例复用（同签名 + probe 通过）——启动互斥锁内复查一次，
+        # 覆盖并行进程抢先启动已写 state 的窗口
+        def _reuse_external() -> dict | None:
+            state = self._load_state(cfg.kind)
+            if state is not None and tuple(state.get("signature", ())) \
+                    == tuple(str(item) for item in cfg.signature()):
+                base = f"http://127.0.0.1:{int(state['port'])}"
+                if self._probe(base, str(state.get("api_key", "")),
+                               Path(cfg.model_path).stem):
+                    with self._lock:
+                        self._owned.pop(cfg.kind, None)  # 借用外部实例
+                    return {
+                        "base_url": base + "/v1",
+                        "api_key": str(state.get("api_key", "")),
+                        "port": int(state["port"]),
+                        "pid": None,
+                        "model": cfg.model_path,
+                        "kind": cfg.kind,
+                    }
+            return None
+
+        reused = _reuse_external()
+        if reused is not None:
+            return reused
         if cancellation_event is not None and cancellation_event.is_set():
             raise RuntimeError(f"{cfg.kind} 服务启动已取消")
-        # 启动新实例
-        port = self._ports.reserve(cfg.kind)
-        self._clear_port(port, cfg.kind)
-        api_key = self._token_factory()
-        cmd = build_server_command(
-            cfg.server_path, cfg.model_path, port=port,
-            api_key=api_key, context_size=cfg.ctx,
-            gpu_layers=cfg.gpu_layers, parallel=cfg.parallel,
-            cache_reuse=cfg.cache_reuse)
-        cmd.extend(cfg.extra_args)
-        log_path = self.app_dir / "logs" / f"{cfg.kind}-server.log"
-        log_path.parent.mkdir(parents=True, exist_ok=True)
-        handle = log_path.open("a", encoding="utf-8", errors="replace")
-        creationflags = 0
-        if sys.platform == "win32":
-            creationflags = (getattr(subprocess, "CREATE_NO_WINDOW", 0)
-                             | getattr(subprocess, "CREATE_NEW_PROCESS_GROUP",
-                                       0))
-        try:
-            proc = self._process_factory(
-                cmd, cwd=str(Path(cmd[0]).parent), stdout=handle,
-                stderr=subprocess.STDOUT, text=True, encoding="utf-8",
-                errors="replace", creationflags=creationflags)
-        except OSError as exc:
-            handle.close()
-            self._clear_state(cfg.kind)
-            raise RuntimeError(f"{cfg.kind} 服务启动失败：{exc}") from exc
-        owned = OwnedProcess(
-            kind=cfg.kind, config=cfg, proc=proc, port=port,
-            api_key=api_key, log_path=log_path)
-        with self._lock:
-            self._owned[cfg.kind] = owned
-            self._log_handles.add(handle)
-        # 探测等待（取消/退出超时 → 清理不留孤儿）
-        deadline = time.monotonic() + self.startup_timeout
-        base = f"http://127.0.0.1:{port}"
-        while time.monotonic() < deadline:
-            if proc.poll() is not None:
-                tail = self._log_tail(log_path)
-                with self._lock:
-                    self._drop_owned(cfg.kind)
-                raise RuntimeError(
-                    f"{cfg.kind} 服务异常退出（{proc.returncode}）："
-                    f"{tail[-400:]}")
+        # 启动新实例（跨进程互斥：并行 runner 同 kind 同时启动竞态）
+        with self._start_lock(cfg.kind):
+            reused = _reuse_external()
+            if reused is not None:
+                return reused
             if cancellation_event is not None \
                     and cancellation_event.is_set():
-                self.stop(cfg.kind)
                 raise RuntimeError(f"{cfg.kind} 服务启动已取消")
-            if self._probe(base, api_key, Path(cfg.model_path).stem):
-                self._save_state(owned)
-                return dict(owned.endpoint)
-            self._sleep(0.5)
-        # 启动超时：终止进程 + 清租约 + 清状态
-        self.stop(cfg.kind)
-        raise RuntimeError(f"{cfg.kind} 服务启动超时（{self.startup_timeout:.0f}s）")
+            # 启动前对固定端口清场（2026-08-14 实证：旧会话 embedding
+            # 残留（8083）→ 新会话 state 复用失败 → reserve 换随机端口
+            # 起第二实例 → 双实例内存膨胀 → 审核 4B 加载 swap 到几分钟
+            # （用户 GUI「正在启动审核模型」卡住）。review 老路径有
+            # _clear_stale_review_port 强杀残留，embed/rerank 迁移到基座
+            # 后丢了这步——此处对齐：固定端口被非 owned 进程占用 →
+            # 终止回收，保证 reserve 拿到固定端口。
+            fixed_port = DEFAULT_PORTS.get(cfg.kind)
+            if fixed_port:
+                self._clear_port(fixed_port, cfg.kind)
+            port = self._ports.reserve(cfg.kind)
+            self._clear_port(port, cfg.kind)
+            api_key = self._token_factory()
+            cmd = build_server_command(
+                cfg.server_path, cfg.model_path, port=port,
+                api_key=api_key, context_size=cfg.ctx,
+                gpu_layers=cfg.gpu_layers, parallel=cfg.parallel,
+                cache_reuse=cfg.cache_reuse)
+            cmd.extend(cfg.extra_args)
+            log_path = self.app_dir / "logs" / f"{cfg.kind}-server.log"
+            log_path.parent.mkdir(parents=True, exist_ok=True)
+            handle = log_path.open("a", encoding="utf-8", errors="replace")
+            creationflags = 0
+            if sys.platform == "win32":
+                creationflags = (getattr(subprocess, "CREATE_NO_WINDOW", 0)
+                                 | getattr(subprocess,
+                                           "CREATE_NEW_PROCESS_GROUP", 0))
+            try:
+                proc = self._process_factory(
+                    cmd, cwd=str(Path(cmd[0]).parent), stdout=handle,
+                    stderr=subprocess.STDOUT, text=True, encoding="utf-8",
+                    errors="replace", creationflags=creationflags)
+            except OSError as exc:
+                handle.close()
+                self._clear_state(cfg.kind)
+                raise RuntimeError(
+                    f"{cfg.kind} 服务启动失败：{exc}") from exc
+            owned = OwnedProcess(
+                kind=cfg.kind, config=cfg, proc=proc, port=port,
+                api_key=api_key, log_path=log_path)
+            with self._lock:
+                self._owned[cfg.kind] = owned
+                self._log_handles.add(handle)
+            # 探测等待（取消/退出超时 → 清理不留孤儿）
+            deadline = time.monotonic() + self.startup_timeout
+            base = f"http://127.0.0.1:{port}"
+            while time.monotonic() < deadline:
+                if proc.poll() is not None:
+                    tail = self._log_tail(log_path)
+                    with self._lock:
+                        self._drop_owned(cfg.kind)
+                    raise RuntimeError(
+                        f"{cfg.kind} 服务异常退出（{proc.returncode}）："
+                        f"{tail[-400:]}")
+                if cancellation_event is not None \
+                        and cancellation_event.is_set():
+                    self.stop(cfg.kind)
+                    raise RuntimeError(f"{cfg.kind} 服务启动已取消")
+                if self._probe(base, api_key, Path(cfg.model_path).stem):
+                    self._save_state(owned)
+                    return dict(owned.endpoint)
+                self._sleep(0.5)
+            # 启动超时：终止进程 + 清租约 + 清状态
+            self.stop(cfg.kind)
+            raise RuntimeError(
+                f"{cfg.kind} 服务启动超时（{self.startup_timeout:.0f}s）")
 
     def release(self, kind: str) -> None:
         """refcount-1；归零后按 TTL 回收（0 = 常驻保留）。"""
@@ -455,6 +568,31 @@ class RuntimeCoordinator:
         """终止指定 kind 的 owned 进程（取消/超时/显式关闭）。"""
         with self._lock:
             self._drop_owned(kind)
+
+    def register(self, kind: str, proc, port: int, api_key: str,
+                 model_path: str) -> None:
+        """外部服务（review 老路径等）注册 owned 进程——退出统一清理。
+
+        2026-08-14 孤儿实证：GUI close 只停翻译 + ~/.hanhua 协调器，
+        review 4B 与项目根 embedding 全部残留 → 会话间进程累积内存
+        膨胀。老路径服务启动成功后调用本方法注册，stop_all 一并清理。
+        """
+        if proc is None or proc.poll() is not None:
+            return
+        with self._lock:
+            existing = self._owned.get(kind)
+            if existing is not None and existing.alive:
+                return  # 本协调器已管理同 kind 存活进程 → 不动
+            owned = OwnedProcess(
+                kind=kind,
+                config=EffectiveRunConfig(
+                    kind=kind, model_path=str(model_path),
+                    model_sha256="registered", server_path="",
+                    port=int(port), ctx=0, gpu_layers=0, parallel=1),
+                proc=proc, port=int(port), api_key=str(api_key),
+                log_path=Path(str(self.app_dir)) / "logs"
+                / f"{kind}-server.log")
+            self._owned[kind] = owned
 
     def stop_all(self) -> int:
         """终止全部 owned 进程（退出政策，P1-10：AppState.close 统一）。"""
@@ -532,3 +670,18 @@ def reset_coordinators() -> None:
         for coord in _COORDINATORS.values():
             coord.stop_all()
         _COORDINATORS.clear()
+
+
+def stop_all_coordinators() -> int:
+    """统一退出政策：清理全部 app_dir 的协调器 owned 进程。
+
+    2026-08-14 孤儿实证：GUI embed/rerank 在 resource_dir 协调器，
+    review 在老路径——AppState.close 只清 ~/.hanhua 协调器 → 其余
+    残留。退出/切换项目必须调用本函数（遍历所有已建协调器）。
+    """
+    total = 0
+    with _COORDINATORS_LOCK:
+        coords = list(_COORDINATORS.values())
+    for coord in coords:
+        total += coord.stop_all()
+    return total

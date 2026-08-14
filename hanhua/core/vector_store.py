@@ -111,8 +111,7 @@ class EmbeddingService:
             info["base_url"] + "/embeddings",
             headers={"Authorization": f"Bearer {info['api_key']}"},
             json={"model": "local", "input": list(texts)},
-            timeout=timeout,
-        )
+            timeout=timeout, trust_env=False, verify=False)
         resp.raise_for_status()
         data = resp.json().get("data", [])
         by_index = {int(item.get("index", i)): item.get("embedding", [])

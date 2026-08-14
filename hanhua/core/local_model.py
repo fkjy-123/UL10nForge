@@ -167,6 +167,87 @@ def _validate_gguf(path: Path) -> Path:
     return path
 
 
+# ── 翻译服务端口唯一性（2026-08-14 统一设计） ─────────────────────
+# 随机端口无法清场 → 孤儿翻译实例累积（taxes 实证：9 个 llama-server
+# 残留 11.5GB → 并发 502）。固定 8080 + 启动前清场：llama-server 形态
+# 残留占用 → 终止回收；非 llama-server 占用（web 服务等）→ 随机端口
+# 回退，绝不误杀。
+
+_DEFAULT_TRANSLATE_PORT = 8080
+
+
+def _port_in_use(port: int) -> bool:
+    import socket
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
+        try:
+            sock.bind(("127.0.0.1", int(port)))
+            return False
+        except OSError:
+            return True
+
+
+def _kill_llama_on_port(port: int) -> bool:
+    """终止监听该端口的 llama-server 残留；其他进程占用返回 False。
+
+    只杀 llama-server 形态（进程名精确匹配）——本工具专用端口的占用
+    者只可能是旧会话残留；非 llama-server 由调用方走随机端口回退。
+    """
+    import subprocess
+    if os.name != "nt":
+        return False
+    try:
+        out = subprocess.run(
+            ["netstat", "-ano"], capture_output=True, text=True,
+            timeout=10,
+            creationflags=getattr(subprocess, "CREATE_NO_WINDOW", 0),
+        ).stdout
+    except (OSError, subprocess.TimeoutExpired):
+        return False
+    pids: set[str] = set()
+    for line in out.splitlines():
+        parts = line.split()
+        if len(parts) >= 5 and parts[0] == "TCP" \
+                and parts[1].endswith(f":{int(port)}") \
+                and parts[3] == "LISTENING":
+            pids.add(parts[4])
+    killed = False
+    for pid in pids:
+        if not (pid.isdigit() and int(pid) > 0):
+            continue
+        try:
+            rows = subprocess.run(
+                ["tasklist", "/FI", f"PID eq {pid}", "/FO", "CSV", "/NH"],
+                capture_output=True, text=True, timeout=10,
+                creationflags=getattr(subprocess, "CREATE_NO_WINDOW", 0),
+            ).stdout
+            name = rows.split(",")[0].strip('"') if rows else ""
+            if name.lower() != "llama-server.exe":
+                continue
+        except (OSError, subprocess.TimeoutExpired):
+            continue
+        try:
+            subprocess.run(["taskkill", "/PID", pid, "/F"],
+                           capture_output=True, timeout=10,
+                           creationflags=getattr(
+                               subprocess, "CREATE_NO_WINDOW", 0))
+            killed = True
+        except (OSError, subprocess.TimeoutExpired):
+            continue
+    return killed
+
+
+def _resolve_translate_port(config: ApiConfig) -> int:
+    """翻译服务端口决策：显式配置 > 固定 8080（清场）> 随机回退。"""
+    configured = int(getattr(config, "local_port", 0) or 0)
+    if configured:
+        return configured
+    if not _port_in_use(_DEFAULT_TRANSLATE_PORT):
+        return _DEFAULT_TRANSLATE_PORT
+    if _kill_llama_on_port(_DEFAULT_TRANSLATE_PORT):
+        return _DEFAULT_TRANSLATE_PORT
+    return choose_port()
+
+
 def build_server_command(
         server_path: str | Path, model_path: str | Path, *, port: int,
         api_key: str, context_size: int, gpu_layers: int,
@@ -213,23 +294,59 @@ def choose_port() -> int:
         return int(sock.getsockname()[1])
 
 
+# 模型 sha256 缓存（2026-08-14 实证：审核 embedding 召回高频调用
+# ensure_running → build_effective_config → 每次重算 1.4GB 模型 sha256
+# ~3-4s CPU，审核整体拖慢数倍）。失效键 = (路径, 大小, mtime_ns)：
+# 文件被替换/写入 → size 或 mtime_ns 变化 → 重算。线程安全。
+_SHA256_CACHE: dict[tuple, str] = {}
+_SHA256_CACHE_LOCK = threading.Lock()
+
+
+def _sha256_cached(path: Path) -> str | None:
+    try:
+        stat = path.stat()
+    except OSError:
+        return None
+    key = (str(path), stat.st_size, stat.st_mtime_ns)
+    with _SHA256_CACHE_LOCK:
+        return _SHA256_CACHE.get(key)
+
+
+def _sha256_cache_store(path: Path, digest: str) -> None:
+    try:
+        stat = path.stat()
+    except OSError:
+        return
+    key = (str(path), stat.st_size, stat.st_mtime_ns)
+    with _SHA256_CACHE_LOCK:
+        if len(_SHA256_CACHE) > 64:
+            _SHA256_CACHE.clear()
+        _SHA256_CACHE[key] = digest
+
+
 def sha256_of(path: str | Path) -> str:
     """模型文件 sha256（审计 Phase D P1-12 固定路由）。
 
     进签名 → 模型文件变化自动不复用旧实例；不可读返回 "unreadable"
     标记（不阻断启动——文件存在性由调用方 is_available 检查）。
     """
+    resolved = Path(path).resolve()
+    cached = _sha256_cached(resolved)
+    if cached is not None:
+        return cached
     try:
         digest = hashlib.sha256()
-        with open(path, "rb") as stream:
+        with open(resolved, "rb") as stream:
             while True:
                 chunk = stream.read(1 << 20)
                 if not chunk:
                     break
                 digest.update(chunk)
-        return digest.hexdigest()
+        value = digest.hexdigest()
     except OSError:
         return "unreadable"
+    _sha256_cache_store(resolved, value)
+    return value
 
 
 def _http_probe(base_url: str, api_key: str, expected_model: str) -> bool:
@@ -237,14 +354,12 @@ def _http_probe(base_url: str, api_key: str, expected_model: str) -> bool:
         headers = {"Authorization": f"Bearer {api_key}"}
         health = httpx.get(
             base_url.rstrip("/") + "/health",
-            headers=headers, timeout=1.5,
-        )
+            headers=headers, timeout=1.5, trust_env=False, verify=False)
         if health.status_code != 200:
             return False
         models = httpx.get(
             base_url.rstrip("/") + "/v1/models",
-            headers=headers, timeout=1.5,
-        )
+            headers=headers, timeout=1.5, trust_env=False, verify=False)
         if models.status_code != 200:
             return False
         expected = expected_model.casefold()
@@ -451,7 +566,7 @@ class LocalModelManager:
             gpu_layers: int, cache_reuse: int,
             cancellation_event=None, *, token_override: str | None = None,
             parallel_override: int | None = None) -> LocalRuntimeInfo:
-        port = int(config.local_port) or choose_port()
+        port = _resolve_translate_port(config)
         token = token_override or self._token_factory()
         parallel = (
             parallel_override

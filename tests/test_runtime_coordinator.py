@@ -9,6 +9,7 @@ import os
 
 os.environ.setdefault("QT_QPA_PLATFORM", "offscreen")
 
+import json
 import threading
 import time
 
@@ -254,7 +255,7 @@ def test_http_probe_carries_authorization(monkeypatch):
         def json(self):
             return self._payload
 
-    def fake_get(url, timeout=0, headers=None):
+    def fake_get(url, timeout=0, headers=None, trust_env=False, verify=False):
         calls.append((url, headers))
         if url.endswith("/health"):
             return _Resp(200)
@@ -271,7 +272,7 @@ def test_http_probe_carries_authorization(monkeypatch):
     assert models_call[0].get("Authorization") == "Bearer k-abc"
 
     # 401（未鉴权服务/错误 key）→ False——不允许误判可用
-    def fake_401(url, timeout=0, headers=None):
+    def fake_401(url, timeout=0, headers=None, trust_env=False, verify=False):
         return _Resp(401)
 
     monkeypatch.setattr(rc.httpx, "get", fake_401)
@@ -279,7 +280,7 @@ def test_http_probe_carries_authorization(monkeypatch):
         "http://127.0.0.1:8083", "k", "m") is False
 
     # 模型不匹配 → False
-    def fake_other_model(url, timeout=0, headers=None):
+    def fake_other_model(url, timeout=0, headers=None, trust_env=False, verify=False):
         if url.endswith("/health"):
             return _Resp(200)
         return _Resp(200, {"data": [{"id": "other-model"}]})
@@ -289,7 +290,7 @@ def test_http_probe_carries_authorization(monkeypatch):
         "http://127.0.0.1:8083", "k", "qwen3-embed") is False
 
     # 网络异常 → False（不抛）
-    def fake_raise(url, timeout=0, headers=None):
+    def fake_raise(url, timeout=0, headers=None, trust_env=False, verify=False):
         raise rc.httpx.HTTPError("conn refused")
 
     monkeypatch.setattr(rc.httpx, "get", fake_raise)
@@ -496,3 +497,62 @@ def test_app_state_close_stops_coordinator(tmp_path):
         assert factory.procs[0]._stopped
     finally:
         reset_coordinators()
+
+
+# ── 跨进程启动互斥锁（2026-08-14 四模型唯一性：并行 runner 竞态兜底） ─
+
+def test_start_lock_acquire_release(tmp_path):
+    """锁内锁文件存在含 PID；退出后删除。"""
+    coord = RuntimeCoordinator(
+        str(tmp_path), process_factory=_FakeProcFactory(),
+        probe=_always_ok_probe)
+    lock_path = tmp_path / "locks" / "embed.lock"
+    with coord._start_lock("embed"):
+        assert lock_path.is_file()
+        assert lock_path.read_text(encoding="utf-8").strip() == \
+            str(os.getpid())
+    assert not lock_path.exists()
+
+
+def test_start_lock_stale_owner_reclaimed(tmp_path):
+    """持有者进程已死（崩溃残留）→ 删锁重抢。"""
+    coord = RuntimeCoordinator(
+        str(tmp_path), process_factory=_FakeProcFactory(),
+        probe=_always_ok_probe)
+    lock_path = tmp_path / "locks" / "embed.lock"
+    lock_path.parent.mkdir(parents=True, exist_ok=True)
+    lock_path.write_text("99999999", encoding="utf-8")  # 不存在的 PID
+    with coord._start_lock("embed"):
+        assert lock_path.read_text(encoding="utf-8").strip() == \
+            str(os.getpid())
+
+
+def test_start_lock_timeout_proceeds_without_blocking(tmp_path, monkeypatch):
+    """存活持有者占用 → 超时放弃互斥继续（不阻塞用户）。"""
+    coord = RuntimeCoordinator(
+        str(tmp_path), process_factory=_FakeProcFactory(),
+        probe=_always_ok_probe)
+    lock_path = tmp_path / "locks" / "embed.lock"
+    lock_path.parent.mkdir(parents=True, exist_ok=True)
+    lock_path.write_text(str(os.getpid()), encoding="utf-8")  # 存活占用
+    monkeypatch.setattr(coord, "_sleep", lambda s: None)
+    monkeypatch.setattr(coord, "_lock_stale", staticmethod(lambda p: False))
+    with coord._start_lock("embed", timeout=0.05):
+        pass  # 超时后放弃互斥继续执行，不抛异常
+    assert lock_path.is_file()  # 未获取锁 → 不删别人的锁
+
+
+def test_acquire_reuses_state_written_by_competing_process(tmp_path):
+    """锁内复查跨实例复用：竞争进程抢先启动并写 state → 不重复启动。"""
+    factory = _FakeProcFactory()
+    coord = RuntimeCoordinator(
+        str(tmp_path), process_factory=factory, probe=_always_ok_probe)
+    cfg = _cfg(tmp_path)
+    state = tmp_path / "coord_runtime_embed.json"
+    state.write_text(json.dumps({
+        "port": 8083, "api_key": "k-race",
+        "signature": [str(x) for x in cfg.signature()],
+    }), encoding="utf-8")
+    e = coord.acquire(cfg)
+    assert factory.procs == []     # 未启动新进程，直接借用外部实例
+    assert e["port"] == 8083

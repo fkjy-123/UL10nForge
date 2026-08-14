@@ -88,8 +88,7 @@ class RerankService:
             headers={"Authorization": f"Bearer {info['api_key']}"},
             json={"model": "local", "query": query,
                   "documents": list(documents)},
-            timeout=timeout,
-        )
+            timeout=timeout, trust_env=False, verify=False)
         resp.raise_for_status()
         return list(resp.json().get("results", []))
 

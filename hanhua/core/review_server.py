@@ -112,11 +112,11 @@ class ReviewModelService:
         """
         headers = {"Authorization": f"Bearer {api_key}"}
         try:
-            health = httpx.get(base + "/health", timeout=2)
+            health = httpx.get(base + "/health", timeout=2, trust_env=False, verify=False)
             if health.status_code != 200:
                 return False
             models = httpx.get(base + "/v1/models", timeout=2,
-                               headers=headers)
+                               headers=headers, trust_env=False, verify=False)
             if models.status_code != 200:
                 return False
             ids = [str(m.get("id", ""))
@@ -131,12 +131,17 @@ class ReviewModelService:
 
     # ── 主入口 ────────────────────────────────────────────────────
     def ensure_running(self, cancellation_event=None,
-                       context_size: int | None = None) -> dict:
+                       context_size: int | None = None,
+                       gpu_choice: str | None = None) -> dict:
         """确保审核服务就绪，返回 {"base_url": ".../v1", "api_key": ...}。
 
         - 本实例已启动同签名服务 → 直接复用
         - review_runtime.json 记录同签名服务 → 探测通过则复用
         - 否则启动新实例（build_server_command + --reasoning off）
+
+        gpu_choice（环境设置页四模型卡片）：auto → hardware_planner
+        决策；cpu → gpu_layers=0 强制 CPU；gpu → 999 强制全层
+        （llama.cpp 对超层数 clamp 到全部层，绕过 planner 的 -1 接管）。
         """
         spec = self._spec()
         if not spec.is_available:
@@ -155,7 +160,12 @@ class ReviewModelService:
             plan = None
         server = discover_server("", self.app_dir)
         ctx = context_size or (plan.ctx if plan else spec.default_ctx)
-        gpu_layers = plan.gpu_layers if plan else -1
+        if gpu_choice == "cpu":
+            gpu_layers = 0
+        elif gpu_choice == "gpu":
+            gpu_layers = 999
+        else:
+            gpu_layers = plan.gpu_layers if plan else -1
         # 审计 Phase D（P1-12）：模型 sha256 进签名——审核模型文件更新后
         # 旧 state 签名不匹配 → 不复用旧实例（自动重启新模型）
         signature = (server, spec.path, sha256_of(spec.path), spec.port,
@@ -227,7 +237,17 @@ class ReviewModelService:
                         "base_url": base + "/v1", "api_key": api_key,
                         "port": spec.port,
                     }
-                    return dict(self._runtime)
+                # 2026-08-14 孤儿实证：GUI close 未清理 review 4B →
+                # 会话间残留累积。注册到共享协调器（同 app_dir 单例），
+                # 退出 stop_all_coordinators 统一回收。
+                try:
+                    from hanhua.core.runtime_coordinator import (
+                        get_coordinator)
+                    get_coordinator(self.app_dir).register(
+                        "review", proc, spec.port, api_key, spec.path)
+                except Exception:  # noqa: BLE001 - 注册失败不影响主流程
+                    pass
+                return dict(self._runtime)
             self._sleep(2.0)
         tail = self._log_tail(log_path)
         raise RuntimeError(f"审核服务启动超时（{self.startup_timeout}s）："
@@ -300,8 +320,7 @@ class ReviewModelService:
             json={"model": "local",
                   "messages": [{"role": "user", "content": prompt}],
                   "temperature": temperature, "max_tokens": max_tokens},
-            timeout=timeout,
-        )
+            timeout=timeout, trust_env=False, verify=False)
         resp.raise_for_status()
         return resp.json()["choices"][0]["message"]["content"]
 

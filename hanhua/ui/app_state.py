@@ -112,11 +112,14 @@ class AppState(QObject):
         if previous is not None:
             self.projectAboutToChange.emit(previous)
         self.local_model.stop()
-        # 审计 Phase D（P1-10）：close 只停翻译模型，审核/重排/嵌入
-        # 实例残留 → 统一退出政策：全部 owned 进程终止 + 状态清理
+        # 审计 Phase D（P1-10）+ 2026-08-14 孤儿实证：close 只停翻译
+        # 模型 + 只清 ~/.hanhua 协调器 → 审核 4B/项目根 embedding 残留
+        # 累积。统一退出政策：清全部 app_dir 协调器（含 review 注册的
+        # owned 进程）。
         try:
-            from hanhua.core.runtime_coordinator import get_coordinator
-            get_coordinator(self.app_dir).stop_all()
+            from hanhua.core.runtime_coordinator import (
+                stop_all_coordinators)
+            stop_all_coordinators()
         except Exception:  # noqa: BLE001 - 清理失败不阻断关闭流程
             pass
         with self._project_lock:
