@@ -188,6 +188,54 @@ _STRINGBUILDER_CTOR_NAME = ".ctor"
 _STRINGBUILDER_APPEND_NAMES = frozenset({"Append", "AppendLine"})
 _STRINGBUILDER_FORMAT_NAMES = frozenset({"AppendFormat"})
 _STRINGBUILDER_TOSTRING_NAME = "ToString"
+# 结构 sink（证明链的镜像用法）：字符串参数是运行时按名查找键的引擎
+# API——流入这些调用的字面量被**证明为结构**（确定性跳过，取代形态
+# 猜测）。语料挖掘实证：Animator.SetTrigger 58 游戏/Shader.PropertyToID
+# 43/GameObject.Find 44/set_name 49 游戏高频消费字符串。
+# 两组：
+# - 栈顶组：字符串参数恒为栈顶（单字符串参数或字符串为末参的重载；
+#   多参重载如 LoadScene(name, mode) 的 top 是枚举 → 自然错过，安全）；
+# - 首参组：字符串是第一个参数（name, value 形态）——arity 定长弹栈，
+#   名字在 stack[-arity]。
+_STRUCTURAL_SINKS = frozenset({
+    ("UnityEngine.GameObject", "Find"),
+    ("UnityEngine.GameObject", "FindGameObjectWithTag"),
+    ("UnityEngine.Transform", "Find"),
+    ("UnityEngine.Object", "set_name"),
+    ("UnityEngine.Animator", "SetTrigger"),
+    ("UnityEngine.Animator", "ResetTrigger"),
+    ("UnityEngine.Animator", "Play"),
+    ("UnityEngine.Shader", "PropertyToID"),
+    ("UnityEngine.Shader", "Find"),
+    ("UnityEngine.Material", "EnableKeyword"),
+    ("UnityEngine.Material", "DisableKeyword"),
+    ("UnityEngine.Material", "HasProperty"),
+    ("UnityEngine.SceneManagement.SceneManager", "LoadScene"),
+    ("UnityEngine.Input", "GetAxis"),
+    ("UnityEngine.Input", "GetAxisRaw"),
+    ("UnityEngine.Input", "GetButton"),
+    ("UnityEngine.Input", "GetButtonDown"),
+    ("UnityEngine.Input", "GetButtonUp"),
+    ("UnityEngine.MonoBehaviour", "Invoke"),
+    ("UnityEngine.Component", "SendMessage"),
+    ("UnityEngine.Component", "CompareTag"),
+    ("UnityEngine.GameObject", "SendMessage"),
+    ("UnityEngine.GameObject", "BroadcastMessage"),
+    ("UnityEngine.LayerMask", "NameToLayer"),
+})
+# 首参组：(type, method) → 参数总数（名字在 stack[-arity] 位置）
+_STRUCTURAL_NAME_SINKS = {
+    ("UnityEngine.Material", "SetFloat"): 2,
+    ("UnityEngine.Material", "SetInt"): 2,
+    ("UnityEngine.Material", "SetColor"): 2,
+    ("UnityEngine.Material", "SetVector"): 2,
+    ("UnityEngine.Material", "SetTexture"): 2,
+    ("UnityEngine.Material", "SetMatrix"): 2,
+    ("UnityEngine.Animator", "SetBool"): 2,
+    ("UnityEngine.Animator", "SetFloat"): 2,
+    ("UnityEngine.Animator", "SetInteger"): 2,
+    ("UnityEngine.MonoBehaviour", "InvokeRepeating"): 3,
+}
 _IL_OPERAND_1 = frozenset({
     *range(0x0E, 0x14), 0x1F, *range(0x2B, 0x38), 0xDE,
 })
@@ -531,7 +579,8 @@ def _cross_assembly_ui_sinks(pes) -> frozenset:
     return frozenset(sink_identities)
 
 
-def _verified_ui_user_string_tokens(pe, *, cross_sinks: frozenset = frozenset()) -> set[int]:
+def _verified_ui_user_string_tokens(pe, *, cross_sinks: frozenset = frozenset(),
+                                    structural_out: set[int] | None = None) -> set[int]:
     """Return #US token offsets proven to flow into verified UI setter calls.
 
     游戏常用自封装方法（SetTutorialText(text) 内部再 set_text），字面量先传给
@@ -554,6 +603,8 @@ def _verified_ui_user_string_tokens(pe, *, cross_sinks: frozenset = frozenset())
     sb_appends: set[int] = set()
     sb_formats: dict[int, int | None] = {}
     sb_tostrings: set[int] = set()
+    structural_sinks: set[int] = set()
+    structural_name_sinks: dict[int, int] = {}
     safe_value_producers: set[int] = set()
     member_identity: dict[int, tuple[str, str]] = {}
     for index, row in enumerate(member_rows, 1):
@@ -564,6 +615,11 @@ def _verified_ui_user_string_tokens(pe, *, cross_sinks: frozenset = frozenset())
         )))
         method_name = str(getattr(row, "Name", "") or "")
         member_identity[0x0A000000 | index] = (full_type, method_name)
+        if (full_type, method_name) in _STRUCTURAL_SINKS:
+            structural_sinks.add(0x0A000000 | index)
+        elif (full_type, method_name) in _STRUCTURAL_NAME_SINKS:
+            structural_name_sinks[0x0A000000 | index] = \
+                _STRUCTURAL_NAME_SINKS[(full_type, method_name)]
         if full_type in _UI_SETTER_TYPES and method_name in {"set_text", "SetText"}:
             ui_setters.add(0x0A000000 | index)
         elif (full_type, method_name) in _UI_DISPLAY_CALLS:
@@ -594,7 +650,12 @@ def _verified_ui_user_string_tokens(pe, *, cross_sinks: frozenset = frozenset())
     for index, row in enumerate(method_rows, 1):
         if str(getattr(row, "Name", "") or "").startswith("get_"):
             safe_value_producers.add(0x06000000 | index)
-    if not ui_setters:
+    if not ui_setters and not structural_sinks and not structural_name_sinks:
+        # 无任何可判定 sink（UI/结构都无）时结构证明也无需运行
+        return set()
+    if not ui_setters and structural_out is None:
+        # 仅结构 sink 且调用方不收集结构证明：逐方法分析无 UI 收益
+        return set()
         return set()
 
     # 每个方法签名的 string 参数位置（None = 无法解析，不参与传递验证）
@@ -669,7 +730,24 @@ def _verified_ui_user_string_tokens(pe, *, cross_sinks: frozenset = frozenset())
                     else:
                         stack.clear()
                 elif opcode in (0x28, 0x6F):  # call / callvirt
-                    if operand in ui_setters or (
+                    if operand in structural_sinks:
+                        # 结构证明（镜像用法）：栈顶字面量是运行时按名
+                        # 查找键（GameObject.Find/SetTrigger 等），确定
+                        # 性跳过——取代形态猜测（误翻名字断功能的
+                        # 按钮失灵教训的证明版）
+                        if structural_out is not None and stack:
+                            tokens, _args = _string_source(stack[-1])
+                            structural_out |= tokens
+                        stack.clear()
+                    elif operand in structural_name_sinks:
+                        # 首参结构 sink（SetFloat(name, value) 形态）：
+                        # 名字在 stack[-arity]
+                        arity = structural_name_sinks[operand]
+                        if structural_out is not None and len(stack) >= arity:
+                            tokens, _args = _string_source(stack[-arity])
+                            structural_out |= tokens
+                        stack.clear()
+                    elif operand in ui_setters or (
                             cross_sinks and member_identity.get(operand)
                             in cross_sinks):
                         # 本程序集 setter，或跨程序集 sink（Fungus.Say 等
@@ -866,8 +944,10 @@ def extract_dll_user_strings(path: str | Path, file_id: str | None = None,
         data = us.get_data_at_offset(0, us.sizeof())
         heap_file_offset = us.get_file_offset(0)
         entries: list[TextEntry] = []
+        structural_tokens: set[int] = set()
         verified_ui_tokens = _verified_ui_user_string_tokens(
-            pe, cross_sinks=cross_sinks)
+            pe, cross_sinks=cross_sinks,
+            structural_out=structural_tokens)
         for token_offset, offset, raw in _walk_us_heap_records(data):
             # ECMA-335 #US blobs always end with a one-byte kind flag.  The
             # flag is zero for ordinary ASCII strings and one for strings that
@@ -882,6 +962,10 @@ def extract_dll_user_strings(path: str | Path, file_id: str | None = None,
                 continue
             # 无 provenance 的 Bold/WASD/Move 等标识符按枚举名/绑定名保守排除。
             is_ui_text = token_offset in verified_ui_tokens
+            # 结构证明（镜像用法）：字面量流入 GameObject.Find/SetTrigger
+            # 等按名查找 API = 确定性结构键——优先于一切显示判定
+            # （对象名同时被 Find 和 set_text 使用的按钮实证：宁漏勿坏）
+            is_structural_proven = token_offset in structural_tokens
             interaction_prompt = is_strong_interaction_prompt(s)
             # 代码拼接的 UI 文本证据：含空格 + 全大写强调词（UI 标签/教程句）。
             # driftapocalypse 真实样本：'BEST SCORE: '、'Hold LEFT or RIGHT to
@@ -889,7 +973,7 @@ def extract_dll_user_strings(path: str | Path, file_id: str | None = None,
             # 诊断/日志字符串通常无全大写词，保持保守跳过。
             uppercase_ui = (
                 " " in s and bool(_UI_UPPERCASE_WORD.search(s)))
-            if _structural_for_ui_text(s, is_ui_text):
+            if not is_structural_proven and _structural_for_ui_text(s, is_ui_text):
                 # R5/L1：结构形态（JSON/URL/路径/GUID/纯数字）静默跳过
                 # 留档（计数 + 限量样本——内容可审计，样本 ≤10 条/原因）
                 skipped["hard_structural"] = skipped.get("hard_structural", 0) + 1
@@ -905,7 +989,7 @@ def extract_dll_user_strings(path: str | Path, file_id: str | None = None,
             # ——tiiny-ragdoll 实证：'Hidden/Post FX/FXAA' 的 FX 全大写词
             # 触发 uppercase_ui 误判为 UI 文本，翻译后 Shader.Find 失败
             # → 渲染崩溃启动卡死。引擎查找键永不翻译，不论 UI 证据。
-            if is_engine_string_core(s):
+            if not is_structural_proven and is_engine_string_core(s):
                 skipped["engine_core"] = skipped.get("engine_core", 0) + 1
                 sample = _skipped_sample_entry(
                     fid, f"skip/us#{offset}", s, kind="us",
@@ -914,6 +998,7 @@ def extract_dll_user_strings(path: str | Path, file_id: str | None = None,
                     entries.append(sample)
                 continue
             if (not is_ui_text and not interaction_prompt and not uppercase_ui
+                    and not is_structural_proven
                     and (is_code_identifier(s) or _is_engine_string(s)
                          or is_engine_string_gated(s))):
                 # R5/L1：代码标识符/引擎串形态静默跳过留档（无 UI 证据时）
@@ -947,7 +1032,8 @@ def extract_dll_user_strings(path: str | Path, file_id: str | None = None,
                 and is_tag_composed(s))
             display_text = (
                 is_ui_text or interaction_prompt or uppercase_ui
-                or unityscript_display or tagged_display) and not mono_diagnostic
+                or unityscript_display or tagged_display) and not mono_diagnostic \
+                and not is_structural_proven
             entries.append(TextEntry(
                 file_id=fid, key_path=f"us#{offset}",
                 original=s, status="pending" if display_text else STATUS_SKIPPED,
@@ -973,7 +1059,8 @@ def extract_dll_user_strings(path: str | Path, file_id: str | None = None,
                     "role": "display" if display_text else "structural",
                     "disposition": "translate" if display_text else "structural",
                     "reason": (
-                        "mono_ui_setter" if is_ui_text
+                        "mono_structural_sink" if is_structural_proven
+                        else "mono_ui_setter" if is_ui_text
                         else "mono_diagnostic" if mono_diagnostic
                         else "interaction_prompt" if interaction_prompt
                         else "user_string_uppercase_ui" if uppercase_ui

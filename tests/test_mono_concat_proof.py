@@ -252,3 +252,55 @@ _APPENDLINE = 0x0A000004
 _APPENDFMT = 0x0A000005
 _TOSTRING = 0x0A000006
 _GUI_LABEL = 0x0A000007
+
+
+class TestStructuralProof:
+    """结构证明（镜像用法）：流入按名查找 API 的字面量确定性跳过。"""
+
+    def _structural_members(self):
+        from tests.test_mono_concat_proof import _text_ref, _setter_ref
+        go = ("UnityEngine", "GameObject")
+        mat = ("UnityEngine", "Material")
+        return [
+            _setter_ref(),
+            _text_ref("Find", ns=go[0], type_name=go[1],
+                      signature=b"\x00\x01\x0e\x0e"),
+            _text_ref("SetFloat", ns=mat[0], type_name=mat[1],
+                      signature=b"\x00\x02\x01\x0e\x1c"),
+        ]
+
+    def test_find_name_proven_structural(self, tmp_path, monkeypatch):
+        # GameObject.Find("Player") → "Player" 是按名查找键
+        heap, tokens = _heap_of(["Player", "Other thing"])
+        code = (_ldstr(tokens[0]) + _call(0x0A000002) + b"\x2a")
+        bodies = {0x2000: bytes(((len(code) << 2) | 2,)) + code}
+        by_original = _extract(heap, bodies, self._structural_members(),
+                               monkeypatch, tmp_path)
+        e = by_original["Player"]
+        assert e.status == "skipped"
+        assert e.meta["reason"] == "mono_structural_sink"
+
+    def test_first_arg_name_proven_structural(self, tmp_path, monkeypatch):
+        # mat.SetFloat("_Color", 1f) → 名字在 stack[-2]
+        heap, tokens = _heap_of(["MyShaderProp"])
+        code = (_ldstr(tokens[0]) + b"\x16"
+                + _callvirt(0x0A000003) + b"\x2a")
+        bodies = {0x2000: bytes(((len(code) << 2) | 2,)) + code}
+        by_original = _extract(heap, bodies, self._structural_members(),
+                               monkeypatch, tmp_path)
+        assert by_original["MyShaderProp"].status == "skipped"
+        assert by_original["MyShaderProp"].meta["reason"] == "mono_structural_sink"
+
+    def test_structural_beats_ui_proof(self, tmp_path, monkeypatch):
+        # "Start" 同时流入 set_text 与 GameObject.Find（对象名=按钮文本
+        # 实证形态）：结构证明优先——宁漏勿坏
+        heap, tokens = _heap_of(["Start"])
+        code = (
+            _ldstr(tokens[0]) + _callvirt(_SETTER)      # UI 路径
+            + _ldstr(tokens[0]) + _call(0x0A000002)     # Find 路径
+            + b"\x2a")
+        bodies = {0x2000: bytes(((len(code) << 2) | 2,)) + code}
+        by_original = _extract(heap, bodies, self._structural_members(),
+                               monkeypatch, tmp_path)
+        assert by_original["Start"].status == "skipped"
+        assert by_original["Start"].meta["reason"] == "mono_structural_sink"
