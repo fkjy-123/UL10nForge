@@ -709,7 +709,13 @@ def _structural_for_ui_text(s: str, is_ui_text: bool) -> bool:
     表拆分碎片软猜测）不得推翻确定性证明——`"HP: " + hp + " of "` 的
     `" of "` 是真实显示成分（拼接片段实证形态），被 padding 规则截杀
     即为误漏。URL/GUID/纯符号等真硬结构在内容上仍拦截。
+
+    TMP 标签组合串（<color=red>Warning!</color>）无论是否被证明都是
+    显示文本——HTML 形态规则误伤标签串，标签语法证据优先。
     """
+    from hanhua.core.tmp_tags import is_tag_composed
+    if is_tag_composed(s):
+        return False
     return is_hard_structural(s.strip() if is_ui_text else s)
 
 
@@ -829,9 +835,16 @@ def extract_dll_user_strings(path: str | Path, file_id: str | None = None,
             unityscript_display = (
                 is_unityscript_asm
                 and not is_ui_text and not interaction_prompt and not uppercase_ui)
+            # TMP 标签组合串（<color=red>Warning!</color>）：标签语法是
+            # 显示文本的强证据（诊断/日志不用 TMP 标签）——未证明时也
+            # 放行（动态拼接的富文本串常不经直接 setter）
+            from hanhua.core.tmp_tags import is_tag_composed
+            tagged_display = (
+                not is_ui_text and not mono_diagnostic
+                and is_tag_composed(s))
             display_text = (
                 is_ui_text or interaction_prompt or uppercase_ui
-                or unityscript_display) and not mono_diagnostic
+                or unityscript_display or tagged_display) and not mono_diagnostic
             entries.append(TextEntry(
                 file_id=fid, key_path=f"us#{offset}",
                 original=s, status="pending" if display_text else STATUS_SKIPPED,
@@ -862,6 +875,7 @@ def extract_dll_user_strings(path: str | Path, file_id: str | None = None,
                         else "interaction_prompt" if interaction_prompt
                         else "user_string_uppercase_ui" if uppercase_ui
                         else "unityscript_user_string" if unityscript_display
+                        else "tmp_tag_composed" if tagged_display
                         else "unverified_user_string"),
                 }))
         for e in entries:

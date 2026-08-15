@@ -90,9 +90,12 @@ def _string_disposition(text: str) -> str:
     """字符串级归因：能被既有规则解释的缺口不计入盲区。"""
     from hanhua.core.engine_strings import is_engine_string_core
     from hanhua.core.placeholders import is_hard_structural, should_skip
+    from hanhua.core.tmp_tags import is_pure_tags
     from hanhua.core.unity.extractor import _is_script_code_line
     if not any(ch.isalpha() for ch in text):
         return "explained:no_letters"
+    if is_pure_tags(text):
+        return "explained:tmp_pure_tags"
     if should_skip(text):
         return "explained:key_identifier"
     if is_hard_structural(text):

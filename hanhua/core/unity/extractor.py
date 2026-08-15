@@ -21,10 +21,13 @@ from hanhua.core.formats import json_format
 from hanhua.core.models import STATUS_SKIPPED, TextEntry
 from hanhua.core.placeholders import (DISPLAY_WORDS, is_credit_like,
                                       is_hard_structural, is_key_style_identifier,
-                                      should_skip, _HAS_LETTER, _LOG_TEMPLATE_TAIL,
+                                      is_vn_command_line, should_skip,
+                                      _HAS_LETTER, _LOG_TEMPLATE_TAIL,
                                       _QUALIFIED, _IDENTIFIER, _WORD_CASE)
 from hanhua.core.scanner import (_has_unity_bundle_magic, _is_runtime_file,
                                  _walk_files)
+from hanhua.core.tmp_tags import (is_pure_tags, is_tag_composed,
+                                  referenced_names)
 import re as _re
 
 _METHOD_NAME = _re.compile(r"^(?:get|set)_[A-Za-z_][A-Za-z0-9_]*$")
@@ -395,6 +398,12 @@ _TYPETREE_IMMUTABLE_FIELD_NAMES = frozenset(
         "m_ControlPath", "m_Action", "m_ActionMap", "m_Script",
         "m_ClassName", "m_Namespace",
         "m_LocaleIdentifier", "m_LocaleCode", "m_SharedData",
+        # camelCase m 前缀变体（NGUI/旧序列化：mName/mGUID/mScript 等，
+        # 与 _normalized_field_name 的 m+大写 strip 同源缺口）
+        "mName", "mKey", "mId", "mEntryID", "mGUID",
+        "mFileID", "mPathID", "mPath", "mAddress",
+        "mControlPath", "mAction", "mActionMap", "mScript",
+        "mClassName", "mNamespace", "mSharedData",
     })
 # 每对象候选条目上限：VisualTreeAsset 等深层结构可能含数千叶子，
 # 防止「低置信证据层」膨胀数据库（识别 ≠ 全入库）。
@@ -402,8 +411,17 @@ _MAX_CANDIDATES_PER_OBJECT = 200
 
 
 def _normalized_field_name(value: object) -> str:
-    name = str(value).casefold()
-    return name[2:] if name.startswith("m_") else name
+    name = str(value)
+    low = name.casefold()
+    if low.startswith("m_"):
+        return low[2:]
+    # NGUI/旧序列化 camelCase m 前缀（mText/mCaption/mLabel，NGUI UILabel
+    # 私有序列化字段实证）：mText 归一化后是 "mtext" 不在白名单——strip
+    # 前导 m（仅当原字段名为 m+大写字母形态，method/matrix 等普通词不受
+    # 影响）。NGUI 游戏整类字段因此漏提取，此为通用修复。
+    if len(name) > 1 and name[0] == "m" and name[1].isupper():
+        return low[1:]
+    return low
 
 
 def _field_name_tokens(value: object) -> frozenset[str]:
@@ -538,6 +556,13 @@ def _typetree_string_entries(
         if normalized in _TYPETREE_DISPLAY_FIELDS:
             append("typetree", path, text, "typetree_display_field",
                    "high", "pending", "display")
+        elif is_tag_composed(text):
+            # TMP 标签组合串：正文是可译内容（typetree 非白名单字段也
+            # 放行，如 <color=red>Warning!</color> 在描述字段里）
+            extra = {"tmp_tag_refs": sorted(referenced_names(text))} \
+                if referenced_names(text) else None
+            append("typetree", path, text, "tmp_tag_composed",
+                   "medium", "pending", "display", extra)
         elif (should_skip(text) or is_hard_structural(text)
               or _looks_like_type_descriptor(text)):
             prefilter = ("key_identifier" if should_skip(text)
@@ -569,6 +594,101 @@ def _typetree_string_entries(
     _finalize_skipped_counts(display, prefilter_counts)
     _finalize_skipped_counts(candidates, prefilter_counts)
     return display, candidates
+
+
+# ── I2 Localization 语言源提取 ─────────────────────────────────────────────
+# I2 Localization 是使用率最高的 Unity 本地化插件之一（官方手册：Terms
+# 存于 LanguageSource，序列化结构 = LanguageSourceAsset 的 mSource/mData
+# → mTerms[].Term（键）+ mTerms[].Languages[]（各语言译文，源语言首个
+# 非空）+ mTerms[].TermType（0=Text，其余为字体/纹理/音频等资产引用）。
+# 语言源 = 整游戏的文本全集，确定性提取（写回走 typetree 字段路径补丁）。
+_I2_SOURCE_FIELD_NAMES = ("mSource", "mData", "m_Source", "m_Data")
+
+
+def _i2_source_data(tree: dict) -> dict | None:
+    """取 I2 LanguageSourceData 容器（mSource/mData 嵌套或平铺）。"""
+    for key in _I2_SOURCE_FIELD_NAMES:
+        data = tree.get(key)
+        if isinstance(data, dict) and isinstance(data.get("mTerms"), list):
+            return data
+    if isinstance(tree.get("mTerms"), list):
+        return tree
+    return None
+
+
+def _is_i2_language_source_tree(tree: dict) -> bool:
+    data = _i2_source_data(tree)
+    if data is None:
+        return False
+    terms = data.get("mTerms") or []
+    return bool(terms) and all(
+        isinstance(t, dict) and t.get("Term") is not None
+        and isinstance(t.get("Languages"), list)
+        for t in terms[:5])
+
+
+def _i2_localization_entries_from_tree(
+        file_id: str, obj_path_id: int, tree: dict,
+        asset_file_name: str = "") -> list[TextEntry]:
+    """I2 语言源条目：每 Term 的源语言值 = 游戏显示文本。
+
+    键（Term）是查找键绝不翻译；TermType≠0 的术语是资产引用
+    （字体/纹理/音频路径名）跳过。值走标准 typetree 字段路径，
+    写回端 _set_typetree_value_at_path 直接可用。
+    """
+    data = _i2_source_data(tree)
+    if data is None:
+        return []
+    source_key = next(
+        (key for key in _I2_SOURCE_FIELD_NAMES
+         if isinstance(tree.get(key), dict) and tree.get(key) is data),
+        None)
+    terms = data.get("mTerms") or []
+    entries: list[TextEntry] = []
+    prefix = (f"asset#{asset_file_name}#{obj_path_id}"
+              if asset_file_name else f"asset#{obj_path_id}")
+    for i, term in enumerate(terms):
+        if not isinstance(term, dict):
+            continue
+        key = term.get("Term")
+        languages = term.get("Languages")
+        term_type = term.get("TermType")
+        # TermType 0=Text；其余（Font/Texture/AudioClip/GameObject/
+        # Sprite/Video/Object）是资产引用路径，翻译断引用
+        if term_type is not None and int(term_type) != 0:
+            continue
+        if key is None or not isinstance(languages, list):
+            continue
+        j = next((idx for idx, v in enumerate(languages)
+                  if isinstance(v, str) and v.strip()), None)
+        if j is None:
+            continue
+        value = languages[j]
+        if is_hard_structural(value):
+            # I2 复数模板等结构值（同 Localization 表处理）
+            continue
+        field_path = ([source_key, "mTerms", i, "Languages", j]
+                      if source_key else ["mTerms", i, "Languages", j])
+        meta = {
+            "kind": "typetree",
+            "obj": obj_path_id,
+            "field_path": field_path,
+            "confidence": "high",
+            "role": "display",
+            "disposition": "translate",
+            "reason": "i2_language_source",
+            "i2_term": key,
+            "i2_lang_index": j,
+        }
+        if asset_file_name:
+            meta["asset_file"] = asset_file_name
+        entries.append(TextEntry(
+            file_id=file_id,
+            key_path=f"{prefix}/field/{_encode_field_path(field_path)}",
+            original=value,
+            meta=meta,
+        ))
+    return entries
 
 
 def find_asset_files(
@@ -1207,6 +1327,22 @@ def _raw_string_entries(file_id: str, obj_path_id: int, raw: bytes,
         elif entry.status == STATUS_SKIPPED:
             reason = "duplicate_key_position"
             confidence, role = "low", "structural"
+        elif is_pure_tags(stripped):
+            # 纯 TMP 标签序列（<size=30><align=center>，无正文字母）：
+            # 标签是排版标记不是语言内容，翻译必破坏标签结构（TMP 标签
+            # 语法层，覆盖全部 TMP 游戏）
+            entry.status = STATUS_SKIPPED
+            reason = "tmp_pure_tags"
+            confidence, role = "low", "structural"
+        elif is_tag_composed(stripped):
+            # TMP 标签组合串（<color=red>Warning!</color> / <b>hi</b>）：
+            # 标签是排版标记、正文是可译内容——即使正文短小无空格也放行
+            # （形态规则会把 <b>hi</b> 误判为标识符/HTML 结构降级）
+            reason = "tmp_tag_composed"
+            confidence, role = "medium", "display"
+            refs = referenced_names(stripped)
+            if refs:
+                entry.meta["tmp_tag_refs"] = sorted(refs)
         elif is_interaction_prompt(stripped):
             entry.status = "pending"
             reason = "interaction_prompt"
@@ -1520,6 +1656,9 @@ def _textasset_entries(file_id: str, obj_path_id: int, raw: bytes,
         if should_skip(content):
             _skip("textasset_key_identifier")
             continue
+        if is_vn_command_line(content):
+            _skip("textasset_vn_command")
+            continue
         # 整文件未达代码阈值（<8 行或占比不足）时的行级代码兜底：
         # 短 Lua 块/单行调用仍按代码跳过（_is_script_code_line 强特征）
         if _is_script_code_line(content):
@@ -1687,6 +1826,12 @@ def _should_downgrade_pending(entry: TextEntry) -> bool:
         return True
     if is_key_style_identifier(entry.original):
         return True
+    if is_tag_composed(entry.original):
+        # TMP 标签组合串是显示文本（正文可译、标签是排版标记）——
+        # is_hard_structural 的 HTML 形态规则会误伤 <b>hi</b>/
+        # <color=red>Warning!</color>（HTML_OR_BB 匹配），确定性标签
+        # 语法证据优先于形态猜测
+        return False
     if not is_hard_structural(entry.original):
         return False
     if (entry.meta.get("confidence") == "high"
@@ -1784,6 +1929,12 @@ def extract_asset_file(path: str | Path, file_id: str | None = None,
                         script_classes.add(script_class)
                     if _is_string_table_tree(tree):
                         entries.extend(_localization_entries_from_tree(
+                            fid, obj.path_id, tree, asset_name))
+                        continue
+                    if _is_i2_language_source_tree(tree):
+                        # I2 Localization 语言源：整游戏文本全集，
+                        # 确定性提取（键/资产引用术语跳过）
+                        entries.extend(_i2_localization_entries_from_tree(
                             fid, obj.path_id, tree, asset_name))
                         continue
                     shared_rows = tree.get("m_Entries")

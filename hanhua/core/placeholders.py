@@ -981,3 +981,29 @@ def should_skip(text: str) -> bool:
     if is_key_style_identifier(s):     # 键风格标识符（ui_newGame / MENU_PLAY / en）
         return True
     return False
+
+
+# ── 视觉小说/对话脚本命令行（通用规则，Yarn/Naninovel/Ink 源脚本） ──
+# .yarn 源文件的 <<if>>/<<set>>/<<jump>> 命令块、=== 节点头、.ink 的
+# -> 跳转行、Naninovel 的 @command 行——按名引用/控制流结构，翻译破坏
+# 运行时解析。带引号对话内容的命令行（@speak Actor: "text"）不拦截
+# （内容是可译文本，由调用方按行提取后模型保留引号结构）。
+_VN_COMMAND_LINE = re.compile(
+    r"^(?:"
+    r"<<.*>>"                       # Yarn 命令块 <<if $var>> / <<jump Node>>
+    r"|===.*==="                     # Ink 节点头 === knot ===
+    r"|@[A-Za-z_][A-Za-z0-9_]*\s*$"  # Naninovel 无参数命令 @stop / @goto
+    r"|@[A-Za-z_][A-Za-z0-9_]*\s+[A-Za-z_][\w.]*\s*$"  # @goto Label 无引号参数
+    r")$")
+
+
+def is_vn_command_line(text: str) -> bool:
+    """Yarn/Naninovel/Ink 源脚本的纯命令行（无对话内容）。
+
+    Yarn 选择行 `-> Go left` 不拦截——显示给玩家的选项文本本身可译
+    （翻译保留 -> 前缀）。带引号的对话命令行不拦截。
+    """
+    s = text.strip()
+    if not s or '"' in s:
+        return False
+    return bool(_VN_COMMAND_LINE.match(s))

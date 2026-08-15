@@ -3,7 +3,8 @@ import re
 from pathlib import Path
 from hanhua.core.models import TextEntry, STATUS_SKIPPED
 from hanhua.core.formats import read_text
-from hanhua.core.placeholders import is_hard_structural, should_skip
+from hanhua.core.placeholders import (is_hard_structural, is_vn_command_line,
+                                       should_skip)
 
 # key=value / key:value（delim 记录原样分隔符）
 _KV = re.compile(r"^(?P<key>[^=:;\t\r\n]+?)\s*(?P<delim>[:=])\s*(?P<value>.*)$")
@@ -33,6 +34,11 @@ def extract_txt(path: str | Path, file_id: str | None = None) -> list[TextEntry]
         elif stripped.startswith("[") and stripped.endswith("]"):
             entries.append(TextEntry(file_id=fid, key_path=f"line/{i}", original=line,
                                      status=STATUS_SKIPPED, meta={**meta, "kind": "section"}))
+        elif is_vn_command_line(stripped):
+            # Yarn <<命令>> / Naninovel @命令 / Ink ===节点头=== 行：
+            # 控制流与按名引用结构，翻译破坏脚本解析（通用规则）
+            entries.append(TextEntry(file_id=fid, key_path=f"line/{i}", original=line,
+                                     status=STATUS_SKIPPED, meta={**meta, "kind": "vn_command"}))
         elif is_hard_structural(stripped):
             # 整行结构值：URL（http://steamworks.github.io 被 _KV 误拆成 key=http 的真实案例）、
             # CLI 参数（Burst 命令记录 --platform=Windows）、协议相对 URL（//host/path）等
@@ -42,7 +48,18 @@ def extract_txt(path: str | Path, file_id: str | None = None) -> list[TextEntry]
             m = _TAB.match(line) or _KV.match(line)
             if m:
                 value = m.group("value").strip()
-                if not value:
+                # Yarn 节点头 title: Start——Start 是 <<jump Start>> 的
+                # 跳转目标（按名引用），翻译断跳转；.ini 等配置文件的
+                # title= 是显示标题不受影响（按扩展名限定）
+                if (p.suffix.lower() == ".yarn"
+                        and m.group("key").strip().casefold() == "title"
+                        and value):
+                    entries.append(TextEntry(
+                        file_id=fid, key_path=f"kv/title/{i}",
+                        original=value, status=STATUS_SKIPPED,
+                        meta={**meta, "kind": "yarn_title",
+                              "key": "title", "delim": m.group("delim")}))
+                elif not value:
                     # 空值 kv 行（nolog= / key= 空参数）：配置项置空，不是文本。
                     # 此前落入 plain 分支作为可译行（Morfosi boot.config 实证：
                     # 'nolog=' 被模型回显 → untranslated_text 恒败）。写回原样输出。
