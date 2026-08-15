@@ -70,6 +70,12 @@ class TestUtf16Runs:
         assert len(hits) == 1
         assert hits[0].text == "任务 Item 12"
 
+    def test_garbage_with_scattered_ascii_pairs_rejected(self):
+        # crash-back-in-time 自定义容器实证：乱码 CJK run 中零星夹着
+        # 合法 (ASCII, 0x00) 对（'H'/'$' 等）——拉丁占比防线必须拒绝
+        raw = "扏彪杅灹䉴潬正$H᐀扏彪片獡䉳潬正唲摮牥#G".encode("utf-16-le")
+        assert _scan_utf16le_runs(raw, 0)[0] == []
+
 
 class TestSkipLogic:
     def test_covered_suffixes(self, tmp_path):

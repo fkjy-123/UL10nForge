@@ -209,13 +209,20 @@ def _scan_utf16le_runs(data: bytes, base_offset: int, *,
     """UTF-16LE 连续可打印 run（逐 2 字节解码，含代理对）。
 
     返回 (hits, open_start)：与 _scan_utf8_runs 同语义（final/跨块 carry）。
-    假阳性防线（require_ascii_letter）：纯 CJK UTF-16 文本（无拉丁字母）
-    暂不覆盖（Unity 原生字符串为 UTF-8，此形态罕见）。
+    假阳性防线（require_ascii_letter + 拉丁占比）：随机二进制字节对
+    解码为可打印 Unicode（尤其 CJK）概率过半，且乱码 run 中零星夹着
+    合法的 (ASCII, 0x00) 对（crash-back-in-time 自定义容器实证：'扏彪
+    杅灹$H᐀' 类乱码混有 H/0x00）。真实 UTF-16 拉丁文本的码元几乎
+    全部是「低字节 0x00 的可打印拉丁」形态——要求该占比 ≥50% 且含
+    ≥1 个 ASCII 字母。纯 CJK UTF-16 文本（无拉丁字母）暂不覆盖
+    （Unity 原生字符串为 UTF-8，此形态罕见）。
     """
     hits: list[CensusHit] = []
     i = 0
     n = len(data)
     run_start = -1
+    units = 0
+    latin_units = 0
     while i + 1 < n:
         unit = data[i] | (data[i + 1] << 8)
         if 0xD800 <= unit <= 0xDBFF and i + 3 < n:  # 高代理
@@ -228,6 +235,7 @@ def _scan_utf16le_runs(data: bytes, base_offset: int, *,
                 if ch and _is_printable_char(ch):
                     if run_start < 0:
                         run_start = i
+                    units += 1
                     i += 4
                     continue
         elif 0xD800 <= unit <= 0xDBFF and i + 3 >= n:
@@ -242,17 +250,23 @@ def _scan_utf16le_runs(data: bytes, base_offset: int, *,
             if ch and _is_printable_char(ch):
                 if run_start < 0:
                     run_start = i
+                units += 1
+                if 0x20 <= unit <= 0x7E:
+                    latin_units += 1
                 i += 2
                 continue
         if run_start >= 0:
-            hit = _emit_run(data, base_offset, run_start, i, "utf-16-le",
-                            require_ascii_letter=True)
-            if hit is not None:
-                hits.append(hit)
+            if (units >= _MIN_RUN_CHARS
+                    and latin_units * 2 >= units):
+                hit = _emit_run(data, base_offset, run_start, i, "utf-16-le",
+                                require_ascii_letter=True)
+                if hit is not None:
+                    hits.append(hit)
             run_start = -1
+            units = latin_units = 0
         i += 2
     if run_start >= 0:
-        if final:
+        if final and units >= _MIN_RUN_CHARS and latin_units * 2 >= units:
             hit = _emit_run(data, base_offset, run_start, n - (n % 2),
                             "utf-16-le", require_ascii_letter=True)
             if hit is not None:
