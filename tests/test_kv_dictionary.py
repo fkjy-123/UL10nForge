@@ -6,6 +6,7 @@ from pathlib import Path
 from hanhua.core.formats import apply_format_text
 from hanhua.core.unity.extractor import (_dictionary_base_name,
                                          _dictionary_language,
+                                         _english_score,
                                          _looks_like_kv_dictionary,
                                          _textasset_entries,
                                          extract_asset_file)
@@ -33,6 +34,17 @@ class TestDetection:
         assert _dictionary_language(["임무", "설정"]) == "ko"
         assert _dictionary_language(["Миссии", "Настройки"]) == "ru"
         assert _dictionary_language(["Missioni", "Settings"]) == "latin"
+
+    def test_english_score(self):
+        # 英文表值普遍命中功能词；意/匈语表不命中
+        assert _english_score([
+            "You have to complete the training mission",
+            "The train is late and you need to finish the mission",
+        ]) >= 0.15
+        assert _english_score([
+            "Per sbloccare mappe e treni, devi completare le missioni",
+            "Il tuo treno è in ritardo",
+        ]) < 0.15
 
 
 class TestKvEntries:
@@ -78,6 +90,38 @@ class TestMultilangGrouping:
                                            "objects": {}})(),
             "read": lambda self, _d=data: _d,
         })()
+
+    def test_english_table_preferred(self, tmp_path, monkeypatch):
+        # 意大利表在前、英文表在后——用户指令：多语言游戏英文优先
+        import UnityPy
+        content_it = ("missions=Missioni\nsettings=Impostazioni\n"
+                      "start=Start\nexit=Uscita\nscore=PUNTI\n")
+        content_en = ("missions=The missions you have to complete\n"
+                      "settings=You can change the settings here\n"
+                      "start=Start the game\nexit=Exit the game\n"
+                      "score=Your score is\n")
+        a = self._fake_textasset(tmp_path / "x.assets", 100,
+                                 "dictionary", content_it)
+        b = self._fake_textasset(tmp_path / "x.assets", 200,
+                                 "dictionary", content_en)
+
+        class Env:
+            objects = [a, b]
+            files = {}
+
+            def load(self, paths):
+                pass
+
+        p = tmp_path / "x.assets"
+        p.write_bytes(b"\x00" * 8)
+        monkeypatch.setattr(UnityPy, "Environment", lambda: Env())
+        pf = extract_asset_file(p, "x.assets")
+        kv_values = [e for e in pf.entries
+                     if e.meta.get("reason") == "textasset_kv_value"]
+        # 英文表被选为源表（意大利表留档跳过）
+        assert "The missions you have to complete" in [
+            e.original for e in kv_values]
+        assert "Missioni" not in [e.original for e in kv_values]
 
     def test_only_first_table_extracted(self, tmp_path, monkeypatch):
         import UnityPy

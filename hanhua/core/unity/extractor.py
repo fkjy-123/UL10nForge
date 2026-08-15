@@ -1586,6 +1586,36 @@ def _dictionary_language(values: list[str]) -> str:
     return "latin"
 
 
+# 英文功能词（拉丁表英文识别用）：意/德/西/匈等语言的句子不含这些词，
+# 英文表的值普遍命中——用户指令「多语言游戏语言优先翻译英文」
+# （2026-08-16），与 _prefer_source_locale_bundles 的英文源表先例一致。
+_ENGLISH_FUNCTION_WORDS = frozenset({
+    # ≥3 字母高频英文功能词，且罗曼语系罕见——意/西/德/匈语句子不命中
+    # （意大利语 'e'=和、'in'=在 与英文功能词同形，1-2 字母词不收录）
+    "the", "you", "your", "are", "and", "not", "with", "this", "that",
+    "for", "have", "has", "will", "can", "was", "but", "when", "from",
+    "they", "were", "been", "would", "should", "our", "them", "their",
+    "than", "what", "which", "who", "how", "why", "because", "about",
+    "into", "over", "under", "after", "before", "through", "also",
+    "very", "much", "more", "most",
+})
+_WORD_TOKEN = _re.compile(r"[a-z]+")
+
+
+def _english_score(values: list[str]) -> float:
+    """值中英文功能词命中率（拉丁表英文判定分）。"""
+    samples = [v.casefold() for v in values[:80] if v]
+    if not samples:
+        return 0.0
+    hits = sum(
+        1 for v in samples
+        if _ENGLISH_FUNCTION_WORDS & set(_WORD_TOKEN.findall(v)))
+    return hits / len(samples)
+
+
+_ENGLISH_SCORE_MIN = 0.15  # 组内英文表命中率下限（低于则无英文表）
+
+
 def _textasset_kv_entries(
         file_id: str, obj_path_id: int, text: str,
         asset_file_name: str = "",
@@ -2007,9 +2037,10 @@ def extract_asset_file(path: str | Path, file_id: str | None = None,
     # 识别 L9：遇到的脚本类名全集（含未登记类）→ 报告待登记队列
     # （类注册表 class_registry 的登记审计数据源）
     script_classes: set[str] = set()
-    # KV 词典分组（多语言词典集合）：组内只提取第一张表（源语言表），
-    # 其余 skipped 留档——对象循环内收集，循环后统一裁决
-    kv_dictionaries: dict[str, list[tuple[int, str, str, str, str]]] = {}
+    # KV 词典分组（多语言词典集合）：组内只提取源语言表（英文优先，
+    # 用户指令 2026-08-16），其余 skipped 留档——对象循环内收集，
+    # 循环后统一裁决
+    kv_dictionaries: dict[str, list[tuple[int, str, str, str, str, float]]] = {}
     # 识别 L7：typetree 覆盖率持续度量——每容器记录成功/失败对象数，
     # 失败靠 raw scan 兜底（Unity 6000 264/268 失败实证）但必须可量化
     typetree_ok = 0
@@ -2055,7 +2086,7 @@ def extract_asset_file(path: str | Path, file_id: str | None = None,
                     kv_dictionaries.setdefault(base, []).append(
                         (int(obj.path_id), _dictionary_language(values),
                          script.decode("utf-8-sig", errors="replace"),
-                         name, asset_name))
+                         name, asset_name, _english_score(values)))
                     continue
                 entries.extend(_textasset_entries(
                     fid, obj.path_id, script or b"", asset_name, skipped))
@@ -2135,16 +2166,25 @@ def extract_asset_file(path: str | Path, file_id: str | None = None,
         covered = covered_by_raw.get((asset_name, path_id), set())
         entries.extend(
             c for c in candidates if c.original not in covered)
-    # KV 词典分组裁决：每组只提取第一张表（path_id 升序 = 文件内出现
-    # 序，即游戏默认源语言表），其余语言表 skipped 留档（原因带语言
-    # 脚本，报告按 reason 聚合可见——electric-trains 19 张词典实证）
+    # KV 词典分组裁决：源语言表选择——英文表优先（用户指令 2026-08-16
+    # 「多语言游戏语言优先翻译英文」，与 _prefer_source_locale_bundles
+    # 的英文源表先例一致），组内无英文表时取第一张（path_id 升序 =
+    # 游戏默认源语言表）；其余语言表 skipped 留档（原因带语言脚本，
+    # 报告按 reason 聚合可见——electric-trains 19 张词典实证）
     for base, records in kv_dictionaries.items():
         records.sort(key=lambda r: r[0])
-        first_pid = records[0][0]
-        for pid, lang, text, name, rec_asset in records:
-            if pid == first_pid:
+        source_pid = records[0][0]
+        best = max(records, key=lambda r: r[5])
+        if best[5] >= _ENGLISH_SCORE_MIN:
+            source_pid = best[0]
+        for pid, lang, text, name, rec_asset, _score in records:
+            if pid == source_pid:
+                # 双重 BOM 剥离（UnityPy str 已含 U+FEFF + encode
+                # utf-8-sig 又加一个 → decode 只移除一个，残留 BOM
+                # 会粘在首个键上 '﻿missions'——a-catfiends 实证
+                # 同源问题）
                 entries.extend(_textasset_kv_entries(
-                    fid, pid, text, rec_asset, skipped))
+                    fid, pid, text.lstrip("﻿"), rec_asset, skipped))
             else:
                 reason = f"textasset_locale_table_{lang}"
                 skipped[reason] = skipped.get(reason, 0) + 1
