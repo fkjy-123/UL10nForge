@@ -60,6 +60,7 @@ class RecognitionReport:
     pool_display: int = 0          # 可译条目（status≠skipped）
     pool_skipped: int = 0
     pool_morphology: dict[str, tuple[int, int]] = field(default_factory=dict)
+    pool_originals: frozenset = frozenset()  # 全部条目原文集合（召回测量用）
     # 缺口
     gaps: list[GapItem] = field(default_factory=list)
     gap_explained: dict[str, int] = field(default_factory=dict)
@@ -216,6 +217,7 @@ def build_report(game_dir: str | Path, *,
     report.pool_skipped = sum(
         1 for e in entries if e.status == STATUS_SKIPPED)
     report.pool_morphology = morph_counts
+    report.pool_originals = frozenset(e.original for e in entries)
 
     # ── 普查 + 缺口差集 ──
     pool_originals = {e.original for e in entries}
