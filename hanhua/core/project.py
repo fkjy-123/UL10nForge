@@ -4,6 +4,7 @@ import hashlib
 import os
 import gc
 import csv
+import functools
 import io
 import json
 import shutil
@@ -1151,9 +1152,25 @@ class Project:
                         f_, file_id=file_id, typetree_generator=gen), f, rel))
             else:
                 sources.append((unity_extractor.extract_asset_file, f, rel))
+        # 跨程序集 UI sink 闭包（证明链扩展）：多 DLL 游戏的显示方法链
+        # （Fungus 等插件方法 → 插件内部 set_text）在逐程序集证明中不可见，
+        # 一次性联合计算后传给每个程序集提取器（deadbeat 实证 +10 条
+        # 真实 UI 文本被证明）。闭包失败静默回退逐程序集证明，不阻断扫描。
+        cross_sinks: frozenset = frozenset()
+        if len(fingerprint.application_assemblies) >= 2:
+            try:
+                import dnfile
+                cross_sinks = mono_extractor._cross_assembly_ui_sinks([
+                    dnfile.dnPE(str(f))
+                    for f in fingerprint.application_assemblies])
+            except Exception:  # noqa: BLE001
+                cross_sinks = frozenset()
         for f in fingerprint.application_assemblies:
             rel = str(f.relative_to(self.game_dir)).replace("\\", "/")
-            sources.append((mono_extractor.extract_dll_user_strings, f, rel))
+            sources.append((
+                functools.partial(
+                    mono_extractor.extract_dll_user_strings,
+                    cross_sinks=cross_sinks), f, rel))
         meta = fingerprint.metadata
         if meta is not None:
             rel = str(meta.relative_to(self.game_dir)).replace("\\", "/")

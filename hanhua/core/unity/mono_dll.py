@@ -218,6 +218,49 @@ def _simple_string_format_parameter_count(row) -> int | None:
     return parameter_count
 
 
+def _simple_concat_parameter_count(row) -> int | None:
+    """Return arity for String.Concat overloads (2-4 params).
+
+    params 数组 / IEnumerable 重载（参数数 1）返回 None——调用点保守清栈
+    （无法按定长弹出，宁漏勿错）。
+    """
+    signature = getattr(getattr(row, "Signature", None), "value", None)
+    if not isinstance(signature, bytes) or len(signature) < 4:
+        return None
+    index = 1
+    if signature[0] & 0x10:  # GENERIC：泛型数在参数数之前
+        generic = _read_compressed_uint(signature, index)
+        if generic is None:
+            return None
+        _, size = generic
+        index += size
+    parameter = _read_compressed_uint(signature, index)
+    if parameter is None:
+        return None
+    param_count, _ = parameter
+    return param_count if 2 <= param_count <= 4 else None
+
+
+def _string_source(element) -> tuple[frozenset, frozenset]:
+    """栈元素 → (可验证 #US token 集合, 流经的 arg 参数索引集合)。
+
+    src = ldstr 直接字面量；frag = Concat/Format 合并出的拼接片段——
+    其 token 集合里的每个字面量都已被证明是同一字符串表达式的一部分
+    （动态文本成分：`"Level " + level` 里的 `"Level "` 正是此形态）。
+    arg 索引随片段传递：wrapper(s){ text.text = "Prefix " + s; } 时，
+    参数 s 流经 Concat 进入 setter → 消费点把该参数标记 gained，包装
+    链传播（调用点传字面量 → 验证）不因拼接断链。
+    """
+    if isinstance(element, tuple):
+        if element[0] == "frag":
+            return element[1], element[2]
+        if element[0] == "src":
+            return frozenset((element[1],)), frozenset()
+        if element[0] == "arg":
+            return frozenset(), frozenset((element[1],))
+    return frozenset(), frozenset()
+
+
 def _method_il(pe, rva: int) -> bytes | None:
     try:
         header = pe.get_data(rva, 12)
@@ -304,6 +347,12 @@ def _method_signature_string_params(sig: bytes) -> list[bool] | None:
 
     仅识别常用 ELEMENT_TYPE；ARRAY/FNPTR/GENERICINST 等复杂编码保守返回 None，
     使该 helper 不参与传递验证（不会误放行，只是少验证一类）。
+
+    首字节是调用约定：0x00 DEFAULT 是 C# 编译器最常见的约定，必须放行
+    （此前与 0xFF 一并拒绝，默认约定方法签名全部解析失败 → 包装链
+    传播对 ~17% 方法全灭，是证明率灾难性低下的根源之一，hickory 实证
+    签名首字节分布 0x00×120/0x10×11/0x20×565）。0xFF（native/unmanaged
+    约定，非标准 MethodDefSig 布局）仍拒绝。
     """
 
     def skip_type(i: int) -> int | None:
@@ -321,7 +370,7 @@ def _method_signature_string_params(sig: bytes) -> list[bool] | None:
             return skip_type(after) if after is not None else None
         return None
 
-    if not sig or sig[0] in (0x00, 0xFF):
+    if not sig or sig[0] == 0xFF:
         return None
     index = 1
     if sig[0] & 0x10:  # GENERIC：泛型数在参数数之前
@@ -355,7 +404,110 @@ def _method_signature_string_params(sig: bytes) -> list[bool] | None:
     return out
 
 
-def _verified_ui_user_string_tokens(pe) -> set[int]:
+def _methoddef_identity_map(pe) -> dict[int, tuple[str, str]]:
+    """MethodDef 索引（1-based）→ 声明身份 (TypeNamespace.TypeName, Name)。
+
+    dnfile 的 TypeDef.MethodList 是 MDTableIndex 列表，其 row_index
+    为 MethodDef 表的 1-based 索引（实证 FirstPersonController.Awake
+    → row_index 1）。身份必须含方法名：MemberRef 身份是 (类型, 方法)
+    二元组，闭包集合按此形态比较。
+    """
+    try:
+        typedefs = pe.net.mdtables.TypeDef.rows
+    except AttributeError:
+        return {}
+    out: dict[int, tuple[str, str]] = {}
+    for td in typedefs:
+        method_list = getattr(td, "MethodList", None)
+        if not isinstance(method_list, (list, tuple)):
+            continue
+        ns = str(getattr(td, "TypeNamespace", "") or "")
+        name = str(getattr(td, "TypeName", "") or "")
+        type_full = f"{ns}.{name}" if ns else name
+        for ref in method_list:
+            row = getattr(ref, "row", None)
+            m_idx = int(getattr(ref, "row_index", 0) or 0)
+            if row is None or m_idx <= 0:
+                continue
+            out[m_idx] = (
+                type_full,
+                str(getattr(row, "Name", "") or ""),
+            )
+    return out
+
+
+def _member_identity_map(pe) -> dict[int, tuple[str, str]]:
+    """MemberRef token → (TypeNamespace.TypeName, Name)。"""
+    try:
+        rows = pe.net.mdtables.MemberRef.rows
+    except AttributeError:
+        return {}
+    out: dict[int, tuple[str, str]] = {}
+    for index, row in enumerate(rows, 1):
+        declaring = getattr(getattr(row, "Class", None), "row", None)
+        full_type = ".".join(filter(None, (
+            str(getattr(declaring, "TypeNamespace", "") or ""),
+            str(getattr(declaring, "TypeName", "") or ""),
+        )))
+        out[0x0A000000 | index] = (
+            full_type, str(getattr(row, "Name", "") or ""))
+    return out
+
+
+def _cross_assembly_ui_sinks(pes) -> frozenset:
+    """多程序集联合闭包：可达 UI setter 的方法身份集合（跨 DLL 链）。
+
+    逐程序集分析时跨 DLL 调用（Fungus.Say 等 MemberRef）在链尾断掉——
+    游戏字符串经 Fungus 方法 → Fungus.dll 内 set_text 的链路因此不可证
+    （a-catfiends 实证：堆含空格 1924 条仅 1 条被证明）。本函数在所有
+    发现的程序集上跑不动点闭包：(type, name) 身份加入 sink 集合 ⇔
+    方法体调用了 sink（种子 = _UI_SETTER_TYPES 的 setter），跨程序集
+    调用天然经 MemberRef 身份解析。返回的集合喂给逐程序集证明器的
+    cross_sinks 参数——调用这些身份的 MemberRef 等同调用 setter。
+    """
+    sink_identities: set[tuple[str, str]] = {
+        (full_type, name)
+        for full_type in _UI_SETTER_TYPES
+        for name in ("set_text", "SetText")}
+    idents = [_methoddef_identity_map(pe) for pe in pes]
+    members = [_member_identity_map(pe) for pe in pes]
+    # 方法体解码缓存（闭包迭代最多 8 轮，重复解码浪费大）
+    il_cache: dict[tuple[int, int], list | None] = {}
+    for _round in range(8):
+        grew = False
+        for pe, ident_map, member_map in zip(pes, idents, members):
+            try:
+                method_rows = pe.net.mdtables.MethodDef.rows
+            except AttributeError:
+                continue
+            for index, row in enumerate(method_rows, 1):
+                identity = ident_map.get(index)
+                if identity is None or identity in sink_identities:
+                    continue
+                rva = int(getattr(row, "Rva", 0) or 0)
+                if not rva:
+                    continue
+                cache_key = (id(pe), rva)
+                if cache_key not in il_cache:
+                    code = _method_il(pe, rva)
+                    il_cache[cache_key] = (_decode_il(code)
+                                           if code is not None else None)
+                instructions = il_cache[cache_key]
+                if instructions is None:
+                    continue
+                for opcode, operand in instructions:
+                    if opcode not in (0x28, 0x6F):
+                        continue
+                    if operand in member_map and member_map[operand] in sink_identities:
+                        sink_identities.add(identity)
+                        grew = True
+                        break
+        if not grew:
+            break
+    return frozenset(sink_identities)
+
+
+def _verified_ui_user_string_tokens(pe, *, cross_sinks: frozenset = frozenset()) -> set[int]:
     """Return #US token offsets proven to flow into verified UI setter calls.
 
     游戏常用自封装方法（SetTutorialText(text) 内部再 set_text），字面量先传给
@@ -373,7 +525,9 @@ def _verified_ui_user_string_tokens(pe) -> set[int]:
         return set()
     ui_setters: set[int] = set()
     string_formatters: dict[int, int] = {}
+    string_concats: dict[int, int | None] = {}
     safe_value_producers: set[int] = set()
+    member_identity: dict[int, tuple[str, str]] = {}
     for index, row in enumerate(member_rows, 1):
         declaring = getattr(getattr(row, "Class", None), "row", None)
         full_type = ".".join(filter(None, (
@@ -381,12 +535,19 @@ def _verified_ui_user_string_tokens(pe) -> set[int]:
             str(getattr(declaring, "TypeName", "") or ""),
         )))
         method_name = str(getattr(row, "Name", "") or "")
+        member_identity[0x0A000000 | index] = (full_type, method_name)
         if full_type in _UI_SETTER_TYPES and method_name in {"set_text", "SetText"}:
             ui_setters.add(0x0A000000 | index)
         elif full_type == "System.String" and method_name == "Format":
             parameter_count = _simple_string_format_parameter_count(row)
             if parameter_count is not None:
                 string_formatters[0x0A000000 | index] = parameter_count
+        elif full_type == "System.String" and method_name == "Concat":
+            # 拼接（C# 的 + 编译产物）：arity 可解析时按定长弹栈合并
+            # token 集合；params/IEnumerable 重载 arity=None → 调用点
+            # 保守清栈（宁漏勿错）
+            string_concats[0x0A000000 | index] = \
+                _simple_concat_parameter_count(row)
         elif method_name.startswith("get_") and full_type != "System.String":
             safe_value_producers.add(0x0A000000 | index)
     for index, row in enumerate(method_rows, 1):
@@ -452,29 +613,55 @@ def _verified_ui_user_string_tokens(pe) -> set[int]:
                         stack.pop()
                     stack.append("other")
                 elif opcode in (0x28, 0x6F):  # call / callvirt
-                    if operand in ui_setters:
+                    if operand in ui_setters or (
+                            cross_sinks and member_identity.get(operand)
+                            in cross_sinks):
+                        # 本程序集 setter，或跨程序集 sink（Fungus.Say 等
+                        # 方法体可达 setter 的导入方法）：等同 setter 消费
+                        # 栈顶字符串来源
                         if stack:
                             top = stack[-1]
-                            if isinstance(top, tuple) and top[0] in ("src", "fmt"):
-                                verified.add(top[1])
-                            elif isinstance(top, tuple) and top[0] == "arg":
-                                gained.add(top[1])
+                            tokens, args = _string_source(top)
+                            verified |= tokens
+                            gained |= args
                         stack.clear()
                     elif operand in string_formatters:
-                        # 格式串来源暂存为 ("fmt", token)：只有真正流入
-                        # setter / helper 才验证——格式化结果被丢弃（pop）时
-                        # 该格式串不是显示文本（回归保护）。
+                        # 格式串来源暂存为 ("frag", tokens, args)：只有真正
+                        # 流入 setter / helper 才验证——格式化结果被丢弃
+                        # （pop）时该格式串不是显示文本（回归保护）。
                         arity = string_formatters[operand]
                         if len(stack) >= arity:
                             source = stack[-arity]
                             del stack[-arity:]
-                            if isinstance(source, tuple) and source[0] in ("src", "fmt"):
-                                stack.append(("fmt", source[1]))
-                            else:
-                                stack.append("other")
+                            tokens, args = _string_source(source)
+                            stack.append(("frag", tokens, args)
+                                         if tokens or args else "other")
                         else:
                             stack.clear()
                             stack.append("other")
+                    elif operand in string_concats:
+                        # 拼接片段（动态文本成分证明）：按 arity 弹出定长
+                        # 参数，合并所有字符串来源的 token/arg 集合推回——
+                        # 每个字面量都是同一字符串表达式的一部分，流入
+                        # setter 时全部验证（`"Level " + level` 的
+                        # `"Level "` 实证形态）；流经拼接的参数索引随
+                        # 片段传播（包装链不断链）。非常量参数（数字/
+                        # 变量）不阻断拼接。
+                        arity = string_concats[operand]
+                        if arity is not None and len(stack) >= arity:
+                            sources = stack[-arity:]
+                            del stack[-arity:]
+                            tokens: set = set()
+                            args: set = set()
+                            for element in sources:
+                                t, a = _string_source(element)
+                                tokens |= t
+                                args |= a
+                            stack.append(("frag", frozenset(tokens),
+                                          frozenset(args))
+                                         if tokens or args else "other")
+                        else:
+                            stack.clear()
                     elif ui_string_params.get(operand):
                         params = string_params.get(operand)
                         if params is not None:
@@ -486,10 +673,9 @@ def _verified_ui_user_string_tokens(pe) -> set[int]:
                                     continue
                                 element = stack[position]
                                 if isinstance(element, tuple):
-                                    if element[0] in ("src", "fmt"):
-                                        verified.add(element[1])
-                                    elif element[0] == "arg":
-                                        gained.add(element[1])
+                                    tokens, args = _string_source(element)
+                                    verified |= tokens
+                                    gained |= args
                         stack.clear()
                     elif operand in safe_value_producers:  # getter
                         if stack:
@@ -515,6 +701,18 @@ def _verified_ui_user_string_tokens(pe) -> set[int]:
     return verified
 
 
+def _structural_for_ui_text(s: str, is_ui_text: bool) -> bool:
+    """已证明 UI 文本的硬结构判定（证据分层）。
+
+    is_ui_text=True（数据流证明流入 setter）时在剥离首尾空白的内容上判：
+    首尾空白填充片段规则（placeholders._WHITESPACE_PADDED_FRAGMENT，字符串
+    表拆分碎片软猜测）不得推翻确定性证明——`"HP: " + hp + " of "` 的
+    `" of "` 是真实显示成分（拼接片段实证形态），被 padding 规则截杀
+    即为误漏。URL/GUID/纯符号等真硬结构在内容上仍拦截。
+    """
+    return is_hard_structural(s.strip() if is_ui_text else s)
+
+
 def _is_mono_diagnostic_string(s: str) -> bool:
     """DLL 内部诊断/日志/错误消息（代码文本，非 UI）。
 
@@ -533,8 +731,14 @@ def _is_mono_diagnostic_string(s: str) -> bool:
 
 
 def extract_dll_user_strings(path: str | Path, file_id: str | None = None,
-                             progress_cb: Callable | None = None) -> ParsedFile:
-    """提取 DLL #US 字符串 → ParsedFile。"""
+                             progress_cb: Callable | None = None, *,
+                             cross_sinks: frozenset = frozenset()) -> ParsedFile:
+    """提取 DLL #US 字符串 → ParsedFile。
+
+    cross_sinks：跨程序集 UI sink 身份集合（_cross_assembly_ui_sinks
+    的产物）——多 DLL 游戏由扫描管线一次性计算后传入（Fungus 等插件
+    的显示方法链在逐程序集证明中不可见，联合闭包补齐跨 DLL 链）。
+    """
     import dnfile
     p = Path(path)
     # UnityScript（旧 Unity JS 语言，Assembly-UnityScript*.dll）编译器生成的 IL
@@ -553,7 +757,8 @@ def extract_dll_user_strings(path: str | Path, file_id: str | None = None,
         data = us.get_data_at_offset(0, us.sizeof())
         heap_file_offset = us.get_file_offset(0)
         entries: list[TextEntry] = []
-        verified_ui_tokens = _verified_ui_user_string_tokens(pe)
+        verified_ui_tokens = _verified_ui_user_string_tokens(
+            pe, cross_sinks=cross_sinks)
         for token_offset, offset, raw in _walk_us_heap_records(data):
             # ECMA-335 #US blobs always end with a one-byte kind flag.  The
             # flag is zero for ordinary ASCII strings and one for strings that
@@ -575,7 +780,7 @@ def extract_dll_user_strings(path: str | Path, file_id: str | None = None,
             # 诊断/日志字符串通常无全大写词，保持保守跳过。
             uppercase_ui = (
                 " " in s and bool(_UI_UPPERCASE_WORD.search(s)))
-            if is_hard_structural(s):
+            if _structural_for_ui_text(s, is_ui_text):
                 # R5/L1：结构形态（JSON/URL/路径/GUID/纯数字）静默跳过
                 # 留档（计数 + 限量样本——内容可审计，样本 ≤10 条/原因）
                 skipped["hard_structural"] = skipped.get("hard_structural", 0) + 1
@@ -660,7 +865,8 @@ def extract_dll_user_strings(path: str | Path, file_id: str | None = None,
                         else "unverified_user_string"),
                 }))
         for e in entries:
-            if e.status == "pending" and is_hard_structural(e.original):
+            if e.status == "pending" and _structural_for_ui_text(
+                    e.original, e.meta.get("reason") == "mono_ui_setter"):
                 e.status = STATUS_SKIPPED
         # 样本计数回写：限量样本的 skipped_count 是累计值，报告聚合需
         # 真实总数（消费端按 (file_id, reason, obj) 取 max）

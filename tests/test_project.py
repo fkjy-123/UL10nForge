@@ -840,7 +840,7 @@ def test_selected_mono_scan_uses_only_fingerprinted_application_assemblies(
         project_module.mono_extractor, "find_dll_files",
         lambda *_args: (_ for _ in ()).throw(AssertionError("must not rediscover DLLs")))
 
-    def selected_assembly(path, file_id=None):
+    def selected_assembly(path, file_id=None, *, cross_sinks=frozenset()):
         assert path == expected
         assert file_id == "A/A_Data/Managed/Assembly-CSharp.dll"
         calls.append(path)
@@ -1760,7 +1760,8 @@ def _fake_dll_extractor(monkeypatch):
     from hanhua.core.extractor import ParsedFile
     from hanhua.core.models import TextEntry
 
-    def fake_extract(path, file_id=None, progress_cb=None):
+    def fake_extract(path, file_id=None, progress_cb=None, *,
+                     cross_sinks=frozenset()):
         return ParsedFile(
             file_id=file_id, rel_path=str(path), format="v2_mono",
             entries=[TextEntry(

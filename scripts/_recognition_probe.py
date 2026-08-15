@@ -75,13 +75,22 @@ def probe_game(game_dir: str) -> dict:
     except Exception as exc:  # noqa: BLE001
         dll_files = []
         out["warnings"].append(f"find_dll_files: {exc}")
+    # 跨程序集 UI sink 闭包（多 DLL 游戏联合证明）
+    cross_sinks: frozenset = frozenset()
+    if len(dll_files) >= 2:
+        try:
+            import dnfile
+            cross_sinks = mono_dll._cross_assembly_ui_sinks([
+                dnfile.dnPE(str(f)) for f in dll_files])
+        except Exception:  # noqa: BLE001
+            cross_sinks = frozenset()
     mc = Counter()
     mc["heap_total"] = 0
     mc["heap_verified_ui"] = 0
     mc["heap_has_space"] = 0
     for f in dll_files:
         try:
-            pf = mono_dll.extract_dll_user_strings(f)
+            pf = mono_dll.extract_dll_user_strings(f, cross_sinks=cross_sinks)
         except Exception as exc:  # noqa: BLE001
             mc["file_error"] += 1
             continue
@@ -97,7 +106,8 @@ def probe_game(game_dir: str) -> dict:
                 data = us.get_data_at_offset(0, us.sizeof())
                 records = mono_dll._walk_us_heap_records(data)
                 mc["heap_total"] += len(records)
-                verified = mono_dll._verified_ui_user_string_tokens(pe)
+                verified = mono_dll._verified_ui_user_string_tokens(
+                    pe, cross_sinks=cross_sinks)
                 mc["heap_verified_ui"] += len(verified)
                 mc["heap_has_space"] += sum(
                     1 for _, _, raw in records

@@ -17,6 +17,7 @@ project._build_typetree_generator 构建，报告模块暂不构建——raw sca
 """
 from __future__ import annotations
 
+import functools
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Callable
@@ -117,12 +118,25 @@ def _run_extractor(fn: Callable, path: Path, rel: str,
     entries.extend(pf.entries)
 
 
-def _mono_denominators(game_dir: Path, report: RecognitionReport) -> None:
-    """程序集 #US 堆分母：堆全集（编译器枚举）与已证明 UI 串数。"""
+def _mono_cross_sinks(dll_files: list[Path]) -> frozenset:
+    """多程序集 UI sink 闭包（提取池与分母共用同一口径）。"""
+    if len(dll_files) < 2:
+        return frozenset()
     try:
-        dll_files = mono_dll.find_dll_files(game_dir)
+        import dnfile
+        return mono_dll._cross_assembly_ui_sinks([
+            dnfile.dnPE(str(f)) for f in dll_files])
     except Exception:  # noqa: BLE001
-        return
+        return frozenset()
+
+
+def _mono_denominators(dll_files: list[Path], report: RecognitionReport,
+                       cross_sinks: frozenset) -> None:
+    """程序集 #US 堆分母：堆全集（编译器枚举）与已证明 UI 串数。
+
+    跨程序集闭包在多 DLL 游戏上联合计算，与提取侧同口径
+    （deadbeat 实证 +10 条真实 UI 文本证明）。
+    """
     report.mono_files = len(dll_files)
     for f in dll_files:
         try:
@@ -135,7 +149,8 @@ def _mono_denominators(game_dir: Path, report: RecognitionReport) -> None:
             records = mono_dll._walk_us_heap_records(data)
             report.us_heap_total += len(records)
             report.us_heap_verified += len(
-                mono_dll._verified_ui_user_string_tokens(pe))
+                mono_dll._verified_ui_user_string_tokens(
+                    pe, cross_sinks=cross_sinks))
             report.us_heap_with_space += sum(
                 1 for _, _, raw in records if b" " in raw)
         except Exception:  # noqa: BLE001
@@ -165,12 +180,15 @@ def build_report(game_dir: str | Path, *,
         dll_files = mono_dll.find_dll_files(root)
     except Exception:  # noqa: BLE001
         dll_files = []
+    cross_sinks = _mono_cross_sinks(dll_files)
     for i, f in enumerate(dll_files):
         if progress_cb:
             progress_cb("mono", i + 1, len(dll_files))
         rel = str(f.relative_to(root)).replace("\\", "/")
-        _run_extractor(mono_dll.extract_dll_user_strings, f, rel,
-                       entries, morph_counts)
+        _run_extractor(
+            functools.partial(mono_dll.extract_dll_user_strings,
+                              cross_sinks=cross_sinks),
+            f, rel, entries, morph_counts)
     meta = next(root.rglob("global-metadata.dat"), None)
     if meta is not None:
         if progress_cb:
@@ -207,7 +225,7 @@ def build_report(game_dir: str | Path, *,
                 report.gap_explained.get(reason, 0) + 1
 
     # ── 证明链分母 ──
-    _mono_denominators(root, report)
+    _mono_denominators(dll_files, report, cross_sinks)
 
     # ── 形态级 skipped 率告警（dense 形态高跳过率 = 整类遗漏信号）──
     for name, (total, skipped) in morph_counts.items():
