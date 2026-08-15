@@ -164,6 +164,30 @@ _UI_SETTER_TYPES = frozenset({
     "UnityEngine.TextMesh", "UnityEngine.UIElements.TextElement",
     "UnityEngine.UIElements.Label", "UnityEngine.UIElements.TextField",
 })
+# IMGUI OnGUI 显示调用（XUnity 框架清单 + 语料挖掘实证：GUI.Label 9 游戏
+# 205 次调用/GUI.Button 9 游戏 220 次——OnGUI 每帧渲染，字符串参数即
+# 屏幕文本）。文本参数恒为最后一个参数（静态调用，栈顶即文本）。
+_UI_DISPLAY_CALLS = frozenset({
+    ("UnityEngine.GUI", "Label"), ("UnityEngine.GUI", "Box"),
+    ("UnityEngine.GUI", "Button"), ("UnityEngine.GUI", "TextField"),
+    ("UnityEngine.GUI", "TextArea"), ("UnityEngine.GUI", "Window"),
+    ("UnityEngine.GUI", "PasswordField"), ("UnityEngine.GUI", "Tooltip"),
+    ("UnityEngine.GUILayout", "Label"), ("UnityEngine.GUILayout", "Box"),
+    ("UnityEngine.GUILayout", "Button"),
+    ("UnityEngine.GUILayout", "TextField"),
+    ("UnityEngine.GUILayout", "TextArea"),
+    ("UnityEngine.GUILayout", "Window"),
+    ("UnityEngine.GUILayout", "PasswordField"),
+    ("UnityEngine.GUILayout", "Tooltip"),
+})
+# StringBuilder 拼接链（语料挖掘实证：Append 41 游戏 1792 次调用/
+# AppendLine 16 游戏/AppendFormat 12 游戏——sb.Append("HP: ").Append(hp)
+# 是拼接显示文本的第三形态，此前未建模全灭）
+_STRINGBUILDER_TYPE = "System.Text.StringBuilder"
+_STRINGBUILDER_CTOR_NAME = ".ctor"
+_STRINGBUILDER_APPEND_NAMES = frozenset({"Append", "AppendLine"})
+_STRINGBUILDER_FORMAT_NAMES = frozenset({"AppendFormat"})
+_STRINGBUILDER_TOSTRING_NAME = "ToString"
 _IL_OPERAND_1 = frozenset({
     *range(0x0E, 0x14), 0x1F, *range(0x2B, 0x38), 0xDE,
 })
@@ -526,6 +550,10 @@ def _verified_ui_user_string_tokens(pe, *, cross_sinks: frozenset = frozenset())
     ui_setters: set[int] = set()
     string_formatters: dict[int, int] = {}
     string_concats: dict[int, int | None] = {}
+    sb_ctors: set[int] = set()
+    sb_appends: set[int] = set()
+    sb_formats: dict[int, int | None] = {}
+    sb_tostrings: set[int] = set()
     safe_value_producers: set[int] = set()
     member_identity: dict[int, tuple[str, str]] = {}
     for index, row in enumerate(member_rows, 1):
@@ -538,6 +566,9 @@ def _verified_ui_user_string_tokens(pe, *, cross_sinks: frozenset = frozenset())
         member_identity[0x0A000000 | index] = (full_type, method_name)
         if full_type in _UI_SETTER_TYPES and method_name in {"set_text", "SetText"}:
             ui_setters.add(0x0A000000 | index)
+        elif (full_type, method_name) in _UI_DISPLAY_CALLS:
+            # IMGUI OnGUI 显示调用：字符串参数即屏幕文本
+            ui_setters.add(0x0A000000 | index)
         elif full_type == "System.String" and method_name == "Format":
             parameter_count = _simple_string_format_parameter_count(row)
             if parameter_count is not None:
@@ -548,6 +579,16 @@ def _verified_ui_user_string_tokens(pe, *, cross_sinks: frozenset = frozenset())
             # 保守清栈（宁漏勿错）
             string_concats[0x0A000000 | index] = \
                 _simple_concat_parameter_count(row)
+        elif full_type == _STRINGBUILDER_TYPE:
+            if method_name == _STRINGBUILDER_CTOR_NAME:
+                sb_ctors.add(0x0A000000 | index)
+            elif method_name in _STRINGBUILDER_APPEND_NAMES:
+                sb_appends.add(0x0A000000 | index)
+            elif method_name in _STRINGBUILDER_FORMAT_NAMES:
+                sb_formats[0x0A000000 | index] = \
+                    _simple_concat_parameter_count(row)
+            elif method_name == _STRINGBUILDER_TOSTRING_NAME:
+                sb_tostrings.add(0x0A000000 | index)
         elif method_name.startswith("get_") and full_type != "System.String":
             safe_value_producers.add(0x0A000000 | index)
     for index, row in enumerate(method_rows, 1):
@@ -612,6 +653,21 @@ def _verified_ui_user_string_tokens(pe, *, cross_sinks: frozenset = frozenset())
                     if stack:
                         stack.pop()
                     stack.append("other")
+                elif opcode == 0x73:  # newobj
+                    if operand in sb_ctors:
+                        # StringBuilder 实例：流式 append 链的 token 容器；
+                        # 构造器带初始内容时（new StringBuilder("Init ")）
+                        # 该字面量也是拼接成分
+                        tokens: frozenset = frozenset()
+                        args: frozenset = frozenset()
+                        if stack:
+                            t, a = _string_source(stack[-1])
+                            if t or a:
+                                tokens, args = t, a
+                                stack.pop()
+                        stack.append(("sb", tokens, args))
+                    else:
+                        stack.clear()
                 elif opcode in (0x28, 0x6F):  # call / callvirt
                     if operand in ui_setters or (
                             cross_sinks and member_identity.get(operand)
@@ -659,6 +715,53 @@ def _verified_ui_user_string_tokens(pe, *, cross_sinks: frozenset = frozenset())
                                 args |= a
                             stack.append(("frag", frozenset(tokens),
                                           frozenset(args))
+                                         if tokens or args else "other")
+                        else:
+                            stack.clear()
+                    elif operand in sb_appends:
+                        # StringBuilder.Append("HP: ")/AppendLine：合并
+                        # 字符串来源 token 进 sb 实例（流式链的接收者
+                        # 保留在栈上继续 append）。callvirt 栈序：
+                        # 接收者在参数下方（stack[-2]）
+                        if (len(stack) >= 2
+                                and isinstance(stack[-2], tuple)
+                                and stack[-2][0] == "sb"):
+                            tokens, args = _string_source(stack[-1])
+                            if tokens or args:
+                                sb_elem = stack[-2]
+                                stack[-2] = (
+                                    "sb",
+                                    frozenset(sb_elem[1] | tokens),
+                                    frozenset(sb_elem[2] | args))
+                            del stack[-1]  # 消费参数，sb 保留（流式）
+                        else:
+                            stack.clear()
+                    elif operand in sb_formats:
+                        # AppendFormat(string fmt, args...)：格式串与
+                        # String.Format 同语义，结果并入 sb
+                        arity = sb_formats[operand]
+                        if (arity is not None
+                                and len(stack) >= arity + 1
+                                and isinstance(stack[-arity - 1], tuple)
+                                and stack[-arity - 1][0] == "sb"):
+                            source = stack[-arity]
+                            del stack[-arity:]
+                            tokens, args = _string_source(source)
+                            if tokens or args:
+                                sb_elem = stack[-1]
+                                stack[-1] = (
+                                    "sb",
+                                    frozenset(sb_elem[1] | tokens),
+                                    frozenset(sb_elem[2] | args))
+                        else:
+                            stack.clear()
+                    elif operand in sb_tostrings:
+                        # sb.ToString() → 拼接结果片段（流入 setter 时
+                        # 全部 token 验证）
+                        if (stack and isinstance(stack[-1], tuple)
+                                and stack[-1][0] == "sb"):
+                            tokens, args = stack[-1][1], stack[-1][2]
+                            stack[-1] = (("frag", tokens, args)
                                          if tokens or args else "other")
                         else:
                             stack.clear()

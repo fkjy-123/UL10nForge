@@ -175,3 +175,80 @@ class TestConcatProof:
         # gained → 调用点 "Gold" 经包装链验证；"Prefix " 直接验证
         assert by_original["Prefix "].meta["reason"] == "mono_ui_setter"
         assert by_original["Gold"].meta["reason"] == "mono_ui_setter"
+
+
+class TestStringBuilderAndIMGUI:
+    """StringBuilder 拼接链与 IMGUI OnGUI 显示调用（语料挖掘实证）。"""
+
+    def _sb_members(self):
+        from tests.test_mono_concat_proof import _text_ref, _setter_ref
+        sb_type = "StringBuilder"
+        return [
+            _setter_ref(),
+            _text_ref(".ctor", ns="System.Text", type_name=sb_type,
+                      signature=b"\x00\x01\x01\x0e"),
+            _text_ref("Append", ns="System.Text", type_name=sb_type,
+                      signature=b"\x00\x02\x01\x0e\x0e"),
+            _text_ref("AppendLine", ns="System.Text", type_name=sb_type,
+                      signature=b"\x00\x02\x01\x0e\x0e"),
+            _text_ref("AppendFormat", ns="System.Text", type_name=sb_type,
+                      signature=b"\x00\x03\x01\x0e\x0e\x1c"),
+            _text_ref("ToString", ns="System.Text", type_name=sb_type,
+                      signature=b"\x00\x00\x0e"),
+            _text_ref("Label", ns="UnityEngine", type_name="GUI",
+                      signature=b"\x00\x01\x01\x0e"),
+        ]
+
+    def test_stringbuilder_chain_verified(self, tmp_path, monkeypatch):
+        # var sb = new StringBuilder("HP: "); sb.Append(hp);
+        # sb.Append(" / "); sb.Append(max); text.text = sb.ToString();
+        heap, tokens = _heap_of(["HP: ", " of ", "Noise"])
+        code = (
+            _ldstr(tokens[0])                    # 构造器初始内容
+            + b"\x73" + struct.pack("<I", _CTOR)  # newobj StringBuilder
+            + b"\x16"                             # ldc.i4.0 (hp)
+            + _callvirt(_APPEND)                  # Append(int) 消耗非字面量
+            + _ldstr(tokens[1])
+            + _callvirt(_APPEND)                  # Append(" / ")
+            + b"\x16"
+            + _callvirt(_APPEND)
+            + _callvirt(_TOSTRING)                # ToString → frag
+            + _callvirt(_SETTER) + b"\x2a")
+        bodies = {0x2000: bytes(((len(code) << 2) | 2,)) + code}
+        by_original = _extract(heap, bodies, self._sb_members(),
+                               monkeypatch, tmp_path)
+        assert by_original["HP: "].meta["reason"] == "mono_ui_setter"
+        assert by_original[" of "].meta["reason"] == "mono_ui_setter"
+
+    def test_stringbuilder_discarded_not_verified(self, tmp_path,
+                                                  monkeypatch):
+        # sb.Append("Score: ") 后 sb 从未 ToString 流入 setter → 不验证
+        heap, tokens = _heap_of(["Score: "])
+        code = (
+            _ldstr(tokens[0])
+            + b"\x73" + struct.pack("<I", _CTOR)
+            + _ldstr(tokens[0])
+            + _callvirt(_APPEND) + b"\x26\x2a")   # pop; ret
+        bodies = {0x2000: bytes(((len(code) << 2) | 2,)) + code}
+        by_original = _extract(heap, bodies, self._sb_members(),
+                               monkeypatch, tmp_path)
+        assert by_original["Score: "].status == "skipped"
+
+    def test_imgui_label_verified(self, tmp_path, monkeypatch):
+        # OnGUI() { GUI.Label(new Rect(...), "Health"); }
+        heap, tokens = _heap_of(["Health"])
+        code = (_ldstr(tokens[0])
+                + _call(_GUI_LABEL) + b"\x2a")
+        bodies = {0x2000: bytes(((len(code) << 2) | 2,)) + code}
+        by_original = _extract(heap, bodies, self._sb_members(),
+                               monkeypatch, tmp_path)
+        assert by_original["Health"].meta["reason"] == "mono_ui_setter"
+        assert by_original["Health"].meta["confidence"] == "high"
+
+
+_CTOR = 0x0A000002
+_APPEND = 0x0A000003
+_APPENDLINE = 0x0A000004
+_APPENDFMT = 0x0A000005
+_TOSTRING = 0x0A000006
+_GUI_LABEL = 0x0A000007
