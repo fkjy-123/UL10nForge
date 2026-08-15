@@ -72,6 +72,8 @@ class RecognitionReport:
     mono_files: int = 0
     # 脚本类队列（识别 L9：未登记类名 = 类注册表下一条登记候选）
     script_classes: dict[str, int] = field(default_factory=dict)
+    # 未证明含空格堆串样本（证明率告警的配套工作队列）
+    us_unverified_samples: list[str] = field(default_factory=list)
     # 告警
     alarms: list[str] = field(default_factory=list)
 
@@ -160,13 +162,26 @@ def _mono_denominators(dll_files: list[Path], report: RecognitionReport,
             records = mono_dll._walk_us_heap_records(data)
             report.us_heap_total += len(records)
             structural: set = set()
-            report.us_heap_verified += len(
-                mono_dll._verified_ui_user_string_tokens(
-                    pe, cross_sinks=cross_sinks,
-                    structural_out=structural))
+            verified = mono_dll._verified_ui_user_string_tokens(
+                pe, cross_sinks=cross_sinks,
+                structural_out=structural)
+            report.us_heap_verified += len(verified)
             report.us_heap_structural += len(structural)
             report.us_heap_with_space += sum(
                 1 for _, _, raw in records if b" " in raw)
+            # 未证明含空格串样本（≤12 条/游戏，告警的可行动配套）
+            if len(report.us_unverified_samples) < 12:
+                for token, _, raw in records:
+                    if (b" " not in raw and b"\t" not in raw
+                            and b"\n" not in raw):
+                        continue
+                    if token in verified or token in structural:
+                        continue
+                    text = raw[:-1].decode("utf-16-le", errors="replace")
+                    if len(text) >= 8 and text not in report.us_unverified_samples:
+                        report.us_unverified_samples.append(text)
+                    if len(report.us_unverified_samples) >= 12:
+                        break
         except Exception:  # noqa: BLE001
             continue
 
@@ -308,6 +323,11 @@ def format_report(report: RecognitionReport, *, gap_limit: int = 60) -> str:
         lines.append("")
         for alarm in report.alarms:
             lines.append(f"[告警] {alarm}")
+        if report.us_unverified_samples:
+            lines.append(f"  未证明含空格串样本（sink 扩容/规则裁决的工作队列）：")
+            for sample in report.us_unverified_samples:
+                text = sample.replace("\n", "␤").replace("\r", "")
+                lines.append(f"    {text!r}")
     top = report.top_unexplained(gap_limit)
     if top:
         lines.append("")
