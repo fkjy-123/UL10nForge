@@ -34,17 +34,42 @@ def _project_dbs(game_dir: Path) -> list[Path]:
 
 
 def _golden_entries(db: Path) -> dict[str, dict]:
-    """原文 → {translation, status, file_id}（translated 且非空译文）。"""
+    """原文 → {translation, status, file_id}（display 角色全状态）。
+
+    分母口径：旧库 role=display 的全部条目（translated + failed +
+    pending）——translated 子集偏向「模型翻得动的简单文本」，把
+    难文本（failed）排除出分母会高估召回。skip/ 前缀的留档样本行
+    排除（它们是审计样本不是显示文本）。"""
+    import json as _json
     conn = sqlite3.connect(str(db))
     try:
         rows = conn.execute(
-            "SELECT original, translation, status, file_id FROM entries"
-            " WHERE status='translated' AND translation IS NOT NULL"
-            " AND trim(translation) != ''").fetchall()
+            "SELECT original, translation, status, file_id, meta"
+            " FROM entries WHERE status IN"
+            " ('translated','failed','pending')").fetchall()
     finally:
         conn.close()
-    return {r[0]: {"translation": r[1], "status": r[2], "file_id": r[3]}
-            for r in rows}
+    out: dict[str, dict] = {}
+    for original, translation, status, file_id, meta_raw in rows:
+        try:
+            meta = _json.loads(meta_raw) if meta_raw else {}
+        except (_json.JSONDecodeError, TypeError):
+            meta = {}
+        if not isinstance(meta, dict):
+            meta = {}
+        role = str(meta.get("role", "display"))
+        if role in {"structural", "code", "key"}:
+            continue
+        if str(meta.get("kind", "")).startswith("skip"):
+            continue
+        if original is None or not str(original).strip():
+            continue
+        out[str(original)] = {
+            "translation": translation, "status": status,
+            "file_id": file_id,
+            "meta": meta,
+        }
+    return out
 
 
 _KV_LINE = __import__("re").compile(
@@ -139,12 +164,19 @@ def main() -> int:
         text_groups: dict[tuple, list[str]] = {}
         for text, info in golden.items():
             m = _KV_LINE.match(text.strip())
-            if m:
+            # 值非空且键无空白才是 KV 行（'ДОСТУПНЫЕ ОЧКИ:' 空值与
+            # 'правила: игра...' 句子冒号都不是词典行，electric-trains
+            # 实证）
+            if (m and m.group("value").strip()
+                    and not any(ch.isspace() for ch in m.group("key"))):
                 kv_groups.setdefault(
                     (info["file_id"], m.group("key").strip()), []).append(text)
             else:
                 text_groups.setdefault((info["file_id"], text), []).append(text)
+        pool = report.pool_originals
+        actionable = report.pool_actionable
         found = 0
+        found_actionable = 0
         stale = 0
         missed: list[str] = []
         for (fid, key), texts in kv_groups.items():
@@ -156,6 +188,10 @@ def main() -> int:
                     break
             if exists:
                 found += 1
+                # 可译：任一语言的线/值形态是可译条目
+                if any(any(form in actionable for form in _match_forms(t))
+                       for t in texts):
+                    found_actionable += 1
             elif exists is False:
                 stale += 1  # 键在旧版存在、当前文件已移除
             else:
@@ -163,15 +199,22 @@ def main() -> int:
         for (_fid, text), texts in text_groups.items():
             if text in pool:
                 found += 1
+                if text in actionable:
+                    found_actionable += 1
             else:
                 missed.append(text)
         current_total = len(kv_groups) + len(text_groups) - stale
         total_golden += current_total
         total_found += found
         recall = found / current_total if current_total else 0.0
-        print(f"  识别率: {found}/{current_total} = {recall:.1%}"
+        actionable_rate = (found_actionable / current_total
+                           if current_total else 0.0)
+        print(f"  进池率: {found}/{current_total} = {recall:.1%}"
               + (f"（陈旧键 {stale} 条不计——游戏文件已更新）"
                  if stale else ""))
+        print(f"  可译率: {found_actionable}/{current_total}"
+              f" = {actionable_rate:.1%}"
+              f"（disposition=translate 的可译条目口径）")
         missed = missed
         if missed:
             by_file: dict[str, list[str]] = {}

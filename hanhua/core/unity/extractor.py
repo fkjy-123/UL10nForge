@@ -1574,16 +1574,25 @@ def _looks_like_kv_dictionary_text(script: bytes) -> bool:
 def _looks_like_kv_dictionary(text: str) -> bool:
     """key=value 行占比 ≥80% 且 ≥5 行，且键含字母（词典键是标识符；
     数据行 '0:12:-1:none' 的数字键不是词典——fp_level_* 实证，
-    该形态由 alpha-density 数据过滤负责）。"""
+    该形态由 alpha-density 数据过滤负责）。值必须非空——UI 标签行
+    'ДОСТУПНЫЕ ОЧКИ:'（冒号结尾）匹配 key: 形态但值是空的，不是
+    词典行（electric-trains 实证，误判会整表值丢失）。"""
     lines = [ln.strip() for ln in text.splitlines() if ln.strip()]
     if len(lines) < _KV_DICT_MIN_LINES:
         return False
-    kv_lines = [ln for ln in lines if _KV_LINE.match(ln)]
+    kv_lines = []
+    for ln in lines:
+        m = _KV_LINE.match(ln)
+        # 词典键是单词（无空白）——'Уважаемый игрок: текст' 类句子的
+        # 冒号不构成词典行（键含空格，electric-trains Rustore 通知实证）
+        if (m is not None and m.group("value").strip()
+                and not any(ch.isspace() for ch in m.group("key"))):
+            kv_lines.append(m)
     if len(kv_lines) / len(lines) < _KV_DICT_MIN_RATIO:
         return False
     letter_keys = sum(
-        1 for ln in kv_lines
-        if any(ch.isalpha() for ch in _KV_LINE.match(ln).group("key")))
+        1 for m in kv_lines
+        if any(ch.isalpha() for ch in m.group("key")))
     return letter_keys / len(kv_lines) >= _KV_DICT_MIN_RATIO
 
 

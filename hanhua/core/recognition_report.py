@@ -61,6 +61,7 @@ class RecognitionReport:
     pool_skipped: int = 0
     pool_morphology: dict[str, tuple[int, int]] = field(default_factory=dict)
     pool_originals: frozenset = frozenset()  # 全部条目原文集合（召回测量用）
+    pool_actionable: frozenset = frozenset()  # 可译条目原文（disposition=translate）
     # 缺口
     gaps: list[GapItem] = field(default_factory=list)
     gap_explained: dict[str, int] = field(default_factory=dict)
@@ -233,6 +234,9 @@ def build_report(game_dir: str | Path, *,
         1 for e in entries if e.status == STATUS_SKIPPED)
     report.pool_morphology = morph_counts
     report.pool_originals = frozenset(e.original for e in entries)
+    from hanhua.core.models import is_actionable_translation
+    report.pool_actionable = frozenset(
+        e.original for e in entries if is_actionable_translation(e))
 
     # ── 普查 + 缺口差集 ──
     pool_originals = {e.original for e in entries}
