@@ -42,6 +42,9 @@ def apply_format_text(fmt: str, entries, text: str, meta: dict) -> str:
     from hanhua.core.formats import (csv_format, json_format, txt_format,
                                      xml_format, yaml_format, subtitle_format,
                                      po_format, ink_yarn_format)
+    if fmt == "kv":
+        from hanhua.core.formats.kv_format import apply_kv
+        return apply_kv(entries, text)
     if fmt == "json":
         return json_format.apply_json(entries, text)
     if fmt == "csv":

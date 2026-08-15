@@ -1517,6 +1517,126 @@ def _raw_string_entries(file_id: str, obj_path_id: int, raw: bytes,
     return entries
 
 
+# ── KV 词典 TextAsset（多语言词典集合，electric-trains 实证） ──
+# electric-trains 内置 19 张同结构词典（意/匈/德/西/乌/俄/日/韩/中/
+# 葡/英，全部名为 dictionary/dictionary old/dictionary_old/dictionary
+# veryold）——旧管线 19 张全提取，同一批 ~356 个键翻译 19 遍（键也被
+# 译坏：missions= 被改成 任务=，运行时按键查找断裂）。
+# 两条通用规则：
+# 1. 组内只提取第一张表（游戏默认源语言表），其余 skipped 留档
+#    （reason=textasset_locale_table_<脚本>，报告可见）；
+# 2. KV 行只提取值（键保真——键是运行时查找键）。
+_KV_LINE = _re.compile(
+    r"^(?P<key>[^=:\t\r\n]+?)\s*[:=]\s*(?P<value>.*)$")
+_KV_DICT_MIN_LINES = 5
+_KV_DICT_MIN_RATIO = 0.8
+_DICT_NAME_VARIANT = _re.compile(r"[\s_](?:very)?old$")
+_CJK_CHAR = _re.compile(r"[一-鿿]")
+_KANA_CHAR = _re.compile(r"[぀-ヿ]")
+_HANGUL_CHAR = _re.compile(r"[가-힯]")
+_CYRILLIC_CHAR = _re.compile(r"[Ѐ-ӿ]")
+
+
+def _looks_like_kv_dictionary_text(script: bytes) -> bool:
+    """KV 词典字节探测（非 UTF-8/二进制内容不构成词典）。"""
+    try:
+        text = script.decode("utf-8-sig", errors="strict")
+    except UnicodeDecodeError:
+        return False
+    return _looks_like_kv_dictionary(text)
+
+
+def _looks_like_kv_dictionary(text: str) -> bool:
+    """key=value 行占比 ≥80% 且 ≥5 行，且键含字母（词典键是标识符；
+    数据行 '0:12:-1:none' 的数字键不是词典——fp_level_* 实证，
+    该形态由 alpha-density 数据过滤负责）。"""
+    lines = [ln.strip() for ln in text.splitlines() if ln.strip()]
+    if len(lines) < _KV_DICT_MIN_LINES:
+        return False
+    kv_lines = [ln for ln in lines if _KV_LINE.match(ln)]
+    if len(kv_lines) / len(lines) < _KV_DICT_MIN_RATIO:
+        return False
+    letter_keys = sum(
+        1 for ln in kv_lines
+        if any(ch.isalpha() for ch in _KV_LINE.match(ln).group("key")))
+    return letter_keys / len(kv_lines) >= _KV_DICT_MIN_RATIO
+
+
+def _dictionary_base_name(name: str) -> str:
+    """'dictionary' / 'dictionary old' / 'dictionary_old' /
+    'dictionary veryold' → 同一逻辑组 'dictionary'。"""
+    return _DICT_NAME_VARIANT.sub("", name.casefold())
+
+
+def _dictionary_language(values: list[str]) -> str:
+    """词典值脚本 → zh/ja/ko/ru/latin（组内非源表 skip 留档用）。"""
+    samples = [v for v in values[:50] if v]
+    if not samples:
+        return "latin"
+    joined = "".join(samples)
+    total = max(1, len(joined))
+    if len(_CJK_CHAR.findall(joined)) / total >= 0.3:
+        return "zh"
+    if len(_KANA_CHAR.findall(joined)) / total >= 0.2:
+        return "ja"
+    if len(_HANGUL_CHAR.findall(joined)) / total >= 0.3:
+        return "ko"
+    if len(_CYRILLIC_CHAR.findall(joined)) / total >= 0.3:
+        return "ru"
+    return "latin"
+
+
+def _textasset_kv_entries(
+        file_id: str, obj_path_id: int, text: str,
+        asset_file_name: str = "",
+        skipped: dict[str, int] | None = None) -> list[TextEntry]:
+    """KV 词典条目：只提取值（键保真——键是运行时按键查找键）。
+
+    写回走 textasset_format=kv 分支（apply_format_text），键与行结构
+    保留，只替换值部分。
+    """
+    prefix = (f"asset#{asset_file_name}#{obj_path_id}"
+              if asset_file_name else f"asset#{obj_path_id}")
+    entries: list[TextEntry] = []
+
+    def _skip(morph: str) -> None:
+        if skipped is not None:
+            skipped[morph] = skipped.get(morph, 0) + 1
+
+    for i, line in enumerate(text.splitlines()):
+        stripped = line.strip()
+        if not stripped:
+            continue
+        m = _KV_LINE.match(stripped)
+        if m is None:
+            _skip("textasset_kv_nonkv_line")
+            continue
+        key = m.group("key").strip()
+        value = m.group("value").strip()
+        if not value:
+            _skip("textasset_kv_empty")
+            continue
+        if should_skip(value) or is_hard_structural(value):
+            _skip("textasset_kv_structural")
+            continue
+        meta = {
+            "kind": "textasset", "obj": obj_path_id,
+            "textasset_format": "kv",
+            "inner_path": f"kv/{quote(key, safe='')}/{i}",
+            "line": i, "kv_key": key,
+            "confidence": "high", "role": "display",
+            "disposition": "translate",
+            "reason": "textasset_kv_value",
+        }
+        if asset_file_name:
+            meta["asset_file"] = asset_file_name
+        entries.append(TextEntry(
+            file_id=file_id,
+            key_path=f"{prefix}/line/{i}",
+            original=value, meta=meta))
+    return entries
+
+
 # 词库型 TextAsset 判定（0.26 地毯式实证：force-reboot 脏话检测黑名单）。
 # 单词行 = 无空格纯 ASCII 词（字母/数字/常见词内符号，≤40 字符）。
 _LEXICON_WORD_RE = _re.compile(r"^[A-Za-z0-9][A-Za-z0-9'_.-]{0,39}$")
@@ -1626,6 +1746,12 @@ def _textasset_entries(file_id: str, obj_path_id: int, raw: bytes,
     if looks_like_csv_text(text):
         out, _ = extract_csv_text(text, file_id)
         return _stamp(out, "csv")
+    if _looks_like_kv_dictionary(text):
+        # KV 词典（多语言词典/配置表）：只提取值（键保真——键是运行时
+        # 按键查找键，整行翻译会改键断查找，electric-trains 实证
+        # missions= 被译成 任务=）
+        return _textasset_kv_entries(file_id, obj_path_id, text,
+                                     asset_file_name, skipped)
     # 数据文件过滤：字母密度 <50% 的行占多数 → 关卡/配置数字表
     # （fp_level_* 的 "0:12:-1:none" 行 36% 字母实证），不做条目。
     # 真文本（字典/字幕）行字母密度高（missions=Missioni ≈88%），不误伤。
@@ -1881,6 +2007,9 @@ def extract_asset_file(path: str | Path, file_id: str | None = None,
     # 识别 L9：遇到的脚本类名全集（含未登记类）→ 报告待登记队列
     # （类注册表 class_registry 的登记审计数据源）
     script_classes: set[str] = set()
+    # KV 词典分组（多语言词典集合）：组内只提取第一张表（源语言表），
+    # 其余 skipped 留档——对象循环内收集，循环后统一裁决
+    kv_dictionaries: dict[str, list[tuple[int, str, str, str, str]]] = {}
     # 识别 L7：typetree 覆盖率持续度量——每容器记录成功/失败对象数，
     # 失败靠 raw scan 兜底（Unity 6000 264/268 失败实证）但必须可量化
     typetree_ok = 0
@@ -1912,10 +2041,24 @@ def extract_asset_file(path: str | Path, file_id: str | None = None,
                         # 的 TextAsset 全部抛 UnicodeEncodeError 被吞
                         script = script.encode(
                             "utf-8-sig", errors="surrogateescape")
-                    entries.extend(_textasset_entries(
-                        fid, obj.path_id, script or b"", asset_name, skipped))
                 except Exception:  # noqa: BLE001
                     continue
+                # KV 词典分组探测（多语言词典集合）：收集后延迟裁决
+                if script and _looks_like_kv_dictionary_text(script):
+                    name = str(getattr(data, "m_Name", "") or "")
+                    values = [
+                        m.group("value").strip()
+                        for line in script.decode("utf-8-sig", errors="replace").splitlines()
+                        if (m := _KV_LINE.match(line.strip())) is not None
+                    ]
+                    base = _dictionary_base_name(name) or str(obj.path_id)
+                    kv_dictionaries.setdefault(base, []).append(
+                        (int(obj.path_id), _dictionary_language(values),
+                         script.decode("utf-8-sig", errors="replace"),
+                         name, asset_name))
+                    continue
+                entries.extend(_textasset_entries(
+                    fid, obj.path_id, script or b"", asset_name, skipped))
             elif (tname in ("MonoBehaviour", "ScriptableObject")
                   or tname in _NATIVE_TEXT_TYPES):
                 tree = None
@@ -1992,6 +2135,31 @@ def extract_asset_file(path: str | Path, file_id: str | None = None,
         covered = covered_by_raw.get((asset_name, path_id), set())
         entries.extend(
             c for c in candidates if c.original not in covered)
+    # KV 词典分组裁决：每组只提取第一张表（path_id 升序 = 文件内出现
+    # 序，即游戏默认源语言表），其余语言表 skipped 留档（原因带语言
+    # 脚本，报告按 reason 聚合可见——electric-trains 19 张词典实证）
+    for base, records in kv_dictionaries.items():
+        records.sort(key=lambda r: r[0])
+        first_pid = records[0][0]
+        for pid, lang, text, name, rec_asset in records:
+            if pid == first_pid:
+                entries.extend(_textasset_kv_entries(
+                    fid, pid, text, rec_asset, skipped))
+            else:
+                reason = f"textasset_locale_table_{lang}"
+                skipped[reason] = skipped.get(reason, 0) + 1
+                sample_value = next(
+                    (m.group("value").strip()
+                     for line in text.splitlines()
+                     if (m := _KV_LINE.match(line.strip())) is not None
+                     and m.group("value").strip()),
+                    name)
+                sample = _skipped_sample_entry(
+                    fid, f"asset#{rec_asset}#{pid}/loc", sample_value,
+                    kind="textasset", reason=reason,
+                    count=skipped[reason])
+                if sample:
+                    entries.append(sample)
     for e in entries:
         if _should_downgrade_pending(e):
             e.status = STATUS_SKIPPED
