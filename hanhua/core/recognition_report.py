@@ -66,6 +66,7 @@ class RecognitionReport:
     # 证明链分母（mono）
     us_heap_total: int = 0
     us_heap_verified: int = 0
+    us_heap_structural: int = 0      # 结构证明（按名查找键确定性跳过）
     us_heap_with_space: int = 0
     mono_files: int = 0
     # 脚本类队列（识别 L9：未登记类名 = 类注册表下一条登记候选）
@@ -157,9 +158,12 @@ def _mono_denominators(dll_files: list[Path], report: RecognitionReport,
             data = us.get_data_at_offset(0, us.sizeof())
             records = mono_dll._walk_us_heap_records(data)
             report.us_heap_total += len(records)
+            structural: set = set()
             report.us_heap_verified += len(
                 mono_dll._verified_ui_user_string_tokens(
-                    pe, cross_sinks=cross_sinks))
+                    pe, cross_sinks=cross_sinks,
+                    structural_out=structural))
+            report.us_heap_structural += len(structural)
             report.us_heap_with_space += sum(
                 1 for _, _, raw in records if b" " in raw)
         except Exception:  # noqa: BLE001
@@ -286,6 +290,7 @@ def format_report(report: RecognitionReport, *, gap_limit: int = 60) -> str:
     if report.mono_files:
         lines.append(f"代码侧分母（#US 堆）：{report.us_heap_total} 全集"
                      f" | 已证明 UI {report.us_heap_verified}"
+                     f" | 已证明结构 {report.us_heap_structural}"
                      f" | 含空格 {report.us_heap_with_space}")
     from hanhua.core.unity.class_registry import disposition
     unknown = {name: count for name, count in report.script_classes.items()

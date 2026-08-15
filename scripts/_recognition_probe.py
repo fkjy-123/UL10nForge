@@ -87,6 +87,7 @@ def probe_game(game_dir: str) -> dict:
     mc = Counter()
     mc["heap_total"] = 0
     mc["heap_verified_ui"] = 0
+    mc["heap_structural"] = 0
     mc["heap_has_space"] = 0
     for f in dll_files:
         try:
@@ -106,9 +107,11 @@ def probe_game(game_dir: str) -> dict:
                 data = us.get_data_at_offset(0, us.sizeof())
                 records = mono_dll._walk_us_heap_records(data)
                 mc["heap_total"] += len(records)
+                structural: set = set()
                 verified = mono_dll._verified_ui_user_string_tokens(
-                    pe, cross_sinks=cross_sinks)
+                    pe, cross_sinks=cross_sinks, structural_out=structural)
                 mc["heap_verified_ui"] += len(verified)
+                mc["heap_structural"] += len(structural)
                 mc["heap_has_space"] += sum(
                     1 for _, _, raw in records
                     if b" " in raw or b"\t" in raw or b"\n" in raw)
@@ -140,6 +143,7 @@ def _print(out: dict) -> None:
               f"（pending {m.get('pending', 0)} / skipped {m.get('skipped', 0)}）")
         print(f"    #US 堆全集: {m['heap_total']}"
               f" | 已证明 UI: {m['heap_verified_ui']}"
+              f" | 已证明结构: {m['heap_structural']}"
               f" | 含空格: {m['heap_has_space']}")
         if m.get("heap_total"):
             print(f"    证明率(UI/堆): {m['heap_verified_ui'] / m['heap_total']:.1%}"
