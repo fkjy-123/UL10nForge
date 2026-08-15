@@ -5,10 +5,10 @@ from hanhua.core.unity.extractor import (_i2_localization_entries_from_tree,
                                          _is_i2_language_source_tree)
 
 
-def _i2_tree(terms, container_key="mSource"):
+def _i2_tree(terms, container_key="mSource", languages=None):
     data = {
         "mTerms": terms,
-        "mLanguages": [{"Name": "English"}, {"Name": "Chinese"}],
+        "mLanguages": languages or [{"Name": "English"}, {"Name": "Chinese"}],
     }
     return {container_key: data} if container_key else dict(data)
 
@@ -52,6 +52,16 @@ class TestExtraction:
         # 源语言空时取首个非空语言值
         assert by_key["MENU_QUIT"].original == "退出"
         assert by_key["MENU_QUIT"].meta["i2_lang_index"] == 1
+
+    def test_english_preferred_over_first(self):
+        # 用户指令：多语言游戏语言优先翻译英文——中文在前、英文在后
+        # 时仍取英文值
+        tree = _i2_tree(
+            [_term("MENU_START", ["开始游戏", "Start the game"])],
+            languages=[{"Name": "中文"}, {"Name": "English"}])
+        entries = _i2_localization_entries_from_tree("f", 7, tree)
+        assert entries[0].original == "Start the game"
+        assert entries[0].meta["i2_lang_index"] == 1
 
     def test_asset_term_type_skipped(self):
         tree = _i2_tree([

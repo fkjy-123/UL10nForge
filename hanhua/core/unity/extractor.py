@@ -636,6 +636,24 @@ def _is_i2_language_source_tree(tree: dict) -> bool:
         for t in terms[:5])
 
 
+def _i2_english_language_index(data: dict) -> int | None:
+    """I2 语言源的英文索引（用户指令：多语言游戏语言优先翻译英文）。
+
+    mLanguages[].Name 含 English/en 即英文；找不到返回 None（调用方
+    回退首个非空语言值）。
+    """
+    langs = data.get("mLanguages")
+    if not isinstance(langs, list):
+        return None
+    for idx, lang in enumerate(langs):
+        if not isinstance(lang, dict):
+            continue
+        name = str(lang.get("Name", "") or "").casefold()
+        if "english" in name or name == "en":
+            return idx
+    return None
+
+
 def _i2_localization_entries_from_tree(
         file_id: str, obj_path_id: int, tree: dict,
         asset_file_name: str = "") -> list[TextEntry]:
@@ -652,6 +670,7 @@ def _i2_localization_entries_from_tree(
         (key for key in _I2_SOURCE_FIELD_NAMES
          if isinstance(tree.get(key), dict) and tree.get(key) is data),
         None)
+    english_index = _i2_english_language_index(data)
     terms = data.get("mTerms") or []
     entries: list[TextEntry] = []
     prefix = (f"asset#{asset_file_name}#{obj_path_id}"
@@ -668,8 +687,14 @@ def _i2_localization_entries_from_tree(
             continue
         if key is None or not isinstance(languages, list):
             continue
-        j = next((idx for idx, v in enumerate(languages)
-                  if isinstance(v, str) and v.strip()), None)
+        j = None
+        if english_index is not None and english_index < len(languages):
+            value = languages[english_index]
+            if isinstance(value, str) and value.strip():
+                j = english_index
+        if j is None:
+            j = next((idx for idx, v in enumerate(languages)
+                      if isinstance(v, str) and v.strip()), None)
         if j is None:
             continue
         value = languages[j]
