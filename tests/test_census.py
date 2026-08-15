@@ -103,6 +103,33 @@ class TestSkipLogic:
         p.write_bytes(bytes(head))
         assert _should_skip_file(p) == "covered:serialized"
 
+    def test_meta_and_catalog_files_skipped(self, tmp_path):
+        # Unity .meta 编辑器元数据 / Addressables 目录键库（假盲区实证）
+        for name in ("x.png.meta", "x.meta~HEAD", "x.meta~origin_A"):
+            p = tmp_path / name
+            p.write_bytes(b"fileFormatVersion: 2 guid: abc")
+            assert _should_skip_file(p) is not None, name
+        for name in ("catalog.bin", "catalog.hash"):
+            p = tmp_path / name
+            p.write_bytes(b"text content here")
+            assert _should_skip_file(p) == f"file:{name}", name
+
+    def test_rsp_skipped(self, tmp_path):
+        p = tmp_path / "x.rsp"
+        p.write_bytes(b'-out="/some/path"')
+        assert _should_skip_file(p) == "suffix:.rsp"
+
+    def test_tooling_dir_skipped(self, tmp_path):
+        (tmp_path / "tooling" / "tool-jobs").mkdir(parents=True)
+        (tmp_path / "tooling" / "tool-jobs" / "x.dat").write_bytes(
+            b"visible text inside tooling")
+        (tmp_path / "real.dat").write_bytes(b"real game text here")
+        result = sweep_game(tmp_path)
+        texts = [h.text for h in result.hits]
+        assert "visible text inside tooling" not in texts
+        assert "real game text here" in texts
+        assert result.files_skipped.get("tooling_dir") == 1
+
 
 class TestSweepGame:
     def test_end_to_end(self, tmp_path):

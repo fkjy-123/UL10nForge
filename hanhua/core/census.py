@@ -60,7 +60,27 @@ _CENSUS_SKIP_SUFFIXES = frozenset({
     ".bank", ".bnk", ".ttf", ".otf", ".woff", ".woff2", ".eot",
     # 已知引擎/工程数据（无文本语义）
     ".fbx", ".obj", ".blend", ".caw", ".ecm", ".sse", ".vis", ".pos",
+    # Unity 编辑器元数据与版本控制副本（.png.meta / .meta~HEAD /
+    # .meta~origin_*——GUID/导入设置，绝非显示文本。operation-ops
+    # 53 文件、faerie-afterlight 7 文件假盲区实证）
+    ".meta",
+    # MSBuild 响应文件（编译参数，bird-builder/butterflies 实证假盲区）
+    ".rsp",
+    # 启动脚本（.bat 引用 exe 路径/窗口参数，electric-trains/outrun-clone
+    # 实证假盲区——非游戏显示文本）
+    ".bat", ".cmd",
 })
+# 普查跳过的文件/目录名（与 scanner.SKIP_FILES 同模式，普查专用）：
+# Addressables 内容目录（catalog.bin=运行时键库按名引用、catalog.hash=
+# 内容哈希——无显示文本，find_asset_files 已文档化；minato 274 条/
+# cosl 284 条假盲区实证）；runner 工具作业残留目录（ivor_scan/soul_
+# scan 实证：tooling/tool-jobs 内是 dumper 输入副本与日志，工具自身
+# 工作区不是游戏内容）；Unity Profiler 连接配置。
+_CENSUS_SKIP_FILES = frozenset({
+    "catalog.bin", "catalog.hash",
+    "playerconnectionconfigfile",
+})
+_CENSUS_SKIP_DIRS = frozenset({"tooling"})
 
 _MIN_RUN_CHARS = 4        # run 最少字符数（低于此是随机噪声/单字节）
 _MAX_RUNS_PER_FILE = 2000  # 每文件 run 上限（截断计数留档）
@@ -278,12 +298,19 @@ def _scan_utf16le_runs(data: bytes, base_offset: int, *,
 def _should_skip_file(p: Path) -> str | None:
     """返回排除原因；None = 纳入普查。
 
-    排除顺序：后缀 → 内容探测。内容探测排除已由提取管线覆盖的容器
-    （Unity 容器/zip/sqlite/gzip 等）——无后缀 level 场景、伪装扩展名
-    的 SerializedFile 在此被正确识别并跳过（由 asset 提取器负责）。
+    排除顺序：后缀 → 文件名 → 内容探测。内容探测排除已由提取管线覆盖
+    的容器（Unity 容器/zip/sqlite/gzip 等）——无后缀 level 场景、伪装
+    扩展名的 SerializedFile 在此被正确识别并跳过（由 asset 提取器负责）。
     """
     if p.suffix.lower() in _CENSUS_SKIP_SUFFIXES:
         return f"suffix:{p.suffix.lower()}"
+    name_low = p.name.casefold()
+    # .meta 的版本控制副本变体（.meta~HEAD / .meta~origin_*——suffix
+    # 会读到 .meta~HEAD 整段）
+    if ".meta~" in name_low:
+        return "suffix:.meta"
+    if name_low in _CENSUS_SKIP_FILES:
+        return f"file:{name_low}"
     try:
         kind = probe_file_kind(p)
     except OSError:
@@ -306,6 +333,12 @@ def sweep_game(
         if _is_runtime_file(p, root):
             result.files_skipped["runtime_file"] = \
                 result.files_skipped.get("runtime_file", 0) + 1
+            continue
+        rel_parts = p.relative_to(root).parts[:-1]
+        if any(part.casefold() in _CENSUS_SKIP_DIRS
+               for part in rel_parts):
+            result.files_skipped["tooling_dir"] = \
+                result.files_skipped.get("tooling_dir", 0) + 1
             continue
         skip = _should_skip_file(p)
         if skip is not None:

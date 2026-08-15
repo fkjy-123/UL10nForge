@@ -367,6 +367,15 @@ _TYPETREE_DISPLAY_FIELD_ROWS: tuple[_DisplayField, ...] = (
     _DisplayField("choice", "dialogue"), _DisplayField("choices", "dialogue"),
     _DisplayField("dialoguetext", "dialogue"),
     _DisplayField("questiontext", "dialogue"),
+    # 对话插件序列化字段（Fungus Say.storyText = 对话台词本体；
+    # Fungus MenuDialog/DialogueSystem Menu Text = 菜单选项显示文本；
+    # SetSayDialog 的台词文本——typetree 白名单路径此前漏收，
+    # raw scan 靠句子形态兜底，确定性字段证据优先）
+    _DisplayField("storytext", "dialogue"),
+    _DisplayField("saytext", "dialogue"),
+    _DisplayField("menutext", "dialogue"),
+    _DisplayField("optiontext", "dialogue"),
+    _DisplayField("buttontext", "dialogue"),
     # locale：本地化表字段（指南 §3.2；Localization 表实证）
     _DisplayField("singular", "locale"), _DisplayField("plural", "locale"),
     _DisplayField("format", "locale"), _DisplayField("template", "locale"),
