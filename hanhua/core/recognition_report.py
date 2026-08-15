@@ -68,6 +68,8 @@ class RecognitionReport:
     us_heap_verified: int = 0
     us_heap_with_space: int = 0
     mono_files: int = 0
+    # 脚本类队列（识别 L9：未登记类名 = 类注册表下一条登记候选）
+    script_classes: dict[str, int] = field(default_factory=dict)
     # 告警
     alarms: list[str] = field(default_factory=list)
 
@@ -103,7 +105,8 @@ def _string_disposition(text: str) -> str:
 
 
 def _run_extractor(fn: Callable, path: Path, rel: str,
-                   entries: list, morph_counts: dict) -> None:
+                   entries: list, morph_counts: dict,
+                   script_classes: dict | None = None) -> None:
     try:
         pf = fn(path)
     except Exception:  # noqa: BLE001 单文件失败不阻断报告
@@ -115,6 +118,9 @@ def _run_extractor(fn: Callable, path: Path, rel: str,
             total + len(pf.entries),
             skipped + sum(1 for e in pf.entries
                           if e.status == STATUS_SKIPPED))
+    if script_classes is not None:
+        for name in (pf.meta or {}).get("script_classes", ()):
+            script_classes[name] = script_classes.get(name, 0) + 1
     entries.extend(pf.entries)
 
 
@@ -175,7 +181,7 @@ def build_report(game_dir: str | Path, *,
             progress_cb("asset", i + 1, len(asset_files))
         rel = str(f.relative_to(root)).replace("\\", "/")
         _run_extractor(asset_ex.extract_asset_file, f, rel,
-                       entries, morph_counts)
+                       entries, morph_counts, report.script_classes)
     try:
         dll_files = mono_dll.find_dll_files(root)
     except Exception:  # noqa: BLE001
@@ -278,6 +284,16 @@ def format_report(report: RecognitionReport, *, gap_limit: int = 60) -> str:
         lines.append(f"代码侧分母（#US 堆）：{report.us_heap_total} 全集"
                      f" | 已证明 UI {report.us_heap_verified}"
                      f" | 含空格 {report.us_heap_with_space}")
+    from hanhua.core.unity.class_registry import disposition
+    unknown = {name: count for name, count in report.script_classes.items()
+               if disposition(name) is None}
+    if unknown:
+        lines.append("")
+        lines.append(f"待登记类队列（{len(unknown)} 个未登记脚本类，"
+                     f"按出现次数排序，人工裁决后进 class_registry）：")
+        for name, count in sorted(unknown.items(),
+                                  key=lambda kv: (-kv[1], kv[0]))[:30]:
+            lines.append(f"  {name} ×{count}")
     if report.alarms:
         lines.append("")
         for alarm in report.alarms:

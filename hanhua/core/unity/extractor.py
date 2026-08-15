@@ -1138,6 +1138,14 @@ def _raw_string_entries(file_id: str, obj_path_id: int, raw: bytes,
         and (_re.search(r"\bsdf\b", _pool_lower) is not None
              or "sprite asset" in _pool_lower)
     )
+    # 识别 L9：确定性脚本类注册表（class_registry）。config 类（TMP
+    # 字体/精灵资产、InputSystem/Timeline 配置）对象内字符串是按名
+    # 查找键/资产元数据——确定性类名证据优先于串池信号猜测
+    # （is_tmp_asset_object 等形态猜测的确定性版本），整体跳过。
+    # 未登记类名不判定（走既有启发式），由提取器收集进报告待登记队列。
+    from hanhua.core.unity.class_registry import disposition
+    class_disposition = disposition(script_class)
+    is_config_class = class_disposition == "config"
     for entry in entries:
         # R5：预过滤留档条目（prefilter_*）的 reason/role 已由
         # _prefilter_entry 定稿，不再走分类链（否则会被
@@ -1158,6 +1166,22 @@ def _raw_string_entries(file_id: str, obj_path_id: int, raw: bytes,
             # 引用键（翻译断引用→Sprite 变体/表情丢失），对象整体跳过
             entry.status = STATUS_SKIPPED
             reason = "tmp_asset_object"
+            confidence, role = "low", "structural"
+        elif is_config_class:
+            # 确定性脚本类注册表 config 类（识别 L9）：TMP 资产/
+            # InputSystem/Timeline 配置——对象内字符串是按名查找键，
+            # 类名证据优先于串池信号猜测，整体跳过。L6 已覆盖的类
+            # 保持既有 reason 词汇（审计连续性），注册表新类用
+            # script_class_config。
+            entry.status = STATUS_SKIPPED
+            entry.meta["obj_is_key_list"] = True
+            entry.meta["script_class"] = script_class
+            reason = (
+                "input_system_object"
+                if script_class in _INPUT_SYSTEM_SCRIPT_CLASSES
+                else "timeline_object"
+                if script_class in _TIMELINE_SCRIPT_CLASSES
+                else "script_class_config")
             confidence, role = "low", "structural"
         elif reason:
             entry.status = STATUS_SKIPPED
@@ -1700,6 +1724,9 @@ def extract_asset_file(path: str | Path, file_id: str | None = None,
     deferred_candidates: list[tuple[str, int, list[TextEntry]]] = []
     seen_objects: set[tuple[str, int]] = set()
     skipped: dict[str, int] = {}  # R5 静默跳过留档（哑识别可见化）
+    # 识别 L9：遇到的脚本类名全集（含未登记类）→ 报告待登记队列
+    # （类注册表 class_registry 的登记审计数据源）
+    script_classes: set[str] = set()
     # 识别 L7：typetree 覆盖率持续度量——每容器记录成功/失败对象数，
     # 失败靠 raw scan 兜底（Unity 6000 264/268 失败实证）但必须可量化
     typetree_ok = 0
@@ -1753,6 +1780,8 @@ def extract_asset_file(path: str | Path, file_id: str | None = None,
                     # 识别 L6：确定性脚本类名（m_Script PPtr → MonoScript）
                     # 优先于串池信号，对象级判定直接使用
                     script_class = _script_class_of(tree, obj)
+                    if script_class:
+                        script_classes.add(script_class)
                     if _is_string_table_tree(tree):
                         entries.extend(_localization_entries_from_tree(
                             fid, obj.path_id, tree, asset_name))
@@ -1814,5 +1843,9 @@ def extract_asset_file(path: str | Path, file_id: str | None = None,
         meta["typetree_coverage"] = typetree_ok / (
             typetree_ok + typetree_failed)
         meta["typetree_objects"] = typetree_ok + typetree_failed
+    # 识别 L9：脚本类名全集入容器 meta（报告待登记队列数据源，
+    # 未登记类名 = 类注册表的下一条登记候选）
+    if script_classes:
+        meta["script_classes"] = sorted(script_classes)
     return ParsedFile(fid, str(p), "v2_asset", entries, "utf-8", "\n",
                       meta, noise, skipped)
