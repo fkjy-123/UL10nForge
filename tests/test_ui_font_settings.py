@@ -118,7 +118,8 @@ def test_advanced_local_settings_visible_only_in_local_mode_and_refresh_vram(
     state = _state(tmp_path)
     page = SettingsPage(state, _Window())
 
-    # API 模式：高级设置独立 Tab 可见但置灰
+    # 默认本地模式（F56）；先切在线验证置灰
+    page.backend_mode.setCurrentIndex(page.backend_mode.findData("api"))
     assert page.tabs.indexOf(page.advanced_tab) == 2
     assert page.local_concurrency.isEnabled() is False
     assert not page.advanced_mode_hint.isHidden()   # API 模式显示"仅本地生效"提示

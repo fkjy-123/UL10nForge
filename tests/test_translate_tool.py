@@ -71,7 +71,8 @@ def _run_until_idle(page, timeout_ms=8000):
 def test_tool_page_model_label_and_history_disabled(qapp, tmp_path):
     """未配置模型：提示去设置；无历史：下拉禁用。"""
     page = TranslateToolPage(_state(tmp_path), _Window())
-    assert "未配置" in page.model_label.text()
+    # 默认本地模式（F56）：模型未找到提示
+    assert "未找到" in page.model_label.text()
     assert not page.history_combo.isEnabled()
     assert page.dst_edit.isReadOnly()
     # 默认提示词是游戏本地化角色（#10 精简版头部）

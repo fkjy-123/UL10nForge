@@ -104,7 +104,8 @@ def test_anthropic_client_chat():
             return httpx.Response(200, json=body)
         return httpx.Client(transport=httpx.MockTransport(handler))
     client = create_client(
-        ApiConfig(provider="anthropic", base_url="https://t", api_key="k", model="m"),
+        ApiConfig(mode="api", provider="anthropic", base_url="https://t",
+                  api_key="k", model="m"),
         transport_factory=factory)
     content, usage = client.chat("sys", [{"role": "user", "content": "u"}])
     assert content.startswith('[{') and usage.prompt == 8 and usage.completion == 4

@@ -404,10 +404,13 @@ def test_settings_backend_switch_enables_local_fields(qapp, tmp_path):
     from hanhua.ui.pages.settings_page import SettingsPage
     page = SettingsPage(_state(tmp_path), _RecordingWindow())
 
-    # 默认 API 模式：API 表单可见、本地卡片隐藏
-    assert page.backend_mode.currentData() == "api"
-    assert not page.stop_local_btn.isEnabled()
-    assert page.mode_api_widget.isHidden() is False
+    # 默认本地模式（F56：开箱即用离线）；在线卡隐藏、本地卡可见
+    assert page.backend_mode.currentData() == "local"
+    assert page.stop_local_btn.isEnabled()
+    assert page.mode_api_widget.isHidden() is True
+    assert page.mode_local_widget.isHidden() is False
+    # 切在线：本地卡隐藏
+    page.backend_mode.setCurrentIndex(page.backend_mode.findData("api"))
     assert page.mode_local_widget.isHidden() is True
 
     # 切到本地：四模型卡片可见，API 表单隐藏（2026-08-14 重构语义）
@@ -432,9 +435,11 @@ def test_settings_online_mode_shows_translate_review_api_cards(qapp, tmp_path):
     """在线 API 模式：只有翻译/审核两张卡（重排/检索恒本地无卡片）。"""
     from hanhua.ui.pages.settings_page import SettingsPage
     page = SettingsPage(_state(tmp_path), _RecordingWindow())
+    # 切在线后断言在线卡（默认本地——F56）
+    page.backend_mode.setCurrentIndex(page.backend_mode.findData("api"))
     assert set(page.api_cards) == {"translate", "review"}
     assert page.api_cards["translate"]["test_btn"].text() == "测试连接"
-    # 默认 API 模式：在线卡片可见、本地四卡隐藏
+    # 在线模式：在线卡片可见、本地四卡隐藏
     assert page.mode_api_widget.isHidden() is False
     assert page.mode_local_widget.isHidden() is True
     # 切本地：在线卡片隐藏

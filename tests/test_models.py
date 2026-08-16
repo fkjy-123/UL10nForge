@@ -20,7 +20,7 @@ def test_profile_and_api_defaults():
 
 def test_local_model_config_defaults_and_roundtrip(tmp_path):
     config = ApiConfig()
-    assert config.mode == "api"
+    assert config.mode == "local"  # F56（2026-08-16）：默认本地离线
     assert config.local_model_path == ""
     assert config.local_server_path == ""
     assert config.local_gpu_layers == -1
