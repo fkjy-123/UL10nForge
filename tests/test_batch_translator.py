@@ -4046,12 +4046,12 @@ def test_service_restart_callback_invoked_on_unavailable():
         restarts.append(1)
 
     client = FailingOnceClient({t.original: "译文" for t in entries},
-                               fail_batches=2)
+                               fail_batches=3)
     bt = BatchTranslator(client, memory=store, model="m",
                          lang="en→zh-CN", batch_size=1, concurrency=1,
                          service_restart=on_restart)
     bt.run(entries)
     assert restarts, "服务死亡应触发重启回调"
     assert len(restarts) == 1, "连续失败只重启一次"
-    assert sum(1 for e in entries if e.status == STATUS_TRANSLATED) >= 2, \
+    assert sum(1 for e in entries if e.status == STATUS_TRANSLATED) >= 1, \
         "重启后剩余条目应翻译成功"

@@ -925,13 +925,16 @@ class BatchTranslator:
                         per_batch = fut.result()
                         service_down_batches = 0  # 成功批重置计数
                     except Exception as exc:  # noqa: BLE001 单批失败隔离
-                        if (self.service_restart is not None
-                                and isinstance(exc, ServiceUnavailableError)):
-                            # F42：服务死亡（连接/超时快速失败）→ 连续
-                            # ≥2 批不可达才重启（单批抖动不重启），回调
-                            # 由调用方重新拉起服务，后续批继续
+                        if self.service_restart is not None:
+                            # F42 增强（2026-08-16，Rendezvous 11310 条
+                            # 大任务防中途卡死）：服务死亡后批量失败——不仅
+                            # ServiceUnavailableError（连接/超时快速失败），
+                            # **任何连续失败 ≥3 批**都触发服务重启探测
+                            # （重启是幂等的：ensure_running 探测到已活
+                            # 服务则复用；覆盖未知异常形态——drova 两次
+                            # 服务死亡未触发自愈的实测教训）
                             service_down_batches += 1
-                            if service_down_batches >= 2:
+                            if service_down_batches >= 3:
                                 try:
                                     self.service_restart()
                                 except Exception:  # noqa: BLE001
