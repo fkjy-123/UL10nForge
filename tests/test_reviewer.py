@@ -768,3 +768,30 @@ def test_active_glossary_pairs_game_filter():
 
     pairs = _active_glossary_pairs(_G(), game="minato")
     assert pairs == [("A", "甲")]        # 无归属通用 + 本游戏；candidate 排除
+
+
+def test_strip_prompt_echo_variants_enhanced():
+    """回显增强（2026-08-16 用户反馈）：模型把提示词以变形回显——
+    引号/System: 前缀/代码块/编号/标签行——必须清洗；正常译文零影响。"""
+    from hanhua.core.translator import strip_prompt_echo
+    system = "你是专业游戏本地化翻译专家，把游戏文本翻译为简体中文。请只输出译文，不要重复指令。"
+    src = "hello world"
+    # System: 前缀回显
+    assert strip_prompt_echo("System: " + system + "\n\n你好，世界",
+                             system, src) == "你好，世界"
+    # 引号包裹提示词 + 原文
+    assert strip_prompt_echo('"' + system + '"\n"hello world"\n你好，世界',
+                             system, src) == "你好，世界"
+    # 代码块包裹提示词 + 标签原文行
+    assert strip_prompt_echo('```' + system + '```\n原文：hello world\n'
+                             '译文：你好，世界', system, src) == "译文：你好，世界"
+    # 编号行回显（提示词+原文+译文都编号）
+    assert strip_prompt_echo('1. ' + system + '\n2. 原文：hello world\n'
+                             '3. 你好，世界', system, src) == "你好，世界"
+    # 纯引号原文回显 → 空
+    assert strip_prompt_echo('"hello world"', system, src) == ""
+    # 标签原文行（无提示词）
+    assert strip_prompt_echo('原文：hello world\n你好，世界',
+                             system, src) == "你好，世界"
+    # 正常译文零影响
+    assert strip_prompt_echo("你好，世界", system, src) == "你好，世界"

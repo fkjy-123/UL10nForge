@@ -479,22 +479,89 @@ def strip_prompt_echo(text: str, system: str, source: str) -> str:
         n = _common_prefix_len(t, sys_text)
         if n >= 20:                     # 至少 20 字符公共前缀，防误伤
             t = t[min(n, len(sys_text)):].strip()
-        # 整行回显（模型逐行复述提示词再跟译文/解释）
+        # 整行回显（模型逐行复述提示词再跟译文/解释）——增强：模型常
+        # 加变形（引号/System:/编号/```包裹/合并行）——行包含匹配
         sys_lines = {line.strip() for line in sys_text.splitlines()
                      if len(line.strip()) >= 15}
         if sys_lines:
             kept = [line for line in t.splitlines()
-                    if not any(line.strip() == s or
-                               line.strip().startswith(s + "：")
+                    if not any(_is_prompt_line(line.strip(), s)
                                for s in sys_lines)]
             if len(kept) != len(t.splitlines()):
                 t = "\n".join(kept).strip()
+        # 大段剥离：输出中提示词关键行命中 ≥3 行 → 模型整体回显了
+        # 提示词（尾部可能跟了译文）——删到最后一个提示词行之后
+        if sys_lines and len(t) > 0:
+            lines = t.splitlines()
+            last_hit = -1
+            for i, line in enumerate(lines):
+                if any(_is_prompt_line(line.strip(), s) for s in sys_lines):
+                    last_hit = i
+            if last_hit >= 2:
+                t = "\n".join(lines[last_hit + 1:]).strip()
     src_text = str(source or "").strip()
     if src_text:
+        # 行级归一（2026-08-16 增强）：模型把原文带标签/编号/引号回显
+        # （'原文：hello world'、'2. hello world'、'"hello world"'）——
+        # 归一后与原文比对，命中的行从输出剔除（保留其他译文行）
+        import re as _re
+        _tag_re = _re.compile(r"^(?:原文|翻译|译文|Source|Text|content)\s*[:：]\s*",
+                              _re.I)
+        _num_re = _re.compile(r"^[0-9]+[.、)）]\s*")
+        _quote = "\"'「『【（("
+        lines = t.splitlines()
+        kept = []
+        changed = False
+        for line in lines:
+            s = line.strip()
+            s = _num_re.sub("", s)
+            s = _tag_re.sub("", s)
+            if len(s) >= 2 and s[0] in _quote and s[-1] in _quote:
+                s = s[1:-1].strip()
+            if s == src_text or (s and src_text.startswith(s)
+                                 and len(s) >= len(src_text) * 0.6):
+                changed = True
+                continue
+            kept.append(line)
+        if changed:
+            # 模型用了编号/标签格式输出 → 保留行也剥编号前缀
+            # （'3. 你好，世界' → '你好，世界'）
+            kept = [_num_re.sub("", line) for line in kept]
+            t = "\n".join(kept).strip()
         n = _common_prefix_len(t, src_text)
         if n >= 3 and n >= len(src_text) * 0.6:
             t = t[min(n, len(src_text)):].strip()
+        # 引号包裹回显：模型把原文用引号包着返回（"原文"/'原文'/
+        # 「原文」）——剥引号后再处理
+        if len(t) >= 2 and t[0] in "\"'「『" and t[-1] in "\"'」』":
+            inner = t[1:-1].strip()
+            if inner == src_text:
+                t = ""
+            elif inner.startswith(src_text):
+                t = inner[len(src_text):].strip()
     return t
+
+
+def _is_prompt_line(line: str, sys_line: str) -> bool:
+    """输出行是否回显了提示词行（含模型常见变形）。
+
+    匹配形态：完全相等 / 提示词+「：」（原有）；提示词嵌入行（引号
+    包裹、System:/指令: 前缀、编号前缀、```包裹、模型合并两行提示词）；
+    行是提示词行的一部分（模型拆行回显）。要求 sys_line ≥15 字符
+    （短行不判——防正常译文短语误伤）。
+    """
+    if len(sys_line) < 15 or not line:
+        return False
+    if line == sys_line or line.startswith(sys_line + "："):
+        return True
+    if sys_line in line:
+        return True
+    if line in sys_line and len(line) >= 15:
+        return True
+    stripped = line.strip("\"'`「『【")
+    if stripped == sys_line or sys_line in stripped:
+        return True
+    return False
 
 
 def create_client(config: ApiConfig, transport_factory: Callable | None = None) -> BaseClient:

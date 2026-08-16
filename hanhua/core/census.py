@@ -83,6 +83,10 @@ _CENSUS_SKIP_SUFFIXES = frozenset({
     # 文本运行时变量引用）。观察项：其他游戏若 .dialoguedata 含
     # Text= 属性（Statement 节点内嵌文本）需提取管线按 XML 解析
     ".dialoguedata", ".sectordata", ".taskdata", ".worlddata",
+    # F55（Rendezvous 实证 2110 条假盲区）：二进制备份与汉化补丁——
+    # .bak（DLL/EXE 备份，PE 二进制被文本启发式误判）+ 汉化组补丁
+    # 命名（ali213/3DM 等——加密数据，非游戏内容）
+    ".bak",
 })
 # 普查跳过的文件/目录名（与 scanner.SKIP_FILES 同模式，普查专用）：
 # Addressables 内容目录（catalog.bin=运行时键库按名引用、catalog.hash=
@@ -92,6 +96,9 @@ _CENSUS_SKIP_SUFFIXES = frozenset({
 # 工作区不是游戏内容）；Unity Profiler 连接配置。
 _CENSUS_SKIP_FILES = frozenset({
     "catalog.bin", "catalog.hash",
+    # F55（Rendezvous 实证）：ali213/3DM/轩辕 等汉化组补丁（加密数据，
+    # 非游戏内容——扫描/汉化无意义）
+    "ali213.bin", "ali213.dll", "ali213.exe",
     "playerconnectionconfigfile",
     # Unity 自动生成的游戏名/公司名文件（DefaultCompany␤游戏名），非显示
     # 文本——78-hour-rain 实证假盲区（缺口报告唯一未解释项）

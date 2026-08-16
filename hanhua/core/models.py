@@ -106,7 +106,8 @@ class GameProfile:
 
 @dataclass
 class ApiConfig:
-    mode: str = "api"             # api / local
+    mode: str = "local"           # api / local（默认本地离线——发行版
+    # 开箱即本地四模型，无需任何云端配置；在线 API 是可选模式）
     provider: str = "openai"     # openai 兼容 / anthropic 原生
     base_url: str = ""
     api_key: str = ""

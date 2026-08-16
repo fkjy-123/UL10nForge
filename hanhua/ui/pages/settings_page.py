@@ -353,6 +353,16 @@ class SettingsPage(QWidget):
         self.backend_mode.setMinimumHeight(40)
         mode_row.addWidget(self.backend_mode, 1)
         left_lay.addLayout(mode_row)
+        # 用户反馈修复（2026-08-16）：「本地模型与云端接口都得部署」
+        # 困惑来自默认在线模式。二选一即可——本地模式开箱即用（四
+        # 模型自动启动，无需任何云端地址）；只有在线 API 模式才需要
+        # 填写云端地址（且只需翻译卡）
+        self.mode_default_hint = QLabel(
+            "默认推荐「本地 llama.cpp」——开箱即用，无需任何云端地址；"
+            "只有选择「在线 API」时才需要填写云端地址")
+        self.mode_default_hint.setWordWrap(True)
+        self.mode_default_hint.setStyleSheet("color: #8b5cf6; font-size: 12px;")
+        left_lay.addWidget(self.mode_default_hint)
 
         # 在线 API 模式：四模型各自一张卡片（2026-08-14 每模型对应
         # 自己的在线服务商 / 端点 / 模型，不是一份配置共用）

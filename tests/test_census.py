@@ -213,3 +213,22 @@ def test_f34_f35_f45_f46_f47_f50_suffixes_skipped():
             p.write_bytes(b"text content here")
             got = _should_skip_file(p)
             assert got == expected, f"{name}: {got} != {expected}"
+
+
+def test_f55_backup_and_patch_files_skipped():
+    """F55（Rendezvous 实证 2110 条假盲区）：.bak 备份与 ali213 汉化
+    补丁（加密二进制）跳过。"""
+    import tempfile
+    from pathlib import Path
+    from hanhua.core.census import _should_skip_file
+    with tempfile.TemporaryDirectory() as td:
+        cases = {
+            "steam_api64.dll.bak": "suffix:.bak",
+            "data.bak": "suffix:.bak",
+            "ali213.bin": "file:ali213.bin",
+        }
+        for name, expected in cases.items():
+            p = Path(td) / name
+            p.write_bytes(b"\x00\x01text run\x02\x03")
+            got = _should_skip_file(p)
+            assert got == expected, f"{name}: {got} != {expected}"
