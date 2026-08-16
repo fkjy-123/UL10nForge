@@ -84,6 +84,10 @@ SKIP_DIRS = {".git", ".svn", "__pycache__", ".idea", ".vs", "Library", "Temp", "
              # 工具部署的运行时（BepInEx 字体覆盖）：0Harmony.xml 等 API 文档
              # 会被误扫为文本（ned-flanders 副本写回实测 42 条失败）
              "BepInEx", "doorstop",
+             # F56（Rendezvous 实证）：Steamworks 破解配置目录
+             # （steam_settings 含空 achievements.json——空 JSON 曾致
+             # 扫描崩溃；破解配置非游戏内容，整目录跳过）
+             "steam_settings", "steam_interfaces",
              # IL2CPP 转换产物（<Game>_BackUpThisFolder_ButDontShipItWithYourGame/ 下）：
              # 生成的 C++ 源码，每行 #include/#ifndef 会被文本启发式收为「文本文件」，
              # 单游戏实测 639 万条目（backrooms）——目录名固定，整树剪掉

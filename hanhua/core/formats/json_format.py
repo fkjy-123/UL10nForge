@@ -131,6 +131,11 @@ def _load_data(text: str) -> tuple[Any, str]:
     if extra_bom != -1:
         raise JSONDecodeError("U+FEFF is only allowed at document start", text, extra_bom)
     parse_text = " " + text[1:] if text.startswith("\ufeff") else text
+    # F56\uff08Rendezvous \u5b9e\u8bc1\uff09\uff1a\u7a7a/\u7eaf\u7a7a\u767d JSON \u6587\u4ef6\uff08steam_settings \u7834\u89e3
+    # \u914d\u7f6e\u7684\u7a7a achievements.json\uff09\u2014\u2014json.loads('') \u629b "Expecting value"
+    # \u5bfc\u81f4\u6574\u573a\u626b\u63cf\u5d29\u6e83\u3002\u7a7a\u6587\u6863 \u2192 \u7a7a\u7ed3\u679c\uff08\u4e0d\u629b\u2014\u2014\u626b\u63cf\u5bb9\u9519\uff09\u3002
+    if not parse_text.strip():
+        return {}, ""
     try:
         data = json.loads(parse_text, object_pairs_hook=_preserve_pairs)
         return data, parse_text
