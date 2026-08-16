@@ -4013,3 +4013,45 @@ def test_language_source_kept_not_added_to_working_memory():
     assert store.get_memory_hits(["Open Door"], "m", "en→zh-CN") == {
         "Open Door": "打开门",
     }
+
+
+class FailingOnceClient(FakeClient):
+    """F42：前 2 批抛 ServiceUnavailableError（模拟服务死亡），之后正常。"""
+
+    def __init__(self, mapping=None, fail_batches: int = 2):
+        super().__init__(mapping)
+        self.batch_calls = 0
+        self.fail_batches = fail_batches
+
+    def chat(self, system, messages):
+        self.batch_calls += 1
+        if self.batch_calls <= self.fail_batches:
+            from hanhua.core.translator import ServiceUnavailableError
+            raise ServiceUnavailableError("翻译服务不可达（测试模拟）")
+        return super().chat(system, messages)
+
+
+def test_service_restart_callback_invoked_on_unavailable():
+    """F42（8morelives 实证）：服务死亡（ServiceUnavailableError 连续
+    批次）→ service_restart 回调被调用（调用方重新拉起服务），后续批
+    在新服务上继续，不丢失翻译进度。"""
+    from hanhua.core.models import STATUS_TRANSLATED
+    store = ProjectStore(Path(tempfile.mkdtemp()) / "f42.db")
+    store.init_schema()
+    entries = [TextEntry(file_id="f", key_path=f"k{i}",
+                         original=f"text{i}") for i in range(4)]
+    restarts = []
+
+    def on_restart():
+        restarts.append(1)
+
+    client = FailingOnceClient({t.original: "译文" for t in entries},
+                               fail_batches=2)
+    bt = BatchTranslator(client, memory=store, model="m",
+                         lang="en→zh-CN", batch_size=1, concurrency=1,
+                         service_restart=on_restart)
+    bt.run(entries)
+    assert restarts, "服务死亡应触发重启回调"
+    assert len(restarts) == 1, "连续失败只重启一次"
+    assert sum(1 for e in entries if e.status == STATUS_TRANSLATED) >= 2, \
+        "重启后剩余条目应翻译成功"

@@ -106,6 +106,14 @@ _CLONE_NUMBERED = re.compile(
 _MD_BOLD_LEAD = re.compile(r"^[ \t]*\*\*[^*]*$")
 # 点开头扩展名：.spriteatlas
 _DOT_EXTENSION = re.compile(r"^\.[A-Za-z0-9_]{2,12}$")
+# F53（adapt-prologue 实证 214 条）：.NET 程序集限定类型名
+# 'System.Boolean, mscorlib'（C# 反射 Type.GetType 按名加载的代码结构，
+# JSON 字段 returnType 等常见）——至少一边含点（'Hello, world' 无点
+# 不误杀），翻译断反射/反序列化
+_NET_ASSEMBLY_QUALIFIED_TYPE = re.compile(
+    r"^(?:[A-Za-z_][A-Za-z0-9_.]*\.[A-Za-z_][A-Za-z0-9_.]*,\s*"
+    r"[A-Za-z_][A-Za-z0-9_.]*|[A-Za-z_][A-Za-z0-9_.]*,\s*"
+    r"[A-Za-z_][A-Za-z0-9_.]*\.[A-Za-z_][A-Za-z0-9_.]*)$")
 # GUID 标识符：GUID:cef3ca5fc32178c449992c58120ccded
 _GUID_IDENTIFIER = re.compile(r"^GUID:[0-9a-fA-F]{32}$")
 # YarnSpinner 字符串表键（line: 前缀 + FNV 哈希）：对话文本以键引用、
@@ -590,6 +598,11 @@ def is_key_style_identifier(text: str) -> bool:
     s = text.strip()
     if _LOCALE_CODE.match(s):
         return True                       # en/ru/zh… 语言代码
+    # F41（bottle-cracks 实证）：省略号结尾 = 进行中状态/输入占位文本
+    # （'Leaving...'/'Connecting...'/'Username...'）——'...' 不是标识符
+    # 点号，是省略号形态（_IDENTIFIER 把点当标识符字符导致误匹配）
+    if s.endswith("..."):
+        return False
     if not _IDENTIFIER.match(s):
         return False
     if _WORD_CASE.match(s):
@@ -817,6 +830,14 @@ def is_hard_structural(text: str) -> bool:
     s = text.strip()
     if not s or len(s) < 2:
         return True
+    # F41（bottle-cracks 实证）：显示词白名单豁免——'v-sync'/'fullscreen'
+    # 等设置项文本命中 URL/版本号等结构形态（v-sync 是 UI 设置标签，
+    # 该翻「垂直同步」），白名单是显式显示词证据，优先于结构形态猜测
+    # （与 a-catfiends 白名单优先于资源猜测的证据分层同语义）
+    if s.casefold() in DISPLAY_WORDS:
+        return False
+    if _NET_ASSEMBLY_QUALIFIED_TYPE.match(s):
+        return True                  # F53：.NET 程序集限定类型名（反射键）
     if s.isdigit():
         return True
     if s.startswith(("{", "[")):
@@ -926,7 +947,13 @@ def is_hard_structural(text: str) -> bool:
     if _SHELL_COMMAND.match(s):
         return True                  # Shell 命令（find/tar/rm…不是游戏文本）
     if _KEYBOARD_NOISE.match(s):
-        return True                  # 键盘噪音测试文本（asdasdasd / fdji ijsdijn…）
+        # F41（bottle-cracks 实证）：含白名单词的短语（'show fps'——
+        # show 是显示词）是设置项文本，不是键盘噪声（asdasdasd /
+        # fdji ijsdijn 无白名单词）
+        if any(w.casefold() in DISPLAY_WORDS for w in s.split()):
+            pass
+        else:
+            return True
     # 引擎富文本控制码串（faerie-afterlight 实证：'.^.b'×178、'^tr'、
     # '^denvis'——'^' 前缀字母段是引擎样式/命令标记（GameMaker/类
     # RichText 控制码），剥除后无可译英文词 → 结构跳过。要求剥除后

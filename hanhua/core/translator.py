@@ -97,6 +97,16 @@ def normalize_base_url(base_url: str, provider: str) -> str:
     return url + ("/chat/completions" if url.endswith("/v1") else "/v1/chat/completions")
 
 
+class ServiceUnavailableError(RuntimeError):
+    """翻译服务不可达（连接失败/连接超时/读取超时）——服务已死或未启动。
+
+    F42（8morelives 实证 2026-08-16）：本地 llama-server 长任务中偶发被
+    静默终止，客户端默认 120s 超时 × 3 重试 = 每批死等数分钟（774 条后
+    龟速爬行永不完成）。连接类错误快速失败（不重试），由批量层触发
+    服务重启回调后继续。
+    """
+
+
 class BaseClient:
     def __init__(self, config: ApiConfig, transport_factory: Callable | None = None):
         self.config = config
@@ -120,6 +130,16 @@ class BaseClient:
                 return resp, self._parse_usage(resp.json())
             except _FatalStatusError:
                 raise
+            except (httpx.ConnectError, httpx.ConnectTimeout) as e:
+                # F42：服务不可达（进程死亡/未启动）→ 快速失败，
+                # 重试无意义（服务不会自己回来），交批量层重启
+                raise ServiceUnavailableError(
+                    f"翻译服务不可达：{type(e).__name__}") from e
+            except httpx.ReadTimeout as e:
+                # 服务进程活着但无响应（可能崩溃中/卡死）→ 同样快速
+                # 失败触发重启（等待只会让每批耗时 120s×3）
+                raise ServiceUnavailableError(
+                    f"翻译服务无响应：{type(e).__name__}") from e
             except Exception as e:  # noqa: BLE001 瞬时错误（含 _RetryableStatusError）
                 last_err = e
                 if attempt < MAX_RETRIES - 1:

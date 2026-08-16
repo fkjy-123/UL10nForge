@@ -69,6 +69,20 @@ _CENSUS_SKIP_SUFFIXES = frozenset({
     # 启动脚本（.bat 引用 exe 路径/窗口参数，electric-trains/outrun-clone
     # 实证假盲区——非游戏显示文本）
     ".bat", ".cmd",
+    # 游戏自定义配置扩展名（drova 实证 3 条假盲区）：.j2d 是引擎配置
+    # （targetFrameRate/vSyncCount 音量项 + 按键绑定 Attack{Mouse.0}
+    # ——运行时按键绑定键值，翻译破坏输入）
+    ".j2d",
+    # 互联网快捷方式（forgeverse 实证假盲区：'Check For Updates.url'
+    # 指向 itch.io 商店页，URL 快捷方式非游戏文本）
+    ".url",
+    # NodeCanvas/NodeEditorFramework 对话/地图/任务图数据（shellcore
+    # 实证 377+29 条假盲区）：.dialoguedata/.sectordata/.taskdata/
+    # .worlddata 是 XML 节点图结构（节点名/变量名 = 代码键
+    # LoadSectorNode/sectorName/DialogueNode，无玩家可见文本；对话
+    # 文本运行时变量引用）。观察项：其他游戏若 .dialoguedata 含
+    # Text= 属性（Statement 节点内嵌文本）需提取管线按 XML 解析
+    ".dialoguedata", ".sectordata", ".taskdata", ".worlddata",
 })
 # 普查跳过的文件/目录名（与 scanner.SKIP_FILES 同模式，普查专用）：
 # Addressables 内容目录（catalog.bin=运行时键库按名引用、catalog.hash=
@@ -79,8 +93,23 @@ _CENSUS_SKIP_SUFFIXES = frozenset({
 _CENSUS_SKIP_FILES = frozenset({
     "catalog.bin", "catalog.hash",
     "playerconnectionconfigfile",
+    # Unity 自动生成的游戏名/公司名文件（DefaultCompany␤游戏名），非显示
+    # 文本——78-hour-rain 实证假盲区（缺口报告唯一未解释项）
+    "app.info",
+    # DOTS EntityScenes 配置二进制（GUID 表 + 场景路径列表）——8morelives
+    # 实证假盲区（GUID 字节被文本启发式误判为 '("BN' 缺口）
+    "scene_info.bin",
 })
-_CENSUS_SKIP_DIRS = frozenset({"tooling"})
+_CENSUS_SKIP_DIRS = frozenset({
+    "tooling",
+    # macOS 打包残留（zip 从 Mac 解压产生，bubble-jcat 实证 89 条
+    # 假盲区）：AppleDouble 元数据目录
+    "__macosx",
+    # Unity 自适应光照探针流式数据（FNAF4-VR 实证 4 条假盲区）：
+    # APVStreamingAssets 是烘焙光照探针二进制（浮点/压缩数据），
+    # 字节被文本启发式误判为文本 run
+    "apvstreamingassets",
+})
 
 _MIN_RUN_CHARS = 4        # run 最少字符数（低于此是随机噪声/单字节）
 _MAX_RUNS_PER_FILE = 2000  # 每文件 run 上限（截断计数留档）
@@ -309,6 +338,10 @@ def _should_skip_file(p: Path) -> str | None:
     # 会读到 .meta~HEAD 整段）
     if ".meta~" in name_low:
         return "suffix:.meta"
+    # F43（bubble-jcat 实证）：macOS 打包残留——.DS_Store（文件索引）
+    # 与 ._ 前缀 AppleDouble 元数据（文件名+注释），非游戏文本
+    if name_low in (".ds_store",) or name_low.startswith("._"):
+        return "file:macos_residue"
     if name_low in _CENSUS_SKIP_FILES:
         return f"file:{name_low}"
     try:

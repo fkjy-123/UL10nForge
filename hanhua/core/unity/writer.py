@@ -161,6 +161,10 @@ class WriteResult:
     logic_audit: list[dict] = field(default_factory=list)      # 写回前敏感形态审计
     raw_expansions: list[dict] = field(default_factory=list)   # rawstr 扩容记录（译文>原文）
     logic_mismatches: list[str] = field(default_factory=list)  # 重开逻辑验证失败（字符串边界）
+    # 工具移植任务 2（patchcrc 等价）：UnityFS header 校验字段状态
+    # （写回后内容已变、旧 hash/crc 失效——Unity 默认不校验，严格路径
+    # 可用 bundle_crc.patch_checksums 按需修复）
+    unityfs_checksum: dict | None = None
     logic_reverted: int = 0        # 反向语义审计自动回退条目数（译文→原文，防逻辑键断链）
     logic_reverted_items: list[str] = field(default_factory=list)  # 回退摘要（最多 30 条）
     # C10：完整回退 locator 集合（file_id:key_path，全量不截断）——发布
@@ -1432,6 +1436,26 @@ def _patch_asset(path: Path, entries: list[dict], result: WriteResult,
                 saved.write_bytes(container.save(packer="original"))
             else:
                 saved.write_bytes(container.save())
+            # 工具移植任务 2（UABEA patchcrc 等价）：UnityFS header 校验
+            # 字段（hash/crc）检测——UnityPy 写回保留旧值，内容已变；
+            # Unity 加载默认不校验，但严格路径（显式 crc 校验/第三方
+            # 工具）会失败。检测并记录（修复接口 patch_checksums 可
+            # 按需调用；自动修复需完整解压 uncompressed，成本高且
+            # 无实测需求——见 bundle_crc.py 说明）
+            try:
+                _raw = saved.read_bytes()
+                from hanhua.core.unity.bundle_crc import (
+                    checksum_header_offset, read_checksums,
+                    verify_checksums)
+                if checksum_header_offset(_raw) is not None:
+                    _h, _c = read_checksums(_raw)
+                    result.unityfs_checksum = {
+                        "hash": _h.hex() if _h else None,
+                        "crc": _c,
+                        "needs_refresh": True,  # 内容已变，旧校验值失效
+                    }
+            except OSError:
+                pass
             try:
                 _verify_saved_bundle(
                     saved, expected_raw_by_path_id, baseline_hashes,

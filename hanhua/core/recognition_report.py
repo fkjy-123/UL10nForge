@@ -99,6 +99,12 @@ def _string_disposition(text: str) -> str:
     from hanhua.core.unity.extractor import _is_script_code_line
     if not any(ch.isalpha() for ch in text):
         return "explained:no_letters"
+    # F48（holo-dungeon 实证）：混淆/加密数据——≥60 字符、无空格、
+    # 纯字母（或字母+数字）随机串（'jefimiz.gh' 的 148 字符纯字母
+    # 混淆流）——非自然语言形态（自然语言必有空格/标点/重复结构）
+    if (len(text) >= 60 and " " not in text
+            and all(ch.isalpha() or ch.isdigit() for ch in text)):
+        return "explained:obfuscated_data"
     if is_pure_tags(text):
         return "explained:tmp_pure_tags"
     if should_skip(text):
@@ -196,6 +202,31 @@ def build_report(game_dir: str | Path, *,
     # ── 提取池 ──
     entries: list[TextEntry] = []
     morph_counts: dict[str, tuple[int, int]] = {}
+    # F51b（shellcore 实证）：识别报告必须包含松散文本文件扫描
+    # （scanner.discover）——否则 .corescript 对话/.txt/.json 等文本
+    # 载体不进提取池，缺口报告把真盲区当"census 假盲区"跳过（原
+    # build_report 只扫 Unity 资源 + DLL + census，文本文件缺失）。
+    try:
+        from hanhua.core.scanner import discover
+        text_files = discover(root)
+    except Exception:  # noqa: BLE001
+        text_files = []
+    from hanhua.core.extractor import parse_file as parse_text_file
+    for i, f in enumerate(text_files):
+        if progress_cb:
+            progress_cb("text", i + 1, len(text_files))
+        rel = str(f.relative_to(root)).replace("\\", "/")
+        try:
+            pf = parse_text_file(f)
+        except Exception:  # noqa: BLE001 单文件失败不阻断报告
+            continue
+        for e in pf.entries:
+            entries.append(e)
+            morph_counts.setdefault("text_file", (0, 0))
+            morph_counts["text_file"] = (
+                morph_counts["text_file"][0] + 1,
+                morph_counts["text_file"][1]
+                + (1 if e.status == STATUS_SKIPPED else 0))
     try:
         asset_files = asset_ex.find_asset_files(root)
     except Exception:  # noqa: BLE001

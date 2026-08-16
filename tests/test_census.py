@@ -113,6 +113,12 @@ class TestSkipLogic:
             p = tmp_path / name
             p.write_bytes(b"text content here")
             assert _should_skip_file(p) == f"file:{name}", name
+        # F34/F35：app.info（公司/游戏名文件）与 scene_info.bin（DOTS
+        # EntityScenes 配置二进制）假盲区实证
+        for name in ("app.info", "scene_info.bin"):
+            p = tmp_path / name
+            p.write_bytes(b"text content here")
+            assert _should_skip_file(p) == f"file:{name}", name
 
     def test_rsp_skipped(self, tmp_path):
         p = tmp_path / "x.rsp"
@@ -162,3 +168,48 @@ class TestSweepGame:
         (tmp_path / "data.bin").write_bytes(content)
         result = sweep_game(tmp_path)
         assert [h.text for h in result.hits] == ["任务提示说明文字"]
+
+
+def test_macos_residue_files_skipped_f43():
+    """F43（bubble-jcat 实证 89 条假盲区）：macOS 打包残留——.DS_Store
+    文件索引与 ._ 前缀 AppleDouble 元数据，非游戏文本。"""
+    import tempfile
+    from pathlib import Path
+    with tempfile.TemporaryDirectory() as td:
+        root = Path(td)
+        ds = root / ".DS_Store"
+        ds.write_bytes(b"Bud1\x00\x00\x00\x10text inside ds store")
+        appledouble = root / "._level0"
+        appledouble.write_bytes(b"\x00\x05\x16\x07AppleDouble comment")
+        (root / "__MACOSX").mkdir()
+        nested = root / "__MACOSX" / "._level1"
+        nested.write_bytes(b"\x00\x05\x16\x07nested appledouble")
+        assert _should_skip_file(ds) == "file:macos_residue"
+        assert _should_skip_file(appledouble) == "file:macos_residue"
+        from hanhua.core.census import sweep_game
+        res = sweep_game(root)
+        assert not res.hits, f"macOS 残留不应有命中：{res.hits[:3]}"
+
+
+def test_f34_f35_f45_f46_f47_f50_suffixes_skipped():
+    """F34-F50 系列：census 假盲区扩展名/文件统一回归（app.info/
+    scene_info.bin/j2d/url/NodeCanvas 图数据）。"""
+    import tempfile
+    from pathlib import Path
+    from hanhua.core.census import _should_skip_file
+    cases = {
+        "app.info": "file:app.info",
+        "scene_info.bin": "file:scene_info.bin",
+        "config.j2d": "suffix:.j2d",
+        "updates.url": "suffix:.url",
+        "dialogue.dialoguedata": "suffix:.dialoguedata",
+        "map.sectordata": "suffix:.sectordata",
+        "quest.taskdata": "suffix:.taskdata",
+        "world.worlddata": "suffix:.worlddata",
+    }
+    with tempfile.TemporaryDirectory() as td:
+        for name, expected in cases.items():
+            p = Path(td) / name
+            p.write_bytes(b"text content here")
+            got = _should_skip_file(p)
+            assert got == expected, f"{name}: {got} != {expected}"

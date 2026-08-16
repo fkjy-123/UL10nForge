@@ -104,6 +104,39 @@ def _language_profile(rows, sample_limit: int = 30000) -> list[tuple[str, int]]:
     return out
 
 
+def _detect_builtin_chinese_pack(game_dir: Path) -> bool:
+    """F52（8morelives 实证 2026-08-16）：游戏自带中文语言包检测。
+
+    8morelives 是 10 语言游戏（TextAsset 每语言一个对象，obj=2145 为
+    307/317 条纯中文包）——玩家选中文即完整汉化，翻译写回反而破坏
+    语言选项（俄语包值被翻成中文）。判定：任一 TextAsset 对象 ≥50 条
+    且 ≥70% 含 CJK 字符 → 自带中文。electric-trains 同规则（用户指令
+    手动跳过）此前靠人工，现自动化。
+    """
+    from hanhua.core.unity import extractor as asset_ex
+    try:
+        cjk = _CJK_IDEOGRAPH
+        for f in asset_ex.find_asset_files(game_dir):
+            try:
+                pf = asset_ex.extract_asset_file(f)
+            except Exception:  # noqa: BLE001 单文件失败不阻断
+                continue
+            objs: dict = {}
+            for e in pf.entries:
+                obj = (e.meta or {}).get("obj")
+                if obj is not None:
+                    objs.setdefault(obj, []).append(e.original)
+            for vals in objs.values():
+                if len(vals) < 50:
+                    continue
+                zh = sum(1 for v in vals if cjk.search(v))
+                if zh / len(vals) >= 0.7:
+                    return True
+    except Exception:  # noqa: BLE001 检测失败不阻断
+        return False
+    return False
+
+
 def _safe_name(name: str) -> str:
     for ch in '\\/:*?"<>|':
         name = name.replace(ch, "_")
@@ -787,6 +820,32 @@ def run_game(game_dir: Path, *, batch: int | None = None,
         print("  语言分布：" + "，".join(
             f"{name} {n}" for name, n in lang_profile))
 
+    # F52（8morelives 实证）：游戏自带中文语言包 → 跳过汉化
+    # （玩家选中文即完整汉化；翻译写回反而破坏语言选项——
+    # 俄语/德语等语言包值被翻成中文写回）。electric-trains 同规则
+    # 此前手动跳过，现自动化拦截。
+    # 工具移植任务 1（2026-08-16）：游戏级 UnityCN 解密 key 探测——
+    # 一次设置全局 key，后续所有加密 bundle 由 UnityPy 解析时自动
+    # 解密（key 常驻 global-metadata.dat/游戏二进制，单文件探测
+    # 可能 miss）
+    try:
+        from hanhua.core.unity.unitycn_decrypt import find_and_set_game_key
+        if find_and_set_game_key(game_dir):
+            print("  [unitycn] 检测到加密 bundle，解密 key 已设置",
+                  flush=True)
+    except Exception:  # noqa: BLE001 探测失败不阻断
+        pass
+    if _detect_builtin_chinese_pack(game_dir):
+        print("[跳过] 游戏自带中文语言包（TextAsset 对象 ≥70% 中文）"
+              "——玩家选中文即完整汉化，无需翻译", flush=True)
+        try:
+            _write_summary(project, report, None, None, game_name, out_dir,
+                           error="游戏自带中文语言包，跳过汉化",
+                           language_profile=lang_profile)
+        except Exception:  # noqa: BLE001 摘要写入失败不阻断
+            pass
+        return 0
+
     # ── 2 翻译（真实本地模型） ──
     stats = None
     review_results: dict[str, ReviewResult] = {}
@@ -800,6 +859,19 @@ def run_game(game_dir: Path, *, batch: int | None = None,
     if do_translate and not resume:
         print("[2/4] 翻译（真实本地模型）…")
         manager = LocalModelManager(PROJECT_ROOT, startup_timeout=180)
+        # 2026-08-16 用户指令：智能上下文——local_context_auto 时按原文
+        # 统计（最长/平均原文 → 预估译文 token）计算安全合理 ctx，不再
+        # 用固定值（drova 6144 固定导致大批次降级逐条/显存冗余）。
+        # 必须在 ensure_running 之前（ctx 决定 llama 启动的 KV 分配）。
+        if getattr(api, "local_context_auto", False):
+            from hanhua.core.context_size import smart_context_size
+            _bs = batch if batch is not None else max(1, int(api.local_batch_size))
+            _origins = [str(r.get("original") or "") for r in project.store.get_entries()]
+            _ctx = smart_context_size(_origins, batch_size=_bs,
+                                      max_tokens=int(api.max_tokens))
+            api = replace(api, local_context_size=_ctx)
+            print(f"  [智能上下文] 按文本统计计算 ctx={_ctx}"
+                  f"（条目 {len(_origins)} 条 · 批量 {_bs}）", flush=True)
         try:
             runtime = manager.ensure_running(api)
             api = replace(api, base_url=runtime.endpoint,
@@ -860,10 +932,32 @@ def run_game(game_dir: Path, *, batch: int | None = None,
         lang = f"{profile.source_lang or 'auto'}→{profile.target_lang or 'zh-CN'}"
         batch_size = batch if batch is not None else max(1, int(api.local_batch_size))
         concurrency = runtime.parallel if api.mode == "local" else api.concurrency
+
+        def _restart_translate_service() -> None:
+            """F42（8morelives 实证）：翻译服务死亡后重新拉起。
+
+            llama-server 长任务中偶发被静默终止，批量层连续失败 ≥2 批
+            时调用本回调——ensure_running 重新探测/启动服务，更新
+            client 与 runtime（后续批在新服务上继续，不丢进度）。
+            """
+            nonlocal runtime, client, api
+            try:
+                new_rt = manager.ensure_running(api)
+                api = replace(api, base_url=new_rt.endpoint,
+                              api_key=new_rt.api_key, model=new_rt.model)
+                runtime = new_rt
+                client = create_client(api)
+                translator.client = client  # noqa: F821 构造前赋值（下两行）
+                print(f"  [F42] 翻译服务已重启（{new_rt.endpoint}）",
+                      flush=True)
+            except Exception as exc:  # noqa: BLE001 重启失败不阻断
+                print(f"  [F42] 翻译服务重启失败：{exc}", flush=True)
+
         translator = BatchTranslator(
             client, batch_size=batch_size, concurrency=concurrency,
             memory=project.store, model=api.model, lang=lang,
             system_prompt=system,
+            service_restart=_restart_translate_service,
             glossary=[(row["term"], row["translation"])
                       # 与 format_for_prompt 对齐：只取 active 词对做
                       # 强制约束——candidate（审核沉淀未跨游戏复现）仅
@@ -1322,3 +1416,4 @@ def main() -> int:
 
 if __name__ == "__main__":
     sys.exit(main())
+

@@ -64,11 +64,11 @@ def _heap_of(texts):
 
 
 def _extract(heap, bodies, member_refs, monkeypatch, tmp_path,
-             method_defs=None):
+             method_defs=None, dll_name: str = "Assembly-CSharp.dll"):
     import dnfile
     fake_pe = _build_fake_pe(heap, bodies, member_refs, method_defs)
     monkeypatch.setattr(dnfile, "dnPE", lambda _path: fake_pe)
-    parsed = extract_dll_user_strings(tmp_path / "Custom.Game.dll")
+    parsed = extract_dll_user_strings(tmp_path / dll_name)
     return {e.original: e for e in parsed.entries
             if not e.key_path.startswith("skip/")}
 
@@ -135,14 +135,15 @@ class TestConcatProof:
         assert by_original["Score: "].meta["reason"] == "unverified_user_string"
 
     def test_params_overload_conservative(self, tmp_path, monkeypatch):
-        # string.Join 类 params 重载（arity=None）：调用点清栈，不误放行
+        # string.Join 类 params 重载（arity=None）：调用点清栈，证明链不
+        # 放行（F33 后状态由句子形态启发式决定，reason 不得是 mono_ui_setter）
         heap, tokens = _heap_of(["Alpha part", "Bravo part"])
         code = (_ldstr(tokens[0]) + _ldstr(tokens[1])
                 + _call(_CONCAT_PARAMS) + _callvirt(_SETTER) + b"\x2a")
         bodies = {0x2000: bytes(((len(code) << 2) | 2,)) + code}
         by_original = _extract(heap, bodies, _members(), monkeypatch, tmp_path)
-        assert by_original["Alpha part"].status == "skipped"
-        assert by_original["Bravo part"].status == "skipped"
+        assert by_original["Alpha part"].meta["reason"] != "mono_ui_setter"
+        assert by_original["Bravo part"].meta["reason"] != "mono_ui_setter"
 
     def test_concat_through_wrapper_chain(self, tmp_path, monkeypatch):
         # wrapper(string s) { text.text = "Prefix " + s; }
@@ -304,3 +305,96 @@ class TestStructuralProof:
                                monkeypatch, tmp_path)
         assert by_original["Start"].status == "skipped"
         assert by_original["Start"].meta["reason"] == "mono_structural_sink"
+
+
+class TestSentenceDisplay:
+    """F33（78-hour-rain 实证）：未证明串的句子形态显示文本放行。
+
+    未流入 UI setter 的小写/混合大小写句子型 #US 串（叙事/教程/状态/
+    标签）此前整类跳过（unverified_user_string 哑信号）；调试打印串
+    （驼峰冒号标签/拼接尾部/调试动词句）仍保守跳过。
+    """
+
+    def _plain_members(self):
+        # 无任何 UI setter（证明链空）——全部串都走未证明路径
+        return [
+            _text_ref("Concat", signature=b"\x00\x02\x0e\x0e\x0e"),
+        ]
+
+    def _extract_unproven(self, texts, tmp_path, monkeypatch):
+        heap, tokens = _heap_of(texts)
+        code = b"\x2a"  # ret —— 无任何消费路径
+        bodies = {0x2000: bytes(((len(code) << 2) | 2,)) + code}
+        return _extract(heap, bodies, self._plain_members(),
+                        monkeypatch, tmp_path)
+
+    def test_narrative_sentence_released(self, tmp_path, monkeypatch):
+        # 'Darkness has a voice'（78-hour-rain 实证 9 条叙事文本之一）
+        by_original = self._extract_unproven(
+            ["Darkness has a voice", "If it spoke, would you listen?"],
+            tmp_path, monkeypatch)
+        assert by_original["Darkness has a voice"].status == "pending"
+        assert by_original["Darkness has a voice"].meta["reason"] == \
+            "user_string_sentence"
+        assert by_original["Darkness has a voice"].meta["confidence"] == \
+            "medium"
+        assert by_original["If it spoke, would you listen?"].status == \
+            "pending"
+
+    def test_tutorial_and_label_released(self, tmp_path, monkeypatch):
+        by_original = self._extract_unproven(
+            ["Left-click to throw held traps",
+             "Volume: ",
+             "Night Calling Active",
+             "final dawn"],
+            tmp_path, monkeypatch)
+        for text in ("Left-click to throw held traps", "Volume: ",
+                     "Night Calling Active", "final dawn"):
+            assert by_original[text].status == "pending", text
+
+    def test_exclamation_ui_word_released(self, tmp_path, monkeypatch):
+        by_original = self._extract_unproven(
+            ["Trapped!", "Untrapped!", "What?"],
+            tmp_path, monkeypatch)
+        assert by_original["Trapped!"].status == "pending"
+        assert by_original["Trapped!"].meta["reason"] == "user_string_sentence"
+        assert by_original["Untrapped!"].status == "pending"
+        assert by_original["What?"].status == "pending"
+
+    def test_debug_print_strings_stay_skipped(self, tmp_path, monkeypatch):
+        # 78-hour-rain 实证的调试打印串：驼峰冒号/拼接尾部/调试动词句
+        by_original = self._extract_unproven(
+            ["doorbreakHealth: ",
+             "Monster spawned at (",
+             "setting teeth angle to ",
+             "failed spawning monster, max reached!",
+             " loot spots available",
+             "updating sens...",
+             "playing thunder in ",
+             "Lightning has struck ",
+             "Not a valid playerPrefs key!",
+             "*****changing menu to None"],
+            tmp_path, monkeypatch)
+        for text in ("doorbreakHealth: ",
+                     "Monster spawned at (",
+                     "setting teeth angle to ",
+                     "failed spawning monster, max reached!",
+                     " loot spots available",
+                     "updating sens...",
+                     "playing thunder in ",
+                     "Lightning has struck ",
+                     "Not a valid playerPrefs key!",
+                     "*****changing menu to None"):
+            assert by_original[text].status == "skipped", text
+            assert by_original[text].meta["reason"] == "unverified_user_string"
+
+    def test_short_and_identifier_stay_skipped(self, tmp_path, monkeypatch):
+        # 'smooth: '（8 字符全小写词+冒号）是已知噪声：与 UI 标签
+        # 'Volume: ' 形态不可分，宁多勿漏放行（观察项）
+        by_original = self._extract_unproven(
+            ["RC", "day: ", "smooth: ", "fadingIn: "],
+            tmp_path, monkeypatch)
+        assert by_original["RC"].status == "skipped"
+        assert by_original["day: "].status == "skipped"
+        assert by_original["fadingIn: "].status == "skipped"
+        assert by_original["smooth: "].status == "pending"

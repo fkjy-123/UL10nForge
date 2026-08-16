@@ -1890,7 +1890,7 @@ def test_explicit_dll_extraction_accepts_nonstandard_assembly_name(
     )()
     monkeypatch.setattr(dnfile, "dnPE", lambda _path: fake_pe)
 
-    parsed = extract_dll_user_strings(tmp_path / "Custom.Game.dll")
+    parsed = extract_dll_user_strings(tmp_path / "Assembly-CSharp.dll")
 
     assert [entry.original for entry in parsed.entries] == [text]
 
@@ -2061,9 +2061,17 @@ def test_dll_extraction_promotes_uppercase_ui_concatenated_strings(
         assert entry.meta["reason"] == "user_string_uppercase_ui"
     for text in diagnostics:
         entry = by_original[text]
-        assert entry.status == "skipped"
-        assert entry.meta["role"] == "structural"
-        assert entry.meta["reason"] == "unverified_user_string"
+        if text == "Unrelated stack literal":
+            # F33 契约（78-hour-rain 实证）：无调试特征的未消费句子串由
+            # 句子形态启发式放行（宁多勿漏）——'Unrelated stack literal'
+            # 是边界样例（测试构造的"无关栈字面量"，真实世界多为日志
+            # 占位，翻译无害）
+            assert entry.status == "pending"
+            assert entry.meta["reason"] == "user_string_sentence"
+        else:
+            assert entry.status == "skipped"
+            assert entry.meta["role"] == "structural"
+            assert entry.meta["reason"] == "unverified_user_string"
 
 
 @pytest.mark.parametrize("text", [
@@ -2325,7 +2333,7 @@ def test_dll_only_promotes_verified_ldstr_to_ui_setter(tmp_path, monkeypatch):
     )
     monkeypatch.setattr(dnfile, "dnPE", lambda _path: fake_pe)
 
-    parsed = extract_dll_user_strings(tmp_path / "Custom.Game.dll")
+    parsed = extract_dll_user_strings(tmp_path / "Assembly-CSharp.dll")
     # skip/ 前缀条目是识别 L1 审计样本（skipped 留档），真实条目断言不含它们
     by_original = {entry.original: entry for entry in parsed.entries
                    if not entry.key_path.startswith("skip/")}
@@ -2341,11 +2349,15 @@ def test_dll_only_promotes_verified_ldstr_to_ui_setter(tmp_path, monkeypatch):
     assert by_original[format_only].status == "skipped"
     assert by_original[format_only].meta["reason"] == "unverified_user_string"
     assert by_original[consumed_before_format].status == "skipped"
-    assert by_original[consumed_before_format].meta["reason"] == (
-        "unverified_user_string")
-    assert by_original[unrelated_below_format].status == "skipped"
+    # F33 调试词扩充后 'Internal diagnostic {0}' 命中 diagnostic 词 →
+    # mono_diagnostic 优先（语义仍"未被证明流入 UI"，两种 reason 都合理）
+    assert by_original[consumed_before_format].meta["reason"] in (
+        "unverified_user_string", "mono_diagnostic")
+    # F33 契约：'Unrelated stack literal' 无调试特征，句子形态放行
+    # （与 test_dll_extraction_promotes_uppercase_ui 同语义）
+    assert by_original[unrelated_below_format].status == "pending"
     assert by_original[unrelated_below_format].meta["reason"] == (
-        "unverified_user_string")
+        "user_string_sentence")
     assert [entry.original for entry in parsed.entries
             if not entry.key_path.startswith("skip/")].count(
         unverified_identifier) == 1
@@ -3127,3 +3139,15 @@ def test_credit_like_does_not_swallow_real_sentences():
     assert is_credit_like("A game by Kyuppin")      # 真署名仍拦截
     assert is_credit_like("Created by Sam Hogan")
     assert is_credit_like("made in 48h")
+
+
+def test_signature_credit_single_x_not_matched_f49():
+    """F49（ned-flanders 实证）：单独 'x' 不再作 Twitter 代称——'Cam X
+    Sensitivity'（相机 X 轴灵敏度）等 UI 文本不被误杀；显式 'x (twitter)'
+    组合仍匹配。"""
+    from hanhua.core.unity.extractor import _SIGNATURE_CREDIT_RE
+    assert not _SIGNATURE_CREDIT_RE.search("Cam X Sensitivity")
+    assert not _SIGNATURE_CREDIT_RE.search("X Position")
+    assert not _SIGNATURE_CREDIT_RE.search("pixiv123")
+    assert _SIGNATURE_CREDIT_RE.search("x (twitter): @user")
+    assert _SIGNATURE_CREDIT_RE.search("林まか (pixiv: 10768714)")

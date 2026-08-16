@@ -9,6 +9,11 @@ from hanhua.core.placeholders import (is_hard_structural, is_vn_command_line,
 # key=value / key:value（delim 记录原样分隔符）
 _KV = re.compile(r"^(?P<key>[^=:;\t\r\n]+?)\s*(?P<delim>[:=])\s*(?P<value>.*)$")
 _TAB = re.compile(r"^(?P<key>[^\t\r\n]+)\t(?P<value>.*)$")
+# NodeEditorFramework 对话脚本行（F51，shellcore 实证 900+ 条对话真
+# 盲区）：Text("key", "对话内容")——key 是对话定位键（保留原文），
+# 引号内 value 是玩家可见对话文本
+_CORESCRIPT_TEXT = re.compile(
+    r'^Text\("(?P<key>[^"]+)",\s*"(?P<value>.*)"\)\s*$')
 
 
 def extract_txt(path: str | Path, file_id: str | None = None) -> list[TextEntry]:
@@ -44,6 +49,27 @@ def extract_txt(path: str | Path, file_id: str | None = None) -> list[TextEntry]
             # CLI 参数（Burst 命令记录 --platform=Windows）、协议相对 URL（//host/path）等
             entries.append(TextEntry(file_id=fid, key_path=f"line/{i}", original=line,
                                      status=STATUS_SKIPPED, meta={**meta, "kind": "structural"}))
+        elif (p.suffix.lower() == ".corescript"
+              and _CORESCRIPT_TEXT.match(stripped)):
+            # F51（shellcore 实证）：Text("key", "对话内容") 对话脚本行
+            # ——key 是对话定位键（保留原文，写回按 key 行定位），引号
+            # 内 value 是玩家可见对话文本
+            m = _CORESCRIPT_TEXT.match(stripped)
+            value = m.group("value")
+            if should_skip(value):
+                entries.append(TextEntry(
+                    file_id=fid,
+                    key_path=f"corescript/{m.group('key')}/{i}",
+                    original=value, status=STATUS_SKIPPED,
+                    meta={**meta, "kind": "corescript_structural",
+                          "cs_key": m.group("key")}))
+            else:
+                entries.append(TextEntry(
+                    file_id=fid,
+                    key_path=f"corescript/{m.group('key')}/{i}",
+                    original=value,
+                    meta={**meta, "kind": "corescript",
+                          "cs_key": m.group("key")}))
         else:
             m = _TAB.match(line) or _KV.match(line)
             if m:

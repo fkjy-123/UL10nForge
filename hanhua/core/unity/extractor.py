@@ -129,10 +129,13 @@ _UNITYEVENT_SIGNALS = frozenset({
 # 署名/credit 形态：作者名 + 作品平台 ID/URL（pixiv/twitter/artstation 等
 # 平台名 + 数字 ID 或用户名，或括号包裹）。「林まか (pixiv: 10768714)」
 # （doog 实证）是作者署名+作品引用——翻译/半翻损坏引用信息，识别层跳过。
+# F49（ned-flanders 实证）：'x' 单独作 Twitter 代称匹配过宽——'Cam X
+# Sensitivity'（相机 X 轴灵敏度）等 UI 文本被误杀。仅显式 'x (twitter)'
+# 组合形态算署名，单独 'x' 不匹配（'x: @handle' 形态由 @ 后缀兜底）。
 _SIGNATURE_CREDIT_RE = _re.compile(
-    r"\(?\b(?:pixiv|twitter|x(?:\s*\(twitter\))?|facebook|instagram|"
+    r"\(?(?:\b(?:pixiv|twitter|facebook|instagram|"
     r"artstation|deviantart|newgrounds|sketchfab|youtube|furaffinity|"
-    r"booth|fantia)\b\s*[:：]?\s*@?[\w.-]{2,}",
+    r"booth|fantia)\b|x\s*\(twitter\))\s*[:：]?\s*@?[\w.-]{2,}",
     _re.I,
 )
 
@@ -748,7 +751,10 @@ def find_asset_files(
     # 老式布局证据：mainData 所在目录（根目录裸 levelN 需与之同目录才收）
     legacy_data_dirs = {p.parent for p in all_files
                         if not p.suffix and _LEGACY_SCENE.fullmatch(p.name)}
-    _UNITY_KINDS = frozenset({"unity", "serialized", "webfile"})
+    _UNITY_KINDS = frozenset({"unity", "serialized", "webfile",
+                              # 工具移植任务 1（2026-08-16）：UnityCN
+                              # 加密 bundle 纳入发现——提取时自动解密
+                              "unitycn_encrypted"})
     found: list[Path] = []
     for p in all_files:
         suffix = p.suffix.lower()
@@ -1300,11 +1306,70 @@ def _raw_string_entries(file_id: str, obj_path_id: int, raw: bytes,
     from hanhua.core.unity.class_registry import disposition
     class_disposition = disposition(script_class)
     is_config_class = class_disposition == "config"
+    # F39（attack-on-wendigo 实证）：命名列表对象信号——TitleCase 单词式
+    # 词 ≥3 且无代码/输入/Timeline/事件/配置/键列表信号 → 对象是武器/
+    # 物品/地点目录（商店/掉落/库存 UI 文本，'Pistol'/'Magnum'/'Rifle'
+    # 等整批被标识符规则跳过）。单词式写法（_WORD_CASE）是显示文本
+    # 形态（is_key_style_identifier 的 CREDITOS/Settings 同证据）；
+    # 粒子名（SnowParticle 驼峰）、类型引用对象（code_heavy）、
+    # InputAction/Timeline 对象（信号先拦）不受影响。
+    titlecase_words = [s.strip() for s in non_engine
+                       if _WORD_CASE.match(s.strip())]
+    # F39 占比约束（test_v2 InputAction 场景实证）：命名列表对象几乎
+    # 全是单词式词（武器列表 5/7）；InputAction 绑定对象（'Player'/
+    # 'Move'/'Dpad' + down/left/right 小写绑定名）TitleCase 占比低
+    # （3/6）——大小写混合是输入配置形态，不触发。含输入绑定词
+    # （WASD/move/fire/look 等）的对象是 InputAction 特征，不触发
+    # （test_raw_string_entries_word_identifiers 契约锚点）。
+    is_word_list_object = (
+        len(titlecase_words) >= 3
+        and len(titlecase_words) / max(1, len(non_engine)) >= 0.6
+        and not any(s.strip().casefold() in _INPUT_BINDING_NAMES
+                    for s in non_engine)
+        and not is_code_heavy and not is_input_system_object
+        and not is_timeline_object and not is_unityevent_object
+        and not is_small_config_object and not is_key_list
+        and not is_word_table and not is_tmp_asset_object
+        and not is_config_class)
+    # F38（adapt-prologue 实证）：对象最终会被释放（非代码/输入/
+    # Timeline/事件绑定/共享配置/键列表/词表/资产对象）时，其
+    # prefilter_high_frequency 样本是**游戏 UI 词**而非引擎高频——
+    # 生物卡片对象（'Clam 01' pending 同侪）里 'Health'/'Food'/
+    # 'Resource' 全被高频跳过（哑信号）。组件配置对象（code_heavy/
+    # InputSystem/Timeline/共享配置/键列表）保持跳过——'Play' 音效
+    # 事件名 294 对象实证：升级会断 FMOD/动画引用。注意 is_core_menu_
+    # control（UI 控件状态 Normal/Pressed ≥3）是 UI 对象信号，不排除。
+    obj_will_release = not (
+        is_code_heavy or is_input_system_object or is_timeline_object
+        or is_unityevent_object or is_small_config_object
+        or is_key_list or is_word_table or is_tmp_asset_object
+        or is_config_class or is_single_visible)
     for entry in entries:
         # R5：预过滤留档条目（prefilter_*）的 reason/role 已由
         # _prefilter_entry 定稿，不再走分类链（否则会被
         # duplicate_key_position 等后处理覆盖）。
         if entry.meta.get("prefilter"):
+            # F38：高频样本在对象释放时升级为显示文本（非升级的
+            # 引擎/键样本保持 skipped，审计语义不变）。UGUI 状态名
+            # （Normal/Highlighted/Pressed/Selected/Disabled）即使
+            # 在 UI 对象里也是控件状态串（翻「正常」写回状态错乱），
+            # 保持跳过（'Enabled'/'Disabled' 双义——天赋卡片「已启用/
+            # 已禁用」标签是真 UI，不排除）
+            if (entry.meta["prefilter"] == "high_frequency"
+                    and obj_will_release
+                    and entry.original.strip().casefold()
+                    not in _UNITY_CONTROL_STATE_NAMES):
+                entry.status = "pending"
+                entry.meta.update({
+                    "reason": "single_visible_string",
+                    "confidence": "medium",
+                    "role": "display",
+                    "disposition": "translate",
+                    "f38_released": True,
+                })
+                entry.meta.pop("prefilter", None)
+                entry.meta.pop("skipped_count", None)
+                continue
             continue
         reason = entry.meta.pop("structural_reason", None)
         stripped = entry.original.strip()
@@ -1420,14 +1485,25 @@ def _raw_string_entries(file_id: str, obj_path_id: int, raw: bytes,
                 entry.status = STATUS_SKIPPED
                 reason = "resource_identifier_without_display_evidence"
                 confidence, role = "low", "structural"
+        elif is_single_visible and _LIST_MARKER.match(stripped):
+            # 列表项标记（'- a'、'• x'）：符号+极短 token，无可译语义
+            # 内容——78-hour-rain 实证：'- a' 被模型回显恒败
+            # target_script_mismatch（2 条阻塞）。与资源标识符猜测不同，
+            # 这是确定性形态（符号+≤3 字符），不依赖对象语境。
+            entry.status = STATUS_SKIPPED
+            reason = "list_marker"
+            confidence, role = "low", "structural"
         elif is_single_visible:
             # 孤立纯小写长词（≥10 字符）：触发器/字段名形态（fieldtrigger
             # 12 字符实证——MonoBehaviour rawstr 数组里孤立的代码词被
             # 无条件放行后模型回显恒败）。对象内无其他显示证据可参照，
             # 长纯小写词无空格无分隔符是代码标识符形态；真实显示文本
             # 的孤立长词（staircase/hallway 等场景词）短于此阈值。
+            # F41（bottle-cracks 实证）：显示词白名单豁免——'fullscreen'
+            # 是设置项文本（该翻「全屏」），白名单优先于长词形态猜测。
             if (stripped.islower() and stripped.isalpha()
-                    and len(stripped) >= 10):
+                    and len(stripped) >= 10
+                    and stripped.casefold() not in DISPLAY_WORDS):
                 entry.status = STATUS_SKIPPED
                 reason = "isolated_lowercode_word"
                 confidence, role = "low", "structural"
@@ -1470,7 +1546,13 @@ def _raw_string_entries(file_id: str, obj_path_id: int, raw: bytes,
                 and counts.get(stripped, 1) >= 2)
             if (_has_sentence_shape(stripped)
                     or (has_ui_evidence and not in_control_state
-                        and stripped.casefold() in DISPLAY_WORDS
+                        and (stripped.casefold() in DISPLAY_WORDS
+                             # F44（dinofurie 实证）：按钮对象（控制状态
+                             # ≥3 = 真实 UI 控件）里的单词式词也是按钮
+                             # 文本——'Jugar'（西语"玩"）不在白名单
+                             # （白名单是英语词表），_WORD_CASE 单词式
+                             # 形态是显示文本证据
+                             or _WORD_CASE.match(stripped))
                         and not shared_with_name)):
                 reason = ("natural_language_in_code_object"
                           if _has_sentence_shape(stripped)
@@ -1495,7 +1577,14 @@ def _raw_string_entries(file_id: str, obj_path_id: int, raw: bytes,
             reason = "object_has_display_evidence"
             confidence, role = "medium", "display"
         elif _IDENTIFIER.match(stripped):
-            if (stripped.casefold() in DISPLAY_WORDS
+            if (is_word_list_object and _WORD_CASE.match(stripped)
+                    and stripped.casefold() not in _UNITY_CONTROL_STATE_NAMES):
+                # F39：命名列表对象中的单词式词 = 显示文本
+                # （武器/物品/地点目录）；UGUI 状态名（Normal 等）
+                # 即使占比达标也是控件状态串，保持跳过（F38 同语义）
+                reason = "word_list_object"
+                confidence, role = "medium", "display"
+            elif (stripped.casefold() in DISPLAY_WORDS
                     and stripped.casefold() not in control_states
                     and (direct_code_signal_count >= 1
                          or ui_control_signal
@@ -1704,6 +1793,9 @@ def _textasset_kv_entries(
 # 词库型 TextAsset 判定（0.26 地毯式实证：force-reboot 脏话检测黑名单）。
 # 单词行 = 无空格纯 ASCII 词（字母/数字/常见词内符号，≤40 字符）。
 _LEXICON_WORD_RE = _re.compile(r"^[A-Za-z0-9][A-Za-z0-9'_.-]{0,39}$")
+# 列表项标记（F37，78-hour-rain 实证）：符号+≤3 字符短 token
+# （'- a' 被模型回显恒败 target_script_mismatch）——确定性形态跳过
+_LIST_MARKER = _re.compile(r"^[-•*–—]\s+[A-Za-z0-9]{1,3}$")
 # 词表对象单词 token（happy-cat-tavern 实证 2026-08-12：打字游戏单词库
 # 条目形态——纯字母单词，无空格/符号/数字）。
 _WORD_TOKEN_RE = _re.compile(r"^[A-Za-z]+$")
@@ -2059,6 +2151,24 @@ def extract_asset_file(path: str | Path, file_id: str | None = None,
     from UnityPy import Environment
     p = Path(path)
     fid = file_id or str(p).replace("\\", "/")
+    # 工具移植任务 1（2026-08-16）：UnityCN 加密 bundle 自动解密——
+    # 文件内暴力探测 16 字符 key（UnityPy ArchiveStorageManager 全局
+    # key），命中后 env.load 时内部自动解密数据块；探测失败返回
+    # blocked 标记（保留原样，报告可见而非静默跳过）
+    from hanhua.core.unity.unitycn_decrypt import (
+        UNITY3D_SIGNATURE, brute_force_key, set_decrypt_key)
+    try:
+        _head = p.read_bytes()[:len(UNITY3D_SIGNATURE)]
+        if _head == UNITY3D_SIGNATURE:
+            _key = brute_force_key(p)
+            if _key is None:
+                return ParsedFile(
+                    fid, str(p), "unitycn", [], "utf-8", "\n",
+                    {"kind": "unitycn", "blocked": "decrypt_key_not_found"},
+                    True, {"unitycn_key_missing": 1})
+            set_decrypt_key(_key)
+    except OSError:
+        pass
     env = Environment()
     if typetree_generator is not None:
         env.typetree_generator = typetree_generator

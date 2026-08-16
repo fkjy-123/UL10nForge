@@ -40,6 +40,7 @@ from hanhua.core.quality import (_CJK, _EXPLANATORY_PATTERN,
                                  validate_translation_quality)
 from hanhua.core.translator import (BUILTIN_UI_REFERENCES,
                                     BUILTIN_UI_SOURCE_TERMS, BaseClient,
+                                    ServiceUnavailableError,
                                     extract_json_array,
                                     extract_json_array_fallback,
                                     merge_translation_references)
@@ -405,7 +406,13 @@ class BatchTranslator:
                  glossary=(), glossary_force=(), cancellation_event=None,
                  agent_memory=None, agent_game: str = "",
                  context_store=None, context_game: str = "",
-                 vector_recall=None, knowledge=None):
+                 vector_recall=None, knowledge=None,
+                 service_restart: Callable | None = None):
+        # F42（8morelives 实证）：服务死亡回调——本地 llama-server 长任务
+        # 中偶发被终止，连接类失败快速抛 ServiceUnavailableError，批量层
+        # 连续失败 ≥2 批时调回调（调用方重新 ensure_running 拉起服务），
+        # 后续批在新服务上继续（不丢失已翻译进度）
+        self.service_restart = service_restart
         self.client = client
         # 服务端实际可用上下文（2026-08-14 用户实证：--ctx-size 6144
         # 实际 2048——llama-server 在 KV 显存不足时启动自动降级
@@ -903,6 +910,7 @@ class BatchTranslator:
                 futures[pool.submit(self._translate_batch, batch, context_window, emit_stats)] = batch
                 if len(futures) >= self.concurrency:
                     break
+            service_down_batches = 0  # F42：连续服务不可达批数
             while futures:
                 done, _ = wait(futures, return_when=FIRST_COMPLETED)
                 if self._stop.is_set() or (cancelled is not None and cancelled.is_set()):
@@ -915,7 +923,20 @@ class BatchTranslator:
                         break
                     try:
                         per_batch = fut.result()
+                        service_down_batches = 0  # 成功批重置计数
                     except Exception as exc:  # noqa: BLE001 单批失败隔离
+                        if (self.service_restart is not None
+                                and isinstance(exc, ServiceUnavailableError)):
+                            # F42：服务死亡（连接/超时快速失败）→ 连续
+                            # ≥2 批不可达才重启（单批抖动不重启），回调
+                            # 由调用方重新拉起服务，后续批继续
+                            service_down_batches += 1
+                            if service_down_batches >= 2:
+                                try:
+                                    self.service_restart()
+                                except Exception:  # noqa: BLE001
+                                    pass
+                                service_down_batches = 0
                         for en in b:
                             for member in group_by_representative[id(en)]:
                                 self._mark_request_failed(member, exc)

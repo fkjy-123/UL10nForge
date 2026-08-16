@@ -1127,7 +1127,9 @@ class SettingsPage(QWidget):
         self.local_concurrency.setCurrentIndex(max(
             0, self.local_concurrency.findData(int(api.local_concurrency))))
         self.local_ctx.setCurrentIndex(max(
-            0, self.local_ctx.findData(int(api.local_context_size))))
+            0, (self.local_ctx.findData(0)
+                if getattr(api, "local_context_auto", False)
+                else self.local_ctx.findData(int(api.local_context_size)))))
         self.local_batch.setCurrentIndex(max(
             0, self.local_batch.findData(int(api.local_batch_size))))
         self._refresh_vram()
@@ -1180,7 +1182,11 @@ class SettingsPage(QWidget):
                            ("2 槽", 2), ("3 槽", 3), ("4 槽", 4)):
             self.local_concurrency.addItem(text, data)
         self.local_ctx = QComboBox()
-        for tokens in (2048, 4096, 6144, 8192):
+        # 2026-08-16 用户指令：智能计算选项（data=0 特殊标记）——按
+        # 游戏文本统计（原文字数→预估译文）自动计算安全合理 ctx，
+        # 切换批量条数不影响（按最长单条兜底）
+        self.local_ctx.addItem("智能计算（按文本自动）", 0)
+        for tokens in (2048, 4096, 6144, 8192, 12288, 16384):
             self.local_ctx.addItem(f"{tokens} tokens", tokens)
         self.local_batch = QComboBox()
         for count in (1, 2, 4, 8, 16, 32):
@@ -1301,7 +1307,10 @@ class SettingsPage(QWidget):
         api.api_key = self.api_key.text().strip()
         api.model = self.api_model.text().strip()
         api.local_concurrency = int(self.local_concurrency.currentData())
-        api.local_context_size = int(self.local_ctx.currentData())
+        _ctx_data = int(self.local_ctx.currentData())
+        api.local_context_auto = (_ctx_data == 0)
+        api.local_context_size = int(
+            api.local_context_size if _ctx_data == 0 else _ctx_data)
         api.local_batch_size = int(self.local_batch.currentData())
         return api
 

@@ -22,6 +22,12 @@ def _status_map() -> dict[str, str]:
     return {e.original: e.status for e in pf.entries}
 
 
+def _reason_map() -> dict[str, str]:
+    pf = extract_dll_user_strings(WRAPPER)
+    assert not pf.noise
+    return {e.original: (e.meta or {}).get("reason", "") for e in pf.entries}
+
+
 def test_direct_assignment_remains_verified():
     status = _status_map()
     assert status["Direct text assignment"] == "pending"
@@ -41,9 +47,14 @@ def test_two_level_wrapper_chain_verified():
 
 def test_log_and_concat_strings_stay_skipped():
     status = _status_map()
-    # Console.WriteLine / String.Concat 不流入 UI setter → 保守跳过
+    reasons = _reason_map()
+    # Console.WriteLine 消费 = log sink 负面证据（F33 配套）→ 确定性跳过；
+    # String.Concat 丢弃结果无负面证据 → F33 句子形态可能放行，
+    # 但证明链绝不误放（reason ≠ mono_ui_setter）
     assert status["log only string"] == "skipped"
-    assert status["composed text"] == "skipped"
+    assert status["composed text"] != "skipped" \
+        or reasons["composed text"] != "mono_ui_setter"
+    assert reasons["composed text"] != "mono_ui_setter"
 
 
 def test_unityscript_assembly_upgrades_unverified_text(tmp_path):
@@ -60,16 +71,19 @@ def test_unityscript_assembly_upgrades_unverified_text(tmp_path):
     assert not pf.noise
     by_text = {e.original: e for e in pf.entries}
     # 含空格 unverified 字符串升级为可翻译
-    assert by_text["log only string"].status == "pending"
-    assert by_text["log only string"].meta["confidence"] == "medium"
-    assert by_text["log only string"].meta["reason"] == "unityscript_user_string"
+    # log sink 负面证据（F33 配套）：Console.WriteLine 消费的字面量是
+    # 确定性日志串，UnityScript 升级启发式不覆盖（铁证优先于启发式）
+    assert by_text["log only string"].status == "skipped"
+    assert by_text["log only string"].meta["reason"] == "mono_diagnostic"
     assert by_text["composed text"].status == "pending"
     # ui setter 验证链在 UnityScript 程序集中不受影响
     assert by_text["Direct text assignment"].status == "pending"
     assert by_text["Direct text assignment"].meta["confidence"] == "high"
     # 升级后全部条目 pending（fixture 无标识符样本；标识符剔除在
-    # is_code_identifier 层保证，见下方判定性测试）
-    assert all(e.status == "pending" for e in pf.entries)
+    # is_code_identifier 层保证，见下方判定性测试）；唯一例外是
+    # log sink 负面证据拦下的 'log only string'
+    assert all(e.status == "pending" or e.original == "log only string"
+               for e in pf.entries)
 
 
 def test_unityscript_particle_text_is_not_a_structural_identifier():

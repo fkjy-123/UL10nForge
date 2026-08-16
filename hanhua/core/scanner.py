@@ -27,6 +27,9 @@ TEXT_EXTENSIONS = {
     # 实测变体（containment-breach-hd）：Language/ 下 JSON 内容的
     # 字幕/语言文件，扩展名非标准但必为文本
     ".subs", ".langs",
+    # NodeEditorFramework 对话脚本（shellcore 实证 900+ 条对话真盲区）：
+    # Text("key", "对话内容") 行格式，游戏对话系统核心数据
+    ".corescript",
 }
 ASSET_EXTENSIONS = {".assets", ".ab", ".unity3d", ".bundle", ".pak", ".bytes"}
 # 伪装扩展名：内容完全未知，一律探测（可能是文本/容器/二进制）
@@ -59,11 +62,25 @@ _BINARY_SUFFIXES = frozenset({
 })
 # Unity 运行时日志与 Mono 调试符号：探测也会被识别为文本，但绝非本地化
 _NOISY_PROBE_EXTS = frozenset({".log", ".trace"})
+# macOS 打包残留（F43，bubble-jcat 实证）：.DS_Store 文件索引与
+# ._ 前缀 AppleDouble 元数据——探测会被识别为文本，绝非本地化
+_MAC_RESIDUE_PREFIX = "._"
+# NodeCanvas/NodeEditorFramework 图数据（F51c，shellcore 实证 9 万条
+# 过度识别）：.sectordata/.dialoguedata/.taskdata/.worlddata 是 XML
+# 节点图结构（节点名/变量名 = 代码键），按文本/XML 解析会把图结构
+# 全量进池——与 census（F50）同一排除口径。.corescript 是真实对话
+# 脚本（Text("key", "对话") 行），必须保留
+_NODE_CANVAS_DATA_EXTS = frozenset({
+    ".sectordata", ".dialoguedata", ".taskdata", ".worlddata",
+})
 
 # Unity/引擎运行时目录：永远不是本地化文本
 SKIP_DIRS = {".git", ".svn", "__pycache__", ".idea", ".vs", "Library", "Temp", "Logs", "obj",
              "Build", "build", "MonoBleedingEdge", "MonoBundle", "il2cpp_data", "mono",
              "UnityCrashHandler", "Boot.config", "Unity_gameresources",
+             # macOS 打包残留（zip 从 Mac 解压产生，bubble-jcat 实证）：
+             # AppleDouble 元数据目录
+             "__MACOSX",
              # 工具部署的运行时（BepInEx 字体覆盖）：0Harmony.xml 等 API 文档
              # 会被误扫为文本（ned-flanders 副本写回实测 42 条失败）
              "BepInEx", "doorstop",
@@ -85,6 +102,10 @@ SKIP_FILES = {
     "unity_builtin_extra", "unity default resources",
     # Unity 运行时日志（打包必带，纯硬件/启动噪音，绝非本地化）
     "output_log.txt", "player.log", "error.log",
+    # Unity 自动生成的游戏名/公司名文件（DefaultCompany␤游戏名）——
+    # 78-hour-rain 实证：被当文本翻译写回（'78 Hour Rain'→'78小时降雨'，
+    # 游戏名被改坏）。census（F34）已跳过，提取管线（F36）同步跳过。
+    "app.info",
     # BepInEx 部署文件（.ini 属 TEXT_EXTENSIONS，不排除会被误扫）
     "doorstop_config.ini",
 }
@@ -269,10 +290,13 @@ def _is_runtime_file(p: Path, game_dir: Path) -> bool:
         # Managed/*.xml 是引擎/程序集 API 文档注释（UnityEngine.AIModule.xml、
         # Assembly-CSharp.xml），不是本地化内容（真实失败样本 42 条）
         return True
-    if p.suffix.lower() == ".txt" and p.stem.casefold().split("_")[0] in (
-            "credits", "credit", "license", "licence"):
-        # credit 名单（"- from AudioBlocks.com" 逐行失败样本）与许可证文本：
-        # 人名/品牌/法律文本翻译无意义且必坏
+    if p.suffix.lower() == ".txt" and any(
+            part in p.stem.casefold().split("_") for part in
+            ("credits", "credit", "license", "licence", "readme")):
+        # F54（bad-faith 实证）：credit/README 文件——人名/品牌/法律文本
+        # 翻译无意义且必坏；README_Credits_MoreInfo.txt 是 windows-1252
+        # 编码（中文写回被正确阻断，文件本身该跳过）。段匹配
+        # （split("_") 任意段）覆盖 README_Credits 组合名。
         return True
     return False
 
@@ -297,6 +321,10 @@ def discover(
         if _is_runtime_file(p, game_dir):
             continue
         suffix = p.suffix.lower()
+        # F51c：NodeCanvas 图数据不是文本（节点名/变量名=代码键），
+        # 即使 XML 内容也整体排除（防 9 万条图结构进池）
+        if suffix in _NODE_CANVAS_DATA_EXTS:
+            continue
         if suffix in TEXT_EXTENSIONS:
             found.append(p)
             continue
@@ -305,7 +333,10 @@ def discover(
             continue
         if (suffix in _BINARY_SUFFIXES
                 or suffix in _NOISY_PROBE_EXTS
-                or p.name.casefold().endswith(tuple(_NOISY_PROBE_EXTS))):
+                or p.name.casefold().endswith(tuple(_NOISY_PROBE_EXTS))
+                # F43：macOS 打包残留（.DS_Store / ._ AppleDouble）
+                or p.name == ".DS_Store"
+                or p.name.startswith(_MAC_RESIDUE_PREFIX)):
             continue
         kind = probe_file_kind(p)
         if kind == "text" or kind in _TEXT_CONTAINER_KINDS:

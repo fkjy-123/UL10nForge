@@ -45,6 +45,88 @@ _ERROR_MSG_PATTERN = re.compile(
     r"(?i)(?:Error parsing|is not correct|Improper .*JSON|JSON format is not)")
 _DEBUG_SENTINEL = re.compile(r"INTERNAL!")
 
+# ── F33（2026-08-16，78-hour-rain 实证）句子形态显示文本 ──────────────
+# 未证明流入 UI setter 的小写/混合大小写句子型 #US 串（叙事文本、教程
+# 提示、状态提示、设置标签）被整类跳过——'Darkness has a voice' 系列 9 条
+# 叙事 + 'Left-click to throw held traps' + 'Volume: ' 等 17 条真实 UI
+# 文本全落 unverified_user_string 跳过桶（哑信号）。调试打印串
+# （'doorbreakHealth: '、'Monster spawned at ('、'setting teeth angle
+# to '）有变量拼接痕迹，用形态剔除——拼接痕迹 = 代码文本，宁漏勿坏。
+# 驼峰/下划线词+冒号结尾 = 变量打印标签（'doorbreakHealth: '）——
+# 词内中间位置含大写或数字（'Volume: ' 'Sensitivity: ' TitleCase
+# 首字母大写其余小写是 UI 标签，负向前瞻豁免）
+_CAMEL_OR_SYMBOL_COLON = re.compile(
+    r"^\s*(?![A-Z]?[a-z]+:)[A-Za-z0-9]+:\s*$")
+# 尾部拼接痕迹：`( `、` to `、` in `、` with `、` at `、` of `、` index `
+# 等介词/量词结尾 = Concat 拼接片段（'Monster spawned at ('、'setting
+# teeth angle to '、'spawning unique at spot index '）
+_DEBUG_CONCAT_TAIL = re.compile(
+    r"(?i)(?:\(\s*$|\b(?:to|in|with|at|of|for|from|index|length|value|"
+    r"state|section|spot|floor|count)\s*$)")
+# 调试句子词（小写形态的日志/错误动词/系统名——UI 中极罕见）。
+# F33 第二版扩充（test_v2 契约实证）：'Internal diagnostic message'、
+# 'Internal format {0}'（未消费格式串）、'Press E state observed'
+# （日志观测句）、'Assertion failed...Aborting'（断言失败）均为开发
+# 文本——diagnostic/state observed/internal format/assertion/aborting
+# 是铁调试特征；'Debug:'/'Trace:' 前缀是日志格式
+_DEBUG_SENTENCE_WORD = re.compile(
+    r"(?i)\b(?:could not|couldn't|failed|spawning|spawned|rerolling|"
+    r"updating|placing|setting up|not found|does not work|max reached|"
+    r"lightning|thunder|heard|struck|playerprefs|changing menu|"
+    r"loading section|diagnostic|state observed|internal format|"
+    r"assertion|aborting|assert)\b")
+# 日志前缀（'Debug: Press E state observed'、'Trace. Failed to...'）
+_DEBUG_LOG_PREFIX = re.compile(r"^(?:debug|trace)[\.\: ]")
+# 句子混入驼峰标识符（'Press inventoryManager to open'——代码拼接
+# 痕迹；UI 自然句无驼峰 token）
+_DEBUG_CAMEL_MIX = re.compile(r"[a-z][A-Z][a-z]")
+# 拼接片段：以空白/符号开头 = 上一片段尾部（' loot spots available'、
+# ' seconds until next strike.'、'*****changing menu to None'）
+_DEBUG_LEADING_JUNK = re.compile(r"^[^\w]+\s")
+
+
+def _is_sentence_display_text(s: str) -> bool:
+    """句子形态显示文本证据（未证明 #US 串的最后一层放行）。
+
+    满足全部条件的未证明串按显示文本进池（由质量门/审核兜底）：
+    长度 ≥8、以字母/数字开头（排除拼接片段）、≥2 词（含空格/换行）、
+    无驼峰冒号变量标签、无拼接尾部、无调试句子词。
+    """
+    if len(s) < 8 or not re.search(r"[A-Za-z]", s):
+        return False
+    if not (s[0].isalpha() or s[0].isdigit()):
+        return False
+    if " " not in s and "\n" not in s:
+        return False
+    if _CAMEL_OR_SYMBOL_COLON.search(s):
+        return False
+    if _DEBUG_CONCAT_TAIL.search(s):
+        return False
+    if _DEBUG_SENTENCE_WORD.search(s):
+        return False
+    if _DEBUG_LOG_PREFIX.match(s):
+        return False
+    if _DEBUG_CAMEL_MIX.search(s):
+        return False
+    return True
+
+
+def _is_exclamation_ui_word(s: str) -> bool:
+    """单 token 感叹/疑问词 UI 文本（'Trapped!' 'Untrapped!' 实证）。
+
+    lilys-day-off 实证对话反应词（'What?' 'Hahaha!'）也是真实文本。
+    形态：长度 3..24、首字符字母且非全小写单词（TitleCase/全大写）、
+    以 ! 或 ? 结尾、无空白/下划线/连字符。调试哨兵（INTERNAL!/CNOT!）
+    已被 _DEBUG_SENTINEL/_INTERNAL_TYPE_NAME 提前剔除。
+    """
+    if not (3 <= len(s) <= 24):
+        return False
+    if not (s.endswith("!") or s.endswith("?")):
+        return False
+    if not s[:-1].isalpha() or not s[0].isupper():
+        return False
+    return True
+
 
 def _safe_resolve_discovery_path(game_root: Path, candidate: Path) -> Path | None:
     """Resolve a discovered path after rejecting any reparse point in its chain."""
@@ -163,6 +245,16 @@ _UI_SETTER_TYPES = frozenset({
     "TMPro.TMP_InputField", "UnityEngine.UI.Text", "UnityEngine.UI.InputField",
     "UnityEngine.TextMesh", "UnityEngine.UIElements.TextElement",
     "UnityEngine.UIElements.Label", "UnityEngine.UIElements.TextField",
+})
+# 日志 sink（F33 配套负面证据）：字面量流入这些 API = 确定性非 UI
+# （开发日志/控制台输出，玩家不可见）——句子形态启发式也不得放行
+_LOG_SINKS = frozenset({
+    ("System.Console", "WriteLine"),
+    ("System.Console", "Write"),
+    ("UnityEngine.Debug", "Log"),
+    ("UnityEngine.Debug", "LogError"),
+    ("UnityEngine.Debug", "LogWarning"),
+    ("UnityEngine.Debug", "LogException"),
 })
 # IMGUI OnGUI 显示调用（XUnity 框架清单 + 语料挖掘实证：GUI.Label 9 游戏
 # 205 次调用/GUI.Button 9 游戏 220 次——OnGUI 每帧渲染，字符串参数即
@@ -580,7 +672,8 @@ def _cross_assembly_ui_sinks(pes) -> frozenset:
 
 
 def _verified_ui_user_string_tokens(pe, *, cross_sinks: frozenset = frozenset(),
-                                    structural_out: set[int] | None = None) -> set[int]:
+                                    structural_out: set[int] | None = None,
+                                    log_consumed_out: set[int] | None = None) -> set[int]:
     """Return #US token offsets proven to flow into verified UI setter calls.
 
     游戏常用自封装方法（SetTutorialText(text) 内部再 set_text），字面量先传给
@@ -606,6 +699,7 @@ def _verified_ui_user_string_tokens(pe, *, cross_sinks: frozenset = frozenset(),
     structural_sinks: set[int] = set()
     structural_name_sinks: dict[int, int] = {}
     safe_value_producers: set[int] = set()
+    log_sinks: set[int] = set()
     member_identity: dict[int, tuple[str, str]] = {}
     for index, row in enumerate(member_rows, 1):
         declaring = getattr(getattr(row, "Class", None), "row", None)
@@ -620,6 +714,10 @@ def _verified_ui_user_string_tokens(pe, *, cross_sinks: frozenset = frozenset(),
         elif (full_type, method_name) in _STRUCTURAL_NAME_SINKS:
             structural_name_sinks[0x0A000000 | index] = \
                 _STRUCTURAL_NAME_SINKS[(full_type, method_name)]
+        elif (full_type, method_name) in _LOG_SINKS:
+            # 日志消费 = 确定性非 UI 负面证据（F33 配套：Console.WriteLine/
+            # Debug.Log 的字面量是开发日志，句子形态启发式也不得放行）
+            log_sinks.add(0x0A000000 | index)
         if full_type in _UI_SETTER_TYPES and method_name in {"set_text", "SetText"}:
             ui_setters.add(0x0A000000 | index)
         elif (full_type, method_name) in _UI_DISPLAY_CALLS:
@@ -746,6 +844,14 @@ def _verified_ui_user_string_tokens(pe, *, cross_sinks: frozenset = frozenset(),
                         if structural_out is not None and len(stack) >= arity:
                             tokens, _args = _string_source(stack[-arity])
                             structural_out |= tokens
+                        stack.clear()
+                    elif operand in log_sinks:
+                        # 日志消费负面证据：栈顶字面量流入 Console.WriteLine/
+                        # Debug.Log → 收集为 mono_diagnostic（F33 配套，
+                        # 防句子形态启发式放行开发日志串）
+                        if log_consumed_out is not None and stack:
+                            tokens, _args = _string_source(stack[-1])
+                            log_consumed_out |= tokens
                         stack.clear()
                     elif operand in ui_setters or (
                             cross_sinks and member_identity.get(operand)
@@ -933,6 +1039,14 @@ def extract_dll_user_strings(path: str | Path, file_id: str | None = None,
     # 825 条对话/服装/结局/选项文本全落 unverified 被跳过）。该程序集字面量
     # 几乎全是显示文本，因此对其放宽 unverified 判定。
     is_unityscript_asm = p.name.casefold().startswith("assembly-unityscript")
+    # F40（bad-faith-the-game 实证）：句子形态启发式仅对游戏主程序集生效
+    # ——插件/引擎 DLL（Fungus/Unity.2D.*/Unity.Mathematics）的句子型串
+    # 几乎全是异常/调试/格式消息（'Invalid quality option'、'bool2({0},
+    # {1})'），翻译无意义（bad-faith：Fungus 310 + Unity.2D 80 + Math 65
+    # 全误放）。Unity 游戏主代码恒为 Assembly-CSharp*.dll。
+    is_game_asm = (
+        is_unityscript_asm
+        or p.name.casefold().startswith("assembly-csharp"))
     fid = file_id or str(p).replace("\\", "/")
     pe = dnfile.dnPE(str(p))
     skipped: dict[str, int] = {}  # R5 静默跳过留档（哑识别可见化）
@@ -945,9 +1059,11 @@ def extract_dll_user_strings(path: str | Path, file_id: str | None = None,
         heap_file_offset = us.get_file_offset(0)
         entries: list[TextEntry] = []
         structural_tokens: set[int] = set()
+        log_consumed: set[int] = set()
         verified_ui_tokens = _verified_ui_user_string_tokens(
             pe, cross_sinks=cross_sinks,
-            structural_out=structural_tokens)
+            structural_out=structural_tokens,
+            log_consumed_out=log_consumed)
         for token_offset, offset, raw in _walk_us_heap_records(data):
             # ECMA-335 #US blobs always end with a one-byte kind flag.  The
             # flag is zero for ordinary ASCII strings and one for strings that
@@ -1015,7 +1131,9 @@ def extract_dll_user_strings(path: str | Path, file_id: str | None = None,
             # 翻译无意义且模型会改坏代码符号）。判 skipped 而非 continue：
             # 记录保留在 skipped 列表供审计（防过度拦截）。
             mono_diagnostic = (
-                not is_ui_text and _is_mono_diagnostic_string(s))
+                not is_ui_text
+                and (_is_mono_diagnostic_string(s)
+                     or token_offset in log_consumed))
             # UnityScript 程序集：未被上方剔除的字符串全部按显示文本升级。
             # 含空格的是对话/UI/服装/结局文本；无空格语气词（'What?' 'Hahaha!'
             # 'Lily-chan!' 等对话反应词，lilys-day-off 实证 29 条）也是真实
@@ -1030,9 +1148,20 @@ def extract_dll_user_strings(path: str | Path, file_id: str | None = None,
             tagged_display = (
                 not is_ui_text and not mono_diagnostic
                 and is_tag_composed(s))
+            # F33（78-hour-rain 实证）：句子形态显示文本——未证明流入
+            # setter 的小写/混合大小写叙事/教程/状态/标签句，由形态
+            # 启发式放行（质量门/审核兜底），不再整类跳过。
+            # F40（bad-faith 实证）：仅游戏主程序集生效——插件/引擎
+            # DLL 的句子型串是异常/调试/格式消息（见 is_game_asm 注）。
+            sentence_display = (
+                not is_ui_text and not mono_diagnostic
+                and is_game_asm
+                and (_is_sentence_display_text(s)
+                     or _is_exclamation_ui_word(s)))
             display_text = (
                 is_ui_text or interaction_prompt or uppercase_ui
-                or unityscript_display or tagged_display) and not mono_diagnostic \
+                or unityscript_display or tagged_display
+                or sentence_display) and not mono_diagnostic \
                 and not is_structural_proven
             entries.append(TextEntry(
                 file_id=fid, key_path=f"us#{offset}",
@@ -1054,7 +1183,8 @@ def extract_dll_user_strings(path: str | Path, file_id: str | None = None,
                     "max_chars": len(raw) // 2,
                     "confidence": (
                         "high" if is_ui_text or interaction_prompt
-                        else "medium" if (uppercase_ui or unityscript_display)
+                        else "medium" if (uppercase_ui or unityscript_display
+                                          or sentence_display)
                         else "low"),
                     "role": "display" if display_text else "structural",
                     "disposition": "translate" if display_text else "structural",
@@ -1066,6 +1196,7 @@ def extract_dll_user_strings(path: str | Path, file_id: str | None = None,
                         else "user_string_uppercase_ui" if uppercase_ui
                         else "unityscript_user_string" if unityscript_display
                         else "tmp_tag_composed" if tagged_display
+                        else "user_string_sentence" if sentence_display
                         else "unverified_user_string"),
                 }))
         for e in entries:

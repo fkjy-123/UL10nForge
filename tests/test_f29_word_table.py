@@ -79,3 +79,137 @@ def test_normal_ui_object_unaffected():
     entries = _raw_string_entries("f1", 5, raw, {}, "sharedassets0.assets")
     assert len(entries) == 3
     assert _find(entries, "Main Menu").status == "pending"
+
+
+# ── F38（adapt-prologue 实证 2026-08-16）──
+# 对象会被释放（非代码/输入/配置/键列表对象）时，其 prefilter_high_
+# frequency 样本是游戏 UI 词而非引擎高频：生物卡片对象（'Clam 01'
+# pending 同侪）里 'Health'/'Food'/'Resource' 全被高频跳过（哑信号）。
+# 组件配置对象（code_heavy，'Play' 音效事件名 294 对象实证）保持跳过。
+
+
+def _ui_card_raw() -> bytes:
+    """生物卡片对象：'Clam 01'（句子形态，pending）+ Health/Food/
+    Resource（全游戏高频 UI 词）。"""
+    return _scriptable_object_raw(
+        "Clam 01", "Health", "Food", "Resource", "Survival/Armor")
+
+
+def test_f38_ui_card_high_freq_released():
+    """UI 卡片对象（含 pending 同侪）：高频 UI 词升级为显示文本。"""
+    # freq：Health/Food/Resource 达到高频阈值（总量 30 条 → 阈值 ~7）
+    freq = {"Health": 20, "Food": 20, "Resource": 20}
+    entries = _raw_string_entries("f1", 9, _ui_card_raw(), freq,
+                                  "sharedassets0.assets")
+    by = {e.original: e for e in entries}
+    assert by["Health"].status == "pending"
+    assert by["Health"].meta["reason"] == "single_visible_string"
+    assert by["Health"].meta.get("f38_released") is True
+    assert by["Food"].status == "pending"
+    assert by["Resource"].status == "pending"
+    assert by["Clam 01"].status == "pending"
+    # Survival/Armor（路径形态'/'分隔）保持跳过——类别路径标签
+    # 观察项（宁漏勿坏），不属本修复范围
+
+
+def test_f38_component_object_high_freq_stays_skipped():
+    """组件配置对象（code_heavy：方法名/类型引用 ≥2）：
+    'Play' 高频词保持跳过（FMOD 事件名，翻译断音效引用）。"""
+    raw = _scriptable_object_raw(
+        "Play", "Populate", "SetState",
+        "FMODUnity.StudioEventEmitter, FMODUnity",
+        "UnityEngine.Object, UnityEngine")
+    freq = {"Play": 300}
+    entries = _raw_string_entries("f1", 7, raw, freq,
+                                  "sharedassets0.assets")
+    by = {e.original: e for e in entries}
+    assert by["Play"].status == "skipped"
+    assert by["Play"].meta["reason"] == "prefilter_high_frequency"
+
+
+def test_f38_ugui_state_names_stay_skipped():
+    """UGUI 状态名（Normal/Highlighted/Pressed/Disabled/Selected）即使
+    在 UI 对象里也不升级（控件状态串，翻译写回状态错乱）。"""
+    raw = _scriptable_object_raw(
+        "Clam 01", "Health", "Normal", "Pressed", "Disabled")
+    freq = {"Health": 20, "Normal": 20, "Pressed": 20, "Disabled": 20}
+    entries = _raw_string_entries("f1", 9, raw, freq,
+                                  "sharedassets0.assets")
+    by = {e.original: e for e in entries}
+    assert by["Health"].status == "pending"          # UI 词升级
+    assert by["Normal"].status == "skipped"          # 状态名不升级
+    assert by["Normal"].meta["reason"] == "prefilter_high_frequency"
+    assert by["Pressed"].status == "skipped"
+    assert by["Disabled"].status == "skipped"
+
+
+# ── F39（attack-on-wendigo 实证 2026-08-16）──
+# 命名列表对象：TitleCase 单词式词 ≥3 且无代码信号 → 武器/物品/地点
+# 目录（商店/掉落/库存 UI 文本），单词式写法是显示文本形态。
+
+def test_f39_word_list_object_released():
+    """武器列表对象（Pistol/Magnum/Rifle/Shotgun）整批恢复显示文本。"""
+    raw = _scriptable_object_raw(
+        "Drugs", "Pistol", "Magnum", "Rifle", "Shotgun")
+    entries = _raw_string_entries("f1", 9, raw, {}, "sharedassets0.assets")
+    by = {e.original: e for e in entries}
+    for w in ("Drugs", "Pistol", "Magnum", "Rifle", "Shotgun"):
+        assert by[w].status == "pending", w
+        assert by[w].meta["reason"] == "word_list_object", w
+
+
+def test_f39_particle_names_not_released():
+    """粒子名（驼峰 SnowParticle）+ 类型引用混入 → code_heavy 信号 →
+    整对象不释放（'Play' 音效事件名同保护）。"""
+    raw = _scriptable_object_raw(
+        "Pistol", "Magnum", "Rifle", "SnowParticle",
+        "UnityEngine.Object, UnityEngine",
+        "FMODUnity.StudioEventEmitter, FMODUnity")
+    entries = _raw_string_entries("f1", 7, raw, {}, "sharedassets0.assets")
+    by = {e.original: e for e in entries}
+    assert by["Pistol"].status == "skipped"   # code_heavy 不释放
+    assert by["SnowParticle"].status == "skipped"
+
+
+def test_f39_two_words_not_triggered():
+    """<3 个 TitleCase 词不触发（小配置/命名对对象保持原判定）。"""
+    raw = _scriptable_object_raw("Pistol", "Magnum")
+    entries = _raw_string_entries("f1", 7, raw, {}, "sharedassets0.assets")
+    by = {e.original: e for e in entries}
+    assert by["Pistol"].status == "skipped"
+    assert by["Pistol"].meta["reason"] != "word_list_object"
+
+
+# ── F44（dinofurie 实证 2026-08-16）──
+# 按钮对象（控制状态 ≥3 + 类型引用 → code_heavy）里的单词式按钮
+# 文本：'Jugar'（西语"玩"）不在英语白名单被 code_heavy_identifier
+# 跳过——UI 控件证据（状态）优先，单词式形态（_WORD_CASE）是显示
+# 文本证据，非白名单也放行。
+
+def test_f44_button_text_word_case_released_in_ui_evidence():
+    """按钮对象（5 状态 + 类型引用）：'Jugar' 单词式按钮文本放行，
+    UGUI 状态名保持跳过。"""
+    raw = _scriptable_object_raw(
+        "Normal", "Highlighted", "Pressed", "Selected", "Disabled",
+        "Jugar", "botons, Assembly-CSharp",
+        "UnityEngine.Object, UnityEngine")
+    entries = _raw_string_entries("f1", 9, raw, {}, "sharedassets0.assets")
+    by = {e.original: e for e in entries}
+    assert by["Jugar"].status == "pending"
+    assert by["Jugar"].meta["reason"] == "code_heavy_display_word"
+    for state in ("Normal", "Highlighted", "Pressed", "Selected",
+                  "Disabled"):
+        assert by[state].status == "skipped", state
+
+
+def test_f44_no_ui_evidence_word_case_stays_skipped():
+    """无 UI 证据（无控制状态）的 code_heavy 对象：单词式词保持跳过
+    （纯代码对象无按钮文本语境）。"""
+    raw = _scriptable_object_raw(
+        "Jugar", "Populate", "SetState",
+        "UnityEngine.Object, UnityEngine",
+        "FMODUnity.StudioEventEmitter, FMODUnity")
+    entries = _raw_string_entries("f1", 9, raw, {}, "sharedassets0.assets")
+    by = {e.original: e for e in entries}
+    assert by["Jugar"].status == "skipped"
+    assert by["Jugar"].meta["reason"] == "code_heavy_identifier"
