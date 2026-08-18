@@ -1429,9 +1429,26 @@ def _patch_asset(path: Path, entries: list[dict], result: WriteResult,
                 if type(fitem).__name__ in
                 ("BundleFile", "SerializedFile", "WebFile")
             }
-            if len(containers) != 1:
-                raise ValueError(f"预期恰好一个顶层 Unity 容器，实际为 {len(containers)}")
-            container = next(iter(containers.values()))
+            if len(containers) == 0:
+                raise ValueError("无顶层 Unity 容器")
+            # 多容器：Mono 游戏 MonoBehaviour read_typetree 会按引用自动加载
+            # 其他 SerializedFile（如 globalgamemanagers.assets 承载 MonoScript）
+            # 进 env.files（Rendezvous sharedassets33/45/0 实证）。引用文件
+            # 是只读的（_patch_asset 只补丁目标文件内的对象），按目标文件名
+            # 匹配保存正确的容器；找不到才拒绝（不静默写错文件）。
+            container = None
+            if len(containers) == 1:
+                container = next(iter(containers.values()))
+            else:
+                for c in containers.values():
+                    if getattr(c, "name", "") == path.name:
+                        container = c
+                        break
+                if container is None:
+                    raise ValueError(
+                        f"无法定位目标容器（{path.name}），实际 "
+                        f"{len(containers)} 个: "
+                        f"{[getattr(c, 'name', '?') for c in containers.values()]}")
             if type(container).__name__ == "BundleFile":
                 saved.write_bytes(container.save(packer="original"))
             else:
@@ -1514,6 +1531,17 @@ def _patch_textasset(script: bytes, items: list[tuple[dict, dict]],
             fmt = meta.get("textasset_format")
             if fmt not in by_fmt:
                 by_fmt[fmt] = []
+            # ink 流程控制词写回硬保护（Rendezvous 实证 2026-08-17）：
+            # 识别漏网的 done/end/out 若带译文写回会破坏对话流程——
+            # 控制词条目强制不写（宁漏勿坏；识别侧 _INK_CONTROL_WORDS
+            # 已含全集，此处防御旧库/旧识别结果的漏网译文）
+            if (fmt == "json" and str(e.get("original", "")).strip()
+                    in {"done", "end", "out"}
+                    and (meta.get("kind") == "ink"
+                         or json.loads(e.get("meta") or "{}").get("kind")
+                         == "ink")):
+                result.note_rejected(e, "ink_control_word_guard")
+                continue
             by_fmt[fmt].append(TextEntry(
                 file_id=e["file_id"],
                 key_path=meta.get("inner_path") or e["key_path"],
@@ -1522,6 +1550,17 @@ def _patch_textasset(script: bytes, items: list[tuple[dict, dict]],
                 meta={**json.loads(e.get("meta") or "{}"), "kind": fmt}))
         changed = False
         for fmt, group in by_fmt.items():
+            if fmt == "yaml":
+                # 行数守恒预检（Rendezvous 实证 2026-08-17）：旧库 yaml
+                # 条目（表头/结构行被过滤导致的缺失行集）按行号重建必然
+                # 丢行 → 游戏解析越界黑屏。重建行数 != 原文行数 → 整组
+                # 拒绝写回（宁漏勿坏），提示重提取（新提取走 csv 链路）。
+                from hanhua.core.formats.yaml_format import apply_yaml
+                if len(apply_yaml(group).splitlines()) \
+                        != len(text.splitlines()):
+                    for e, _ in group:
+                        result.note_rejected(e, "yaml_line_loss_guard")
+                    continue
             try:
                 body = apply_format_text(fmt, group, text, {"kind": "textasset"})
             except XmlRewriteUnsafeError:

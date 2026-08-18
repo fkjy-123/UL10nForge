@@ -29,7 +29,8 @@ def _capability(*, provider_supported=True, runtime="mono",
 
 
 def _input(tmp_path: Path, *, enabled=True, runtime="mono",
-           capability=None, required=None) -> FontPipelineInput:
+           capability=None, required=None,
+           unity_version="2022.3") -> FontPipelineInput:
     game = tmp_path / "game"
     game.mkdir(exist_ok=True)
     staging = tmp_path / "staging"
@@ -37,7 +38,7 @@ def _input(tmp_path: Path, *, enabled=True, runtime="mono",
     config = FontConfig(enabled=enabled)
     return FontPipelineInput(
         game_dir=game, staging=staging, font_config=config,
-        unity_version="2022.3", runtime=runtime, player_root=None,
+        unity_version=unity_version, runtime=runtime, player_root=None,
         capability=capability or _capability(runtime=runtime),
         translations={"Settings": "设置"},
         required_set=required,
@@ -121,6 +122,47 @@ def test_deploy_runtime_il2cpp_after_static_replace_installs(
     static = type("S", (), {"replaced": 2, "coverage": None})()
     font = pipeline.deploy_runtime(pipeline.plan(), static)
     assert font.installed is True
+
+
+def test_deploy_runtime_selects_unity_2019_tmp_bundle(
+        tmp_path, monkeypatch):
+    from hanhua.core.font import pipeline as pipeline_module
+
+    calls = {}
+
+    def fake_install(game_dir, staging, config, **kwargs):
+        calls["tmp_bundle"] = kwargs.get("tmp_bundle")
+        return FontInstallResult(installed=True)
+
+    monkeypatch.setattr(pipeline_module, "install_font_override", fake_install)
+    pipeline = FontCompatibilityPipeline(_input(
+        tmp_path, unity_version="2019.4.40f1"))
+    static = type("S", (), {"replaced": 1, "coverage": None})()
+
+    pipeline.deploy_runtime(pipeline.plan(), static)
+
+    assert calls["tmp_bundle"] is not None
+    assert calls["tmp_bundle"].name == "notoserif_sdf_u2019"
+
+
+@pytest.mark.parametrize("unity_version", ["2018.4.36f1", None])
+def test_deploy_runtime_passes_no_tmp_bundle_for_incompatible_version(
+        tmp_path, monkeypatch, unity_version):
+    from hanhua.core.font import pipeline as pipeline_module
+
+    calls = {}
+
+    def fake_install(game_dir, staging, config, **kwargs):
+        calls["tmp_bundle"] = kwargs.get("tmp_bundle", "missing")
+        return FontInstallResult(installed=True)
+
+    monkeypatch.setattr(pipeline_module, "install_font_override", fake_install)
+    pipeline = FontCompatibilityPipeline(_input(
+        tmp_path, unity_version=unity_version))
+
+    pipeline.deploy_runtime(pipeline.plan(), None)
+
+    assert calls["tmp_bundle"] is None
 
 
 def test_deploy_runtime_unsupported_il2cpp_calls_install(tmp_path, monkeypatch):
@@ -251,7 +293,7 @@ def test_run_returns_unified_outcome(tmp_path, monkeypatch):
     monkeypatch.setattr(
         pipeline_module, "install_font_override",
         lambda *a, **k: FontInstallResult(
-            installed=True, filename="SourceHanSansSC-Regular.otf",
+            installed=True, filename="NotoSerifCJKsc-Medium.otf",
             payload_deployed=True, provider_id="mono_font_plugin"))
 
     pipeline = FontCompatibilityPipeline(

@@ -338,7 +338,12 @@ def apply_json(
         ):
             continue
         span = document.value_spans.get(path)
-        if span is None or span.value != entry.original:
+        # strip 容差（Rendezvous 实证 2026-08-17）：ink 对话行提取时
+        # original 经 strip（'...Tyrell! ' 尾空格被去），写回校验严格
+        # 相等失败——首尾空白是格式噪音，strip 后相等即匹配
+        if (span is None
+                or (span.value != entry.original
+                    and span.value.strip() != entry.original.strip())):
             raise ValueError(
                 f"JSON translation target does not match source: {entry.key_path!r}"
             )

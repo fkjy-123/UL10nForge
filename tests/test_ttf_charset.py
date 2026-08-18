@@ -99,13 +99,14 @@ def test_no_cmap_table_returns_empty():
     assert ttf_charset(data) == frozenset()
 
 
-def test_real_source_han_font():
-    """白名单字体（思源黑体）真实 cmap 覆盖：CJK + 全 ASCII。"""
+def test_real_noto_serif_font():
+    """白名单字体（Noto Serif CJK SC Medium）真实 cmap 覆盖：CJK + 全 ASCII。"""
     p = Path(__file__).resolve().parents[1] / "fonts" \
-        / "SimplifiedChinese" / "SourceHanSansSC-Regular.otf"
+        / "SimplifiedChinese" / "NotoSerifCJKsc-Medium.otf"
     if not p.is_file():
         return
     chars = ttf_charset(p.read_bytes())
-    # 思源黑体：常用汉字 + 全可打印 ASCII（legacy 替换后逐码点验证基准）
+    # Noto Serif CJK SC Medium：常用汉字 + 全可打印 ASCII（legacy 替换
+    # 后逐码点验证基准）
     assert {0x4E00, 0x4E10, 0x9F99} <= chars
     assert all(c in chars for c in (0x41, 0x7A, 0x30, 0x20, 0x21))

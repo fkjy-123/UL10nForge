@@ -351,7 +351,7 @@ def test_real_bmfont_generates_validated_chinese_atlas(tmp_path):
 
     result, artifact = run_bmfont(
         IsolatedToolRunner(tmp_path / "app-data"), registry.specs["bmfont"],
-        project_root / "fonts" / "SimplifiedChinese" / "SourceHanSansSC-Regular.otf",
+        project_root / "fonts" / "SimplifiedChinese" / "NotoSerifCJKsc-Medium.otf",
         entries,
         width=1024, height=1024,
     )

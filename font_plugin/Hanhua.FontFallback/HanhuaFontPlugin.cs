@@ -1,4 +1,5 @@
 using BepInEx;
+using HarmonyLib;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -16,6 +17,17 @@ namespace Hanhua.FontFallback
     [BepInPlugin(PluginGuid, PluginName, PluginVersion)]
     public sealed class HanhuaFontPlugin : BaseUnityPlugin
     {
+        // Rendezvous 实证 2026-08-17：主菜单/游戏内 TMP 文本的字体引用
+        // 无法通过对象扫描定位（FindObjectsOfTypeAll 找不到场景 TMP 文本
+        // ——类型发现/扫描链在游戏内失效，ui/tmp 恒 6）——Harmony 补丁
+        // hook TMP_Text.set_text 与 LocalizationText.ChangeLanguage：文本
+        // 每次更新后强制字体=工具字体，100% 覆盖所有渲染路径。
+        public static HanhuaFontPlugin Instance;
+        private static MethodInfo _tmpSetTextMethod;
+        private static MethodInfo _tmpOnEnableMethod;
+        private static MethodInfo _tmpGenerateTextMeshMethod;
+        private static MethodInfo _locChangeLanguageMethod;
+        private static bool _harmonyPatched;
         private sealed class TranslationApplicationState
         {
             public object Target;
@@ -67,6 +79,9 @@ namespace Hanhua.FontFallback
         private Font dynamicFont;
         private Font tmpSourceFont;
         private UnityEngine.Object dynamicTmpFont;
+        private AssetBundle tmpFontBundle;
+        private string tmpFontSource = "";
+        private string tmpFontFamily = "";
         private Type tmpFontAssetType;
         private Type tmpSettingsType;
         private Type tmpTextType;
@@ -109,6 +124,7 @@ namespace Hanhua.FontFallback
         private string uiToolkitError = "";
         private long totalTmpApplications;
         private long totalUiApplications;
+        private long totalImGuiApplications;
         private long totalTextMeshApplications;
         private long totalUiToolkitApplications;
         private long totalExactTranslationApplications;
@@ -156,9 +172,11 @@ namespace Hanhua.FontFallback
 
         private void Awake()
         {
+            Instance = this;
             pluginDirectory = Path.Combine(Paths.PluginPath, "HanhuaFont");
             DiscoverOptionalTextTypes();
             sessionNonce = Guid.NewGuid().ToString("N");
+            SetupHarmonyPatches();
             try
             {
                 LoadRequiredGlyphs();
@@ -204,6 +222,502 @@ namespace Hanhua.FontFallback
             StartCoroutine(ScanLoop());
         }
 
+        // Rendezvous 实证 2026-08-17：ScanLoop 协程在场景切换后未再输出
+        // periodic 扫描（主线程卡死时协程不跑）——Update 轮询兜底（MonoBehaviour
+        // 每帧回调，主线程活着就一定执行）。每 1 秒扫描一次替换场景内
+        // 后创建的 TMP/UGUI 文本字体。
+        private float _lastUpdateScan = 0f;
+        private const float UpdateScanInterval = 1f;
+
+        private void Update()
+        {
+            // Harmony 补丁延迟重试：插件 Awake 早于游戏主程序集加载，
+            // LocalizationText 补丁需等 Assembly-CSharp 就绪（每 2 秒
+            // 尝试一次，打上即停）
+            if (!_harmonyPatched && Time.frameCount % 120 == 0)
+            {
+                SetupHarmonyPatches();
+            }
+            if (Time.realtimeSinceStartup - _lastUpdateScan < UpdateScanInterval)
+            {
+                return;
+            }
+            _lastUpdateScan = Time.realtimeSinceStartup;
+            SafeApplyFonts("update");
+        }
+
+        // Rendezvous 实证 2026-08-17：IMGUI（OnGUI）文本用 GUI.skin 默认
+        // 字体（内置 Arial 无中文字形）→ 口口口。GUI.skin 只能在 OnGUI
+        // 生命周期内访问（运行时检查），Update/协程里调用必抛异常跳过
+        // （旧实现每帧尝试都失败）——OnGUI 回调是唯一安全上下文，每帧
+        // 检查 skin 是否已用动态字体（GUI.skin 在场景重建后重置）。
+        private void OnGUI()
+        {
+            if (dynamicFont == null)
+            {
+                return;
+            }
+            try
+            {
+                UnityEngine.GUISkin skin = UnityEngine.GUI.skin;
+                if (skin == null)
+                {
+                    return;
+                }
+                bool dirty = skin.font != dynamicFont;
+                if (!dirty)
+                {
+                    foreach (UnityEngine.GUIStyle style in skin)
+                    {
+                        if (style != null && style.font != null
+                            && !ReferenceEquals(style.font, dynamicFont))
+                        {
+                            dirty = true;
+                            break;
+                        }
+                    }
+                }
+                if (!dirty)
+                {
+                    return;
+                }
+                // Rendezvous 实证 2026-08-17：游戏开发者设置的官方中文字体
+                // （font 非 null）缺字形 → 口口。必须**无条件**替换为工具
+                // 字体（不能只在 font == null 时替换——那正是之前 IMGUI
+                // 口口不变的原因）。
+                int applied = 0;
+                foreach (UnityEngine.GUIStyle style in skin)
+                {
+                    if (style != null
+                        && !ReferenceEquals(style.font, dynamicFont))
+                    {
+                        style.font = dynamicFont;
+                        applied++;
+                    }
+                }
+                if (!ReferenceEquals(skin.font, dynamicFont))
+                {
+                    skin.font = dynamicFont;
+                    applied++;
+                }
+                totalImGuiApplications += applied;
+                Logger.LogInfo("IMGUI_SKIN_PATCHED styles=" + applied);
+            }
+            catch (Exception)
+            {
+                // OnGUI 内访问不应失败；失败则下帧重试
+            }
+        }
+
+        // ── Harmony 补丁（Rendezvous 实证 2026-08-17）──
+        // 对象扫描找不到场景 TMP 文本（FindObjectsOfTypeAll 返回 0）——
+        // 改为 hook 文本设置入口：TMP_Text.set_text / 游戏
+        // LocalizationText.ChangeLanguage，文本每次更新后强制字体替换。
+        private void SetupHarmonyPatches()
+        {
+            // Rendezvous 实证 2026-08-17：插件 Awake 时游戏主程序集
+            // （Assembly-CSharp）尚未加载 → LocalizationText 找不到 →
+            // change_language 补丁缺失（唯一直接命中游戏文本设置的
+            // 补丁）。Update 轮询里延迟重试（游戏程序集加载后命中）。
+            try
+            {
+                Type tmpTextType = FindOptionalType("TMPro.TMP_Text");
+                if (tmpTextType != null)
+                {
+                    _tmpSetTextMethod = tmpTextType.GetMethod(
+                        "set_text",
+                        BindingFlags.Public | BindingFlags.Instance);
+                    _tmpOnEnableMethod = tmpTextType.GetMethod(
+                        "OnEnable",
+                        BindingFlags.Public | BindingFlags.NonPublic
+                        | BindingFlags.Instance);
+                    _tmpGenerateTextMeshMethod = tmpTextType.GetMethod(
+                        "GenerateTextMesh",
+                        BindingFlags.Public | BindingFlags.NonPublic
+                        | BindingFlags.Instance);
+                }
+                Type uiTextTypeLocal = FindOptionalType(
+                    "UnityEngine.UI.Text");
+                Type locType = FindOptionalType("LocalizationText");
+                if (locType != null)
+                {
+                    _locChangeLanguageMethod = locType.GetMethod(
+                        "ChangeLanguage",
+                        BindingFlags.Public | BindingFlags.Instance);
+                }
+                var harmony = new Harmony("com.hanhua.fontfallback");
+                if (_tmpSetTextMethod != null)
+                {
+                    harmony.Patch(
+                        _tmpSetTextMethod,
+                        postfix: new HarmonyMethod(
+                            typeof(HanhuaFontPlugin),
+                            nameof(TmpSetTextPostfix)));
+                }
+                if (uiTextTypeLocal != null)
+                {
+                    MethodInfo uiSetText = uiTextTypeLocal.GetMethod(
+                        "set_text",
+                        BindingFlags.Public | BindingFlags.Instance);
+                    if (uiSetText != null)
+                    {
+                        harmony.Patch(
+                            uiSetText,
+                            postfix: new HarmonyMethod(
+                                typeof(HanhuaFontPlugin),
+                                nameof(UiSetTextPostfix)));
+                    }
+                }
+                if (_tmpOnEnableMethod != null)
+                {
+                    harmony.Patch(
+                        _tmpOnEnableMethod,
+                        postfix: new HarmonyMethod(
+                            typeof(HanhuaFontPlugin),
+                            nameof(TmpOnEnablePostfix)));
+                }
+                if (_tmpGenerateTextMeshMethod != null)
+                {
+                    harmony.Patch(
+                        _tmpGenerateTextMeshMethod,
+                        prefix: new HarmonyMethod(
+                            typeof(HanhuaFontPlugin),
+                            nameof(TmpGenerateTextMeshPrefix)));
+                }
+                if (_locChangeLanguageMethod != null)
+                {
+                    harmony.Patch(
+                        _locChangeLanguageMethod,
+                        postfix: new HarmonyMethod(
+                            typeof(HanhuaFontPlugin),
+                            nameof(ChangeLanguagePostfix)));
+                }
+                // 全部目标打上才算完成；change_language 缺失时 Update
+                // 轮询重试（游戏主程序集加载后 Assembly-CSharp 可达）
+                _harmonyPatched = (_tmpSetTextMethod != null
+                    && _tmpOnEnableMethod != null
+                    && _tmpGenerateTextMeshMethod != null
+                    && uiTextTypeLocal != null
+                    && _locChangeLanguageMethod != null);
+                Logger.LogInfo(
+                    "HARMONY_PATCHED tmp_text="
+                    + (_tmpSetTextMethod != null)
+                    + " tmp_enable=" + (_tmpOnEnableMethod != null)
+                    + " tmp_mesh="
+                    + (_tmpGenerateTextMeshMethod != null)
+                    + " ui_text=" + (uiTextTypeLocal != null)
+                    + " change_language="
+                    + (_locChangeLanguageMethod != null)
+                    + " complete=" + _harmonyPatched);
+            }
+            catch (Exception exception)
+            {
+                Logger.LogError(
+                    "Harmony patch setup failed; font scans continue: "
+                    + exception);
+            }
+        }
+
+        // UnityEngine.UI.Text.set_text 后置：UGUI 文本更新后强制字体=
+        // 工具字体（Rendezvous 实证：LocalizationText.t_text 是 UGUI
+        // Text，官方子集字体缺字 → 口口；ChangeLanguage 补丁可能缺失，
+        // set_text 补丁兜底覆盖一切 UGUI 文本）。
+        private static int _harmonyLogCount;
+
+        public static void UiSetTextPostfix(object __instance, string value)
+        {
+            HanhuaFontPlugin plugin = Instance;
+            if (plugin == null || plugin.dynamicFont == null
+                || __instance == null)
+            {
+                return;
+            }
+            try
+            {
+                Type type = __instance.GetType();
+                PropertyInfo fontProperty = type.GetProperty(
+                    "font", BindingFlags.Public | BindingFlags.Instance);
+                if (fontProperty == null || !fontProperty.CanWrite)
+                {
+                    return;
+                }
+                object current = fontProperty.GetValue(__instance, null);
+                if (current == null
+                    || !ReferenceEquals(current, plugin.dynamicFont))
+                {
+                    fontProperty.SetValue(__instance, plugin.dynamicFont, null);
+                    if (_harmonyLogCount < 30)
+                    {
+                        _harmonyLogCount++;
+                        string preview = value == null ? "" :
+                            (value.Length > 30 ? value.Substring(0, 30)
+                             : value);
+                        plugin.Logger.LogInfo(
+                            "HARMONY_UI text=" + preview
+                            + " oldFont=" + (current == null
+                                ? "null" : current.ToString())
+                            + " -> tool");
+                    }
+                }
+            }
+            catch (Exception)
+            {
+            }
+        }
+
+        private static bool IsUnityObjectUnavailable(object value)
+        {
+            if (ReferenceEquals(value, null))
+            {
+                return true;
+            }
+            UnityEngine.Object unityObject = value as UnityEngine.Object;
+            return !ReferenceEquals(unityObject, null) && unityObject == null;
+        }
+
+        private static bool ApplyTmpFontToText(object target)
+        {
+            HanhuaFontPlugin plugin = Instance;
+            if (plugin == null || plugin.dynamicTmpFont == null
+                || IsUnityObjectUnavailable(target))
+            {
+                return false;
+            }
+
+            PropertyInfo fontProperty = target.GetType().GetProperty(
+                "font", BindingFlags.Public | BindingFlags.Instance);
+            if (fontProperty == null || !fontProperty.CanRead
+                || !fontProperty.CanWrite
+                || !fontProperty.PropertyType.IsInstanceOfType(
+                    plugin.dynamicTmpFont))
+            {
+                return false;
+            }
+
+            object original = fontProperty.GetValue(target, null);
+            if (ReferenceEquals(original, plugin.dynamicTmpFont))
+            {
+                return false;
+            }
+            if (!IsUnityObjectUnavailable(original)
+                && plugin.tmpFontAssetType != null
+                && plugin.tmpFontAssetType.IsInstanceOfType(original))
+            {
+                // Fallback wiring is best-effort.  The static tool font must
+                // still become the main font even if TMP rejects a mutation.
+                try
+                {
+                    plugin.AttachOriginalTmpFallback(original);
+                }
+                catch (Exception exception)
+                {
+                    plugin.Logger.LogWarning(
+                        "Could not preserve TMP original fallback: "
+                        + exception.Message);
+                }
+            }
+
+            fontProperty.SetValue(target, plugin.dynamicTmpFont, null);
+            return true;
+        }
+
+        private static string DescribeCurrentTmpFont(object target)
+        {
+            if (IsUnityObjectUnavailable(target))
+            {
+                return "null";
+            }
+            PropertyInfo fontProperty = target.GetType().GetProperty(
+                "font", BindingFlags.Public | BindingFlags.Instance);
+            if (fontProperty == null || !fontProperty.CanRead)
+            {
+                return "unavailable";
+            }
+            object current = fontProperty.GetValue(target, null);
+            return IsUnityObjectUnavailable(current)
+                ? "null" : current.ToString();
+        }
+
+        private void AttachOriginalTmpFallback(object original)
+        {
+            if (dynamicTmpFont == null || IsUnityObjectUnavailable(original)
+                || ReferenceEquals(original, dynamicTmpFont)
+                || tmpFontAssetType == null
+                || !tmpFontAssetType.IsInstanceOfType(original))
+            {
+                return;
+            }
+
+            PropertyInfo originalFallbackProperty = original.GetType().GetProperty(
+                "fallbackFontAssetTable",
+                BindingFlags.Public | BindingFlags.Instance);
+            if (originalFallbackProperty != null
+                && originalFallbackProperty.CanRead)
+            {
+                IList originalFallbacks = originalFallbackProperty.GetValue(
+                    original, null) as IList;
+                if (originalFallbacks != null
+                    && originalFallbacks.Contains(dynamicTmpFont))
+                {
+                    return;
+                }
+            }
+
+            PropertyInfo fallbackProperty = dynamicTmpFont.GetType().GetProperty(
+                "fallbackFontAssetTable",
+                BindingFlags.Public | BindingFlags.Instance);
+            if (fallbackProperty == null || !fallbackProperty.CanRead)
+            {
+                return;
+            }
+
+            IList fallbacks = fallbackProperty.GetValue(
+                dynamicTmpFont, null) as IList;
+            if (fallbacks == null)
+            {
+                if (!fallbackProperty.CanWrite)
+                {
+                    return;
+                }
+                Type listType = typeof(List<>).MakeGenericType(tmpFontAssetType);
+                fallbacks = Activator.CreateInstance(listType) as IList;
+                if (fallbacks == null)
+                {
+                    return;
+                }
+                fallbackProperty.SetValue(dynamicTmpFont, fallbacks, null);
+            }
+
+            if (fallbacks.Contains(original))
+            {
+                return;
+            }
+            fallbacks.Add(original);
+        }
+
+        // TMP_Text.set_text 后置：文本更新后强制主字体=工具字体
+        // （TMP 2.x 无字体时用内置默认/官方子集字体 → 缺字口口。
+        // 不依赖对象扫描——每个文本每次更新都执行）。
+        public static void TmpSetTextPostfix(object __instance, string value)
+        {
+            HanhuaFontPlugin plugin = Instance;
+            if (plugin == null || plugin.dynamicTmpFont == null
+                || __instance == null)
+            {
+                return;
+            }
+            try
+            {
+                string oldFont = DescribeCurrentTmpFont(__instance);
+                if (ApplyTmpFontToText(__instance))
+                {
+                    if (_harmonyLogCount < 30)
+                    {
+                        _harmonyLogCount++;
+                        string preview = value == null ? "" :
+                            (value.Length > 30 ? value.Substring(0, 30)
+                             : value);
+                        plugin.Logger.LogInfo(
+                            "HARMONY_TMP text=" + preview
+                            + " oldFont=" + oldFont
+                            + " -> tool");
+                    }
+                }
+            }
+            catch (Exception)
+            {
+            }
+        }
+
+        // TMP objects may receive their final text through a wrapper that
+        // never calls TMP_Text.set_text after the component is enabled.  The
+        // lifecycle hook catches that path before the first render.
+        public static void TmpOnEnablePostfix(object __instance)
+        {
+            HanhuaFontPlugin plugin = Instance;
+            if (plugin == null || plugin.dynamicTmpFont == null
+                || __instance == null)
+            {
+                return;
+            }
+            try
+            {
+                ApplyTmpFontToText(__instance);
+            }
+            catch (Exception exception)
+            {
+                plugin.Logger.LogWarning(
+                    "Could not apply TMP font on enable: "
+                    + exception.Message);
+            }
+        }
+
+        // Final common TMP render path; catches custom wrappers that never
+        // call the public text setter after assigning translated text.
+        public static void TmpGenerateTextMeshPrefix(object __instance)
+        {
+            HanhuaFontPlugin plugin = Instance;
+            if (plugin == null || plugin.dynamicTmpFont == null
+                || __instance == null)
+            {
+                return;
+            }
+            try
+            {
+                ApplyTmpFontToText(__instance);
+            }
+            catch (Exception exception)
+            {
+                plugin.Logger.LogWarning(
+                    "Could not apply TMP font before mesh generation: "
+                    + exception.Message);
+            }
+        }
+
+        // LocalizationText.ChangeLanguage 后置：游戏侧文本设置完成后
+        // 统一把 t_text（UGUI）与 t_textTMP（TMP）字体替换为工具字体。
+        public static void ChangeLanguagePostfix(object __instance)
+        {
+            HanhuaFontPlugin plugin = Instance;
+            if (plugin == null || __instance == null
+                || plugin.dynamicFont == null)
+            {
+                return;
+            }
+            try
+            {
+                Type type = __instance.GetType();
+                FieldInfo uguiField = type.GetField(
+                    "t_text", BindingFlags.Public | BindingFlags.NonPublic
+                    | BindingFlags.Instance);
+                FieldInfo tmpField = type.GetField(
+                    "t_textTMP", BindingFlags.Public | BindingFlags.NonPublic
+                    | BindingFlags.Instance);
+                if (uguiField != null)
+                {
+                    object ugui = uguiField.GetValue(__instance);
+                    if (ugui != null)
+                    {
+                        PropertyInfo fontProp = ugui.GetType().GetProperty(
+                            "font",
+                            BindingFlags.Public | BindingFlags.Instance);
+                        if (fontProp != null && fontProp.CanWrite)
+                        {
+                            fontProp.SetValue(ugui, plugin.dynamicFont, null);
+                        }
+                    }
+                }
+                if (tmpField != null && plugin.dynamicTmpFont != null)
+                {
+                    object tmp = tmpField.GetValue(__instance);
+                    ApplyTmpFontToText(tmp);
+                }
+            }
+            catch (Exception)
+            {
+            }
+        }
+
         private void OnDestroy()
         {
             SceneManager.sceneLoaded -= OnSceneLoaded;
@@ -219,11 +733,22 @@ namespace Hanhua.FontFallback
 
             try
             {
+                bool bundleOwned = tmpFontSource == "bundle";
                 if (dynamicTmpFont != null)
                 {
-                    Destroy(dynamicTmpFont);
+                    if (!bundleOwned)
+                    {
+                        Destroy(dynamicTmpFont);
+                    }
                     dynamicTmpFont = null;
                 }
+
+                if (tmpFontBundle != null)
+                {
+                    tmpFontBundle.Unload(false);
+                    tmpFontBundle = null;
+                }
+                tmpFontSource = "";
 
                 CleanupTmpFontCandidates(tmpFontCandidates, dynamicFont);
                 tmpFontCandidates.Clear();
@@ -338,6 +863,53 @@ namespace Hanhua.FontFallback
                     return found;
                 }
             }
+            // Rendezvous 实证 2026-08-17：UnityEngine.UI 等按需程序集在
+            // 相关场景加载前未入 AppDomain → GetAssemblies 遍历不到 →
+            // uiTextType 缓存 null → UGUI 文本永远未 patch（静态写回
+            // 中文用游戏原字体渲染 → 口口口，ui 恒 0）。按类型名的
+            // 程序集部分显式加载（BepInEx 环境按名解析）。
+            // TMP 陷阱：命名空间是 TMPro 但程序集是 Unity.TextMeshPro
+            // （TMP 2.x/3.x）——Assembly.Load("TMPro") 必失败 → 类型
+            // 永远 null。候选程序集逐个尝试。
+            int lastDot = fullName.LastIndexOf('.');
+            string[] candidates;
+            if (lastDot <= 0)
+            {
+                // Rendezvous 实证 2026-08-17：LocalizationText 等在全局
+                // 命名空间（无点号）——必须尝试游戏主程序集，否则
+                // Harmony 补丁打不上、UGUI 文本字体永远不替换。
+                candidates = new[] {
+                    "Assembly-CSharp",
+                    "Assembly-CSharp-firstpass",
+                };
+            }
+            else
+            {
+                string namespacePart = fullName.Substring(0, lastDot);
+                candidates = new[] {
+                    namespacePart,
+                    // TMP 2.x/3.x（Unity 2019+，TextMeshPro 2.x 程序集名）
+                    "Unity.TextMeshPro",
+                    // TMP 1.x / 老工程
+                    "TextMeshPro",
+                };
+            }
+            foreach (string assemblyName in candidates)
+            {
+                try
+                {
+                    Assembly loaded = Assembly.Load(assemblyName);
+                    Type found = loaded.GetType(fullName, false);
+                    if (found != null)
+                    {
+                        return found;
+                    }
+                }
+                catch (Exception)
+                {
+                    // 该候选程序集不存在 → 尝试下一个
+                }
+            }
             return null;
         }
 
@@ -375,13 +947,89 @@ namespace Hanhua.FontFallback
                 : "";
         }
 
+        private bool TryLoadBundledTmpFont()
+        {
+            string bundlePath = Path.Combine(pluginDirectory, "font-tmp.bundle");
+            if (!File.Exists(bundlePath))
+            {
+                Logger.LogInfo(
+                    "TMP_BUNDLE_FALLBACK reason=missing path=" + bundlePath);
+                return false;
+            }
+
+            AssetBundle loadedBundle = null;
+            try
+            {
+                loadedBundle = AssetBundle.LoadFromFile(bundlePath);
+                if (loadedBundle == null)
+                {
+                    throw new InvalidOperationException(
+                        "AssetBundle.LoadFromFile returned null");
+                }
+
+                UnityEngine.Object[] assets =
+                    loadedBundle.LoadAllAssets(tmpFontAssetType);
+                List<UnityEngine.Object> fonts = new List<UnityEngine.Object>();
+                foreach (UnityEngine.Object asset in assets)
+                {
+                    if (asset != null && tmpFontAssetType.IsInstanceOfType(asset))
+                    {
+                        fonts.Add(asset);
+                    }
+                }
+                if (fonts.Count != 1)
+                {
+                    throw new InvalidOperationException(
+                        "Expected exactly one TMP_FontAsset, got " + fonts.Count);
+                }
+
+                tmpFontBundle = loadedBundle;
+                dynamicTmpFont = fonts[0];
+                tmpFontSource = "bundle";
+                activeTmpFactoryArgument = bundlePath;
+                tmpFactoryVerified = false;
+                EnsureGlobalTmpFallback();
+                Logger.LogInfo(
+                    "TMP_BUNDLE_READY path=" + bundlePath
+                    + " asset=" + dynamicTmpFont.name);
+                return true;
+            }
+            catch (Exception exception)
+            {
+                if (loadedBundle != null)
+                {
+                    loadedBundle.Unload(false);
+                }
+                tmpFontBundle = null;
+                dynamicTmpFont = null;
+                tmpFontSource = "";
+                activeTmpFactoryArgument = null;
+                tmpFactoryVerified = false;
+                Logger.LogWarning(
+                    "TMP_BUNDLE_FALLBACK reason=" + exception.GetType().Name
+                    + ": " + exception.Message);
+                return false;
+            }
+        }
+
         private void InitializeTmpFont(string family)
+        {
+            tmpFontFamily = family;
+            InitializeTmpFont(family, true);
+        }
+
+        private void InitializeTmpFont(string family, bool tryBundledFont)
         {
             if (tmpFontAssetType == null)
             {
                 throw new NotSupportedException(
                     "TMPro.TMP_FontAsset is unavailable; TMP adapter is optional");
             }
+            if (tryBundledFont && TryLoadBundledTmpFont())
+            {
+                return;
+            }
+
             List<MethodInfo> fileFactories = new List<MethodInfo>();
             List<MethodInfo> fontFactories = new List<MethodInfo>();
             foreach (MethodInfo method in tmpFontAssetType.GetMethods(
@@ -482,6 +1130,7 @@ namespace Hanhua.FontFallback
                     }
 
                     dynamicTmpFont.name = "Hanhua TMP Dynamic Fallback";
+                    tmpFontSource = "dynamic";
                     SetOptionalProperty(
                         dynamicTmpFont, "atlasPopulationMode", "Dynamic");
                     SetOptionalProperty(
@@ -505,6 +1154,7 @@ namespace Hanhua.FontFallback
                         Destroy(dynamicTmpFont);
                         dynamicTmpFont = null;
                     }
+                    tmpFontSource = "";
                     tmpSourceFont = null;
                     activeTmpFactoryArgument = null;
                 }
@@ -622,11 +1272,16 @@ namespace Hanhua.FontFallback
                 }
                 else if (type == typeof(int))
                 {
+                    // Rendezvous 实证 2026-08-17：atlas 2048 + sampleSize 32
+                    // + padding 9 → 每字形 50px² → 容量 ≈1677，required 集
+                    // 1769 码点溢出 → TMP 文本口口口（格式无关——TTF/OTF
+                    // 同样缺）。atlas 4096（TMP 上限）→ 容量 4 倍 → 覆盖
+                    // 需求集绰绰有余。
                     arguments[index] = name.IndexOf(
                         "padding", StringComparison.OrdinalIgnoreCase) >= 0
                         ? 9
                         : name.IndexOf("atlas", StringComparison.OrdinalIgnoreCase) >= 0
-                            ? 2048
+                            ? 4096
                             : name.IndexOf("face", StringComparison.OrdinalIgnoreCase) >= 0
                                 ? 0
                                 : 32;
@@ -1830,8 +2485,24 @@ namespace Hanhua.FontFallback
                     "TMP_FACTORY_REJECTED candidate="
                     + DescribeTmpCandidate(activeTmpFactoryArgument)
                     + " glyph=" + character);
+                bool rejectedBundle = tmpFontSource == "bundle";
                 DiscardDynamicTmpFont();
-                if (!ActivateNextTmpFont(failures))
+                if (rejectedBundle)
+                {
+                    try
+                    {
+                        InitializeTmpFont(tmpFontFamily, false);
+                    }
+                    catch (Exception exception)
+                    {
+                        failures.Add(
+                            "Dynamic fallback after bundle rejection failed: "
+                            + exception.GetType().Name + ": "
+                            + exception.Message);
+                        break;
+                    }
+                }
+                else if (!ActivateNextTmpFont(failures))
                 {
                     break;
                 }
@@ -1855,6 +2526,7 @@ namespace Hanhua.FontFallback
             }
 
             UnityEngine.Object rejectedFont = dynamicTmpFont;
+            bool bundleOwned = tmpFontSource == "bundle";
             try
             {
                 RemoveDynamicTmpFallbacks();
@@ -1871,9 +2543,21 @@ namespace Hanhua.FontFallback
                 tmpSourceFont = null;
                 activeTmpFactoryArgument = null;
                 tmpFactoryVerified = false;
+                tmpFontSource = "";
                 try
                 {
-                    Destroy(rejectedFont);
+                    if (bundleOwned)
+                    {
+                        if (tmpFontBundle != null)
+                        {
+                            tmpFontBundle.Unload(false);
+                            tmpFontBundle = null;
+                        }
+                    }
+                    else
+                    {
+                        Destroy(rejectedFont);
+                    }
                 }
                 catch (Exception exception)
                 {
@@ -2206,26 +2890,136 @@ namespace Hanhua.FontFallback
             }
         }
 
+        // Rendezvous 诊断 2026-08-17：主菜单中文口口（"量""盘"）多次
+        // 修复无效——把所有「含中文文本」的对象（类型/内容/字体/字体
+        // 类型）输出到日志，一次定位全部渲染路径。awake 场景未加载时
+        // dump=0——改为每次扫描限频输出（场景加载后自动覆盖）。
+        private float _lastDiagDump = -100f;
+
+        private void DumpTextDiagnostics()
+        {
+            try
+            {
+                UnityEngine.Object[] all = Resources.FindObjectsOfTypeAll<
+                    UnityEngine.Object>();
+                int dumped = 0;
+                foreach (UnityEngine.Object obj in all)
+                {
+                    if (obj == null || dumped >= 80)
+                    {
+                        continue;
+                    }
+                    Type type = obj.GetType();
+                    PropertyInfo textProp = type.GetProperty(
+                        "text", BindingFlags.Public | BindingFlags.Instance);
+                    if (textProp == null || !textProp.CanRead)
+                    {
+                        continue;
+                    }
+                    object value;
+                    try
+                    {
+                        value = textProp.GetValue(obj, null);
+                    }
+                    catch (Exception)
+                    {
+                        continue;
+                    }
+                    string text = value as string;
+                    if (string.IsNullOrEmpty(text))
+                    {
+                        continue;
+                    }
+                    bool hasChinese = false;
+                    foreach (char c in text)
+                    {
+                        if (c >= 0x4E00 && c <= 0x9FFF)
+                        {
+                            hasChinese = true;
+                            break;
+                        }
+                    }
+                    if (!hasChinese)
+                    {
+                        continue;
+                    }
+                    string fontDesc = "no-font-prop";
+                    string fontType = "";
+                    PropertyInfo fontProp = type.GetProperty(
+                        "font", BindingFlags.Public | BindingFlags.Instance);
+                    if (fontProp != null && fontProp.CanRead)
+                    {
+                        try
+                        {
+                            object fv = fontProp.GetValue(obj, null);
+                            fontType = fv == null ? "null" : fv.GetType().Name;
+                            fontDesc = fv == null ? "null" : fv.ToString();
+                        }
+                        catch (Exception)
+                        {
+                        }
+                    }
+                    string preview = text.Length > 24
+                        ? text.Substring(0, 24) : text;
+                    Logger.LogInfo(
+                        "TEXT_DIAG name=" + obj.name
+                        + " type=" + type.FullName
+                        + " text=" + preview
+                        + " font=" + fontDesc
+                        + " fontType=" + fontType);
+                    dumped++;
+                }
+                Logger.LogInfo("TEXT_DIAG_TOTAL dumped=" + dumped);
+            }
+            catch (Exception exception)
+            {
+                Logger.LogError("TEXT_DIAG failed: " + exception);
+            }
+        }
+
         private void ApplyFonts(string reason)
         {
+            // Rendezvous 实证 2026-08-17：Start 时按需程序集（UnityEngine.UI）
+            // 可能未加载 → 类型发现为空 → UGUI 文本永远未 patch。每次
+            // 扫描前重新发现（幂等：已发现的类型快速返回，未发现的
+            // 每次尝试 Assembly.Load——场景加载后类型即被补上）。
+            DiscoverOptionalTextTypes();
             if (reason == "periodic"
                 || reason.StartsWith("scene:", StringComparison.Ordinal)
                 || (reason == "awake" && !RequiresDeferredTmpGlyphValidation()))
             {
                 EnsureUsableTmpFont();
             }
+            if (Time.realtimeSinceStartup - _lastDiagDump >= 5f)
+            {
+                _lastDiagDump = Time.realtimeSinceStartup;
+                DumpTextDiagnostics();
+            }
             int translatedCount = RunFontScan(
                 "ExactTranslations",
                 ApplyExactTranslations);
-            int tmpCount = RunFontScan("TMP", PatchLoadedTmpAssets);
+            // TMP 文本主字体替换（Rendezvous 实证：fallback 查询未生效，
+            // 主字体替换绕开——官方中文字体缺字问题根治）
+            int tmpTextCount = RunFontScan("TMP.Text", PatchTmpTexts);
+            int tmpCount = tmpTextCount;
+            tmpCount += RunFontScan("TMP", PatchLoadedTmpAssets);
             int uiCount = RunFontScan("UI.Text", PatchUiTexts);
             int uiToolkitCount = RunFontScan(
                 "UI Toolkit", PatchUiToolkitTexts);
             int textMeshCount = RunFontScan("TextMesh", PatchTextMeshes);
+            // 暴力兜底：一切 Font 类型属性 → 工具字体（类型白名单漏网
+            // 的 UGUI/NGUI 组件靠它覆盖，Rendezvous 实证 ui=0 场景）
+            int allCount = RunFontScan("AllFontProps", PatchAllFontProperties);
+            uiCount += allCount;
+            // IMGUI skin 只能在 OnGUI 生命周期内访问（GUI.skin 运行时
+            // 检查），此处不能安全 patch（Rendezvous 实证：非 OnGUI
+            // 调用抛异常跳过）——由 OnGUI() 回调专责。
+            int imGuiCount = 0;
             totalTmpApplications += tmpCount;
             totalUiApplications += uiCount;
             totalUiToolkitApplications += uiToolkitCount;
             totalTextMeshApplications += textMeshCount;
+            totalImGuiApplications += imGuiCount;
             VerifyRequiredGlyphs();
             CollectConsumerEvidence();
             WriteHealthManifest(reason == "periodic");
@@ -2239,6 +3033,7 @@ namespace Hanhua.FontFallback
                     + " ui=" + uiCount
                     + " uitoolkit=" + uiToolkitCount
                     + " textmesh=" + textMeshCount
+                    + " imgui=" + imGuiCount
                     + " translations=" + translatedCount
                     + " exact=" + totalExactTranslationApplications
                     + " normalized=" + totalNormalizedTranslationApplications
@@ -2246,7 +3041,8 @@ namespace Hanhua.FontFallback
                     + " totals=" + totalTmpApplications
                     + "/" + totalUiApplications
                     + "/" + totalUiToolkitApplications
-                    + "/" + totalTextMeshApplications);
+                    + "/" + totalTextMeshApplications
+                    + "/" + totalImGuiApplications);
             }
         }
 
@@ -2719,9 +3515,53 @@ namespace Hanhua.FontFallback
             }
         }
 
+        // Rendezvous 实证 2026-08-17：主菜单/加载界面文本是 TMP
+        // （TextMeshProUGUI，官方中文字体 asset 渲染）——官方字体只
+        // 覆盖官方中文集，译文新字缺字形 → 个别字口口（每次启动相同，
+        // 确定性缺字）。TMP fallback 表查询在 TMP 2.x 对动态字体未
+        // 生效（挂 fallback 后缺字不变）——直接把 TMP 文本的主字体
+        // 替换为动态字体（工具字体全字形），绕开 fallback 查询。
+        private int PatchTmpTexts()
+        {
+            if (dynamicTmpFont == null || tmpTextType == null)
+            {
+                return 0;
+            }
+            int applied = 0;
+            foreach (UnityEngine.Object text in FindObjectsOfOptionalType(
+                tmpTextType))
+            {
+                if (text == null)
+                {
+                    continue;
+                }
+                try
+                {
+                    if (ApplyTmpFontToText(text))
+                    {
+                        applied++;
+                    }
+                }
+                catch (Exception exception)
+                {
+                    Logger.LogWarning(
+                        "Could not apply TMP text font: " + exception.Message);
+                }
+            }
+            return applied;
+        }
+
         private int PatchLoadedTmpAssets()
         {
             if (dynamicTmpFont == null)
+            {
+                return 0;
+            }
+
+            // In bundle mode the tool font is the graph root.  Original
+            // assets may point to it only through the tool font's fallback
+            // table; adding reverse edges here would create a cycle.
+            if (tmpFontSource == "bundle")
             {
                 return 0;
             }
@@ -2739,6 +3579,12 @@ namespace Hanhua.FontFallback
 
                 try
                 {
+                    if (IsDynamicTmpFallback(fontAsset)
+                        || WouldCreateTmpFallbackCycle(fontAsset,
+                            dynamicTmpFont))
+                    {
+                        continue;
+                    }
                     PropertyInfo fallbackProperty = fontAsset.GetType().GetProperty(
                         "fallbackFontAssetTable",
                         BindingFlags.Public | BindingFlags.Instance);
@@ -2775,6 +3621,188 @@ namespace Hanhua.FontFallback
                 }
             }
 
+            return applied;
+        }
+
+        private bool WouldCreateTmpFallbackCycle(object source,
+            object candidate)
+        {
+            if (IsUnityObjectUnavailable(source)
+                || IsUnityObjectUnavailable(candidate))
+            {
+                return false;
+            }
+            if (ReferenceEquals(source, candidate))
+            {
+                return true;
+            }
+            return CanReachTmpFallback(candidate, source,
+                new HashSet<object>(ReferenceEqualityComparer.Instance));
+        }
+
+        private bool CanReachTmpFallback(object current, object target,
+            HashSet<object> visited)
+        {
+            if (IsUnityObjectUnavailable(current)
+                || !visited.Add(current))
+            {
+                return false;
+            }
+            if (ReferenceEquals(current, target))
+            {
+                return true;
+            }
+
+            PropertyInfo fallbackProperty = current.GetType().GetProperty(
+                "fallbackFontAssetTable",
+                BindingFlags.Public | BindingFlags.Instance);
+            if (fallbackProperty == null || !fallbackProperty.CanRead)
+            {
+                return false;
+            }
+            IList fallbacks = fallbackProperty.GetValue(current, null) as IList;
+            if (fallbacks == null)
+            {
+                return false;
+            }
+            foreach (object fallback in fallbacks)
+            {
+                if (CanReachTmpFallback(fallback, target, visited))
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        private sealed class ReferenceEqualityComparer :
+            IEqualityComparer<object>
+        {
+            public static readonly ReferenceEqualityComparer Instance =
+                new ReferenceEqualityComparer();
+
+            public new bool Equals(object left, object right)
+            {
+                return ReferenceEquals(left, right);
+            }
+
+            public int GetHashCode(object value)
+            {
+                return RuntimeHelpers.GetHashCode(value);
+            }
+        }
+
+        private bool IsDynamicTmpFallback(object candidate)
+        {
+            if (dynamicTmpFont == null || IsUnityObjectUnavailable(candidate))
+            {
+                return false;
+            }
+            PropertyInfo fallbackProperty = dynamicTmpFont.GetType().GetProperty(
+                "fallbackFontAssetTable",
+                BindingFlags.Public | BindingFlags.Instance);
+            if (fallbackProperty == null || !fallbackProperty.CanRead)
+            {
+                return false;
+            }
+            IList fallbacks = fallbackProperty.GetValue(
+                dynamicTmpFont, null) as IList;
+            return fallbacks != null && fallbacks.Contains(candidate);
+        }
+
+        // Rendezvous 实证 2026-08-17：加载界面/存档提示等 IMGUI（OnGUI）
+        // 文本用 GUI.skin 默认字体（内置 Arial 无中文字形）→ 口口口。
+        // 替换 GUI.skin.font 与全部样式字体（update 轮询保证场景重建后
+        // 再次替换）。
+        private int PatchImGuiSkin()
+        {
+            // IMGUI skin 只能在 OnGUI 生命周期内安全访问（GUI.skin 运行时
+            // 检查）——OnGUI() 回调专责（Rendezvous 实证 2026-08-17）。
+            return 0;
+        }
+
+        // Rendezvous 实证 2026-08-17：类型白名单（UGUI/TMP/TextMesh）扫描
+        // 找不到游戏文本组件（ui 恒 0，主菜单中文用游戏原字体渲染 →
+        // 口口口）。兜底：遍历全部对象，反射替换一切 Font 类型属性——
+        // 覆盖 UGUI/NGUI/旧 Text/TextMesh 等所有 legacy 字体路径。
+        // 已替换为 dynamicFont 的对象跳过（首次大扫后为增量）。
+        private int PatchAllFontProperties()
+        {
+            if (dynamicFont == null)
+            {
+                return 0;
+            }
+            int applied = 0;
+            UnityEngine.Object[] all;
+            try
+            {
+                all = Resources.FindObjectsOfTypeAll<UnityEngine.Object>();
+            }
+            catch (Exception)
+            {
+                return 0;
+            }
+            foreach (UnityEngine.Object obj in all)
+            {
+                if (obj == null || ReferenceEquals(obj, dynamicFont))
+                {
+                    continue;
+                }
+                Type type = obj.GetType();
+                if (type == typeof(Font) || type == typeof(Texture2D)
+                    || type == typeof(Material) || type == typeof(Shader))
+                {
+                    continue;
+                }
+                PropertyInfo[] props;
+                try
+                {
+                    props = type.GetProperties(
+                        BindingFlags.Public | BindingFlags.Instance);
+                }
+                catch (Exception)
+                {
+                    continue;
+                }
+                bool isTmpFontType = dynamicTmpFont != null;
+                Type tmpFontType = isTmpFontType
+                    ? dynamicTmpFont.GetType() : null;
+                foreach (PropertyInfo prop in props)
+                {
+                    if (!prop.CanWrite || !prop.CanRead)
+                    {
+                        continue;
+                    }
+                    // legacy Font 属性 → dynamicFont；
+                    // TMP_FontAsset 类型属性（TMP 文本 font）→ dynamicTmpFont
+                    // （Rendezvous 实证：TMP_Text 类型发现/扫描链失效，
+                    // TMP 文本主字体从未被替换——官方 SDF 字体缺字口口。
+                    // 按属性值类型兜底，不依赖类型白名单。）
+                    bool isLegacyFont = prop.PropertyType == typeof(Font);
+                    bool isTmpFont = isTmpFontType
+                        && prop.PropertyType == tmpFontType;
+                    if (!isLegacyFont && !isTmpFont)
+                    {
+                        continue;
+                    }
+                    try
+                    {
+                        object current = prop.GetValue(obj, null);
+                        object target = isLegacyFont ? (object)dynamicFont
+                            : dynamicTmpFont;
+                        if (current == null || ReferenceEquals(current, target))
+                        {
+                            continue;
+                        }
+                        prop.SetValue(obj, target, null);
+                        applied++;
+                    }
+                    catch (Exception)
+                    {
+                        // 只读/受限属性：跳过
+                    }
+                }
+            }
             return applied;
         }
 

@@ -808,8 +808,8 @@ class Project:
         )
         return report
 
-    def scan_all(self, event_cb: Callable[[PipelineEvent], None] | None = None
-                 ) -> AnalysisReport:
+    def scan_all(self, event_cb: Callable[[PipelineEvent], None] | None = None,
+                 csv_overwrite_source: bool = False) -> AnalysisReport:
         """统一执行只读检测、原生扫描和受控工具交叉分析。"""
         def emit(phase: str, status: str, message: str,
                  current: int = 0, total: int = 0) -> None:
@@ -849,7 +849,7 @@ class Project:
         try:
             text_files = self.scan()
             emit("text_scan", "succeeded", f"结构化文本文件 {text_files} 个")
-            v2_files = self.scan_v2()
+            v2_files = self.scan_v2(csv_overwrite_source=csv_overwrite_source)
         finally:
             self._scan_all_active = False
         warnings.extend(self._last_scan_morph_warnings)
@@ -1126,7 +1126,8 @@ class Project:
         except Exception:  # noqa: BLE001 生成器不可用不阻断扫描
             return None
 
-    def scan_v2(self, progress_cb: Callable | None = None) -> int:
+    def scan_v2(self, progress_cb: Callable | None = None,
+                csv_overwrite_source: bool = False) -> int:
         """扫描二进制资源并入库，返回保留的资源文件数。"""
         standalone_before = None
         if not self._scan_all_active:
@@ -1147,11 +1148,17 @@ class Project:
             rel = str(f.relative_to(self.game_dir)).replace("\\", "/")
             if tt_generator is not None:
                 sources.append((
-                    lambda f_, file_id=None, gen=tt_generator:
+                    lambda f_, file_id=None, gen=tt_generator,
+                    ovr=csv_overwrite_source:
                     unity_extractor.extract_asset_file(
-                        f_, file_id=file_id, typetree_generator=gen), f, rel))
+                        f_, file_id=file_id, typetree_generator=gen,
+                        csv_overwrite_source=ovr), f, rel))
             else:
-                sources.append((unity_extractor.extract_asset_file, f, rel))
+                sources.append((
+                    lambda f_, file_id=None, ovr=csv_overwrite_source:
+                    unity_extractor.extract_asset_file(
+                        f_, file_id=file_id,
+                        csv_overwrite_source=ovr), f, rel))
         # 跨程序集 UI sink 闭包（证明链扩展）：多 DLL 游戏的显示方法链
         # （Fungus 等插件方法 → 插件内部 set_text）在逐程序集证明中不可见，
         # 一次性联合计算后传给每个程序集提取器（deadbeat 实证 +10 条
@@ -1701,7 +1708,7 @@ class Project:
                     runner = IsolatedToolRunner(self.app_dir / "tooling")
                     font_file = (
                         app_root / "fonts" / "SimplifiedChinese"
-                        / "SourceHanSansSC-Regular.otf")
+                        / "NotoSerifCJKsc-Medium.otf")
                     if font_file.is_file():
                         def _bmfont_executor(provider, staging_fnt, plan):
                             return inject_bitmap_font(

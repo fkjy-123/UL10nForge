@@ -116,6 +116,9 @@ def _detect_builtin_chinese_pack(game_dir: Path) -> bool:
     from hanhua.core.unity import extractor as asset_ex
     try:
         cjk = _CJK_IDEOGRAPH
+        has_chinese_obj = False
+        total_entries = 0
+        latin_entries = 0
         for f in asset_ex.find_asset_files(game_dir):
             try:
                 pf = asset_ex.extract_asset_file(f)
@@ -126,12 +129,25 @@ def _detect_builtin_chinese_pack(game_dir: Path) -> bool:
                 obj = (e.meta or {}).get("obj")
                 if obj is not None:
                     objs.setdefault(obj, []).append(e.original)
+                if e.original.strip():
+                    total_entries += 1
+                    if any(ord(c) < 0x2E80 for c in e.original):
+                        latin_entries += 1
             for vals in objs.values():
                 if len(vals) < 50:
                     continue
                 zh = sum(1 for v in vals if cjk.search(v))
                 if zh / len(vals) >= 0.7:
-                    return True
+                    has_chinese_obj = True
+        # 完整中文包判据 v2（Rendezvous 实证修正）：对象级 ≥50 条 ≥70%
+        # 中文只说明「有中文数据」——Rendezvous 只有 Chapter1_CHN 一个
+        # 对话中文版 + CSV CHN 部分行，其余 98% 文本仍英文，不是完整
+        # 中文包（拦截会漏掉 14 个对话/数千条文本的汉化）。完整包 =
+        # 中文对象存在 **且游戏文本主体不是英文**（8morelives 10 语言
+        # 完整包：英文对象只占总量 1/10；Rendezvous 英文占 ~98%）
+        if has_chinese_obj and total_entries > 0:
+            if latin_entries / total_entries < 0.5:
+                return True
     except Exception:  # noqa: BLE001 检测失败不阻断
         return False
     return False
@@ -710,13 +726,135 @@ def _run_semantic_review(project, entries, out_dir: Path, game_name: str,
     return mapped, summary
 
 
+def _apply_official_zh(entries: list) -> int:
+    """CSV 官方中文搬运 + ink ^ 前缀保护。
+
+    CSV 条目 meta official_zh（目标语言列 CHN 的官方中文）→ translation
+    直接用官方译文（覆盖模型译文）；ink 对话行 ^ 前缀是 ink 文本标记
+    （模型可能丢失）→ 写回前补回。
+    """
+    moved = 0
+    for e in entries:
+        zh = e.meta.get("official_zh") if getattr(e, "meta", None) else None
+        if zh and e.status != "skipped":
+            e.translation = zh
+            e.meta["translation_note"] = "official_zh"
+            moved += 1
+            continue
+        if (e.meta.get("kind") == "ink" and e.translation
+                and e.original.startswith("^")
+                and not e.translation.startswith("^")):
+            e.translation = "^" + e.translation
+    return moved
+
+
+def _apply_ink_official_zh(game_dir: Path, entries: list) -> int:
+    """ink 对话语言版搬运：游戏目录中 `X_CHN` 对话存在时，`X_EN` 条目的
+    同块同行用官方中文（块内行序一致——同源编译的 ink 语言版）。
+
+    按 ink_base（Chapter1）+ 块名对齐：CHN 版块行数 == EN 版块行数 →
+    逐行搬运（官方中文，含 ^ 前缀）；行数不同/块缺失（官方翻译未覆盖）
+    → 保留模型译文（宁漏勿坏）。
+    """
+    from hanhua.core.unity import extractor as asset_ex
+    import json as _json
+    import re as _re
+    import UnityPy
+    chn: dict[str, dict[str, list[str]]] = {}
+    for f in asset_ex.find_asset_files(game_dir):
+        try:
+            env = UnityPy.load(str(f))
+        except Exception:  # noqa: BLE001
+            continue
+        for obj in env.objects:
+            if obj.type.name != "TextAsset":
+                continue
+            try:
+                t = obj.read()
+                name = str(getattr(t, "m_Name", "") or "")
+                text = t.m_Script
+            except Exception:  # noqa: BLE001
+                continue
+            if not isinstance(text, str) or not text.lstrip(
+                    "﻿").startswith('{"inkVersion"'):
+                continue
+            m = _re.match(r"^(.*?)_([A-Z]{2,3})$", name)
+            if not m or m.group(2) != "CHN":
+                continue
+            base = m.group(1)
+            try:
+                data = _json.loads(text.lstrip("﻿"))
+            except Exception:  # noqa: BLE001
+                continue
+            blocks: dict[str, list[str]] = {}
+
+            def walk(node: Any, cur: str) -> None:
+                if isinstance(node, dict):
+                    for k, v in node.items():
+                        if (isinstance(k, str) and k.startswith("#")) or (
+                                isinstance(k, str) and k == "->"):
+                            continue
+                        nb = cur
+                        if (isinstance(k, str) and k not in ("root",)
+                                and not k.startswith("^")
+                                and not k[0].isdigit() and len(k) > 1):
+                            nb = k
+                        walk(v, nb)
+                elif isinstance(node, list):
+                    for v in node:
+                        walk(v, cur)
+                elif isinstance(node, str) and node.strip():
+                    v = node.strip()
+                    if v in ("done", "end") or not any(
+                            c.isalpha() for c in v):
+                        return
+                    blocks.setdefault(cur, []).append(v)
+
+            walk(data, "")
+            chn.setdefault(base, {})
+            for blk, lines in blocks.items():
+                chn[base][blk] = lines
+    if not chn:
+        return 0
+    # EN 版块条目数（ink_base + 块）——与 CHN 版块行数一致才搬运
+    en_count: dict[tuple[str, str], int] = {}
+    for e in entries:
+        base = e.meta.get("ink_base")
+        blk = e.meta.get("ink_block") or ""
+        if not base or not blk or e.meta.get("reason") != "ink_dialogue_line":
+            continue
+        key = (base, blk)
+        en_count[key] = en_count.get(key, 0) + 1
+    moved = 0
+    for e in entries:
+        if e.meta.get("reason") != "ink_dialogue_line":
+            continue
+        base = e.meta.get("ink_base") or ""
+        block = e.meta.get("ink_block") or ""
+        seq = e.meta.get("ink_seq")
+        if not isinstance(seq, int) or not base or not block:
+            continue
+        lines = (chn.get(base) or {}).get(block)
+        if lines is None:
+            continue
+        # 块行数一致才对齐（官方翻译未覆盖的块宁漏勿坏）
+        if en_count.get((base, block)) != len(lines):
+            continue
+        if seq < len(lines):
+            e.translation = lines[seq]
+            e.meta["translation_note"] = "official_ink_zh"
+            moved += 1
+    return moved
+
+
 def run_game(game_dir: Path, *, batch: int | None = None,
              do_translate: bool = True, do_writeback: bool = True,
              keep_library: bool = False,
              do_review: bool | None = None,
              app_dir: Path | None = None,
              resume: bool = False,
-             no_cleanup: bool = False) -> int:
+             no_cleanup: bool = False,
+             csv_overwrite_source: bool = False) -> int:
     """单游戏完整流程。返回退出码：0=流程完成（待分析），2=扫描阻断。
 
     resume=True：项目库已存在时跳过扫描+翻译，从语义审核/写回/导出继续
@@ -789,7 +927,8 @@ def run_game(game_dir: Path, *, batch: int | None = None,
     else:
         print("[1/4] 扫描识别…")
         project = Project.open_game_dir(game_dir, app_dir)
-        report = project.scan_all()
+        report = project.scan_all(
+            csv_overwrite_source=csv_overwrite_source)
         profile = project.profile
         print(f"  文本文件 {report.text_files} · v2 文件 {report.v2_files}"
              f" · 识别条目 {report.recognized_entries}")
@@ -994,6 +1133,22 @@ def run_game(game_dir: Path, *, batch: int | None = None,
         print(f"  完成：{stats.done} 条（记忆 {stats.from_memory}）"
               f" · 失败 {stats.failed} · 请求 {stats.requests}"
               f" · 耗时 {stats.elapsed:.1f}s")
+        # 官方中文搬运（Rendezvous 实证 2026-08-17）：游戏语言设置只有
+        # 英文，目标语言列（CSV CHN 列）与 ink 语言版（Chapter1_CHN）
+        # 的官方中文玩家读不到——搬运到实际显示位（写回源列/EN 版）。
+        # 官方译文优先于模型译文（质量更高且零翻译成本）。
+        # 注意：搬运修改内存 entries 后**必须写回 store**（写回阶段用
+        # store 数据）——2026-08-17 实证：只改内存导致 Load Game 等
+        # 官方译文丢失 + 56 条 ink ^ 前缀未补回。
+        try:
+            moved = _apply_official_zh(entries)
+            ink_moved = _apply_ink_official_zh(game_dir, entries)
+            if moved or ink_moved:
+                project.store.batch_update_translation_results(entries)
+                print(f"  官方中文搬运：CSV {moved} 条 · ink {ink_moved} 条"
+                      "（官方译文优先，不重复翻译）", flush=True)
+        except Exception:  # noqa: BLE001 搬运失败不阻断（保留模型译文）
+            print("  [官方中文搬运] 失败，保留模型译文", flush=True)
         # 命中注入用的 knowledge 实例已用完，关闭（learn 用新实例）
         try:
             knowledge.close()
@@ -1400,6 +1555,9 @@ def main() -> int:
     parser.add_argument("--no-cleanup", action="store_true",
                         help="写回成功后保留 `_汉化` 发布目录（默认闭环即删；"
                         "供发布目录保留调试/复验）")
+    parser.add_argument("--csv-overwrite-source", action="store_true",
+                        help="CSV 覆盖源列模式（游戏语言设置只有英文："
+                        "翻译源列写回源列，目标语言列官方中文搬运）")
     args = parser.parse_args()
     return run_game(
         args.game_dir,
@@ -1411,6 +1569,7 @@ def main() -> int:
         do_review=False if args.no_review else None,
         resume=args.resume,
         no_cleanup=args.no_cleanup,
+        csv_overwrite_source=args.csv_overwrite_source,
     )
 
 

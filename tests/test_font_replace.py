@@ -39,11 +39,11 @@ BUNDLE_DIR = FONTS_DIR / "TMP_Font_AssetBundles"
     ("5.6.1", None),      # TMP1 走 legacy 路径，无 bundle
     ("2017.4.40", None),
     ("2018.4.36", None),
-    ("2019.4.40", "sourcehan_sdf_medium_u2019"),
-    ("2020.3.48", "sourcehan_sdf_medium_u2019"),
-    ("2021.3.33", "sourcehan_sdf_medium_u2021"),
-    ("2022.3.20", "sourcehan_sdf_medium_u2022"),
-    ("6000.3.32f1", "sourcehan_sdf_medium_u6000"),
+    ("2019.4.40", "notoserif_sdf_u2019"),
+    ("2020.3.48", "notoserif_sdf_u2019"),
+    ("2021.3.33", "notoserif_sdf_u2021"),
+    ("2022.3.20", "notoserif_sdf_u2022"),
+    ("6000.3.32f1", "notoserif_sdf_u6000"),
     ("2050.1.0", None),
 ])
 def test_select_tmp_bundle(version, expected):
@@ -54,20 +54,6 @@ def test_select_tmp_bundle(version, expected):
         assert bundle is not None
         assert bundle.name == expected
         assert bundle.is_file()
-
-
-@pytest.mark.parametrize("weight,expected", [
-    ("heavy", "sourcehan_sdf_heavy_u2022"),
-    ("medium", "sourcehan_sdf_medium_u2022"),
-    ("thin", "sourcehan_sdf_thin_u2022"),
-    ("bold", "sourcehan_sdf_medium_u2022"),  # 未知档位回退 medium
-    ("", "sourcehan_sdf_medium_u2022"),
-])
-def test_select_tmp_bundle_weight(weight, expected):
-    bundle = select_tmp_bundle("2022.3.20", weight=weight)
-    assert bundle is not None
-    assert bundle.name == expected
-    assert bundle.is_file()
 
 
 def test_select_tmp_bundle_none():
@@ -144,10 +130,10 @@ def test_ttf_metrics_real_fonts():
     import os
     ttf = Path(os.path.join(
         str(Path(__file__).resolve().parents[1]), "fonts",
-        "SimplifiedChinese", "SourceHanSansSC-Regular.otf"))
+        "SimplifiedChinese", "NotoSerifCJKsc-Medium.otf"))
     if ttf.is_file():
         ascent, descent, gap = _ttf_metrics(ttf.read_bytes())
-        # 思源黑体 hhea: ascent≈0.92em, descent≈-0.24em
+        # Noto Serif CJK SC hhea: ascent≈0.92em, descent≈-0.24em
         assert 0.7 < ascent < 1.2
         assert -0.35 < descent < -0.1
         assert -0.2 < gap < 0.2
@@ -261,7 +247,7 @@ def test_copy_fields_layout_mismatch_fields():
 
 def test_font_ttf_candidate_whitelist():
     # legacy TTF 白名单：文件不在 → None（TMP SDF 三档取代 legacy 路径）
-    cfg = FontConfig(filename="SimplifiedChinese/SourceHanSansSC-Regular.otf")
+    cfg = FontConfig(filename="SimplifiedChinese/NotoSerifCJKsc-Medium.otf")
     cand = _font_ttf_candidate(cfg)
     assert cand is None or cand.is_file()
 
@@ -306,8 +292,8 @@ def test_manifest_matches_bundles():
         encoding="utf-8"))
     integrity = manifest["integrity"]
     # manifest 里的每个 bundle 都必须真实存在且 sha256 匹配
-    # （3 档 × 4 版本 sourcehan，共 12 个）
-    assert len(integrity) == 12
+    # （单字体 NotoSerif × 4 版本，共 4 个）
+    assert len(integrity) == 4
     for name, meta in integrity.items():
         p = BUNDLE_DIR / name
         assert p.is_file(), f"{name} missing"
@@ -319,12 +305,8 @@ def test_manifest_versions_cover_all_bundles():
     manifest = json.loads((BUNDLE_DIR / "manifest.json").read_text(
         encoding="utf-8"))
     integrity = manifest["integrity"]
-    for name in ["sourcehan_sdf_heavy_u2019", "sourcehan_sdf_heavy_u2021",
-                 "sourcehan_sdf_heavy_u2022", "sourcehan_sdf_heavy_u6000",
-                 "sourcehan_sdf_medium_u2019", "sourcehan_sdf_medium_u2021",
-                 "sourcehan_sdf_medium_u2022", "sourcehan_sdf_medium_u6000",
-                 "sourcehan_sdf_thin_u2019", "sourcehan_sdf_thin_u2021",
-                 "sourcehan_sdf_thin_u2022", "sourcehan_sdf_thin_u6000"]:
+    for name in ["notoserif_sdf_u2019", "notoserif_sdf_u2021",
+                 "notoserif_sdf_u2022", "notoserif_sdf_u6000"]:
         assert name in integrity
 
 

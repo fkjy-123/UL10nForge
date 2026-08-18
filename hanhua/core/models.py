@@ -133,9 +133,9 @@ class ApiConfig:
 @dataclass
 class FontConfig:
     enabled: bool = True
-    filename: str = "SimplifiedChinese/SourceHanSansSC-Regular.otf"
-    #: TMP 替换字体的粗细档位：heavy（粗）/ medium（中）/ thin（细）
-    weight: str = "medium"
+    # 2026-08-18 收敛：只保留唯一字体 Noto Serif CJK SC Medium（宋体
+    # 中等字重），不再维护多字体/多档位。legacy Font 路径用该 OTF。
+    filename: str = "SimplifiedChinese/NotoSerifCJKsc-Medium.otf"
 
 
 @dataclass

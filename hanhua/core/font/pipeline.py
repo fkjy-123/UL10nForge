@@ -39,7 +39,8 @@ from hanhua.core.font_support import (FontInstallResult,
                                       install_font_override)
 from hanhua.core.models import FontConfig
 from hanhua.core.unity.font_replace import (FontReplaceResult,
-                                            install_static_fonts)
+                                            install_static_fonts,
+                                            select_tmp_bundle)
 
 
 @dataclass
@@ -182,6 +183,7 @@ class FontCompatibilityPipeline:
         """运行时回退部署：Mono 安装 BepInEx 插件；IL2CPP 无 provider →
         unsupported stub（发布门按 coverage/flag 决策，这里不阻断）。"""
         inputs = self.inputs
+        tmp_bundle = select_tmp_bundle(inputs.unity_version)
         if static is not None and static.replaced:
             # 静态替换成功后部署运行时插件兜底（覆盖动态加载字体）——
             # 插件失败不阻断（静态已生效），记 warning 由调用方附加
@@ -192,6 +194,7 @@ class FontCompatibilityPipeline:
                         translations=inputs.translations,
                         exclude=set(reverted_sources),
                         player_root=inputs.player_root,
+                        tmp_bundle=tmp_bundle,
                     )
                 except Exception as exc:  # noqa: BLE001
                     # 静态覆盖已完整证明时插件兜底非必需（hickory 实证：
@@ -217,6 +220,7 @@ class FontCompatibilityPipeline:
                 translations=inputs.translations,
                 exclude=set(reverted_sources),
                 player_root=inputs.player_root,
+                tmp_bundle=tmp_bundle,
             )
         return FontInstallResult(
             installed=False,

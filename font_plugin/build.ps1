@@ -185,10 +185,13 @@ try {
         (Join-Path $managedDirectory 'System.Core.dll'),
         (Join-Path $managedDirectory 'UnityEngine.dll'),
         (Join-Path $managedDirectory 'UnityEngine.CoreModule.dll'),
+        (Join-Path $managedDirectory 'UnityEngine.AssetBundleModule.dll'),
         (Join-Path $managedDirectory 'UnityEngine.TextRenderingModule.dll'),
+        (Join-Path $managedDirectory 'UnityEngine.IMGUIModule.dll'),
         (Join-Path $managedDirectory 'UnityEngine.UI.dll'),
         $textMeshProCandidates[0],
-        (Join-Path $runtimeDirectory 'BepInEx\core\BepInEx.dll')
+        (Join-Path $runtimeDirectory 'BepInEx\core\BepInEx.dll'),
+        (Join-Path $runtimeDirectory 'BepInEx\core\0Harmony.dll')
     )
     # netstandard.dll 仅 .NET 4.x 配置的 Managed 目录存在（Unity 2018.1+
     # 的 .NET 4.x 模式）；CLR 2.0（.NET 3.5，Unity 2018.2 及更早默认）下
@@ -235,9 +238,31 @@ try {
         throw "Roslyn compilation failed with exit code $LASTEXITCODE"
     }
 
-    # 产物 mscorlib 引用必须 ≤ 2.0（CLR 2.0 老 Unity 兼容）；否则部署到
-    # 2018.2 等 .NET 3.5 游戏会 TypeLoadException（tiiny-ragdoll 实证）。
-    $probeAssembly = [Reflection.Assembly]::ReflectionOnlyLoadFrom($temporaryOutput)
+    # 产物必须匹配受支持的 Unity CLR 2/4 家族。用字节加载避免 Windows
+    # 对临时 DLL 保持路径锁，确保 finally 能清理且不掩盖验证错误。
+    $probeOutputDeadline = [DateTime]::UtcNow.AddSeconds(5)
+    $probeOutputFile = $null
+    $probeAssemblyBytes = $null
+    while ($true) {
+        $probeOutputFile = Get-Item -LiteralPath $temporaryOutput
+        if ($probeOutputFile.Length -ne 0) {
+            $probeAssemblyBytes = [System.IO.File]::ReadAllBytes($temporaryOutput)
+            if ($probeAssemblyBytes.Length -eq $probeOutputFile.Length) {
+                break
+            }
+        }
+        if ([DateTime]::UtcNow -ge $probeOutputDeadline) {
+            if ($probeOutputFile.Length -eq 0) {
+                throw 'Compiled plugin is empty; cannot verify CLR compatibility'
+            }
+            if ($probeAssemblyBytes.Length -ne $probeOutputFile.Length) {
+                throw 'Compiled plugin read was incomplete; cannot verify CLR compatibility'
+            }
+        }
+        Start-Sleep -Milliseconds 50
+    }
+    $probeAssembly = [Reflection.Assembly]::ReflectionOnlyLoad(
+        [byte[]]$probeAssemblyBytes)
     $probeMscorlib = @(
         $probeAssembly.GetReferencedAssemblies() |
             Where-Object { $_.Name -eq 'mscorlib' }
@@ -245,11 +270,13 @@ try {
     if ($probeMscorlib.Count -ne 1) {
         throw 'Compiled plugin has no single mscorlib reference; cannot verify CLR compatibility'
     }
-    if ($probeMscorlib[0].Version.Major -gt 2) {
+    $supportedMscorlibMajors = @('2', '4')
+    $probeMscorlibMajor = $probeMscorlib[0].Version.Major.ToString()
+    if ($supportedMscorlibMajors -notcontains $probeMscorlibMajor) {
         throw (
             'Compiled plugin targets mscorlib ' + $probeMscorlib[0].Version +
-            '; CLR 2.0 games (Unity 2018.2 / .NET 3.5) cannot load it. ' +
-            'Rebuild with a Unity 2018.2 game directory'
+            '; supported Unity CLR families are major 2 and 4. ' +
+            'Rebuild with a supported Unity game directory'
         )
     }
 

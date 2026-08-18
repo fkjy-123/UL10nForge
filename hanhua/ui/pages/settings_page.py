@@ -9,7 +9,7 @@ from PySide6.QtGui import QBrush, QColor, QIcon
 from PySide6.QtWidgets import (QCheckBox, QComboBox, QFormLayout, QFrame,
                                QGroupBox, QHBoxLayout, QHeaderView, QLabel,
                                QLineEdit, QListWidget, QListWidgetItem,
-                               QPushButton, QRadioButton, QTableWidget,
+                               QPushButton, QTableWidget,
                                QTableWidgetItem, QTabWidget, QVBoxLayout,
                                QWidget)
 
@@ -49,26 +49,24 @@ class SettingsPage(QWidget):
 
         lay.addWidget(PageHeader(
             "设置",
-            "分类设置中心 · 环境设置 / 字体设置 / 模型与性能 / AI 审核 / 术语库 / 关于",
+            "分类设置中心 · 环境设置 / 模型与性能 / AI 审核 / 术语库 / 关于",
         ))
 
         # 构建顺序：高级 tab 先建（API tab 的 _load_api_ui/_sync_backend_mode
         # 引用其控件），再按显示顺序 addTab
         advanced_tab = self._build_advanced_tab()
         env_tab = self._build_env_tab()
-        font_tab = self._build_font_tab()
         glossary_tab = self._build_glossary_tab()
         review_tab = self._build_review_tab()
         about_tab = self._build_about_tab()
         self.tabs = QTabWidget()
         self.tabs.addTab(env_tab, "环境设置")
-        self.tabs.addTab(font_tab, "字体设置")
         self.tabs.addTab(advanced_tab, "模型与性能")
         self.tabs.addTab(glossary_tab, "术语库")
         self.tabs.addTab(review_tab, "AI 审核")
         self.tabs.addTab(about_tab, "关于")
         for index, icon_name in enumerate(
-                ("rocket", "pen", "tool", "database", "shield", "brand")):
+                ("rocket", "tool", "database", "shield", "brand")):
             self.tabs.setTabIcon(index, QIcon(LineIcon.pixmap(icon_name, 16)))
         self.tabs.tabBar().setVisible(False)  # §66：左侧分类导航切换
         # 切回环境设置页时刷新四模型状态（端口探测；tabs 在此才创建完成）
@@ -94,11 +92,10 @@ class SettingsPage(QWidget):
         self.settings_nav.setFixedWidth(180)
         for title, tab_index, icon_name in (
                 ("环境设置", 0, "rocket"),
-                ("字体设置", 1, "pen"),
-                ("模型与性能", 2, "tool"),
-                ("AI 审核", 4, "shield"),
-                ("术语库", 3, "database"),
-                ("关于", 5, "brand")):
+                ("模型与性能", 1, "tool"),
+                ("AI 审核", 3, "shield"),
+                ("术语库", 2, "database"),
+                ("关于", 4, "brand")):
             item = QListWidgetItem(
                 QIcon(LineIcon.pixmap(icon_name, 16)), title)
             item.setData(Qt.UserRole, tab_index)
@@ -1025,84 +1022,6 @@ class SettingsPage(QWidget):
             total, free = gpu
             self.status_vram.setText(f"{free:.1f} / {total:.1f} GB 可用")
         self.state.settingsChanged.emit()
-
-    # ── 字体设置（2026-08-14 从翻译服务表单拆出独立页） ────────────
-    def _build_font_tab(self) -> QWidget:
-        tab = QWidget()
-        root = QHBoxLayout(tab)
-        root.setContentsMargins(28, 24, 28, 18)
-        root.setSpacing(24)
-
-        left = QWidget()
-        lay = QVBoxLayout(left)
-        lay.setContentsMargins(0, 0, 0, 0)
-        lay.setSpacing(12)
-        font_group = QGroupBox("中文字体档位")
-        f_lay = QVBoxLayout(font_group)
-        f_lay.setContentsMargins(16, 14, 16, 14)
-        f_lay.setSpacing(10)
-        self.font_thin = QRadioButton("细")
-        self.font_medium = QRadioButton("中（推荐）")
-        self.font_heavy = QRadioButton("粗")
-        for r in (self.font_thin, self.font_medium, self.font_heavy):
-            r.setMinimumHeight(38)
-            r.setMinimumWidth(200)
-            f_lay.addWidget(r)
-        hint = QLabel("写回时 TMP 字体按所选档位替换"
-                      "（思源黑体 SDF：细 / 中 / 粗）")
-        hint.setProperty("class", "subtitle")
-        hint.setWordWrap(True)
-        f_lay.addWidget(hint)
-        self.font_save_btn = QPushButton("保存字体档位")
-        self.font_save_btn.setProperty("primary", True)
-        self.font_save_btn.setMinimumHeight(40)
-        f_lay.addWidget(self.font_save_btn)
-        lay.addWidget(font_group)
-        lay.addStretch(1)
-        root.addWidget(left, 4)
-
-        right = QWidget()
-        right_lay = QVBoxLayout(right)
-        right_lay.setContentsMargins(0, 0, 0, 0)
-        right_lay.setSpacing(10)
-        head = QLabel("字体替换说明")
-        head.setProperty("class", "pageTitle")
-        font_hint = QLabel(
-            "社区方案（XUnity）遇到的口口乱码，本工具走「替换字体 + "
-            "完整性验证」链：写入游戏的字体需通过逐码点验证（所需字形"
-            " → 字符表 → 字形表 → 图集 → 回退链），缺失码点如实报告"
-            "而非静默替换——防止「汉化了但全是口口」的假成功。\n\n"
-            "档位影响显示粗细：思源黑体细 / 中 / 粗三档 SDF，"
-            "写回时按所选档位替换 TMP 字体。")
-        font_hint.setProperty("class", "subtitle")
-        font_hint.setWordWrap(True)
-        right_lay.addWidget(head)
-        right_lay.addWidget(font_hint)
-        right_lay.addStretch(1)
-        root.addWidget(right, 6)
-
-        self._load_font_weight_ui()
-        self.font_save_btn.clicked.connect(self._save_font_weight)
-        return tab
-
-    def _load_font_weight_ui(self):
-        weight = getattr(self.state.settings.font, "weight", "medium")
-        (self.font_thin if weight == "thin"
-         else self.font_heavy if weight == "heavy"
-         else self.font_medium).setChecked(True)
-
-    def _save_font_weight(self):
-        cfg = replace(self.state.settings.font)
-        if self.font_thin.isChecked():
-            cfg.weight = "thin"
-        elif self.font_heavy.isChecked():
-            cfg.weight = "heavy"
-        else:
-            cfg.weight = "medium"
-        self.state.settings.font = cfg
-        self.state.settings.save()
-        self.state.settingsChanged.emit()
-        Toast.show(self, "字体设置已保存，写回时按所选档位替换字体", "success")
 
     def _load_api_ui(self):
         api = self.state.api

@@ -7,9 +7,9 @@
    Unity 对 dynamic Font 在运行时按 TTF 生成字形图集，替换后拉丁+中文全部可渲染。
 
 2. TMP_FontAsset 替换（版本化 bundle 路径）：
-   按游戏 Unity 版本 + 粗细档位选择 ``fonts/TMP_Font_AssetBundles`` 中
-   思源黑体（SourceHanSansSC）SDF 字体 bundle
-   ``sourcehan_sdf_<heavy|medium|thin>_u<2019|2021|2022|6000>``
+   按游戏 Unity 版本选择 ``fonts/TMP_Font_AssetBundles`` 中
+   Noto Serif CJK SC Medium（宋体中等字重，单字体收敛）SDF 字体 bundle
+   ``notoserif_sdf_u<2019|2021|2022|6000>``
    （u2019/u2021/u2022=TMP 2.x，u6000=TMP 3.x；TMP 1.x 2018 及更早无
    中文 SDF bundle，仅 legacy Font 路径可替换），把游戏内 TMP_FontAsset
    的字形表/字符表/面信息替换为 bundle 字体的，图集 Texture2D 数据同步替换。
@@ -107,16 +107,13 @@ def _bundle_dir() -> Path:
 #: TMP2 布局可用的 Unity 主版本（2019+，tmp2 骨架）→ bundle 后缀。
 #: 2018 及更早是 TMP1 布局（m_glyphInfoList），用户的中文 SDF 资产
 #: （TMP 1.1.0，tmp2 布局）不兼容 → 无可用 bundle，返回 None。
-_TMP2_WEIGHT_SUFFIXES = {"heavy": "heavy", "medium": "medium", "thin": "thin"}
+#: 2026-08-18 单字体收敛：只保留 NotoSerifCJKsc-Medium，无档位维度。
+def select_tmp_bundle(unity_version: str | None) -> Path | None:
+    """按 Unity 主版本选 TMP 字体 bundle；未知返回 None。
 
-
-def select_tmp_bundle(unity_version: str | None,
-                      weight: str = "medium") -> Path | None:
-    """按 Unity 主版本 + 粗细档位选 TMP 字体 bundle；未知返回 None。
-
-    weight ∈ heavy/medium/thin → sourcehan_sdf_<weight>_u<ver>（用户
-    制作的思源黑体 SDF，覆盖 6 万码点，中文不缺字）。TMP1（2018 及
-    更早）无中文 SDF bundle，返回 None（仅 legacy Font 路径可替换）。
+    返回 notoserif_sdf_u<ver>（Noto Serif CJK SC Medium，用户导出的
+    中文字库，覆盖 CJK 基本区，中文不缺字）。TMP1（2018 及更早）无
+    中文 SDF bundle，返回 None（仅 legacy Font 路径可替换）。
     """
     if not unity_version:
         return None
@@ -126,7 +123,6 @@ def select_tmp_bundle(unity_version: str | None,
     major_num = int(major.group(1))
     if major_num <= 2018:
         return None
-    weight_name = _TMP2_WEIGHT_SUFFIXES.get(weight or "medium", "medium")
     if major_num <= 2020:
         suffix = "u2019"
     elif major_num == 2021:
@@ -137,7 +133,7 @@ def select_tmp_bundle(unity_version: str | None,
         suffix = "u6000"
     else:
         return None
-    bundle = _bundle_dir() / f"sourcehan_sdf_{weight_name}_{suffix}"
+    bundle = _bundle_dir() / f"notoserif_sdf_{suffix}"
     return bundle if bundle.is_file() else None
 
 
@@ -246,13 +242,16 @@ def load_tmp_bundle(bundle: Path) -> TmpBundlePayload:
 
 def _font_ttf_candidate(config: FontConfig) -> Path | None:
     """白名单中文字体 TTF（写回方负责校验存在性）。"""
-    from hanhua.core.font_support import FONT_OPTIONS
+    from hanhua.core.font_support import (FONT_OPTIONS,
+                                          _normalize_font_filename)
     if not config.filename:
         return None
-    if config.filename not in FONT_OPTIONS:
+    # 旧库兼容：弃用字体路径映射新字体（与运行时部署同源更正）
+    filename = _normalize_font_filename(config.filename)
+    if filename not in FONT_OPTIONS:
         return None
     fonts_dir = _bundle_dir().parent
-    candidate = fonts_dir / config.filename
+    candidate = fonts_dir / filename
     return candidate if candidate.is_file() else None
 
 
@@ -939,8 +938,8 @@ def install_static_fonts(out_dir, config, *, unity_version=None,
             if replaced:
                 result.replaced_paths.append(
                     asset.relative_to(out_dir).as_posix())
-    # TMP 路径（粗细档位随 FontConfig.weight）
-    bundle = select_tmp_bundle(unity_version, weight=config.weight)
+    # TMP 路径（单字体 NotoSerifCJKsc-Medium，按 Unity 版本选择）
+    bundle = select_tmp_bundle(unity_version)
     if bundle is not None and config.enabled:
         try:
             payload = load_tmp_bundle(bundle)

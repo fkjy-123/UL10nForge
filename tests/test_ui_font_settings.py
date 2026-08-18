@@ -73,44 +73,24 @@ def test_app_state_owns_local_model_manager(tmp_path):
 
 def test_font_settings_ui_removed_and_default_config_intact(
         qapp, tmp_path, monkeypatch):
-    """旧字体开关已移除；新增粗/中/细三档选择器（#24），默认档位为 medium，
-    写回时按档位选用 SDF 字体包。"""
+    """字体设置 tab 已移除（2026-08-18 单字体收敛）；默认配置为
+    Noto Serif CJK SC Medium，写回时按 Unity 版本选用 SDF 字体包。"""
     state = _state(tmp_path)
     page = SettingsPage(state, _Window())
 
-    assert page.tabs.count() == 6
-    assert [page.tabs.tabText(i) for i in range(6)] == [
-        "环境设置", "字体设置", "模型与性能", "术语库", "AI 审核", "关于"]
-    assert not hasattr(page, "font_enabled")          # 旧字体开关已移除
-    assert hasattr(page, "font_save_btn")             # 新档位保存按钮
-    assert page.font_medium.isChecked() is True       # 默认中档
-    assert page.font_heavy.isChecked() is False
-    assert page.font_thin.isChecked() is False
+    assert page.tabs.count() == 5
+    assert [page.tabs.tabText(i) for i in range(5)] == [
+        "环境设置", "模型与性能", "术语库", "AI 审核", "关于"]
+    assert not hasattr(page, "font_enabled")     # 旧字体开关已移除
+    assert not hasattr(page, "font_save_btn")    # 档位保存按钮已移除
+    assert not hasattr(page, "font_medium")      # 档位选择器已移除
+    assert not hasattr(page, "_save_font_weight")
 
     loaded = SettingsStore(tmp_path / "settings.json")
     loaded.load()
     assert loaded.font.enabled is True
-    assert loaded.font.filename == "SimplifiedChinese/SourceHanSansSC-Regular.otf"
-    assert loaded.font.weight == "medium"
-
-
-def test_font_weight_selection_persists(qapp, tmp_path, monkeypatch):
-    """选择粗档并保存 → settings.json 写入 weight=heavy。"""
-    state = _state(tmp_path)
-    page = SettingsPage(state, _Window())
-    toasts = []
-    monkeypatch.setattr(
-        "hanhua.ui.pages.settings_page.Toast.show",
-        lambda _parent, _message, kind="info": toasts.append(kind))
-
-    page.font_heavy.setChecked(True)
-    page._save_font_weight()
-
-    loaded = SettingsStore(tmp_path / "settings.json")
-    loaded.load()
-    assert loaded.font.weight == "heavy"
-    assert state.settings.font.weight == "heavy"
-    assert toasts and toasts[-1] == "success"
+    assert loaded.font.filename == \
+        "SimplifiedChinese/NotoSerifCJKsc-Medium.otf"
 
 
 def test_advanced_local_settings_visible_only_in_local_mode_and_refresh_vram(
@@ -120,7 +100,7 @@ def test_advanced_local_settings_visible_only_in_local_mode_and_refresh_vram(
 
     # 默认本地模式（F56）；先切在线验证置灰
     page.backend_mode.setCurrentIndex(page.backend_mode.findData("api"))
-    assert page.tabs.indexOf(page.advanced_tab) == 2
+    assert page.tabs.indexOf(page.advanced_tab) == 1
     assert page.local_concurrency.isEnabled() is False
     assert not page.advanced_mode_hint.isHidden()   # API 模式显示"仅本地生效"提示
     # 初始值来自配置（默认 local_concurrency=0 自动 / 8192 / 8）
@@ -632,7 +612,7 @@ def test_write_result_shows_coverage_gate_over_font_level(
 
     page._on_written({
         "text_files": 1,
-        "font": FontInstallResult(True, "SourceHanSansSC-Regular.otf"),
+        "font": FontInstallResult(True, "NotoSerifCJKsc-Medium.otf"),
         "verification": {
             "input_protected": True,
             "reopen_verified": True,

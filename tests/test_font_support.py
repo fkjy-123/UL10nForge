@@ -92,7 +92,7 @@ def test_default_font_runtime_assets_are_production_payloads() -> None:
     # Managed）真实构建替换（InvalidDataException→FormatException、
     # HasDefaultValue→IsOptional 两处 CLR 2.0 兼容修复后重编译）。
     assert hashlib.sha256(plugin_payload).hexdigest() == (
-        "92ce5afc16d52d25ce263559f9fc471ca3fe98687dc046a53b30bb11de0e6deb"
+        "4afd3dc4994da38ba043efb6653266d77f307b96bc629f218af89887fbbb45ba"
     )
     assert len(plugin_payload) > 0x40
     assert plugin_payload[:2] == b"MZ"
@@ -503,7 +503,7 @@ def _make_assets(root: Path) -> FontRuntimeAssets:
     fonts_dir = root / "fonts"
     sc_dir = fonts_dir / "SimplifiedChinese"
     sc_dir.mkdir(parents=True)
-    (sc_dir / "SourceHanSansSC-Regular.otf").write_bytes(b"font-payload")
+    (sc_dir / "NotoSerifCJKsc-Medium.otf").write_bytes(b"font-payload")
     runtime_zip = root / "runtime.zip"
     with zipfile.ZipFile(runtime_zip, "w") as archive:
         archive.writestr("winhttp.dll", b"doorstop")
@@ -546,7 +546,7 @@ def test_flat_layout_mono_install_without_data_dir(tmp_path: Path) -> None:
         game_dir,
         out_dir,
         FontConfig(
-            enabled=True, filename="SimplifiedChinese/SourceHanSansSC-Regular.otf"),
+            enabled=True, filename="SimplifiedChinese/NotoSerifCJKsc-Medium.otf"),
         assets=assets,
     )
 
@@ -567,7 +567,7 @@ def test_installs_font_runtime_into_mono_x64_copy(tmp_path: Path) -> None:
         game_dir,
         out_dir,
         FontConfig(
-            enabled=True, filename="SimplifiedChinese/SourceHanSansSC-Regular.otf"),
+            enabled=True, filename="SimplifiedChinese/NotoSerifCJKsc-Medium.otf"),
         assets=assets,
     )
 
@@ -578,18 +578,116 @@ def test_installs_font_runtime_into_mono_x64_copy(tmp_path: Path) -> None:
     assert result.architecture == "x64"
     assert result.provider_id == "bepinex5_mono_x64"
     assert result.payload_available is True
-    assert result.filename == "SimplifiedChinese/SourceHanSansSC-Regular.otf"
-    assert result.family == "Source Han Sans SC"
+    assert result.filename == "SimplifiedChinese/NotoSerifCJKsc-Medium.otf"
+    assert result.family == "Noto Serif CJK SC"
     assert (out_dir / "winhttp.dll").read_bytes() == b"doorstop"
     assert (out_dir / "doorstop_config.ini").read_bytes() == b"enabled=true"
     assert (out_dir / "BepInEx" / "core" / "BepInEx.dll").read_bytes() == b"bepinex"
     assert (plugin_dir / "Hanhua.FontFallback.dll").read_bytes() == b"plugin"
     assert (plugin_dir / "font.ttf").read_bytes() == b"font-payload"
-    assert (plugin_dir / "font-family.txt").read_bytes() == b"Source Han Sans SC\n"
+    assert (plugin_dir / "font-family.txt").read_bytes() == b"Noto Serif CJK SC\n"
     assert (plugin_dir / "translations.json").read_bytes() == b"{}\n"
     # BepInEx 发行包自带的根级文档不部署：覆盖游戏同名文件（Windows
     # 大小写不敏感）会破坏原文件（containment-breach 实测根因）。
     assert not (out_dir / "changelog.txt").exists()
+
+
+def test_installer_atomically_deploys_exact_tmp_bundle_payload(
+        tmp_path: Path) -> None:
+    game_dir = _make_mono_game(tmp_path / "game")
+    out_dir = tmp_path / "output"
+    assets = _make_assets(tmp_path / "assets")
+    bundle = tmp_path / "notoserif_sdf_u2019"
+    bundle_payload = b"exact-tmp-bundle-payload\x00\xff"
+    bundle.write_bytes(bundle_payload)
+
+    install_font_override(
+        game_dir, out_dir, FontConfig(), assets=assets,
+        tmp_bundle=bundle,
+    )
+
+    plugin_dir = out_dir / "BepInEx" / "plugins" / "HanhuaFont"
+    assert (plugin_dir / "font-tmp.bundle").read_bytes() == bundle_payload
+    assert {path.name for path in plugin_dir.iterdir()} == {
+        "Hanhua.FontFallback.dll", "font-family.txt", "font.ttf",
+        "font-tmp.bundle", "translations.json", "runtime-templates.json",
+        "required-glyphs.json",
+    }
+
+
+def test_installer_without_tmp_bundle_deploys_no_bundle_file(
+        tmp_path: Path) -> None:
+    game_dir = _make_mono_game(tmp_path / "game")
+    out_dir = tmp_path / "output"
+
+    install_font_override(
+        game_dir, out_dir, FontConfig(),
+        assets=_make_assets(tmp_path / "assets"),
+        tmp_bundle=None,
+    )
+
+    plugin_dir = out_dir / "BepInEx" / "plugins" / "HanhuaFont"
+    assert not (plugin_dir / "font-tmp.bundle").exists()
+
+
+def test_installer_rejects_tmp_bundle_symlink_without_deploying_owned_tree(
+        tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    game_dir = _make_mono_game(tmp_path / "game")
+    out_dir = tmp_path / "output"
+    bundle_target = tmp_path / "bundle-target"
+    bundle_target.write_bytes(b"bundle")
+    bundle = tmp_path / "bundle-link"
+    try:
+        bundle.symlink_to(bundle_target)
+    except OSError as exc:
+        if getattr(exc, "winerror", None) != 1314:
+            raise
+        bundle.write_bytes(bundle_target.read_bytes())
+        from hanhua.core import font_support as font_support_module
+        original_is_link = font_support_module._path_is_link
+        monkeypatch.setattr(
+            font_support_module,
+            "_path_is_link",
+            lambda path: Path(path) == bundle or original_is_link(Path(path)),
+        )
+
+    with pytest.raises(FontInstallError, match="TMP|bundle|普通文件|符号链接"):
+        install_font_override(
+            game_dir, out_dir, FontConfig(),
+            assets=_make_assets(tmp_path / "assets"),
+            tmp_bundle=bundle,
+        )
+
+    assert not (out_dir / "BepInEx" / "plugins" / "HanhuaFont").exists()
+
+
+def test_installer_tmp_bundle_read_error_preserves_existing_owned_tree(
+        tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    game_dir = _make_mono_game(tmp_path / "game")
+    out_dir = tmp_path / "output"
+    owned = out_dir / "BepInEx" / "plugins" / "HanhuaFont"
+    owned.mkdir(parents=True)
+    (owned / "old.dll").write_bytes(b"keep-existing-owned-tree")
+    bundle = tmp_path / "bundle"
+    bundle.write_bytes(b"unreadable")
+    original_read_bytes = Path.read_bytes
+
+    def fail_bundle_read(path: Path) -> bytes:
+        if Path(path) == bundle:
+            raise PermissionError("synthetic bundle read failure")
+        return original_read_bytes(path)
+
+    monkeypatch.setattr(Path, "read_bytes", fail_bundle_read)
+
+    with pytest.raises(FontInstallError, match="TMP bundle"):
+        install_font_override(
+            game_dir, out_dir, FontConfig(),
+            assets=_make_assets(tmp_path / "assets"),
+            tmp_bundle=bundle,
+        )
+
+    assert {path.name for path in owned.iterdir()} == {"old.dll"}
+    assert (owned / "old.dll").read_bytes() == b"keep-existing-owned-tree"
 
 
 def test_installer_writes_exact_translation_mapping_without_ascii_escaping(
@@ -694,17 +792,22 @@ def test_upgrade_replaces_only_owned_plugin_directory(tmp_path: Path) -> None:
     user_runtime = out_dir / "BepInEx" / "config" / "user.cfg"
     user_runtime.parent.mkdir(parents=True)
     user_runtime.write_bytes(b"user-runtime")
+    bundle = tmp_path / "notoserif_sdf_u2019"
+    bundle_payload = b"upgrade-tmp-bundle"
+    bundle.write_bytes(bundle_payload)
 
     install_font_override(
         game_dir, out_dir, FontConfig(),
         assets=_make_assets(tmp_path / "assets"),
+        tmp_bundle=bundle,
     )
 
     assert {path.name for path in owned.iterdir()} == {
         "Hanhua.FontFallback.dll", "font-family.txt", "font.ttf",
-        "translations.json", "runtime-templates.json",
+        "font-tmp.bundle", "translations.json", "runtime-templates.json",
         "required-glyphs.json",
     }
+    assert (owned / "font-tmp.bundle").read_bytes() == bundle_payload
     assert user_plugin.read_bytes() == b"user-plugin"
     assert user_runtime.read_bytes() == b"user-runtime"
 
@@ -894,7 +997,7 @@ def test_rejects_font_outside_whitelist(tmp_path: Path) -> None:
 
 def test_rejects_missing_whitelisted_font_before_installing(tmp_path: Path) -> None:
     assets = _make_assets(tmp_path / "assets")
-    (assets.fonts_dir / "SimplifiedChinese" / "SourceHanSansSC-Regular.otf").unlink()
+    (assets.fonts_dir / "SimplifiedChinese" / "NotoSerifCJKsc-Medium.otf").unlink()
     out_dir = tmp_path / "output"
 
     with pytest.raises(FontInstallError, match="字体文件不存在"):
@@ -1696,7 +1799,7 @@ def test_rejects_whitelisted_font_symlink_escaping_font_root(
     assets = _make_assets(tmp_path / "assets")
     outside_font = tmp_path / "outside.ttf"
     outside_font.write_bytes(b"outside-font")
-    selected_font = assets.fonts_dir / "SimplifiedChinese" / "SourceHanSansSC-Regular.otf"
+    selected_font = assets.fonts_dir / "SimplifiedChinese" / "NotoSerifCJKsc-Medium.otf"
     selected_font.unlink()
     try:
         selected_font.symlink_to(outside_font)
@@ -1830,3 +1933,38 @@ def test_installer_no_exclude_writes_no_exclude_file(tmp_path: Path) -> None:
     assert json.loads(
         (plugin_dir / "translations.json").read_text(encoding="utf-8")) == {
         "Quit": "退出"}
+
+
+def test_legacy_font_filename_maps_to_new(tmp_path: Path) -> None:
+    """旧库兼容（Rendezvous 实证 2026-08-17）：store 配置的弃用 otf
+    路径自动映射到新 TrueType 字体——只建新字体文件、不建旧文件，
+    安装必须成功且装载新字体。"""
+    from hanhua.core.font_support import _normalize_font_filename
+    assert _normalize_font_filename(
+        "SimplifiedChinese/NotoSerifCJKsc-Medium.otf") == \
+        "SimplifiedChinese/NotoSerifCJKsc-Medium.otf"
+    assert _normalize_font_filename(
+        "SimplifiedChinese/NotoSerifCJKsc-Medium.otf") == \
+        "SimplifiedChinese/NotoSerifCJKsc-Medium.otf"
+    assert _normalize_font_filename("other/path.ttf") == "other/path.ttf"
+
+    game_dir = _make_mono_game(tmp_path / "game")
+    out_dir = tmp_path / "output"
+    assets = _make_assets(tmp_path / "assets")
+    # 只存在新字体文件——旧路径文件不存在（磁盘已弃用）
+    (assets.fonts_dir / "SimplifiedChinese"
+     / "NotoSerifCJKsc-Medium.otf").write_bytes(b"new-font")
+
+    result = install_font_override(
+        game_dir, out_dir,
+        FontConfig(enabled=True,
+                   filename="SimplifiedChinese/NotoSerifCJKsc-Medium.otf"),
+        assets=assets,
+    )
+    assert result.installed is True
+    assert result.filename == "SimplifiedChinese/NotoSerifCJKsc-Medium.otf"
+    assert result.family == "Noto Serif CJK SC"
+    plugin_dir = out_dir / "BepInEx" / "plugins" / "HanhuaFont"
+    assert (plugin_dir / "font.ttf").read_bytes() == b"new-font"
+    assert (plugin_dir / "font-family.txt").read_text(
+        encoding="utf-8").strip() == "Noto Serif CJK SC"

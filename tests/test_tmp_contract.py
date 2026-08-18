@@ -210,18 +210,15 @@ def test_manifest_schema_and_contracts():
     assert charset["cjk_range"] == [0x4E00, 0x9FFF]
     assert charset["min_cjk_count"] >= 3000
     assert charset["ascii_range"] == [0x21, 0x7E]
-    assert set(manifest["weights"]) == {"heavy", "medium", "thin"}
-    # 三档 × 四版本完整性（u2019/u2021/u2022/u6000，select_tmp_bundle
-    # 按 Unity 主版本 + weight 选择的后端）
+    # 四版本完整性（u2019/u2021/u2022/u6000，select_tmp_bundle 按
+    # Unity 主版本选择的后端；单字体单字重，无 weight 维度）
     from hanhua.core.unity.font_replace import select_tmp_bundle
-    for weight in ("heavy", "medium", "thin"):
-        for ver in ("2019.4", "2021.3", "2022.3", "6000.0"):
-            bundle = select_tmp_bundle(ver, weight=weight)
-            assert bundle is not None and bundle.is_file(), (
-                f"缺少 {weight}/{ver} bundle")
+    for ver in ("2019.4", "2021.3", "2022.3", "6000.0"):
+        bundle = select_tmp_bundle(ver)
+        assert bundle is not None and bundle.is_file(), f"缺少 {ver} bundle"
     for name, meta in manifest["integrity"].items():
         assert meta["unity"] and meta["tmp_layout"] == "tmp2" \
-            and meta["sha256"] and meta["weight"]
+            and meta["sha256"]
 
 
 @pytest.mark.skipif(

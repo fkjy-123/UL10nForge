@@ -24,9 +24,10 @@ logs/
 !.scratch/running-issues/
 !.scratch/running-issues/*.md
 
-# 思源黑体字重仅提交 Regular（白名单唯一引用），其余字重留磁盘供后续字重支持
+# 中文字体仅提交白名单引用的唯一字体（2026-08-18 单字体收敛：
+# Noto Serif CJK SC Medium），其余留磁盘不入库
 fonts/SimplifiedChinese/*
-!fonts/SimplifiedChinese/SourceHanSansSC-Regular.otf
+!fonts/SimplifiedChinese/NotoSerifCJKsc-Medium.otf
 
 # 每次汉化自动导出的失败记录（生成产物，不入库）
 docs/fail record/

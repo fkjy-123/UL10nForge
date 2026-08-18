@@ -52,12 +52,28 @@ def apply_format_text(fmt: str, entries, text: str, meta: dict) -> str:
         delimiter = meta.get("delimiter") or {
             ".tsv": "\t", ".psv": "|", None: ",", "": ",",
         }.get(suffix, ",")
-        return csv_format.apply_csv(entries, text, delimiter, "zh-CN",
-                                    meta.get("target_col"))
+        # 写回列优先取条目级 meta 的 target_col（Rendezvous 实证 2026-08
+        # -17：writer 传参 meta 只有 {"kind": "textasset"}，target_col 缺失
+        # → apply_csv 走 new_col 追加列——译文写进第 14 列（Chinese
+        # Simplified），游戏读 CHN 第 13 列——UI 全部显示英文，汉化白写）
+        tc = meta.get("target_col")
+        if tc is None:
+            for e in entries:
+                if getattr(e, "meta", {}).get("target_col") is not None:
+                    tc = e.meta["target_col"]
+                    break
+        return csv_format.apply_csv(entries, text, delimiter, "zh-CN", tc)
     if fmt == "xml":
         return xml_format.apply_xml(entries, text)
     if fmt == "yaml":
-        return yaml_format.apply_yaml(entries)
+        body = yaml_format.apply_yaml(entries)
+        # 行数守恒保护（Rendezvous 实证 2026-08-17）：yaml 按行号重建，
+        # 任何一行条目缺失（提取过滤/行号错位）→ 重建丢行 → 游戏解析
+        # 越界黑屏。行数不一致 → 拒绝重建返回原文（宁漏勿坏），由
+        # 调用方（writer）逐条记 rejected 供审计。
+        if len(body.splitlines()) != len(text.splitlines()):
+            return text
+        return body
     if fmt in ("srt", "vtt", "ass", "ssa", "lrc"):
         return subtitle_format.apply_subtitle(entries)
     if fmt == "po":

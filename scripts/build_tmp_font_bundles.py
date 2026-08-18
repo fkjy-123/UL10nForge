@@ -1,11 +1,12 @@
 # -*- coding: utf-8 -*-
-"""把用户导出的 TMP SDF 资产（Unity YAML .asset，粗/中/细三档）转换为
+"""把用户导出的 TMP SDF 资产（Unity YAML .asset，单字体单字重）转换为
 load_tmp_bundle 可读的 UnityFS bundle（以 git 参考 arialuni bundle 为
 骨架——保留 m_Script/Material/Shader 引用与容器版本，只替换字形数据、
 字符表与图集像素）。
 
-输出 3 档 × 4 版本：
-  fonts/TMP_Font_AssetBundles/sourcehan_sdf_{heavy|medium|thin}_{u2019|u2021|u2022|u6000}
+2026-08-18 收敛：只保留唯一字体 Noto Serif CJK SC Medium（宋体中等
+字重），不再维护多字体/多字重（用户指令）。输出 1 档 × 4 版本：
+  fonts/TMP_Font_AssetBundles/notoserif_sdf_{u2019|u2021|u2022|u6000}
 
 用法：
   python scripts/build_tmp_font_bundles.py [--ref-dir .ref_fonts]
@@ -23,11 +24,8 @@ FONTS = REPO / "fonts"
 OUT_DIR = FONTS / "TMP_Font_AssetBundles"
 DEFAULT_REF_DIR = REPO / ".ref_fonts"
 
-WEIGHTS = {
-    "heavy": "SourceHanSansSC-Heavy SDF.asset",
-    "medium": "SourceHanSansSC-Medium SDF.asset",
-    "thin": "SourceHanSansSC-Thin SDF.asset",
-}
+#: 唯一字体源（2026-08-18 收敛）：Noto Serif CJK SC Medium SDF 资产。
+FONT_SOURCE = "SDF_Font_Asset/NotoSerifCJKsc-Medium SDF.asset"
 # 版本骨架：参考 bundle 名 → 输出 bundle 名
 VERSIONS = {
     "u2019": "arialuni_sdf_u2019",
@@ -44,6 +42,13 @@ _COPY_TOP_FIELDS = (
     "m_UsedGlyphRects", "m_FreeGlyphRects", "m_Version",
     "m_IsMultiAtlasTexturesEnabled", "m_ClearDynamicDataOnBuild",
 )
+
+# Material values are part of the SDF sampling contract.  The reference
+# bundles use an 8192 atlas, while the shipped Source Han assets are 4096²;
+# leaving the skeleton values in place produces the characteristic horizontal
+# striping/ghosting seen when TMP computes texel size from the wrong atlas.
+_SDF_ATLAS_SIZE = 4096
+_SDF_GRADIENT_SCALE = 10.0
 # 骨架缺 m_ClassDefinitionType（u2019/TMP 2.1）时从 glyph 移除
 _GLYPH_KEYS_WITH_CDT = {"m_AtlasIndex", "m_ClassDefinitionType",
                         "m_GlyphRect", "m_Index", "m_Metrics", "m_Scale"}
@@ -124,7 +129,7 @@ def convert_chars(user_chars: list) -> list:
 
 
 def fill_skeleton(ref_file: Path, out_file: Path, font: dict,
-                  pixels: bytes, weight_name: str) -> None:
+                  pixels: bytes) -> None:
     """复制骨架 bundle → 填入用户数据 → 保存到 out_file。"""
     shutil.copyfile(ref_file, out_file)
     from UnityPy import Environment
@@ -149,7 +154,7 @@ def fill_skeleton(ref_file: Path, out_file: Path, font: dict,
                 font["m_GlyphTable"], glyph_keys, has_cdt)
             tree["m_CharacterTable"] = convert_chars(
                 font["m_CharacterTable"])
-            tree["m_Name"] = f"SourceHanSansSC-{weight_name} SDF"
+            tree["m_Name"] = "NotoSerifCJKsc-Medium SDF"
             obj.save_typetree(tree)
             changed += 1
         elif obj.type.name == "Texture2D":
@@ -161,6 +166,20 @@ def fill_skeleton(ref_file: Path, out_file: Path, font: dict,
             t["m_StreamData"] = {"offset": 0, "size": 0, "path": ""}
             obj.save_typetree(t)
             changed += 1
+        elif obj.type.name == "Material":
+            t = obj.read_typetree()
+            props = t.get("m_SavedProperties")
+            if isinstance(props, dict):
+                floats = props.get("m_Floats")
+                if isinstance(floats, list):
+                    values = dict(floats)
+                    values["_TextureWidth"] = float(_SDF_ATLAS_SIZE)
+                    values["_TextureHeight"] = float(_SDF_ATLAS_SIZE)
+                    values["_GradientScale"] = _SDF_GRADIENT_SCALE
+                    props["m_Floats"] = list(values.items())
+                    t["m_SavedProperties"] = props
+                    obj.save_typetree(t)
+                    changed += 1
     if changed == 0:
         raise ValueError(f"骨架 {ref_file.name} 没有可填对象")
     env.save(pack="lz4", out_path=str(out_file.parent))
@@ -171,20 +190,19 @@ def main() -> int:
     ref_dir = Path(sys.argv[sys.argv.index("--ref-dir") + 1]
                    if "--ref-dir" in sys.argv else DEFAULT_REF_DIR)
     OUT_DIR.mkdir(parents=True, exist_ok=True)
-    for weight, asset_name in WEIGHTS.items():
-        asset = parse_asset(FONTS / asset_name)
-        font, pixels = extract_font_and_atlas(asset)
-        print(f"{asset_name}: chars={len(font['m_CharacterTable'])} "
-              f"glyphs={len(font['m_GlyphTable'])} atlas={len(pixels) >> 20}MB")
-        for version, ref_name in VERSIONS.items():
-            ref = ref_dir / ref_name
-            if not ref.is_file():
-                print(f"  SKIP {version}: 骨架缺失 {ref.name}")
-                continue
-            out = OUT_DIR / f"sourcehan_sdf_{weight}_{version}"
-            fill_skeleton(ref, out, font, pixels, weight.title())
-            size = out.stat().st_size >> 20
-            print(f"  {out.name}: {size}MB")
+    asset = parse_asset(FONTS / FONT_SOURCE)
+    font, pixels = extract_font_and_atlas(asset)
+    print(f"{FONT_SOURCE}: chars={len(font['m_CharacterTable'])} "
+          f"glyphs={len(font['m_GlyphTable'])} atlas={len(pixels) >> 20}MB")
+    for version, ref_name in VERSIONS.items():
+        ref = ref_dir / ref_name
+        if not ref.is_file():
+            print(f"  SKIP {version}: 骨架缺失 {ref.name}")
+            continue
+        out = OUT_DIR / f"notoserif_sdf_{version}"
+        fill_skeleton(ref, out, font, pixels)
+        size = out.stat().st_size >> 20
+        print(f"  {out.name}: {size}MB")
     return 0
 
 

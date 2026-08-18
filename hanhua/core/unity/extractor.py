@@ -3,6 +3,7 @@ TextAsset 整文本 + MonoBehaviour 序列化原始字节字符串扫描（typet
 from __future__ import annotations
 
 import dataclasses
+import struct
 from collections.abc import Iterable
 from pathlib import Path
 from typing import Any, Callable
@@ -1040,6 +1041,47 @@ def _high_freq_threshold(freq: dict[str, int]) -> int:
                min(_HIGH_FREQ_CAP, int(total * _HIGH_FREQ_RATIO)))
 
 
+def _mono_object_name_span(raw: bytes) -> tuple[int, int] | None:
+    """MonoBehaviour/ScriptableObject 的 m_Name 字符串跨度（@28 长度头+内容）。
+
+    m_Name 是对象标识名（Inspector 标签/Find 查找键），翻译必断链
+    （Rendezvous 2026-08-18 实证：场景对象名被 rawstr 路径翻译后，
+    游戏代码按原名查找 → 过场流程空指针崩溃）。typetree 路径已有
+    m_Name 排除（_IMMUTABLE_FIELD_NAMES），rawstr 路径此前缺失——
+    此处按 MonoBehaviour 固定布局定位 m_Name 并排除。
+    """
+    if raw is None or len(raw) < 32:
+        return None
+    # 头部校验：m_GameObject PPtr(fileID 0..2, pathID) + m_Enabled(0/1)
+    # + m_Script PPtr(fileID 0..2)——防止把「payload 从 @0 开始」的
+    # 假对象（如测试构造的 raw 池）误判 m_Name 位置。
+    try:
+        go_fid = struct.unpack_from("<i", raw, 0)[0]
+        go_pid = struct.unpack_from("<q", raw, 4)[0]
+        enabled = struct.unpack_from("<i", raw, 12)[0]
+        sc_fid = struct.unpack_from("<i", raw, 16)[0]
+        sc_pid = struct.unpack_from("<q", raw, 20)[0]
+    except (struct.error, IndexError):
+        return None
+    if go_fid not in (0, 1, 2) or go_pid < 0 or enabled not in (0, 1):
+        return None
+    if sc_fid not in (0, 1, 2) or sc_pid < 0:
+        return None
+    try:
+        n = struct.unpack_from("<i", raw, 28)[0]
+    except (struct.error, IndexError):
+        return None
+    if not (0 < n < 500) or 32 + n > len(raw):
+        return None
+    try:
+        name = raw[32:32 + n].decode("utf-8")
+        if not all(c.isprintable() or c in " \t" for c in name):
+            return None
+    except Exception:  # noqa: BLE001 非 UTF-8 内容不是名字
+        return None
+    return (28, 32 + n)
+
+
 def _raw_string_entries(file_id: str, obj_path_id: int, raw: bytes,
                         freq: dict[str, int], asset_file_name: str = "",
                         freq_threshold: int | None = None,
@@ -1085,7 +1127,15 @@ def _raw_string_entries(file_id: str, obj_path_id: int, raw: bytes,
     entries: list[TextEntry] = []
     non_engine: list[str] = []
     prefilter_counts: dict[str, int] = {}
+    # Rendezvous 2026-08-18 实证：rawstr 路径翻译 m_Name（对象标识名）
+    # → 游戏按原名查找断链 → 过场空指针崩溃。typetree 路径经
+    # _IMMUTABLE_FIELD_NAMES 排除 m_Name，rawstr 路径在此按固定布局
+    # 定位 m_Name 跨度并跳过（对象标识名绝不进入翻译池）。
+    name_span = _mono_object_name_span(raw)
     for idx, offset, s in scanned:
+        if (name_span is not None
+                and name_span[0] <= offset <= name_span[1]):
+            continue
         seen[s] = seen.get(s, 0) + 1
         is_last = seen[s] == counts[s]
         structural_reason = _structural_reason(s)
@@ -1809,7 +1859,8 @@ def _is_lexicon_word(s: str) -> bool:
 
 def _textasset_entries(file_id: str, obj_path_id: int, raw: bytes,
                        asset_file_name: str = "",
-                       skipped: dict[str, int] | None = None) -> list[TextEntry]:
+                       skipped: dict[str, int] | None = None,
+                       csv_overwrite_source: bool = False) -> list[TextEntry]:
     """TextAsset 内容：嵌套格式探测（JSON → XML → YAML → CSV），否则按行拆分。
 
     结构化条目 meta 带 "textasset_format"（写回用 apply_format_text 整体重建，
@@ -1867,7 +1918,13 @@ def _textasset_entries(file_id: str, obj_path_id: int, raw: bytes,
         # .NET 类型注册表（registerTypes 数组）里的类型全名经 JSON 提取后
         # 无引号、会被句子形状规则放行（a-catfiends obj71 实证 8 条失败）。
         # 真实对话 JSON（字典/字幕）不受影响（模式为确定性代码特征）。
-        kept = [e for e in out if not _is_script_code_line(e.original)]
+        # YAML 例外（Rendezvous 实证 2026-08-17）：yaml 写回按行号整行
+        # 重建，过滤掉任何一行（表头/结构行被 _is_script_code_line 命中，
+        # 如 ' ,IND,ENG,...' 逗号分隔大写列名）→ 重建丢行 → 游戏解析
+        # 越界黑屏。yaml 条目必须全部保留（宁漏勿坏）；json/csv 按
+        # key/row 写回，缺条目只意味着该行不写，无结构破坏。
+        kept = [e for e in out
+                if fmt == "yaml" or not _is_script_code_line(e.original)]
         if len(kept) != len(out):
             _skip(f"structured_code_line_{fmt}")
         out = kept
@@ -1897,11 +1954,15 @@ def _textasset_entries(file_id: str, obj_path_id: int, raw: bytes,
             return _stamp(out, "xml")
     from hanhua.core.formats.csv_format import extract_csv_text, looks_like_csv_text
     from hanhua.core.formats.yaml_format import extract_yaml_text, looks_like_yaml_text
+    # CSV 判定优先（Rendezvous 实证 2026-08-17）：多语言词典表的对话行
+    # 含冒号（'SeaWall_D1,Arum: Apa kau...'）命中 YAML kv 模式 → 误判
+    # yaml → 表头行被过滤 → 重建丢行 → 游戏 CSVParser 越界黑屏。CSV 是
+    # 行列宽度一致的表结构，判定更确定，必须排在 yaml 之前。
+    if looks_like_csv_text(text):
+        out, _ = extract_csv_text(text, file_id, overwrite_source=csv_overwrite_source)
+        return _stamp(out, "csv")
     if looks_like_yaml_text(text):
         return _stamp(extract_yaml_text(text, file_id), "yaml")
-    if looks_like_csv_text(text):
-        out, _ = extract_csv_text(text, file_id)
-        return _stamp(out, "csv")
     if _looks_like_kv_dictionary(text):
         # KV 词典（多语言词典/配置表）：只提取值（键保真——键是运行时
         # 按键查找键，整行翻译会改键断查找，electric-trains 实证
@@ -1960,6 +2021,163 @@ def _textasset_entries(file_id: str, obj_path_id: int, raw: bytes,
             original=content,
             meta={**base_meta, "kind": "textasset", "line": i}))
     return lines
+
+
+# ── ink 对话脚本（Inkle 引擎） ──
+# Rendezvous 实证：ink JSON（{"inkVersion":19,...}）含对话行与流程结构
+# 混合——"done"/"end" 是流程控制词（翻译破坏对话流程）、"->" 键的值是
+# divert 跳转目标（翻译断跳转）、#f/#n/#c 标签键的值是流程元数据。
+# 只有 "^" 前缀对话行与纯文本值（choice 文本/变量行）是显示文本。
+# ink 流程控制词全集（编译产物特殊字符串值，翻译破坏对话流程）：
+# done/end = 流程结束；out = 对话块出口标记（Rendezvous 实证 2026-08-17：
+# 各块固定位置 'out' 被当对话行译成「出去」）。ink 玩家选项文本带 *
+# 前缀（"* 出去"），纯 "out" 值必是流程结构。
+_INK_CONTROL_WORDS = frozenset({"done", "end", "out"})
+_CYRILLIC_MIN = 0x0400
+
+
+def _ink_line_localized(line: str) -> bool:
+    """对话行是否已本地化（CJK/西里尔主导）——语言版文件整跳过。"""
+    if not line:
+        return False
+    cn = sum(1 for c in line if "一" <= c <= "鿿")
+    jp = sum(1 for c in line if 0x3040 <= ord(c) <= 0x30ff)
+    ru = sum(1 for c in line if _CYRILLIC_MIN <= ord(c) <= 0x04ff)
+    letters = sum(1 for c in line if c.isalpha())
+    if letters == 0:
+        return False
+    return (cn + jp + ru) / letters > 0.35
+
+
+def _ink_entries(file_id: str, obj_path_id: int, raw: bytes,
+                 asset_file_name: str,
+                 skipped: dict[str, int] | None = None,
+                 obj_name: str = "") -> list[TextEntry]:
+    """ink 对话 JSON 特判提取：只产出对话行/纯文本值，控制结构与
+    语言版文件跳过留档（审计可见）。key_path 用真 JSON 路径（RFC6901），
+    写回走 apply_json 原位置替换（控制结构原样保留）。"""
+    import json as _json
+    from hanhua.core.formats.json_format import _encode_path
+
+    def _skip(morph: str, n: int = 1) -> None:
+        if skipped is not None:
+            skipped[morph] = skipped.get(morph, 0) + n
+
+    text = raw.decode("utf-8-sig", errors="replace").lstrip("﻿")
+    try:
+        data = _json.loads(text)
+    except Exception:  # noqa: BLE001
+        # JSON 损坏 → 不产生条目（宁漏勿坏；ink 结构损坏游戏也无法运行）
+        _skip("ink_json_failed")
+        return []
+    # 语言版判定：对话行（^ 前缀/纯文本）中 CJK/西里尔主导 → 已本地化
+    dialogue_lines: list[str] = []
+    out: list[TextEntry] = []
+    prefix = (f"asset#{asset_file_name}#{obj_path_id}"
+              if asset_file_name else f"asset#{obj_path_id}")
+    base_meta = {
+        "obj": obj_path_id,
+        "confidence": "medium",
+        "role": "display",
+        "disposition": "translate",
+        "reason": "ink_dialogue_line",
+        "kind": "ink",
+        "textasset_format": "json",
+    }
+    if asset_file_name:
+        base_meta["asset_file"] = asset_file_name
+    # 语言版对话 base 名（Chapter1_EN → Chapter1）：官方中文搬运对齐用
+    # （同源编译的 ink 语言版块内行序一致）。
+    # 非英文语言版（Chapter1_ITA/GER/CHN/JPN/RUS…，Rendezvous 实证 2026-08
+    # -17）：游戏语言设置只有默认语言（英文）时，只有 EN 版被游戏读取——
+    # 其他语言版翻译写回无人读取且浪费翻译量（ITA 版 365 条被进池实证）。
+    # 按 m_Name 语言后缀整文件跳过（比内容级 CJK/西里尔判定全面——拉丁
+    # 字母语言版如 ITA/GER 内容检测不可分辨）。
+    import re as _re
+    _ink_name_m = _re.match(r"^(.*?)_([A-Z]{2,3})$", obj_name)
+    if _ink_name_m:
+        base_meta["ink_base"] = _ink_name_m.group(1)
+        if _ink_name_m.group(2) != "EN":
+            _skip("ink_non_en_version")
+            return []
+
+    seq = 0
+    block = ""
+
+    def walk(node: Any, path: tuple, cur_block: str) -> None:
+        nonlocal seq
+        if isinstance(node, dict):
+            for k, v in node.items():
+                if isinstance(k, str) and k.startswith("#"):
+                    continue
+                if isinstance(k, str) and k == "->":
+                    continue
+                walk(v, path + (k,), cur_block)
+        elif isinstance(node, list):
+            for i, v in enumerate(node):
+                walk(v, path + (i,), cur_block)
+        elif isinstance(node, str):
+            v = node.strip()
+            if not v:
+                return
+            if v in _INK_CONTROL_WORDS:
+                _skip("ink_control_word")
+                return
+            # divert 目标（"->" 键的值）与标签元数据（#f/#n/#c 键的值）
+            for seg in path:
+                if (isinstance(seg, str) and seg.startswith("#")) or (
+                        isinstance(seg, str) and seg == "->"):
+                    _skip("ink_flow_structure")
+                    return
+            # 结构化数字/纯符号值（ink 计数/标记）
+            if not any(c.isalpha() for c in v):
+                _skip("ink_non_text")
+                return
+            dialogue_lines.append(v)
+            out.append(TextEntry(
+                file_id=file_id, key_path=_encode_path(path),
+                original=v,
+                meta={**base_meta, "ink_text": v,
+                      "inner_path": _encode_path(path),
+                      "ink_block": cur_block, "ink_seq": seq}))
+            seq += 1
+
+    # 对话块名 = 路径中最后出现的字母键段（Setyo_WakeUp 等）；块内行序
+    # = 该块下对话行的出现序号（同源编译的 ink 语言版结构一致，块级对齐
+    # 搬运官方中文用——Chapter1_CHN → Chapter1_EN，Rendezvous 实证）
+    def walk_with_block(node: Any, path: tuple, cur_block: str) -> None:
+        nonlocal seq
+        if isinstance(node, dict):
+            for k, v in node.items():
+                if isinstance(k, str) and k.startswith("#"):
+                    continue
+                if isinstance(k, str) and k == "->":
+                    continue
+                nb = cur_block
+                if (isinstance(k, str) and k not in ("root",)
+                        and not k.startswith("^")
+                        and not k[0].isdigit() and len(k) > 1):
+                    nb = k
+                    # 进入新对话块：块内行序重置（ink_seq 是块内序号，
+                    # 语言版块级对齐搬运用——Chapter1_CHN → EN）
+                    seq = 0
+                # 递归 walk_with_block 保持块名追踪（list/dict 内嵌套的
+                # 对话块）；只有字符串叶子交给 walk 提取
+                walk_with_block(v, path + (k,), nb)
+        elif isinstance(node, list):
+            for i, v in enumerate(node):
+                walk_with_block(v, path + (i,), cur_block)
+        elif isinstance(node, str):
+            walk(node, path, cur_block)
+
+    walk_with_block(data, (), "")
+    if dialogue_lines:
+        localized = sum(1 for ln in dialogue_lines if _ink_line_localized(ln))
+        if localized / len(dialogue_lines) > 0.5:
+            # 语言版文件（CHN/JPN/RUS…）——已本地化不译（Chapter1_CHN 等）
+            _skip("ink_localized", len(out))
+            return []
+    return out
 
 
 # ── TextAsset 源码检测（整文件代码判定，0.25.0 地毯式排查实证） ──
@@ -2089,6 +2307,14 @@ def _should_downgrade_pending(entry: TextEntry) -> bool:
         return False
     fmt = entry.meta.get("textasset_format")
     inner = str(entry.meta.get("inner_path", ""))
+    if fmt == "csv" and entry.meta.get("source_col") is not None:
+        # CSV 多语言词典：source_col 是表头声明的语言列（ENG 等），列语义
+        # 即"该语言的显示文本"——确定性证据。软猜测（引擎串/键风格/硬结构
+        # 形态）不得推翻（Rendezvous 实证：IName_Medkit→'Med-Kit' 连字符
+        # 被 hard_structural 降级、BTN_FullScreen→'FullScreen' 被引擎串
+        # 降级——都是物品名/设置项显示文本，该译）。写回目标是目标语言列
+        # （CHN），不覆盖源列，机器数据值写回也无破坏性。
+        return False
     if fmt == "xml" and ("/value" in inner or inner.endswith("/value")):
         # xml value 节点是确定性显示文本证据（doog 的 messages/
         # message[N]/value 是游戏内显示文本）——后置闸门的**软猜测
@@ -2134,7 +2360,8 @@ def _should_downgrade_pending(entry: TextEntry) -> bool:
 
 def extract_asset_file(path: str | Path, file_id: str | None = None,
                        progress_cb: Callable | None = None, *,
-                       typetree_generator: Any | None = None) -> ParsedFile:
+                       typetree_generator: Any | None = None,
+                       csv_overwrite_source: bool = False) -> ParsedFile:
     """提取一个资源文件 → ParsedFile（含文件级噪音判定）。
 
     容器：UnityPy 的 Environment.objects 自动递归 BundleFile/WebFile 嵌套
@@ -2232,8 +2459,23 @@ def extract_asset_file(path: str | Path, file_id: str | None = None,
                          script.decode("utf-8-sig", errors="replace"),
                          name, asset_name, _english_score(values)))
                     continue
+                # ink 对话脚本（Inkle 引擎，Rendezvous 实证）：JSON 结构，
+                # 内含控制词（done/end）、divert 目标（"->" 键值）、标签
+                # （#f/#n/#c）与对话行（"^" 前缀）——通用 JSON 提取会把
+                # 控制词/divert 目标进池翻译，破坏对话流程。特判提取：
+                # 只保留对话行与纯文本值，其余留档跳过。语言版（CHN/JPN/
+                # RUS 后缀或对话行 CJK/西里尔主导）已本地化 → 整文件跳过。
+                # 双重 BOM 健壮（UnityPy str 已含 U+FEFF + utf-8-sig 又加
+                # 一个 → EF BB BF EF BB BF）：整串 lstrip 再判 ink 头
+                if script and script.lstrip(b"\xef\xbb\xbf").startswith(
+                        b'{"inkVersion"'):
+                    entries.extend(_ink_entries(
+                        fid, obj.path_id, script or b"", asset_name, skipped,
+                        str(getattr(data, "m_Name", "") or "")))
+                    continue
                 entries.extend(_textasset_entries(
-                    fid, obj.path_id, script or b"", asset_name, skipped))
+                    fid, obj.path_id, script or b"", asset_name, skipped,
+                    csv_overwrite_source))
             elif (tname in ("MonoBehaviour", "ScriptableObject")
                   or tname in _NATIVE_TEXT_TYPES):
                 tree = None

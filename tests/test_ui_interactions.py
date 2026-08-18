@@ -489,12 +489,12 @@ def test_settings_nav_switches_tabs(qapp, tmp_path):
     page = SettingsPage(_state(tmp_path), _RecordingWindow())
     assert not page.tabs.tabBar().isVisible()
     assert page.tabs.currentIndex() == 0
-    # 2026-08-14 重构：环境/字体/模型与性能/术语库/AI审核/关于 6 页，
-    # 导航行 2 = 模型与性能(2)、行 3 = AI 审核(4)
+    # 2026-08-18 字体 tab 移除后 5 页：环境/模型与性能/术语库/AI审核/关于，
+    # 导航行 1 = 模型与性能(1)、行 2 = AI 审核(3)
+    page.settings_nav.setCurrentRow(1)
+    assert page.tabs.currentIndex() == 1
     page.settings_nav.setCurrentRow(2)
-    assert page.tabs.currentIndex() == 2
-    page.settings_nav.setCurrentRow(3)
-    assert page.tabs.currentIndex() == 4
+    assert page.tabs.currentIndex() == 3
 
 
 def test_settings_review_strategy_persists(qapp, tmp_path):

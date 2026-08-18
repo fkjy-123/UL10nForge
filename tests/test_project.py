@@ -38,7 +38,7 @@ def test_settings_without_font_section_defaults_to_lenovo():
     settings.load()
 
     assert settings.font.enabled is True
-    assert settings.font.filename == "SimplifiedChinese/SourceHanSansSC-Regular.otf"
+    assert settings.font.filename == "SimplifiedChinese/NotoSerifCJKsc-Medium.otf"
 
 
 def test_settings_font_roundtrip():
@@ -276,7 +276,7 @@ def test_project_selectors_isolate_nested_player_and_database(tmp_path, monkeypa
         source, app_dir,
         player_root=source / "B", player_executable=source / "B/B.exe",
     )
-    monkeypatch.setattr(selected_a, "scan_v2", lambda progress_cb=None: 0)
+    monkeypatch.setattr(selected_a, "scan_v2", lambda progress_cb=None, csv_overwrite_source=False: 0)
     real_resolve_font = project_module.resolve_font_provider
     font_roots = []
 
@@ -722,7 +722,7 @@ def test_stray_data_directory_does_not_hide_root_localization(tmp_path, monkeypa
     (localization / "en.json").write_text(
         '{"title":"Root localization"}', encoding="utf-8")
     project = Project.open_game_dir(game, tmp_path / "app")
-    monkeypatch.setattr(project, "scan_v2", lambda progress_cb=None: 0)
+    monkeypatch.setattr(project, "scan_v2", lambda progress_cb=None, csv_overwrite_source=False: 0)
 
     project.scan_all()
 
@@ -883,7 +883,7 @@ def test_write_preflight_rejects_selected_backend_layout_drift_before_copy(
         source, tmp_path / "app",
         player_root=Path("A"), player_executable=Path("A/A.exe"),
     )
-    monkeypatch.setattr(project, "scan_v2", lambda progress_cb=None: 0)
+    monkeypatch.setattr(project, "scan_v2", lambda progress_cb=None, csv_overwrite_source=False: 0)
     assert project.scan_all().unblocked is True
     project.store.set_manual("A/Localization/en.json", "title", "玩家甲")
     _write_valid_pe(
@@ -1036,7 +1036,7 @@ def test_scan_all_keeps_native_results_when_required_tool_fails(tmp_path, monkey
     metadata = game / "IL2CPP Fixture_Data" / "il2cpp_data" / "Metadata" / "global-metadata.dat"
     before = metadata.read_bytes()
     monkeypatch.setattr(project, "scan", lambda: 4)
-    monkeypatch.setattr(project, "scan_v2", lambda progress_cb=None: 2)
+    monkeypatch.setattr(project, "scan_v2", lambda progress_cb=None, csv_overwrite_source=False: 2)
 
     def fail_tool(*args, **kwargs):
         raise RuntimeError("cross-check failed")
@@ -1065,7 +1065,7 @@ def test_scan_all_degrades_tool_analysis_on_dumper_version_gap(tmp_path, monkeyp
     project = Project.open_game_dir(game, tmp_path / "app")
     project.store.init_schema()
     monkeypatch.setattr(project, "scan", lambda: 4)
-    monkeypatch.setattr(project, "scan_v2", lambda progress_cb=None: 2)
+    monkeypatch.setattr(project, "scan_v2", lambda progress_cb=None, csv_overwrite_source=False: 2)
 
     def version_gap(*args, **kwargs):
         raise RuntimeError(
@@ -1089,7 +1089,7 @@ def test_scan_all_keeps_blocked_on_generic_tool_failure(tmp_path, monkeypatch):
     project = Project.open_game_dir(game, tmp_path / "app")
     project.store.init_schema()
     monkeypatch.setattr(project, "scan", lambda: 4)
-    monkeypatch.setattr(project, "scan_v2", lambda progress_cb=None: 2)
+    monkeypatch.setattr(project, "scan_v2", lambda progress_cb=None, csv_overwrite_source=False: 2)
 
     def fail_tool(*args, **kwargs):
         raise RuntimeError("game assembly unreadable")
@@ -1108,7 +1108,7 @@ def test_scan_all_surfaces_verified_tool_cache_hit(tmp_path, monkeypatch):
     metadata.write_bytes(metadata.read_bytes() + b"Hello")
     project = Project.open_game_dir(game, tmp_path / "app")
     monkeypatch.setattr(project, "scan", lambda: 1)
-    monkeypatch.setattr(project, "scan_v2", lambda progress_cb=None: 1)
+    monkeypatch.setattr(project, "scan_v2", lambda progress_cb=None, csv_overwrite_source=False: 1)
     monkeypatch.setattr(
         "hanhua.core.project.il2cpp_extractor.parse_string_literals",
         lambda raw: [(0, 5, 8)],
@@ -1211,7 +1211,7 @@ def test_write_all_accepts_v39_version_gap_degrade(tmp_path, monkeypatch):
     project.store.init_schema()
     _add_write_ready_text(project)
     monkeypatch.setattr(project, "scan", lambda: 0)
-    monkeypatch.setattr(project, "scan_v2", lambda: 0)
+    monkeypatch.setattr(project, "scan_v2", lambda progress_cb=None, csv_overwrite_source=False: 0)
     monkeypatch.setattr(
         "hanhua.core.project.il2cpp_extractor.parse_string_literals",
         lambda raw: [(0, 5, 8)],
@@ -1247,7 +1247,7 @@ def test_write_all_accepts_current_successful_il2cpp_v29_cross_check(
     project = Project.open_game_dir(game, tmp_path / "app")
     _add_write_ready_text(project)
     monkeypatch.setattr(project, "scan", lambda: 0)
-    monkeypatch.setattr(project, "scan_v2", lambda: 0)
+    monkeypatch.setattr(project, "scan_v2", lambda progress_cb=None, csv_overwrite_source=False: 0)
     monkeypatch.setattr(
         "hanhua.core.project.il2cpp_extractor.parse_string_literals",
         lambda raw: [(0, 5, 8)],
@@ -1284,7 +1284,7 @@ def test_il2cpp_v29_static_writeback_uses_static_font_replace(
         game, tmp_path / "app", FontConfig(enabled=True))
     _add_write_ready_text(project)
     monkeypatch.setattr(project, "scan", lambda: 0)
-    monkeypatch.setattr(project, "scan_v2", lambda: 0)
+    monkeypatch.setattr(project, "scan_v2", lambda progress_cb=None, csv_overwrite_source=False: 0)
     monkeypatch.setattr(
         "hanhua.core.project.il2cpp_extractor.parse_string_literals",
         lambda raw: [(0, 5, 8)],
@@ -1335,7 +1335,7 @@ def test_write_all_rejects_il2cpp_input_drift_after_successful_cross_check(
     metadata.write_bytes(metadata.read_bytes() + b"Hello")
     project = Project.open_game_dir(game, tmp_path / "app")
     monkeypatch.setattr(project, "scan", lambda: 0)
-    monkeypatch.setattr(project, "scan_v2", lambda: 0)
+    monkeypatch.setattr(project, "scan_v2", lambda progress_cb=None, csv_overwrite_source=False: 0)
     monkeypatch.setattr(
         "hanhua.core.project.il2cpp_extractor.parse_string_literals",
         lambda raw: [(0, 5, 8)],
@@ -1504,7 +1504,7 @@ def test_write_all_rechecks_il2cpp_evidence_after_copy_before_any_writer(
     project = Project.open_game_dir(game, tmp_path / "app")
     _add_write_ready_text(project)
     monkeypatch.setattr(project, "scan", lambda: 0)
-    monkeypatch.setattr(project, "scan_v2", lambda: 0)
+    monkeypatch.setattr(project, "scan_v2", lambda progress_cb=None, csv_overwrite_source=False: 0)
     monkeypatch.setattr(
         "hanhua.core.project.il2cpp_extractor.parse_string_literals",
         lambda raw: [(0, 5, 8)],
@@ -1546,7 +1546,7 @@ def test_write_all_rejects_json_modified_after_successful_scan_before_copy(
     game = _make_mono_unity_game(tmp_path)
     project = Project.open_game_dir(game, tmp_path / "app")
     _add_write_ready_text(project)
-    monkeypatch.setattr(project, "scan_v2", lambda progress_cb=None: 0)
+    monkeypatch.setattr(project, "scan_v2", lambda progress_cb=None, csv_overwrite_source=False: 0)
     assert project.scan_all().input_protected is True
     source = game / "Localization" / "en.json"
     source.write_text('{"title":"Changed"}', encoding="utf-8")
@@ -1588,7 +1588,7 @@ def test_write_all_rejects_any_full_tree_drift_before_copy_and_keeps_output(
     dll = game / "Fixture Game_Data" / "Managed" / "Fixture.dll"
     dll.write_bytes(b"MZ fixture dll")
     project = Project.open_game_dir(game, tmp_path / "app")
-    monkeypatch.setattr(project, "scan_v2", lambda progress_cb=None: 0)
+    monkeypatch.setattr(project, "scan_v2", lambda progress_cb=None, csv_overwrite_source=False: 0)
     assert project.scan_all().input_protected is True
     project.store.set_manual("Localization/en.json", "title", "你好")
     project.out_dir.mkdir(parents=True)
@@ -1633,7 +1633,7 @@ def test_scan_all_marks_full_tree_change_during_scan_unprotected(
         return result
 
     monkeypatch.setattr(project, "scan", mutate_during_scan)
-    monkeypatch.setattr(project, "scan_v2", lambda progress_cb=None: 0)
+    monkeypatch.setattr(project, "scan_v2", lambda progress_cb=None, csv_overwrite_source=False: 0)
 
     report = project.scan_all()
 
@@ -1647,7 +1647,7 @@ def test_write_all_rejects_copy_time_drift_before_writer_and_keeps_output(
     game = _make_mono_unity_game(tmp_path)
     project = Project.open_game_dir(game, tmp_path / "app")
     _add_write_ready_text(project)
-    monkeypatch.setattr(project, "scan_v2", lambda progress_cb=None: 0)
+    monkeypatch.setattr(project, "scan_v2", lambda progress_cb=None, csv_overwrite_source=False: 0)
     assert project.scan_all().input_protected is True
     project.out_dir.mkdir(parents=True)
     marker = project.out_dir / "KEEP-ME.txt"
@@ -1727,7 +1727,7 @@ def test_public_text_scan_invalidates_mixed_locator_manifest_until_scan_all(
     game = _make_mono_unity_game(tmp_path)
     project = Project.open_game_dir(game, tmp_path / "app")
     _add_write_ready_text(project)
-    monkeypatch.setattr(project, "scan_v2", lambda progress_cb=None: 0)
+    monkeypatch.setattr(project, "scan_v2", lambda progress_cb=None, csv_overwrite_source=False: 0)
     assert project.scan_all().input_protected is True
     project.store.add_file(
         "binary", "Fixture Game_Data/Managed/Assembly-CSharp.dll",
@@ -1815,7 +1815,7 @@ def test_project_rejects_v2_candidate_when_writer_reports_zero_verified_patches(
         tmp_path, monkeypatch):
     game = _make_mono_unity_game(tmp_path)
     project = Project.open_game_dir(game, tmp_path / "app")
-    monkeypatch.setattr(project, "scan_v2", lambda progress_cb=None: 0)
+    monkeypatch.setattr(project, "scan_v2", lambda progress_cb=None, csv_overwrite_source=False: 0)
     assert project.scan_all().input_protected is True
     project.store.add_file(
         "binary", "Fixture Game_Data/Managed/Assembly-CSharp.dll",

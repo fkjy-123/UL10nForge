@@ -2,21 +2,24 @@ from __future__ import annotations
 import csv
 import io
 from pathlib import Path
-from hanhua.core.models import TextEntry
+from hanhua.core.models import STATUS_SKIPPED, TextEntry
 from hanhua.core.formats import read_text
 
 TARGET_LANG_ALIASES = {
     "zh-CN": ("ChineseSimplified", "zh-CN", "zh_Hans", "简体中文",
-              "Simplified Chinese", "cn", "zh"),
+              "Simplified Chinese", "cn", "zh", "chn"),
 }
 
 NON_LANG_HEADERS = {"key", "id", "type", "category", "comment", "notes"}
 
 
 def pick_target_col(header: list[str], target_lang: str) -> int | None:
-    aliases = TARGET_LANG_ALIASES.get(target_lang, (target_lang,))
+    # 大小写不敏感（Rendezvous 实证：I2 13 列词典表头 'ID,IND,ENG,...,CHN'，
+    # CHN 未加别名导致 target_col=None → 写回走追加新列 → 游戏读 CHN 列
+    # 汉化不生效；且已填行被重复翻译覆盖官方中文）
+    aliases = {a.lower() for a in TARGET_LANG_ALIASES.get(target_lang, (target_lang,))}
     for i, name in enumerate(header):
-        if name.strip() in aliases:
+        if name.strip().lower() in aliases:
             return i
     return None
 
@@ -69,8 +72,15 @@ def looks_like_csv_text(text: str) -> bool:
 
 
 def extract_csv_text(text: str, file_id: str | None = None, suffix: str = "",
-                     target_lang: str = "zh-CN") -> tuple[list[TextEntry], int | None]:
-    """文本直取（TextAsset / zip 内层 / 伪装文件复用）。"""
+                     target_lang: str = "zh-CN",
+                     overwrite_source: bool = False) -> tuple[list[TextEntry], int | None]:
+    """文本直取（TextAsset / zip 内层 / 伪装文件复用）。
+
+    overwrite_source=True：覆盖源列模式（Rendezvous 实证——游戏语言设置
+    只有英文，目标语言列（CHN）官方内容玩家永远读不到；汉化=翻译源列
+    （ENG）写回源列）。此时目标语言列仅作官方译文参考（meta official_zh
+    = 官方中文，runner 搬运优先于模型译文）。
+    """
     fid = file_id or "csv"
     rows = _read_rows(text, _detect_delimiter(text, suffix))
     if not rows:
@@ -88,16 +98,38 @@ def extract_csv_text(text: str, file_id: str | None = None, suffix: str = "",
                               if len(rows[r]) > c and rows[r][c].strip()))
     else:
         source_col = 1
+    # 覆盖源列模式：写回列=源列（ENG）；目标语言列（CHN）作官方译文参考
+    write_col = source_col if overwrite_source else target_col
+    official_col = target_col if overwrite_source else None
     entries: list[TextEntry] = []
     for r in range(1, len(rows)):
         row = rows[r]
         if len(row) <= source_col or not row[source_col].strip():
             continue
         key = row[0].strip() if row and row[0].strip() else f"row{r}"
+        meta = {"row": r, "key": key, "source_col": source_col,
+                "target_col": write_col}
+        if overwrite_source:
+            meta["overwrite_source"] = True
+            # 官方中文参考（目标语言列已填）——搬运优先，模型不译
+            if official_col is not None and len(row) > official_col \
+                    and row[official_col].strip():
+                meta["official_zh"] = row[official_col].strip()
+        elif target_col is not None and len(row) > target_col \
+                and row[target_col].strip():
+            # 目标语言列已有内容 → 官方已汉化（Rendezvous 实证：I2 词典
+            # CHN 列 428 行已填官方中文）——跳过不译不覆盖（宁漏勿坏；
+            # skipped 留档审计可见，写回侧同保护）
+            entries.append(TextEntry(
+                file_id=fid, key_path=f"row/{r}",
+                original=row[source_col].strip(),
+                status=STATUS_SKIPPED,
+                meta={**meta, "reason": "target_col_already_filled"}))
+            continue
         entries.append(TextEntry(
             file_id=fid, key_path=f"row/{r}", original=row[source_col].strip(),
-            meta={"row": r, "key": key, "source_col": source_col, "target_col": target_col}))
-    return entries, target_col
+            meta=meta))
+    return entries, write_col
 
 
 def apply_csv(entries: list[TextEntry], source_text: str, delimiter: str = ",",
@@ -128,4 +160,64 @@ def apply_csv(entries: list[TextEntry], source_text: str, delimiter: str = ",",
     eol = "\r\n" if source_text.count("\r\n") > source_text.count("\n") / 2 else "\n"
     writer = csv.writer(out, delimiter=delimiter, lineterminator=eol)
     writer.writerows(rows)
+    return out.getvalue()
+
+
+def verify_csv_writeback(source_text: str, delimiter: str = ",",
+                         target_col: int = 2) -> list[str]:
+    """写回后完整性校验：源列不应残留「未翻译的纯 ASCII 英文」。
+
+    Rendezvous 2026-08-18 实证：CutsceneLocalization(TextAsset#30) 写回
+    漏了 158 行（ENG 列仍是英文）——过场对话全部英文。写回后调用本
+    函数逐行检查源列，返回残留的（行号, 内容）描述列表；空 = 完整。
+
+    注意：技术词（V-Sync/SFX 等）会被判为「残留」——由调用方按
+    allowlist 过滤，或人工确认后忽略。
+    """
+    import io as _io
+
+    rows = _read_rows(source_text, delimiter)
+    leftovers: list[str] = []
+    for r, row in enumerate(rows[1:], start=1):
+        if len(row) <= target_col:
+            continue
+        cell = row[target_col].strip()
+        if not cell:
+            continue
+        if all(c.isascii() and (c.isprintable() or c in " ") for c in cell):
+            leftovers.append(f"row {r}: {cell[:60]}")
+    return leftovers
+
+
+def apply_csv_by_id(entries: list, source_text: str, delimiter: str = ",",
+                    target_col: int = 2, id_col: int = 0) -> str:
+    """按 ID 列写回（防行号错位——Rendezvous 引号逗号行合并实证）。
+
+    与 apply_csv 的差异：条目按「ID 列值」匹配行（不依赖行号），
+    即使 CSV 解析的行号因引号内逗号/换行发生偏移也能正确写回。
+    条目需在 meta 中携带 id 值（提取侧注入），否则退化为按行号。
+    """
+    import io as _io
+
+    rows = _read_rows(source_text, delimiter)
+    by_id: dict[str, object] = {}
+    for e in entries:
+        rid = (e.meta or {}).get("id")
+        if rid is not None:
+            by_id[str(rid).strip()] = e
+    written = 0
+    for r, row in enumerate(rows[1:], start=1):
+        if len(row) <= id_col:
+            continue
+        e = by_id.get(str(row[id_col]).strip())
+        if not e or not e.translation:
+            continue
+        while len(row) <= target_col:
+            row.append("")
+        row[target_col] = e.translation
+        written += 1
+    out = _io.StringIO()
+    eol = "\r\n" if source_text.count("\r\n") > source_text.count("\n") / 2 else "\n"
+    import csv as _csv
+    _csv.writer(out, delimiter=delimiter, lineterminator=eol).writerows(rows)
     return out.getvalue()

@@ -120,7 +120,16 @@ def looks_like_yaml_text(text: str) -> bool:
 
     对话脚本（"Speaker: Hello."）值常以标点结尾，占比高时判为行文本，
     交给 txt 的 kv 逻辑（保留说话人前缀）——YAML 提取会丢弃 key 部分。
+
+    CSV 硬排除（Rendezvous 实证 2026-08-17）：多语言词典对话表
+    'SeaWall_D1,Arum: Apa kau...' 命中 _YAML_KV（冒号）→ 误判 yaml →
+    表头行被代码行过滤 → 按行号重建丢行 → 游戏 CSVParser 越界黑屏。
+    CSV 是行列宽度一致的表结构，判定更确定，先排除（写回走 apply_csv
+    按键写回，结构守恒）。
     """
+    from hanhua.core.formats.csv_format import looks_like_csv_text
+    if looks_like_csv_text(text):
+        return False
     _VALUE_SENTENCE = re.compile(r"[.!?:，。！？;；]$")
     _HAS_WORD = re.compile(r"[A-Za-z]{3,}")
     # 自然语言值：≥2 个空格分隔的单词（数据行的 "12:-1:none" 仅 1 个

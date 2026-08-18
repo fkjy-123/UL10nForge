@@ -19,9 +19,31 @@ from hanhua.core.models import FontConfig
 from hanhua.core.placeholders import extract_placeholders
 
 
+# 运行时插件字体源（2026-08-18 单字体收敛，用户指令）：
+# - 只保留唯一字体 Noto Serif CJK SC Medium（宋体中等字重，与
+#   SDF_Font_Asset/NotoSerifCJKsc-Medium SDF.asset 同源同字重）；
+# - 历史 SourceHanSansSC（思源黑体）系列弃用，兼容别名映射到新字体。
 FONT_OPTIONS = {
-    "SimplifiedChinese/SourceHanSansSC-Regular.otf": "Source Han Sans SC",
+    "SimplifiedChinese/NotoSerifCJKsc-Medium.otf": "Noto Serif CJK SC",
 }
+
+# 旧项目库兼容：历史 store 配置的 filename 指向已弃用/已替换字体
+# （Rendezvous 实证：默认值/旧项目一直部署过期字体）。安装前规范化到
+# 新字体——旧库自动更正线路，不再使用过期字体。
+_LEGACY_FONT_ALIASES = {
+    "SimplifiedChinese/SourceHanSansSC-Regular.otf":
+        "SimplifiedChinese/NotoSerifCJKsc-Medium.otf",
+    "SimplifiedChinese/SourceHanSansSC-Medium.otf":
+        "SimplifiedChinese/NotoSerifCJKsc-Medium.otf",
+    "SimplifiedChinese/SourceHanSansSC-Medium.ttf":
+        "SimplifiedChinese/NotoSerifCJKsc-Medium.otf",
+}
+
+
+def _normalize_font_filename(filename: str) -> str:
+    """旧字体路径 → 新字体路径（兼容映射）；未知路径原样返回（由
+    FONT_OPTIONS 白名单在调用方拒绝）。"""
+    return _LEGACY_FONT_ALIASES.get(filename, filename)
 
 _WINDOWS_RESERVED_NAMES = {
     "con",
@@ -1001,11 +1023,15 @@ def install_font_override(
     translations: dict[str, str] | None = None,
     exclude: set[str] | None = None,
     player_root: Path | None = None,
+    tmp_bundle: Path | None = None,
 ) -> FontInstallResult:
     if not config.enabled:
         return FontInstallResult(False)
+    # 旧库兼容：弃用字体路径自动映射新字体（含 dataclasses.replace 语义，
+    # 不改动调用方配置对象——仅本次安装生效）
+    filename = _normalize_font_filename(config.filename)
     try:
-        family = FONT_OPTIONS[config.filename]
+        family = FONT_OPTIONS[filename]
     except KeyError as exc:
         raise FontInstallError(f"字体不在允许的白名单中: {config.filename}") from exc
     source_root = Path(game_dir).resolve()
@@ -1024,7 +1050,7 @@ def install_font_override(
     if not capability.provider_supported and runtime == "il2cpp":
         return FontInstallResult(
             installed=False,
-            filename=config.filename,
+            filename=filename,
             family=family,
             payload_deployed=False,
             runtime_verified=False,
@@ -1040,10 +1066,10 @@ def install_font_override(
     architecture = capability.architecture
     try:
         fonts_root = selected_assets.fonts_dir.resolve(strict=True)
-        font_source = (fonts_root / config.filename).resolve(strict=True)
+        font_source = (fonts_root / filename).resolve(strict=True)
     except OSError as exc:
         raise FontInstallError(
-            f"字体文件不存在或无法解析: {selected_assets.fonts_dir / config.filename}"
+            f"字体文件不存在或无法解析: {selected_assets.fonts_dir / filename}"
         ) from exc
     if (
         not fonts_root.is_dir()
@@ -1065,6 +1091,19 @@ def install_font_override(
         runtime_zip = selected_assets.runtime_zip
         expected_runtime_sha256 = selected_assets.expected_runtime_sha256
         expected_runtime_size = selected_assets.expected_runtime_size
+    tmp_bundle_payload: bytes | None = None
+    if tmp_bundle is not None:
+        bundle_path = Path(tmp_bundle)
+        try:
+            if _path_is_link(bundle_path) or not bundle_path.is_file():
+                raise FontInstallError(
+                    f"TMP bundle 必须是可读的普通文件: {bundle_path}")
+            tmp_bundle_payload = bundle_path.read_bytes()
+        except FontInstallError:
+            raise
+        except OSError as exc:
+            raise FontInstallError(
+                f"无法读取 TMP bundle: {bundle_path}: {exc}") from exc
     try:
         font_payload = font_source.read_bytes()
         plugin_payload = selected_assets.plugin_dll.read_bytes()
@@ -1191,6 +1230,9 @@ def install_font_override(
             plugin_dir.mkdir(parents=True, exist_ok=True)
             (plugin_dir / "Hanhua.FontFallback.dll").write_bytes(plugin_payload)
             (plugin_dir / "font.ttf").write_bytes(font_payload)
+            if tmp_bundle_payload is not None:
+                (plugin_dir / "font-tmp.bundle").write_bytes(
+                    tmp_bundle_payload)
             (plugin_dir / "font-family.txt").write_bytes(
                 f"{family}\n".encode("utf-8")
             )
@@ -1208,7 +1250,7 @@ def install_font_override(
     except OSError as exc:
         raise FontInstallError(f"无法准备字体运行时临时安装树: {exc}") from exc
     return FontInstallResult(
-        True, config.filename, family,
+        True, filename, family,
         payload_deployed=True,
         runtime_verified=False,
         architecture=architecture,

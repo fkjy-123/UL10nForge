@@ -417,7 +417,7 @@ def test_font_gate_and_coverage_in_records(tmp_path, monkeypatch):
     result = {
         "text_files": 2,
         "font": type("F", (), {
-            "family": "SourceHanSansSC-Regular.otf",
+            "family": "NotoSerifCJKsc-Medium.otf",
             "level": "runtime_fallback",
             "installed": True})(),
         "verification": {

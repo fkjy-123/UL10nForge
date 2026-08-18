@@ -276,6 +276,14 @@ def _walk_files(
 
 
 def _is_runtime_file(p: Path, game_dir: Path) -> bool:
+    # 汉化工具自身生成的备份/清单（点文件 + .bak/.tmp，Rendezvous 实证
+    # 2026-08-17）：.pre-xxx.bak / .xxx.hanhua-*.tmp 等被扫描产生 650+
+    # 条重复待翻译，且写回可能污染备份。游戏内容不会放在点文件/备份
+    # 后缀里，统一排除（Windows 隐藏文件 + 工具产物）。
+    if p.name.startswith("."):
+        return True
+    if p.suffix.lower() in {".bak", ".tmp", ".orig", ".old"}:
+        return True
     if p.name.casefold() in _SKIP_FILE_KEYS:
         return True
     rel_parts = p.relative_to(game_dir).parts
