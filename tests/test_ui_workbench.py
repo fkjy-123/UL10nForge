@@ -103,8 +103,7 @@ def test_home_is_accessible_five_stage_workbench_without_emoji(qapp, tmp_path):
     assert TOKENS.control_height >= 44
     assert isinstance(page.dz_icon, LineIcon)
     assert [card.step_id for card in page.pipeline_cards] == [
-        "detection", "text_scan", "tool_analysis",
-        "translation_quality", "writeback",
+        "scan", "translation", "review", "writeback", "verify",
     ]
     assert page.pick_btn.minimumHeight() >= 44
     assert page.pick_btn.accessibleName() == "选择 Unity 游戏文件夹"
@@ -797,7 +796,8 @@ def test_stale_queued_write_never_targets_new_project_or_calls_back(
             self.store = Store()
             self.out_dir = tmp_path / f"{name}_汉化"
 
-        def write_all(self, *, font_config=None, allow_partial=False):
+        def write_all(self, *, font_config=None, allow_partial=False,
+                      allow_unverified_font_candidate=False):
             calls.append((self.name, font_config))
             return {"text_files": 1}
 
@@ -839,7 +839,7 @@ def test_writeback_stage_progress_and_duplicate_run_guard(
             self.out_dir = tmp_path / "game_汉化"
 
         def write_all(self, *, font_config=None, stage_cb=None,
-                allow_partial=False):
+                allow_partial=False, allow_unverified_font_candidate=False):
             assert font_config is not None
             for phase, message in (
                     ("copying", "正在复制原游戏"),
@@ -903,7 +903,7 @@ def test_project_switch_cannot_clear_active_write_guard(
             self.out_dir = tmp_path / f"{name}_汉化"
 
         def write_all(self, *, font_config=None, stage_cb=None,
-                allow_partial=False):
+                allow_partial=False, allow_unverified_font_candidate=False):
             return {"text_files": 1}
 
     first = Project("first")
@@ -979,7 +979,8 @@ def test_active_write_holds_project_lease_across_switch(
         def __init__(self):
             self.store = Store()
 
-        def write_all(self, *, font_config=None, allow_partial=False):
+        def write_all(self, *, font_config=None, allow_partial=False,
+                      allow_unverified_font_candidate=False):
             assert self.store.closed is False
             entered.set()
             assert release.wait(timeout=2)
@@ -1021,8 +1022,8 @@ def test_write_task_captures_font_settings_at_queue_time(
         "store": store,
         "out_dir": tmp_path / "game_汉化",
         "write_all": lambda _self, *, font_config=None, stage_cb=None,
-             allow_partial=False: captured.append(
-            font_config) or {"text_files": 1},
+             allow_partial=False, allow_unverified_font_candidate=False:
+             captured.append(font_config) or {"text_files": 1},
     })()
     state = _state(tmp_path)
     state.settings.font = FontConfig(
@@ -1417,9 +1418,9 @@ def test_home_rail_follows_pipeline_phase_broadcasts(qapp, tmp_path):
     state = page.state
 
     state.pipelinePhase.emit(
-        "translation_quality", "running", "正在翻译…", "已完成 10 / 100 条")
+        "translation", "running", "正在翻译…", "已完成 10 / 100 条")
     node = next(c for c in page.pipeline_cards
-                if c.step_id == "translation_quality")
+                if c.step_id == "translation")
     assert node.property("status") == "running"
     assert "10 / 100" in node.metrics_label.text()
 
@@ -1442,17 +1443,23 @@ def test_home_rail_follows_scan_progress_events(qapp, tmp_path):
     from hanhua.core.project import PipelineEvent
     page = HomePage(_state(tmp_path), _Window())
 
+    # 2026-08-15 流水线重做：detection/text_scan/tool_analysis 子阶段
+    # 合并到「识别」节点（状态取最严重：running > succeeded）
+    by_id = {c.step_id: c for c in page.pipeline_cards}
+
+    # 初始全部 succeeded → 识别节点 succeeded
     page._on_scan_progress(PipelineEvent(
         "detection", "succeeded", "Mono · Unity 2022"))
     page._on_scan_progress(PipelineEvent(
         "text_scan", "succeeded", "结构化文本文件 12 个"))
     page._on_scan_progress(PipelineEvent(
-        "tool_analysis", "running", "Il2CppDumper 交叉验证"))
+        "tool_analysis", "succeeded", "Il2CppDumper 通过"))
+    assert by_id["scan"].property("status") == "succeeded"
 
-    by_id = {c.step_id: c for c in page.pipeline_cards}
-    assert by_id["detection"].property("status") == "succeeded"
-    assert by_id["text_scan"].property("status") == "succeeded"
-    assert by_id["tool_analysis"].property("status") == "running"
+    # 任一 running → 合并状态升级为 running（最严重）
+    page._on_scan_progress(PipelineEvent(
+        "tool_analysis", "running", "Il2CppDumper 交叉验证"))
+    assert by_id["scan"].property("status") == "running"
 
     # 非 rail 阶段（binary_scan）忽略不崩
     page._on_scan_progress(PipelineEvent("binary_scan", "succeeded", "x"))
@@ -1632,7 +1639,8 @@ def test_home_health_translate_pct_uses_actionable_scope(qapp, tmp_path):
     page._refresh_dashboard()
     await_reload(page)
 
-    assert page.stat_total.value_label.text() == "4"  # 文本总数不变
+    # 文本总数 4 不变（显示在 hero_sub）
+    assert "共 4 条文本" in page.hero_sub.text()
     # 分母 = translated(1) + actionable(1) = 2 → 完成度 50%（此前 1/4 = 25%）
     assert "1 已翻译（50%）" in page.hero_sub.text()
 

@@ -211,11 +211,10 @@ class EntryTableModel(QAbstractTableModel):
                 return level or "—"
         if role == Qt.EditRole and col == 3:
             return row["translation"]
-        if role == Qt.TextFormatRole and col in (2, 3):
-            # #48：原文/译文含富文本标签时 AutoText 会渲染成粗体，
-            # 与真实文本（审校模型输入的原文）不一致——强制纯文本
-            # 原样显示，标签结构可核对。
-            return Qt.PlainText
+        # #48 富文本纯文本化：Qt 6 移除了 TextFormatRole（PySide6 6.11
+        # Qt.ItemDataRole 无此枚举）——该 role 视图不再查询，原分支为
+        # 死代码且引用已删枚举会崩溃。原文/译文含富文本标签的纯文本
+        # 显示由 DisplayRole 返回原串 + 视图默认纯文本处理保证。
         if role == Qt.CheckStateRole and col == 6:
             return Qt.Checked if row["locked"] else Qt.Unchecked
         if role == Qt.ToolTipRole and col == 1:

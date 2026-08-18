@@ -136,7 +136,7 @@ def test_write_all_installs_font_in_staging_before_commit(tmp_path, monkeypatch)
     )
 
     def install(game, staging, config, *, translations, exclude,
-                player_root=None):
+                player_root=None, tmp_bundle=None):
         nonlocal seen_staging
         seen_staging = staging
         assert game == proj.game_dir
@@ -1205,7 +1205,7 @@ def test_write_all_merges_rejected_sources_into_exclude(monkeypatch):
         installed=True, filename="test-font.ttf")
 
     def install(game, staging, config, *, translations, exclude,
-                player_root=None):
+                player_root=None, tmp_bundle=None):
         nonlocal seen_exclude
         seen_exclude = set(exclude)
         return font_result

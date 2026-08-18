@@ -268,16 +268,24 @@ def test_apply_tmp_font_preserves_a_compatible_original_before_assignment():
     assert "return true;" in apply_font
 
 
-def test_apply_tmp_font_switches_matching_sdf_material_and_dirties_mesh():
+def test_apply_tmp_font_switches_sdf_font_and_mesh_generation_forces_it():
     source = _plugin_source()
     apply_font = _method_body(
         source, "private static bool ApplyTmpFontToText")
-    assert "ApplyTmpMaterialToText(target)" in apply_font
-    material = _method_body(
-        source, "private void ApplyTmpMaterialToText")
-    assert '"material"' in material
-    assert '"fontSharedMaterial"' in material
-    assert '"SetAllDirty"' in material
+    # Rendezvous 重构：ApplyTmpMaterialToText 已被 mesh 生成钩子取代——
+    # ApplyTmpFontToText 直接替换 font 属性并保留原字体 fallback；材质
+    # 切换与网格刷新由 TmpGenerateTextMeshPrefix（生成前强制字体）保证。
+    assert "fontProperty.SetValue(target, plugin.dynamicTmpFont, null)" \
+        in apply_font
+    assert "plugin.AttachOriginalTmpFallback(original)" in apply_font
+    assert "return true;" in apply_font
+    # mesh 生成钩子：font 在 GenerateTextMesh 之前强制，避免 UV/条纹
+    setup = _method_body(source, "private void SetupHarmonyPatches")
+    assert "TmpGenerateTextMeshPrefix" in source
+    assert '"GenerateTextMesh"' in setup
+    prefix = _method_body(
+        source, "public static void TmpGenerateTextMeshPrefix")
+    assert "ApplyTmpFontToText" in prefix
 
 
 def test_original_tmp_fallback_is_compatible_acyclic_and_idempotent():

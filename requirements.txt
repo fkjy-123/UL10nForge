@@ -4,3 +4,4 @@ chardet>=5.2
 UnityPy>=1.25
 dnfile>=0.16
 pytest>=8.0
+pycryptodome>=3.20
