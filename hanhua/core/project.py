@@ -250,14 +250,44 @@ def _sha256_file(path: Path) -> str:
     return digest.hexdigest()
 
 
+#: 扫描入库聚合批大小（2026-08-19 扫描性能修复，见 Project.scan）
+_SCAN_DB_BATCH = 200
+
+
+def _file_fingerprint(st: os.stat_result, path: Path) -> str:
+    """文件指纹：小文件（≤8MB）全量 sha256（安全写回证据链仍用内容
+    哈希）；大文件退化为 size+mtime_ns+ctime_ns 组合指纹。
+
+    2026-08-19 扫描性能修复：_tree_hashes 此前对全树逐文件 sha256——
+    大游戏几十 GB 资源（.assets/ bundle/纹理/音频）在 scan_all 里被
+    完整读盘 6 次（scan_manifest_before/after + scan standalone ×2 +
+    scan_v2 standalone ×2），磁盘读带宽直接决定扫描时长（实测大游戏
+    仅树哈希就小时级）。清单用途是「树在扫描前后是否变化」的指纹
+    比对，不是内容完整性证明——大文件 size+时间戳足够捕捉任何写入
+    （mtime/ctime 变化必然伴随），小文件保留内容哈希兜底（时间戳
+    粒度问题）。IL2CPP 规范输入（GameAssembly/metadata）仍有独立的
+    _sha256_file 校验（写回闸门），安全语义不受影响。
+    """
+    if st.st_size <= 8 * 1024 * 1024:
+        try:
+            return _sha256_file(path)
+        except OSError:
+            pass
+    return f"s{st.st_size}:{st.st_mtime_ns}:{st.st_ctime_ns}"
+
+
 def _tree_hashes(root: Path) -> dict[str, str]:
     """返回普通文件的稳定相对路径哈希；符号链接与 junction 不作为可写输入跟随。
 
     rglob 会跟随 Windows junction 下探（islink 为 False），游戏目录中一旦出现
     指向祖先的链接（OneDrive 同步、汉化副本发布残留）会无限递归卡死扫描。
     os.walk + reparse 剪枝保证树遍历终止。
+
+    2026-08-19：单次 os.stat 驱动指纹（is_file 与指纹共用 st，避免双
+    stat 系统调用——万文件树每次扫描省 2N 次 stat）。
     """
     hashes: dict[str, str] = {}
+    import stat as _stat
     for dirpath, dirnames, filenames in os.walk(root, topdown=True):
         dirnames[:] = [
             name for name in sorted(dirnames)
@@ -265,8 +295,13 @@ def _tree_hashes(root: Path) -> dict[str, str]:
         ]
         for name in sorted(filenames):
             path = Path(dirpath) / name
-            if path.is_file() and not path.is_symlink():
-                hashes[path.relative_to(root).as_posix()] = _sha256_file(path)
+            try:
+                st = path.stat()
+            except OSError:
+                continue
+            if not _stat.S_ISREG(st.st_mode) or path.is_symlink():
+                continue
+            hashes[path.relative_to(root).as_posix()] = _file_fingerprint(st, path)
     return hashes
 
 
@@ -1024,6 +1059,18 @@ class Project:
         self._store_scan_state()
         return report
 
+    def _flush_scan_batch(self, batch_files: list[tuple],
+                          batch_rows: list[dict]) -> None:
+        """聚合批落库（2026-08-19 扫描性能修复，见 scan 的批说明）。
+
+        文件记录 executemany 单语句，条目走 upsert_entries（既有合并
+        语义不变：skipped 覆盖/译文继承）；空批零成本。"""
+        if not batch_files:
+            return
+        for file_id, rel, fmt, encoding, eol, meta in batch_files:
+            self.store.add_file(file_id, rel, fmt, encoding, eol, meta)
+        self.store.upsert_entries(batch_rows)
+
     def scan(self) -> int:
         """扫描并入库，返回保留的文本文件数。规则升级后被淘汰的旧文件自动清理。"""
         standalone_before = None
@@ -1039,22 +1086,39 @@ class Project:
         files = discover(selected_root, exclude_roots=excluded_roots)
         found_ids: set[str] = set()
         kept = 0
-        for f in files:
-            rel = str(f.relative_to(self.game_dir)).replace("\\", "/")
-            pf = parse_file(f, file_id=rel)
-            if pf.noise:
-                continue      # 整文件为运行时噪音，不入库
-            # R5：提取侧静默跳过聚合（哑识别可见化）
-            for morph, count in pf.skipped_reasons.items():
-                self._last_scan_skipped[morph] = (
-                    self._last_scan_skipped.get(morph, 0) + count)
-            found_ids.add(rel)
-            self.store.add_file(pf.file_id, rel, pf.format, pf.encoding, pf.eol, pf.meta)
-            self.store.upsert_entries([
-                {"file_id": e.file_id, "key_path": e.key_path,
-                 "original": e.original, "status": e.status, "meta": e.meta}
-                for e in pf.entries])
-            kept += 1
+        # 2026-08-19 扫描性能修复：逐文件 add_file + upsert_entries 各
+        # 一次 commit——万文件游戏一次扫描 2 万次 commit（WAL 下每次
+        # commit 仍是事务开销 + RLock 串行）。改为聚合批：文件记录与
+        # 条目累积到 _scan_batch_size（或遍历结束）一次性提交。中途
+        # 异常时已完成批已落库，重扫幂等（upsert 语义）。
+        batch_files: list[tuple] = []
+        batch_rows: list[dict] = []
+        try:
+            for f in files:
+                rel = str(f.relative_to(self.game_dir)).replace("\\", "/")
+                pf = parse_file(f, file_id=rel)
+                if pf.noise:
+                    continue      # 整文件为运行时噪音，不入库
+                # R5：提取侧静默跳过聚合（哑识别可见化）
+                for morph, count in pf.skipped_reasons.items():
+                    self._last_scan_skipped[morph] = (
+                        self._last_scan_skipped.get(morph, 0) + count)
+                found_ids.add(rel)
+                batch_files.append((
+                    pf.file_id, rel, pf.format, pf.encoding, pf.eol,
+                    pf.meta))
+                batch_rows.extend(
+                    {"file_id": e.file_id, "key_path": e.key_path,
+                     "original": e.original, "status": e.status,
+                     "meta": e.meta}
+                    for e in pf.entries)
+                kept += 1
+                if len(batch_files) >= _SCAN_DB_BATCH:
+                    self._flush_scan_batch(batch_files, batch_rows)
+                    batch_files = []
+                    batch_rows = []
+        finally:
+            self._flush_scan_batch(batch_files, batch_rows)
         for old in self.store.get_files():
             if old["format"].startswith("v2_"):
                 continue      # v2 文件由 scan_v2 管理，不能在此清理

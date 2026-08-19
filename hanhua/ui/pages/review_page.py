@@ -317,22 +317,32 @@ class EntryFilterProxy(QSortFilterProxyModel):
         self.endFilterChange(QSortFilterProxyModel.Direction.Rows)
 
     def filterAcceptsRow(self, row, parent):
+        # 2026-08-19 卡顿修复：行级缓存解析后的 meta 与小写搜索串——
+        # _row_meta 每行每次过滤都 json.loads（万行 × 每次筛选/每个防抖
+        # 前的按键），.lower() 同样按调用重算。缓存以 (id(row-dict)) 为
+        # 键挂在模型行上（setEntries 换新行 dict 自然失效），复杂度从
+        # O(过滤次数×N×json解析) 降为 O(N×json解析) + O(过滤次数×N)。
         model: EntryTableModel = self.sourceModel()
         r = model._rows[row]
-        if self.search and self.search not in r["original"].lower() \
-                and self.search not in (r["translation"] or "").lower():
+        cached = r.get("_filter_cache")
+        if cached is None or cached[0] is not r.get("meta"):
+            cached = (r.get("meta"), _row_meta(r),
+                      r["original"].lower(),
+                      (r["translation"] or "").lower())
+            r["_filter_cache"] = cached
+        if self.search and self.search not in cached[2] \
+                and self.search not in cached[3]:
             return False
         if self.status == "needs_review":
             # #47：待审核 = 未收敛终态（NEEDS_REVISION/BLOCKED/
             # REVIEW_ERROR）∪ 遗留 review_issue ∪ 机械失败——原「审核」
             # 胶囊并入（质量门未过/被标记/高风险最终都落未收敛终态，
             # 两胶囊展示同一集合，重复展示合并为单一胶囊）
-            meta = _row_meta(r)
-            if not (_needs_review(meta) or r["status"] == "failed"):
+            if not (_needs_review(cached[1]) or r["status"] == "failed"):
                 return False
         elif self.status == "retranslated":
             # #47：重译收敛待人工确认（有问题的文本重返审校）
-            if not _row_meta(r).get("retranslated"):
+            if not cached[1].get("retranslated"):
                 return False
         elif self.status == "pending":
             # #2/#8：待翻译 = 引擎实际会翻的条目（与翻译页 chips 同源
@@ -491,7 +501,7 @@ class ReviewPage(QWidget):
         self.splitter.setStretchFactor(1, 2)
         self.splitter.setSizes([380, 640])
 
-        self.search_box.textChanged.connect(self._apply_filters)
+        self.search_box.textChanged.connect(self._on_search_changed)
         self.translate_btn.clicked.connect(lambda: self.window.navigate("translate"))
         # Ctrl+F 聚焦搜索框（搜索框 placeholder 已提示）
         _search_shortcut = QShortcut(QKeySequence("Ctrl+F"), self)
@@ -930,6 +940,19 @@ class ReviewPage(QWidget):
         if self._loading:
             return
         self._apply_filters()
+
+    def _on_search_changed(self, _text: str):
+        """搜索输入防抖（2026-08-19 卡顿修复）：每个按键触发一次全量
+        过滤重算（filterAcceptsRow × 万行 + json.loads meta），连续输入
+        时万行模型反复重建代理行映射——输入 10 个字符 = 10 次全量过滤。
+        250ms 防抖合并为一次（QTimer 而非 sleep：不阻塞主线程）。"""
+        from PySide6.QtCore import QTimer
+        if getattr(self, "_search_timer", None) is None:
+            self._search_timer = QTimer(self)
+            self._search_timer.setSingleShot(True)
+            self._search_timer.setInterval(250)
+            self._search_timer.timeout.connect(self._apply_filters)
+        self._search_timer.start()
 
     def _apply_filters(self):
         if self._loading:

@@ -316,34 +316,82 @@ class ProjectStore:
             self.conn.commit()
 
     def batch_update_translation_results(self, entries) -> None:
-        """原子保存译文、状态和质量元数据，同时保留扫描器定位信息。"""
+        """原子保存译文、状态和质量元数据，同时保留扫描器定位信息。
+
+        2026-08-19 性能修复：原实现逐条 SELECT meta + Python 合并 +
+        UPDATE——翻译 flush() 每批一次，万级条目累计 O(N²) 次点查与
+        JSON 序列化（翻译越久越卡的 DB 侧根因之一）。改为 SQL 内
+        json_patch 合并（UPDATE 的 SET 表达式中 entries.meta 引用旧值，
+        patch 键覆盖旧键——与 dict.update 语义一致），单次 executemany
+        + 单次 commit；合并结果回写 entry.meta 用批量 IN 查询（每批
+        一次而非每条一次）。json_patch 不可用（极旧 SQLite）→ 兜底
+        旧的逐条合并路径，行为不变只是慢。"""
         rows = list(entries)
         if not rows:
             return
         with self._lock:
-            values = []
-            for entry in rows:
-                current = self.conn.execute(
-                    "SELECT meta FROM entries WHERE file_id=? AND key_path=?",
-                    (entry.file_id, entry.key_path),
-                ).fetchone()
-                try:
-                    merged_meta = json.loads(current["meta"] or "{}") if current else {}
-                except (json.JSONDecodeError, TypeError):
-                    merged_meta = {}
-                merged_meta.update(entry.meta)
-                entry.meta = merged_meta
-                values.append((
-                    entry.translation, entry.status,
-                    json.dumps(merged_meta, ensure_ascii=False),
-                    entry.file_id, entry.key_path,
-                ))
-            self.conn.executemany(
+            values = [
+                (entry.translation, entry.status,
+                 json.dumps(entry.meta, ensure_ascii=False),
+                 entry.file_id, entry.key_path)
+                for entry in rows
+            ]
+            try:
+                self.conn.executemany(
+                    "UPDATE entries SET "
+                    "translation=?, "
+                    "status=?, "
+                    "meta=json_patch(COALESCE(entries.meta,'{}'), json(?)) "
+                    "WHERE file_id=? AND key_path=?",
+                    values,
+                )
+            except sqlite3.OperationalError:
+                self._batch_update_translation_results_slow(rows)
+            self.conn.commit()
+            # 合并后的 meta 回写 entry（旧实现副作用兼容——后续 reviewer
+            # 读 entry.meta 需要含扫描器字段的完整视图）。批量 IN 查询，
+            # 每批一次而非每条一次。
+            by_key = {(e.file_id, e.key_path): e for e in rows}
+            keys = list(by_key)
+            for offset in range(0, len(keys), 400):
+                chunk = keys[offset:offset + 400]
+                placeholders = ",".join("(?,?)" for _ in chunk)
+                flat = [v for pair in chunk for v in pair]
+                cursor = self.conn.execute(
+                    f"SELECT file_id, key_path, meta FROM entries "
+                    f"WHERE (file_id, key_path) IN ({placeholders})",
+                    flat)
+                for r in cursor:
+                    entry = by_key.get((r["file_id"], r["key_path"]))
+                    if entry is None:
+                        continue
+                    try:
+                        merged = json.loads(r["meta"] or "{}")
+                    except (json.JSONDecodeError, TypeError):
+                        continue
+                    if isinstance(merged, dict):
+                        entry.meta = merged
+
+    def _batch_update_translation_results_slow(self, rows) -> None:
+        """json_patch 不可用时的兜底：逐条 SELECT 合并 UPDATE（旧实现）。"""
+        for entry in rows:
+            current = self.conn.execute(
+                "SELECT meta FROM entries WHERE file_id=? AND key_path=?",
+                (entry.file_id, entry.key_path),
+            ).fetchone()
+            try:
+                merged_meta = json.loads(
+                    current["meta"] or "{}") if current else {}
+            except (json.JSONDecodeError, TypeError):
+                merged_meta = {}
+            merged_meta.update(entry.meta)
+            entry.meta = merged_meta
+            self.conn.execute(
                 "UPDATE entries SET translation=?, status=?, meta=? "
                 "WHERE file_id=? AND key_path=?",
-                values,
-            )
-            self.conn.commit()
+                (entry.translation, entry.status,
+                 json.dumps(merged_meta, ensure_ascii=False),
+                 entry.file_id, entry.key_path))
 
     def update_entry_metas(self, rows: list[tuple[str, str, dict]]) -> int:
         """批量合并条目 meta（保留既有字段，逐条 merge 后单次提交）。

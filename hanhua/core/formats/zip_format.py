@@ -30,8 +30,13 @@ def _entry_file_id(zip_fid: str, entry_name: str, depth: int = 0) -> str:
 
 
 def _decode(raw: bytes) -> str:
-    """按 chardet 解码 zip 条目字节（与 read_text 同策略）。"""
-    det = chardet.detect(raw)
+    """按 chardet 解码 zip 条目字节（与 read_text 同策略）。
+
+    chardet 只喂头部样本（2026-08-19 扫描性能修复，见 extractor
+    ._detect_encoding——全量 chardet 是大文件内存暴涨源头）；zip
+    条目已有 8MB 解压上限，此处再保险截断。"""
+    sample = raw[:65536] if len(raw) > 65536 else raw
+    det = chardet.detect(sample)
     encoding = (det.get("encoding") or "utf-8").lower()
     if raw.startswith(b"\xef\xbb\xbf"):
         encoding = "utf-8-sig"

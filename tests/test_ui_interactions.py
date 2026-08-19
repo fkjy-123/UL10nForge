@@ -14,6 +14,7 @@ os.environ.setdefault("QT_QPA_PLATFORM", "offscreen")
 import pytest
 from PySide6.QtCore import QMimeData, QPoint, Qt, QUrl
 from PySide6.QtGui import QKeySequence
+from PySide6.QtTest import QTest
 from PySide6.QtWidgets import (QApplication, QFileDialog, QLabel,
                                QPushButton, QTableWidgetItem)
 
@@ -273,9 +274,13 @@ def test_review_filter_updates_proxy_rows(qapp, tmp_path):
     await_reload(page)
 
     assert page.proxy.rowCount() == 2
+    # 2026-08-19 防抖：搜索过滤 250ms 合并（_on_search_changed）——
+    # setText 不再同步过滤，等防抖定时器触发（qWait 泵事件循环）。
     page.search_box.setText("Quit")
+    QTest.qWait(400)
     assert page.proxy.rowCount() == 1
     page.search_box.setText("不存在的文本")
+    QTest.qWait(400)
     assert page.proxy.rowCount() == 0
 
 

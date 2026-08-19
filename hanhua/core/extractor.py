@@ -177,17 +177,17 @@ def looks_like_noise_file(entries: list[TextEntry]) -> bool:
 
 
 def _detect_encoding(raw: bytes) -> str:
-
+    """编码检测：只喂头部样本——chardet.detect 是 O(N) 统计分析，
+    2026-08-19 扫描性能修复：几十 MB 的大文本文件（对话库/语料库）
+    全量检测会同时占住 raw 副本 + 检测状态数秒，是大文本游戏扫描
+    内存暴涨（规律性涨落 = 大文件整读 → 检测 → 解析 → GC）的主源
+    之一。编码判断只需头部统计（BOM/前几十 KB 足够稳定）。"""
     import chardet
-
-    det = chardet.detect(raw)
-
+    sample = raw[:65536] if len(raw) > 65536 else raw
+    det = chardet.detect(sample)
     enc = (det.get("encoding") or "utf-8").lower()
-
     if enc in ("ascii",):
-
         return "utf-8"
-
     return enc
 
 
@@ -597,11 +597,12 @@ def _unlink_temp(handle) -> None:
 
 
 def _decode_text(raw: bytes) -> str:
-
+    """字节 → 文本：BOM 优先，chardet 只喂头部样本（见 _detect_encoding
+    的性能说明——全量 chardet 是大文件内存暴涨源头），strict 解码 +
+    gbk/latin-1 兜底。"""
     import chardet
-
-    det = chardet.detect(raw)
-
+    sample = raw[:65536] if len(raw) > 65536 else raw
+    det = chardet.detect(sample)
     encoding = (det.get("encoding") or "utf-8").lower()
 
     if raw.startswith(b"\xef\xbb\xbf"):

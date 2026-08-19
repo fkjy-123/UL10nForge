@@ -1503,7 +1503,9 @@ def test_review_page_selection_maps_proxy_to_source(qapp, tmp_path):
     ])
     # 搜索 "am" 只命中 Gamma（Alpha/Beta 均不含）→ proxy 仅 1 行
     # （源行 2）：proxy 行号 0 ≠ 源行号 2，直接覆盖错位映射
+    # 2026-08-19 防抖：过滤 250ms 合并，等防抖定时器触发
     page.search_box.setText("am")
+    QTest.qWait(400)
     assert page.proxy.rowCount() == 1
 
     proxy_row = 0

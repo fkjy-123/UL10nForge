@@ -533,6 +533,10 @@ class BatchTranslator:
         # "Iron Key translates to 铁钥匙" → 模型输出「铁钥匙」）。
         self._obj_results: dict[str, list[tuple[str, str]]] = {}
         self._obj_lock = threading.Lock()
+        # 2026-08-19 emit_stats 条件重算标志：本轮产生过失败（置 failed
+        # 的任何路径）才全量扫 entries 统计 failed——连续成功批零遍历
+        # （万级条目 × 数百批的 O(N) 降 O(1)，见 emit_stats 注释）。
+        self._failures_dirty = True
 
     def stop(self):
         self._stop.set()
@@ -549,6 +553,7 @@ class BatchTranslator:
             force_retry_exhausted: bool = False) -> TranslateStats:
         self._stop.clear()
         cancelled = self.cancellation_event
+        self._failures_dirty = True   # 首次 emit 必须统计一次基线 failed
         with self._metrics_lock:
             self._requests = 0
             self._input_tokens = 0
@@ -590,27 +595,30 @@ class BatchTranslator:
             run_scope 无 pre-translated 条目——is_actionable 只认 pending/
             failed，与重算语义严格等价），直接使用；failed 保留全量重算
             （C4 预算耗尽的历史 failed 条目不在 run_scope 也不在本轮
-            changed，增量会漏计——chips 显示口径含它们，进度必须一致，
-            纯 status 判断的轻遍历每批一次可接受）。
+            changed，增量会漏计——chips 显示口径含它们，进度必须一致）。
+
+            2026-08-19 再优化：failed 全量重算改为**条件重算**——只有
+            本轮实际产生过失败（含记忆拒绝置 failed 的路径）才扫
+            entries（纯 status 判断）；连续成功批零遍历。万级条目 ×
+            数百批的场景，绝大多数批（全部成功）从 O(N) 降到 O(1)。
+            条件标志由各失败路径置位（_mark_* 家族统一在
+            _note_local_failure 记账）。
             """
-            if progress_cb is None:
-                # 无监听者零成本（#13 卡顿实证：runner 无 UI 场景每批
-                # O(N) 全扫 run_scope 白算）。仅维护 tokens/requests
-                # 最终统计（O(1)）。
-                with self._metrics_lock:
-                    stats.requests = self._requests
-                    stats.input_tokens = self._input_tokens
-                    stats.output_tokens = self._output_tokens
-                return
-            # C4：failed 按 entries 全量统计——预算耗尽的条目不在
-            # run_scope（本轮不再尝试），但记忆拒绝置 failed 后必须
-            # 统计可见，否则又是「该翻未翻」的黑洞。
-            stats.failed = sum(
-                1 for entry in entries if entry.status == STATUS_FAILED)
             with self._metrics_lock:
                 stats.requests = self._requests
                 stats.input_tokens = self._input_tokens
                 stats.output_tokens = self._output_tokens
+            if progress_cb is None:
+                # 无监听者零成本（#13 卡顿实证：runner 无 UI 场景每批
+                # O(N) 全扫 run_scope 白算）
+                return
+            if self._failures_dirty:
+                # C4：failed 按 entries 全量统计——预算耗尽的条目不在
+                # run_scope（本轮不再尝试），但记忆拒绝置 failed 后必须
+                # 统计可见，否则又是「该翻未翻」的黑洞。
+                stats.failed = sum(
+                    1 for entry in entries if entry.status == STATUS_FAILED)
+                self._failures_dirty = False
             progress_cb(replace(stats))
 
         # 1) 翻译记忆命中（工作记忆，会话级缓存）
@@ -627,6 +635,7 @@ class BatchTranslator:
                         stats.done += 1
                         stats.from_memory += 1
                     else:
+                        self._failures_dirty = True
                         rejected = list(e.quality_reasons)
                         self.memory.remove_memory(e.original, self.model, self.lang)
                         e.translation = ""
@@ -670,6 +679,7 @@ class BatchTranslator:
                     stats.done += 1
                     stats.from_memory += 1
                 else:
+                    self._failures_dirty = True
                     rejected = list(e.quality_reasons)
                     e.translation = ""
                     e.quality_reasons = ()
@@ -711,6 +721,7 @@ class BatchTranslator:
                     stats.done += 1
                     stats.from_memory += 1
                 else:
+                    self._failures_dirty = True
                     e.translation = ""
                     e.quality_reasons = ()
                     e.meta.pop("quality_passed", None)
@@ -757,6 +768,7 @@ class BatchTranslator:
                     stats.done += 1
                     stats.from_memory += 1
                 else:
+                    self._failures_dirty = True
                     # 语境记录被质量门拒绝 → 存疑标记（阶段 3 防污染）
                     if match.id is not None:
                         self.context_store.mark_suspicious(match.id)
@@ -828,6 +840,7 @@ class BatchTranslator:
                     else:
                         member.status = STATUS_FAILED
                         stats.failed += 1
+                        self._failures_dirty = True
                     changed.append(member)
                 # C3：语言保持（原文已是目标语言，译文=原文）与回显一样
                 # 排除出记忆——「原文→原文」沉淀会毒化（后续直接复用
@@ -969,6 +982,7 @@ class BatchTranslator:
                             else:
                                 member.status = STATUS_FAILED
                                 stats.failed += 1
+                                self._failures_dirty = True
                             changed.append(member)
                         # C3：语言保持（译文=原文）与回显一样排除出记忆
                         if good and en.translation and self.memory:
@@ -3148,6 +3162,7 @@ class BatchTranslator:
 
     def _mark_request_failed(self, entry: TextEntry, exc: Exception) -> None:
         self._mark_failed(entry, "request_error")
+        self._failures_dirty = True
         secret = getattr(getattr(self.client, "config", None), "api_key", "")
         entry.meta["request_error_detail"] = json.dumps(
             sanitize_exception(exc, (secret,)), ensure_ascii=False,

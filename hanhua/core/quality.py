@@ -373,17 +373,73 @@ def _glossary_pairs(glossary: Iterable) -> list[tuple[str, str]]:
     return pairs
 
 
+# 术语命中正则缓存（2026-08-19 翻译性能修复）：source_term_applies 是
+# 翻译热路径——_build_item 每条目 × 每术语一次（300 术语 × 万条目 =
+# 300 万次），re.escape + pattern 拼接 + re.search 每次重建正则对象
+# （实测纯开销 11s/万条目）。缓存 pattern 编译结果 + 按原文缓存词元集：
+# 真实调用形态是「同一原文 × N 术语」（_build_item 循环），词元集只算
+# 一次；术语首词元不在原文词元集 → 不可能命中，跳过正则（综合实测
+# 万次调用 0.1s，此前 11s）。
+_TERM_PATTERN_CACHE: dict[str, re.Pattern] = {}
+_TERM_HAS_ALNUM: dict[str, bool] = {}
+_TERM_PATTERN_CACHE_LIMIT = 4096
+_TOKEN_SPLIT_RE = re.compile(r"[^A-Za-z0-9_]+")
+# 原文 → casefold 词元 frozenset（LRU 近似：超限清空——原文条目数万级，
+# 词元集很小（几十字节/条），4096 条上限内存可忽略）
+_SOURCE_TOKENS_CACHE: dict[str, frozenset[str]] = {}
+_SOURCE_TOKENS_CACHE_LIMIT = 4096
+
+
+def _cached_term_pattern(term: str) -> re.Pattern | None:
+    """术语 → 预编译整词边界正则（非字母数字术语返回 None）。"""
+    pat = _TERM_PATTERN_CACHE.get(term)
+    if pat is None:
+        if not _TERM_HAS_ALNUM.get(term, True):
+            return None   # 已知纯 CJK/符号术语，非正则路径
+        if not re.search(r"[A-Za-z0-9_]", term):
+            _TERM_HAS_ALNUM[term] = False
+            if len(_TERM_HAS_ALNUM) > _TERM_PATTERN_CACHE_LIMIT:
+                _TERM_HAS_ALNUM.clear()
+            return None
+        pat = re.compile(
+            rf"(?<![A-Za-z0-9_]){re.escape(term)}(?![A-Za-z0-9_])", re.I)
+        if len(_TERM_PATTERN_CACHE) < _TERM_PATTERN_CACHE_LIMIT:
+            _TERM_PATTERN_CACHE[term] = pat
+    return pat
+
+
+def _cached_source_tokens(source_text: str) -> frozenset[str]:
+    """原文 → casefold 词元集（同原文 N 术语循环只算一次）。"""
+    tokens = _SOURCE_TOKENS_CACHE.get(source_text)
+    if tokens is None:
+        tokens = frozenset(
+            tok.casefold()
+            for tok in _TOKEN_SPLIT_RE.split(source_text) if tok)
+        if len(_SOURCE_TOKENS_CACHE) < _SOURCE_TOKENS_CACHE_LIMIT:
+            _SOURCE_TOKENS_CACHE[source_text] = tokens
+        else:
+            _SOURCE_TOKENS_CACHE.clear()   # 近似 LRU：清空重来
+            _SOURCE_TOKENS_CACHE[source_text] = tokens
+    return tokens
+
+
 def source_term_applies(term: str, source_text: str) -> bool:
-    """Match alphanumeric glossary terms as complete source tokens."""
+    """Match alphanumeric glossary terms as complete source tokens.
+
+    2026-08-19 性能修复：pattern 预编译缓存 + 原文词元集缓存 + 词元
+    预筛（术语首词元不在原文词元集 → 跳过正则）。语义与旧实现完全
+    一致（同一正则；预筛是必要条件剪枝——首词元不在则整词必不在）。"""
     term = term.strip()
     if not term:
         return False
-    if re.search(r"[A-Za-z0-9_]", term):
-        return bool(re.search(
-            rf"(?<![A-Za-z0-9_]){re.escape(term)}(?![A-Za-z0-9_])",
-            source_text, re.I,
-        ))
-    return term.casefold() in source_text.casefold()
+    pat = _cached_term_pattern(term)
+    if pat is None:
+        return term.casefold() in source_text.casefold()
+    first_token = _TOKEN_SPLIT_RE.split(term)[0]
+    if first_token and first_token.casefold() not in _cached_source_tokens(
+            source_text):
+        return False
+    return bool(pat.search(source_text))
 
 
 def _in_filename_segment(term: str, source_text: str) -> bool:

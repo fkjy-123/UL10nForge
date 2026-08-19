@@ -3,12 +3,20 @@ from pathlib import Path
 
 import chardet
 
+#: 编码检测样本上限：chardet.detect 是 O(N) 统计分析，全量检测几十 MB
+#: 的大文本（对话库/语料库）会占住 raw 副本数秒——2026-08-19 扫描性能
+#: 修复，编码判断只需头部统计（BOM/前 64KB 足够稳定）。
+_ENCODING_SAMPLE_BYTES = 65536
+
 
 def read_text(path: str | Path) -> str:
-    """按 chardet 检测的编码读取文本文件（含 BOM 处理）。"""
+    """按 chardet 检测的编码读取文本文件（含 BOM 处理）。
+
+    chardet 只喂头部样本（性能说明见 _ENCODING_SAMPLE_BYTES）。"""
     p = Path(path)
     raw = p.read_bytes()
-    det = chardet.detect(raw)
+    sample = raw[:_ENCODING_SAMPLE_BYTES] if len(raw) > _ENCODING_SAMPLE_BYTES else raw
+    det = chardet.detect(sample)
     encoding = (det.get("encoding") or "utf-8").lower()
     if raw.startswith(b"\xef\xbb\xbf"):
         encoding = "utf-8-sig"
