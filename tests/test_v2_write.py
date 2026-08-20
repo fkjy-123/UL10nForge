@@ -824,11 +824,12 @@ def test_crc_preflight_receives_only_bundles_with_writable_entries(
         "meta": '{"kind":"localization","obj":2,"entry_id":2}',
     }
     monkeypatch.setattr(
-        "hanhua.core.unity.writer._entries_for_file",
-        lambda store, file_id: (
-            [changed_entry] if file_id == "changed"
-            else [same_entry] if file_id == "same"
-            else []
+        "hanhua.core.unity.writer._entries_by_file",
+        lambda store, file_ids: (
+            {fid: ([changed_entry] if fid == "changed"
+                   else [same_entry] if fid == "same"
+                   else [])
+             for fid in file_ids}
         ),
     )
     captured = []

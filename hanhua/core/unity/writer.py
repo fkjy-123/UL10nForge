@@ -280,6 +280,21 @@ def _fit_bytes(translation: str, capacity: int, encoding: str,
     if encoding == "utf-16-le":
         # 预算至少留 1 个字符给省略号
         chars = max(1, capacity // 2 - 1)
+        # 审计 #8 补严：Python str 按码点计数，astral 平面字符（emoji/
+        # 扩展 CJK）1 码点 = 2 个 UTF-16 单元——按码点数预算的 chars 个
+        # 字符编码后可能远超 capacity 字节，末尾 [:capacity] 字节切片
+        # 会把代理对切成两半（孤立代理，CLR #US 解码器容忍度不确定）。
+        # 先收缩到「截断正文 + 省略号」编码后不超容量。
+        while (chars > 0
+               and len((translation[:chars]
+                        + TRUNCATION_ELLIPSIS).encode("utf-16-le"))
+               > capacity):
+            chars -= 1
+        # 截断点本身不得落在代理对中间（字符串内嵌孤立代理，如
+        # surrogatepass 解码产物）：高代理后多退一格
+        while (chars > 0
+               and "\ud800" <= translation[chars - 1:chars] <= "\udbff"):
+            chars -= 1
         data = (translation[:chars] + TRUNCATION_ELLIPSIS).encode("utf-16-le")[:capacity]
         if pad:
             return data + b"\x00" * (capacity - len(data)), True
@@ -688,6 +703,19 @@ def _assert_asset_diff_whitelist(raw: bytes, patched: bytes,
             raise ValueError(
                 f"{desc} 变长补丁后非目标区段 0x{a:x}..0x{b:x} 内容丢失或被"
                 "改动（子串顺序保留检查失败），拒绝")
+        # 审计 #7：短段（<4 字节）在长 patched 里极易巧合命中非预期
+        # 位置（单字节 segment 任何该字节的出现都算匹配）——附加位置
+        # 约束：允许的位移量不超过所有变长 span 的净增量总和（内容
+        # 只能被补丁推挤，不能凭空跳很远）。非目标区段相对位置在
+        # 变长补丁下的最大漂移 = 全部 span 的字节增量之和。
+        max_shift = sum(max(0, new_end - old_end)
+                        for _s, old_end, new_end in spans)
+        if len(segment) < 4:
+            expected_pos = a
+            if idx - expected_pos > max_shift + 1:
+                raise ValueError(
+                    f"{desc} 短非目标区段 0x{a:x}..0x{b:x} 匹配位置漂移 "
+                    f"0x{idx:x} 超出补丁位移预算（疑似非目标字节被改动），拒绝")
         cursor = idx + len(segment)
 
 
@@ -884,12 +912,20 @@ def copy_game_dir(game_dir: Path, out_dir: Path, progress_cb: Callable | None = 
     return total
 
 
-def _entries_for_file(store: ProjectStore, file_id: str) -> list[dict]:
+def _entries_by_file(store: ProjectStore, file_ids: set[str]) -> dict[str, list[dict]]:
+    """按 file_id 一次性分组取条目（轻量）：v2 写回循环原是每文件
+    _entries_for_file() 全库 SELECT * + Python 过滤（旧实现，已并入本
+    函数）——大游戏几百个
+    bundle 每个都全表扫一遍 O(N×M)。单次全量 + 分组替代。"""
     from hanhua.core.quality import is_write_ready
-    return [e for e in store.get_entries()
-            if e["file_id"] == file_id
-            and is_write_ready(e.get("status", ""), e.get("translation", ""),
-                               e.get("meta", "{}"))]
+    grouped: dict[str, list[dict]] = {}
+    for e in store.get_entries():
+        fid = e["file_id"]
+        if fid in file_ids and is_write_ready(
+                e.get("status", ""), e.get("translation", ""),
+                e.get("meta", "{}")):
+            grouped.setdefault(fid, []).append(e)
+    return grouped
 
 
 def _should_write_entry(e: dict) -> bool:
@@ -958,13 +994,14 @@ def write_back_v2(store: ProjectStore, game_dir: Path, out_dir: Path,
     for file_info in v2_files:
         resolve_relative_under(game_dir, file_info["rel_path"])
         resolve_relative_under(out_dir, file_info["rel_path"])
-    entries_by_file = {f["id"]: _entries_for_file(store, f["id"]) for f in v2_files}
+    entries_by_file = _entries_by_file(
+        store, {f["id"] for f in v2_files})
     changed_bundle_candidates = [
         f for f in v2_files
         if f["format"] == "v2_asset"
         and any(
             _should_write_entry(e) and e["translation"] != e["original"]
-            for e in entries_by_file[f["id"]]
+            for e in entries_by_file.get(f["id"], ())
         )
     ]
     _validate_addressables_catalog_sources(
@@ -975,10 +1012,10 @@ def write_back_v2(store: ProjectStore, game_dir: Path, out_dir: Path,
     from hanhua.core.unity.logic_audit import audit_entries_before_writeback
     for f in v2_files:
         result.logic_audit.extend(audit_entries_before_writeback(
-            e for e in entries_by_file[f["id"]]
+            e for e in entries_by_file.get(f["id"], ())
             if _should_write_entry(e) and e["translation"] != e["original"]))
     for f in v2_files:
-        entries = entries_by_file[f["id"]]
+        entries = entries_by_file.get(f["id"], ())
         candidates = [e for e in entries if e["translation"] != e["original"]]
         for entry in candidates:
             result.note_attempt(entry)
@@ -1590,9 +1627,17 @@ def _patch_textasset(script: bytes, items: list[tuple[dict, dict]],
             original_lines = script.decode(
                 "utf-8-sig", errors="replace").splitlines(keepends=True)
             target_lines = text.splitlines(keepends=True)
-            by_line = {
-                int(meta["line"]): entry
-                for entry, meta in line_items if "line" in meta}
+            by_line: dict[int, dict] = {}
+            for entry, meta in line_items:
+                # 审计 #6：重复行号后写覆盖前写，被覆盖条目静默丢失——
+                # 重复一律拒绝（与 _patch_metadata/_patch_dll 同构）
+                lineno = meta.get("line")
+                if not isinstance(lineno, int):
+                    continue
+                if lineno in by_line:
+                    result.note_rejected(entry, "textasset_duplicate_line")
+                    continue
+                by_line[lineno] = entry
             for lineno, entry in sorted(by_line.items()):
                 if not (0 <= lineno < len(original_lines)):
                     result.note_rejected(
@@ -1625,10 +1670,16 @@ def _patch_textasset(script: bytes, items: list[tuple[dict, dict]],
         if bom:
             data = b"\xef\xbb\xbf" + data
         return data
-    by_line = {}
+    by_line: dict[int, dict] = {}
     for e, meta in _select_write_items(items, result, "textasset"):
-        if "line" in meta:
-            by_line[meta["line"]] = e
+        lineno = meta.get("line")
+        if not isinstance(lineno, int):
+            continue
+        # 审计 #6：重复行号拒绝（与结构化路径同构）
+        if lineno in by_line:
+            result.note_rejected(e, "textasset_duplicate_line")
+            continue
+        by_line[lineno] = e
     if not by_line:
         return script
     new_lines = []
@@ -1667,6 +1718,7 @@ def _us_record_offset(meta: dict) -> int | None:
 def _patch_dll(path: Path, entries: list[dict], result: WriteResult):
     blob = bytearray(path.read_bytes())
     expected: list[tuple[int, bytes, int, dict]] = []
+    seen_offsets: set[int] = set()
     for e in entries:
         meta = json.loads(e["meta"] or "{}")
         if meta.get("kind") != "us":
@@ -1681,7 +1733,13 @@ def _patch_dll(path: Path, entries: list[dict], result: WriteResult):
         if offset is None:
             result.note_rejected(e, "#US meta 缺定位字段")
             continue
-        capacity = meta["utf16_len"]
+        # 审计 #2：record_offset 快速路径不检查 utf16_len——旧库部分迁移
+        # meta 有 record_offset 却缺 utf16_len 时此处 KeyError 崩整场写回，
+        # 与 _us_record_offset 防御风格对齐（get + isinstance）
+        capacity = meta.get("utf16_len")
+        if not isinstance(capacity, int):
+            result.note_rejected(e, "#US meta 缺 utf16_len")
+            continue
         payload, truncated = _fit_bytes(
             e["translation"], capacity, "utf-16-le", pad=False)
         if truncated:
@@ -1704,6 +1762,12 @@ def _patch_dll(path: Path, entries: list[dict], result: WriteResult):
         # F3：写回前记录预检——按 offset 读压缩前缀，校验其与 meta 声称的
         # 容量一致（防 offset 语义错位/提取后文件变化写坏记录；MyRustySubmarine
         # 实测「#US 记录缺失」即 heap_offset 语义错位所致，预检在写坏前拦截）
+        # 审计 #4：同一 record_offset 两条 entry 时后写覆盖前写，前一条
+        # 仍 note_written 虚假成功——重复一律拒绝（与 _patch_metadata #3 同构）
+        if offset in seen_offsets:
+            result.note_rejected(e, f"#US offset {offset} 重复条目")
+            continue
+        seen_offsets.add(offset)
         old_ln = capacity + 1
         record = mono_dll.read_us_record_at(bytes(blob), offset)
         if record is None:
@@ -1778,14 +1842,24 @@ def _patch_metadata(path: Path, entries: list[dict], result: WriteResult):
         if not _should_write_entry(e):
             result.note_rejected(e, _write_rejection_reason(e))
             continue
-        offset = meta["file_offset"]
-        capacity = meta["length"]
+        # 旧库迁移/部分损坏的 meta 可能缺定位字段——单条坏 meta 必须
+        # 优雅拒绝（note_rejected），不能 KeyError 崩掉整场 IL2CPP 写回
+        # （审计 2026-08-20：与 _us_record_offset 的防御风格对齐）
+        offset = meta.get("file_offset")
+        capacity = meta.get("length")
+        if not isinstance(offset, int) or not isinstance(capacity, int):
+            result.note_rejected(e, "il2cpp meta 缺 file_offset/length")
+            continue
         if not (data_off <= offset < data_off + data_size):
             result.note_rejected(e, "data_index 超出数据区范围")
             continue
         data_index = offset - data_off
-        if (data_index in pool_by_index
-                and capacity not in pool_by_index[data_index]):
+        # F7 收口（审计 #5）：预检只在「data_index 在池中且长度不符」时
+        # 拒绝——data_index 完全不在池中（独立读取器找不到该偏移的任何
+        # 记录）也必须拒绝：偏移错位/旧库 meta 过期指向非记录起始，
+        # 放行则把 patch_metadata_strings 的交叉验证当唯一防线
+        if (data_index not in pool_by_index
+                or capacity not in pool_by_index[data_index]):
             # F7：独立读取器确认该偏移有记录，但长度与 meta 声称不符——
             # meta 过期/提取后文件变化/偏移错位，拒绝写回（绝不写错位置）
             result.note_rejected(
@@ -1808,6 +1882,12 @@ def _patch_metadata(path: Path, entries: list[dict], result: WriteResult):
         payload = restored
         if not _placeholders_intact(e["original"], payload.decode("utf-8")):
             result.note_rejected(e, "译文缺失 {n} 占位符")
+            continue
+        # 审计 #3：同一 data_index 两条 entry（重复提取/旧库合并）时
+        # changes dict 后写静默覆盖前写，前一条仍 note_written 虚假成功
+        # ——重复一律拒绝，宁可漏写不可谎报
+        if data_index in changes:
+            result.note_rejected(e, f"data_index {data_index} 重复条目")
             continue
         changes[data_index] = payload
         expected.append((data_index, payload, e))

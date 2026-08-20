@@ -884,7 +884,8 @@ class Project:
         try:
             text_files = self.scan()
             emit("text_scan", "succeeded", f"结构化文本文件 {text_files} 个")
-            v2_files = self.scan_v2(csv_overwrite_source=csv_overwrite_source)
+            v2_files = self._scan_v2_with_progress(emit,
+                                                   csv_overwrite_source)
         finally:
             self._scan_all_active = False
         warnings.extend(self._last_scan_morph_warnings)
@@ -1147,11 +1148,11 @@ class Project:
                     # 绑定：手动 add_file 只加文件记录无条目时，文本扫描
                     # 不覆盖这些输入，store 清单不完整——保持失效直到
                     # scan_all（混合定位器 review 实证）
-                    v2_file_ids = {
+                    v2_file_ids = [
                         f["id"] for f in self.store.get_files()
-                        if f["format"].startswith("v2_")}
-                    if any(e["file_id"] in v2_file_ids
-                           for e in self.store.get_entries()):
+                        if f["format"].startswith("v2_")]
+                    # 2026-08-19：get_entries() 全表遍历 → SQL COUNT
+                    if self.store.count_by_files(v2_file_ids):
                         self._last_source_manifest = dict(standalone_after)
         self._store_scan_state()
         return kept
@@ -1189,6 +1190,25 @@ class Project:
             return tt_generator
         except Exception:  # noqa: BLE001 生成器不可用不阻断扫描
             return None
+
+    def _scan_v2_with_progress(self, emit, csv_overwrite_source: bool) -> int:
+        """scan_v2 包装：把逐文件进度转成 binary_scan PipelineEvent。
+
+        大型游戏 scan_v2 可能跑数分钟——GUI 侧此前拿不到任何中间进度，
+        「识别」节点全程停在首个 running。这里以 1/5 文件为粒度转发
+        binary_scan running 事件（当前/总数来自 scan_v2 的 progress_cb），
+        完成/异常分别补 succeeded/failed。"""
+        def cb(done: int, total: int) -> None:
+            if total and (done == 1 or done % 5 == 0 or done == total):
+                emit("binary_scan", "running",
+                     f"Unity 二进制资源 {done}/{total}", done, total)
+        try:
+            n = self.scan_v2(progress_cb=cb,
+                             csv_overwrite_source=csv_overwrite_source)
+        except Exception:
+            emit("binary_scan", "failed", "scan_v2 异常")
+            raise
+        return n
 
     def scan_v2(self, progress_cb: Callable | None = None,
                 csv_overwrite_source: bool = False) -> int:
@@ -1274,8 +1294,10 @@ class Project:
             self.store.add_file(pf.file_id, rel, pf.format, pf.encoding, pf.eol, pf.meta)
             new_keys = {e.key_path for e in pf.entries}
             # 重扫后不再存在的旧条目（如已被规则过滤的键位置）→ 删除，避免残留写回
-            old_keys = [e["key_path"] for e in self.store.get_entries()
-                        if e["file_id"] == rel and e["key_path"] not in new_keys]
+            # 2026-08-19 扫描性能修复：旧实现每文件 store.get_entries() 全库
+            # SELECT *（几万条目 × 数百文件 = O(N×M)，实测 412 文件 33s 纯
+            # 浪费 + dict 构造内存抖动）——改为单文件 key_path 轻量查询。
+            old_keys = self.store.get_entry_key_paths(rel) - new_keys
             self.store.upsert_entries([
                 {"file_id": e.file_id, "key_path": e.key_path,
                  "original": e.original, "status": e.status, "meta": e.meta}

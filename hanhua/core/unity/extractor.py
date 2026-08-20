@@ -194,10 +194,42 @@ def _localization_bundle_probe(
     try:
         env.load([str(path)])
         for obj in env.objects:
-            try:
-                tree = obj.read_typetree()
-            except Exception:  # noqa: BLE001
-                continue
+            tname = getattr(getattr(obj, "type", None), "name", "")
+            if tname not in ("MonoBehaviour", "ScriptableObject"):
+                # 非脚本类型不触发失败缓存，直接读
+                try:
+                    tree = obj.read_typetree()
+                except Exception:  # noqa: BLE001
+                    continue
+            else:
+                # 脚本类型：先检查失败缓存，再做纯 Python 预检
+                # （node 缺失时无法预检，退回直接读——探测语境无 generator）
+                cls_sig = _mono_class_sig(obj)
+                if cls_sig and cls_sig in _FAILED_CLASS_CACHE:
+                    continue
+                tree = None
+                if _quick_typetree_check(obj):
+                    try:
+                        tree = obj.read_typetree()
+                    except Exception:  # noqa: BLE001
+                        continue
+                else:
+                    node = getattr(
+                        getattr(obj, "serialized_type", None), "node", None)
+                    if node is None:
+                        # 无法预检（无 node 无 generator）：直接读，失败计入
+                        # 缓存的仅限确实解析失败的类
+                        try:
+                            tree = obj.read_typetree()
+                        except Exception:  # noqa: BLE001
+                            continue
+                    else:
+                        # 预检失败：越界对象，boost 读必 5-7s 病态慢，跳过
+                        if cls_sig:
+                            _FAILED_CLASS_CACHE.add(cls_sig)
+                        continue
+                if tree is None:
+                    continue
             if not isinstance(tree, dict) or not _is_string_table_tree(tree):
                 continue
             locale = (tree.get("m_LocaleId") or {}).get("m_Code")
@@ -1006,6 +1038,56 @@ _INPUT_SYSTEM_SCRIPT_CLASSES = frozenset({
 _TIMELINE_SCRIPT_CLASSES = frozenset({
     "TimelineAsset", "PlayableDirector",
 })
+
+
+def _mono_class_sig(obj) -> str:
+    """MonoBehaviour/ScriptableObject 的 (assembly, class_name) 签名，用于失败类缓存。"""
+    try:
+        mb = obj.parse_monobehaviour_head()
+        script = mb.m_Script.deref_parse_as_object()
+        ns = script.m_Namespace or ""
+        cls = script.m_ClassName or ""
+        asm = script.m_AssemblyName or ""
+        return f"{asm}|{ns}.{cls}" if ns else f"{asm}|{cls}"
+    except Exception:  # noqa: BLE001
+        return ""
+
+
+def _quick_typetree_check(obj, gen=None) -> bool:
+    """纯 Python read_value 快速预检，返回 True=成功（可继续 boost），False=失败（跳过 boost）。
+
+    核心逻辑：
+    - 已知失败类在 _FAILED_CLASS_CACHE 跳过（最大节省：ObjectState 31 实例 × 7s）
+    - 纯 Python read_value 在越界时 0.00s 失败（vs boost 5-7s）
+    - 成功读：纯 Python 约 0.003s（vs boost 0.001s），可接受
+    """
+    node = getattr(obj, "serialized_type", None)
+    node = getattr(node, "node", None) if node is not None else None
+    if node is None and gen is not None:
+        try:
+            mb = obj.parse_monobehaviour_head()
+            script = mb.m_Script.deref_parse_as_object()
+            fullname = (f"{script.m_Namespace}.{script.m_ClassName}"
+                        if script.m_Namespace else script.m_ClassName)
+            node = gen.get_nodes_up(script.m_AssemblyName, fullname)
+        except Exception:  # noqa: BLE001
+            return False
+    if node is not None:
+        try:
+            data = obj.get_raw_data()
+            from UnityPy.streams.EndianBinaryReader import EndianBinaryReader
+            reader = EndianBinaryReader(data, endian=obj.reader.endian)
+            from UnityPy.helpers.TypeTreeHelper import (
+                TypeTreeConfig, read_value as tt_read_value)
+            tt_read_value(node, reader, TypeTreeConfig(True, obj.assets_file, False))
+            return True
+        except Exception:  # noqa: BLE001
+            return False
+    return False  # 无 node 且无法构建 → 视为失败
+
+
+# 全局失败类缓存（同类对象首例失败后跳过后续 read_typetree）
+_FAILED_CLASS_CACHE: set[str] = set()
 
 
 def _script_class_of(tree: dict, obj) -> str:
@@ -2480,16 +2562,39 @@ def extract_asset_file(path: str | Path, file_id: str | None = None,
                   or tname in _NATIVE_TEXT_TYPES):
                 tree = None
                 script_class = ""
-                try:
-                    tree = obj.read_typetree()
-                    typetree_ok += 1
-                except Exception:  # noqa: BLE001
-                    # 识别 L7：typetree 失败率留档（覆盖率指标数据源）——
-                    # 失败对象靠 raw scan 兜底（Unity 6000 实证），但失败
-                    # 率必须可量化：逐容器记录 + skipped 原因聚合
-                    typetree_failed += 1
-                    skipped["typetree_failed"] = (
-                        skipped.get("typetree_failed", 0) + 1)
+                # === 根因修复：失败类快速预检（2026-08-20）===
+                # UnityPyBoost.read_typetree C 扩展在 EOF 越界路径上病态耗时
+                # ~5-7s/次（Rendezvous ObjectState 31 实例全如此），而纯 Python
+                # read_value 同样越界但 0.00s 失败。用纯 Python 做预检，首例
+                # 失败后按 (assembly, class_name) 缓存，后续同类直接跳 read_typetree。
+                # typetree_failed 计数不变（保持报告语义一致）。
+                cls_sig = _mono_class_sig(obj)
+                if cls_sig:
+                    if cls_sig in _FAILED_CLASS_CACHE:
+                        typetree_failed += 1
+                        skipped["typetree_failed"] = (
+                            skipped.get("typetree_failed", 0) + 1)
+                    else:
+                        ok = _quick_typetree_check(obj, typetree_generator)
+                        if not ok:
+                            _FAILED_CLASS_CACHE.add(cls_sig)
+                            typetree_failed += 1
+                            skipped["typetree_failed"] = (
+                                skipped.get("typetree_failed", 0) + 1)
+                            tree = None
+                if tree is None and cls_sig not in _FAILED_CLASS_CACHE:
+                    try:
+                        # 预检通过（纯 Python read_value 成功）才走 boost——
+                        # 失败对象在缓存跳过，不会到达这里
+                        tree = obj.read_typetree()
+                        typetree_ok += 1
+                    except Exception:  # noqa: BLE001
+                        # 识别 L7：typetree 失败率留档（覆盖率指标数据源）——
+                        # 失败对象靠 raw scan 兜底（Unity 6000 实证），但失败
+                        # 率必须可量化：逐容器记录 + skipped 原因聚合
+                        typetree_failed += 1
+                        skipped["typetree_failed"] = (
+                            skipped.get("typetree_failed", 0) + 1)
                 if isinstance(tree, dict):
                     # 识别 L6：确定性脚本类名（m_Script PPtr → MonoScript）
                     # 优先于串池信号，对象级判定直接使用

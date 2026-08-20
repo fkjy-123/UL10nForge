@@ -302,7 +302,17 @@ def test_main_cleans_memory_after_settings_load_before_state_creation(monkeypatc
     )
     monkeypatch.setattr(entrypoint.sys, "exit", lambda _code: None)
 
-    entrypoint.main()
+    # main() 会把全局线程池 maxThreadCount 压到 4（GIL 饿死防护）。
+    # 该设置是进程级全局状态且永不恢复——泄漏的 worker 若占满 4 个槽位，
+    # 会饿死本进程内后续 UI 测试的 worker（await_reload 8s 超时，曾致
+    # 18 个顺序依赖失败）。此处保存/恢复，隔离全局副作用。
+    from PySide6.QtCore import QThreadPool
+    _pool = QThreadPool.globalInstance()
+    _saved_threads = _pool.maxThreadCount()
+    try:
+        entrypoint.main()
+    finally:
+        _pool.setMaxThreadCount(_saved_threads)
 
     assert events[0:2] == ["settings-loaded", "memory-cleared"]
     assert events[2][0:2] == ("state-created", cleanup_summary)

@@ -21,6 +21,13 @@ def write_back(store: ProjectStore, game_dir: Path, out_dir: Path,
     """
     files = store.get_files()
     out_dir.mkdir(parents=True, exist_ok=True)
+    # 2026-08-20 写回性能修复：旧实现循环内每文件 get_entries() 全库
+    # SELECT * + Python 过滤——333 文件 × 21839 条目 = O(N×M) 聚集，
+    # 大游戏写回时重复全表扫描几十次（与扫描六根因同模式）。
+    # 一次全量取出按 file_id 分组，循环内 O(1) 查表。
+    entries_by_file: dict[str, list[dict]] = {}
+    for e in store.get_entries():
+        entries_by_file.setdefault(e["file_id"], []).append(e)
     count = 0
     for f in files:
         if f["format"].startswith("v2_"):
@@ -28,7 +35,9 @@ def write_back(store: ProjectStore, game_dir: Path, out_dir: Path,
         src = resolve_relative_under(game_dir, f["rel_path"])
         if not src.exists():
             continue
-        entries = [e for e in store.get_entries() if e["file_id"] == f["id"]]
+        entries = entries_by_file.get(f["id"], [])
+        # mkdir 后须重取路径：resolve_relative_under 校验 reparse 链，
+        # 若 mkdir 被竞态替换成 junction，重查会抛 UnsafeRelativePathError
         out = resolve_relative_under(out_dir, f["rel_path"])
         out.parent.mkdir(parents=True, exist_ok=True)
         out = resolve_relative_under(out_dir, f["rel_path"])

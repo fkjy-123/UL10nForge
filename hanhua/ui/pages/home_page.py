@@ -13,9 +13,10 @@ from pathlib import Path
 from PySide6.QtCore import Qt, QThreadPool, Signal
 from PySide6.QtGui import (QColor, QDragEnterEvent, QDropEvent, QPainter,
                            QPen)
-from PySide6.QtWidgets import (QFileDialog, QFrame, QHBoxLayout, QLabel,
-                               QProgressBar, QPushButton, QStackedWidget,
-                               QVBoxLayout, QWidget)
+from PySide6.QtWidgets import (QDialog, QDialogButtonBox, QFileDialog, QFrame,
+                               QHBoxLayout, QLabel, QListWidget,
+                               QListWidgetItem, QProgressBar, QPushButton,
+                               QStackedWidget, QVBoxLayout, QWidget)
 
 from hanhua.core import models
 from hanhua.core.models import (TextEntry, entry_from_row,
@@ -92,6 +93,57 @@ class _DirectoryDropZone(QFrame):
             return
         event.acceptProposedAction()
         self.directoryDropped.emit(path)
+
+
+def _select_player_candidate(candidates) -> tuple | None:
+    """多 Unity 玩家（ambiguous 布局）选择对话框。
+
+    candidates 为 player_layout.discover_player_candidates 的结果（含
+    player_root/executable/data_dir 绝对路径）。返回被选中的
+    (player_root, executable) 元组；取消返回 None。
+    """
+    dialog = QDialog()
+    dialog.setWindowTitle("选择游戏")
+    dialog.setMinimumWidth(480)
+    lay = QVBoxLayout(dialog)
+    hint = QLabel(
+        "该文件夹包含多个 Unity 游戏（检测到多个玩家布局）。\n"
+        "请选择要翻译的一个：")
+    hint.setWordWrap(True)
+    lay.addWidget(hint)
+    # QListWidget 默认无父窗口焦点策略问题：offscreen 测试下仍需
+    # setFocus 才能可靠响应键盘；点击选择为主交互
+    list_widget = QListWidget()
+    for candidate in candidates:
+        try:
+            root_text = str(candidate.player_root)
+            exe_text = str(candidate.executable)
+        except AttributeError:
+            continue
+        item = QListWidgetItem(f"{exe_text}\n    （玩家目录：{root_text}）")
+        item.setData(Qt.UserRole, (candidate.player_root,
+                                   candidate.executable))
+        list_widget.addItem(item)
+    if list_widget.count() == 0:
+        return None
+    list_widget.setCurrentRow(0)
+    list_widget.setFocus()
+    lay.addWidget(list_widget, 1)
+    buttons = QDialogButtonBox(
+        QDialogButtonBox.StandardButton.Ok
+        | QDialogButtonBox.StandardButton.Cancel)
+    buttons.button(QDialogButtonBox.StandardButton.Ok).setText("开始扫描")
+    buttons.button(QDialogButtonBox.StandardButton.Cancel).setText("取消")
+    buttons.accepted.connect(dialog.accept)
+    buttons.rejected.connect(dialog.reject)
+    lay.addWidget(buttons)
+    list_widget.itemDoubleClicked.connect(lambda *_: dialog.accept())
+    if dialog.exec() != QDialog.DialogCode.Accepted:
+        return None
+    item = list_widget.currentItem()
+    if item is None:
+        return None
+    return item.data(Qt.UserRole)
 
 
 class HomePage(QWidget):
@@ -335,6 +387,16 @@ class HomePage(QWidget):
         if not path.is_dir():
             Toast.show(self, "请选择有效的文件夹", "warning")
             return
+        # 多 Unity 玩家目录（一个根目录打包多个游戏，如 ned-flanders）：
+        # Project 核心支持 player_root/player_executable 选择器，但此前
+        # GUI 无入口——扫描直接 ambiguous blocked。这里预先探测候选，
+        # >1 个时弹选择对话框，选中后带选择器重扫（同根不同玩家自动
+        # 隔离到不同 DB）。
+        selection = self._resolve_player_selection(path)
+        if selection == "ambiguous":
+            return
+        player_root, player_executable = (
+            selection if selection is not None else (None, None))
         self._set_busy(True)
         # 扫描事件经 Worker 信号转发（M1：event_cb 此前未接线，rail 的
         # 检测/扫描/工具分析节点全程卡在首个 running）
@@ -343,6 +405,9 @@ class HomePage(QWidget):
         def run_scan():
             return self._scan_worker(
                 str(path), str(self.state.app_dir),
+                player_root=str(player_root) if player_root is not None else None,
+                player_executable=(str(player_executable)
+                                   if player_executable is not None else None),
                 event_cb=signals_holder["signals"].progress.emit)
 
         worker = Worker(run_scan)
@@ -352,10 +417,33 @@ class HomePage(QWidget):
         worker.signals.error.connect(self._on_scan_error)
         QThreadPool.globalInstance().start(worker)
 
+    def _resolve_player_selection(self, path: Path):
+        """返回 (player_root, executable) / None（单玩家或探测失败按原
+        逻辑）/ "ambiguous"（多玩家但用户取消选择）。探测失败静默降级——
+        后续 scan_all 自会给出 blocked/失败事件，不在此预判。"""
+        try:
+            from hanhua.core.tooling.player_layout import (
+                discover_player_candidates)
+            candidates = discover_player_candidates(path)
+        except Exception:
+            return None
+        if len(candidates) <= 1:
+            return None
+        selected = _select_player_candidate(candidates)
+        if selected is None:
+            Toast.show(
+                self, "已取消：该文件夹包含多个游戏，请选择其中一个", "warning")
+            return "ambiguous"
+        return selected
+
     @staticmethod
     def _scan_worker(path_str: str, app_dir: str,
+                     player_root: str | None = None,
+                     player_executable: str | None = None,
                      event_cb=None):
-        proj = Project.open_game_dir(path_str, app_dir)
+        proj = Project.open_game_dir(
+            path_str, app_dir,
+            player_root=player_root, player_executable=player_executable)
         report = proj.scan_all(event_cb=event_cb)
         return proj, report
 
@@ -409,15 +497,49 @@ class HomePage(QWidget):
             self.drop_zone.set_state("ready")
             Toast.show(self, f"分析通过：{summary}", "success")
             self.window.navigate("review")
+            self._warn_skip_rate(report)
         else:
             self.drop_zone.set_state("blocked")
-            Toast.show(self, f"分析受限：{summary}，请查看阻断步骤", "warning")
+            fingerprint = getattr(report, "fingerprint", None)
+            if (fingerprint is not None
+                    and "ambiguous_player_layout" in getattr(
+                        fingerprint, "evidence", ())):
+                # 兜底：候选探测失败/未走选择对话框时仍落到这里——
+                # 指明成因与出路，而非笼统的「请查看阻断步骤」
+                Toast.show(
+                    self,
+                    "该文件夹包含多个 Unity 游戏。请重新拖入，并在弹出"
+                    "的选择框中指定其中一个（或直接拖入单个游戏的子文件夹）",
+                    "warning")
+            else:
+                Toast.show(
+                    self, f"分析受限：{summary}，请查看阻断步骤", "warning")
 
     def _on_scan_error(self, err: str):
         self._set_busy(False)
         self.pipeline_rail.set_node_state(
             "scan", "failed", err[:80], "置信度 low")
         Toast.show(self, f"扫描失败：{err}", "error")
+
+    def _warn_skip_rate(self, report) -> None:
+        """跳过率告警（识别模块哑信号教训，2026-08-20）：大量 status=
+        skipped 的候选串意味着「识别器看到了但没敢收」——此前完全静默，
+        用户以为文本提全了。阈值：skipped ≥ 2000 且 ≥ 识别条目 80% 时
+        弹 warning 提示去审校页看跳过原因（top 形态 + 计数），不阻断。"""
+        counts = dict(getattr(report, "status_counts", ()) or {})
+        skipped = counts.get("skipped", 0)
+        recognized = getattr(report, "recognized_entries", 0) or 0
+        if skipped < 2000 or recognized == 0 or skipped < recognized * 0.8:
+            return
+        reasons = getattr(report, "skipped_reasons", None) or {}
+        top = sorted(reasons.items(), key=lambda kv: -kv[1])[:3]
+        detail = "、".join(f"{k}（{v} 条）" for k, v in top) or "见审校页"
+        Toast.show(
+            self,
+            f"注意：本作有 {skipped} 条候选文本被识别器跳过（{detail}）。\n"
+            f"这些文本不会被翻译——如发现游戏内文本未汉化，"
+            f"可能是跳过策略过严导致，请在 Issue 中反馈。",
+            "warning")
 
     def _set_busy(self, busy: bool):
         self._scanning = busy

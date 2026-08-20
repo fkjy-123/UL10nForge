@@ -66,6 +66,15 @@ def _install_crash_hooks() -> Path:
 
 def main():
     _install_crash_hooks()
+    # GIL 饿死防护（2026-08-20）：PySide6 全局线程池默认 maxThreadCount=
+    # CPU 核数（本机 32），扫描/翻译期间几十个 worker 挤进全局池争抢
+    # GIL，事件循环被饿死、GUI 卡死。压到 4（重 IO/CPU 混合任务经验
+    # 值）：单扫描任务独占一个槽，界面始终留有余量保持响应。
+    # 放在 main() 而非 MainWindow.__init__：测试进程直接构造 MainWindow，
+    # 全局池压到 4 会让泄漏的 worker 占满槽位 → await_reload 轮询超时
+    # （全量套件 17 个 UI 测试顺序依赖失败，实测定位）。
+    from PySide6.QtCore import QThreadPool
+    QThreadPool.globalInstance().setMaxThreadCount(4)
     app = QApplication(sys.argv)
     app.setApplicationName("汉化助手")
     app.setOrganizationName("hanhua")

@@ -147,6 +147,9 @@ def test_gpu_memory_info_returns_none_without_nvidia_smi(monkeypatch):
         raise FileNotFoundError("nvidia-smi not found")
 
     monkeypatch.setattr(subprocess, "run", fake_run)
+    # 全量套件顺序依赖：2 秒 TTL 缓存若被先前测试用真实 nvidia-smi
+    # 填充，monkeypatch 的假探测根本不会执行 → 断言误判。
+    monkeypatch.setattr("hanhua.core.vram._GPU_INFO_CACHE", [0.0, None])
     assert gpu_memory_info() is None
 
 
@@ -165,6 +168,7 @@ def test_gpu_memory_info_suppresses_console_window(monkeypatch):
         return type("Result", (), {"returncode": 1, "stdout": ""})()
 
     monkeypatch.setattr(subprocess, "run", fake_run)
+    monkeypatch.setattr("hanhua.core.vram._GPU_INFO_CACHE", [0.0, None])
     assert gpu_memory_info() is None
     assert calls["creationflags"] == getattr(
         subprocess, "CREATE_NO_WINDOW", 0)

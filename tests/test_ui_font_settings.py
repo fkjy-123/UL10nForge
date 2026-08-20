@@ -723,7 +723,7 @@ def test_probe_port_reflects_real_http_server(qapp, tmp_path):
         server.shutdown()
 
 
-def test_start_model_worker_maps_gpu_choice(monkeypatch, tmp_path):
+def test_start_model_worker_maps_gpu_choice(qapp, monkeypatch, tmp_path):
     """启动 worker：translate 按 auto/cpu/gpu → gpu_layers -1/0/999，
     走 state.local_model.ensure_running（与正式翻译链路同源）。"""
     state = _state(tmp_path)
@@ -744,7 +744,7 @@ def test_start_model_worker_maps_gpu_choice(monkeypatch, tmp_path):
         assert cfg.local_gpu_layers == expect
 
 
-def test_start_model_worker_other_kinds(monkeypatch, tmp_path):
+def test_start_model_worker_other_kinds(qapp, monkeypatch, tmp_path):
     """review/rerank/embed 走各自服务 ensure_running（同正式链路）。"""
     state = _state(tmp_path)
     page = SettingsPage(state, _Window())
@@ -790,7 +790,7 @@ def test_start_model_worker_other_kinds(monkeypatch, tmp_path):
 
 
 def test_stop_model_worker_stops_translate_via_local_model(
-        monkeypatch, tmp_path):
+        qapp, monkeypatch, tmp_path):
     state = _state(tmp_path)
     page = SettingsPage(state, _Window())
     stopped = []

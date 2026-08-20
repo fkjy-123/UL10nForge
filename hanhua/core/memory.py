@@ -62,6 +62,11 @@ class ProjectStore:
                 created_at TEXT DEFAULT (datetime('now'))
             );
             CREATE INDEX IF NOT EXISTS idx_entries_status ON entries(status);
+            -- file_id 索引（2026-08-19 扫描性能修复）：UNIQUE(file_id,
+            -- key_path) 只服务唯一约束（键序 file_id 在前其实可用于前缀
+            -- 查询，但显式单列索引让 upsert 的 IN 批查与 get_entry_key_paths
+            -- 的点查走确定路径——大库无索引时每文件全表扫）。
+            CREATE INDEX IF NOT EXISTS idx_entries_file ON entries(file_id);
             CREATE TABLE IF NOT EXISTS profile(
                 key TEXT PRIMARY KEY, value TEXT
             );
@@ -574,10 +579,38 @@ class ProjectStore:
                 return [dict(r) for r in self.conn.execute("SELECT * FROM entries WHERE status=?", (status,))]
             return [dict(r) for r in self.conn.execute("SELECT * FROM entries")]
 
+    def get_entry_key_paths(self, file_id: str) -> set[str]:
+        """单文件条目键集（轻量）：scan_v2 重扫清理用——只取 key_path
+        一列，不构造完整行 dict（大游戏几万条目时全量 get_entries +
+        Python 过滤是 O(全库) 每文件一次，O(N×M) 累计）。"""
+        with self._lock:
+            rows = self.conn.execute(
+                "SELECT key_path FROM entries WHERE file_id=?", (file_id,))
+            return {r["key_path"] for r in rows}
+
     def count(self, status: str) -> int:
         with self._lock:
             row = self.conn.execute("SELECT COUNT(*) c FROM entries WHERE status=?", (status,)).fetchone()
             return row["c"] if row else 0
+
+    def count_by_files(self, file_ids: list[str]) -> int:
+        """给定文件 id 集合的条目总数（轻量 COUNT，不构造行 dict）。
+
+        2026-08-19 扫描性能修复：scan/scan_v2 的绑定判定原是
+        get_entries() 全库 SELECT * + Python any()——大游戏几万条目
+        每次扫描两遍全表。SQL 端 COUNT 只返回一个整数。"""
+        if not file_ids:
+            return 0
+        with self._lock:
+            total = 0
+            for offset in range(0, len(file_ids), 400):
+                chunk = file_ids[offset:offset + 400]
+                placeholders = ",".join("?" for _ in chunk)
+                row = self.conn.execute(
+                    f"SELECT COUNT(*) c FROM entries "
+                    f"WHERE file_id IN ({placeholders})", chunk).fetchone()
+                total += row["c"] if row else 0
+            return total
 
     def get_memory_hits(self, originals: list[str], model: str, lang: str) -> dict[str, str]:
         """返回 {原文: 译文} 命中缓存（单条 IN 查询，替代逐条 SELECT）。
@@ -767,13 +800,16 @@ class ProjectStore:
             self.conn.commit()
 
     def remove_entries(self, file_id: str, key_paths: list[str]):
-        """删除指定文件中的特定条目（重扫后不再存在的旧条目，如已被过滤的键）。"""
+        """删除指定文件中的特定条目（重扫后不再存在的旧条目，如已被过滤的键）。
+
+        2026-08-19 扫描性能修复：逐条 DELETE 每条一个语句——改为
+        executemany 单次提交（几百键时数百次 execute → 1 次）。"""
         if not key_paths:
             return
         with self._lock:
-            for kp in key_paths:
-                self.conn.execute("DELETE FROM entries WHERE file_id=? AND key_path=?",
-                                  (file_id, kp))
+            self.conn.executemany(
+                "DELETE FROM entries WHERE file_id=? AND key_path=?",
+                [(file_id, kp) for kp in key_paths])
             self.conn.commit()
 
     # ── 项目级游戏档案 ──

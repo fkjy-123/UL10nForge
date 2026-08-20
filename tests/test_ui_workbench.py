@@ -1847,3 +1847,129 @@ def test_translate_progress_throttles_chips_keeps_progress_live(qapp, tmp_path):
     page._on_progress(TranslateStats(total=300, done=30))
     assert len(calls) == 2
     assert page.progress_label.text() == "30 / 300 条"
+
+
+# ── 多 Unity 玩家目录（ambiguous 布局）GUI 选择入口 ─────────────
+
+def _make_gui_same_root_players(tmp_path):
+    """同根双玩家（ned-flanders 布局）：A.exe/A_Data + B.exe/B_Data。"""
+    from tests.test_project import _make_same_root_mono_players
+    return _make_same_root_mono_players(tmp_path)
+
+
+def test_home_single_player_dir_skips_selection_dialog(qapp, tmp_path):
+    """单玩家目录：不弹选择框，open_dir 走原路径（player 选择器为
+    None）。"""
+    import hanhua.ui.pages.home_page as home_mod
+    source = _make_gui_same_root_players(tmp_path)
+    single = source.parent / "solo"
+    single.mkdir()
+    (single / "solo.exe").write_bytes(b"")
+    page = HomePage(_state(tmp_path), _Window())
+    called = []
+    real = home_mod.HomePage._resolve_player_selection
+    monkey_sel = lambda self, path: called.append(path) or None
+    page.__class__._resolve_player_selection = monkey_sel
+    try:
+        page.open_dir(single)
+    finally:
+        page.__class__._resolve_player_selection = real
+    assert called == [single]
+
+
+def test_home_ambiguous_dir_prompts_selection_and_scans_selected_player(
+        qapp, tmp_path, monkeypatch):
+    """多玩家目录：弹选择对话框 → 用户选中 A 玩家 → 扫描 worker 收到
+    player_root/player_executable 选择器（同根不同玩家自动隔离 DB）。"""
+    import hanhua.ui.pages.home_page as home_mod
+    source = _make_gui_same_root_players(tmp_path)
+    state = _state(tmp_path / "app")
+    page = HomePage(state, _Window())
+    captured = {}
+    monkeypatch.setattr(
+        home_mod, "_select_player_candidate",
+        lambda candidates: captured.setdefault(
+            "candidates", candidates) and (
+            candidates[0].player_root, candidates[0].executable))
+    monkeypatch.setattr(
+        page, "_set_busy", lambda busy: None)
+    from PySide6.QtCore import QThreadPool
+    real_pool = QThreadPool.globalInstance
+    started = []
+    monkeypatch.setattr(
+        home_mod.QThreadPool, "globalInstance",
+        staticmethod(lambda: type("P", (), {
+            "start": staticmethod(lambda worker: started.append(worker))})()))
+    monkeypatch.setattr(home_mod.Toast, "show", lambda *a, **k: None)
+
+    page.open_dir(source)
+
+    assert len(captured["candidates"]) == 2   # A、B 两个玩家候选
+    assert len(started) == 1
+    # 扫描闭包必须携带选择器（player A）
+    fake_project = type("P", (), {"scan_all": lambda self, event_cb=None: None})()
+    monkeypatch.setattr(
+        home_mod.Project, "open_game_dir", staticmethod(
+            lambda gd, ad, player_root=None, player_executable=None:
+            captured.update(opened=(player_root, player_executable))
+            or fake_project))
+    started[0].fn()
+    root, exe = captured["opened"]
+    assert Path(root).name == source.name or Path(root) == source
+    assert str(exe).endswith("A.exe")
+
+
+def test_home_ambiguous_dir_cancel_keeps_project_closed(
+        qapp, tmp_path, monkeypatch):
+    """用户取消选择 → 不启动任何扫描（不进入忙碌态，DB 不建）。"""
+    import hanhua.ui.pages.home_page as home_mod
+    source = _make_gui_same_root_players(tmp_path)
+    state = _state(tmp_path / "app")
+    page = HomePage(state, _Window())
+    toasts = []
+    monkeypatch.setattr(home_mod, "_select_player_candidate", lambda c: None)
+    monkeypatch.setattr(
+        home_mod.Toast, "show", lambda _p, msg, kind="info":
+        toasts.append(msg))
+    started = []
+    monkeypatch.setattr(
+        home_mod.QThreadPool, "globalInstance",
+        staticmethod(lambda: type("P", (), {
+            "start": staticmethod(lambda worker: started.append(worker))})()))
+    monkeypatch.setattr(page, "_set_busy", lambda busy: toasts.append(
+        f"busy={busy}"))
+
+    page.open_dir(source)
+
+    assert started == []                       # 未启动扫描
+    assert page._scanning is False             # 未进入忙碌态
+    assert any("多个游戏" in t for t in toasts)  # 取消 toast 说明原因
+
+
+def test_home_scan_done_ambiguous_fallback_hint_is_actionable(
+        qapp, tmp_path, monkeypatch):
+    """兜底路径（探测失败/直接 blocked）：ambiguous blocked 报告给出
+    指向明确成因的提示，而非笼统的「请查看阻断步骤」。"""
+    import hanhua.ui.pages.home_page as home_mod
+    state = _state(tmp_path)
+    window = _RecordingWindow()
+    page = HomePage(state, window)
+    toasts = []
+    monkeypatch.setattr(
+        home_mod.Toast, "show",
+        lambda _p, msg, kind="info": toasts.append(msg))
+    monkeypatch.setattr(page, "_render_report", lambda _r: None)
+    monkeypatch.setattr(page, "_refresh_profile_card", lambda: None)
+    monkeypatch.setattr(
+        "hanhua.ui.app_state.AppState.switch_project", lambda *a, **k: 0)
+    fingerprint = type("F", (), {"evidence": ("ambiguous_player_layout",),
+                                 "runtime": "unknown",
+                                 "unity_version": "unknown"})()
+    report = type("Report", (), {
+        "text_files": 0, "v2_files": 0, "unblocked": False,
+        "fingerprint": fingerprint,
+    })()
+
+    page._on_scan_done((object(), report))
+
+    assert any("多个 Unity 游戏" in t for t in toasts)

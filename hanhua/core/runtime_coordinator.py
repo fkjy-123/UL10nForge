@@ -396,12 +396,18 @@ class RuntimeCoordinator:
             except (OSError, ProcessLookupError):
                 return True
         try:
+            # Windows tasklist 输出跟随系统 OEM 代码页（中文系统 GBK，
+            # 「没有运行的任务匹配指定标准」含 0xd0 起始字节），text=True
+            # 默认 utf-8 解码在 reader 线程抛 UnicodeDecodeError → stdout
+            # 为 None → `str(pid) not in None` TypeError（测试实测）。
+            # 改为 bytes 捕获 + latin-1 容错解码：PID 数字串任何代码页
+            # 下字节不变，比对语义不受影响。
             out = subprocess.run(
                 ["tasklist", "/FI", f"PID eq {pid}", "/NH"],
-                capture_output=True, text=True, timeout=5,
+                capture_output=True, timeout=5,
                 creationflags=getattr(subprocess, "CREATE_NO_WINDOW", 0),
             ).stdout
-            return str(pid) not in out
+            return str(pid) not in (out or b"").decode("latin-1", "replace")
         except (OSError, subprocess.TimeoutExpired, subprocess.SubprocessError):
             return False
 
