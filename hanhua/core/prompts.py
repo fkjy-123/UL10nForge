@@ -312,8 +312,6 @@ def build_system_prompt(profile: GameProfile, glossary_lines: list[str] | str,
         parts.append(f"【世界观设定】{profile.world_setting}")
     if profile.tone_notes:
         parts.append(f"【文风要求】{profile.tone_notes}")
-    if profile.style_guide:
-        parts.append(f"【风格指南】{profile.style_guide}")
     # #10：Style/Personalization——用户自定义提示词（按游戏档案编辑）优先
     if profile.prompt_style:
         parts.append(f"【个性化风格要求（用户自定义，最高优先）】\n{profile.prompt_style}")

@@ -1,11 +1,12 @@
-"""审校页 v3（2026-08-13 精简）：双栏工作区——文本列表 / 翻译工作区。
+"""审校页 v3（2026-08-20 #16）：双栏工作区——文本列表 / 翻译工作区。
 
-筛选全部收敛为表格上方的小选项（FilterChip 胶囊：全部/待翻译/已翻译/
-待审核/高风险/失败/已锁定）+ 搜索框；文件下拉、状态下拉、AI 审核右栏
-均已移除。左栏列表沿用表格模型（EntryTableModel 六列 + 筛选 + 右键
-菜单，护栏契约不变）；中栏展示选中条目的原文、译文编辑与上下文
-（§24 Context 区域）。选中联动：表格 selectionChanged → 中栏刷新；
-保存/锁定后恢复选中，避免 reload 丢焦点。
+筛选：状态胶囊（全部/待翻译/已翻译/待审核/已重译/失败/已锁定）+
+搜索框 + 来源文件下拉（#16：译文一多难以浏览，按来源文件筛选——
+选项由当前条目动态聚合，reload 后保留选择）。左栏列表沿用表格模型
+（EntryTableModel 六列 + 筛选 + 右键菜单，护栏契约不变）；中栏展示
+选中条目的原文、译文编辑与上下文（§24 Context 区域）。选中联动：
+表格 selectionChanged → 中栏刷新；保存/锁定后恢复选中，避免
+reload 丢焦点。
 """
 from __future__ import annotations
 
@@ -16,10 +17,11 @@ from PySide6.QtCore import (QAbstractTableModel, QModelIndex,
                             QSortFilterProxyModel, Qt, QThreadPool, QTimer)
 from PySide6.QtGui import QColor, QKeySequence, QPainter, QPen, QShortcut
 from PySide6.QtWidgets import (QAbstractItemView, QButtonGroup, QCheckBox,
-                               QFrame, QHBoxLayout, QHeaderView, QLabel,
-                               QLineEdit, QMenu, QPlainTextEdit, QPushButton,
-                               QSplitter, QStackedLayout, QStyledItemDelegate,
-                               QTableView, QVBoxLayout, QWidget)
+                               QComboBox, QFrame, QHBoxLayout, QHeaderView,
+                               QLabel, QLineEdit, QMenu, QPlainTextEdit,
+                               QPushButton, QSplitter, QStackedLayout,
+                               QStyledItemDelegate, QTableView, QVBoxLayout,
+                               QWidget)
 
 from dataclasses import replace
 
@@ -393,7 +395,7 @@ class ReviewPage(QWidget):
         header.set_actions([self.translate_btn])
         lay.addWidget(header)
 
-        # ── 工具栏（仅搜索框；状态筛选全部收敛到下方胶囊） ──
+        # ── 工具栏（搜索框 + 来源文件下拉；状态筛选收敛到下方胶囊） ──
         toolbar = QHBoxLayout()
         toolbar.setSpacing(10)
         self.search_box = QLineEdit()
@@ -402,6 +404,20 @@ class ReviewPage(QWidget):
         self.search_box.setMinimumHeight(44)
         self.search_box.setAccessibleName("搜索原文或译文")
         toolbar.addWidget(self.search_box, 1)
+        # #16 来源文件筛选：译文一多难以浏览，按来源文件聚焦一个文件
+        # 的条目。选项由 _on_reload_rows 从当前条目聚合（见 _refresh_file_filter）
+        self.file_filter_box = QComboBox()
+        self.file_filter_box.addItem("全部来源", "")
+        self.file_filter_box.setMinimumHeight(44)
+        # 宽度给足短文件名（列表本体走下拉弹层，不挤占搜索框）
+        self.file_filter_box.setMinimumContentsLength(18)
+        self.file_filter_box.setSizeAdjustPolicy(
+            QComboBox.AdjustToMinimumContentsLengthWithIcon)
+        self.file_filter_box.setToolTip("按来源文件筛选列表")
+        self.file_filter_box.setAccessibleName("按来源文件筛选")
+        self.file_filter_box.currentIndexChanged.connect(
+            self._on_file_filter_changed)
+        toolbar.addWidget(self.file_filter_box)
         lay.addLayout(toolbar)
 
         # ── 筛选胶囊（§21 精简：唯一状态筛选入口） ──
@@ -966,8 +982,37 @@ class ReviewPage(QWidget):
         self.proxy.setFilters(
             search=self.search_box.text(),
             status=status,
+            file_id=self.file_filter_box.currentData() or "",
             locked_only=locked)
         self._refresh_summary()
+
+    def _on_file_filter_changed(self, _index: int) -> None:
+        """来源文件下拉切换（#16）。构造期 addItem 触发的首个信号由
+        _loading 守卫在 _apply_filters 里挡掉。"""
+        self._apply_filters()
+
+    def _refresh_file_filter(self, rows: list[dict]) -> None:
+        """从当前条目聚合来源文件选项（#16）。reload 后调用——
+        blockSignals 重建选项避免中途触发过滤；当前选中项仍在列表
+        则维持，否则回「全部来源」（file_id 消失于新数据集时不过滤
+        出空表）。显示短名 + 条目数，完整 file_id 放 userData。"""
+        current = self.file_filter_box.currentData() or ""
+        # 去重保持出现顺序（同文件条目相邻，天然按首次出现排序）
+        seen: dict[str, int] = {}
+        for r in rows:
+            fid = r.get("file_id") or ""
+            if fid:
+                seen[fid] = seen.get(fid, 0) + 1
+        box = self.file_filter_box
+        box.blockSignals(True)
+        box.clear()
+        box.addItem("全部来源", "")
+        for fid, count in seen.items():
+            label = f"{Path(fid).name}（{count}）"
+            box.addItem(label, fid)
+        if current and current in seen:
+            box.setCurrentIndex(box.findData(current))
+        box.blockSignals(False)
 
     def _auto_reload(self):
         """entriesChanged 广播触发的自动刷新（翻译页每 ≥1s 广播一次）。
@@ -999,6 +1044,7 @@ class ReviewPage(QWidget):
         if self.state.project is None:
             self._loading = False
             self.model.setEntries([])
+            self._refresh_file_filter([])
             self._stack.setCurrentWidget(self.empty_state)
             self._detail_stack.setCurrentWidget(self.detail_empty)
             self._refresh_summary()
@@ -1055,6 +1101,8 @@ class ReviewPage(QWidget):
         self._stack.setCurrentWidget(
             self.table if rows else self.empty_state)
         self._loading = False
+        # #16：先刷新来源下拉（新数据集聚合文件选项），再应用过滤
+        self._refresh_file_filter(rows)
         self._apply_filters()
         # 保留选中（#16：翻译/审校保存触发的 reload 重建模型会丢选中，
         # 中栏焦点跳到空白）。按主键找回重选；行不存在（被筛选/删除）
@@ -1073,6 +1121,7 @@ class ReviewPage(QWidget):
             return
         self._loading = False
         self.model.setEntries([])
+        self._refresh_file_filter([])
         self._stack.setCurrentWidget(self.empty_state)
         self._refresh_summary()
 

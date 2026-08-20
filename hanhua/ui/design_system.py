@@ -47,6 +47,7 @@ class DesignTokens:
     primary_hover: str = "#7BF0D4"
     primary_pressed: str = "#35C9A6"
     primary_muted: str = "#12372E"     # 品牌色低饱和底
+    accent_dim: str = "#2A6B5C"        # 半透明感主色：卡片描边强调
     gradient_start: str = "#58E6C2"
     gradient_end: str = "#63B3FF"      # 薄荷青 → 天蓝
     ai_primary: str = "#A78BFA"        # == ai

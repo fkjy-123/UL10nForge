@@ -234,7 +234,7 @@ def test_tool_page_reset_prompt_uses_project_profile(qapp, tmp_path):
     profile = type("Profile", (), {
         "game_name": "DemoGame", "genre": "RPG",
         "world_setting": "赛博朋克", "tone_notes": "",
-        "style_guide": "", "prompt_style": "专名音译",
+        "prompt_style": "专名音译",
         "source_lang": "en", "target_lang": "zh-CN",
     })()
     state.project = type("Project", (), {"profile": profile})()

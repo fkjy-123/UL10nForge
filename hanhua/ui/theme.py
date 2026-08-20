@@ -26,6 +26,7 @@ ACCENT = TOKENS.accent          # 薄荷青：主流程
 ACCENT_HOVER = TOKENS.primary_hover
 ACCENT_PRESSED = TOKENS.primary_pressed
 ACCENT_BG = TOKENS.primary_muted
+ACCENT_DIM = TOKENS.accent_dim       # 半透明感主色：卡片描边强调
 AI = TOKENS.ai                  # 紫罗兰=AI
 AI_SECONDARY = TOKENS.ai_secondary
 AI_BG = TOKENS.ai_muted
@@ -273,6 +274,24 @@ QProgressBar::chunk {{
         stop:0 {GRAD_START}, stop:1 {GRAD_END});
     border-radius: 4px;
 }}
+/* 扫描进度条（#14）：需要容纳百分比文本，故单独加高；
+   文本用深色（落在渐变 chunk 上）/轨道内浅色双态保证对比度 */
+QProgressBar#scanBar {{
+    min-height: 18px;
+    max-height: 18px;
+    border-radius: 6px;
+    font-size: 9pt;
+    font-weight: 600;
+    color: {TEXT_SECONDARY};
+    background: {LOGGER_BG};
+    border: 1px solid {BORDER};
+}}
+QProgressBar#scanBar::chunk {{
+    border-radius: 5px;
+    background: qlineargradient(x1:0, y1:0, x2:1, y2:0,
+        stop:0 {GRAD_START}, stop:1 {GRAD_END});
+    width: 4px;
+}}
 
 /* ── 任务状态轨道（五步状态轨，贯穿四页的产品记忆点） ─────── */
 QFrame#statusNode {{
@@ -486,11 +505,14 @@ QFrame#dropZone[state="blocked"] {{
     border-style: solid;
     border-color: {WARNING};
 }}
+/* #17 档案卡重做：与英雄区同族的渐变底 + ACCENT 左边条 + 描边，
+   视觉权重高于普通面板，避免被忽视 */
 QFrame#profileCard {{
-    background: {PANEL};
-    border: none;
-    border-left: 3px solid {WARNING};
-    border-radius: {RADIUS_MD}px;
+    background: qlineargradient(x1:0, y1:0, x2:1, y2:1,
+        stop:0 {RAISED}, stop:1 {PANEL});
+    border: 1px solid {ACCENT_DIM};
+    border-left: 4px solid {ACCENT};
+    border-radius: {RADIUS_CARD}px;
 }}
 QFrame[class="sectionRule"] {{
     background: {BORDER};

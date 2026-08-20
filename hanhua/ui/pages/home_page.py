@@ -235,7 +235,13 @@ class HomePage(QWidget):
         btn_row.addWidget(self.pick_btn)
         btn_row.addStretch(1)
         self.scan_bar = QProgressBar()
-        self.scan_bar.setRange(0, 0)
+        # #14 扫描进度条：determinate 百分比（阶段加权，见
+        # _on_scan_progress）；薄荷青→天蓝渐变填充由 QSS #scanBar 提供
+        self.scan_bar.setObjectName("scanBar")
+        self.scan_bar.setRange(0, 100)
+        self.scan_bar.setValue(0)
+        self.scan_bar.setTextVisible(True)
+        self.scan_bar.setFormat("正在准备扫描… %p%")
         self.scan_bar.setVisible(False)
         dz.addLayout(icon_row)
         dz.addWidget(self.dz_title)
@@ -325,25 +331,36 @@ class HomePage(QWidget):
         self.pipeline_cards = self.pipeline_rail.nodes
         lay.addWidget(self.pipeline_rail)
 
-        # 游戏档案（带左侧黄色标记的编辑区，不套大卡片）
+        # 游戏档案（#17 重做：原 64px 单行卡易被忽视——改为两行大卡：
+        # 标题行（图标 + 标题 + 生效说明 + 编辑按钮）+ 摘要多行，
+        # ACCENT 渐变底与英雄区同族但更醒目；空档案时用引导文案）
         self.profile_card = QFrame()
         self.profile_card.setObjectName("profileCard")
-        self.profile_card.setFixedHeight(64)
-        pc = QHBoxLayout(self.profile_card)
-        pc.setContentsMargins(16, 10, 16, 10)
-        pc.setSpacing(10)
+        pc = QVBoxLayout(self.profile_card)
+        pc.setContentsMargins(18, 14, 18, 14)
+        pc.setSpacing(6)
+        pc_head = QHBoxLayout()
+        pc_head.setSpacing(10)
+        pc_icon = LineIcon("profile", 28)
         pc_title = QLabel("游戏档案")
         pc_title.setProperty("class", "pageTitle")
+        pc_hint = QLabel("填写后注入翻译提示词，直接影响译文风格")
+        pc_hint.setProperty("class", "subtitle")
         self.profile_edit_btn = QPushButton("编辑档案")
-        self.profile_edit_btn.setProperty("ghost", True)
+        self.profile_edit_btn.setProperty("primary", True)
         self.profile_edit_btn.setMinimumHeight(44)
         self.profile_edit_btn.setAccessibleName("编辑当前游戏档案")
+        pc_head.addWidget(pc_icon)
+        pc_head.addWidget(pc_title)
+        pc_head.addSpacing(6)
+        pc_head.addWidget(pc_hint)
+        pc_head.addStretch(1)
+        pc_head.addWidget(self.profile_edit_btn)
         self.profile_summary = QLabel("尚未填写。填写后翻译将贴合本游戏的世界观与文风。")
         self.profile_summary.setProperty("class", "subtitle")
         self.profile_summary.setWordWrap(True)
-        pc.addWidget(pc_title)
-        pc.addWidget(self.profile_summary, 1)
-        pc.addWidget(self.profile_edit_btn)
+        pc.addLayout(pc_head)
+        pc.addWidget(self.profile_summary)
         self.profile_card.setHidden(True)
         lay.addWidget(self.profile_card)
 
@@ -448,9 +465,18 @@ class HomePage(QWidget):
         return proj, report
 
     def _on_scan_progress(self, event) -> None:
-        """扫描阶段事件 → rail 实时更新。2026-08-15 流水线重做：
-        detection/text_scan/tool_analysis/binary_scan 全部映射到合并
-        节点「识别」——状态取最严重（failed > running > succeeded）。"""
+        """扫描阶段事件 → rail 实时更新 + 进度条百分比（#14）。
+
+        2026-08-15 流水线重做：detection/text_scan/tool_analysis/
+        binary_scan 全部映射到合并节点「识别」——状态取最严重
+        （failed > running > succeeded）。
+
+        2026-08-20（#14）：进度条按阶段加权——检测 0-5%、结构化文本
+        5-15%、二进制资源 15-85%（唯一带 current/total 的事件，线性插值
+        ——大游戏 scan_v2 数分钟，是用户最需要看进度的一段）、工具分析
+        与收尾 85-100%。事件到达顺序与权重起点单调对齐，条只前进不回退
+        （text_scan succeeded 在 binary_scan running 之后到达时不再把
+        百分比拉回去）。"""
         phase = getattr(event, "phase", "") or ""
         status = getattr(event, "status", "") or ""
         message = getattr(event, "message", "") or ""
@@ -463,6 +489,45 @@ class HomePage(QWidget):
             self._scan_node_state, status)
         self.pipeline_rail.set_node_state(
             "scan", self._scan_node_state, message, "")
+        self._update_scan_bar(phase, status, message, event)
+
+    # 各阶段进度条区间终点（#14 阶段加权）：检测 5 / 文本 15 /
+    # 二进制 85 / 工具分析+收尾 100。事件只在到达时取「本阶段终点」
+    # 与「当前值」的较大者，保证单调不减。
+    _SCAN_PHASE_WEIGHTS = {
+        "detection": 5,
+        "text_scan": 15,
+        "binary_scan": 85,
+        "tool_analysis": 100,
+    }
+
+    def _update_scan_bar(self, phase: str, status: str, message: str,
+                         event) -> None:
+        """PipelineEvent → scan_bar 百分比与文本（#14）。"""
+        if not self._scanning:
+            return
+        start = {"detection": 0, "text_scan": 5,
+                 "binary_scan": 15, "tool_analysis": 85}.get(phase, 0)
+        end = self._SCAN_PHASE_WEIGHTS.get(phase, 100)
+        if status == "failed":
+            return
+        if phase == "binary_scan" and status == "running":
+            current = getattr(event, "current", 0) or 0
+            total = getattr(event, "total", 0) or 0
+            if total > 0:
+                pct = start + int(
+                    (end - start) * min(current, total) / total)
+            else:
+                pct = start
+            label = f"扫描 Unity 资源 {current}/{total} · %p%"
+        else:
+            # 阶段 succeeded/blocked/running：直接推进到该阶段区间终点
+            pct = end
+            label = f"{message} · %p%" if message else "%p%"
+        # 只前进不回退（阶段事件乱序到达时保持最大值）
+        pct = max(pct, self.scan_bar.value())
+        self.scan_bar.setFormat(label)
+        self.scan_bar.setValue(pct)
 
     @staticmethod
     def _merge_scan_state(current: str, incoming: str) -> str:
@@ -544,6 +609,10 @@ class HomePage(QWidget):
     def _set_busy(self, busy: bool):
         self._scanning = busy
         self.scan_bar.setVisible(busy)
+        if busy:
+            # #14：新扫描从 0 起（determinate 百分比）
+            self.scan_bar.setValue(0)
+            self.scan_bar.setFormat("正在准备扫描… %p%")
         self.pick_btn.setEnabled(not busy)
         self.drop_zone.set_state("scanning" if busy else "empty")
         self.dz_title.setText(
@@ -713,12 +782,16 @@ class HomePage(QWidget):
     def _refresh_profile_card(self):
         self.profile_card.setHidden(False)
         p = self.state.project.profile
-        if p.game_name or p.world_setting or p.tone_notes:
+        # #17：摘要覆盖全部会影响翻译的字段（含 #10 个性化风格要求），
+        # 让用户在概览页就能确认档案实际生效的内容
+        if p.game_name or p.world_setting or p.tone_notes or p.prompt_style:
             parts = [p.game_name + (f"（{p.genre}）" if p.genre else "")]
             if p.world_setting:
                 parts.append(f"世界观：{p.world_setting[:60]}{'…' if len(p.world_setting) > 60 else ''}")
             if p.tone_notes:
                 parts.append(f"文风：{p.tone_notes[:60]}{'…' if len(p.tone_notes) > 60 else ''}")
+            if p.prompt_style:
+                parts.append(f"风格：{p.prompt_style[:60]}{'…' if len(p.prompt_style) > 60 else ''}")
             self.profile_summary.setText("　".join(parts))
         else:
             self.profile_summary.setText("尚未填写。填写后翻译将贴合本游戏的世界观与文风。")
@@ -729,4 +802,5 @@ class HomePage(QWidget):
         if dialog.exec():
             self.state.project.save_profile(dialog.result_profile())
             self._refresh_profile_card()
-            Toast.show(self, "游戏档案已保存（仅当前项目生效）", "success")
+            Toast.show(self, "游戏档案已保存，下次翻译开始时生效（进行中的任务"
+                             "仍使用开始时的档案）", "success")

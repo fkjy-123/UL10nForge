@@ -25,6 +25,7 @@ NAME_COLORS = {
     "play": TOKENS.text_secondary,
     "alert": TOKENS.warning,
     "database": TOKENS.text_secondary,
+    "profile": TOKENS.primary,
 }
 
 
@@ -205,6 +206,15 @@ class LineIcon(QWidget):
         path = QPainterPath(QPointF(10, 16))
         path.lineTo(14, 20); path.lineTo(23, 11)
         p.drawPath(path)
+
+    @staticmethod
+    def _paint_profile(p: QPainter):
+        """档案卡图标：卡片轮廓 + 头像剪影（#17）。"""
+        p.drawRoundedRect(QRectF(4, 5, 24, 22), 4, 4)
+        p.drawArc(QRectF(10, 10, 6, 6), 0, 360 * 16)
+        p.drawArc(QRectF(9, 19, 14, 10), 180 * 16, 180 * 16)
+        p.drawLine(QPointF(20, 11), QPointF(25, 11))
+        p.drawLine(QPointF(20, 15), QPointF(25, 15))
 
     @staticmethod
     def _paint_brand(p: QPainter):

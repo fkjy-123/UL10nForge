@@ -3,9 +3,10 @@ from __future__ import annotations
 
 from PySide6.QtCore import (QEasingCurve, QObject, QPropertyAnimation,
                             QRunnable, Qt, QTimer, Signal)
-from PySide6.QtWidgets import (QFrame, QGraphicsOpacityEffect, QHBoxLayout, QLabel,
-                               QListWidget, QListWidgetItem,
-                               QPushButton, QVBoxLayout, QWidget)
+from PySide6.QtWidgets import (QFrame, QGraphicsOpacityEffect, QHBoxLayout,
+                               QLabel, QListWidget, QListWidgetItem,
+                               QPushButton, QSizePolicy, QVBoxLayout,
+                               QWidget)
 
 from hanhua.ui import theme
 from hanhua.ui.design_system import TOKENS, motion_enabled
@@ -182,23 +183,50 @@ class StatusNode(QFrame):
 
 
 class StatusRail(QWidget):
-    """横向状态轨道：节点 + 细连接线，贯穿四页的产品记忆点。"""
+    """横向状态轨道：节点 + 细连接线，贯穿四页的产品记忆点。
+
+    2026-08-20（#15）布局重做：原实现 rail 与 node 以 stretch 1:3 交替
+    加入布局——五格宽度随内容与窗口宽度抖动、互不相等。现改为等宽网格
+    思路：每个节点占据一个等分格（addWidget(node, 1)），连接线以绝对
+    定位横穿两节点之间的间隙中点，不参与拉伸分配——五格恒等宽、间隙
+    连接线视觉对齐。"""
 
     def __init__(self, nodes: list[tuple[str, str, str]], parent=None):
         super().__init__(parent)
         self.nodes: list[StatusNode] = []
+        self._rails: list[QFrame] = []
+        self.setMouseTracking(True)
         lay = QHBoxLayout(self)
         lay.setContentsMargins(0, 0, 0, 0)
-        lay.setSpacing(8)
+        lay.setSpacing(24)
         for index, (step_id, title, icon_name) in enumerate(nodes):
+            node = StatusNode(step_id, title, icon_name)
+            # 每个节点等分（stretch 1），内部 head 布局吃掉多余宽度
+            node.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Preferred)
+            lay.addWidget(node, 1)
+            self.nodes.append(node)
             if index:
-                rail = QFrame()
+                rail = QFrame(self)
                 rail.setObjectName("brandRail")
                 rail.setFixedHeight(2)
-                lay.addWidget(rail, 1)
-            node = StatusNode(step_id, title, icon_name)
-            lay.addWidget(node, 3)
-            self.nodes.append(node)
+                # 置于两节点之间的间隙：x 由 resizeEvent 按几何重算
+                rail.setAttribute(Qt.WA_TransparentForMouseEvents, True)
+                rail.lower()
+                self._rails.append(rail)
+
+    def resizeEvent(self, event):
+        """间隙连接线定位：每条线横跨前一节点右缘到后一节点左缘，
+        垂直居中于标题行（节点内边距 10 + 标题行高一半 ≈ 18px）。"""
+        super().resizeEvent(event)
+        for rail, node in zip(self._rails, self.nodes[1:]):
+            prev = self.nodes[self.nodes.index(node) - 1]
+            x1 = prev.geometry().right() + 1
+            x2 = node.geometry().left() - 1
+            if x2 > x1:
+                rail.setGeometry(x1, 18, x2 - x1, 2)
+                rail.show()
+            else:
+                rail.hide()
 
     def set_node_state(self, step_id: str, status: str, detail: str,
                        metrics: str = ""):

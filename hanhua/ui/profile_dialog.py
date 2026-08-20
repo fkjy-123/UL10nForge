@@ -21,20 +21,21 @@ class ProfileDialog(QDialog):
         lay.setContentsMargins(22, 20, 22, 18)
         lay.setSpacing(12)
 
-        hint = QLabel("档案只属于当前项目，会注入翻译提示词——填得越详细，翻译越贴合游戏。")
+        hint = QLabel("档案只属于当前游戏项目，保存后注入翻译提示词——下次翻译开始时生效。")
         hint.setProperty("class", "subtitle")
         lay.addWidget(hint)
 
         form = QFormLayout()
         form.setSpacing(12)
         self.name = QLineEdit(profile.game_name)
+        self.name.setPlaceholderText("如：Rendezvous")
         self.genre = QLineEdit(profile.genre)
         self.genre.setPlaceholderText("如：动作 RPG / 视觉小说 / 恐怖解谜…")
         self.world = QPlainTextEdit(profile.world_setting)
-        self.world.setPlaceholderText("例：近未来都市，地下排水管道中的恐怖求生，主角被困其中…")
+        self.world.setPlaceholderText("例：近未来都市，地下排水管道中的恐怖求生，主角被困其中…\n注入提示词的【世界观设定】，帮助模型理解语境。")
         self.world.setFixedHeight(100)
         self.tone = QPlainTextEdit(profile.tone_notes)
-        self.tone.setPlaceholderText("例：对话口语化、阴郁氛围；主角沉默寡言；NPC 各有口癖…")
+        self.tone.setPlaceholderText("例：对话口语化、阴郁氛围；主角沉默寡言；NPC 各有口癖…\n注入提示词的【文风要求】。")
         self.tone.setFixedHeight(90)
         # #10：Style/Personalization——自定义翻译风格提示词（按游戏档案
         # 编辑；非空时以【个性化风格要求】块注入翻译提示词并优先生效）
@@ -42,7 +43,7 @@ class ProfileDialog(QDialog):
         self.style.setPlaceholderText(
             "例：本游戏术语统一音译；\"play/resume\" 等按键词必须译成"
             "「开始/继续」；禁止出现网络用语；技能名保持两字格式…\n"
-            "留空 = 使用内置的游戏本地化专家角色提示词")
+            "注入提示词且优先级最高；留空 = 使用内置的游戏本地化专家提示词")
         self.style.setFixedHeight(100)
         self.source = QComboBox()
         for lang in SOURCE_LANGS:

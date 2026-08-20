@@ -95,10 +95,11 @@ class GameProfile:
     genre: str = ""
     world_setting: str = ""
     tone_notes: str = ""
-    style_guide: str = ""
     # #10：Style/Personalization——用户自定义翻译风格要求（游戏本地化
     # 角色行为边界之外的个性化指令）。空 = 使用内置默认角色；非空 →
     # 以【个性化风格要求】块注入 system prompt 并优先于内置文风。
+    # #17：旧 style_guide 字段已删（与 prompt_style 功能重复且无 UI
+    # 入口）；get_profile 按字段过滤，旧库残留 key 自动忽略。
     prompt_style: str = ""
     source_lang: str = "auto"    # auto / English / 日本語 / 한국어 / ...
     target_lang: str = "zh-CN"
