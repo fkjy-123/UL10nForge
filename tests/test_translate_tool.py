@@ -22,6 +22,7 @@ from hanhua.ui.main_window import MainWindow, PAGES
 from hanhua.ui.pages.translate_tool_page import (
     TranslateToolPage,
     _BLOCK_CHARS,
+    _is_symbol_only,
 )
 from conftest import await_reload
 
@@ -220,6 +221,33 @@ def test_tool_page_split_blocks_keeps_lines():
         assert len(block) <= _BLOCK_CHARS
     # 短文本不分块
     assert TranslateToolPage._split_blocks("short") == ["short"]
+
+
+def test_tool_page_symbol_input_blocked_without_model(qapp, tmp_path, monkeypatch):
+    """2026-08-20 用户实证：输入 {}【】等纯符号/非文字时，翻译前直接
+    拦截——不调模型（避免小模型回显整段提示词塞满译文栏），译文区
+    清空并提示「无法翻译」。"""
+    calls = []
+    monkeypatch.setattr("hanhua.ui.pages.translate_tool_page.create_client",
+                        lambda config, transport_factory=None: calls.append(1))
+    page = TranslateToolPage(_state(tmp_path), _Window())
+    page.src_edit.setPlainText("{}【】")
+    page.translate_btn.click()
+    QTest.qWait(50)
+    assert calls == [], "纯符号输入不应调用模型"
+    assert page.dst_edit.toPlainText() == ""
+    assert "无法翻译" in page.status_label.text()
+
+
+def test_is_symbol_only_classification():
+    """纯符号判定：无字母/数字/CJK 为纯符号；含任一即非纯符号。"""
+    assert _is_symbol_only("{}【】") is True
+    assert _is_symbol_only("{} 【】 \n  ") is True
+    assert _is_symbol_only("hello") is False
+    assert _is_symbol_only("你好") is False
+    assert _is_symbol_only("123") is False
+    assert _is_symbol_only("{}a") is False
+    assert _is_symbol_only("") is False
 
 
 def test_tool_page_reset_prompt_uses_project_profile(qapp, tmp_path):

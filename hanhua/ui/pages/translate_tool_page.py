@@ -30,6 +30,24 @@ _HISTORY_SHOWN = 20          # 下拉展示条数
 _BLOCK_CHARS = 2000          # 长文本单块字符上限（行不拆分）
 
 
+def _is_symbol_only(text: str) -> bool:
+    """是否为纯符号/非文字内容（无字母、无 CJK、无西文带调字母等）。
+
+    2026-08-20 用户实证：输入 {}【】这类不可翻译符号时，小模型会把
+    整段提示词当输出回显塞满译文栏。翻译前拦截——这类输入本就无
+    语义可译。允许少量空白分隔（strip 已去首尾，行内空白不计为字符）。
+    """
+    import unicodedata
+    for ch in text:
+        if ch.isspace():
+            continue
+        cat = unicodedata.category(ch)
+        # 字母（L*）与数字（N*）视为有语义可翻译内容
+        if cat[0] in ("L", "N"):
+            return False
+    return bool(text.strip())
+
+
 class TranslateToolPage(QWidget):
     """轻量翻译应用页：模型信息 + 可编辑提示词 + 原文/译文 + 历史。"""
 
@@ -194,6 +212,16 @@ class TranslateToolPage(QWidget):
         text = self.src_edit.toPlainText().strip()
         if not text:
             self._warn("请输入要翻译的文本")
+            return
+        # 2026-08-20 用户实证：输入纯符号/格式串（{}【】等无字母与 CJK
+        # 的内容）时，小模型把整段提示词当输出回显，译文栏塞满提示词。
+        # 翻译前直接拦截——这类输入本就无语义可译，不调模型、不浪费
+        # 资源，直接告知用户而非吐出回显。
+        if _is_symbol_only(text):
+            self.dst_edit.setPlainText("")
+            self.status_label.setText(
+                "内容为纯符号/非文字，无法翻译（请输入含字母或文字的文本）")
+            Toast.show(self, "内容为纯符号/非文字，无法翻译", "warning")
             return
         api = self.state.api
         if api.mode == "api" and not (api.base_url and api.api_key

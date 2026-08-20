@@ -10,9 +10,11 @@ import subprocess
 import threading
 import time
 
-from PySide6.QtCore import Qt, QThreadPool
-from PySide6.QtWidgets import (QCheckBox, QFrame, QHBoxLayout, QLabel,
-                               QPlainTextEdit, QProgressBar, QPushButton,
+from PySide6.QtCore import (QEasingCurve, QPropertyAnimation, Qt,
+                            QThreadPool)
+from PySide6.QtWidgets import (QCheckBox, QFrame, QGraphicsOpacityEffect,
+                               QHBoxLayout, QLabel, QPlainTextEdit,
+                               QProgressBar, QPushButton, QSplitter,
                                QVBoxLayout, QWidget)
 
 from hanhua.core.agent_memory import AgentMemory
@@ -28,7 +30,8 @@ from hanhua.core.quality import is_write_ready
 from hanhua.core.reviewer import review_entries
 from hanhua.core.translator import create_client
 from hanhua.ui.app_state import AppState
-from hanhua.ui.widgets import (ActivityFeed, MetricStrip, PageHeader,
+from hanhua.ui.design_system import TOKENS, motion_enabled
+from hanhua.ui.widgets import (ActivityFeed, PageHeader,
                                SafetyBar, Toast, Worker)
 
 @dataclass(eq=False)
@@ -66,6 +69,48 @@ class _TranslationRun:
 
 
 MAX_LOCAL_RECOVERIES = 2  # 单次翻译运行允许的服务故障恢复次数
+
+# 全链路进度分段权重（2026-08-20）：翻译/审校判定/审校处置/写回共享
+# 同一根 progress_bar，按 3-3-3-1 权重映射到 0-100 并接续前段末值单调
+# 推进——杜绝此前审核首条把翻译满条 100 归零再爬、写回又从 5% 起跳的
+# 「倒退/jumping back」。审校内部分两个子阶段：判定（review_batch 逐条
+# 4B 判定，有 on_progress）+ 处置（反馈重译 + 再审收敛，串行 2-30s/条，
+# 原本静默——现经 on_disposition_progress 回调驱动 60-90% 段）。
+# 识别 scan 保留自己的 #scanBar，不在此条。
+_PIPELINE_STAGE_RANGE = {
+    "translate": (0, 30),            # 翻译 3 份
+    "review_verdict": (30, 60),      # 审校判定 3 份
+    "review_disposition": (60, 90),  # 审校处置 3 份
+    "writeback": (90, 100),         # 写回 1 份
+}
+
+# 分段图例尺配置：(键, 权重 stretch, 阶段色, 文字)——与 _PIPELINE_STAGE_RANGE
+# 同源。权重 3-3-3-1 决定图例尺四段宽度比例，阶段色与进度条填色一致。
+_PIPELINE_SEGMENTS = (
+    ("translate", 3, "#58E6C2", "翻译 30%"),
+    ("review_verdict", 3, "#A78BFA", "审校判定 30%"),
+    ("review_disposition", 3, "#63B3FF", "审校处置 30%"),
+    ("writeback", 1, "#F5B84B", "写回 10%"),
+)
+
+
+def _hex_to_rgba(hex_color: str, alpha: float = 1.0) -> str:
+    """#RRGGBB → rgba(r, g, b, a)，供 QSS 背景用（QSS 不支持 opacity）。"""
+    h = hex_color.lstrip("#")
+    r, g, b = int(h[0:2], 16), int(h[2:4], 16), int(h[4:6], 16)
+    return f"rgba({r}, {g}, {b}, {alpha})"
+
+
+# ── 动效时长（2026-08-21 Task #4 配色与动效优化） ──
+# 图例尺跨段淡入淡出 220ms OutCubic（略长于 page_enter，让高亮切换在
+# 进度到位后落定——视觉上「先到位再点亮」）。reduced-motion 时
+# _update_segment_active 直切不构造动画。进度条值本身不动画：
+# setValue 同步可断言、跨段接续靠 _pipeline_floor 单调下限保证不倒退。
+_SEGMENT_FADE_MS = 220                            # 图例尺跨段淡入淡出
+# 图例尺分段透明度：激活段 1.0（满色），未到段 0.55（半透明仍可见
+# 文字与色相，不至于暗到看不出是哪段）。跨段切换在这两个值间淡入淡出。
+_SEG_DIM_OPACITY = 0.55
+_SEG_ACTIVE_OPACITY = 1.0
 
 
 def _critical_local_failures(store) -> bool:
@@ -116,9 +161,23 @@ class TranslatePage(QWidget):
         self._stream_last_done = 0
         self._last_review: tuple[int, int] | None = None
         self._last_review_emit = 0.0
-        # 审核阶段进度条重置标记（2026-08-15：审核首条回调时把翻译
-        # 满条进度条归零，之后逐条推进；翻译开始时复位）
-        self._review_bar_reset = False
+        # 全链路进度条分段驱动（2026-08-20）：翻译/审校判定/审校处置/
+        # 写回共享同一根 progress_bar，按 3-3-3-1 权重映射到 0-30 /
+        # 30-60 / 60-90 / 90-100 四段并接续前段末值单调推进——杜绝此前
+        # 审核首条把翻译满条 100 归零再爬、写回又从 5% 起跳的
+        # 「倒退/jumping back」。_pipeline_floor 记录已达到的最大值，
+        # 跨段切换时不回退（新段 lo = 旧段 hi，自然接续）。
+        # 识别 scan 保留自己的 #scanBar，不进此条。
+        self._pipeline_floor = 0
+        # 当前激活段（图例尺高亮用）——start() 复位为 None
+        self._active_segment: str | None = None
+        # 图例尺分段激活切换动画：跨段时旧段从满色淡出到半透明、新段从
+        # 半透明淡入到满色，220ms OutCubic。每段持一个 QGraphicsOpacity
+        # effect + 动画，互不影响。reduced-motion 直切。
+        # 进度条值本身不动画（setValue 同步可断言）；跨段接续靠
+        # _pipeline_floor 单调下限保证 30→31 不倒退。
+        self._seg_effect: dict[str, QGraphicsOpacityEffect] = {}
+        self._seg_fade: dict[str, QPropertyAnimation] = {}
         # 进度节流（#13 实证：home 分数与流水线 rail 只在全部完成后才
         # 更新，翻译时「突然一下完成几十条」——批粒度 progress 直接
         # emit entriesChanged 会让首页 O(N) 重扫刷屏）。每 ≥1s 才广播
@@ -154,8 +213,17 @@ class TranslatePage(QWidget):
         ))
 
         # ── 任务摘要条（细长：进度 + 即时文本，不套大卡片） ──
+        # 2026-08-20 全链路分段进度条：翻译/审校判定/审校处置/写回共享
+        # 同一根 progress_bar，按 3-3-3-1 权重接续推进不倒退。下方分段
+        # 图例尺（segment legend）四段按权重比例 stretch、各带阶段色与
+        # 文字，进度条上 30%/60%/90% 分界一目了然。审校内部分判定 +
+        # 处置两个子阶段——处置阶段原本静默（反馈重译串行 2-30s/条无
+        # 进度回调），现经 on_disposition_progress 回调驱动 60-90% 段。
         strip = QFrame()
-        strip_row = QHBoxLayout(strip)
+        strip_v = QVBoxLayout(strip)
+        strip_v.setContentsMargins(0, 0, 0, 0)
+        strip_v.setSpacing(4)
+        strip_row = QHBoxLayout()
         strip_row.setContentsMargins(0, 0, 0, 0)
         strip_row.setSpacing(12)
         self.progress_bar = QProgressBar()
@@ -164,6 +232,44 @@ class TranslatePage(QWidget):
         self.progress_label.setStyleSheet("font-size: 14px; font-weight: 600;")
         strip_row.addWidget(self.progress_bar, 1)
         strip_row.addWidget(self.progress_label)
+        strip_v.addLayout(strip_row)
+
+        # 分段图例尺：翻译 30% · 审校判定 30% · 审校处置 30% · 写回 10%
+        # （与 _PIPELINE_STAGE_RANGE / _PIPELINE_SEGMENTS 权重同源）。四段
+        # 按比例 stretch，阶段色 + 居中文字 + 圆角小条。当前激活段高亮
+        # （_update_segment_active），未到段半透明。
+        # 2026-08-21 Task #4：每段挂一个 QGraphicsOpacityEffect，跨段切换
+        # 时旧段从满色（opacity 1.0）淡出到半透明（0.55）、新段从 0.55
+        # 淡入到 1.0，220ms OutCubic——高亮不再硬切。reduced-motion 直切
+        # （effect 初始 1.0，_update_segment_active 直接 setOpacity 跳变）。
+        legend = QHBoxLayout()
+        legend.setContentsMargins(0, 0, 0, 0)
+        legend.setSpacing(4)
+        self._segment_widgets: dict[str, QFrame] = {}
+        for key, weight, color, text in _PIPELINE_SEGMENTS:
+            seg = QFrame()
+            seg.setObjectName(f"seg{key}")
+            seg.setMinimumHeight(18)
+            seg.setMaximumHeight(18)
+            seg.setToolTip(
+                f"{text}（进度条 {self._seg_lo(key)}-{self._seg_hi(key)}% 段）")
+            seg_lbl = QLabel(text, seg)
+            seg_lbl.setAlignment(Qt.AlignCenter)
+            seg_lbl.setStyleSheet(
+                "color: #090B12; font-size: 10px; font-weight: 700;"
+                "background: transparent;")
+            seg_layout = QVBoxLayout(seg)
+            seg_layout.setContentsMargins(0, 0, 0, 0)
+            seg_layout.addWidget(seg_lbl)
+            self._apply_segment_style(seg, color, active=False)
+            # 半透明底（opacity 0.55）对应未激活态；满色（1.0）对应激活态
+            effect = QGraphicsOpacityEffect(seg)
+            effect.setOpacity(_SEG_DIM_OPACITY)
+            seg.setGraphicsEffect(effect)
+            self._seg_effect[key] = effect
+            self._segment_widgets[key] = seg
+            legend.addWidget(seg, weight)
+        strip_v.addLayout(legend)
         lay.addWidget(strip)
 
         # ── 次级行：剩余量 + 轻量状态计数（跳过项默认隐藏） ──
@@ -187,7 +293,17 @@ class TranslatePage(QWidget):
         sub_row.addWidget(self.chip_skipped)
         lay.addLayout(sub_row)
 
-        # ── AI Translation Console（§33~35：活动事件流；模型信息卡已移除） ──
+        # ── 运行区双栏（左：实时处理流；右：运行记录） ──
+        # 2026-08-20 重做：原版只有一个处理流卡片 + 折叠日志，
+        # 处置审校时根本来不及看。改为水平 QSplitter 左右并排两个竖
+        # 栏，日志默认可见且大，用户可拖中缝调节比例。MetricStrip
+        # （待翻译/tokens）信息冗余已删——顶部 chips 已显示同样口径。
+        console_split = QSplitter(Qt.Horizontal)
+        console_split.setObjectName("consoleSplit")
+        console_split.setChildrenCollapsible(False)
+        console_split.setHandleWidth(12)
+
+        # 左栏：实时处理流
         stream_frame = QFrame()
         stream_frame.setObjectName("card")
         sf = QVBoxLayout(stream_frame)
@@ -197,37 +313,27 @@ class TranslatePage(QWidget):
         st_title = QLabel("实时处理流")
         st_title.setProperty("class", "pageTitle")
         self.stream_status = QLabel("等待开始")
+        self.stream_status.setObjectName("streamStatus")
         self.stream_status.setProperty("class", "subtitle")
+        self.stream_status.setProperty("phase", "idle")
         st_head.addWidget(st_title)
         st_head.addStretch(1)
         st_head.addWidget(self.stream_status)
         # ActivityFeed（§6.4）：状态着色的事件流，容量上限自动裁剪
         self.activity_feed = ActivityFeed(max_items=120)
-        self.activity_feed.setMaximumHeight(140)
         sf.addLayout(st_head)
-        sf.addWidget(self.activity_feed)
-        lay.addWidget(stream_frame, 1)
+        sf.addWidget(self.activity_feed, 1)
 
-        # ── 数据舱：待翻译 / tokens ──
-        self.metric_pending = MetricStrip("待翻译", "—")
-        self.metric_tokens = MetricStrip("tokens", "—")
-        metrics_row = QHBoxLayout()
-        metrics_row.setSpacing(10)
-        for metric in (self.metric_pending, self.metric_tokens):
-            metrics_row.addWidget(metric, 1)
-        lay.addLayout(metrics_row)
-
-        self.quality_reason_label = QLabel("质量门失败原因：无")
-        self.quality_reason_label.setProperty("class", "subtitle")
-        self.quality_reason_label.setWordWrap(True)
-        self.quality_reason_label.setTextInteractionFlags(Qt.TextSelectableByMouse)
-        lay.addWidget(self.quality_reason_label)
-
-        # ── 运行记录（§35：默认折叠，可展开；标题 + 展开/复制/清空） ──
+        # 右栏：运行记录（默认可见，可收起腾给处理流）
+        log_frame = QFrame()
+        log_frame.setObjectName("card")
+        lf = QVBoxLayout(log_frame)
+        lf.setContentsMargins(14, 10, 14, 10)
+        lf.setSpacing(6)
         log_head = QHBoxLayout()
         log_title = QLabel("运行记录")
         log_title.setProperty("class", "pageTitle")
-        self.log_toggle = QPushButton("展开日志")
+        self.log_toggle = QPushButton("收起日志")
         self.log_toggle.setAccessibleName("展开或收起运行日志")
         self.copy_log_btn = QPushButton("复制")
         self.clear_log_btn = QPushButton("清空")
@@ -241,13 +347,25 @@ class TranslatePage(QWidget):
         log_head.addWidget(self.log_toggle)
         log_head.addWidget(self.copy_log_btn)
         log_head.addWidget(self.clear_log_btn)
-        lay.addLayout(log_head)
+        lf.addLayout(log_head)
         self.log_view = QPlainTextEdit()
         self.log_view.setObjectName("logView")
         self.log_view.setReadOnly(True)
         self.log_view.setMaximumBlockCount(2000)
-        self.log_view.setVisible(False)   # §35 日志默认折叠
-        lay.addWidget(self.log_view, 1)
+        lf.addWidget(self.log_view, 1)
+
+        console_split.addWidget(stream_frame)
+        console_split.addWidget(log_frame)
+        console_split.setStretchFactor(0, 1)
+        console_split.setStretchFactor(1, 1)
+        console_split.setSizes([520, 520])
+        lay.addWidget(console_split, 1)
+
+        self.quality_reason_label = QLabel("质量门失败原因：无")
+        self.quality_reason_label.setProperty("class", "reasonIdle")
+        self.quality_reason_label.setWordWrap(True)
+        self.quality_reason_label.setTextInteractionFlags(Qt.TextSelectableByMouse)
+        lay.addWidget(self.quality_reason_label)
 
         # ── 底部操作区：翻译控制 + SafetyBar 安全写回（§6.3） ──
         ctl = QHBoxLayout()
@@ -322,6 +440,140 @@ class TranslatePage(QWidget):
                 button.style().unpolish(button)
                 button.style().polish(button)
 
+    # ── 全链路进度条分段驱动（2026-08-20，3-3-3-1 权重） ──
+    # 翻译/审校判定/审校处置/写回共享同一根 progress_bar，四段按权重
+    # 接续：translate 0-30 · review_verdict 30-60 · review_disposition
+    # 60-90 · writeback 90-100。_pipeline_floor 记录已达到的最大值，
+    # 跨段切换或乱序信号到达时不回退（新段 lo = 旧段 hi，自然接续）。
+    # 图例尺 _segment_widgets 四段按 3-3-3-1 stretch，当前激活段高亮。
+    def _seg_lo(self, key: str) -> int:
+        return _PIPELINE_STAGE_RANGE[key][0]
+
+    def _seg_hi(self, key: str) -> int:
+        return _PIPELINE_STAGE_RANGE[key][1]
+
+    def _apply_segment_style(self, seg: QFrame, color: str, *,
+                             active: bool) -> None:
+        """图例尺分段样式：激活段满色 + 实边，未到段半透明 + 淡边。"""
+        bg = color if active else _hex_to_rgba(color, 0.22)
+        border = color if active else _hex_to_rgba(color, 0.40)
+        seg.setStyleSheet(
+            f"background: {bg}; border: 1px solid {border};"
+            f"border-radius: 4px;")
+
+    def _fade_segment(self, key: str, target_opacity: float) -> None:
+        """图例尺分段透明度过渡（220ms OutCubic）。
+
+        激活段 → 1.0（满色），离开段 → 0.55（半透明）。reduced-motion
+        直接 setOpacity 跳变。旧动画未完成时停掉重开（避免快速跨段时
+        两个淡入淡出动画抢同一个 effect 的 opacity 属性）。
+        """
+        effect = self._seg_effect.get(key)
+        if effect is None:
+            return
+        current = effect.opacity()
+        if not motion_enabled() or abs(current - target_opacity) < 0.01:
+            effect.setOpacity(target_opacity)
+            return
+        old = self._seg_fade.get(key)
+        if old is not None:
+            old.stop()
+            old.deleteLater()
+        anim = QPropertyAnimation(effect, b"opacity", self)
+        anim.setDuration(_SEGMENT_FADE_MS)
+        anim.setStartValue(current)
+        anim.setEndValue(target_opacity)
+        anim.setEasingCurve(QEasingCurve.OutCubic)
+        anim.finished.connect(lambda a=anim: a.deleteLater())
+        self._seg_fade[key] = anim
+        anim.start()
+
+    def _update_segment_active(self, segment: str | None) -> None:
+        """高亮当前激活段，其余半透明。segment=None → 全部未激活。
+
+        2026-08-21 Task #4：激活态由 opacity 双层叠加表达——
+        _apply_segment_style 切换底色（满色/半透明底），再经 _fade_segment
+        把整段不透明度在 1.0↔0.55 间淡入淡出。两层叠加让跨段切换有
+        过渡而非硬切：底色立刻定到目标（标识「这是新激活段」），整段
+        亮度随后滑入/淡出（视觉过渡）。
+        """
+        self._active_segment = segment
+        for key, _weight, color, _text in _PIPELINE_SEGMENTS:
+            seg = self._segment_widgets.get(key)
+            if seg is not None:
+                self._apply_segment_style(
+                    seg, color, active=key == segment)
+                self._fade_segment(
+                    key,
+                    _SEG_ACTIVE_OPACITY if key == segment
+                    else _SEG_DIM_OPACITY)
+
+    def _set_pipeline_progress(self, segment: str, ratio: float,
+                               label_text: str,
+                               sub_text: str | None = None) -> int:
+        """统一驱动全链路进度条（单调不倒退）。
+
+        segment ∈ {translate, review_verdict, review_disposition, writeback}；
+        ratio ∈ [0,1] 为该段内进度；映射到 [lo, hi] 后取 max(已达到值)
+        防倒退。首次调用退出忙碌动画（setRange 0,0 → 0,100）。高亮当前段。
+        返回最终写入的整数值（供调用方广播 metrics 用）。
+
+        2026-08-21 Task #4：进度值直接 setValue（同步可断言），视觉动效
+        交给段图例淡入淡出（_update_segment_active → _fade_segment）。
+        曾试 QVariantAnimation 滑值，但 valueChanged 需事件泵才触发，
+        与同步断言 progress_bar.value() 不兼容，故值不动画、只图例动画。
+        """
+        lo, hi = _PIPELINE_STAGE_RANGE[segment]
+        ratio = max(0.0, min(1.0, ratio))
+        value = int(round(lo + (hi - lo) * ratio))
+        if value < self._pipeline_floor:
+            value = self._pipeline_floor          # 跨段/乱序信号不倒退
+        else:
+            self._pipeline_floor = value
+        if self.progress_bar.maximum() == 0:     # 退出忙碌动画
+            self.progress_bar.setRange(0, 100)
+        self.progress_bar.setValue(value)
+        self.progress_label.setText(label_text)
+        if sub_text is not None:
+            self.progress_sub.setText(sub_text)
+        self._update_segment_active(segment)
+        return value
+
+    def _reset_pipeline_progress(self) -> None:
+        """新一轮运行/项目切换/终态错误时复位进度条与 floor。"""
+        self._pipeline_floor = 0
+        self._active_segment = None
+        self.progress_bar.setRange(0, 100)
+        self.progress_bar.setValue(0)
+        self._update_segment_active(None)
+
+    # ── 实时处理流状态文本（2026-08-21 Task #4 配色统一） ──
+    # stream_status 各阶段配语义色：idle 灰 / running 薄荷青（翻译、审校
+    # 判定/处置、写回）/ succeeded 绿 / warning 琥珀 / error 珊瑚 / stopped
+    # 灰。由 QSS 通过 [phase="..."] 动态属性驱动；本方法统一改文本+属性+
+    # repolish，杜绝散落 setText 各自硬编码样式。
+    def _set_stream_status(self, text: str, *, phase: str | None = None) -> None:
+        """实时处理流状态文字 + 阶段配色。phase=None 时保留当前 phase。"""
+        self.stream_status.setText(text)
+        if phase is not None:
+            self.stream_status.setProperty("phase", phase)
+            self.stream_status.style().unpolish(self.stream_status)
+            self.stream_status.style().polish(self.stream_status)
+
+    def _set_quality_reason(self, summary: str | None) -> None:
+        """质量门失败原因标签：有原因时用 reasonStatus 高亮，无则 reasonIdle 弱化。
+
+        summary=None 或空串表示「无失败」，文本回退为「无」并切到弱化样式。
+        """
+        if summary:
+            self.quality_reason_label.setText(f"质量门失败原因：{summary}")
+            self.quality_reason_label.setProperty("class", "reasonStatus")
+        else:
+            self.quality_reason_label.setText("质量门失败原因：无")
+            self.quality_reason_label.setProperty("class", "reasonIdle")
+        self.quality_reason_label.style().unpolish(self.quality_reason_label)
+        self.quality_reason_label.style().polish(self.quality_reason_label)
+
     def _copy_log(self):
         from PySide6.QtWidgets import QApplication
         QApplication.clipboard().setText(self.log_view.toPlainText())
@@ -331,10 +583,10 @@ class TranslatePage(QWidget):
         self.log_view.clear()
 
     def _toggle_log(self):
-        """§35 日志折叠：默认收起，点击展开/收起。"""
-        collapsed = not self.log_view.isVisibleTo(self)
-        self.log_view.setVisible(collapsed)
-        self.log_toggle.setText("收起日志" if collapsed else "展开日志")
+        """§35 日志折叠：默认展开，点击切换可见性腾出空间给处理流。"""
+        collapsed = self.log_view.isVisibleTo(self)
+        self.log_view.setVisible(not collapsed)
+        self.log_toggle.setText("展开日志" if collapsed else "收起日志")
 
     # ── 开始 ──
     def start(self):
@@ -373,8 +625,9 @@ class TranslatePage(QWidget):
         # 2026-08-14 卡顿优化：广播级标志——审校页在翻译中挂起
         # entriesChanged 全量重建，翻译结束广播自然补跑
         self.state.translation_running = True
-        # 审核阶段进度条重置标记复位（新一次运行审核首条时归零进度条）
-        self._review_bar_reset = False
+        # 全链路进度条复位：新一轮翻译从 0 开始，floor 清零（上一轮
+        # 审校/写回的 floor 残留会让新一轮翻译首条卡在高位不动）。
+        self._reset_pipeline_progress()
         self.start_btn.setEnabled(False)
         self.stop_btn.setEnabled(True)
         self.retry_btn.setEnabled(False)
@@ -384,7 +637,7 @@ class TranslatePage(QWidget):
         self.activity_feed.clear()
         self._stream_last_done = 0
         self.activity_feed.append_event("running", "正在请求模型…")
-        self.stream_status.setText("◐ 正在处理")
+        self._set_stream_status("◐ 正在处理", phase="running")
         signals_holder = {}
 
         def run_translation():
@@ -403,6 +656,13 @@ class TranslatePage(QWidget):
         worker.signals.review.connect(
             lambda done, total, p=project, g=generation:
             self._on_review_progress(done, total)
+            if self.state.is_current_project(p, g) else None)
+        # 审校处置进度（2026-08-20 全链路 3-3-3-1）：处置阶段 60-90% 段
+        # 原本静默（反馈重译串行 2-30s/条无进度回调），现经
+        # on_disposition_progress → signals.review_disposition 驱动
+        worker.signals.review_disposition.connect(
+            lambda done, total, p=project, g=generation:
+            self._on_review_disposition_progress(done, total)
             if self.state.is_current_project(p, g) else None)
         # worker 线程活动流消息（2026-08-14 闪退修复：worker 内直接调
         # activity_feed.append_event 是跨线程 UI 访问，Windows 上未定义
@@ -687,6 +947,11 @@ class TranslatePage(QWidget):
                             on_note=on_log,
                             on_progress=lambda done, total:
                             signals.review.emit(done, total),
+                            # 审校处置进度（2026-08-20 全链路 3-3-3-1）：
+                            # 处置阶段 = 反馈重译 + 再审收敛，串行 2-30s/条，
+                            # 原本完全静默——经此回调驱动 60-90% 段
+                            on_disposition_progress=lambda done, total:
+                            signals.review_disposition.emit(done, total),
                             translator=translator,
                             memory=store,
                             store=store,
@@ -857,19 +1122,21 @@ class TranslatePage(QWidget):
         - 剩余 = total - done（done 只计成功译出；失败可重试仍属待翻译
           ——与顶部 chips「待翻译」同源，失败不再从剩余中扣除，两侧
           数字恒一致）；
-        - 失败单独显示（可重试，归入剩余但不重复计数）。"""
+        - 失败单独显示（可重试，归入剩余但不重复计数）。
+
+        2026-08-20 全链路分段进度条：翻译阶段映射到 0-30% 段（ratio =
+        done/total），经 _set_pipeline_progress 接续推进且不倒退。
+        """
         if stats is None:
             return
         n_total = stats.total
         n_done = stats.done
         n_failed = stats.failed
-        if self.progress_bar.maximum() == 0:
-            self.progress_bar.setRange(0, 100)
-        self.progress_bar.setValue(
-            int(n_done / n_total * 100) if n_total else 0)
-        self.progress_label.setText(f"{n_done} / {n_total} 条")
-        self.progress_sub.setText(
-            f"剩余 {max(0, n_total - n_done)} 条 · 失败 {n_failed} 条")
+        ratio = (n_done / n_total) if n_total else 0.0
+        self._set_pipeline_progress(
+            "translate", ratio,
+            label_text=f"{n_done} / {n_total} 条",
+            sub_text=f"剩余 {max(0, n_total - n_done)} 条 · 失败 {n_failed} 条")
 
     def _on_progress(self, stats):
         self._last_stats = stats
@@ -892,8 +1159,9 @@ class TranslatePage(QWidget):
                 f"本批完成 {delta} 条 · 累计 {done} / {stats.total} {source}")
             self._stream_last_done = done
         if stats.total:
-            self.stream_status.setText(
-                f"◐ 正在处理 {done + stats.failed} / {stats.total} 条")
+            self._set_stream_status(
+                f"◐ 正在处理 {done + stats.failed} / {stats.total} 条",
+                phase="running")
         # 实时广播（#13/#15）：节流 ≥1s 一次，驱动首页分数与流水线 rail
         # 边翻边刷——此前要等全部完成才 emit entriesChanged，首页数字
         # 全程不动。节流避免批粒度（2 条/批）高频触发首页 O(N) 重扫。
@@ -906,33 +1174,57 @@ class TranslatePage(QWidget):
                 f" · {stats.rate_per_minute:.0f} 条/分")
 
     def _on_review_progress(self, done: int, total: int):
-        """语义审核进度（worker 线程经 signals.review 回主线程）。
+        """语义审核判定进度（worker 线程经 signals.review 回主线程）。
 
         逐条判定期间界面必须实时推进（审核在翻译 worker 内同步执行，
         无反馈 = 用户看到「卡住不动」且写回被锁）。标签逐条更新，
         activity_feed 按 ≥5 条节流一次，末条必报。
 
-        2026-08-15 修复：进度条此前只由翻译/写回阶段驱动——审核期间
-        停留在翻译完成时的满条（用户实证「审核时进度条还是翻译的
-        满条」）。审核首条回调重置进度条，之后逐条推进到审核 100%。
+        2026-08-20 全链路分段进度条：判定阶段映射到 30-60% 段（ratio =
+        done/total），经 _set_pipeline_progress 接续翻译段末值 30 单调
+        推进，不再归零再爬（此前 _review_bar_reset 把翻译满条 100 归零
+        再从 0 爬的「倒退」彻底消除）。
         """
         self._last_review = (done, total)
         if total > 0:
-            if not self._review_bar_reset:
-                self._review_bar_reset = True
-                self.progress_bar.setRange(0, 100)
-                self.progress_bar.setValue(0)
-            self.progress_bar.setValue(int(done / total * 100))
-            self.progress_label.setText(
-                f"语义审核 {done}/{total} 条…")
-            self.stream_status.setText(
-                f"◐ 语义审核 {done}/{total} 条")
+            self._set_pipeline_progress(
+                "review_verdict", done / total,
+                label_text=f"语义审核 {done}/{total} 条…")
+            self._set_stream_status(
+                f"◐ 语义审核 {done}/{total} 条", phase="running")
         now = time.monotonic()
         if done >= total or now - self._last_review_emit >= 0.8:
             self._last_review_emit = now
             self.activity_feed.append_event(
                 "info" if done < total else "success",
                 f"语义审核：{done}/{total} 条"
+                + ("" if done < total else " · 完成"))
+
+    def _on_review_disposition_progress(self, done: int, total: int):
+        """语义审核处置进度（worker 线程经 signals.review_disposition 回主线程）。
+
+        处置阶段 = 反馈重译（_retranslate_with_feedback）+ 再审收敛（≤2 轮），
+        串行 2-30s/条——判定完成（review_batch）后到这里，此前完全静默，
+        UI 停在「N/N 条完成」后界面静止数分钟。on_disposition_progress
+        回调驱动 60-90% 段，让等待有可见进度。total=0（无不合格条目）
+        时直接跳满该段。
+        """
+        if total <= 0:
+            self._set_pipeline_progress(
+                "review_disposition", 1.0,
+                label_text="审校处置完成")
+            return
+        self._set_pipeline_progress(
+            "review_disposition", done / total,
+            label_text=f"审校处置 {done}/{total} 条…")
+        self._set_stream_status(
+            f"◐ 审校处置 {done}/{total} 条", phase="running")
+        now = time.monotonic()
+        if done >= total or now - self._last_review_emit >= 0.8:
+            self._last_review_emit = now
+            self.activity_feed.append_event(
+                "info" if done < total else "success",
+                f"审校处置：{done}/{total} 条"
                 + ("" if done < total else " · 完成"))
 
     def _on_review_summary(self, line: str):
@@ -969,7 +1261,9 @@ class TranslatePage(QWidget):
                 "error", f"{stats.failed} 条失败（可重试）")
         else:
             self.activity_feed.append_event("success", "全部完成")
-        self.stream_status.setText("○ 已完成")
+        self._set_stream_status(
+            "○ 已完成",
+            phase="warning" if stats.failed else "succeeded")
         if stats.failed:
             export_path = self._export_fail_record()
             Toast.show(
@@ -1040,7 +1334,7 @@ class TranslatePage(QWidget):
         # 页面停在翻译前快照，用户看不到失败状态）
         self.state.entriesChanged.emit()
         self._set_primary(self.write_btn)
-        self.stream_status.setText("○ 已停止")
+        self._set_stream_status("○ 已停止", phase="error")
         self.progress_label.setText("翻译出错")
         self.state.pipelinePhase.emit(
             "translation", "failed", "翻译出错", err[:60])
@@ -1141,8 +1435,7 @@ class TranslatePage(QWidget):
         message = f"写回失败：{err}"
         self._write_terminal_message = message
         self.log_view.appendPlainText(message)
-        self.progress_bar.setRange(0, 100)
-        self.progress_bar.setValue(0)
+        self._reset_pipeline_progress()
         self.progress_label.setText(message)
         self.state.pipelinePhase.emit(
             "writeback", "failed", "写回失败", err[:60])
@@ -1183,23 +1476,28 @@ class TranslatePage(QWidget):
         if message:
             self.log_view.appendPlainText(message)
             self.progress_label.setText(message)
+        # 写回阶段映射到 90-100% 段（2026-08-20 全链路 3-3-3-1）：
+        # 七个阶段在 10% 区间内按比例分布，经 _set_pipeline_progress
+        # 接续审校处置末值 90 单调推进，杜绝此前从 5% 起跳的倒退。
         phases = {
-            "preflight": 5,
-            "copying": 20,
-            "patching": 45,
-            "runtime_payload": 65,
-            "verifying": 80,
-            "publishing": 95,
-            "published": 100,
+            "preflight": 0.10,
+            "copying": 0.30,
+            "patching": 0.55,
+            "runtime_payload": 0.70,
+            "verifying": 0.85,
+            "publishing": 0.95,
+            "published": 1.00,
         }
         if phase in phases:
-            self.progress_bar.setRange(0, 100)
-            self.progress_bar.setValue(phases[phase])
+            self._set_pipeline_progress(
+                "writeback", phases[phase],
+                label_text=message or "正在写回…")
         # 流水线 rail（#15）：写回阶段进度实时广播（阶段数少，无需节流）
+        lo, hi = _PIPELINE_STAGE_RANGE["writeback"]
+        pct = (lo + (hi - lo) * phases[phase]) if phase in phases else lo
         self.state.pipelinePhase.emit(
             "writeback", "running", message or "正在写回…",
-            f"阶段 {phase or '—'}"
-            + (f" · {phases[phase]}%" if phase in phases else ""))
+            f"阶段 {phase or '—'} · {pct:.0f}%")
 
     def _on_write_drained(self, worker: Worker) -> None:
         if self._write_worker_task is not worker:
@@ -1208,8 +1506,7 @@ class TranslatePage(QWidget):
         self._write_running = False
         self._refresh_chips()
         if self._write_terminal_message:
-            self.progress_bar.setRange(0, 100)
-            self.progress_bar.setValue(0)
+            self._reset_pipeline_progress()
             self.progress_label.setText(self._write_terminal_message)
 
     def _on_written(self, result):
@@ -1499,7 +1796,6 @@ class TranslatePage(QWidget):
         self.chip_done.setText(f"已翻译 {translated}")
         self.chip_failed.setText(f"失败 {failed}")
         self.chip_skipped.setText(f"跳过 {skipped}")
-        self.metric_pending.setValue(f"{actionable} 条")
         if s is None or not self._running:
             # 未开始 / 翻译已结束：进度显示切回全量口径（TranslateStats
             # 未导入，直接传轻量代理对象——_update_progress_widgets 只用
@@ -1517,9 +1813,9 @@ class TranslatePage(QWidget):
                         "done": translated, "failed": failed})())
         if reasons:
             summary = " · ".join(f"{reason} {count}" for reason, count in sorted(reasons.items()))
-            self.quality_reason_label.setText(f"质量门失败原因：{summary}")
+            self._set_quality_reason(summary)
         else:
-            self.quality_reason_label.setText("质量门失败原因：无")
+            self._set_quality_reason(None)
         # 写回可用性与核心质量门同源，翻译/写回进行中禁用；SafetyBar
         # 统一管理按钮状态与原因（§6.3：禁用时说明具体原因）
         if self._running:
@@ -1537,11 +1833,6 @@ class TranslatePage(QWidget):
             else:
                 self.write_safety.set_ready(
                     False, "还没有通过质量门的译文，先开始翻译")
-        if s is None:
-            self.metric_tokens.setValue("—")
-            return
-        self.metric_tokens.setValue(f"{s.input_tokens}↑ / {s.output_tokens}↓"
-                                    f" · 请求 {s.requests}")
 
     def _on_chips_error(self, token: int, err: str) -> None:
         if token != self._chips_token:
@@ -1550,7 +1841,7 @@ class TranslatePage(QWidget):
         self.chip_pending.setText("待翻译 —")
         self.chip_done.setText("已翻译 —")
         self.chip_failed.setText("失败 —")
-        self.quality_reason_label.setText(f"质量门失败原因：统计失败（{err[:60]}）")
+        self._set_quality_reason(f"统计失败（{err[:60]}）")
 
     def _on_project(self, _proj):
         if self.state.project is None:
@@ -1565,12 +1856,13 @@ class TranslatePage(QWidget):
         self.start_btn.setEnabled(self._active_run is None)
         self.stop_btn.setEnabled(False)
         self.retry_btn.setEnabled(False)
-        self.progress_bar.setRange(0, 100)
-        self.progress_bar.setValue(0)
+        self._reset_pipeline_progress()
         self.progress_label.setText("尚未开始")
+        self.progress_sub.setText(
+            "在开始前，请确认设置页的 API 与游戏档案已配置")
         self.log_view.clear()
         self.activity_feed.clear()
-        self.stream_status.setText("等待开始")
+        self._set_stream_status("等待开始", phase="idle")
         self._refresh_chips()
         self._set_primary(self.start_btn)
         self.reveal_btn.setHidden(True)

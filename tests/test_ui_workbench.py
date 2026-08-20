@@ -131,11 +131,11 @@ def test_reduced_motion_disables_looping_animations(qapp, monkeypatch):
     assert motion_enabled() is False
 
 
-def test_translate_log_is_collapsed_by_default(qapp, tmp_path):
+def test_translate_log_is_visible_by_default(qapp, tmp_path):
     page = TranslatePage(_state(tmp_path), _Window())
-    assert not page.log_view.isVisibleTo(page)
-    page.log_toggle.click()
     assert page.log_view.isVisibleTo(page)
+    page.log_toggle.click()
+    assert not page.log_view.isVisibleTo(page)
 
 
 def test_write_safety_bar_explains_disabled_state(qapp, tmp_path):
@@ -244,7 +244,9 @@ def test_translate_progress_uses_actionable_scope_and_collapses_skips(
     page._on_progress(TranslateStats(total=300, done=300))
 
     assert page.progress_label.text() == "300 / 300 条"
-    assert page.progress_bar.value() == 100
+    # 2026-08-20 全链路 3-3-3-1 进度条：翻译段映射到 0-30% 段，
+    # 300/300 → ratio 1.0 → 30（不再占满 0-100 整根条）
+    assert page.progress_bar.value() == 30
 
 
 def test_translation_start_log_uses_same_zero_actionable_scope(
@@ -1217,7 +1219,6 @@ def test_refresh_chips_pending_uses_actionable_count(qapp, tmp_path):
     page._refresh_chips()
     await_reload(page)
     assert page.chip_pending.text() == "待翻译 1"
-    assert page.metric_pending.value_label.text() == "1 条"
     assert "低置信度" in page.chip_pending.toolTip()
     assert "1" in page.chip_pending.toolTip()      # 留档 1 条
     # 进度条与计数同源（未运行时切全量口径）：可处理 2 条（1 待翻译 +
@@ -1841,7 +1842,8 @@ def test_translate_progress_throttles_chips_keeps_progress_live(qapp, tmp_path):
     assert len(calls) == 1
     # 进度条/数字批粒度实时更新（不受节流影响）
     assert page.progress_label.text() == "20 / 300 条"
-    assert page.progress_bar.value() == 6
+    # 2026-08-20 全链路 3-3-3-1 进度条：翻译段 0-30%，20/300*30 ≈ 2
+    assert page.progress_bar.value() == 2
 
     page._last_chip_refresh = 0.0                           # 模拟时间流逝
     page._on_progress(TranslateStats(total=300, done=30))

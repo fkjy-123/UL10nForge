@@ -795,3 +795,26 @@ def test_strip_prompt_echo_variants_enhanced():
                              system, src) == "你好，世界"
     # 正常译文零影响
     assert strip_prompt_echo("你好，世界", system, src) == "你好，世界"
+
+
+def test_strip_prompt_echo_symbol_block_prompts():
+    """2026-08-20 用户实证：{}【】等不可翻译输入，小模型把整段提示词
+    当输出回显——①前缀剥除后第二句提示词残留、②逐行匹配在拆成
+    <15 字符短句时不触发，终末护栏按去空白归一后「剩余是提示词
+    连续片段」判定纯回显 → 返回空串（比塞提示词给用户安全）。
+    正常译文不是翻译指令的长片段，零误伤。"""
+    from hanhua.core.translator import strip_prompt_echo
+    system = ("你是专业游戏本地化翻译专家，把游戏文本翻译为简体中文。"
+              "请只输出译文，不要重复指令。")
+    src = "{}【】"
+    # 模型把整段提示词改行/合并回显后穿插原文符号（前缀剥除后第二句残留）
+    out = ("你是专业游戏本地化翻译专家，把游戏文本翻译为简体中文。\n"
+           "请只输出译文，不要重复指令。\n\n{}【】")
+    assert strip_prompt_echo(out, system, src) == ""
+    # 提示词 + 大量原文残片穿插 → 仍判纯回显
+    out2 = system + "\n" + src + "\n" + src
+    assert strip_prompt_echo(out2, system, src) == ""
+    # 正常译文（恰好短，非翻译指令片段）零影响
+    assert strip_prompt_echo("这是一条译文", system, src) == "这是一条译文"
+    # 正常译文与提示词无整段包含关系（短前缀不触发 ≥10 门槛）
+    assert strip_prompt_echo(system[:8] + "的简短译文", system, src) != ""

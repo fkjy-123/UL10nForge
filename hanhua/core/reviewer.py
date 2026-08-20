@@ -847,6 +847,7 @@ def _quality_fix_hints(reasons) -> str:
 def review_entries(entries, glossary, *, game_name: str = "",
                    on_note: Callable[[str], None] | None = None,
                    on_progress: Callable[[int, int], None] | None = None,
+                   on_disposition_progress: Callable[[int, int], None] | None = None,
                    translator=None, memory=None, store=None,
                    app_dir: str | Path | None = None,
                    data_dir: str | Path | None = None,
@@ -1164,6 +1165,13 @@ def review_entries(entries, glossary, *, game_name: str = "",
     if on_note:
         on_note(f"语义审核：判定完成（{dispatch_total} 条），正在处置"
                 f"不合格条目（反馈重译 + 再审收敛）…")
+    # 处置进度回调（2026-08-20 全链路 3-3-3-1 进度条 60-90% 段）：
+    # 判定阶段有 on_progress（逐条 4B 判定），处置阶段（反馈重译 +
+    # 再审收敛，串行 2-30s/条）原本完全静默——UI 停在「N/N 条完成」
+    # 后界面静止数分钟。on_disposition_progress 按处置分发计数回调，
+    # 让等待有可见进度。total=0（无不合格条目）时调用方直接跳满该段。
+    if on_disposition_progress is not None and dispatch_total > 0:
+        on_disposition_progress(0, dispatch_total)
     dispatched = 0
     persisted: list[TextEntry] = []
     for r in results.values():
@@ -1171,6 +1179,9 @@ def review_entries(entries, glossary, *, game_name: str = "",
         if entry is None:
             continue
         dispatched += 1
+        # 处置进度回调（每条处置后推进 60-90% 段，串行重译期间可见）
+        if on_disposition_progress is not None:
+            on_disposition_progress(dispatched, dispatch_total)
         if on_note and (dispatched == dispatch_total
                         or dispatched % 5 == 0):
             on_note(f"语义审核：处置中 {dispatched}/{dispatch_total} 条…")

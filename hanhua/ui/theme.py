@@ -391,6 +391,37 @@ QListWidget#activityFeed::item {{
 QListWidget#activityFeed::item:selected {{ background: transparent; color: {TEXT}; }}
 QLabel[class="feedStatus"] {{ font-weight: 600; }}
 
+/* ── 实时处理流状态文本（2026-08-21 Task #4：阶段语义配色） ── */
+/* stream_status 随当前阶段着色：idle 灰 / running 薄荷青 / succeeded
+   绿 / warning 琥珀 / error 珊瑚红。QSS 读 [phase="..."] 动态属性，
+   _set_stream_status 改属性 + repolish 切色（无动画） */
+QLabel#streamStatus {{
+    font-size: 9.5pt;
+    font-weight: 700;
+    border-radius: {RADIUS}px;
+    padding: 2px 8px;
+}}
+QLabel#streamStatus[phase="idle"] {{ color: {TEXT_SECONDARY}; }}
+QLabel#streamStatus[phase="running"] {{ color: {ACCENT}; }}
+QLabel#streamStatus[phase="succeeded"] {{ color: {SUCCESS}; }}
+QLabel#streamStatus[phase="warning"] {{ color: {WARNING}; }}
+QLabel#streamStatus[phase="error"] {{ color: {ERROR}; }}
+
+/* 质量门失败原因（2026-08-21 Task #4：失败时有语义色 + 浅色胶囊底，
+   无失败时回归 subtitle 灰）。class=reasonStatus 由代码动态切换 */
+QLabel[class="reasonStatus"] {{
+    color: {TEXT};
+    background: rgba(245,184,75,0.10);
+    border-left: 3px solid {WARNING};
+    border-radius: {RADIUS}px;
+    padding: 4px 10px;
+    font-size: 9.5pt;
+}}
+QLabel[class="reasonIdle"] {{
+    color: {TEXT_SECONDARY};
+    font-size: 10pt;
+}}
+
 /* ── 写回安全栏（§6.3：独立底部安全栏） ───────────────────── */
 QFrame#safetyBar {{
     background: {PANEL};

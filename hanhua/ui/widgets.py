@@ -582,7 +582,12 @@ class WorkerSignals(QObject):
     error = Signal(str)
     progress = Signal(object)
     log = Signal(str)
-    review = Signal(int, int)   # 语义审核进度 (done, total) 实时刷新
+    review = Signal(int, int)   # 语义审核判定进度 (done, total) 实时刷新
+    review_disposition = Signal(int, int)
+                                # 语义审核处置进度 (done, total)——
+                                # 2026-08-20 全链路 3-3-3-1 进度条
+                                # 60-90% 段：反馈重译 + 再审收敛
+                                # 串行 2-30s/条，原本静默
     note = Signal(str, str)     # 活动流消息 (status, text)——worker 线程
                                 # 不得直接操作 QWidget，经此信号回主线程
     review_summary = Signal(str)  # 审核完成汇总——2026-08-14 用户实证

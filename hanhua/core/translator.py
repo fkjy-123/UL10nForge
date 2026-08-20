@@ -539,6 +539,18 @@ def strip_prompt_echo(text: str, system: str, source: str) -> str:
                 t = ""
             elif inner.startswith(src_text):
                 t = inner[len(src_text):].strip()
+    # ④ 终末回显护栏（2026-08-20 用户实证：{}【】等不可翻译输入，
+    # 小模型把整段提示词当输出回显；模型常改行/合并/穿插原文，使
+    # ① 前缀剥除与 ② 逐行匹配漏判——提示词被拆成 <15 字符短句时 ②
+    # 不触发，前缀剥除后第二句提示词残留）。去空白归一后若剩余仍是
+    # 提示词的连续片段（≥10 字符），判纯回显 → 返回空串（比塞提示词
+    # 给用户安全；正常译文不会是翻译指令的长片段，零误伤）。
+    if sys_text and len(sys_text) > 20:
+        import re as _re_g
+        _squeeze = lambda s: _re_g.sub(r"\s+", "", s or "")
+        _t_n, _s_n = _squeeze(t), _squeeze(sys_text)
+        if _s_n and len(_t_n) >= 10 and _t_n in _s_n:
+            return ""
     return t
 
 
