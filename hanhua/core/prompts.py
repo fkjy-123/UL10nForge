@@ -283,6 +283,39 @@ def _game_context_rules() -> str:
             f"（play 不是\"播放\"、resume 不是\"简历\"）：{pairs}")
 
 
+def build_game_context_block(profile) -> str:
+    """设计文档 §15/16：Game Context 注入块——翻译与审校共用同一份数据。
+
+    只注入简短核心信息（【游戏背景】【游戏简介】【语言风格】【相关角色】
+    【相关术语】【翻译注意事项】），不膨胀上下文（§12）；无语境时返回
+    空串。profile 兼容 GameProfile dataclass 与任意含 context_* 字段的
+    对象（getattr 防御，测试桩/mock 不崩）。
+    """
+    parts: list[str] = []
+    g = lambda key: str(getattr(profile, key, "") or "")
+    gl = lambda key: [str(x) for x in (getattr(profile, key, None) or [])]
+    if g("context_game_name") or g("context_genre") or g("context_setting"):
+        bg = "，".join(p for p in (
+            g("context_game_name"), g("context_genre"), g("context_setting"))
+            if p)
+        if bg:
+            parts.append(f"【游戏背景】{bg}")
+    if g("context_summary"):
+        parts.append(f"【游戏简介】{g('context_summary')}")
+    if g("context_style"):
+        parts.append(f"【语言风格】{g('context_style')}")
+    chars = gl("context_characters")[:20]
+    if chars:
+        parts.append(f"【相关角色】{'、'.join(chars)}")
+    terms = gl("context_terms")[:30]
+    if terms:
+        parts.append(f"【相关术语】{'、'.join(terms)}")
+    notes = gl("context_translation_notes")[:5]
+    if notes:
+        parts.append(f"【翻译注意事项】{'；'.join(notes)}")
+    return "\n".join(parts)
+
+
 def build_system_prompt(profile: GameProfile, glossary_lines: list[str] | str,
                         known_names: list[str] | None = None,
                         knowledge_lines: list[str] | str | None = None) -> str:
@@ -315,6 +348,11 @@ def build_system_prompt(profile: GameProfile, glossary_lines: list[str] | str,
     # #10：Style/Personalization——用户自定义提示词（按游戏档案编辑）优先
     if profile.prompt_style:
         parts.append(f"【个性化风格要求（用户自定义，最高优先）】\n{profile.prompt_style}")
+    # 设计文档 §15：Game Context 注入（翻译/审校共用同一份数据，§12
+    # 不膨胀）。user-facing 游戏介绍 与 model-facing Game Context 同源。
+    ctx_block = build_game_context_block(profile)
+    if ctx_block:
+        parts.append(ctx_block)
     parts.append(
         "【翻译规则】\n"
         "1. 原样保留所有占位符与格式标签（如 {0}、{name}、%s、<b>、<color=...>、[b]、\\n），不得增删改序。\n"

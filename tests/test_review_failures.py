@@ -118,7 +118,7 @@ def test_critical_converged_records_correct_translation(monkeypatch):
     monkeypatch.setattr(
         "hanhua.core.reviewer._re_review",
         lambda entry, reviewer=None, app_dir=None, term_hint="",
-        context_hint="":
+        context_hint="", game_context_hint="":
         ReviewResult("re", level="PASS", reason="已收敛"))
     tr = _FakeTranslator([(True, "按下继续继续")])
     summary = review_entries(_entries(), _FakeGlossary(), game_name="G",
@@ -147,7 +147,7 @@ def test_critical_blocked_never_has_correct_translation(monkeypatch):
     monkeypatch.setattr(
         "hanhua.core.reviewer._re_review",
         lambda entry, reviewer=None, app_dir=None, term_hint="",
-        context_hint="":
+        context_hint="", game_context_hint="":
         ReviewResult("re", level="CRITICAL", reason="仍错译"))
     tr = _FakeTranslator([(True, "译1"), (True, "译2")])
     summary = review_entries(_entries(), _FakeGlossary(), game_name="G",
@@ -307,7 +307,7 @@ def test_review_entries_collects_full_detail(monkeypatch):
     monkeypatch.setattr(
         "hanhua.core.reviewer._re_review",
         lambda entry, reviewer=None, app_dir=None, term_hint="",
-        context_hint="":
+        context_hint="", game_context_hint="":
         ReviewResult("re", level="MINOR", reason="已收敛"))
     tr = _FakeTranslator([(True, "移除每个阶段开头的 5 <b>次点击</b>。")])
     summary = review_entries([entry], _FakeGlossary(), game_name="G",

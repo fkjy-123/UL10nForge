@@ -75,6 +75,7 @@ class ReviewModelService:
         self._runtime: dict | None = None      # {"base_url", "api_key"}
         self._lock = threading.RLock()
         self._online: dict | None = None
+        self._online_provider: str = "openai"
         if online_cfg is not None and online_cfg.base_url \
                 and online_cfg.api_key and online_cfg.model:
             self._online = {
@@ -82,6 +83,13 @@ class ReviewModelService:
                 "api_key": str(online_cfg.api_key),
                 "model": str(online_cfg.model),
             }
+            # Anthropic 原生端点（api.anthropic.com/messages）：鉴权头
+            # x-api-key + anthropic-version，请求体格式与 OpenAI 不同。
+            # 其余（含本地 llama-server /v1）走 OpenAI 兼容形式。在线
+            # 端点没有 provider 强制 1:1——OpenAI 兼容代理（DeepSeek/
+            # 硅基流动等）都自称 openai。
+            self._online_provider = str(
+                getattr(online_cfg, "provider", "") or "openai")
 
     # ── 跨实例运行时状态（review_runtime.json，独立于翻译实例） ────
     @property
@@ -286,7 +294,8 @@ class ReviewModelService:
         try:
             out = subprocess.run(
                 ["netstat", "-ano"], capture_output=True, text=True,
-                timeout=10, creationflags=nowindow).stdout
+                errors="replace", timeout=10,
+                creationflags=nowindow).stdout
         except (OSError, subprocess.TimeoutExpired):
             return
         pids: set[str] = set()
@@ -327,8 +336,35 @@ class ReviewModelService:
     # ── 对话 ─────────────────────────────────────────────────────
     def chat(self, prompt: str, *, max_tokens: int = 1024,
              temperature: float = 0.1, timeout: float = 120.0) -> str:
-        """本地审核模型单轮对话，返回 content 文本（无 reasoning）。"""
+        """审核模型单轮对话，返回 content 文本（无 reasoning）。
+
+        本地（llama.cpp /v1）与 OpenAI 兼容在线端点都走 /chat/completions
+        Bearer 形式；Anthropic 原生端点（api.anthropic.com）走
+        /v1/messages + x-api-key 头 + anthropic-version（2026-08-21
+        云端链路修复：此前在线端点恒用 OpenAI 形式，Anthropic provider
+        兼容性缺失）。
+        """
         info = self.ensure_running()
+        if self._online_provider == "anthropic":
+            resp = httpx.post(
+                info["base_url"].rstrip("/") + "/v1/messages",
+                headers={
+                    "x-api-key": info["api_key"],
+                    "anthropic-version": "2023-06-01",
+                    "Content-Type": "application/json",
+                },
+                json={"model": info["model"], "max_tokens": max_tokens,
+                      "temperature": temperature,
+                      "system": prompt,
+                      "messages": []},
+                timeout=timeout, trust_env=False, verify=False)
+            resp.raise_for_status()
+            data = resp.json()
+            # Anthropic content 是数组：[{"type": "text", "text": "..."}]
+            for block in data.get("content", []) or []:
+                if block.get("type") == "text" and block.get("text"):
+                    return str(block["text"])
+            return ""
         resp = httpx.post(
             info["base_url"] + "/chat/completions",
             headers={"Authorization": f"Bearer {info['api_key']}"},

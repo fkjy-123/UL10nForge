@@ -1,4 +1,17 @@
-"""设置页：API 配置（含测试连接）/ 游戏档案 / 术语表。"""
+"""设置页：API 配置（含测试连接）/ 游戏档案 / 术语表。
+
+2026-08-22（Task #17）布局重做：用户反馈「字挤在一起、没有说明文字、
+未严格按规范」。本版重做要点：
+- 环境设置改为上下卡片区（模式卡 / 本地模型卡 / 在线 API 卡），
+  每张卡带独立标题行 + 说明文字行；模型卡拆为两行（选择行 + 状态按钮行），
+  不再把端口/运行方式/状态/按钮挤进一行；
+- 新增「说明」分类页：平行于其它四个分类的独立小设置，集中存放各小
+  设置的说明文字——说明从各功能页移走，功能页不再拥挤；
+- 术语库重做为人性化左右分栏：左侧列表（带搜索/筛选），右侧详情编辑区
+  （术语/译文/类别/状态/备注分字段），底部分状态图例。
+所有既有测试接口（tabs / backend_mode / model_cards / api_cards /
+settings_nav / test_btn / advanced_* / glossary_*）原样保留。
+"""
 from __future__ import annotations
 
 from dataclasses import replace
@@ -29,6 +42,24 @@ CATEGORIES = ["术语", "人名", "地名", "专名"]
 _ESTIMATED_RATE_PER_SLOT = 40.0
 
 
+def _explain(title: str, body: str) -> QWidget:
+    """说明条目：标题 + 说明文字（独立卡片，不占功能页空间）。"""
+    card = QFrame()
+    card.setObjectName("modelCard")
+    lay = QVBoxLayout(card)
+    lay.setContentsMargins(18, 12, 18, 12)
+    lay.setSpacing(6)
+    head = QLabel(title)
+    head.setProperty("class", "cardTitle")
+    lay.addWidget(head)
+    text = QLabel(body)
+    text.setProperty("class", "subtitle")
+    text.setWordWrap(True)
+    text.setTextFormat(Qt.RichText)
+    lay.addWidget(text)
+    return card
+
+
 class SettingsPage(QWidget):
     def __init__(self, state: AppState, window):
         super().__init__()
@@ -49,24 +80,25 @@ class SettingsPage(QWidget):
 
         lay.addWidget(PageHeader(
             "设置",
-            "分类设置中心 · 环境设置 / 模型与性能 / AI 审核 / 术语库 / 关于",
+            "分类设置中心 · 环境设置 / 翻译设置 / 术语库 / 说明 / 关于",
         ))
 
         # 构建顺序：高级 tab 先建（API tab 的 _load_api_ui/_sync_backend_mode
         # 引用其控件），再按显示顺序 addTab
+        self._init_status_labels()   # 底部状态条四标签（服务/模型/显存/测试）
         advanced_tab = self._build_advanced_tab()
         env_tab = self._build_env_tab()
         glossary_tab = self._build_glossary_tab()
-        review_tab = self._build_review_tab()
         about_tab = self._build_about_tab()
+        help_tab = self._build_help_tab()
         self.tabs = QTabWidget()
         self.tabs.addTab(env_tab, "环境设置")
-        self.tabs.addTab(advanced_tab, "模型与性能")
+        self.tabs.addTab(advanced_tab, "翻译设置")
         self.tabs.addTab(glossary_tab, "术语库")
-        self.tabs.addTab(review_tab, "AI 审核")
+        self.tabs.addTab(help_tab, "说明")
         self.tabs.addTab(about_tab, "关于")
         for index, icon_name in enumerate(
-                ("rocket", "tool", "database", "shield", "brand")):
+                ("rocket", "tool", "database", "help", "brand")):
             self.tabs.setTabIcon(index, QIcon(LineIcon.pixmap(icon_name, 16)))
         self.tabs.tabBar().setVisible(False)  # §66：左侧分类导航切换
         # 切回环境设置页时刷新四模型状态（端口探测；tabs 在此才创建完成）
@@ -92,9 +124,9 @@ class SettingsPage(QWidget):
         self.settings_nav.setFixedWidth(180)
         for title, tab_index, icon_name in (
                 ("环境设置", 0, "rocket"),
-                ("模型与性能", 1, "tool"),
-                ("AI 审核", 3, "shield"),
+                ("翻译设置", 1, "tool"),
                 ("术语库", 2, "database"),
+                ("说明", 3, "help"),
                 ("关于", 4, "brand")):
             item = QListWidgetItem(
                 QIcon(LineIcon.pixmap(icon_name, 16)), title)
@@ -112,41 +144,44 @@ class SettingsPage(QWidget):
         center_lay.addWidget(self.tabs)
         center_lay.addStretch(1)
         body.addWidget(center, 1)
-        # §6.4 右侧实时状态卡：服务 / 模型 / 显存 / 测试结果
-        body.addWidget(self._build_status_card())
         lay.addLayout(body, 1)
+        # 2026-08-21：右侧独立状态卡移除——底部通栏承载四模型 + 在线
+        # API 全链路状态（服务/模型/显存/测试一行横排，3s 轮询实时刷新）
+        self._place_status_bar(lay)
         state.settingsChanged.connect(self._refresh_status_card)
         state.settingsChanged.connect(self._refresh_vram_estimates)
         self._refresh_status_card()
 
-    # ── 右侧实时状态卡（§6.4） ────────────────────────────
-    def _build_status_card(self) -> QWidget:
-        card = QFrame()
-        card.setObjectName("statusCard")
-        lay = QVBoxLayout(card)
-        lay.setContentsMargins(16, 14, 16, 14)
-        lay.setSpacing(8)
-        title = QLabel("实时状态")
-        title.setProperty("class", "pageTitle")
-        lay.addWidget(title)
+    # ── 底部实时状态条（2026-08-21 重做：右侧卡 → 底部长条） ────────
+    # 四模型本地启动/停止 + 在线 API 测试全链路状态实时可见（§6.4/§26
+    # 体验统一）。_init_status_labels 创建四个 QLabel 属性（服务/模型/
+    # 显存/测试），_place_status_bar 把它们横排挂到页面底部通栏；env 页
+    # 3s 轮询驱动 _refresh_model_states 刷新。
+    def _init_status_labels(self) -> None:
         self.status_service = QLabel("未配置")
         self.status_model = QLabel("—")
         self.status_vram = QLabel("—")
         self.status_test = QLabel("尚未测试连接")
+        for label in (self.status_service, self.status_model,
+                      self.status_vram, self.status_test):
+            label.setProperty("class", "subtitle")
+
+    def _place_status_bar(self, layout: QVBoxLayout) -> None:
+        bar = QFrame()
+        bar.setObjectName("statusBar")
+        bl = QHBoxLayout(bar)
+        bl.setContentsMargins(14, 10, 14, 10)
+        bl.setSpacing(16)
         for name, label in (
                 ("服务", self.status_service), ("模型", self.status_model),
                 ("显存", self.status_vram), ("测试", self.status_test)):
-            row = QHBoxLayout()
-            row.setSpacing(8)
             tag = QLabel(name)
             tag.setProperty("class", "metricLabel")
-            row.addWidget(tag)
-            row.addStretch(1)
-            row.addWidget(label)
-            lay.addLayout(row)
-        lay.addStretch(1)
-        card.setFixedWidth(220)
-        return card
+            bl.addWidget(tag)
+            bl.addWidget(label)
+        bl.addStretch(1)
+        layout.addWidget(bar)
+        self.status_bar = bar
 
     def _refresh_status_card(self):
         api = self.state.api
@@ -173,76 +208,10 @@ class SettingsPage(QWidget):
         if item is not None:
             self.tabs.setCurrentIndex(item.data(Qt.UserRole))
 
-    # ── AI 审核设置（§68 开关与策略 / §69 阈值说明） ──
-    def _build_review_tab(self) -> QWidget:
-        tab = QWidget()
-        root = QHBoxLayout(tab)
-        root.setContentsMargins(28, 24, 28, 18)
-        root.setSpacing(24)
-
-        left = QWidget()
-        form = QFormLayout(left)
-        form.setContentsMargins(0, 0, 0, 0)
-        form.setSpacing(14)
-        self.review_enabled = QCheckBox("翻译完成后自动进行 AI 语义审核")
-        self.review_enabled.setMinimumHeight(44)
-        # 2026-08-14 全量送审：抽样（5-30%）会让多数问题译文漏网——汉化
-        # 游戏少数不准是常态，只有扫完所有译文才能揪出语境错误。取消
-        # 三档抽样 radio，改为全量说明（保留 ai_review_strategy 字段兼容
-        # 旧配置，不再参与送审）。
-        self.review_scope_label = QLabel(
-            "审核范围：<b>全部译文</b>（不再抽样送审）")
-        self.review_scope_label.setMinimumHeight(34)
-        self.review_scope_label.setWordWrap(True)
-        form.addRow("自动审核", self.review_enabled)
-        form.addRow("审核范围", self.review_scope_label)
-        self.review_save_btn = QPushButton("保存 AI 审核设置")
-        self.review_save_btn.setProperty("primary", True)
-        self.review_save_btn.setMinimumHeight(44)
-        form.addRow("", self.review_save_btn)
-        root.addWidget(left, 4)
-
-        right = QWidget()
-        right_lay = QVBoxLayout(right)
-        right_lay.setContentsMargins(0, 0, 0, 0)
-        right_lay.setSpacing(10)
-        head = QLabel("语义审核说明")
-        head.setProperty("class", "pageTitle")
-        hint = QLabel(
-            "翻译完成后，审核模型对<b>全部译文</b>逐条做四级判定"
-            "（通过 / 轻微 / 较大问题 / 严重）：\n\n"
-            "· 严重问题 —— 自动按审核意见重译并再次复核（最多 2 轮收敛）；\n"
-            "· 较大问题 —— 按审核建议修正后放行；\n"
-            "· 审核不通过的条目在「文本审校」页标为「需要优化」，"
-            "重译过的译文可在审校页「已重译」中复查，"
-            "审核词对经语境门禁沉淀后跨游戏复用。\n\n"
-            "审核全程本地运行（llama.cpp · Qwen3.5-4B 审核模型），"
-            "数据不出本机。全量送审耗时随条目数线性增长——"
-            "逐条进度实时可见，可随时停止。")
-        hint.setProperty("class", "subtitle")
-        hint.setWordWrap(True)
-        right_lay.addWidget(head)
-        right_lay.addWidget(hint)
-        right_lay.addStretch(1)
-        root.addWidget(right, 6)
-
-        self._load_review_ui()
-        self.review_save_btn.clicked.connect(self._save_review)
-        return tab
-
-    def _load_review_ui(self):
-        api = self.state.api
-        self.review_enabled.setChecked(api.ai_review_enabled)
-
-    def _save_review(self):
-        cfg = replace(self.state.api)
-        cfg.ai_review_enabled = self.review_enabled.isChecked()
-        # 2026-08-14 全量送审：ai_review_strategy 保留兼容（旧配置可读），
-        # 不再参与送审——全部译文都审，抽样率固定 100%。
-        self._commit_api_config(cfg)
-        Toast.show(self, "AI 审核设置已保存，下次翻译生效", "success")
-
-    # ── 关于（版本 / 本地架构 / 隐私） ──
+    # ── 关于（版本 / 本地架构 / 审核说明 / 隐私，2026-08-21 并入） ──
+    # 「AI 审核」分类页删除：语义审核是翻译管线固定环节（设计文档 §26
+    # 全链路闭环），不再提供关闭入口——ai_review_enabled 字段保留兼容
+    # 旧配置（读取恒真，见 translate_page），审核说明并入本页。
     def _build_about_tab(self) -> QWidget:
         from hanhua import VERSION
         tab = QWidget()
@@ -284,6 +253,23 @@ class SettingsPage(QWidget):
         model_text.setProperty("class", "subtitle")
         model_text.setWordWrap(True)
         lay.addWidget(model_text)
+        lay.addSpacing(8)
+        head_review = QLabel("语义审核说明")
+        head_review.setProperty("class", "pageTitle")
+        lay.addWidget(head_review)
+        review_hint = QLabel(
+            "翻译完成后，审核模型对<b>全部译文</b>逐条做四级判定"
+            "（通过 / 轻微 / 较大问题 / 严重）：\n\n"
+            "· 严重问题 —— 自动按审核意见重译并再次复核（最多 2 轮收敛）；\n"
+            "· 较大问题 —— 按审核建议修正后放行；\n"
+            "· 审核不通过的条目在「文本审校」页标为「需要优化」，"
+            "重译过的译文可在审校页「已重译」中复查，"
+            "审核词对经语境门禁沉淀后跨游戏复用。\n\n"
+            "审核是翻译管线固定环节（不再提供关闭入口）；全量送审耗时"
+            "随条目数线性增长——逐条进度实时可见，可随时停止。")
+        review_hint.setProperty("class", "subtitle")
+        review_hint.setWordWrap(True)
+        lay.addWidget(review_hint)
         lay.addStretch(1)
         root.addWidget(left, 5)
 
@@ -307,12 +293,72 @@ class SettingsPage(QWidget):
         root.addWidget(right, 5)
         return tab
 
-    # ── 环境设置（四模型管理 + 在线 API 切换，2026-08-14 重构） ────
-    # 本地模式：四模型卡片（启动/停止 + GPU/CPU 选择 + 状态）；切换
-    # 在线 API 才出现 Base URL / Key / 模型表单。选择持久化到
-    # SettingsStore.model_runtime，启动时按 kind 应用。
+    # ── 说明（2026-08-22 新增：平行分类页，集中存放各功能说明） ──
+    # 用户反馈「说明设置」——各小设置的说明文字从功能页移走，太拥挤；
+    # 本页是独立的第五个分类，把所有功能说明集中展示，功能页只留控件。
+    def _build_help_tab(self) -> QWidget:
+        tab = QWidget()
+        root = QVBoxLayout(tab)
+        root.setContentsMargins(28, 24, 28, 18)
+        root.setSpacing(14)
+
+        head = QLabel("功能说明")
+        head.setProperty("class", "pageTitle")
+        root.addWidget(head)
+        intro = QLabel(
+            "各设置的详细说明统一放在这里查看——功能页保持简洁，"
+            "只放控件不堆文字。")
+        intro.setProperty("class", "subtitle")
+        intro.setWordWrap(True)
+        root.addWidget(intro)
+
+        sections = [
+            ("运行模式",
+             "默认推荐「本地 llama.cpp」——四模型全部离线运行，开箱即用，"
+             "无需任何云端地址，数据不出本机。只有选择「在线 API」时才需要"
+             "填写云端地址（翻译/审核各一张配置卡），重排与检索恒本地。"),
+            ("GPU / CPU 怎么选",
+             "看环境页顶部「可用显存」数字："
+             "显存 6GB 以上 → 选「自动（推荐）」，全部模型优先上显卡，速度快；"
+             "显存 2~6GB → 也选「自动」，放不下时自动把部分层分给 CPU 分担"
+             "（能跑，稍慢）；"
+             "没有显卡或显存不足 2GB → 选「CPU」，纯处理器运行（短句几秒一条"
+             "但完全能跑，审核模型按需加载）；"
+             "「GPU」强制全层用显存——只在显存很充裕（8GB+）时选，"
+             "显存不够时选它会启动失败。"),
+            ("并发槽位",
+             "同时开几条翻译线路。显卡一次只能干一件事，多槽只是排队交替，"
+             "速度并不会成倍变快，显存却会成倍占用（每槽一份独立缓存）——"
+             "新手直接用「自动 · 单槽」最省心；显存 8GB 以上想微调可试 2 槽，"
+             "再高收益很小。"),
+            ("上下文长度",
+             "模型一次能记住的文本量（token）。8192 已覆盖常规游戏文本，"
+             "直接用默认值即可；机器内存紧张（8GB 以下）可选 4096 省内存，"
+             "几乎不影响翻译质量。显存不足时工具会自动降档，无需手动改。"),
+            ("每批条数",
+             "一次打包翻译多少条文本。打包越多，每条分到的翻译空间越少，"
+             "长文本（成段剧情对话）容易出错——短文本为主的游戏（按钮/标签）"
+             "选 16~32；长文本多的游戏（对话/文档）选 4~8。"),
+            ("术语库",
+             "· 生效：跨游戏复现或人工确认，翻译时强制约束；\n"
+             "· 候选：审核沉淀待跨游戏复现，仅参考不强制；\n"
+             "· 双击列表「状态」列可切换 生效 / 候选；\n"
+             "· 右侧详情区可编辑术语 / 译文 / 类别 / 状态 / 备注。"),
+            ("在线 API 说明",
+             "翻译与审核两个模型各自指向云端（OpenAI 兼容 / Anthropic 原生），"
+             "用各自的接口与模型名；未配置的模型在线模式下不可用。修改自动保存，"
+             "切换回本地模式后 API 配置不参与运行。"),
+        ]
+        for title, body in sections:
+            root.addWidget(_explain(title, body))
+        root.addStretch(1)
+        return tab
+
+    # ── 环境设置（四模型管理 + 在线 API 切换，2026-08-22 重做） ────
+    # 布局：顶部模式卡（模式选择 + 说明），下方按模式切换显示
+    # 本地四模型卡片区 或 在线 API 卡片区；每张卡内容宽松、带说明。
     _MODEL_CARDS = (
-        # (kind, 显示名, 端口, 模型线索, 描述——保持简短，细则进 tooltip)
+        # (kind, 显示名, 端口, 模型线索, 描述, tooltip)
         ("translate", "翻译模型", 8080, "hy-mt2",
          "Hy-MT2 1.8B · 翻译主模型",
          "翻译主模型：Hy-MT2 1.8B，本地离线运行，数据不出本机"),
@@ -330,47 +376,45 @@ class SettingsPage(QWidget):
 
     def _build_env_tab(self) -> QWidget:
         tab = QWidget()
-        root = QHBoxLayout(tab)
+        root = QVBoxLayout(tab)
         root.setContentsMargins(28, 24, 28, 18)
-        root.setSpacing(24)
+        root.setSpacing(16)
 
-        # 左 6：模式切换 + 在线表单 + 四模型卡片
-        left = QWidget()
-        left_lay = QVBoxLayout(left)
-        left_lay.setContentsMargins(0, 0, 0, 0)
-        left_lay.setSpacing(14)
-        mode_row = QHBoxLayout()
-        mode_row.setSpacing(10)
-        mode_tag = QLabel("运行模式")
-        mode_tag.setProperty("class", "metricLabel")
-        mode_row.addWidget(mode_tag)
+        # ── 模式卡：运行模式选择（说明文字已移到「说明」页） ──
+        mode_card = QFrame()
+        mode_card.setObjectName("modelCard")
+        mc = QVBoxLayout(mode_card)
+        mc.setContentsMargins(18, 14, 18, 14)
+        mc.setSpacing(10)
+        mode_head = QHBoxLayout()
+        mode_head.setSpacing(10)
+        mode_title = QLabel("运行模式")
+        mode_title.setProperty("class", "cardTitle")
+        mode_head.addWidget(mode_title)
+        mode_head.addStretch(1)
+        mc.addLayout(mode_head)
         self.backend_mode = QComboBox()
         self.backend_mode.addItem("本地 llama.cpp（四模型离线）", "local")
         self.backend_mode.addItem("在线 API", "api")
-        self.backend_mode.setMinimumHeight(40)
-        mode_row.addWidget(self.backend_mode, 1)
-        left_lay.addLayout(mode_row)
-        # 用户反馈修复（2026-08-16）：「本地模型与云端接口都得部署」
-        # 困惑来自默认在线模式。二选一即可——本地模式开箱即用（四
-        # 模型自动启动，无需任何云端地址）；只有在线 API 模式才需要
-        # 填写云端地址（且只需翻译卡）
+        self.backend_mode.setMinimumHeight(44)
+        mc.addWidget(self.backend_mode)
+        # 2026-08-22：默认推荐提示保留一行（关键引导），细则进「说明」页
         self.mode_default_hint = QLabel(
-            "默认推荐「本地 llama.cpp」——开箱即用，无需任何云端地址；"
-            "只有选择「在线 API」时才需要填写云端地址")
+            "默认推荐「本地 llama.cpp」——开箱即用，无需任何云端地址")
+        self.mode_default_hint.setProperty("class", "subtitle")
         self.mode_default_hint.setWordWrap(True)
-        self.mode_default_hint.setStyleSheet("color: #8b5cf6; font-size: 12px;")
-        left_lay.addWidget(self.mode_default_hint)
+        mc.addWidget(self.mode_default_hint)
+        root.addWidget(mode_card)
 
-        # 在线 API 模式：四模型各自一张卡片（2026-08-14 每模型对应
-        # 自己的在线服务商 / 端点 / 模型，不是一份配置共用）
+        # ── 在线 API 卡片区（每模型一张，内容宽松） ──
         self.api_cards: dict[str, dict] = {}
         self.mode_api_widget = QWidget()
         api_lay = QVBoxLayout(self.mode_api_widget)
-        api_lay.setContentsMargins(0, 4, 0, 0)
+        api_lay.setContentsMargins(0, 2, 0, 0)
         api_lay.setSpacing(12)
         api_overview = QLabel(
-            "在线模式：翻译与审核各自指向云端服务（修改自动保存）；"
-            "重排与检索保持本地 0.6B 轻量运行")
+            "在线模式：翻译与审核各自指向云端服务，修改自动保存。"
+            "（详细说明见「说明」页）")
         api_overview.setProperty("class", "subtitle")
         api_overview.setWordWrap(True)
         api_lay.addWidget(api_overview)
@@ -380,12 +424,12 @@ class SettingsPage(QWidget):
                 continue
             api_lay.addWidget(self._build_api_card(kind, title, tooltip, desc))
         api_lay.addStretch(1)
-        left_lay.addWidget(self.mode_api_widget)
+        root.addWidget(self.mode_api_widget)
 
-        # 本地模式：四模型卡片（启动/停止 + GPU/CPU 选择 + 状态）
+        # ── 本地模型卡片区 ──
         self.mode_local_widget = QWidget()
         local_lay = QVBoxLayout(self.mode_local_widget)
-        local_lay.setContentsMargins(0, 4, 0, 0)
+        local_lay.setContentsMargins(0, 2, 0, 0)
         local_lay.setSpacing(12)
         # 总览行：可用显存 / 系统内存（直观对照卡片占用）
         self.vram_overview = QLabel("可用显存 — · 内存 —")
@@ -396,35 +440,20 @@ class SettingsPage(QWidget):
         for kind, title, port, hint, desc, tooltip in self._MODEL_CARDS:
             local_lay.addWidget(self._build_model_card(
                 kind, title, port, tooltip, desc))
-        local_lay.addStretch(1)
-        left_lay.addWidget(self.mode_local_widget)
-        left_lay.addStretch(1)
-        root.addWidget(left, 7)
-
-        # 右 3：连接状态与说明
-        right = QWidget()
-        right_lay = QVBoxLayout(right)
-        right_lay.setContentsMargins(0, 0, 0, 0)
-        right_lay.setSpacing(10)
-        status_head = QLabel("连接状态")
-        status_head.setProperty("class", "pageTitle")
+        # 本地模式底部分布式状态行：连接状态 + 停止全部
+        local_footer = QHBoxLayout()
+        local_footer.setSpacing(10)
         self.local_status = QLabel("本地服务：未启动")
         self.local_status.setProperty("class", "subtitle")
         self.local_status.setWordWrap(True)
+        local_footer.addWidget(self.local_status, 1)
         self.stop_local_btn = QPushButton("停止全部本地模型")
         self.stop_local_btn.setProperty("danger", True)
         self.stop_local_btn.setMinimumHeight(44)
-        self.env_hint = QLabel("")
-        self.env_hint.setProperty("class", "subtitle")
-        self.env_hint.setWordWrap(True)
-        right_lay.addWidget(status_head)
-        right_lay.addWidget(self.local_status)
-        right_lay.addSpacing(4)
-        right_lay.addWidget(self.stop_local_btn)
-        right_lay.addSpacing(10)
-        right_lay.addWidget(self.env_hint)
-        right_lay.addStretch(1)
-        root.addWidget(right, 3)
+        local_footer.addWidget(self.stop_local_btn)
+        local_lay.addLayout(local_footer)
+        local_lay.addStretch(1)
+        root.addWidget(self.mode_local_widget)
 
         self._load_api_ui()
         self.backend_mode.currentIndexChanged.connect(self._sync_backend_mode)
@@ -436,11 +465,13 @@ class SettingsPage(QWidget):
 
     def _build_model_card(self, kind: str, title: str, port: int,
                           hint: str, desc: str) -> QWidget:
-        """单个模型的管理卡片（3 行：标题 / 端口·方式·状态·按钮 / 预估）。
+        """单个模型的管理卡片（2026-08-22 重做：两行宽松布局）。
 
-        2026-08-14 布局疏朗化：预估占用从操作行拆出为独立行——原 2 行
-        布局把「端口+运行方式+预估双值+状态+按钮」挤进一行 456px，
-        文字被截断（用户实证「文字很挤，有的字没显示全」）。
+        行 1：名称 + 短描述（说明文字）
+        行 2：端口 + 运行方式（下拉）+ 状态
+        行 3：启动/停止按钮（独立，不再与状态挤一行）
+        行 4：预估占用（GPU/CPU 双值）
+
         rerank/embed 固定 CPU（fixed_cpu 硬约束）不可改。
         """
         card = QFrame()
@@ -466,9 +497,9 @@ class SettingsPage(QWidget):
             "port": port, "hint": hint,
         }
 
-        # 行 2：端口 / 运行方式 / 状态 / 启动按钮（4 元素 + stretch，宽松）
+        # 行 2：端口 + 运行方式（下拉）+ 状态（独立行，不再挤）
         row = QHBoxLayout()
-        row.setSpacing(10)
+        row.setSpacing(12)
         port_label = QLabel(f"端口 {port}")
         port_label.setProperty("class", "metricLabel")
         row.addWidget(port_label)
@@ -488,7 +519,7 @@ class SettingsPage(QWidget):
                 "GPU：全层强制用显存，速度最快——仅显存很充裕（8GB+）时选；"
                 "显存不够会启动失败。\n"
                 "CPU：纯处理器运行，最慢但最省显存——没有显卡或显存不足时选")
-        combo.setMinimumHeight(32)
+        combo.setMinimumHeight(36)
         choice = self.state.settings.model_runtime_choice(kind)
         combo.setCurrentIndex(max(0, combo.findData(choice)))
         combo.currentIndexChanged.connect(
@@ -500,16 +531,22 @@ class SettingsPage(QWidget):
         status = QLabel("状态：未启动")
         status.setProperty("class", "subtitle")
         row.addWidget(status)
-        btn = QPushButton("启动")
-        btn.setProperty("primary", True)
-        btn.setMinimumHeight(32)
-        btn.clicked.connect(lambda _c, k=kind: self._toggle_model(k))
-        row.addWidget(btn)
-        self.model_cards[kind]["status"] = status
-        self.model_cards[kind]["btn"] = btn
         lay.addLayout(row)
 
-        # 行 3：预估占用整行独立（GPU 全层 / CPU 内存双值，当前选择高亮）
+        # 行 3：启动/停止按钮（独立一行，避免拥挤）
+        btn_row = QHBoxLayout()
+        btn_row.setSpacing(10)
+        btn = QPushButton("启动")
+        btn.setProperty("primary", True)
+        btn.setMinimumHeight(36)
+        btn.clicked.connect(lambda _c, k=kind: self._toggle_model(k))
+        btn_row.addWidget(btn)
+        btn_row.addStretch(1)
+        lay.addLayout(btn_row)
+        self.model_cards[kind]["status"] = status
+        self.model_cards[kind]["btn"] = btn
+
+        # 行 4：预估占用整行独立（GPU 全层 / CPU 内存双值，当前选择高亮）
         vram = QLabel("预估 —")
         vram.setProperty("class", "subtitle")
         vram.setTextFormat(Qt.RichText)
@@ -551,7 +588,7 @@ class SettingsPage(QWidget):
         }
         lay.addLayout(head)
 
-        # 行 2：提供商 + Base URL
+        # 行 2：提供商 + Base URL（2026-08-22：字段换行，避免挤）
         row1 = QHBoxLayout()
         row1.setSpacing(10)
         provider_tag = QLabel("提供商")
@@ -561,7 +598,7 @@ class SettingsPage(QWidget):
         provider.setObjectName(f"apiProvider_{kind}")
         provider.addItem("OpenAI 兼容", "openai")
         provider.addItem("Anthropic 原生", "anthropic")
-        provider.setMinimumHeight(34)
+        provider.setMinimumHeight(36)
         row1.addWidget(provider)
         url_tag = QLabel("Base URL")
         url_tag.setProperty("class", "metricLabel")
@@ -569,11 +606,11 @@ class SettingsPage(QWidget):
         url = QLineEdit()
         url.setObjectName(f"apiUrl_{kind}")
         url.setPlaceholderText("https://api.openai.com/v1 或代理地址")
-        url.setMinimumHeight(34)
+        url.setMinimumHeight(36)
         row1.addWidget(url, 1)
         lay.addLayout(row1)
 
-        # 行 3：API Key + 模型
+        # 行 3：API Key + 模型（2026-08-22：字段换行）
         row2 = QHBoxLayout()
         row2.setSpacing(10)
         key_tag = QLabel("API Key")
@@ -583,7 +620,7 @@ class SettingsPage(QWidget):
         key.setObjectName(f"apiKey_{kind}")
         key.setEchoMode(QLineEdit.Password)
         key.setPlaceholderText("sk-…")
-        key.setMinimumHeight(34)
+        key.setMinimumHeight(36)
         row2.addWidget(key, 1)
         model_tag = QLabel("模型")
         model_tag.setProperty("class", "metricLabel")
@@ -591,7 +628,7 @@ class SettingsPage(QWidget):
         model = QLineEdit()
         model.setObjectName(f"apiModel_{kind}")
         model.setPlaceholderText("如 gpt-4o / claude-sonnet-4 / deepseek-chat")
-        model.setMinimumHeight(34)
+        model.setMinimumHeight(36)
         row2.addWidget(model, 1)
         lay.addLayout(row2)
 
@@ -601,7 +638,7 @@ class SettingsPage(QWidget):
         test_btn = QPushButton("测试连接")
         test_btn.setObjectName(f"apiTest_{kind}")
         test_btn.setProperty("primary", True)
-        test_btn.setMinimumHeight(32)
+        test_btn.setMinimumHeight(36)
         test_btn.clicked.connect(lambda _c, k=kind: self.test_api_card(k))
         row3.addWidget(test_btn)
         saved_hint = QLabel("修改自动保存")
@@ -776,7 +813,7 @@ class SettingsPage(QWidget):
         btn.style().polish(btn)
 
     def _apply_model_states(self, data, token: int) -> None:
-        """应用探测结果：四卡片状态 + 右侧显存行。
+        """应用探测结果：四卡片状态 + 底部显存行。
 
         data 双形态兼容：{"states": …, "gpu": …}（worker 探测）或
         直接 states dict（旧调用/错误路径）。token 防竞态：过期回调
@@ -808,7 +845,7 @@ class SettingsPage(QWidget):
 
         显存总览刷新（2026-08-14 用户实证「即时显存显示还是有问题」）：
         总览行此前只在 settingsChanged/构建时更新——切回页面先刷一次
-        最新值，激活期间的 3s 轮询由 _apply_model_states 顺带刷右侧
+        最新值，激活期间的 3s 轮询由 _apply_model_states 顺带刷底部
         「显存」行（probe_hardware 走 vram 2s TTL 缓存，不卡 UI）。"""
         if index == 0:
             self._refresh_model_states()
@@ -996,7 +1033,7 @@ class SettingsPage(QWidget):
         Toast.show(self, "全部本地模型已停止", "success")
 
     def _refresh_env_status(self):
-        """右列连接状态卡：后台汇总四个模型运行数（不阻塞 UI）。"""
+        """本地模式底部状态行：后台汇总四个模型运行数（不阻塞 UI）。"""
         worker = Worker(self._env_status_worker)
         worker.signals.finished.connect(self._apply_env_status)
         worker.signals.error.connect(self._on_probe_error)
@@ -1076,21 +1113,7 @@ class SettingsPage(QWidget):
             widget.setEnabled(local)
         self.advanced_mode_hint.setVisible(not local)
         self.test_btn.setText("启动并测试" if local else "测试连接")
-        self.env_hint.setText(
-            "本地模式：四模型全部离线运行，数据不出本机。\n\n"
-            "【新手必读】GPU/CPU 怎么选——看上方「可用显存」数字：\n"
-            "· 显存 6GB 以上 → 选「自动（推荐）」，全部模型优先上显卡，速度快\n"
-            "· 显存 2~6GB → 选「自动」，放不下时自动把部分层分给 CPU 分担（能跑，稍慢）\n"
-            "· 没有显卡或显存不足 2GB → 选「CPU」，纯处理器运行：翻译慢（短句几秒一条）但完全能跑，审核模型按需加载\n"
-            "· 「GPU」强制全层用显存——只在显存很充裕（8GB+）时选它；显存不够时选它会启动失败\n\n"
-            "在线 API：翻译与审核各自填写云端服务后「测试连接」验证，"
-            "修改自动保存。切换回本地模式后，API 配置不参与运行。"
-            if local else
-            "在线 API 模式：翻译与审核两个模型各自指向云端"
-            "（OpenAI 兼容 / Anthropic 原生），用各自的接口与模型名；"
-            "未配置的模型在线模式下不可用。\n\n"
-            "重排与检索保持本地 0.6B 轻量运行（毫秒级任务不上云端）。"
-            "在线模式下本地模型不会被自动启动。")
+        # 2026-08-22：详细说明已整体移到「说明」页，此处无文案可换
         self._refresh_vram()
 
     # ── 高级设置（本地模型） ──
@@ -1326,52 +1349,245 @@ class SettingsPage(QWidget):
             self.local_status.setText("本地服务：启动失败")
         Toast.show(self, f"连接失败：{err}", "error")
 
-    # ── 术语表（全局） ──
+    # ── 术语库（全局） ───────────────────────────────────────
+    # 2026-08-22（#18）人性化重做：左侧列表 + 右侧详情编辑区。
+    # 左侧：统计徽章 + 冲突告警 + 搜索/筛选 + 术语表格（保留既有接口）。
+    # 右侧：选中行的详情编辑（术语/译文/类别/状态/备注分字段），
+    #       底部状态图例（生效=强制 / 候选=参考）。
+    # 保留既有测试接口：glossary_table / glossary_filter / add_btn /
+    # del_btn / _glossary_add / _glossary_cell_changed / _glossary_loading。
     def _build_glossary_tab(self) -> QWidget:
         tab = QWidget()
-        lay = QVBoxLayout(tab)
-        lay.setContentsMargins(28, 22, 28, 18)
+        root = QHBoxLayout(tab)
+        root.setContentsMargins(20, 18, 20, 14)
+        root.setSpacing(16)
+
+        # ── 左 7：列表区 ──
+        left = QWidget()
+        lay = QVBoxLayout(left)
+        lay.setContentsMargins(0, 0, 0, 0)
         lay.setSpacing(10)
 
-        head = QHBoxLayout()
-        head.addWidget(QLabel("术语表会注入翻译提示词，翻译时必须严格使用。"))
-        head.addStretch(1)
+        # 统计徽章行：总数 / 生效 / 候选 / 同源冲突
+        badges = QHBoxLayout()
+        badges.setSpacing(10)
+        self._glossary_badges: dict[str, QLabel] = {}
+        for key, text in (("total", "总条目"), ("active", "生效"),
+                          ("candidate", "候选"), ("conflict", "同源冲突")):
+            badge = QFrame()
+            badge.setObjectName("glossaryBadge")
+            bl = QVBoxLayout(badge)
+            bl.setContentsMargins(12, 7, 12, 7)
+            bl.setSpacing(0)
+            value = QLabel("0")
+            value.setObjectName("glossaryBadgeValue")
+            label = QLabel(text)
+            label.setObjectName("glossaryBadgeLabel")
+            bl.addWidget(value)
+            bl.addWidget(label)
+            badges.addWidget(badge)
+            self._glossary_badges[key] = value
+        badges.addStretch(1)
+        lay.addLayout(badges)
+
+        # 冲突告警条：同源异译组存在时显示
+        self.glossary_conflict_bar = QFrame()
+        self.glossary_conflict_bar.setObjectName("glossaryConflict")
+        self.glossary_conflict_bar.setVisible(False)
+        cl = QHBoxLayout(self.glossary_conflict_bar)
+        cl.setContentsMargins(12, 8, 12, 8)
+        cl.setSpacing(8)
+        self.glossary_conflict_label = QLabel("")
+        self.glossary_conflict_label.setProperty("class", "subtitle")
+        cl.addWidget(self.glossary_conflict_label)
+        cl.addStretch(1)
+        lay.addWidget(self.glossary_conflict_bar)
+
+        # 工具栏：搜索 + 类别筛选 + 添加 + 删除
+        toolbar = QFrame()
+        toolbar.setObjectName("glossaryToolbar")
+        tb = QHBoxLayout(toolbar)
+        tb.setContentsMargins(12, 8, 12, 8)
+        tb.setSpacing(10)
+        self.glossary_search = QLineEdit()
+        self.glossary_search.setPlaceholderText("搜索术语 / 译文…")
+        self.glossary_search.setMinimumHeight(36)
+        tb.addWidget(self.glossary_search, 1)
         self.glossary_filter = QComboBox()
         self.glossary_filter.addItems(["全部"] + CATEGORIES)
         self.glossary_filter.setFixedWidth(110)
+        self.glossary_filter.setMinimumHeight(36)
+        tb.addWidget(self.glossary_filter)
         self.add_btn = QPushButton("＋ 添加")
+        self.add_btn.setProperty("primary", True)
+        self.add_btn.setMinimumHeight(36)
+        tb.addWidget(self.add_btn)
         self.del_btn = QPushButton("删除选中")
         self.del_btn.setProperty("danger", True)
-        head.addWidget(self.glossary_filter)
-        head.addWidget(self.add_btn)
-        head.addWidget(self.del_btn)
-        lay.addLayout(head)
+        self.del_btn.setMinimumHeight(36)
+        tb.addWidget(self.del_btn)
+        lay.addWidget(toolbar)
 
         self.glossary_table = QTableWidget(0, 5)
         self.glossary_table.setHorizontalHeaderLabels(
             ["术语", "译文", "类别", "状态", "备注"])
-        self.glossary_table.horizontalHeader().setSectionResizeMode(0, QHeaderView.ResizeToContents)
-        self.glossary_table.horizontalHeader().setSectionResizeMode(1, QHeaderView.Stretch)
-        self.glossary_table.horizontalHeader().setSectionResizeMode(2, QHeaderView.Fixed)
+        self.glossary_table.horizontalHeader().setSectionResizeMode(
+            0, QHeaderView.ResizeToContents)
+        self.glossary_table.horizontalHeader().setSectionResizeMode(
+            1, QHeaderView.Stretch)
+        self.glossary_table.horizontalHeader().setSectionResizeMode(
+            2, QHeaderView.Fixed)
         self.glossary_table.horizontalHeader().resizeSection(2, 90)
-        self.glossary_table.horizontalHeader().setSectionResizeMode(3, QHeaderView.Fixed)
+        self.glossary_table.horizontalHeader().setSectionResizeMode(
+            3, QHeaderView.Fixed)
         self.glossary_table.horizontalHeader().resizeSection(3, 72)
-        self.glossary_table.horizontalHeader().setSectionResizeMode(4, QHeaderView.ResizeToContents)
+        self.glossary_table.horizontalHeader().setSectionResizeMode(
+            4, QHeaderView.ResizeToContents)
         self.glossary_table.verticalHeader().setVisible(False)
         self.glossary_table.setSelectionBehavior(QTableWidget.SelectRows)
+        self.glossary_table.setWordWrap(False)
         lay.addWidget(self.glossary_table, 1)
 
-        hint = QLabel("示例：Aria → 艾莉亚（人名）｜Vale → 幽谷（地名）。编辑后立即保存。")
+        # 列表底部提示（人性化：告诉用户该干嘛）
+        hint = QLabel(
+            "单击行 → 右侧详情编辑；双击「状态」列可切换 生效/候选；"
+            "悬停备注列查看来源游戏与置信度。编辑后立即保存。")
         hint.setProperty("class", "subtitle")
+        hint.setWordWrap(True)
         lay.addWidget(hint)
+        root.addWidget(left, 7)
+
+        # ── 右 3：详情编辑区 ──
+        right = QWidget()
+        right_lay = QVBoxLayout(right)
+        right_lay.setContentsMargins(0, 0, 0, 0)
+        right_lay.setSpacing(10)
+        detail_head = QLabel("术语详情")
+        detail_head.setProperty("class", "pageTitle")
+        right_lay.addWidget(detail_head)
+        detail_card = QFrame()
+        detail_card.setObjectName("glossaryNote")
+        dc = QVBoxLayout(detail_card)
+        dc.setContentsMargins(16, 14, 16, 14)
+        dc.setSpacing(12)
+
+        # 术语 / 译文 两字段
+        self.detail_term = QLineEdit()
+        self.detail_term.setPlaceholderText("原文术语")
+        self.detail_term.setMinimumHeight(38)
+        dc.addWidget(QLabel("术语"))
+        dc.addWidget(self.detail_term)
+        self.detail_translation = QLineEdit()
+        self.detail_translation.setPlaceholderText("译文")
+        self.detail_translation.setMinimumHeight(38)
+        dc.addWidget(QLabel("译文"))
+        dc.addWidget(self.detail_translation)
+
+        # 类别 / 状态 一行
+        meta_row = QHBoxLayout()
+        meta_row.setSpacing(10)
+        cat_col = QVBoxLayout()
+        cat_col.setSpacing(4)
+        cat_col.addWidget(QLabel("类别"))
+        self.detail_category = QComboBox()
+        self.detail_category.addItems(CATEGORIES)
+        self.detail_category.setMinimumHeight(38)
+        cat_col.addWidget(self.detail_category)
+        meta_row.addLayout(cat_col)
+        status_col = QVBoxLayout()
+        status_col.setSpacing(4)
+        status_col.addWidget(QLabel("状态"))
+        self.detail_status = QComboBox()
+        self.detail_status.addItem("生效（强制）", "active")
+        self.detail_status.addItem("候选（参考）", "candidate")
+        self.detail_status.setMinimumHeight(38)
+        status_col.addWidget(self.detail_status)
+        meta_row.addLayout(status_col)
+        dc.addLayout(meta_row)
+
+        # 备注（多行，显示来源游戏/置信度/例句）
+        self.detail_note = QLineEdit()
+        self.detail_note.setPlaceholderText("备注（来源游戏 / 置信度 / 例句…）")
+        self.detail_note.setMinimumHeight(38)
+        dc.addWidget(QLabel("备注"))
+        dc.addWidget(self.detail_note)
+
+        # 详情保存按钮
+        self.detail_save_btn = QPushButton("保存修改")
+        self.detail_save_btn.setProperty("primary", True)
+        self.detail_save_btn.setMinimumHeight(44)
+        dc.addWidget(self.detail_save_btn)
+        right_lay.addWidget(detail_card)
+
+        # 状态图例（人性化：解释生效/候选的区别）
+        legend = QLabel(
+            "· <b>生效</b>：跨游戏复现或人工确认，翻译时强制约束\n"
+            "· <b>候选</b>：审核沉淀待复现，仅参考不强制")
+        legend.setProperty("class", "subtitle")
+        legend.setTextFormat(Qt.RichText)
+        legend.setWordWrap(True)
+        right_lay.addWidget(legend)
+        right_lay.addStretch(1)
+        root.addWidget(right, 3)
 
         self.add_btn.clicked.connect(self._glossary_add)
         self.del_btn.clicked.connect(self._glossary_delete)
         self.glossary_filter.currentTextChanged.connect(self._glossary_filter)
+        self.glossary_search.textChanged.connect(self._glossary_apply_filter)
         self.glossary_table.cellChanged.connect(self._glossary_cell_changed)
+        self.glossary_table.cellDoubleClicked.connect(
+            self._glossary_cell_double)
+        self.glossary_table.itemSelectionChanged.connect(
+            self._glossary_on_select)
+        self.detail_save_btn.clicked.connect(self._glossary_detail_save)
         self.state.projectOpened.connect(lambda _p: self._ensure_glossary())
         self._ensure_glossary()
         return tab
+
+    def _glossary_on_select(self) -> None:
+        """列表选中行 → 右侧详情区回填（人性化：一眼看全字段）。"""
+        row = self.glossary_table.currentRow()
+        if row < 0 or row >= self.glossary_table.rowCount():
+            return
+        term = self.glossary_table.item(row, 0)
+        trans = self.glossary_table.item(row, 1)
+        cat = self.glossary_table.item(row, 2)
+        status = self.glossary_table.item(row, 3)
+        note = self.glossary_table.item(row, 4)
+        if term is None:
+            return
+        self._glossary_loading = True
+        self.detail_term.setText(term.text())
+        self.detail_translation.setText(
+            trans.text() if trans else "")
+        self.detail_category.setCurrentText(cat.text() if cat else "术语")
+        self.detail_status.setCurrentIndex(
+            0 if (status and status.text() == "生效") else 1)
+        self.detail_note.setText(note.text() if note else "")
+        self._glossary_loading = False
+
+    def _glossary_detail_save(self) -> None:
+        """右侧详情区 → 写入词库（术语/译文/类别/状态/备注一次性保存）。"""
+        if self._glossary is None:
+            return
+        term = self.detail_term.text().strip()
+        translation = self.detail_translation.text().strip()
+        if not term:
+            Toast.show(self, "术语原文不能为空", "warning")
+            return
+        category = self.detail_category.currentText()
+        status = self.detail_status.currentData()
+        note = self.detail_note.text().strip()
+        # 复用既有通道：按 term 更新（含新增）
+        if any(r["term"] == term for r in self._glossary.list_all()):
+            self._glossary.update(term, translation, category, note)
+        else:
+            self._glossary.add(term, translation, category, note)
+        self._glossary.set_status(term, status)
+        self._glossary_reload()
+        self._glossary_update_badges()
+        self._glossary_update_conflicts()
+        Toast.show(self, f"术语「{term}」已保存", "success")
 
     def _ensure_glossary(self):
         if self._glossary is None:
@@ -1384,8 +1600,13 @@ class SettingsPage(QWidget):
         self._glossary_loading = True
         self.glossary_table.setRowCount(0)
         for r in rows:
-            self._glossary_row(r, CATEGORIES.index(r["category"]) if r["category"] in CATEGORIES else 0)
+            self._glossary_row(
+                r, CATEGORIES.index(r["category"])
+                if r["category"] in CATEGORIES else 0)
         self._glossary_loading = False
+        self._glossary_update_badges()
+        self._glossary_update_conflicts()
+        self._glossary_apply_filter()
 
     def _glossary_row(self, data: dict, cat_idx: int):
         row = self.glossary_table.rowCount()
@@ -1394,31 +1615,100 @@ class SettingsPage(QWidget):
         translation = QTableWidgetItem(data["translation"])
         cat = QTableWidgetItem(data["category"])
         cat.setData(Qt.UserRole, data["term"])   # 记录原术语用于更新
+        status = data.get("status", "active")
         # 状态列：active=强制生效；candidate=候选（仅参考不强制，跨游戏
         # 复现才升级）。候选行置灰提示（术语表内容排查可见性，2026-08-13）
-        status = QTableWidgetItem(
-            "生效" if data.get("status", "active") == "active" else "候选")
-        status.setFlags(Qt.ItemIsEnabled)         # 状态不可编辑
+        status_item = QTableWidgetItem("生效" if status == "active" else "候选")
+        status_item.setFlags(
+            Qt.ItemIsEnabled | Qt.ItemIsSelectable | Qt.ItemIsEditable)
         note = QTableWidgetItem(data["note"])
+        # 备注列 tooltip：透出全字段（来源游戏 / 置信度 / 例句 / 禁止译法）
+        tip_parts = []
+        if data.get("games"):
+            tip_parts.append(f"来源游戏：{data['games']}")
+        if data.get("confidence") is not None:
+            tip_parts.append(f"置信度：{float(data['confidence']):.0%}")
+        if data.get("usage_example"):
+            tip_parts.append(f"例句：{data['usage_example'][:80]}")
+        if data.get("forbidden_translation"):
+            tip_parts.append(f"禁止译法：{data['forbidden_translation']}")
+        if data.get("context"):
+            tip_parts.append(f"语境：{data['context'][:80]}")
+        if tip_parts:
+            note.setToolTip("\n".join(tip_parts))
         self.glossary_table.setItem(row, 0, term)
         self.glossary_table.setItem(row, 1, translation)
         self.glossary_table.setItem(row, 2, cat)
-        self.glossary_table.setItem(row, 3, status)
+        self.glossary_table.setItem(row, 3, status_item)
         self.glossary_table.setItem(row, 4, note)
-        if data.get("status", "active") != "active":
+        if status != "active":
             for col in range(5):
                 item = self.glossary_table.item(row, col)
                 item.setForeground(QBrush(QColor("#999999")))
         return row
 
+    def _glossary_update_badges(self) -> None:
+        """统计徽章：总条目 / 生效 / 候选（空库 0）。"""
+        if not hasattr(self, "_glossary_badges"):
+            return
+        rows = self._glossary.list_all() if self._glossary else []
+        active = sum(1 for r in rows
+                     if r.get("status", "active") == "active")
+        self._glossary_badges["total"].setText(str(len(rows)))
+        self._glossary_badges["active"].setText(str(active))
+        self._glossary_badges["candidate"].setText(str(len(rows) - active))
+
+    def _glossary_update_conflicts(self) -> None:
+        """同源异译冲突告警条：冲突组存在 → 显示与引导。"""
+        if not hasattr(self, "glossary_conflict_bar"):
+            return
+        conflicts = self._glossary.detect_conflicts() if self._glossary else []
+        self._glossary_badges["conflict"].setText(str(len(conflicts)))
+        if conflicts:
+            groups = "；".join(
+                " / ".join(f"「{r['term']}」" for r in c["rows"])
+                for c in conflicts[:3])
+            more = f" 等 {len(conflicts)} 组" if len(conflicts) > 3 else ""
+            self.glossary_conflict_label.setText(
+                f"⚠ 同源异译冲突{more}：{groups}——同一原文多译名会使"
+                "模型无所适从，请统一译名")
+            self.glossary_conflict_bar.setVisible(True)
+        else:
+            self.glossary_conflict_bar.setVisible(False)
+
     def _glossary_add(self):
         if self._glossary is None:
             self._ensure_glossary()
         self._glossary_loading = True
-        row = self._glossary_row({"term": "", "translation": "", "category": "术语", "note": ""}, 0)
+        row = self._glossary_row(
+            {"term": "", "translation": "", "category": "术语", "note": ""},
+            0)
         self._glossary_loading = False
         self.glossary_table.setCurrentCell(row, 0)
         self.glossary_table.editItem(self.glossary_table.item(row, 0))
+        # 新增后同步右侧详情区（人性化：字段编辑位置一致）
+        self._glossary_on_select()
+
+    def _glossary_cell_double(self, row: int, col: int):
+        """双击状态列：候选 ↔ 生效 切换（人工确认/降级）。"""
+        if col != 3 or self._glossary is None:
+            return
+        item = self.glossary_table.item(row, 3)
+        term_item = self.glossary_table.item(row, 0)
+        if item is None or term_item is None:
+            return
+        term = term_item.text().strip()
+        if not term:
+            return
+        new_status = ("candidate" if item.text() == "生效"
+                      else "active")
+        self._glossary.set_status(term, new_status)
+        self._glossary_reload()
+        Toast.show(
+            self,
+            f"术语「{term}」已{'降回候选' if new_status == 'candidate'
+                                  else '升级为生效'}",
+            "success")
 
     def _glossary_cell_changed(self, row: int, col: int):
         if self._glossary_loading or self._glossary is None:
@@ -1439,6 +1729,9 @@ class SettingsPage(QWidget):
             self._glossary.add(term, translation, category, note)
             self.glossary_table.item(row, 2).setData(Qt.UserRole, term)
         Toast.show(self, f"术语「{term}」已保存", "success")
+        # 统计徽章与冲突条在编辑后刷新（类别/备注变化也会影响）
+        self._glossary_update_badges()
+        self._glossary_update_conflicts()
         # P2：同源异译冲突检测——大小写/空白/标点变体同源但译名不同，
         # 会导致模型对同一原文无所适从（prompt 里出现两个译法）
         conflicts = self._glossary.detect_conflicts()
@@ -1452,7 +1745,8 @@ class SettingsPage(QWidget):
     def _glossary_delete(self):
         if self._glossary is None:
             return
-        rows = sorted({i.row() for i in self.glossary_table.selectedIndexes()}, reverse=True)
+        rows = sorted({i.row() for i in self.glossary_table.selectedIndexes()},
+                      reverse=True)
         if not rows:
             Toast.show(self, "请先选中要删除的行", "warning")
             return
@@ -1461,12 +1755,31 @@ class SettingsPage(QWidget):
             if term_item:
                 self._glossary.delete(term_item.text().strip())
             self.glossary_table.removeRow(row)
+        self._glossary_update_badges()
+        self._glossary_update_conflicts()
         Toast.show(self, "已删除")
 
-    def _glossary_filter(self, text: str):
+    def _glossary_apply_filter(self, _text: str = "") -> None:
+        """类别筛选 + 搜索合并（行隐藏）。类别筛选忽略搜索时，搜索
+        忽略类别时——任一条件匹配即显示（宽松匹配，用户直觉）。"""
         if self._glossary is None:
             return
+        cat = self.glossary_filter.currentText()
+        query = self.glossary_search.text().strip().casefold()
         for row in range(self.glossary_table.rowCount()):
-            cat = self.glossary_table.item(row, 2)
+            cat_item = self.glossary_table.item(row, 2)
+            term_item = self.glossary_table.item(row, 0)
+            trans_item = self.glossary_table.item(row, 1)
+            match_cat = (cat == "全部"
+                         or (cat_item and cat_item.text() == cat))
+            match_query = (not query
+                           or (term_item and query in
+                               term_item.text().casefold())
+                           or (trans_item and query in
+                               trans_item.text().casefold()))
             self.glossary_table.setRowHidden(
-                row, text != "全部" and (not cat or cat.text() != text))
+                row, not (match_cat and match_query))
+
+    def _glossary_filter(self, text: str):
+        """类别下拉变化 → 合并筛选（类别 × 搜索）。"""
+        self._glossary_apply_filter()

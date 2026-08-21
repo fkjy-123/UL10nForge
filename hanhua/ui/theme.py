@@ -666,6 +666,45 @@ QLabel[class="cardTitle"] {{
     font-weight: 600;
     font-size: 13px;
 }}
+QFrame#glossaryToolbar {{
+    background: {PANEL};
+    border: 1px solid {BORDER};
+    border-radius: {RADIUS_CARD}px;
+}}
+QFrame#glossaryBadge {{
+    background: {PANEL};
+    border: 1px solid {BORDER};
+    border-radius: {RADIUS}px;
+}}
+QLabel#glossaryBadgeValue {{
+    color: {TEXT};
+    font-weight: 600;
+    font-size: 15px;
+}}
+QLabel#glossaryBadgeLabel {{
+    color: {TEXT_SECONDARY};
+    font-size: 9pt;
+}}
+QFrame#glossaryConflict {{
+    background: {ACCENT_BG};
+    border: none;
+    border-left: 3px solid {WARNING};
+    border-radius: {RADIUS}px;
+}}
+QFrame#glossaryNote {{
+    background: {PANEL};
+    border: 1px solid {BORDER};
+    border-radius: {RADIUS_CARD}px;
+}}
+
+/* ── 2026-08-22 设置页重做补充 ─────────────────────────── */
+/* 底部状态通栏（服务/模型/显存/测试四段横排，替代右侧状态卡） */
+QFrame#statusBar {{
+    background: {PANEL};
+    border: none;
+    border-top: 1px solid {BORDER};
+    border-radius: 0 0 {RADIUS_CARD}px {RADIUS_CARD}px;
+}}
 """
 
 

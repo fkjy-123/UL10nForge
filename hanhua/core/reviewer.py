@@ -38,6 +38,7 @@ from .review_outcome import (APPROVED, APPROVED_MINOR, BLOCKED, CANCELLED,
                              review_publishable)
 from .risk_gate import gate_entries
 from .review_server import ReviewModelService
+from .prompts import build_game_context_block
 
 # ── 审核维度与四级判定标准 ─────────────────────────────────────────
 
@@ -224,6 +225,10 @@ class ReviewItem:
     # 由调用方（review_entries）检索，空串 = 无参考（行为与旧版一致）。
     term_hint: str = ""
     context_hint: str = ""
+    # 设计文档 §16：Game Context 注入（游戏背景/语言风格/相关角色/
+    # 相关术语/翻译注意事项）——审校模型看到与翻译同一份游戏语境。
+    # 由调用方注入（空串 = 无语境，行为与旧版一致）。
+    game_context_hint: str = ""
 
 
 @dataclass
@@ -328,7 +333,8 @@ def _estimate_prompt_tokens(item: ReviewItem) -> int:
     """
     text = ((item.original or "")[:220] + (item.translation or "")[:220]
             + (item.term_hint or "")[:120]
-            + (item.context_hint or "")[:120])
+            + (item.context_hint or "")[:120]
+            + (item.game_context_hint or "")[:300])
     cjk = sum(1 for ch in text if "一" <= ch <= "鿿")
     return int(cjk + (len(text) - cjk) * 0.25) + 40   # +40 类型/格式行
 
@@ -431,12 +437,16 @@ def _parse_batch_result(raw: str,
 
 
 def _build_item_body(item: ReviewItem, title: bool = False) -> str:
-    """条目段（类型/原文/译文 + 术语/语境参考），单条与批量共用。
+    """条目段（类型/原文/译文 + 术语/语境参考 + Game Context），单条与批量共用。
 
     截断 220/120（2026-08-14 提速，见 _build_item_prompt）：单条/批量
     必须同口径——批量此前漏改仍用 600/400，与 _estimate_prompt_tokens
     的估算（220/120）不一致会让预算拆组失真。title=True 时带
     「### 条目」标题（批量数组输出需要条目标识；单条路径保持旧格式）。
+
+    game_context_hint（设计文档 §16）：审校模型看到与翻译同一份游戏
+    语境（游戏背景/语言风格/相关角色/相关术语/翻译注意事项）——判
+    定「语气不符角色设定」「术语与世界观不匹配」类问题有据可依。
     """
     head = f"\n### 条目 {item.entry_id}\n" if title else "\n"
     parts = [
@@ -444,6 +454,8 @@ def _build_item_body(item: ReviewItem, title: bool = False) -> str:
         f"原文：{item.original[:220]}\n"
         f"译文：{item.translation[:220]}",
     ]
+    if item.game_context_hint:
+        parts.append(f"游戏语境参考：{item.game_context_hint[:300]}")
     if item.term_hint:
         parts.append(f"术语参考：{item.term_hint[:120]}")
     if item.context_hint:
@@ -614,7 +626,8 @@ class SemanticReviewer:
     def retranslate_with_feedback(
             self, original: str, translation: str, feedback: str,
             *, max_tokens: int = 1024, text_type: str = "",
-            term_hint: str = "", context_hint: str = "") -> str:
+            term_hint: str = "", context_hint: str = "",
+            game_context_hint: str = "") -> str:
         """4B 反馈式重译（2026-08-14 request_error 根因修复）。
 
         用户实证：不合格条目的反馈重译走翻译服务（1.8B）——但 6~8GB
@@ -637,6 +650,8 @@ class SemanticReviewer:
         type_line = f"文本类型：{text_type}\n" if text_type else ""
         term_line = f"术语参考：{term_hint}\n" if term_hint else ""
         ctx_line = f"语境参考：{context_hint}\n" if context_hint else ""
+        gc_line = (f"游戏语境参考：{game_context_hint}\n"
+                   if game_context_hint else "")
         # 结构硬约束（2026-08-15 minato 实证：重译候选被机械门以
         # placeholder_mismatch/numeric_mismatch/newline_mismatch 拒——
         # 模型重译时丢占位符/改数字/改行结构，反馈本身没提，模型不会
@@ -645,7 +660,7 @@ class SemanticReviewer:
             f"{_RETRANSLATE_ROLE}\n\n"
             "请根据下面的审核反馈，修正这条游戏文本的译文，"
             "只输出修正后的译文，不要解释：\n"
-            f"{type_line}{term_line}{ctx_line}"
+            f"{type_line}{term_line}{ctx_line}{gc_line}"
             f"原文：{original}\n上次译文：{translation}\n"
             f"审核反馈：{feedback}\n"
             "输出要求：译文必须完整保留原文的全部占位符"
@@ -856,7 +871,8 @@ def review_entries(entries, glossary, *, game_name: str = "",
                    cancellation_event=None,
                    force_send: bool = False,
                    online_review_cfg=None,
-                   review_batch_size: int | None = None) -> dict:
+                   review_batch_size: int | None = None,
+                   profile=None) -> dict:
     # 在线 API 模式（2026-08-14 环境设置页 per-kind 配置）：传入审核的
     # ApiConfig——审核走云端端点（不启动本地 4B）。None = 本地路径
     #（现有行为）。语境证据检索（embed/rerank）恒本地 0.6B 轻量运行。
@@ -940,6 +956,15 @@ def review_entries(entries, glossary, *, game_name: str = "",
         item_entries.append(e)
         summary["originals"][eid] = str(e.original)
         summary["locators"][eid] = f"{e.file_id}:{e.key_path}"
+    # 设计文档 §16：Game Context 注入审校（一次构建，全量条目共用同一
+    # 份游戏语境参考）。profile 为 None 或未带 context_* 字段时返回空串
+    # （与旧版行为完全一致，零破坏）。
+    game_context_hint = ""
+    if profile is not None:
+        try:
+            game_context_hint = build_game_context_block(profile)
+        except Exception:  # noqa: BLE001 - 语境注入失败不阻断审核主流程
+            game_context_hint = ""
 
     def _persist_early(rows: list[TextEntry]) -> None:
         """提前返回路径的原子落库（P0-4：无候选 BLOCKED 不因早退丢失）。"""
@@ -1084,7 +1109,8 @@ def review_entries(entries, glossary, *, game_name: str = "",
             entry_id=it.entry_id, original=it.original,
             translation=it.translation, text_type=it.text_type,
             term_hint=_term_hint_for(str(it.original), pairs),
-            context_hint=ctx_hint))
+            context_hint=ctx_hint,
+            game_context_hint=game_context_hint))
 
     def _progress(done: int, total: int) -> None:
         # 节流：约每 10% 一条日志 + 末条必报（不刷屏）；
@@ -1241,7 +1267,8 @@ def review_entries(entries, glossary, *, game_name: str = "",
             outcome = _retranslate_with_feedback(
                 translator, entry, r, on_note, extra_feedback=extra,
                 reviewer=reviewer, app_dir=app_dir,
-                term_hint=hint[0], context_hint=hint[1])
+                term_hint=hint[0], context_hint=hint[1],
+                game_context_hint=game_context_hint)
             if outcome == "converged":
                 summary["converged"] += 1
             elif outcome == "blocked":
@@ -1260,7 +1287,8 @@ def review_entries(entries, glossary, *, game_name: str = "",
                 outcome = _retranslate_with_feedback(
                     translator, entry, r, on_note,
                     reviewer=reviewer, app_dir=app_dir,
-                    term_hint=hint[0], context_hint=hint[1])
+                    term_hint=hint[0], context_hint=hint[1],
+                    game_context_hint=game_context_hint)
                 if outcome == "converged":
                     summary["converged"] += 1
                 elif outcome == "blocked":
@@ -1412,7 +1440,8 @@ def _retranslate_with_feedback(translator, entry: TextEntry,
                                extra_feedback: str = "",
                                reviewer=None, app_dir=None,
                                term_hint: str = "",
-                               context_hint: str = "") -> str:
+                               context_hint: str = "",
+                               game_context_hint: str = "") -> str:
     """T1-4/T1-5 反馈式重译 + 再审收敛（上限 2 轮）。
 
     注入审核理由重译 → 过质量门 → 再审（若再审器可用）→
@@ -1454,7 +1483,8 @@ def _retranslate_with_feedback(translator, entry: TextEntry,
                     feedback, max_tokens=1024,
                     text_type=text_type_for(entry.meta),
                     term_hint=term_hint[:120],
-                    context_hint=context_hint[:120])
+                    context_hint=context_hint[:120],
+                    game_context_hint=game_context_hint[:300])
             except Exception:  # noqa: BLE001 - 4B 通道失败回退 translator
                 candidate = ""
         ok, translation = False, ""
@@ -1530,7 +1560,8 @@ def _retranslate_with_feedback(translator, entry: TextEntry,
         # hint，同一译文两次判定输入不一致，收敛判定波动）
         re_result = _re_review(entry, reviewer=reviewer, app_dir=app_dir,
                                term_hint=term_hint,
-                               context_hint=context_hint)
+                               context_hint=context_hint,
+                               game_context_hint=game_context_hint)
         if re_result is None or re_result.is_error:
             apply_outcome(entry, REVIEW_ERROR,
                           level=re_result.level if re_result else "RETRANSLATED",
@@ -1565,11 +1596,12 @@ def _retranslate_with_feedback(translator, entry: TextEntry,
 def _re_review(entry: TextEntry, reviewer: SemanticReviewer | None = None,
                app_dir: str | Path | None = None,
                online_cfg=None, term_hint: str = "",
-               context_hint: str = "") -> ReviewResult | None:
+               context_hint: str = "",
+               game_context_hint: str = "") -> ReviewResult | None:
     """再审一次（收敛判定）。失败返回 None（保守放行）。
 
-    term_hint/context_hint 与首审一致（2026-08-14：同一译文两次
-    判定输入一致，收敛判定不因参考缺失而波动）。
+    term_hint/context_hint/game_context_hint 与首审一致（2026-08-14：
+    同一译文两次判定输入一致，收敛判定不因参考缺失而波动）。
     """
     if reviewer is None:
         reviewer = SemanticReviewer(app_dir=app_dir or Path.cwd(),
@@ -1581,6 +1613,7 @@ def _re_review(entry: TextEntry, reviewer: SemanticReviewer | None = None,
         text_type=text_type_for(entry.meta),
         term_hint=term_hint[:120],
         context_hint=context_hint[:120],
+        game_context_hint=game_context_hint[:300],
     ))
 
 

@@ -169,7 +169,7 @@ def test_blocked_after_two_unconverged_rounds(monkeypatch, tmp_path):
     store = _store(tmp_path, [entry])
 
     def fake_review(entry, reviewer=None, app_dir=None, term_hint="",
-                context_hint=""):
+                context_hint="", game_context_hint=""):
         return ReviewResult("re", level="CRITICAL", reason="仍错译")
 
     monkeypatch.setattr("hanhua.core.reviewer._re_review", fake_review)
@@ -309,7 +309,7 @@ def test_failed_entry_with_candidate_enters_mandatory_review(monkeypatch,
     store = _store(tmp_path, [entry])
 
     def fake_re_review(entry, reviewer=None, app_dir=None, term_hint="",
-                    context_hint=""):
+                    context_hint="", game_context_hint=""):
         return ReviewResult("re", level="PASS", reason="修正后正确")
 
     monkeypatch.setattr("hanhua.core.reviewer._re_review", fake_re_review)
@@ -344,7 +344,7 @@ def test_failed_entry_pass_verdict_never_approves_rejected_candidate(
     store = _store(tmp_path, [entry])
 
     def fake_re_review(entry, reviewer=None, app_dir=None, term_hint="",
-                    context_hint=""):
+                    context_hint="", game_context_hint=""):
         return ReviewResult("re", level="PASS", reason="重译正确")
 
     monkeypatch.setattr("hanhua.core.reviewer._re_review", fake_re_review)

@@ -256,7 +256,7 @@ _SCAN_DB_BATCH = 200
 
 def _file_fingerprint(st: os.stat_result, path: Path) -> str:
     """文件指纹：小文件（≤8MB）全量 sha256（安全写回证据链仍用内容
-    哈希）；大文件退化为 size+mtime_ns+ctime_ns 组合指纹。
+    哈希）；大文件退化为 size+mtime_ns 组合指纹。
 
     2026-08-19 扫描性能修复：_tree_hashes 此前对全树逐文件 sha256——
     大游戏几十 GB 资源（.assets/ bundle/纹理/音频）在 scan_all 里被
@@ -264,16 +264,23 @@ def _file_fingerprint(st: os.stat_result, path: Path) -> str:
     scan_v2 standalone ×2），磁盘读带宽直接决定扫描时长（实测大游戏
     仅树哈希就小时级）。清单用途是「树在扫描前后是否变化」的指纹
     比对，不是内容完整性证明——大文件 size+时间戳足够捕捉任何写入
-    （mtime/ctime 变化必然伴随），小文件保留内容哈希兜底（时间戳
-    粒度问题）。IL2CPP 规范输入（GameAssembly/metadata）仍有独立的
-    _sha256_file 校验（写回闸门），安全语义不受影响。
+    （mtime 变化必然伴随），小文件保留内容哈希兜底（时间戳粒度问题）。
+    IL2CPP 规范输入（GameAssembly/metadata）仍有独立的 _sha256_file
+    校验（写回闸门），安全语义不受影响。
+
+    2026-08-22 ctime 修正：大文件指纹此前用 mtime+ctime——Windows 上
+    ctime 语义是「创建/写入目录项时间」，复制会获得新的 ctime，与
+    扫描时不同 → 写回复制后 _tree_hashes(staging) != 清单，全量写回
+    被误拒（dead-catch E2E 实证：复制 166 文件全一致，仅 4 个大文件
+    ctime 不同 → 「复制期间原游戏输入发生变化」）。ctime 不参与指纹，
+    只在原目录侧做 mtime 快照一致性校验（复制不影响原目录 mtime）。
     """
     if st.st_size <= 8 * 1024 * 1024:
         try:
             return _sha256_file(path)
         except OSError:
             pass
-    return f"s{st.st_size}:{st.st_mtime_ns}:{st.st_ctime_ns}"
+    return f"s{st.st_size}:{st.st_mtime_ns}"
 
 
 def _tree_hashes(root: Path) -> dict[str, str]:

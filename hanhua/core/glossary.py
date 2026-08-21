@@ -296,6 +296,19 @@ class GlossaryStore:
                               (translation, category, note, term))
             self.conn.commit()
 
+    def set_status(self, term, status: str) -> None:
+        """人工切换条目状态（候选 ↔ 生效），仅接受 active/candidate。
+
+        候选词对（审核沉淀未跨游戏复现）用户可在术语库确认升级为生效；
+        生效词对也可降回候选（觉得该词对当前游戏语境不合适时）。
+        """
+        if status not in ("active", "candidate"):
+            return
+        with self._lock:
+            self.conn.execute(
+                "UPDATE glossary SET status=? WHERE term=?", (status, term))
+            self.conn.commit()
+
     def delete(self, term):
         with self._lock:
             self.conn.execute("DELETE FROM glossary WHERE term=?", (term,))

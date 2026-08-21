@@ -467,6 +467,15 @@ class TranslatePage(QWidget):
         激活段 → 1.0（满色），离开段 → 0.55（半透明）。reduced-motion
         直接 setOpacity 跳变。旧动画未完成时停掉重开（避免快速跨段时
         两个淡入淡出动画抢同一个 effect 的 opacity 属性）。
+
+        2026-08-21 修复「无法开始翻译」：旧动画自然结束后 finished
+        回调里 deleteLater 销毁了 C++ 对象，但 _seg_fade 仍持 Python
+        引用（悬空）——快速跨段切换时 old.stop() 抛 RuntimeError
+        （libshiboken: Internal C++ object already deleted）。此异常
+        在 start()→_reset_pipeline_progress→_update_segment_active
+        路径抛出，致 worker 从未启动、_active_run 不清，第二次点击
+        命中「上一个翻译任务仍在停止」守卫。根治：finished 回调里先从
+        dict 移除引用再 deleteLater，且 stop() 包 try/except 兜底。
         """
         effect = self._seg_effect.get(key)
         if effect is None:
@@ -475,16 +484,33 @@ class TranslatePage(QWidget):
         if not motion_enabled() or abs(current - target_opacity) < 0.01:
             effect.setOpacity(target_opacity)
             return
-        old = self._seg_fade.get(key)
+        old = self._seg_fade.pop(key, None)
         if old is not None:
-            old.stop()
-            old.deleteLater()
+            # C++ 对象可能已被 finished→deleteLater 销毁（悬空引用），
+            # stop/deleteLater 均 may raise RuntimeError——静默吞掉。
+            try:
+                old.stop()
+                old.deleteLater()
+            except RuntimeError:
+                pass
         anim = QPropertyAnimation(effect, b"opacity", self)
         anim.setDuration(_SEGMENT_FADE_MS)
         anim.setStartValue(current)
         anim.setEndValue(target_opacity)
         anim.setEasingCurve(QEasingCurve.OutCubic)
-        anim.finished.connect(lambda a=anim: a.deleteLater())
+
+        def _on_finished(anim=anim, key=key):
+            # 自然结束：先从 dict 移除（防悬空引用），再 deleteLater
+            # 释放。只有当 dict 里仍是本动画才移除——中途被新动画替换
+            # 时不误删新动画的引用。
+            if self._seg_fade.get(key) is anim:
+                self._seg_fade.pop(key, None)
+            try:
+                anim.deleteLater()
+            except RuntimeError:
+                pass
+
+        anim.finished.connect(_on_finished)
         self._seg_fade[key] = anim
         anim.start()
 
@@ -915,9 +941,12 @@ class TranslatePage(QWidget):
                 # 审计 §5 P0-8）、cancellation_event（可取消，P0-9）。
                 # §68 设置：开关关闭时跳过审核；策略映射送审率上限
                 # （快速 5% / 平衡 15% / 严格 30%，risk_gate 硬约束上限）。
+                # 2026-08-21：开关（ai_review_enabled）已从设置页移除——
+                # 语义审核是翻译管线固定环节（设计文档 §26 全链路），不再
+                # 提供关闭入口；字段保留兼容旧配置，恒走审核。
                 try:
                     review_summary = None
-                    if self.state.api.ai_review_enabled:
+                    if True:  # 恒审核（§26 全链路闭环；开关字段保留兼容）
                         # 审核进度实时可见（用户实证：翻译完成后界面无
                         # 反馈，2.6GB 审核模型首次启动 30-120 秒 + 逐条
                         # 判定期间 UI 像卡死、写回被锁）——启动提示先于
@@ -944,6 +973,13 @@ class TranslatePage(QWidget):
                         review_summary = review_entries(
                             entries, learn_g,
                             game_name=str(profile.game_name or ""),
+                            # 设计文档 §16：Game Context 注入审校——审校
+                            # 模型看到与翻译同一份游戏语境（游戏背景/
+                            # 语言风格/相关角色/相关术语/翻译注意事项），
+                            # 判定「语气不符角色设定」「术语与世界觀不匹配」
+                            # 类问题有据可依。profile 已带 context_* 字段
+                            #（GameProfile 扩展），直接传入。
+                            profile=profile,
                             on_note=on_log,
                             on_progress=lambda done, total:
                             signals.review.emit(done, total),

@@ -80,11 +80,16 @@ def test_font_settings_ui_removed_and_default_config_intact(
 
     assert page.tabs.count() == 5
     assert [page.tabs.tabText(i) for i in range(5)] == [
-        "环境设置", "模型与性能", "术语库", "AI 审核", "关于"]
+        "环境设置", "翻译设置", "术语库", "说明", "关于"]
     assert not hasattr(page, "font_enabled")     # 旧字体开关已移除
     assert not hasattr(page, "font_save_btn")    # 档位保存按钮已移除
     assert not hasattr(page, "font_medium")      # 档位选择器已移除
     assert not hasattr(page, "_save_font_weight")
+    # 2026-08-21：「AI 审核」分类页已删除（审核是固定管线环节）
+    assert not hasattr(page, "review_enabled")
+    assert not hasattr(page, "review_tab")
+    # 底部状态条取代右侧独立状态卡
+    assert hasattr(page, "status_bar")
 
     loaded = SettingsStore(tmp_path / "settings.json")
     loaded.load()

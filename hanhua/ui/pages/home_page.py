@@ -19,6 +19,9 @@ from PySide6.QtWidgets import (QDialog, QDialogButtonBox, QFileDialog, QFrame,
                                QStackedWidget, QVBoxLayout, QWidget)
 
 from hanhua.core import models
+from hanhua.core.game_context import (SAMPLE_BUDGET, context_needs_update,
+                                      game_context_summary,
+                                      load_game_context, sample_entries)
 from hanhua.core.models import (TextEntry, entry_from_row,
                                 is_actionable_translation)
 from hanhua.core.project import Project
@@ -183,6 +186,11 @@ class HomePage(QWidget):
 
         self.profile_edit_btn.clicked.connect(self._edit_profile)
         self.pick_btn.clicked.connect(self._pick_dir)
+        # 设计文档 §24：游戏语境状态卡——未建立/已建立/需要更新 + 按钮
+        self.context_recog_btn.clicked.connect(self._start_context_recognition)
+        self.context_view_btn.clicked.connect(self._view_game_context)
+        self.context_reanalyze_btn.clicked.connect(
+            self._start_context_recognition)
         # #2：数据带统计后台化竞态防护——每次刷新递增 token，worker
         # 完成时 token 不符（项目已切换/更新刷新已发出）则丢弃。
         self._dashboard_token = 0
@@ -194,6 +202,8 @@ class HomePage(QWidget):
         # 双态刷新：打开项目与条目变化（翻译/审校后）都要更新
         state.projectOpened.connect(lambda _p: self._refresh_dashboard())
         state.entriesChanged.connect(self._refresh_dashboard)
+        state.projectOpened.connect(lambda _p: self._refresh_context_card())
+        state.entriesChanged.connect(self._refresh_context_card)
         # 流水线 rail 实时刷新（#15）：扫描阶段事件 + 翻译/审核/写回阶段
         # 广播——此前 rail 只在 _render_report（扫描完成）更新一次，扫描
         # 与翻译全程 rail 卡在「游戏检测」节点。
@@ -363,6 +373,48 @@ class HomePage(QWidget):
         pc.addWidget(self.profile_summary)
         self.profile_card.setHidden(True)
         lay.addWidget(self.profile_card)
+
+        # 游戏语境状态卡（设计文档 §21-24：未建立/已建立/需要更新 +
+        # 开始识别/重新分析/查看游戏介绍按钮。不展示 Token/推理深度/
+        # 置信度等系统内部信息——§24 明确禁止）。识别在首次翻译前自动
+        # 提示（§21），此处为手动入口；识别结果与翻译/审校/重排共享
+        # 同一份数据（§11/§15-17）。
+        self.context_card = QFrame()
+        self.context_card.setObjectName("profileCard")
+        cc = QVBoxLayout(self.context_card)
+        cc.setContentsMargins(18, 14, 18, 14)
+        cc.setSpacing(6)
+        cc_head = QHBoxLayout()
+        cc_head.setSpacing(10)
+        cc_icon = LineIcon("profile", 28)
+        cc_title = QLabel("游戏语境")
+        cc_title.setProperty("class", "pageTitle")
+        self.context_status = QLabel("尚未建立")
+        self.context_status.setProperty("class", "subtitle")
+        self.context_recog_btn = QPushButton("开始识别")
+        self.context_recog_btn.setProperty("primary", True)
+        self.context_recog_btn.setMinimumHeight(44)
+        self.context_recog_btn.setAccessibleName("开始游戏语境识别")
+        self.context_view_btn = QPushButton("查看游戏介绍")
+        self.context_view_btn.setMinimumHeight(44)
+        self.context_reanalyze_btn = QPushButton("重新分析")
+        self.context_reanalyze_btn.setMinimumHeight(44)
+        cc_head.addWidget(cc_icon)
+        cc_head.addWidget(cc_title)
+        cc_head.addSpacing(6)
+        cc_head.addWidget(self.context_status)
+        cc_head.addStretch(1)
+        cc_head.addWidget(self.context_view_btn)
+        cc_head.addWidget(self.context_reanalyze_btn)
+        cc_head.addWidget(self.context_recog_btn)
+        self.context_summary_label = QLabel(
+            "翻译前建议先分析游戏背景，模型将自动获得足够的游戏语境。")
+        self.context_summary_label.setProperty("class", "subtitle")
+        self.context_summary_label.setWordWrap(True)
+        cc.addLayout(cc_head)
+        cc.addWidget(self.context_summary_label)
+        self.context_card.setHidden(True)
+        lay.addWidget(self.context_card)
 
     # ── 拖放 ──
     def _set_drop_active(self, active: bool):
@@ -552,6 +604,7 @@ class HomePage(QWidget):
         self.state.switch_project(proj, report)
         self._render_report(report)
         self._refresh_profile_card()
+        self._refresh_context_card()
         self.window.updateProjectCard(proj)
         summary = f"{report.text_files} 个文本文件 · {report.v2_files} 个二进制资源"
         morph_warnings = [w for w in getattr(report, "warnings", ())
@@ -690,15 +743,23 @@ class HomePage(QWidget):
 
     # ── 双态切换（§16：项目打开后隐藏大拖放框） ─────────────
     def _refresh_dashboard(self):
-        """有项目 → 项目态；无项目 → 欢迎态。"""
+        """有项目 → 项目态；无项目 → 欢迎态。
+
+        2026-08-21 防御：projectOpened 信号可能在项目切换过渡期命中，
+        state.project 此刻未必是完整 Project（crash.log 实证
+        AttributeError: 'object' has no attribute 'store'）。用 hasattr
+        守卫，非完整项目按「无项目」处理而非崩溃。
+        """
         project = self.state.project
-        has_project = project is not None and project.store is not None
+        has_project = (project is not None
+                       and getattr(project, "store", None) is not None)
         self._panels.setCurrentIndex(0 if not has_project else 1)
         self.welcome_panel.setVisible(not has_project)
         self.project_panel.setVisible(has_project)
         if not has_project:
             return
         self._refresh_project_state()
+        self._refresh_context_card()
 
     def _refresh_project_state(self):
         """数据带 + 健康度 + 推荐 + 英雄区（#2：全量统计后台线程）。"""
@@ -804,3 +865,132 @@ class HomePage(QWidget):
             self._refresh_profile_card()
             Toast.show(self, "游戏档案已保存，下次翻译开始时生效（进行中的任务"
                              "仍使用开始时的档案）", "success")
+
+    # ── 游戏语境识别（设计文档 §3-24） ────────────────────────
+    def _refresh_context_card(self):
+        """状态卡渲染：未建立 / 已建立 / 需要更新（§23 三态）。"""
+        project = self.state.project
+        store = getattr(project, "store", None)
+        if store is None:
+            self.context_card.setHidden(True)
+            return
+        self.context_card.setHidden(False)
+        ctx = load_game_context(store)
+        if not ctx:
+            self.context_status.setText("尚未建立")
+            self.context_recog_btn.setVisible(True)
+            self.context_view_btn.setVisible(False)
+            self.context_reanalyze_btn.setVisible(False)
+            self.context_summary_label.setText(
+                "翻译前建议先分析游戏背景，模型将自动获得足够的游戏语境。")
+            return
+        # 已有上下文：需更新判定（§23 新增大量文本后提示）
+        actionable = self._count_actionable()
+        if context_needs_update(store, actionable):
+            status_text = "需要更新"
+        else:
+            status_text = "已建立"
+        self.context_status.setText(status_text)
+        self.context_recog_btn.setVisible(False)
+        self.context_view_btn.setVisible(True)
+        self.context_reanalyze_btn.setVisible(True)
+        summary = game_context_summary(ctx)
+        self.context_summary_label.setText(
+            summary or "游戏语境已建立（点击「查看游戏介绍」查看详情）")
+
+    def _count_actionable(self) -> int:
+        """当前可翻译条目数（需要更新判定用，§23）。"""
+        try:
+            rows = self.state.project.store.get_entries()
+        except Exception:  # noqa: BLE001 统计失败不阻断状态卡
+            return 0
+        count = 0
+        for row in rows:
+            entry = HomePage._entry_from_row(row)
+            if is_actionable_translation(entry):
+                count += 1
+        return count
+
+    def _start_context_recognition(self):
+        """开始/重新分析游戏语境（Worker 后台识别，复制 translate_tool_page
+        模式：Worker 内 ensure_running → create_client → chat → 解析）。"""
+        project = self.state.project
+        store = getattr(project, "store", None)
+        if store is None:
+            Toast.show(self, "请先打开游戏项目", "warning")
+            return
+        api = self.state.api
+        if api.mode == "api" and not (api.base_url and api.api_key
+                                      and api.model):
+            Toast.show(self, "请先在设置中配置 API 模型", "warning")
+            return
+        # 取样（后台线程做全量扫描 + 分类抽样）
+        self.context_status.setText("正在识别…")
+        self.context_recog_btn.setEnabled(False)
+        self.context_reanalyze_btn.setEnabled(False)
+        self.context_summary_label.setText(
+            "正在分析代表性文本（UI 对白/任务/物品/技能/剧情…）…")
+        worker = Worker(self._recognize_worker, api, store,
+                        self.state.resource_dir, self.state.local_model)
+        # 引用必须保存（worker 局部变量会丢 wrapper）
+        self._context_worker = worker
+        worker.signals.finished.connect(self._on_context_done)
+        worker.signals.error.connect(self._on_context_error)
+        QThreadPool.globalInstance().start(worker)
+
+    @staticmethod
+    def _recognize_worker(api, store, resource_dir, local_model):
+        """后台识别线程：取样 → 本地/云端统一识别 → 解析 → 落库。
+
+        返回 (ctx: dict, raw: str)。失败抛异常由 error 信号处理。
+        """
+        from hanhua.core.game_context import (GameContextRecognizer,
+                                              parse_game_context,
+                                              save_game_context)
+        rows = store.get_entries()
+        samples = sample_entries(rows)
+        if not samples:
+            raise RuntimeError("没有可识别的文本样本（项目为空）")
+        config = api
+        if api.mode == "local":
+            runtime = local_model.ensure_running(api)
+            from hanhua.core.models import ApiConfig
+            from dataclasses import replace
+            config = replace(api, base_url=runtime.endpoint,
+                             api_key=runtime.api_key, model=runtime.model)
+        # 原文语言：从游戏档案读取（store 是 ProjectStore，只有 get_profile()）
+        profile = store.get_profile()
+        source_lang = getattr(profile, "source_lang", "") or "auto"
+        recognizer = GameContextRecognizer(config)
+        raw = recognizer.recognize(samples, source_lang=source_lang)
+        ctx = parse_game_context(raw)
+        ctx["_sampled_total"] = len(rows)
+        save_game_context(store, ctx)
+        return ctx, raw
+
+    def _on_context_done(self, result):
+        ctx, _raw = result
+        self.context_recog_btn.setEnabled(True)
+        self.context_reanalyze_btn.setEnabled(True)
+        self._refresh_context_card()
+        from hanhua.core.game_context import game_context_summary
+        summary = game_context_summary(ctx)
+        Toast.show(
+            self,
+            f"游戏语境已建立：{summary or '识别完成'}", "success")
+
+    def _on_context_error(self, err: str):
+        self.context_recog_btn.setEnabled(True)
+        self.context_reanalyze_btn.setEnabled(True)
+        self.context_status.setText("识别失败")
+        self.context_summary_label.setText(
+            f"识别失败：{err[:80]}（可直接开始翻译，游戏语境将不注入）")
+        Toast.show(self, f"游戏语境识别失败：{err}", "error")
+
+    def _view_game_context(self):
+        """查看游戏介绍（§11 用户可见的游戏介绍 = 同一份 Game Context 数据）。"""
+        from hanhua.ui.game_context_dialog import GameContextDialog
+        store = getattr(self.state.project, "store", None)
+        ctx = load_game_context(store) if store is not None else {}
+        dialog = GameContextDialog(ctx, self)
+        dialog.exec()

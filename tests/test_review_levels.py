@@ -428,7 +428,7 @@ class _FakeTranslator:
 
 def test_convergence_after_one_round(monkeypatch):
     def fake_review(entry, reviewer=None, app_dir=None, term_hint="",
-                context_hint=""):
+                context_hint="", game_context_hint=""):
         return ReviewResult("re", level="PASS")
 
     monkeypatch.setattr("hanhua.core.reviewer._re_review", fake_review)
@@ -446,7 +446,7 @@ def test_convergence_after_one_round(monkeypatch):
 
 def test_convergence_minor_after_retranslate(monkeypatch):
     def fake_review(entry, reviewer=None, app_dir=None, term_hint="",
-                context_hint=""):
+                context_hint="", game_context_hint=""):
         return ReviewResult("re", level="MINOR", reason="语序略生硬")
 
     monkeypatch.setattr("hanhua.core.reviewer._re_review", fake_review)
@@ -460,7 +460,7 @@ def test_convergence_minor_after_retranslate(monkeypatch):
 
 def test_blocked_after_two_rounds(monkeypatch):
     def fake_review(entry, reviewer=None, app_dir=None, term_hint="",
-                context_hint=""):
+                context_hint="", game_context_hint=""):
         return ReviewResult("re", level="CRITICAL", reason="仍错译")
 
     monkeypatch.setattr("hanhua.core.reviewer._re_review", fake_review)

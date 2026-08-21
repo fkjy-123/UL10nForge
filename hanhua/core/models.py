@@ -90,19 +90,36 @@ def entry_from_row(row: dict) -> TextEntry:
 
 
 @dataclass
+class GameContext:
+    """游戏语境识别结果（设计文档 §5-10）。"""
+    game_name: str = ""
+    genre: str = ""
+    setting: str = ""
+    summary: str = ""
+    characters: list[str] = field(default_factory=list)
+    terms: list[str] = field(default_factory=list)
+    style: str = ""
+    translation_notes: list[str] = field(default_factory=list)
+
+
+@dataclass
 class GameProfile:
     game_name: str = ""
     genre: str = ""
     world_setting: str = ""
     tone_notes: str = ""
-    # #10：Style/Personalization——用户自定义翻译风格要求（游戏本地化
-    # 角色行为边界之外的个性化指令）。空 = 使用内置默认角色；非空 →
-    # 以【个性化风格要求】块注入 system prompt 并优先于内置文风。
-    # #17：旧 style_guide 字段已删（与 prompt_style 功能重复且无 UI
-    # 入口）；get_profile 按字段过滤，旧库残留 key 自动忽略。
     prompt_style: str = ""
-    source_lang: str = "auto"    # auto / English / 日本語 / 한국어 / ...
+    source_lang: str = "auto"
     target_lang: str = "zh-CN"
+    # 新增：GameContext 字段（与设计文档一致，user-facing 与 model-facing 共享数据）
+    context_game_name: str = ""
+    context_genre: str = ""
+    context_setting: str = ""
+    context_summary: str = ""
+    context_characters: list[str] = field(default_factory=list)
+    context_terms: list[str] = field(default_factory=list)
+    context_style: str = ""
+    context_translation_notes: list[str] = field(default_factory=list)
 
 
 @dataclass

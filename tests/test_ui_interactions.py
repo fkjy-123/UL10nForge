@@ -494,37 +494,40 @@ def test_settings_nav_switches_tabs(qapp, tmp_path):
     page = SettingsPage(_state(tmp_path), _RecordingWindow())
     assert not page.tabs.tabBar().isVisible()
     assert page.tabs.currentIndex() == 0
-    # 2026-08-18 字体 tab 移除后 5 页：环境/模型与性能/术语库/AI审核/关于，
-    # 导航行 1 = 模型与性能(1)、行 2 = AI 审核(3)
+    # 2026-08-22 加「说明」页后 5 页：环境/翻译设置/术语库/说明/关于，
+    # 导航行 1 = 翻译设置(1)、行 2 = 术语库(2)、行 3 = 说明(3)、行 4 = 关于(4)
     page.settings_nav.setCurrentRow(1)
     assert page.tabs.currentIndex() == 1
     page.settings_nav.setCurrentRow(2)
+    assert page.tabs.currentIndex() == 2
+    page.settings_nav.setCurrentRow(3)
     assert page.tabs.currentIndex() == 3
+    page.settings_nav.setCurrentRow(4)
+    assert page.tabs.currentIndex() == 4
 
 
 def test_settings_review_strategy_persists(qapp, tmp_path):
-    """#47：AI 审核改为全量送审——策略三档（快速/平衡/严格）已移除，
-    审核范围固定「全部译文」；开关仍保存并持久化。"""
+    """#47 + 2026-08-21：AI 审核改为固定管线环节——「AI 审核」分类页
+    已删除（无开关可关）；全量送审范围说明并入「关于」页。"""
     from hanhua.ui.pages.settings_page import SettingsPage
     state = _state(tmp_path)
     page = SettingsPage(state, _RecordingWindow())
-    assert page.review_enabled.isChecked()  # 默认开启
-    assert not hasattr(page, "review_balanced")   # 抽样策略已移除
-    assert not hasattr(page, "review_strict")
-    assert "全部译文" in page.review_scope_label.text()  # 全量范围文案
-    page.review_enabled.setChecked(False)
-    page._save_review()
-    assert state.api.ai_review_enabled is False
-    # 重新加载页面，配置还原（持久化验证）
-    page2 = SettingsPage(state, _RecordingWindow())
-    assert not page2.review_enabled.isChecked()
-    assert "全部译文" in page2.review_scope_label.text()
+    # 审核开关已移除：恒全量审核，无关闭入口
+    assert not hasattr(page, "review_enabled")
+    assert not hasattr(page, "review_scope_label")
+    assert not hasattr(page, "review_save_btn")
+    # ai_review_enabled 字段保留兼容旧配置（恒走审核，translate_page 恒真）
+    assert state.api.ai_review_enabled is True
 
 
 def test_settings_glossary_add_edit_delete(qapp, tmp_path):
     from hanhua.ui.pages.settings_page import SettingsPage
     page = SettingsPage(_state(tmp_path), _RecordingWindow())
     page.tabs.setCurrentWidget(page.glossary_table.parent())  # 切到术语表
+    # 新增后统计徽章/搜索/冲突条存在（#15 术语库 UI 重做）
+    assert hasattr(page, "glossary_search")
+    assert hasattr(page, "glossary_conflict_bar")
+    assert page._glossary_badges["total"].text() == "0"
     page._glossary_add()
     # 直接填表
     page._glossary_loading = True
@@ -536,6 +539,49 @@ def test_settings_glossary_add_edit_delete(qapp, tmp_path):
     rows = page._glossary.list_all()
     assert any(r["term"] == "Aria" and r["translation"] == "艾莉亚"
                for r in rows)
+    # 徽章刷新：总条目 1
+    assert page._glossary_badges["total"].text() == "1"
+
+
+def test_settings_glossary_search_and_status_toggle(qapp, tmp_path):
+    """#15：搜索过滤 + 双击状态列候选↔生效切换（人工确认/降级）。"""
+    from hanhua.ui.pages.settings_page import SettingsPage
+    page = SettingsPage(_state(tmp_path), _RecordingWindow())
+    page._ensure_glossary()
+    for term, trans, cat, status in (
+            ("Vale", "幽谷", "地名", "active"),
+            ("Aria", "艾莉亚", "人名", "active"),
+            ("moon_key", "月光钥匙", "术语", "candidate")):
+        page._glossary.add(term, trans, cat, "", )
+        if status == "candidate":
+            page._glossary.set_status(term, "candidate")
+    page._glossary_reload()
+    assert page.glossary_table.rowCount() == 3
+    # 搜索过滤：只显示 Aria
+    page.glossary_search.setText("Aria")
+    assert [page.glossary_table.item(r, 0).text()
+            for r in range(page.glossary_table.rowCount())
+            if not page.glossary_table.isRowHidden(r)] == ["Aria"]
+    page.glossary_search.clear()
+    # 类别筛选：人名 → 只显示 Aria
+    page.glossary_filter.setCurrentText("人名")
+    assert [page.glossary_table.item(r, 0).text()
+            for r in range(page.glossary_table.rowCount())
+            if not page.glossary_table.isRowHidden(r)] == ["Aria"]
+    page.glossary_filter.setCurrentText("全部")
+    # 状态列显示 生效/候选
+    statuses = [page.glossary_table.item(r, 3).text()
+                for r in range(page.glossary_table.rowCount())]
+    assert statuses.count("生效") == 2 and statuses.count("候选") == 1
+    # 双击候选行状态列 → 升级为生效
+    row = next(r for r in range(page.glossary_table.rowCount())
+               if page.glossary_table.item(r, 0).text() == "moon_key")
+    page._glossary_cell_double(row, 3)
+    assert page._glossary.list_all()
+    assert [r["status"] for r in page._glossary.list_all()
+            if r["term"] == "moon_key"] == ["active"]
+    # 徽章：候选 0
+    assert page._glossary_badges["candidate"].text() == "0"
 
 
 # ─────────────────────────── 主窗口整体 ─────────────────────
