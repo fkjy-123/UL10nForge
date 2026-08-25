@@ -13,8 +13,10 @@ from PySide6.QtTest import QTest
 
 
 # #2 后台化页面各自的 in-flight 标志：ReviewPage._loading /
-# TranslatePage._chips_loading / HomePage._dashboard_loading
-_LOADING_FLAGS = ("_loading", "_chips_loading", "_dashboard_loading")
+# TranslatePage._chips_loading / HomePage._dashboard_loading /
+# HomePage._context_loading（2026-08-22 语境卡后台化）
+_LOADING_FLAGS = ("_loading", "_chips_loading", "_dashboard_loading",
+                  "_context_loading")
 
 
 def await_reload(page, timeout_ms=8000):

@@ -13,6 +13,7 @@
   text/translated.txt     # 成功文本：来源/键位/原文/译文/置信度/原因/质量评分
   text/failed.txt         # 失败文本：来源/键位/原文/译文/失败原因/详情
   text/skipped.txt        # 跳过文本：来源/键位/原文/跳过原因/判定结论
+  text/blocked.txt        # 阻断文本：语义审核重译未收敛（坏译文/审核理由/轮次）
   writeback/writeback.txt # 写回逐文件记录：文件/成功失败/详情/验证结果
 """
 from __future__ import annotations
@@ -170,22 +171,6 @@ def _load_meta(row: dict) -> dict:
     return value if isinstance(value, dict) else {}
 
 
-def _format_detail(raw) -> str:
-    if raw is None or raw == "":
-        return ""
-    if isinstance(raw, dict):
-        text = json.dumps(raw, ensure_ascii=False, indent=2)
-    else:
-        try:
-            value = json.loads(raw)
-        except (json.JSONDecodeError, TypeError):
-            return str(raw)
-        text = json.dumps(value, ensure_ascii=False, indent=2) \
-            if isinstance(value, (dict, list)) else str(value)
-    lines = [line.strip() for line in text.splitlines() if line.strip()]
-    return " ".join(lines)
-
-
 def _entry_from_row(row: dict) -> TextEntry:
     meta = _load_meta(row)
     reasons = meta.get("quality_reasons", [])
@@ -201,117 +186,30 @@ def _entry_from_row(row: dict) -> TextEntry:
     )
 
 
-def _object_label(meta: dict, row: dict) -> str:
-    """所属对象/组件类型（Unity 结构定位信息）。"""
-    parts = []
-    if meta.get("asset_file"):
-        parts.append(f"asset_file={meta['asset_file']}")
-    if meta.get("obj") is not None:
-        parts.append(f"obj={meta['obj']}")
-    if meta.get("record_offset") is not None:
-        parts.append(f"record_offset={meta['record_offset']}")
-    if meta.get("line") is not None:
-        parts.append(f"line={meta['line']}")
-    kind = meta.get("kind") or ""
-    component = {
-        "str": "MonoBehaviour str 字段", "rawstr": "MonoBehaviour rawstr 数组",
-        "textasset": "TextAsset 脚本", "localization": "Localization 表格",
-        "typetree": "Typetree 字段", "us": "DLL #US 字符串",
-        "il2cpp": "IL2CPP metadata 字符串", "plain": "纯文本文件行",
-    }.get(kind, kind or "—")
-    label = "、".join(parts)
-    return f"{component}（{label}）" if label else component
-
-
 def _export_text_records(project, out_text: Path, profile,
                          model_name: str = "",
                          writeback_status: dict[str, str] | None = None,
                          review_results: dict[str, ReviewResult] | None = None) -> None:
-    """导出 translated/failed/skipped 三类文本全字段记录。
+    """导出 translated/failed/skipped/blocked 四类文本全字段记录。
 
-    writeback_status：{locator: 状态} 映射（written/rejected/回显跳过），
-    在写回完成后导出时为每条记录标注实际写回结果（避免「后台显示成功、
-    实际未写入」的统计虚高）。
-    review_results：{locator: ReviewResult} 语义审核结论——不合格条目
-    在导出中标注「需要优化：是（审核：<问题>）」与建议译文，取代旧的
-    形式化「需要优化：否」（用户实证：Resume→简历 类语义错误旧门不报）。
+    2026-08-22 记录升级：文本导出委托 record_writer 共享实现（GUI 与
+    runner 同构——对象行/审核：行/处置行/哨兵分布/重译档案统一），
+    本地保留薄签名转发，调用方无需改动。
     """
-    store = project.store
-    categories = {
-        "translated": ("成功文本", store.get_entries(status="translated")),
-        "failed": ("失败文本", store.get_entries(status="failed")),
-        "skipped": ("跳过文本", store.get_entries(status="skipped")),
-    }
-    now = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-    for category, (title, rows) in categories.items():
-        path = out_text / f"{category}.txt"
-        blocks = [
-            f"游戏：{profile.game_name or Path(project.game_dir).name}",
-            f"导出时间：{now}",
-            f"翻译模型：{model_name or '—'}",
-            f"{title}：{len(rows)} 条", "",
-        ]
-        for index, row in enumerate(rows, start=1):
-            meta = _load_meta(row)
-            reason = meta.get("reason") or ""
-            role = meta.get("role") or ""
-            confidence = meta.get("confidence") or row.get("confidence", "medium")
-            source = meta.get("source") or row["file_id"]
-            quality = meta.get("quality_reasons", [])
-            quality_text = "、".join(str(r) for r in quality) \
-                if isinstance(quality, list) and quality else "—"
-            quality_passed = meta.get("quality_passed")
-            detail = meta.get("request_error_detail")
-            original = row.get("original", "")
-            translation = row.get("translation", "") or "（无）"
-            echoed = (category == "translated" and translation == original)
-            wb_status = ""
-            if writeback_status:
-                locator = f"{row['file_id']}:{row.get('key_path', '')}"
-                wb_status = writeback_status.get(locator)
-            if wb_status:
-                wb_line = f"写回：未写入（{wb_status}）"
-            elif echoed:
-                wb_line = "写回：未执行（回显——译文与原文相同，无需写回）"
-            elif category == "translated" and writeback_status is not None:
-                wb_line = "写回：已写入"
-            else:
-                wb_line = "写回：—"
-            review = None
-            if review_results:
-                review = review_results.get(
-                    f"{row['file_id']}:{row.get('key_path', '')}")
-            if review is not None and review.verdict == "flag":
-                eval_text = (f"需优化（审核：{review.issue}——"
-                             f"{review.reason}）")
-                opt_text = (f"是（审核：{review.issue}——{review.reason}"
-                            f"{'；建议：' + review.suggestion if review.suggestion else ''}）")
-            else:
-                eval_text = ('回显保留原文（未实际翻译）' if echoed
-                             else '已产出译文' if category == 'translated'
-                             else quality_text or '—')
-                opt_text = ('是（回显未翻译）' if echoed
-                            else '否（审核通过或未审核）')
-            blocks += [
-                _SEPARATOR,
-                f"[{index}] {title}",
-                f"来源：{source}",
-                f"键位：{row.get('key_path', '')}",
-                f"对象：{_object_label(meta, row)}",
-                f"原文：{original}",
-                f"译文：{translation}",
-                f"置信度：{confidence}",
-                f"原因：{reason or '—'}",
-                f"角色：{role or '—'}",
-                f"质量评分：{quality_text}（passed={quality_passed}）",
-                f"翻译评价：{eval_text}",
-                f"需要优化：{opt_text}",
-                wb_line,
-            ]
-            if detail:
-                blocks.append(f"失败详情：{_format_detail(detail)}")
-            blocks.append("")
-        path.write_text("\n".join(blocks), encoding="utf-8")
+    from hanhua.core.record_writer import (
+        _export_retranslated_records,
+        _export_text_records as _rw_export_text_records,
+    )
+    _rw_export_text_records(
+        project, out_text, profile,
+        model_name=model_name,
+        writeback_status=writeback_status,
+        review_results=review_results)
+    _export_retranslated_records(
+        project, out_text, profile,
+        model_name=model_name,
+        writeback_status=writeback_status,
+        review_results=review_results)
 
 
 def _export_writeback_record(project, out_writeback: Path, profile,
@@ -337,6 +235,7 @@ def _export_writeback_record(project, out_writeback: Path, profile,
     if error_title:
         blocks += [_SEPARATOR, f"写回失败：{error_title}"]
         if error_detail:
+            from hanhua.core.record_writer import _format_detail
             blocks.append(f"详情：{_format_detail(error_detail)}")
         blocks.append("")
     elif result is not None:
@@ -1315,6 +1214,54 @@ def run_game(game_dir: Path, *, batch: int | None = None,
                              writeback_result,
                              error_title=("写回失败" if writeback_error else ""),
                              error_detail=writeback_error or "")
+
+    # ── 写回后地毯式审计（2026-08-25 用户指令：写回要像翻译一样审核）──
+    # 第 1 层确定性结构审计（字节/行数/结构/占位符/渲染一致）任何文件 FAIL
+    # → needs_rewrite=True，阻断本轮闭环（结构与 containment-breach-hd 的
+    # 卡死同源，必须重写回）；第 2 层审校模型软复核记 flag 供人工确认。
+    # 只读对比源目录 vs 发布目录，不修改任何文件；模型不可用优雅跳过。
+    if do_writeback and not writeback_error:
+        print("[3/4] 写回审计…")
+        from hanhua.core.writeback_audit import (
+            audit_writeback, render_audit_report)
+        audit_res = audit_writeback(
+            project.store, project.game_dir, project.out_dir,
+            run_model=True, app_dir=PROJECT_ROOT,
+            font_enabled=bool(getattr(settings.font, "enabled", False)),
+            on_note=lambda s: print(f"  {s}"))
+        try:
+            (out_writeback / "audit.txt").write_text(
+                render_audit_report(audit_res, game_name),
+                encoding="utf-8")
+        except Exception:  # noqa: BLE001 - 报告写失败不阻断
+            pass
+        if audit_res.needs_rewrite:
+            failed = ", ".join(
+                f.rel_path for f in audit_res.failed_files[:5])
+            writeback_error = (
+                f"写回审计失败（结构破坏，需重写回）：{failed}"
+                + (f" 等 {len(audit_res.failed_files)} 个文件" if
+                   len(audit_res.failed_files) > 5 else ""))
+            print(f"[错误] {writeback_error}")
+            print("  → 详细见 writeback/audit.txt")
+        elif audit_res.model_unavailable:
+            # 模型复核请求了却不可用 → 第二道防线覆盖不完整 → 阻断发布
+            # （不允许带审计缺口的写回发布；用户要求写回审核零错误、
+            # 无需人工兜底）。audit.txt 里已有「模型不可用」说明。
+            writeback_error = "写回审计不完整：审校模型服务不可用，已阻断发布（需先启动审核模型端口 8081）"
+            print(f"[错误] {writeback_error}")
+            print("  → 详细见 writeback/audit.txt")
+        else:
+            print(f"  写回审计通过：{len(audit_res.files)} 文件结构完整"
+                  f" · 模型 FLAG {len(audit_res.model_flags)} 条（软复核）")
+    elif do_writeback:
+        try:
+            (out_writeback / "audit.txt").write_text(
+                f"游戏：{game_name}\n写回审计时间：{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n\n写回失败，未执行审计（见 writeback.txt）\n",
+                encoding="utf-8")
+        except Exception:  # noqa: BLE001
+            pass
+
     # 知识库闭环：写回结果自动登记 writeback 域（§0.4.4-5）
     wb_kb = KnowledgeBase(REAL_USER_DIR / "knowledge.db")
     _register_writeback(wb_kb, game_name, writeback_result, writeback_error)
@@ -1429,7 +1376,8 @@ def _write_summary(project, report, stats, writeback_result, game_name,
         from types import SimpleNamespace
         counts = {
             st: project.store.count(st)
-            for st in ("pending", "translated", "failed", "skipped")
+            for st in ("pending", "translated", "failed", "skipped",
+                       "blocked")
         }
         report = SimpleNamespace(
             text_files="（续跑，见上轮 summary.md）",
@@ -1507,12 +1455,15 @@ def _write_summary(project, report, stats, writeback_result, game_name,
     else:
         lines += ["## 3 写回", "- （未写回）", ""]
     if stats is not None and review_summary:
+        blocked_n = review_summary.get("blocked", 0)
         lines += [
             "## 3.5 语义审核（翻译质量升级）",
             f"- 审核条数：{review_summary.get('reviewed', 0)}"
             f" · 不合格：{review_summary.get('flagged', 0)}"
-            f" · 术语沉淀：{review_summary.get('pairs', 0)}",
-            "- 不合格清单见 review/review-report.md（需人工确认后优化）",
+            f" · 重译未收敛阻断：{blocked_n}",
+            f"- 术语沉淀：{review_summary.get('pairs', 0)}",
+            "- 不合格清单见 review/review-report.md（需人工确认后优化）；"
+            "阻断条目全字段明细见 text/blocked.txt",
             "",
         ]
     lines += [
@@ -1526,7 +1477,8 @@ def _write_summary(project, report, stats, writeback_result, game_name,
         "- [ ] 闭环后删除汉化输出目录",
         "",
         "记录文件：",
-        "- text/translated.txt / text/failed.txt / text/skipped.txt",
+        "- text/translated.txt / text/failed.txt / text/skipped.txt / "
+        "text/blocked.txt",
         "- review/review-report.md / review.json（语义审核）",
         "- writeback/writeback.txt",
         "",

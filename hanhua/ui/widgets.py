@@ -54,7 +54,6 @@ class PageHeader(QWidget):
 
     def __init__(self, title: str, subtitle: str, parent=None):
         super().__init__(parent)
-        self.setFixedHeight(64)
         lay = QHBoxLayout(self)
         lay.setContentsMargins(0, 0, 0, 0)
         lay.setSpacing(16)
@@ -64,10 +63,15 @@ class PageHeader(QWidget):
         self.title_label.setProperty("class", "pageTitle")
         self.subtitle_label = QLabel(subtitle)
         self.subtitle_label.setProperty("class", "subtitle")
+        # 2026-08-22 修复文字拥挤/截半：副标题强制换行 + 最小高度，
+        # 窄窗口下不再被固定行高压成一条缝（PageHeader 高度 64→自适应，
+        # min 64 保底，说明长时自动撑高）
+        self.subtitle_label.setWordWrap(True)
         left.addWidget(self.title_label)
         left.addWidget(self.subtitle_label)
         lay.addLayout(left)
         lay.addStretch(1)
+        self.setMinimumHeight(64)
         self.actions_box = QHBoxLayout()
         self.actions_box.setSpacing(10)
         lay.addLayout(self.actions_box)
@@ -594,6 +598,10 @@ class WorkerSignals(QObject):
                                 # 「只有完成二字，两分钟后才出反馈」：
                                 # 汇总此前只进默认折叠的日志面板，完成
                                 # 时须经此信号回主线程弹 Toast/活动流
+    audit = Signal(str, str)    # 写回审计进度 (status, text)——worker 线程
+                                # 不得直接操作 QWidget，经此信号回主线程
+                                #（写回后地毯式审计：确定性逐文件 PASS/FAIL
+                                # + 模型软复核 FLAG/不可用，2026-08-26）
 
 
 class Worker(QRunnable):

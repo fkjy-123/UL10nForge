@@ -10,9 +10,9 @@ MODEL_RUNTIME_CHOICES = ("auto", "cpu", "gpu")
 _MODEL_RUNTIME_KINDS = ("translate", "review", "rerank", "embed")
 
 # 在线 API 模式需要云端配置的模型（2026-08-14：翻译与审核走云端
-# 大模型各自独立配置；重排/检索是 0.6B 毫秒级轻量任务，恒本地固定
-# CPU——用户拍板「不需要准备在线 API」）
-_API_KINDS = ("translate", "review")
+# 大模型各自独立配置。2026-08-22 用户指令：检索（embedding）也提供
+# 在线 API 卡片——云端 embedding 端点与本地 0.6B 等价；重排恒本地）
+_API_KINDS = ("translate", "review", "embed")
 
 # ApiConfig 字段过滤集（load 时只收合法字段，防旧 JSON 脏字段）
 _API_FIELDS = tuple(ApiConfig.__dataclass_fields__)
@@ -38,6 +38,7 @@ class SettingsStore:
         self.api_configs: dict[str, ApiConfig] = {
             "translate": self.api,
             "review": ApiConfig(),
+            "embed": ApiConfig(),
         }
 
     def load(self):
@@ -78,7 +79,7 @@ class SettingsStore:
                     **{k: v for k, v in raw.items() if k in _API_FIELDS})
             else:
                 self.api_configs[kind] = ApiConfig()
-        # 旧 JSON 里的 embed/rerank 在线配置（已弃用：恒本地）直接忽略。
+        # 旧 JSON 里的 rerank 在线配置（已弃用：恒本地）直接忽略。
         # 兼容旧版本：全局 profile 字段直接忽略（已废弃为项目级）
 
     def save(self):

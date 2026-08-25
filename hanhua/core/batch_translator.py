@@ -43,7 +43,9 @@ from hanhua.core.translator import (BUILTIN_UI_REFERENCES,
                                     ServiceUnavailableError,
                                     extract_json_array,
                                     extract_json_array_fallback,
-                                    merge_translation_references)
+                                    merge_translation_references,
+                                    strip_prompt_echo,
+                                    translate_source_directive)
 
 
 # 译文残留英文检测（target_script_mismatch）：
@@ -1408,6 +1410,65 @@ class BatchTranslator:
                     return e, "", False
                 if repaired is not None and repaired[2]:
                     return repaired
+            # 中文显式指令逐词补译（纯回显兜底）：native 英文 prompt 下
+            # 1.8B 对简单/品牌原文稳定回显（'Out of the Loop studio' →
+            # 回显，containment 实证；'Markiplier was here' 专名句回显，
+            # backrooms 实证）——英文 references 引用重试（proper_name
+            # reference / 多语言双跳 / 同对象译例）全部失败后才到这里。
+            # 把整条原文当整体译名强制翻译（中文显式指令是 1.8B 翻译
+            # 意图最强信号，与审校页 AI 翻译同级降级链同源，实测稳定产出
+            # 'Out of the Loop 工作室'）：strip_prompt_echo 剥指令前缀/
+            # 原文回显；剥空（模型仍回显）则不强求，交后续降级链。
+            # 多语言源（西语/俄语/法语等，_is_multilingual_source）跳过：
+            # 该类由双跳/同对象译例/多语言源保留放行链处理，不走中文指令
+            # 硬译（测试桩 0.7B 无法响应中文指令）。
+            if (callable(getattr(self.client, "translate_text", None))
+                    and not sub[0][2]
+                    and self._allows_fallback_retry(e)
+                    and sub[0][1]
+                    and not _CJK.search(sub[0][1])
+                    and not _is_multilingual_source(e.original)
+                    and ({"untranslated_text", "target_script_mismatch"}
+                         & set(e.quality_reasons))):
+                if self._is_cancelled():
+                    restore_original_state()
+                    return e, "", False
+                try:
+                    direct_out, direct_usage = translate_source_directive(
+                        self.client, e.original, target_lang, self.references)
+                except Exception as exc:  # noqa: BLE001
+                    self._record_usage(None)
+                    self._mark_request_failed(e, exc)
+                    return e, "", False
+                self._record_usage(direct_usage)
+                if self._is_cancelled():
+                    restore_original_state()
+                    return e, "", False
+                direct_clean = strip_prompt_echo(direct_out, "", e.original)
+                if direct_clean.strip() and _CJK.search(direct_clean):
+                    good = self._apply_quality(e, direct_clean)
+                    return e, direct_clean, good
+                # 整条原文作整体译名强制翻译（'Out of the Loop studio'
+                # 类短专名/品牌名：中文指令后模型仍可能整段回显——逐词
+                # 补译指令把整条原文当作整体译名，禁止回显）
+                try:
+                    word_out, _wusage = self.client.chat(
+                        "", [{"role": "user", "content":
+                              "请将以下名称翻译为简体中文，直接输出译名，"
+                              "不得回显原文，不要添加任何解释：\n\n"
+                              + e.original}])
+                except Exception as exc:  # noqa: BLE001
+                    self._record_usage(None)
+                    self._mark_request_failed(e, exc)
+                    return e, "", False
+                self._record_usage(_wusage)
+                if self._is_cancelled():
+                    restore_original_state()
+                    return e, "", False
+                word_clean = strip_prompt_echo(word_out, "", e.original)
+                if word_clean.strip() and _CJK.search(word_clean):
+                    good = self._apply_quality(e, word_clean)
+                    return e, word_clean, good
             # glossary 术语确定性修复：glossary_mismatch（模型译漏/双关
             # 误译术语，'Slash key'→'删除键' deadbeat 实证）→ 术语段
             # 替换为译例 + 非术语语义段翻译拼接（_repair_glossary_terms）。
@@ -1671,6 +1732,42 @@ class BatchTranslator:
         entry.meta["review_round"] = int(round_no)
         good = self._apply_quality(entry, candidate, skip_consistency=True)
         if not good:
+            # 纯回显兜底：英文反馈 prompt 下 1.8B 对简单/品牌原文仍回显
+            # （'Out of the Loop studio' 反馈重译→回显，containment 实证）
+            # → 中文显式指令（翻译意图最强信号）+ 逐词补译兜底，同
+            # _chat_each 降级链口径。两次都失败才按 model_behavior 计账。
+            target_lang = self.lang.rsplit("→", 1)[-1] or "zh-CN"
+            try:
+                direct_out, _du = translate_source_directive(
+                    self.client, entry.original, target_lang,
+                    self.references)
+            except Exception:  # noqa: BLE001 - 指令路径失败交调用方 blocked
+                direct_out = ""
+            direct_clean = strip_prompt_echo(direct_out, "", entry.original)
+            if direct_clean.strip() and _CJK.search(direct_clean):
+                good = self._apply_quality(
+                    entry, direct_clean, skip_consistency=True)
+                if good:
+                    return good, entry.translation
+                _record_failure_attempt(entry, "model_behavior")
+                return good, candidate
+            # 整条原文作整体译名强制翻译（品牌名/短专名类）
+            try:
+                word_out, _wu = self.client.chat(
+                    "", [{"role": "user", "content":
+                          "请将以下名称翻译为简体中文，直接输出译名，"
+                          "不得回显原文，不要添加任何解释：\n\n"
+                          + entry.original}])
+            except Exception:  # noqa: BLE001 - 指令路径失败交调用方 blocked
+                word_out = ""
+            word_clean = strip_prompt_echo(word_out, "", entry.original)
+            if word_clean.strip() and _CJK.search(word_clean):
+                good = self._apply_quality(
+                    entry, word_clean, skip_consistency=True)
+                if good:
+                    return good, entry.translation
+                _record_failure_attempt(entry, "model_behavior")
+                return good, candidate
             _record_failure_attempt(entry, "model_behavior")
         return good, candidate
 

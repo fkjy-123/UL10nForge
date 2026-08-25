@@ -442,6 +442,16 @@ def test_keyboard_noise_and_jam_credit_are_skipped(text):
     "banana bread",
     "welcome to the game",
     "A pretty tasty fruit, nothing special",
+    # 2026-08-24（Ice Age Baby Adventure）：开发者自嘲对话含长词+重复
+    # 3-gram 命中键盘噪声形态（was/a/and/the、if/can/have/a/in 等功能词
+    # 是句子语法骨架）——真实句子不是键盘乱打，必须保持可翻译（此前
+    # 被当键盘噪声整条跳过，8 条自嘲对话漏翻）
+    "he was a good frog and was good at protecting the crünch",
+    "if you want you can have a ride in my spaceship",
+    "plus flex sands powerfull powder is so strong",
+    "flex sand is perfect for holes sniffing like cocane and making hills",
+    "and recreated it with only flex sand",
+    "but it creates a superstrong climable and water tight seal",
 ])
 def test_normal_text_is_not_mistaken_for_noise(text):
     assert not should_skip(text)

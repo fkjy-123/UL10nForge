@@ -131,11 +131,11 @@ def test_reduced_motion_disables_looping_animations(qapp, monkeypatch):
     assert motion_enabled() is False
 
 
-def test_translate_log_is_visible_by_default(qapp, tmp_path):
+def test_translate_log_always_visible_no_toggle(qapp, tmp_path):
+    """2026-08-22 收起日志按钮已删（Splitter 可拖），日志恒可见。"""
     page = TranslatePage(_state(tmp_path), _Window())
     assert page.log_view.isVisibleTo(page)
-    page.log_toggle.click()
-    assert not page.log_view.isVisibleTo(page)
+    assert not hasattr(page, "log_toggle")
 
 
 def test_write_safety_bar_explains_disabled_state(qapp, tmp_path):

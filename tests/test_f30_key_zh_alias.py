@@ -66,3 +66,38 @@ def test_escape_plain_word_not_mistranslated():
     ok = validate_translation_quality(
         _entry("escape the room"), "逃离房间")
     assert "key_name_mistranslated" not in ok.reasons
+
+
+def test_shift_noun_night_shift_not_mistranslated():
+    """fix-54 键名兼作普通名词：'night shift / day shift' 的 shift 是
+    「班次」普通名词，译文「夜班/日班」完全正确——源文小写普通名词形态
+    非键位绑定 → key_name_mistranslated 跳过（Flabby Pizza 实证 3 条
+    对话被误杀阻断）。"""
+    for original, translation in (
+            ("Boss: How was your night shift yesterday?", "老板：昨天夜班过得怎么样？"),
+            ("Find the apartment key to head out for your night shift",
+             "找到公寓钥匙，然后去参加夜班工作"),
+            ("Boss: Your job consists of cleaning the pizzeria and preparing pizza for the day shift",
+             "老板：你的任务就是清洁披萨店，并为当日班次的员工准备披萨。")):
+        ok = validate_translation_quality(_entry(original), translation)
+        assert "key_name_mistranslated" not in ok.reasons
+        assert ok.passed
+
+
+def test_shift_binding_still_enforced():
+    """键名兼作普通名词的判别不放过真键位绑定：源文大写专有键拼写
+    （Shift/RMB）或作为交互提示字面量（Press Shift to…）→ 仍强制保留，
+    译成中文仍判失败。"""
+    # 大写专有键拼写 → 强制保留
+    bad = validate_translation_quality(
+        _entry("Camera Control - Shift + RMB"), "相机控制 - 移位 + 人民币")
+    assert "key_name_mistranslated" in bad.reasons
+    # 交互提示字面量（小写 shift 也是按键）→ 强制保留
+    bad2 = validate_translation_quality(
+        _entry("Press Shift to sprint"), "按 移位 冲刺")
+    assert "key_name_mistranslated" in bad2.reasons
+    # 真绑定保留键名 → 通过
+    ok = validate_translation_quality(
+        _entry("Camera Control - Shift + RMB"), "相机控制 - Shift + RMB")
+    assert "key_name_mistranslated" not in ok.reasons
+    assert ok.passed

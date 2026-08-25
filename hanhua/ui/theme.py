@@ -666,6 +666,11 @@ QLabel[class="cardTitle"] {{
     font-weight: 600;
     font-size: 13px;
 }}
+/* 2026-08-22 说明页可折叠卡片头：整行可点（手型光标由代码设置），
+   悬停高亮提示可展开 */
+QLabel[class="cardTitle"][collapsible="true"]:hover {{
+    color: {ACCENT};
+}}
 QFrame#glossaryToolbar {{
     background: {PANEL};
     border: 1px solid {BORDER};

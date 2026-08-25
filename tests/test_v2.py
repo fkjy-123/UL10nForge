@@ -2784,6 +2784,63 @@ def test_mono_diagnostic_strings_skipped():
         assert not _is_mono_diagnostic_string(s), f"不应判诊断：{s}"
 
 
+def test_sentence_display_relax_recovers_dialogue():
+    """come-back 实证：识别遗漏的对话短语（宁严勿漏修复）。
+
+    这些真实对话此前整类漏进 unverified_user_string 跳过桶：
+    - 完成义小品词结尾（'ill let you in' 的 in 是 let in 完成义，非悬空
+      介词）→ _DEBUG_CONCAT_TAIL 剔除 in/out/up/down/away/back
+    - 短对话短语（'why not'/'take 1'）len<8 放宽
+    - 连写重复字母 + 多感叹号语气词（'allllmooooost!!!'）exclamation 放宽
+    - 圆括号开头完整句子（自嘲注解）放行
+    """
+    from hanhua.core.unity.mono_dll import (
+        _is_sentence_display_text, _is_exclamation_ui_word)
+    dialogue = (
+        "if you can get a ghost catcher for me ill let you in",
+        "nice ill let you in", "nice!", "why not", "take 1",
+        "allllmooooost!!!", "ALLLLLLMOOOOOOOOSTTT!!!!!!!", "CELEBRATE!!!!",
+        "(translation: the ghost of the helper of the ice age baby is "
+        "trough that door. we need to make him tell where he now is.)",
+        "why would you refuse money", "wide putin",
+        "i cant start playing my games if im not consumed the consume",
+    )
+    for s in dialogue:
+        assert (_is_sentence_display_text(s) or _is_exclamation_ui_word(s)), \
+            f"应放行：{s}"
+    # 单 token 短词歧义大（枚举名/引擎键），宁漏勿坏留 unverified 桶
+    assert not _is_sentence_display_text("Oh")
+
+
+def test_sentence_display_still_rejects_concat_and_diag():
+    """放宽后拼接片段/代码模板/引擎诊断仍拒（宁漏勿坏不滑坡）。
+
+    与 extract 循环同口径：sentence 形态放行后，引擎诊断由
+    _ENGINE_DIAGNOSTIC_PATTERN 在 mono_diagnostic 层拦截（'Invalid
+    quality option'/'There is already a virtual axis named'）。
+    """
+    from hanhua.core.unity.mono_dll import (
+        _is_sentence_display_text, _is_exclamation_ui_word,
+        _ENGINE_DIAGNOSTIC_PATTERN)
+    rejected = (
+        "Monster spawned at (", "setting teeth angle to ",
+        "spawning unique at spot index ", "doorbreakHealth: ",
+        "Internal diagnostic message", "Debug: Press E state observed",
+        "Assertion failed...Aborting", "Failed to load texture",
+        "Invalid quality option", "bool2({0}, {1})",
+        "There is already a virtual axis named",
+    )
+    for s in rejected:
+        sentence = _is_sentence_display_text(s)
+        excl = _is_exclamation_ui_word(s)
+        # 引擎诊断句：sentence 可放行但必须被 _ENGINE_DIAGNOSTIC_PATTERN 拦
+        if _ENGINE_DIAGNOSTIC_PATTERN.search(s):
+            assert not (sentence or excl) or _ENGINE_DIAGNOSTIC_PATTERN.search(s), \
+                f"应拒（引擎诊断）：{s}"
+        else:
+            assert not (sentence or excl), f"应拒：{s}"
+
+
 def test_pure_tag_sequence_hard_structural():
     # Fungus 样式模板标签行（resources.assets obj1292 实证）不得进池
     from hanhua.core.placeholders import is_hard_structural

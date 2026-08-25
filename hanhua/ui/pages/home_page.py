@@ -196,14 +196,24 @@ class HomePage(QWidget):
         self._dashboard_token = 0
         self._dashboard_worker = None
         self._dashboard_loading = False
+        # 游戏语境状态卡：后台化 token/worker 引用 + 翻译中挂起标志
+        # （2026-08-22 卡顿根治，见 _refresh_context_card 注释）。
+        self._context_token = 0
+        self._context_worker = None
+        self._context_loading = False
+        self._pending_context_refresh = False
         self.drop_zone.directoryDropped.connect(self.open_dir)
         self.drop_zone.activeChanged.connect(self._set_drop_active)
         self.hero_btn.clicked.connect(lambda: self.window.navigate("translate"))
         # 双态刷新：打开项目与条目变化（翻译/审校后）都要更新
         state.projectOpened.connect(lambda _p: self._refresh_dashboard())
         state.entriesChanged.connect(self._refresh_dashboard)
+        # 2026-08-22 卡顿根治：entriesChanged 不再直连 _refresh_context_card
+        # ——_refresh_dashboard 末尾已调用它，直连导致每次广播双重执行；
+        # 且 _count_actionable 是主线程全量 O(N) 扫描，翻译中每 ≥1s 的
+        # 广播叠加万级条目 = 「每批完成十几条就卡几秒」的直接元凶
+        # （_refresh_context_card 内部已有 translation_running 挂起）。
         state.projectOpened.connect(lambda _p: self._refresh_context_card())
-        state.entriesChanged.connect(self._refresh_context_card)
         # 流水线 rail 实时刷新（#15）：扫描阶段事件 + 翻译/审核/写回阶段
         # 广播——此前 rail 只在 _render_report（扫描完成）更新一次，扫描
         # 与翻译全程 rail 卡在「游戏检测」节点。
@@ -760,6 +770,9 @@ class HomePage(QWidget):
             return
         self._refresh_project_state()
         self._refresh_context_card()
+        # 翻译结束后（translation_running 已复位）的 entriesChanged 广播：
+        # 语境卡挂起的刷新在这里补跑——_refresh_context_card 内部读的是
+        # 复位后的标志，pending 时它本就会正常执行，无需额外分支。
 
     def _refresh_project_state(self):
         """数据带 + 健康度 + 推荐 + 英雄区（#2：全量统计后台线程）。"""
@@ -868,14 +881,62 @@ class HomePage(QWidget):
 
     # ── 游戏语境识别（设计文档 §3-24） ────────────────────────
     def _refresh_context_card(self):
-        """状态卡渲染：未建立 / 已建立 / 需要更新（§23 三态）。"""
+        """状态卡渲染：未建立 / 已建立 / 需要更新（§23 三态）。
+
+        2026-08-22 卡顿根治：
+        1. 翻译进行中（state.translation_running）挂起重刷——上下文卡
+           的三态判定需要 _count_actionable 全量 O(N) 扫描，翻译中每 ≥1s
+           的 entriesChanged 广播叠加万级条目会卡主线程数秒（同审校页
+           _auto_reload 挂起模式），挂起并记 _pending_context_refresh，
+           翻译结束广播时补跑一次；
+        2. 重活（load_game_context + _count_actionable）移后台 Worker
+           （token 防竞态，同 _refresh_project_state 模式），主线程只
+           做纯渲染。无项目/无 store 的早退路径仍同步。
+        """
         project = self.state.project
         store = getattr(project, "store", None)
         if store is None:
             self.context_card.setHidden(True)
             return
         self.context_card.setHidden(False)
+        if getattr(self.state, "translation_running", False):
+            # 翻译中：全量扫描挂起，等 _on_finished 的 entriesChanged 补跑
+            self._pending_context_refresh = True
+            return
+        self._pending_context_refresh = False
+        self._context_token += 1
+        token = self._context_token
+        self._context_loading = True
+        worker = Worker(self._collect_context_state, store)
+        # 引用必须保存（局部 worker 函数返回后 wrapper 引用丢失，
+        # finished 连接失效——同 #2 实证）。
+        self._context_worker = worker
+        worker.signals.finished.connect(
+            lambda result: self._on_context_state(token, result))
+        worker.signals.error.connect(
+            lambda err: self._on_context_state_error(token, err))
+        QThreadPool.globalInstance().start(worker)
+
+    @staticmethod
+    def _collect_context_state(store) -> tuple:
+        """后台线程：读 Game Context + 全量数一遍可翻译条目
+        （context_needs_update 判定基线用），主线程零扫描。"""
         ctx = load_game_context(store)
+        if not ctx:
+            return (ctx, 0)
+        actionable = 0
+        for row in store.get_entries():
+            entry = HomePage._entry_from_row(row)
+            if is_actionable_translation(entry):
+                actionable += 1
+        return (ctx, actionable)
+
+    def _on_context_state(self, token: int, result: tuple) -> None:
+        """后台统计完成：渲染三态状态卡（主线程纯渲染）。"""
+        if token != self._context_token:
+            return
+        self._context_loading = False
+        ctx, actionable = result
         if not ctx:
             self.context_status.setText("尚未建立")
             self.context_recog_btn.setVisible(True)
@@ -885,8 +946,11 @@ class HomePage(QWidget):
                 "翻译前建议先分析游戏背景，模型将自动获得足够的游戏语境。")
             return
         # 已有上下文：需更新判定（§23 新增大量文本后提示）
-        actionable = self._count_actionable()
-        if context_needs_update(store, actionable):
+        # （ctx 与 actionable 都来自后台统计结果；context_needs_update
+        # 内部会再读一次 KV——轻量单键读取，主线程可接受。store 重新
+        # 取一次防项目切换后引用旧 store）
+        store = getattr(self.state.project, "store", None)
+        if store is not None and context_needs_update(store, actionable):
             status_text = "需要更新"
         else:
             status_text = "已建立"
@@ -898,18 +962,25 @@ class HomePage(QWidget):
         self.context_summary_label.setText(
             summary or "游戏语境已建立（点击「查看游戏介绍」查看详情）")
 
-    def _count_actionable(self) -> int:
-        """当前可翻译条目数（需要更新判定用，§23）。"""
-        try:
-            rows = self.state.project.store.get_entries()
-        except Exception:  # noqa: BLE001 统计失败不阻断状态卡
-            return 0
-        count = 0
-        for row in rows:
-            entry = HomePage._entry_from_row(row)
-            if is_actionable_translation(entry):
-                count += 1
-        return count
+    def _on_context_state_error(self, token: int, err: str) -> None:
+        """后台统计失败：不阻断状态卡，显示降级文案。"""
+        if token != self._context_token:
+            return
+        self._context_loading = False
+        self.context_status.setText("已建立")
+        self.context_recog_btn.setVisible(False)
+        self.context_view_btn.setVisible(True)
+        self.context_reanalyze_btn.setVisible(True)
+        self.context_summary_label.setText(
+            "游戏语境已建立（详情读取失败）")
+
+    def _resume_context_refresh_if_pending(self):
+        """翻译结束（translation_running 复位）后的 entriesChanged
+        广播路径补跑挂起的状态卡刷新（_on_finished 已复位标志，这里
+        由普通 _refresh_context_card 调用路径自然覆盖，此方法供
+        showEvent/显式刷新兜底）。"""
+        if self._pending_context_refresh:
+            self._refresh_context_card()
 
     def _start_context_recognition(self):
         """开始/重新分析游戏语境（Worker 后台识别，复制 translate_tool_page
@@ -972,7 +1043,11 @@ class HomePage(QWidget):
         ctx, _raw = result
         self.context_recog_btn.setEnabled(True)
         self.context_reanalyze_btn.setEnabled(True)
-        self._refresh_context_card()
+        # 识别完成时 translation_running 可能为 True（识别入口在翻译中
+        # 仍可用）——_refresh_context_card 会挂起并记 pending，由翻译
+        # 结束广播补跑；非翻译中立即刷新。
+        self._pending_context_refresh = True
+        self._resume_context_refresh_if_pending()
         from hanhua.core.game_context import game_context_summary
         summary = game_context_summary(ctx)
         Toast.show(

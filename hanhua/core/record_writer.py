@@ -4,12 +4,20 @@ GUI 手动汉化每次写回后自动生成与 runner 闭环
 （scripts/all_record_runner.py）同一结构的完整记录，避免「手动汉化
 无记录」——用户实测问题没有落盘依据，无法复盘：
 
-  summary.md                    # 识别/翻译/写回统计
-  text/translated.txt|failed.txt|skipped.txt
+  summary.md                    # 识别/翻译/审校/写回统计 + 运行记录
+  text/translated.txt|failed.txt|skipped.txt|blocked.txt|retranslated.txt
   writeback/writeback.txt       # 文件清单 + 写回结果/闸门
   analysis/analysis-final.md    # 数据快照 + 分析待办清单
   fix record/fix-record.md      # 失败条目明细 + 分类统计
   final report/final-report.md  # 流程结果与结论
+  memory-report.md              # 经验记忆（AgentMemory）报告
+
+文本导出（_export_text_records）是 GUI 与 runner 的共享单一实现
+（2026-08-22 记录升级：消除双实现漂移——runner 原有自己的
+_export_text_records/_load_meta/_format_detail/_object_label，两份
+漂移会导致同一游戏 GUI/runner 记录字段不一致）。runner 仅保留其富
+写回记录（_export_writeback_record）与流程编排，文本导出全部委托
+本模块。
 
 三份分析文档由本模块生成「数据快照 + 待办清单」（标注自动生成时间），
 实质分析在后续会话中补充——与 runner 闭环「分析」流程一致。
@@ -104,11 +112,137 @@ def _confidence_of(row: dict, meta: dict) -> str:
                or row.get("confidence") or "medium")
 
 
+def _object_label(meta: dict, row: dict) -> str:
+    """所属对象/组件类型（Unity 结构定位信息）。
+
+    2026-08-22 从 runner 迁入（单一实现）：GUI 与 runner 的文本记录
+    均含「对象」行，逐条可定位到 Unity 对象/组件层级。
+    """
+    parts = []
+    if meta.get("asset_file"):
+        parts.append(f"asset_file={meta['asset_file']}")
+    if meta.get("obj") is not None:
+        parts.append(f"obj={meta['obj']}")
+    if meta.get("record_offset") is not None:
+        parts.append(f"record_offset={meta['record_offset']}")
+    if meta.get("line") is not None:
+        parts.append(f"line={meta['line']}")
+    kind = meta.get("kind") or ""
+    component = {
+        "str": "MonoBehaviour str 字段", "rawstr": "MonoBehaviour rawstr 数组",
+        "textasset": "TextAsset 脚本", "localization": "Localization 表格",
+        "typetree": "Typetree 字段", "us": "DLL #US 字符串",
+        "il2cpp": "IL2CPP metadata 字符串", "plain": "纯文本文件行",
+    }.get(kind, kind or "—")
+    label = "、".join(parts)
+    return f"{component}（{label}）" if label else component
+
+
+def _disposition_text(category: str, meta: dict, wb_status: str,
+                      echoed: bool) -> str:
+    """终态处置（2026-08-22 记录升级）：每条一目了然的三态去向——
+
+    已写入发布 / 未写入（原因）/ 待人工处置（阻断、失败、回显）。
+    与「写回」行分工：写回行是写回链路视角（已写入/未写入/未执行），
+    处置行是闭环视角（发布成功 / 待审核 / 待复核 / 待修复）。
+    """
+    if category == "blocked":
+        return "待处置：审核阻断（重译未收敛，需人工复核后重译或改译）"
+    if category == "failed":
+        return "待处置：翻译失败（需重试或根因彻查后重跑）"
+    if category == "skipped":
+        return "未翻译：识别层跳过（该翻未翻→识别修复；确为该跳→记录判定）"
+    if wb_status:
+        return f"未发布：写回被拒（{wb_status}）"
+    if echoed:
+        return "未发布：回显保留原文（无需写回）"
+    if meta.get("review_outcome") == "PENDING":
+        return "待处置：审核待定（审校页复核终态）"
+    if meta.get("review_outcome") in ("NEEDS_REVISION",
+                                      "REVIEW_ERROR", "CANCELLED"):
+        return "待处置：审核不合格（需优化后重审或人工改译）"
+    if meta.get("retranslated"):
+        return "已发布：重译收敛（审核通过后产出终译）"
+    return "已发布：译文已写入"
+
+
 def _quality_text(meta: dict) -> str:
     quality = meta.get("quality_reasons", [])
     if isinstance(quality, list) and quality:
         return "、".join(str(r) for r in quality)
     return "—"
+
+
+def _export_retranslated_records(project, out_text: Path, profile, *,
+                                 model_name: str = "",
+                                 writeback_status: dict[str, str] | None = None,
+                                 review_results: dict | None = None) -> None:
+    """text/retranslated.txt：重译收敛条目专档（2026-08-22 新增）。
+
+    语义审核判不合格（NEEDS_REVISION）→ 带审核反馈重译 → 收敛通过的
+    条目（meta.retranslated=True，review_level=RETRANSLATED）。此前该
+    类条目混在 translated.txt 里与一次通过的真翻译无从区分——审核反
+    馈了什么、重译改了什么（首译→终译对照）是审校链路最重要的记录，
+    单独成档。审核仍不收敛的条目状态为 blocked，见 blocked.txt。
+    """
+    rows = [r for r in project.store.get_entries(status="translated")
+            if _meta_of(r).get("retranslated")]
+    path = out_text / "retranslated.txt"
+    if not rows:
+        path.write_text(
+            f"游戏：{_game_name(project, profile)}\n"
+            f"导出时间：{_now()}\n翻译模型：{model_name or '—'}\n"
+            f"重译收敛条目：0 条\n\n（无重译条目——审核一次通过或未开"
+            "语义审核；审核未收敛条目见 text/blocked.txt）\n",
+            encoding="utf-8")
+        return
+    blocks = [
+        f"游戏：{_game_name(project, profile)}",
+        f"导出时间：{_now()}",
+        f"翻译模型：{model_name or '—'}",
+        f"重译收敛条目：{len(rows)} 条", "",
+    ]
+    for index, row in enumerate(rows, start=1):
+        meta = _meta_of(row)
+        locator = f"{row['file_id']}:{row.get('key_path', '')}"
+        wb_status = (writeback_status or {}).get(locator) or ""
+        # 重译原因：质量门原因优先（最重要），缺则用审核理由兜底
+        reason_txt = _quality_text(meta)
+        if reason_txt == "—":
+            reason_txt = meta.get("review_reason") or "—"
+        review = (review_results or {}).get(locator)
+        if review is not None and getattr(review, "verdict", "") == "flag":
+            reason_txt = (f"{reason_txt}（审核：{review.issue}——"
+                          f"{review.reason}）")
+        blocks += [
+            _SEPARATOR,
+            f"[{index}] 重译收敛",
+            f"来源：{meta.get('source') or row['file_id']}",
+            f"键位：{row.get('key_path', '')}",
+            f"对象：{_object_label(meta, row)}",
+            f"原文：{row.get('original', '')}",
+            f"首译（被否）：{meta.get('rejected_candidate') or '（未留存）'}",
+            f"重译终译：{row.get('translation', '') or '（无）'}",
+            f"重译原因：{reason_txt}",
+            f"轮次：第 {meta.get('review_round') or 1} 轮收敛",
+            f"处置：{_disposition_text('translated', meta, wb_status, False)}",
+        ]
+        review_line = ""
+        review_outcome = meta.get("review_outcome") or ""
+        if review_outcome:
+            review_line = f"审核：{review_outcome}（RETRANSLATED）"
+            risk_score = meta.get("risk_score")
+            if isinstance(risk_score, (int, float)):
+                review_line += f" · 风险 {int(risk_score)}"
+                if meta.get("risk_level"):
+                    review_line += f" {meta['risk_level']}"
+        if review_line:
+            blocks.append(review_line)
+        suggestion = meta.get("review_suggestion")
+        if suggestion:
+            blocks.append(f"审核建议：{suggestion}")
+        blocks.append("")
+    path.write_text("\n".join(blocks), encoding="utf-8")
 
 
 def _status_counts(store) -> dict[str, int]:
@@ -368,14 +502,30 @@ def _verification_block(verification: dict) -> list[str]:
 def _export_text_records(project, out_text: Path, profile, *,
                          model_name: str = "",
                          writeback_status: dict[str, str] | None = None,
+                         review_results: dict | None = None,
                          error_title: str = "",
                          error_detail: str = "") -> None:
-    """导出 translated/failed/skipped 三类文本全字段记录。"""
+    """导出 translated/failed/skipped/blocked 四类文本全字段记录。
+
+    GUI 与 runner 共享的单一实现（2026-08-22 记录升级：消除双实现
+    漂移——对象行/审校标注/哨兵分布全部统一）。
+
+    - 对象行（_object_label，原 runner 独有）：逐条 Unity 结构定位。
+    - review_results（原 runner 独有）：{locator: ReviewResult} 语义
+      审核结论——不合格条目标注「需优化（审核：…）」与建议译文。
+    - 审核：行：meta 审校终态（review_outcome/level/风险分）。
+    - 处置：行：每条终态去向（已发布/未发布/待处置）。
+    - blocked（语义审核终态：重译/再审未收敛，需人工复核）与 failed/
+      translated/skipped 平行——此前 blocked 只计入 _status_counts 无记录
+      文件。blocked 条目保存全字段：重译前坏译文（rejected_candidate）、
+      审核理由/建议、重译轮次、原始输出、失败分类等。
+    """
     store = project.store
     categories = {
         "translated": ("成功文本", store.get_entries(status="translated")),
         "failed": ("失败文本", store.get_entries(status="failed")),
         "skipped": ("跳过文本", store.get_entries(status="skipped")),
+        "blocked": ("阻断文本", store.get_entries(status="blocked")),
     }
     now = _now()
     for category, (title, rows) in categories.items():
@@ -415,9 +565,9 @@ def _export_text_records(project, out_text: Path, profile, *,
             original = row.get("original", "")
             translation = row.get("translation", "") or "（无）"
             echoed = (category == "translated" and translation == original)
+            locator = f"{row['file_id']}:{row.get('key_path', '')}"
             wb_status = ""
             if writeback_status:
-                locator = f"{row['file_id']}:{row.get('key_path', '')}"
                 wb_status = writeback_status.get(locator)
             if wb_status:
                 wb_line = f"写回：未写入（{wb_status}）"
@@ -427,11 +577,24 @@ def _export_text_records(project, out_text: Path, profile, *,
                 wb_line = "写回：已写入"
             else:
                 wb_line = "写回：—"
-            eval_text = ('回显保留原文（未实际翻译）' if echoed
-                         else '已产出译文' if category == 'translated'
-                         else quality or '—')
-            opt_text = ('是（回显未翻译）' if echoed
-                        else '否' if category == 'translated' else '—')
+            # 语义审核标注（原 runner 独有，2026-08-22 统一）：审核判定
+            # 不合格（flag）的条目，翻译评价/需要优化直接透出审核问题与
+            # 建议译文（取代形式化的「已产出译文/否」——Resume→简历 类
+            # 语义错误机械门不报）
+            review = None
+            if review_results:
+                review = review_results.get(locator)
+            if review is not None and getattr(review, "verdict", "") == "flag":
+                eval_text = (f"需优化（审核：{review.issue}——"
+                             f"{review.reason}）")
+                opt_text = (f"是（审核：{review.issue}——{review.reason}"
+                            f"{'；建议：' + review.suggestion if review.suggestion else ''}）")
+            else:
+                eval_text = ('回显保留原文（未实际翻译）' if echoed
+                             else '已产出译文' if category == 'translated'
+                             else quality or '—')
+                opt_text = ('是（回显未翻译）' if echoed
+                            else '否' if category == 'translated' else '—')
             # #43 阶段 F：审校元数据透出（meta 有值才显示——审校页单条
             # 重审/批量审核终态写回 meta，旧记录无字段不补行）
             review_line = ""
@@ -451,6 +614,7 @@ def _export_text_records(project, out_text: Path, profile, *,
                 f"[{index}] {title}",
                 f"来源：{source}",
                 f"键位：{row.get('key_path', '')}",
+                f"对象：{_object_label(meta, row)}",
                 f"原文：{original}",
                 f"译文：{translation}",
                 f"置信度：{confidence}",
@@ -460,9 +624,42 @@ def _export_text_records(project, out_text: Path, profile, *,
                 f"翻译评价：{eval_text}",
                 f"需要优化：{opt_text}",
                 wb_line,
+                f"处置：{_disposition_text(category, meta, wb_status, echoed)}",
             ]
             if review_line:
                 blocks.append(review_line)
+            # blocked 专属全字段（2026-08-22 记录重设计）：阻断条目译文
+            # 已被清空（发布槽移除），坏译文存 rejected_candidate——必须
+            # 单独透出，否则「译文正常却被阻断」无痕可查。审核理由/建议/
+            # 重译轮次/原始输出/失败分类一并落盘（meta 有值才显示）。
+            if category == "blocked":
+                rejected = meta.get("rejected_candidate")
+                if rejected:
+                    blocks.append(f"重译前坏译文：{rejected}")
+                rounds = meta.get("review_blocked_rounds")
+                if rounds:
+                    blocks.append(f"重译轮次：{rounds} 轮未收敛")
+                raw = meta.get("raw_output")
+                if raw:
+                    blocks.append(f"原始输出：{raw}")
+                norm = meta.get("normalized_output")
+                if norm and norm != raw:
+                    blocks.append(f"归一化输出：{norm}")
+                reason_txt = meta.get("review_reason")
+                if reason_txt:
+                    blocks.append(f"审核理由：{reason_txt}")
+                suggestion_txt = meta.get("review_suggestion")
+                if suggestion_txt:
+                    blocks.append(f"审核建议：{suggestion_txt}")
+                err_kind = meta.get("review_error_kind")
+                if err_kind:
+                    blocks.append(f"审核错误：{err_kind}")
+                category_txt = meta.get("failure_category")
+                if category_txt:
+                    blocks.append(f"失败分类：{category_txt}")
+                attempts = meta.get("attempt_count")
+                if attempts:
+                    blocks.append(f"尝试次数：{attempts}")
             if detail:
                 blocks.append(f"失败详情：{_format_detail(detail)}")
             blocks.append("")
@@ -572,8 +769,14 @@ def _write_summary(project, out_dir: Path, profile, *,
                    result: dict | None = None,
                    error_title: str = "",
                    error_detail: str = "",
-                   agent_report: dict | None = None) -> None:
-    """summary.md：识别/翻译/写回统计（与 runner 记录同构）。"""
+                   agent_report: dict | None = None,
+                   run_stats=None) -> None:
+    """summary.md：识别/翻译/审校/写回统计 + 运行记录。
+
+    run_stats：BatchTranslator 统计对象（requests/input_tokens/
+    output_tokens/elapsed/rate_per_minute）——GUI 路径此前缺失运行
+    记录，只有 runner 摘要有；现在两条路径同构（2026-08-22 补齐）。
+    """
     store = project.store
     counts = _status_counts(store)
     confidences = _confidence_counts(store)
@@ -593,7 +796,7 @@ def _write_summary(project, out_dir: Path, profile, *,
         f"- 识别条目：{sum(counts.values())}",
         "- 状态分布：",
     ]
-    for status in ("pending", "translated", "failed", "skipped"):
+    for status in ("pending", "translated", "failed", "skipped", "blocked"):
         blocks.append(f"  - {status}: {counts.get(status, 0)}")
     conf_text = " · ".join(
         f"{k}: {v}" for k, v in sorted(confidences.items()))
@@ -676,10 +879,24 @@ def _write_summary(project, out_dir: Path, profile, *,
     blocks += [
         f"- 完成：{counts.get('translated', 0)} · "
         f"失败：{counts.get('failed', 0)} · "
-        f"跳过：{counts.get('skipped', 0)}",
-        f"- 翻译模型：{model_name or '—'}", "",
-        "## 3 写回",
+        f"跳过：{counts.get('skipped', 0)} · "
+        f"阻断：{counts.get('blocked', 0)}",
+        f"- 翻译模型：{model_name or '—'}",
     ]
+    # 运行记录（2026-08-22 补齐）：请求量/Token 消耗/耗时/吞吐——
+    # GUI 与 runner 同构；stats 缺失（旧流程/未翻译直接导出）则跳过
+    if run_stats is not None:
+        try:
+            blocks += [
+                f"- 请求：{run_stats.requests} · "
+                f"输入 {run_stats.input_tokens} tokens · "
+                f"输出 {run_stats.output_tokens} tokens",
+                f"- 耗时：{run_stats.elapsed:.1f}s · "
+                f"吞吐 {run_stats.rate_per_minute:.0f} 条/分",
+            ]
+        except (AttributeError, TypeError, ValueError):
+            pass
+    blocks += ["", "## 3 写回",]
     if error_title:
         blocks.append(f"- 失败：{error_title}")
         if error_detail:
@@ -729,7 +946,8 @@ def _write_summary(project, out_dir: Path, profile, *,
                "- [ ] 修复后用升级版本重跑本游戏全流程（闭环）",
                "- [ ] 闭环后删除汉化输出目录", "",
                "记录文件：",
-               "- text/translated.txt / text/failed.txt / text/skipped.txt",
+               "- text/translated.txt / text/failed.txt / text/skipped.txt / "
+               "text/blocked.txt / text/retranslated.txt",
                "- writeback/writeback.txt",
                "- analysis/analysis-final.md / fix record/fix-record.md / "
                "final report/final-report.md", "",
@@ -763,7 +981,7 @@ def _write_auto_docs(project, out_dir: Path, profile, *,
         f"识别条目：{sum(counts.values())}",
         "- 状态分布：",
     ]
-    for status in ("pending", "translated", "failed", "skipped"):
+    for status in ("pending", "translated", "failed", "skipped", "blocked"):
         blocks.append(f"  - {status}: {counts.get(status, 0)}")
     conf_text = " · ".join(
         f"{k}: {v}" for k, v in sorted(confidences.items()))
@@ -771,7 +989,8 @@ def _write_auto_docs(project, out_dir: Path, profile, *,
                "## 2 翻译快照",
                f"- 完成：{counts.get('translated', 0)} · "
                f"失败：{counts.get('failed', 0)} · "
-               f"跳过：{counts.get('skipped', 0)}",
+               f"跳过：{counts.get('skipped', 0)} · "
+               f"阻断：{counts.get('blocked', 0)}",
                "- 失败原因分类：",
     ]
     if categories:
@@ -831,7 +1050,9 @@ def _write_auto_docs(project, out_dir: Path, profile, *,
         f"- 生成时间：{_now()}",
         f"- 游戏目录：{project.game_dir}",
         f"- 失败条目：{len(failures)}（以下明细最多列出 "
-        f"{_MAX_FAILED_DETAILS} 条）", "",
+        f"{_MAX_FAILED_DETAILS} 条）",
+        f"- 阻断条目（重译未收敛，需人工复核）："
+        f"{counts.get('blocked', 0)}（全字段明细见 text/blocked.txt）", "",
         "## 1 失败条目明细", "",
     ]
     for index, row in enumerate(shown, start=1):
@@ -861,7 +1082,27 @@ def _write_auto_docs(project, out_dir: Path, profile, *,
         blocks += [f"- {cat}：{n}" for cat, n in categories]
     else:
         blocks.append("- —")
-    blocks += ["", "## 3 待办修复（后续会话补充）",
+    blocks += ["", "## 3 阻断条目（重译未收敛）", ""]
+    blocked_rows = store.get_entries(status="blocked")
+    if blocked_rows:
+        blocks.append(
+            f"共 {len(blocked_rows)} 条——语义审核多轮重译仍未收敛，译文"
+            "已从发布槽移除（坏译文存 meta.rejected_candidate）。"
+            "按 locator 逐条对照 text/blocked.txt 全字段明细复核：")
+        for row in blocked_rows[:_MAX_FAILED_DETAILS]:
+            meta = _meta_of(row)
+            blocks.append(
+                f"- {row['file_id']}:{row.get('key_path', '')}"
+                f" · 原文：{row.get('original', '')[:60]}"
+                + (f" · {meta.get('review_blocked_rounds')} 轮未收敛"
+                   if meta.get("review_blocked_rounds") else ""))
+        if len(blocked_rows) > _MAX_FAILED_DETAILS:
+            blocks.append(
+                f"（其余 {len(blocked_rows) - _MAX_FAILED_DETAILS} 条见 "
+                f"text/blocked.txt 全量记录）")
+    else:
+        blocks.append("- 无")
+    blocks += ["", "## 4 待办修复（后续会话补充）",
                "- [ ] 失败文本根因系统彻查（同类问题全解）",
                "- [ ] 修复后重跑本游戏全流程验证（闭环）",
                "- [ ] 闭环后删除汉化输出目录", "",
@@ -892,7 +1133,9 @@ def _write_auto_docs(project, out_dir: Path, profile, *,
         else "- 识别 → 翻译 → 写回：写回中断",
         f"- 最终结论：{verdict}",
         f"- 翻译：完成 {counts.get('translated', 0)} · "
-        f"失败 {counts.get('failed', 0)} · 跳过 {counts.get('skipped', 0)}",
+        f"失败 {counts.get('failed', 0)} · "
+        f"跳过 {counts.get('skipped', 0)} · "
+        f"阻断 {counts.get('blocked', 0)}",
         "", "## 2 写回验证",
     ]
     if error_title:
@@ -975,13 +1218,19 @@ def export_records(project, out_root: Path | None = None, *,
                    error_title: str = "",
                    error_detail: str = "",
                    model_name: str = "",
-                   agent_report: dict | None = None) -> Path | None:
+                   agent_report: dict | None = None,
+                   run_stats=None,
+                   review_results: dict | None = None) -> Path | None:
     """GUI 手动汉化写回后自动生成完整记录文档。
 
     成功路径传 write_result；失败路径传 error_title/error_detail
     （二者均有写回清单/摘要落盘，保证失败也有依据）。返回记录目录。
     agent_report：经验记忆（AgentMemory）会话报告 dict——非 None 时
     summary.md 追加记忆节 + 生成 memory-report.md（记忆如何成长可见）。
+    run_stats：BatchTranslator 统计对象——summary.md §2 补运行记录
+    （请求/Token/耗时/吞吐）。
+    review_results：语义审核结论 {locator: ReviewResult}——文本记录
+    透出审核问题/建议标注（runner 语义审核闭环传入）。
     """
     try:
         profile = project.store.get_profile()
@@ -994,7 +1243,13 @@ def export_records(project, out_root: Path | None = None, *,
             project, out_dir / "text", profile,
             model_name=model_name,
             writeback_status=writeback_status,
+            review_results=review_results,
             error_title=error_title, error_detail=error_detail)
+        _export_retranslated_records(
+            project, out_dir / "text", profile,
+            model_name=model_name,
+            writeback_status=writeback_status,
+            review_results=review_results)
         _export_writeback(
             project, out_dir / "writeback", profile,
             result=write_result,
@@ -1003,7 +1258,8 @@ def export_records(project, out_root: Path | None = None, *,
             project, out_dir, profile, model_name=model_name,
             result=write_result,
             error_title=error_title, error_detail=error_detail,
-            agent_report=agent_report)
+            agent_report=agent_report,
+            run_stats=run_stats)
         if agent_report:
             _write_memory_report(out_dir, agent_report)
         _write_auto_docs(

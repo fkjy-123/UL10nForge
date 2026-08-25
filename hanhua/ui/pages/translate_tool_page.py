@@ -19,7 +19,10 @@ from PySide6.QtWidgets import (QComboBox, QHBoxLayout, QLabel,
 
 from hanhua.core.local_model import LocalModelError, discover_model
 from hanhua.core.prompts import build_system_prompt
-from hanhua.core.translator import create_client, strip_prompt_echo
+from hanhua.core.translator import (create_client, strip_prompt_echo,
+                                    translate_source_directive,
+                                    merge_translation_references)
+from hanhua.core.glossary import GlossaryStore
 from hanhua.ui.app_state import AppState
 from hanhua.ui.design_system import TOKENS
 from hanhua.ui.widgets import PageHeader, Toast, Worker
@@ -46,6 +49,26 @@ def _is_symbol_only(text: str) -> bool:
         if cat[0] in ("L", "N"):
             return False
     return bool(text.strip())
+
+
+def _load_glossary_pairs(app_dir) -> list[tuple[str, str]]:
+    """加载术语库 active 词对（翻译意图信号 + 术语译名约束）。
+
+    失败/库不存在 → 空列表（不阻断翻译）。
+    """
+    if not app_dir:
+        return []
+    try:
+        g = GlossaryStore(Path(app_dir) / "glossary.db")
+        g.init_schema()
+        pairs = [
+            (row["term"], row["translation"])
+            for row in g.list_all()
+            if row.get("status", "active") == "active"]
+        g.close()
+        return pairs
+    except Exception:  # noqa: BLE001 术语库不可用不阻断翻译
+        return []
 
 
 class TranslateToolPage(QWidget):
@@ -251,7 +274,8 @@ class TranslateToolPage(QWidget):
             "正在翻译…" + ("（首次本地模型启动约 30-120 秒）"
                         if api.mode == "local" else ""))
         worker = Worker(self._run_blocks, api, system, blocks,
-                        self.state.local_model, self.state.resource_dir)
+                        self.state.local_model,
+                        self.state.app_dir)
         # 引用必须保存：worker 局部变量会丢 wrapper（同各页 _worker 模式）
         self._worker = worker
         worker.signals.finished.connect(
@@ -269,17 +293,39 @@ class TranslateToolPage(QWidget):
 
     @staticmethod
     def _run_blocks(api, system: str, blocks: list[str],
-                    local_model, resource_dir: Path):
-        """后台线程：本地模式先确保服务运行，然后逐块翻译。"""
+                    local_model, app_dir):
+        """后台线程：本地模式先确保服务运行，然后逐块翻译。
+
+        本地模型优先走 Hy-MT2 原生中文指令 prompt（translate_source_
+        directive）——英文提示词下 1.8B 模型对简单原文稳定回显（Out of
+        the Loop studio 实证），中文显式指令强制输出译文。同时注入术语
+        库引用（翻译意图信号 + 术语译名约束）。用户自定义提示词
+        （system 非空）时仍用原 chat 路径（保留自定提示词控制权）。
+        输出经 strip_prompt_echo 清洗提示词/原文回显。
+        """
         if api.mode == "local":
             runtime = local_model.ensure_running(api)
             api = replace(api, base_url=runtime.endpoint,
                           api_key=runtime.api_key, model=runtime.model)
         client = create_client(api)
+        refs = merge_translation_references(_load_glossary_pairs(app_dir))
         parts = []
         for block in blocks:
-            text, _usage = client.chat(
-                system, [{"role": "user", "content": block}])
+            if api.mode == "local" and not system:
+                text, _usage = translate_source_directive(
+                    client, block, "zh-CN", refs)
+                if not strip_prompt_echo(text, "", block).strip():
+                    # 中文指令下仍回显原文（'Out of the Loop studio'
+                    # 品牌名被当整体专名回显）→ 逐词补译指令（整条原文
+                    # 作整体译名，禁止回显）
+                    text2, _usage2 = client.chat(
+                        "", [{"role": "user", "content":
+                              "请将以下名称翻译为简体中文，直接输出译名，"
+                              "不得回显原文，不要添加任何解释：\n\n" + block}])
+                    text = text2
+            else:
+                text, _usage = client.chat(
+                    system, [{"role": "user", "content": block}])
             parts.append(strip_prompt_echo(text, system, block))
         return parts
 

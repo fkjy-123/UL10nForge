@@ -22,9 +22,9 @@ from PySide6.QtGui import QBrush, QColor, QIcon
 from PySide6.QtWidgets import (QCheckBox, QComboBox, QFormLayout, QFrame,
                                QGroupBox, QHBoxLayout, QHeaderView, QLabel,
                                QLineEdit, QListWidget, QListWidgetItem,
-                               QPushButton, QTableWidget,
-                               QTableWidgetItem, QTabWidget, QVBoxLayout,
-                               QWidget)
+                               QPushButton, QScrollArea, QSizePolicy,
+                               QTableWidget, QTableWidgetItem, QTabWidget,
+                               QVBoxLayout, QWidget)
 
 from hanhua.ui.icons import LineIcon
 from hanhua.ui.design_system import TOKENS
@@ -42,21 +42,53 @@ CATEGORIES = ["术语", "人名", "地名", "专名"]
 _ESTIMATED_RATE_PER_SLOT = 40.0
 
 
+class _CollapseHead(QLabel):
+    """可点击卡片头：整行可点切换展开/收起，箭头随状态旋转。"""
+
+    def __init__(self, title: str, on_toggle):
+        super().__init__(f"▸  {title}")
+        self.setProperty("class", "cardTitle")
+        self.setProperty("collapsible", True)
+        self._on_toggle = on_toggle
+        # 手型光标提示可点（QSS cursor 属性对 QLabel 不稳，代码设置）
+        self.setCursor(Qt.PointingHandCursor)
+
+    def mouseReleaseEvent(self, event):
+        if event.button() == Qt.LeftButton:
+            self._on_toggle()
+            # 属性变化需重算 QSS（悬停高亮才生效）
+            self.style().unpolish(self)
+            self.style().polish(self)
+        super().mouseReleaseEvent(event)
+
+
 def _explain(title: str, body: str) -> QWidget:
-    """说明条目：标题 + 说明文字（独立卡片，不占功能页空间）。"""
+    """说明条目：点击标题展开 / 收起小卡片（默认收起，页面不拥挤）。
+
+    2026-08-22 用户指令：说明页各条目要「点击展开一张小卡片」——
+    收起时只占一行标题，展开才显示正文；正文 QLabel 强制 wordWrap
+    （根治中文长句被压扁/截半）。
+    """
     card = QFrame()
     card.setObjectName("modelCard")
     lay = QVBoxLayout(card)
     lay.setContentsMargins(18, 12, 18, 12)
-    lay.setSpacing(6)
-    head = QLabel(title)
-    head.setProperty("class", "cardTitle")
+    lay.setSpacing(8)
+    state = {"open": False}
+
+    def _toggle():
+        state["open"] = not state["open"]
+        head.setText(f"{'▾' if state['open'] else '▸'}  {title}")
+        body_label.setVisible(state["open"])
+
+    head = _CollapseHead(title, _toggle)
     lay.addWidget(head)
-    text = QLabel(body)
-    text.setProperty("class", "subtitle")
-    text.setWordWrap(True)
-    text.setTextFormat(Qt.RichText)
-    lay.addWidget(text)
+    body_label = QLabel(body)
+    body_label.setProperty("class", "subtitle")
+    body_label.setWordWrap(True)
+    body_label.setTextFormat(Qt.RichText)
+    body_label.setVisible(False)
+    lay.addWidget(body_label)
     return card
 
 
@@ -92,11 +124,17 @@ class SettingsPage(QWidget):
         about_tab = self._build_about_tab()
         help_tab = self._build_help_tab()
         self.tabs = QTabWidget()
-        self.tabs.addTab(env_tab, "环境设置")
-        self.tabs.addTab(advanced_tab, "翻译设置")
-        self.tabs.addTab(glossary_tab, "术语库")
-        self.tabs.addTab(help_tab, "说明")
-        self.tabs.addTab(about_tab, "关于")
+        # 2026-08-22 布局根因修复：五个 tab 的内容高度（环境页
+        # minimumSizeHint 实测 1326px）远超可用高度（~500px），
+        # QStackedWidget 会把整列强行压缩——卡片被压到 54px、
+        # 标签塌成 h=0、56px 控件溢出互相重叠（用户截图实证）。
+        # 每个 tab 套 QScrollArea(widgetResizable) 让内容按
+        # sizeHint 排，超高走滚动条。
+        self.tabs.addTab(self._wrap_scroll(env_tab), "环境设置")
+        self.tabs.addTab(self._wrap_scroll(advanced_tab), "翻译设置")
+        self.tabs.addTab(self._wrap_scroll(glossary_tab), "术语库")
+        self.tabs.addTab(self._wrap_scroll(help_tab), "说明")
+        self.tabs.addTab(self._wrap_scroll(about_tab), "关于")
         for index, icon_name in enumerate(
                 ("rocket", "tool", "database", "help", "brand")):
             self.tabs.setTabIcon(index, QIcon(LineIcon.pixmap(icon_name, 16)))
@@ -135,11 +173,14 @@ class SettingsPage(QWidget):
         self.settings_nav.currentRowChanged.connect(self._on_settings_nav)
         self.settings_nav.setCurrentRow(0)
         body.addWidget(self.settings_nav)
-        # §6.4 中央表单 640–760px 可读宽度：居中列限制 tabs 宽度
+        # §6.4 中央表单可读宽度（2026-08-22 拥挤修复：760px 上限下
+        # 中文长句行宽不足，说明文字被压成多行窄条——放宽到 840 并给
+        # 680 下限，窗口再窄也优先保证行宽而非压缩文字）
         center = QWidget()
         center_lay = QHBoxLayout(center)
         center_lay.setContentsMargins(0, 0, 0, 0)
-        self.tabs.setMaximumWidth(760)
+        self.tabs.setMinimumWidth(680)
+        self.tabs.setMaximumWidth(840)
         center_lay.addStretch(1)
         center_lay.addWidget(self.tabs)
         center_lay.addStretch(1)
@@ -202,32 +243,51 @@ class SettingsPage(QWidget):
         except Exception:  # noqa: BLE001 无 GPU 信息时显示占位
             self.status_vram.setText("—")
 
+    @staticmethod
+    def _wrap_scroll(tab: QWidget) -> QScrollArea:
+        """tab 内容套滚动区（2026-08-22 布局根因修复）。
+
+        QTabWidget 页高固定为可视高度，而环境页内容 minimumSizeHint
+        实测 1326px——没有滚动区时布局只能把整列压缩进 ~500px：
+        卡片帧被压到 54px、QLabel 塌成 h=0、56px 高的输入控件
+        溢出卡片互相叠（用户截图实证）。widgetResizable 让内容按
+        sizeHint 正常展开，超高走滚动条，布局不再互相挤压。
+        """
+        scroll = QScrollArea()
+        scroll.setWidget(tab)
+        scroll.setWidgetResizable(True)
+        scroll.setFrameShape(QFrame.Shape.NoFrame)
+        scroll.setContentsMargins(0, 0, 0, 0)
+        scroll.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        # 让滚动区把宽度让给内容（横向不滚，竖向滚）
+        tab.setSizePolicy(QSizePolicy.Policy.Preferred,
+                          QSizePolicy.Policy.Ignored)
+        return scroll
+
     # ── 左侧分类导航（§66） ──
     def _on_settings_nav(self, row: int):
         item = self.settings_nav.item(row)
         if item is not None:
             self.tabs.setCurrentIndex(item.data(Qt.UserRole))
 
-    # ── 关于（版本 / 本地架构 / 审核说明 / 隐私，2026-08-21 并入） ──
+    # ── 关于（版本 / 隐私，2026-08-22 精简去重） ──
     # 「AI 审核」分类页删除：语义审核是翻译管线固定环节（设计文档 §26
     # 全链路闭环），不再提供关闭入口——ai_review_enabled 字段保留兼容
-    # 旧配置（读取恒真，见 translate_page），审核说明并入本页。
+    # 旧配置（读取恒真，见 translate_page）。
+    # 2026-08-22 用户指令「说明和关于冲突」：模型架构/审核流程说明
+    # 归「说明」页，本页只留品牌、版本与隐私——两页不再重复。
     def _build_about_tab(self) -> QWidget:
         from hanhua import VERSION
         tab = QWidget()
-        root = QHBoxLayout(tab)
+        root = QVBoxLayout(tab)
         root.setContentsMargins(28, 24, 28, 18)
-        root.setSpacing(24)
+        root.setSpacing(14)
 
-        left = QWidget()
-        lay = QVBoxLayout(left)
-        lay.setContentsMargins(0, 0, 0, 0)
-        lay.setSpacing(12)
         brand_row = QHBoxLayout()
-        brand_row.setSpacing(12)
-        icon = LineIcon("brand", 40, TOKENS.primary)
+        brand_row.setSpacing(14)
+        icon = LineIcon("brand", 44, TOKENS.primary)
         brand_text = QVBoxLayout()
-        brand_text.setSpacing(0)
+        brand_text.setSpacing(4)
         name = QLabel("UL10nForge")
         name.setProperty("class", "pageTitle")
         ver = QLabel(f"v{VERSION} · Unity 游戏智能汉化工具")
@@ -237,77 +297,48 @@ class SettingsPage(QWidget):
         brand_row.addWidget(icon)
         brand_row.addLayout(brand_text)
         brand_row.addStretch(1)
-        lay.addLayout(brand_row)
-        lay.addSpacing(8)
-        head = QLabel("本地推理架构")
-        head.setProperty("class", "pageTitle")
-        lay.addWidget(head)
-        model_text = QLabel(
-            "四模型全部本地运行（llama.cpp）：\n\n"
-            "· Hy-MT2 1.8B —— 翻译主模型；\n"
-            "· Qwen3.5-4B —— 语义审核（四级判定 + 反馈重译）；\n"
-            "· Qwen3-Reranker 0.6B —— 语料相关度重排；\n"
-            "· Qwen3-Embedding 0.6B —— 语境向量记忆检索。\n\n"
-            "检测 / 提取 / 翻译 / 审核 / 写回全流程离线完成，"
-            "数据不出本机。")
-        model_text.setProperty("class", "subtitle")
-        model_text.setWordWrap(True)
-        lay.addWidget(model_text)
-        lay.addSpacing(8)
-        head_review = QLabel("语义审核说明")
-        head_review.setProperty("class", "pageTitle")
-        lay.addWidget(head_review)
-        review_hint = QLabel(
-            "翻译完成后，审核模型对<b>全部译文</b>逐条做四级判定"
-            "（通过 / 轻微 / 较大问题 / 严重）：\n\n"
-            "· 严重问题 —— 自动按审核意见重译并再次复核（最多 2 轮收敛）；\n"
-            "· 较大问题 —— 按审核建议修正后放行；\n"
-            "· 审核不通过的条目在「文本审校」页标为「需要优化」，"
-            "重译过的译文可在审校页「已重译」中复查，"
-            "审核词对经语境门禁沉淀后跨游戏复用。\n\n"
-            "审核是翻译管线固定环节（不再提供关闭入口）；全量送审耗时"
-            "随条目数线性增长——逐条进度实时可见，可随时停止。")
-        review_hint.setProperty("class", "subtitle")
-        review_hint.setWordWrap(True)
-        lay.addWidget(review_hint)
-        lay.addStretch(1)
-        root.addWidget(left, 5)
+        root.addLayout(brand_row)
+        root.addSpacing(8)
 
-        right = QWidget()
-        right_lay = QVBoxLayout(right)
-        right_lay.setContentsMargins(0, 0, 0, 0)
-        right_lay.setSpacing(10)
+        arch = QLabel(
+            "四模型本地推理（llama.cpp）：Hy-MT2 1.8B 翻译 · "
+            "Qwen3.5-4B 审核 · Qwen3-Reranker 0.6B 重排 · "
+            "Qwen3-Embedding 0.6B 检索。")
+        arch.setProperty("class", "subtitle")
+        arch.setWordWrap(True)
+        root.addWidget(arch)
+        root.addSpacing(8)
+
         head2 = QLabel("隐私与数据")
         head2.setProperty("class", "pageTitle")
+        root.addWidget(head2)
         privacy = QLabel(
-            "· 翻译、审核、记忆检索均在本机完成，不向任何云端服务发送"
-            "文本内容；\n\n"
-            "· 「在线 API」设置项仅为存在性保留，不作为开发验收通道；\n\n"
+            "· 本地模式下翻译、审核、记忆检索均在本机完成，"
+            "不向任何云端服务发送文本内容；\n"
+            "· 在线 API 模式下仅所配置的云端端点收到对应文本；\n"
+            "· 检测 / 提取 / 写回等全部文件操作只发生在所选游戏目录内，"
+            "写回前自动备份；\n"
             "· 全局术语表、语境记忆与知识库存储于应用数据目录，"
             "跨游戏复用，可随时在术语表页维护。")
         privacy.setProperty("class", "subtitle")
         privacy.setWordWrap(True)
-        right_lay.addWidget(head2)
-        right_lay.addWidget(privacy)
-        right_lay.addStretch(1)
-        root.addWidget(right, 5)
+        root.addWidget(privacy)
+        root.addStretch(1)
         return tab
 
     # ── 说明（2026-08-22 新增：平行分类页，集中存放各功能说明） ──
-    # 用户反馈「说明设置」——各小设置的说明文字从功能页移走，太拥挤；
-    # 本页是独立的第五个分类，把所有功能说明集中展示，功能页只留控件。
+    # 用户指令：各条目点击展开小卡片，收起时只占一行；说明文字唯一
+    # 归属本页——功能页只留一行引导，关于页只留品牌/版本/隐私。
     def _build_help_tab(self) -> QWidget:
         tab = QWidget()
         root = QVBoxLayout(tab)
         root.setContentsMargins(28, 24, 28, 18)
-        root.setSpacing(14)
+        root.setSpacing(12)
 
         head = QLabel("功能说明")
         head.setProperty("class", "pageTitle")
         root.addWidget(head)
-        intro = QLabel(
-            "各设置的详细说明统一放在这里查看——功能页保持简洁，"
-            "只放控件不堆文字。")
+        intro = QLabel("点击条目展开详细说明，再次点击收起。")
         intro.setProperty("class", "subtitle")
         intro.setWordWrap(True)
         root.addWidget(intro)
@@ -316,7 +347,7 @@ class SettingsPage(QWidget):
             ("运行模式",
              "默认推荐「本地 llama.cpp」——四模型全部离线运行，开箱即用，"
              "无需任何云端地址，数据不出本机。只有选择「在线 API」时才需要"
-             "填写云端地址（翻译/审核各一张配置卡），重排与检索恒本地。"),
+             "填写云端地址（翻译/审核/检索各一张配置卡），重排恒本地。"),
             ("GPU / CPU 怎么选",
              "看环境页顶部「可用显存」数字："
              "显存 6GB 以上 → 选「自动（推荐）」，全部模型优先上显卡，速度快；"
@@ -340,14 +371,37 @@ class SettingsPage(QWidget):
              "长文本（成段剧情对话）容易出错——短文本为主的游戏（按钮/标签）"
              "选 16~32；长文本多的游戏（对话/文档）选 4~8。"),
             ("术语库",
-             "· 生效：跨游戏复现或人工确认，翻译时强制约束；\n"
-             "· 候选：审核沉淀待跨游戏复现，仅参考不强制；\n"
-             "· 双击列表「状态」列可切换 生效 / 候选；\n"
-             "· 右侧详情区可编辑术语 / 译文 / 类别 / 状态 / 备注。"),
+             "跨游戏复用的译名约束表。状态两档：生效（翻译时强制约束）/"
+             " 候选（审核沉淀待复现，仅参考不强制）。顶部徽章显示总数与"
+             "同源冲突；支持搜索、按类别筛选（人名/地名/专名/术语）、"
+             "添加与删除；双击列表「状态」列可快速切换，右侧详情区编辑"
+             "术语 / 译文 / 类别 / 状态 / 备注。"),
             ("在线 API 说明",
-             "翻译与审核两个模型各自指向云端（OpenAI 兼容 / Anthropic 原生），"
-             "用各自的接口与模型名；未配置的模型在线模式下不可用。修改自动保存，"
-             "切换回本地模式后 API 配置不参与运行。"),
+             "翻译 / 审核 / 检索三个模型各自指向云端"
+             "（OpenAI 兼容 / Anthropic 原生），用各自的接口与模型名；"
+             "未配置的模型在线模式下不可用。修改自动保存，切换回本地模式后"
+             " API 配置不参与运行。"),
+            ("游戏档案",
+             "概览页「游戏档案」卡：填写游戏名称 / 类型 / 世界观设定 /"
+             " 文风要求 / 个性化风格要求 / 源语言 / 目标语言。档案只属于"
+             "当前游戏项目，保存后注入翻译提示词，下次翻译开始时生效。"
+             "「个性化风格要求」留空 = 使用内置的游戏本地化专家提示词，"
+             "填写后以它优先。"),
+            ("游戏语境",
+             "概览页「游戏语境」卡：点「开始识别」自动分析游戏文本样本，"
+             "生成游戏背景（角色 / 世界观 / 文风等），翻译时自动注入，"
+             "让译文贴合游戏。文本变化后可「重新分析」；识别失败也能直接"
+             "翻译（只是不注入语境）；重新扫描项目时语境自动清空。"),
+            ("翻译流程与质量门",
+             "运行页一键批量流水线：翻译 → 审校判定 → 审校处置 → 写回，"
+             "进度分段显示。质量门拦截有拒绝 / 截断的批次，失败原因显示在"
+             "运行页，默认阻断发布；确认无误后可勾选「允许部分写入」跳过"
+             "拦截。写回前自动备份原文件（磁盘保留最新一份，清单记录路径），"
+             "出问题时按清单把备份目录改名回来即可回滚。"),
+            ("快译（翻译页）",
+             "「翻译」页是即时翻译小工具，独立于批量流程：粘贴文本单轮翻译，"
+             "提示词可自由编辑（默认按当前游戏档案生成），历史记录自动保存"
+             "最近 50 条；长文本按行分块翻译，保持原文换行结构。"),
         ]
         for title, body in sections:
             root.addWidget(_explain(title, body))
@@ -413,14 +467,15 @@ class SettingsPage(QWidget):
         api_lay.setContentsMargins(0, 2, 0, 0)
         api_lay.setSpacing(12)
         api_overview = QLabel(
-            "在线模式：翻译与审核各自指向云端服务，修改自动保存。"
+            "在线模式：翻译 / 审核 / 检索各自指向云端服务，修改自动保存。"
             "（详细说明见「说明」页）")
         api_overview.setProperty("class", "subtitle")
         api_overview.setWordWrap(True)
         api_lay.addWidget(api_overview)
         for kind, title, port, hint, desc, tooltip in self._MODEL_CARDS:
-            # 只提供翻译/审核的在线 API（用户拍板：重排/检索恒本地）
-            if kind not in ("translate", "review"):
+            # 2026-08-22 用户指令：检索（embed）也提供在线 API 卡片；
+            # 重排恒本地（毫秒级轻量任务，无云端必要）
+            if kind == "rerank":
                 continue
             api_lay.addWidget(self._build_api_card(kind, title, tooltip, desc))
         api_lay.addStretch(1)
@@ -480,18 +535,16 @@ class SettingsPage(QWidget):
         lay.setContentsMargins(16, 12, 16, 12)
         lay.setSpacing(8)
 
-        # 行 1：名称 + 短描述（细则进 tooltip）
-        head = QHBoxLayout()
-        head.setSpacing(10)
+        # 行 1：名称（标题独立行——2026-08-22 拥挤修复：desc 与标题
+        # 挤同一水平行时中文长描述被截半）
         name = QLabel(title)
         name.setProperty("class", "cardTitle")
-        head.addWidget(name)
+        lay.addWidget(name)
         model_label = QLabel(desc)
         model_label.setProperty("class", "subtitle")
+        model_label.setWordWrap(True)
         model_label.setToolTip(hint)
-        head.addWidget(model_label, 1)
-        head.addStretch(1)
-        lay.addLayout(head)
+        lay.addWidget(model_label)
         self.model_cards[kind] = {
             "frame": card, "status": None, "btn": None, "combo": None,
             "port": port, "hint": hint,
@@ -527,10 +580,9 @@ class SettingsPage(QWidget):
         combo.setEnabled(not fixed_cpu)
         self.model_cards[kind]["combo"] = combo
         row.addWidget(combo)
-        row.addStretch(1)
         status = QLabel("状态：未启动")
         status.setProperty("class", "subtitle")
-        row.addWidget(status)
+        row.addWidget(status, 1)
         lay.addLayout(row)
 
         # 行 3：启动/停止按钮（独立一行，避免拥挤）
@@ -569,70 +621,55 @@ class SettingsPage(QWidget):
         lay.setContentsMargins(16, 12, 16, 12)
         lay.setSpacing(8)
 
-        # 行 1：名称 + 短描述 + 配置状态
-        head = QHBoxLayout()
-        head.setSpacing(10)
+        # 行 1：名称（标题独立行——desc 与状态挤同一水平行会被截半）
         name = QLabel(title)
         name.setProperty("class", "cardTitle")
-        head.addWidget(name)
+        lay.addWidget(name)
+        # 行 2：短描述独立行（wordWrap 防压扁；细则进 tooltip）
         model_label = QLabel(desc)
         model_label.setProperty("class", "subtitle")
+        model_label.setWordWrap(True)
         model_label.setToolTip(hint)
-        head.addWidget(model_label, 1)
+        lay.addWidget(model_label)
         status = QLabel("未配置")
         status.setProperty("class", "subtitle")
-        head.addWidget(status)
+        lay.addWidget(status)
         self.api_cards[kind] = {
             "frame": card, "provider": None, "url": None, "key": None,
             "model": None, "test_btn": None, "status": status, "hint": hint,
         }
-        lay.addLayout(head)
 
-        # 行 2：提供商 + Base URL（2026-08-22：字段换行，避免挤）
-        row1 = QHBoxLayout()
-        row1.setSpacing(10)
-        provider_tag = QLabel("提供商")
-        provider_tag.setProperty("class", "metricLabel")
-        row1.addWidget(provider_tag)
+        # 行 2~5：表单字段——每行「标签 + 输入」竖排（2026-08-22 拥挤
+        # 修复：标签与输入挤同一水平行时窄窗口下中文标签被截半，改
+        # QFormLayout 自动分配标签列宽，且行距统一）
+        form = QFormLayout()
+        form.setContentsMargins(0, 4, 0, 0)
+        form.setSpacing(10)
         provider = QComboBox()
         provider.setObjectName(f"apiProvider_{kind}")
         provider.addItem("OpenAI 兼容", "openai")
         provider.addItem("Anthropic 原生", "anthropic")
         provider.setMinimumHeight(36)
-        row1.addWidget(provider)
-        url_tag = QLabel("Base URL")
-        url_tag.setProperty("class", "metricLabel")
-        row1.addWidget(url_tag)
         url = QLineEdit()
         url.setObjectName(f"apiUrl_{kind}")
         url.setPlaceholderText("https://api.openai.com/v1 或代理地址")
         url.setMinimumHeight(36)
-        row1.addWidget(url, 1)
-        lay.addLayout(row1)
-
-        # 行 3：API Key + 模型（2026-08-22：字段换行）
-        row2 = QHBoxLayout()
-        row2.setSpacing(10)
-        key_tag = QLabel("API Key")
-        key_tag.setProperty("class", "metricLabel")
-        row2.addWidget(key_tag)
         key = QLineEdit()
         key.setObjectName(f"apiKey_{kind}")
         key.setEchoMode(QLineEdit.Password)
         key.setPlaceholderText("sk-…")
         key.setMinimumHeight(36)
-        row2.addWidget(key, 1)
-        model_tag = QLabel("模型")
-        model_tag.setProperty("class", "metricLabel")
-        row2.addWidget(model_tag)
         model = QLineEdit()
         model.setObjectName(f"apiModel_{kind}")
         model.setPlaceholderText("如 gpt-4o / claude-sonnet-4 / deepseek-chat")
         model.setMinimumHeight(36)
-        row2.addWidget(model, 1)
-        lay.addLayout(row2)
+        form.addRow("提供商", provider)
+        form.addRow("Base URL", url)
+        form.addRow("API Key", key)
+        form.addRow("模型", model)
+        lay.addLayout(form)
 
-        # 行 4：测试按钮 + 自动保存提示
+        # 行 6：测试按钮 + 自动保存提示
         row3 = QHBoxLayout()
         row3.setSpacing(10)
         test_btn = QPushButton("测试连接")
@@ -1164,38 +1201,22 @@ class SettingsPage(QWidget):
         form.addRow("", row)
         root.addWidget(left, 4)
 
-        # 右 6：说明
+        # 右：一行引导（细则归「说明」页——2026-08-22 去重）
         right = QWidget()
         right_lay = QVBoxLayout(right)
         right_lay.setContentsMargins(0, 0, 0, 0)
         right_lay.setSpacing(10)
-        head = QLabel("说明")
-        head.setProperty("class", "pageTitle")
         self.advanced_mode_hint = QLabel(
             "以下参数仅对「本地 Hy-MT2（llama.cpp）」后端生效，"
             "当前为在线 API 模式，调整将被忽略。")
         self.advanced_mode_hint.setProperty("class", "subtitle")
         self.advanced_mode_hint.setWordWrap(True)
         hint = QLabel(
-            "【并发槽位】同时开几条翻译线路。显卡一次只能干一件事，"
-            "多槽只是排队交替，速度并不会成倍变快，显存却会成倍占用"
-            "（每槽一份独立缓存）——新手直接用「自动 · 单槽」最省心；"
-            "显存 8GB 以上想微调可试 2 槽，再高收益很小。\n\n"
-            "【上下文长度】模型一次能记住的文本量（token）。"
-            "8192 已覆盖常规游戏文本，直接用默认值即可；"
-            "机器内存紧张（8GB 以下）可选 4096 省内存，几乎不影响"
-            "翻译质量。显存不足时工具会自动降档，无需手动改。\n\n"
-            "【每批条数】一次打包翻译多少条文本。打包越多，每条分到"
-            "的翻译空间越少，长文本（成段剧情对话）容易出错——"
-            "短文本为主的游戏（按钮/标签）选 16~32；"
-            "长文本多的游戏（对话/文档）选 4~8。\n\n"
-            "显存预估与估算速度随上面的选择实时变化，"
-            "都是参考值，实际占用以运行时为准。")
+            "显存预估与估算速度随左侧选择实时变化，均为参考值。"
+            "各参数的详细说明见「说明」页。")
         hint.setProperty("class", "subtitle")
         hint.setWordWrap(True)
-        right_lay.addWidget(head)
         right_lay.addWidget(self.advanced_mode_hint)
-        right_lay.addSpacing(4)
         right_lay.addWidget(hint)
         right_lay.addStretch(1)
         root.addWidget(right, 6)

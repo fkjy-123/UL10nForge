@@ -5,7 +5,7 @@ from types import SimpleNamespace
 os.environ.setdefault("QT_QPA_PLATFORM", "offscreen")
 
 import pytest
-from PySide6.QtWidgets import QApplication
+from PySide6.QtWidgets import QApplication, QWidget
 
 from hanhua.core.font_support import FontInstallResult
 from hanhua.core.models import FontConfig
@@ -105,7 +105,11 @@ def test_advanced_local_settings_visible_only_in_local_mode_and_refresh_vram(
 
     # 默认本地模式（F56）；先切在线验证置灰
     page.backend_mode.setCurrentIndex(page.backend_mode.findData("api"))
-    assert page.tabs.indexOf(page.advanced_tab) == 1
+    # 2026-08-22：tab 内容已包 QScrollArea，indexOf 用内容 widget 判位
+    _idx = next(i for i in range(page.tabs.count())
+                if page.tabs.widget(i).findChildren(QWidget)
+                and page.advanced_tab in page.tabs.widget(i).findChildren(QWidget))
+    assert _idx == 1
     assert page.local_concurrency.isEnabled() is False
     assert not page.advanced_mode_hint.isHidden()   # API 模式显示"仅本地生效"提示
     # 初始值来自配置（默认 local_concurrency=0 自动 / 8192 / 8）

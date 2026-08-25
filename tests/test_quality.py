@@ -292,6 +292,21 @@ def test_quality_rejects_real_echoes(source, translation):
         entry, translation).reasons
 
 
+@pytest.mark.parametrize(("source", "translation"), [
+    # 低质量原文（梗/自嘲/错拼）回显豁免：原文本就是故意错拼的
+    # broken English，模型保留原文是合理行为（come-back 实证：
+    # 'supa mario in real loife' 回显被 untranslated_text 拒 →
+    # 强制重译再回显 → BLOCKED 留人工，与审核维度 11 低质量豁免对齐）
+    ("supa mario in real loife", "Supa Mario in real life"),
+    ("ware is sequl. i wan kill ice age baby 4 real now.",
+     "ware is sequl. i wan kill ice age baby 4 real now."),
+])
+def test_quality_allows_low_quality_source_echo(source, translation):
+    entry = _entry(source, role="display")
+
+    assert validate_translation_quality(entry, translation).passed
+
+
 def test_interaction_prompt_input_token_is_subsequence():
     # 译文保留按键序列（顺序一致）且允许出现额外字面量：
     # "Press 1 for Chapter 1" 的章节号 1、"A: " 说话人标记 A 不是按键破坏
@@ -315,6 +330,38 @@ def test_interaction_prompt_input_token_is_subsequence():
         arrhy,
         "A嘿，Hal，我们可以换到新的批次吗？\n"
         "> H: I“对不起，戴夫。” I 做不到那样。\n> A...兄弟").passed
+
+
+def test_interaction_prompt_merged_lines_exempt():
+    """fix-55 交互提示「对象名 + 按键动作行」双行原文的译文合行豁免。
+
+    Flabby Pizza 实证：'Dish\\nG - to throw' 在反馈重译时被模型合并成
+    单行「盘子/容器 G 扔掉」——newline_mismatch + line_content_mismatch
+    恒定拦截，正确译文被 BLOCKED 留人工（对象名+按键提示共 4 条全部
+    阻断）。按键提示双行是 UI 排版，合行无运行时崩溃风险，内容未丢时
+    豁免。对象名整行丢失（'G 投掷'）或按键丢失（'盘子/菜肴 - 扔'）
+    仍判失败（untranslated_text / input_token_mismatch 承接）。"""
+    # 合行但对象名已翻译 + 按键保留 → 豁免通过
+    ok = validate_translation_quality(
+        _entry("Dish\nG - to throw"), "盘子/容器 G 扔掉")
+    assert ok.passed
+    assert "newline_mismatch" not in ok.reasons
+    assert "line_content_mismatch" not in ok.reasons
+    ok2 = validate_translation_quality(
+        _entry("Screwdriver\nG - to throw"), "螺丝刀 G 扔掉")
+    assert ok2.passed
+    # 对象名整行丢失（按键动作行前无内容）→ 仍失败
+    dropped = validate_translation_quality(
+        _entry("PostCard\nG - to throw"), "G 投掷")
+    assert "newline_mismatch" in dropped.reasons
+    # 按键丢失（合行但无 G 字面量）→ 仍失败（input_token_mismatch 承接）
+    lost_key = validate_translation_quality(
+        _entry("Dish\nG - to throw"), "盘子/菜肴 - 扔")
+    assert "input_token_mismatch" in lost_key.reasons
+    # 保留双行结构 → 照常通过
+    preserved = validate_translation_quality(
+        _entry("Dish\nG - to throw"), "菜肴/食物\nG 扔掉")
+    assert preserved.passed
 
 
 def test_interaction_prompt_preserves_input_token_count_and_order():
@@ -989,4 +1036,38 @@ def test_numeric_check_exempts_log_and_format_templates():
     # 对照：波次数字改写（3→5）仍判失败——数字是语义数据
     changed = validate_translation_quality(
         _entry("Wave 3 of 5 begins"), "第 5 波开始")
+    assert "numeric_mismatch" in changed.reasons
+
+
+def test_numeric_leetspeak_for_not_mismatch():
+    """leetspeak 形近数字豁免（Ice Age Baby Adventure 实证）：'4 real
+    now' 的 4=for 是网络口语对字母的替代，不是语义数字——译文「真的」
+    不应判 numeric_mismatch（梗文本的正确翻译被机械门误杀，重译再被
+    同一门拒 → BLOCKED 留人工）。"""
+    for original, translation in (
+        ("ware is sequl. i wan kill ice age baby 4 real now.",
+         "ware 是 sequl。我现在真的想杀死冰河世纪宝宝。"),
+        ("i wan kill ice age baby 4 real now", "我想立刻杀死冰河世纪宝宝"),
+        ("2fast 2furious", "速度太快太激烈"),   # 2=to
+        ("gr8 game bro", "很棒的游戏兄弟"),      # 8=ate
+    ):
+        result = validate_translation_quality(_entry(original), translation)
+        assert "numeric_mismatch" not in result.reasons, (original, translation)
+
+
+def test_numeric_leetspeak_does_not_exempt_semantic_number():
+    """leetspeak 豁免只对「原文明显低质量（≥2 个梗/错拼词）」生效——
+    普通语义数字（关卡/伤害/数量）被吞仍判失败；普通原文不因含单个
+    数字+空格+词 形态就被豁免。"""
+    for original, translation in (
+        ("Deal 4 damage", "造成伤害"),          # 4 是独立语义数量
+        ("Gain 3 health", "恢复生命"),
+        ("You have 4 lives", "你有很多条命"),
+        ("I need help with 3 gems", "我需要宝石的帮助"),  # 普通原文吞语义数字
+    ):
+        result = validate_translation_quality(_entry(original), translation)
+        assert "numeric_mismatch" in result.reasons, (original, translation)
+    # 对照：普通原文的语义数字改动（4→5）仍判失败
+    changed = validate_translation_quality(
+        _entry("Deal 4 damage"), "造成 5 点伤害")
     assert "numeric_mismatch" in changed.reasons

@@ -4055,3 +4055,71 @@ def test_service_restart_callback_invoked_on_unavailable():
     assert len(restarts) == 1, "连续失败只重启一次"
     assert sum(1 for e in entries if e.status == STATUS_TRANSLATED) >= 1, \
         "重启后剩余条目应翻译成功"
+
+
+class _BrandEchoDirectiveClient(BaseClient):
+    """2026-08-26 'Out of the Loop studio' 回归：native 英文 prompt 稳定
+    回显（回显原文），中文显式指令路径（translate_source_directive +
+    逐词补译指令）输出正确译文 'Out of the Loop 工作室'。"""
+
+    def __init__(self):
+        self.config = SimpleNamespace(timeout=120.0)
+        self.calls = 0
+
+    def translate_text(self, *_args):
+        self.calls += 1
+        return "Out of the Loop studio", Usage(1, 1)
+
+    def chat(self, system, messages):
+        self.calls += 1
+        content = messages[0]["content"]
+        if "请将以下文本翻译为简体中文" in content:
+            return "Out of the Loop 工作室", Usage(1, 1)
+        if "请将以下名称翻译为简体中文" in content:
+            return "Out of the Loop 工作室", Usage(1, 1)
+        return "Out of the Loop studio", Usage(1, 1)
+
+
+def test_brand_echo_translated_via_chinese_directive():
+    """品牌/工作室名纯回显（'Out of the Loop studio' containment 实证：
+    native 英文 prompt 稳定回显 → 首译 failed → proper_name 引用/双跳
+    无中文可译）→ 中文显式指令（翻译意图最强信号）产出 'Out of the Loop
+    工作室' → 过质量门落 translated。修复前该条目 BLOCKED 留人工。"""
+    client = _BrandEchoDirectiveClient()
+    entry = _to_model([{
+        "file_id": "level1", "key_path": "asset#level1#104/str/0",
+        "original": "Out of the Loop studio",
+        "meta": {"role": "display", "disposition": "translate",
+                 "kind": "rawstr", "obj": 104, "reason": "single_visible_string",
+                 "confidence": "high"},
+    }])[0]
+
+    stats = BatchTranslator(client, batch_size=1, concurrency=1,
+                            lang="en→zh-CN").run([entry])
+
+    assert stats.done == 1, stats
+    assert entry.status == "translated"
+    assert entry.translation == "Out of the Loop 工作室"
+    assert entry.meta.get("quality_passed") is True
+    assert client.calls >= 3, "应先试 native（回显）再走中文指令 + 逐词补译"
+
+
+def test_retranslate_with_feedback_falls_back_to_chinese_directive():
+    """审核反馈重译（retranslate_with_feedback）对纯回显条目：英文反馈
+    prompt 仍回显 → 中文显式指令兜底产出正确译文 → 通过质量门。
+    （'Out of the Loop studio' 审核反馈重译→回显→BLOCKED 的回归保护）"""
+    client = _BrandEchoDirectiveClient()
+    entry = _to_model([{
+        "file_id": "level1", "key_path": "asset#level1#104/str/0",
+        "original": "Out of the Loop studio",
+        "meta": {"role": "display", "disposition": "translate",
+                 "kind": "rawstr", "obj": 104, "reason": "single_visible_string",
+                 "confidence": "high"},
+    }])[0]
+    bt = BatchTranslator(client, batch_size=1, concurrency=1,
+                         lang="en→zh-CN")
+    client.calls = 0
+    ok, translation = bt.retranslate_with_feedback(entry, "必须译成中文")
+    assert ok is True, entry.meta.get("quality_reasons")
+    assert entry.translation == "Out of the Loop 工作室"
+    assert translation == "Out of the Loop 工作室"

@@ -333,18 +333,16 @@ class TranslatePage(QWidget):
         log_head = QHBoxLayout()
         log_title = QLabel("运行记录")
         log_title.setProperty("class", "pageTitle")
-        self.log_toggle = QPushButton("收起日志")
-        self.log_toggle.setAccessibleName("展开或收起运行日志")
+        # 2026-08-22 用户指令：删掉「收起日志」按钮（右栏用 Splitter
+        # 拖动即可调节，不需要额外折叠开关），保留 复制/清空。
         self.copy_log_btn = QPushButton("复制")
         self.clear_log_btn = QPushButton("清空")
-        for button in (self.log_toggle, self.copy_log_btn,
-                       self.clear_log_btn):
+        for button in (self.copy_log_btn, self.clear_log_btn):
             button.setProperty("ghost", True)
             button.setMinimumHeight(32)
             button.setCursor(Qt.PointingHandCursor)
         log_head.addWidget(log_title)
         log_head.addStretch(1)
-        log_head.addWidget(self.log_toggle)
         log_head.addWidget(self.copy_log_btn)
         log_head.addWidget(self.clear_log_btn)
         lf.addLayout(log_head)
@@ -391,6 +389,9 @@ class TranslatePage(QWidget):
         self.partial_check.setToolTip(
             "存在拒绝/截断条目时强制发布（默认阻断，不勾选）")
         self.partial_check.setAccessibleName("允许部分写入并发布")
+        # 2026-08-22 用户指令：checkbox 旁加几个字的小说明
+        self.partial_hint = QLabel("有拒绝/截断时仍可发布")
+        self.partial_hint.setProperty("class", "subtitle")
         self.stop_btn.setEnabled(False)
         self.retry_btn.setEnabled(False)
         self.play_btn.setEnabled(False)
@@ -400,6 +401,7 @@ class TranslatePage(QWidget):
         ctl.addWidget(self.retry_btn)
         ctl.addStretch(1)
         ctl.addWidget(self.partial_check)
+        ctl.addWidget(self.partial_hint)
         ctl.addWidget(self.reveal_btn)
         ctl.addWidget(self.play_btn)
         lay.addLayout(ctl)
@@ -421,7 +423,6 @@ class TranslatePage(QWidget):
         self.reveal_btn.clicked.connect(self.reveal_output)
         self.copy_log_btn.clicked.connect(self._copy_log)
         self.clear_log_btn.clicked.connect(self._clear_log)
-        self.log_toggle.clicked.connect(self._toggle_log)
         # §35「允许部分写入」改变后立即刷新写回原因
         self.partial_check.toggled.connect(
             lambda _checked: self._refresh_chips())
@@ -608,12 +609,6 @@ class TranslatePage(QWidget):
     def _clear_log(self):
         self.log_view.clear()
 
-    def _toggle_log(self):
-        """§35 日志折叠：默认展开，点击切换可见性腾出空间给处理流。"""
-        collapsed = self.log_view.isVisibleTo(self)
-        self.log_view.setVisible(not collapsed)
-        self.log_toggle.setText("展开日志" if collapsed else "收起日志")
-
     # ── 开始 ──
     def start(self):
         if self.state.project is None:
@@ -700,6 +695,17 @@ class TranslatePage(QWidget):
         worker.signals.review_summary.connect(
             lambda line, p=project, g=generation:
             self._on_review_summary(line)
+            if self.state.is_current_project(p, g) else None)
+        # 写回后地毯式审计进度（2026-08-26 任务四：audit_writeback 逐文件
+        # 确定性 PASS/FAIL + 模型软复核 FLAG/不可用，worker 线程经此信号
+        # 回主线程——写回审计在 GUI 实时处理流/运行记录中必须可见）
+        worker.signals.audit.connect(
+            lambda status, text, p=project, g=generation:
+            self.activity_feed.append_event(status, text)
+            if self.state.is_current_project(p, g) else None)
+        worker.signals.log.connect(
+            lambda line, p=project, g=generation:
+            self.log_view.appendPlainText(line)
             if self.state.is_current_project(p, g) else None)
         worker.signals.finished.connect(
             lambda stats, p=project, g=generation:
@@ -869,6 +875,13 @@ class TranslatePage(QWidget):
                 total_pending = sum(
                     is_actionable_translation(entry) for entry in entries)
                 on_log(f"开始翻译：共 {len(entries)} 条，待翻译 {total_pending} 条")
+                # 去重口径说明（2026-08-22 用户实证「每批条数忽大忽小」）：
+                # 每批 N 条作用于去重后的唯一文本（同原文+同角色只翻一次），
+                # 一次模型译文会扇出应用到所有同文条目——活动流的
+                # 「本批完成 N 条」统计的是真实条目数，因此可能出现一批
+                # 完成几十条（同文组大）或两三条（几乎无重复）的正常波动。
+                on_log(f"去重后按唯一文本分批：同原文条目共享一次译文"
+                       f"（每批 {batch_size} 条唯一文本）")
                 if total_pending == 0:
                     low_pending = sum(
                         1 for e in entries
@@ -1185,11 +1198,15 @@ class TranslatePage(QWidget):
             self._last_chip_refresh = now
             self._refresh_chips()
         # 实时处理流（§34）：批粒度事件，不伪造逐条数据
+        # （2026-08-22 口径说明：delta 是真实条目数——同原文条目共享
+        # 一条译文一次性落库，所以「本批完成」可远大于每批唯一文本数）
         done = stats.done
         prev = self._stream_last_done
         if done > prev:
             delta = done - prev
             source = "（记忆命中）" if delta and stats.from_memory else ""
+            if delta >= 20:
+                source = "（同文条目共享译文，一次性落库）"
             self.activity_feed.append_event(
                 "success",
                 f"本批完成 {delta} 条 · 累计 {done} / {stats.total} {source}")
@@ -1355,7 +1372,8 @@ class TranslatePage(QWidget):
                 write_result=write_result,
                 error_title=error_title, error_detail=error_detail,
                 model_name=model_name,
-                agent_report=agent_report)
+                agent_report=agent_report,
+                run_stats=getattr(self, "_last_stats", None))
         except Exception as exc:  # noqa: BLE001 记录导出不阻断写回主流程
             Toast.show(self, f"记录导出失败：{exc}", "error")
             return None
@@ -1499,12 +1517,65 @@ class TranslatePage(QWidget):
                     font_config=font_config,
                     allow_partial=allow_partial,
                     allow_unverified_font_candidate=True)
-            return project.write_all(
+            result = project.write_all(
                 font_config=font_config,
                 stage_cb=signals.progress.emit,
                 allow_partial=allow_partial,
                 allow_unverified_font_candidate=True,
             )
+            # 写回后地毯式审计（2026-08-26 任务四：GUI 写回链路必须可见）。
+            # 与 runner all_record_runner.py 同源：第 1 层确定性结构审计
+            # （字节/行数/结构/占位符/渲染一致，任何 FAIL → needs_rewrite
+            # 阻断本轮闭环）+ 第 2 层审校模型软复核（Qwen3.5-4B，只审计
+            # 第 1 层 PASS 且有差异的文件，FLAG 不硬拦）。审计只读对比
+            # 源目录 vs 发布目录，不修改任何文件；模型不可用优雅降级为
+            # 只确定性审计（GUI 场景不阻断发布，审计报告留档）。
+            try:
+                if signals.audit:
+                    signals.audit.emit(
+                        "running", "写回后地毯式审计：结构完整性与译文"
+                        "复核（只读，不修改文件）…")
+                from hanhua.core.writeback_audit import (
+                    audit_writeback, render_audit_report)
+                audit_res = audit_writeback(
+                    project.store, project.game_dir, project.out_dir,
+                    run_model=True, app_dir=self.state.resource_dir,
+                    font_enabled=bool(getattr(font_config, "enabled", False)),
+                    on_note=lambda s: signals.audit.emit("info", s)
+                    if signals.audit else None)
+                report_text = render_audit_report(
+                    audit_res, str(getattr(project.profile, "game_name", "")
+                                   or project.game_dir.name))
+                audit_path = project.out_dir / "writeback" / "audit.txt"
+                try:
+                    audit_path.parent.mkdir(parents=True, exist_ok=True)
+                    audit_path.write_text(report_text, encoding="utf-8")
+                except OSError:
+                    pass  # 审计报告落盘失败不阻断主流程
+                if audit_res.needs_rewrite:
+                    failed = ", ".join(
+                        f.rel_path for f in audit_res.failed_files[:5])
+                    signals.audit.emit(
+                        "error",
+                        f"写回审计失败（结构破坏，需重写回）：{failed}"
+                        + (f" 等 {len(audit_res.failed_files)} 个文件"
+                           if len(audit_res.failed_files) > 5 else ""))
+                elif audit_res.model_flags:
+                    signals.audit.emit(
+                        "warning",
+                        f"写回审计通过：{len(audit_res.files)} 文件结构完整"
+                        f" · 模型复核 FLAG {len(audit_res.model_flags)} 条"
+                        f"（软复核，详见 writeback/audit.txt）")
+                else:
+                    signals.audit.emit(
+                        "success",
+                        f"写回审计通过：{len(audit_res.files)} 文件结构完整"
+                        f" · 模型复核无 FLAG")
+            except Exception as exc:  # noqa: BLE001 审计异常不阻断写回主流程
+                if signals.audit:
+                    signals.audit.emit(
+                        "warning", f"写回审计异常（已跳过）：{exc}")
+            return result
 
     def _on_write_stage(self, stage) -> None:
         message = str(getattr(stage, "message", "") or "")
@@ -1711,6 +1782,12 @@ class TranslatePage(QWidget):
         record_path = self._export_records(write_result=result)
         if record_path:
             self.log_view.appendPlainText(f"完整记录已导出：{record_path}")
+            # 写回审计报告随记录文档落盘（record_writer 已生成
+            # writeback/audit.txt 时在记录目录内；此处兜底独立路径）
+            audit_path = self.state.project.out_dir / "writeback" / "audit.txt"
+            if audit_path.is_file():
+                self.log_view.appendPlainText(
+                    f"写回审计报告：{audit_path}")
 
     def reveal_output(self):
         out = str(self.state.project.out_dir)

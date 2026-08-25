@@ -59,9 +59,14 @@ _CAMEL_OR_SYMBOL_COLON = re.compile(
     r"^\s*(?![A-Z]?[a-z]+:)[A-Za-z0-9]+:\s*$")
 # 尾部拼接痕迹：`( `、` to `、` in `、` with `、` at `、` of `、` index `
 # 等介词/量词结尾 = Concat 拼接片段（'Monster spawned at ('、'setting
-# teeth angle to '、'spawning unique at spot index '）
+# teeth angle to '、'spawning unique at spot index '）。2026-08-24
+# come-back 实证：真实对话以完成义小品词结尾（'ill let you in'、
+# 'nice ill let you in' 的 in 是 let in 的完成义小品词，不是悬空介词）——
+# 从词表剔除 in/out/up/down/away/back 等完成义小品词，保留真正的悬空
+# 介词/量词（to/with/at/of/for/from/index/length/value...），真拼接片段
+# （'setting teeth angle to '）仍拒，对话不再误漏。
 _DEBUG_CONCAT_TAIL = re.compile(
-    r"(?i)(?:\(\s*$|\b(?:to|in|with|at|of|for|from|index|length|value|"
+    r"(?i)(?:\(\s*$|\b(?:to|with|at|of|for|from|index|length|value|"
     r"state|section|spot|floor|count)\s*$)")
 # 调试句子词（小写形态的日志/错误动词/系统名——UI 中极罕见）。
 # F33 第二版扩充（test_v2 契约实证）：'Internal diagnostic message'、
@@ -83,6 +88,19 @@ _DEBUG_CAMEL_MIX = re.compile(r"[a-z][A-Z][a-z]")
 # 拼接片段：以空白/符号开头 = 上一片段尾部（' loot spots available'、
 # ' seconds until next strike.'、'*****changing menu to None'）
 _DEBUG_LEADING_JUNK = re.compile(r"^[^\w]+\s")
+# 代码格式占位符（'bool2({0}, {1})' 引擎调试模板）——真实 UI/对话句
+# 不用 {N} 裸占位符，命中即代码文本
+_FORMAT_PLACEHOLDER = re.compile(r"\{[0-9]+\}")
+
+# 引擎/编辑器诊断句式（2026-08-24 come-back 实证）：动词开头的错误消息
+# 不被 _is_mono_diagnostic_string 拦截（它只拦开发词开头的句子）。这些
+# 是玩家不可见的引擎/输入系统诊断（'There is already a virtual axis
+# named'、'Invalid quality option'），翻译无意义。真实 UI/对话不含
+# 'virtual axis'/'quality option'/'not supported' 等开发措辞。
+_ENGINE_DIAGNOSTIC_PATTERN = re.compile(
+    r"(?i)\b(?:virtual axis|virtual button|quality option|not supported|"
+    r"not implemented|only supported|can only be called|is not possible)"
+    r"\b")
 
 
 def _is_sentence_display_text(s: str) -> bool:
@@ -91,10 +109,32 @@ def _is_sentence_display_text(s: str) -> bool:
     满足全部条件的未证明串按显示文本进池（由质量门/审核兜底）：
     长度 ≥8、以字母/数字开头（排除拼接片段）、≥2 词（含空格/换行）、
     无驼峰冒号变量标签、无拼接尾部、无调试句子词。
+
+    2026-08-24 come-back 实证放宽（识别遗漏修复，宁严勿漏）：
+    - 短对话短语（4-15 字符含空格，如 'why not'/'take 1'/'nice ill let
+      you in'）是玩家可见对话/提示，不是代码——此前 len<8 整类漏掉。
+      真诊断短句（'not found'/'max reached'/'to '）被 _DEBUG_SENTENCE_WORD/
+      _DEBUG_CONCAT_TAIL 提前拦截，不因放宽漏入。
+    - 圆括号开头的完整句子（'（translation: ...）' 对话内自嘲注解）是
+      显示台词，不是拼接碎片（拼接碎片以 `(` 结尾被 _DEBUG_CONCAT_TAIL
+      拦截，且无空格）。
+    - 代码格式模板（'bool2({0}, {1})' 含 {N} 占位符）是引擎/算法调试
+      消息，翻译无意义——{N} 占位符是强代码形态，直接拒（真实 UI 句
+      不用 {0} 裸占位符）。
     """
-    if len(s) < 8 or not re.search(r"[A-Za-z]", s):
+    if len(s) < 4 or not re.search(r"[A-Za-z]", s):
         return False
-    if not (s[0].isalpha() or s[0].isdigit()):
+    if _FORMAT_PLACEHOLDER.search(s):
+        return False
+    # 短「词: 」标签/拼接片段（'day: ' 'Score: '）是标签/打印前缀，非对话
+    # ——短对话（'why not'/'take 1'）不以冒号结尾。真正 UI 标签达到 8 字符
+    # （'Volume: ' 'smooth: '）才按标签放行（len 放宽不波及短冒号标签）。
+    if len(s) < 8 and s.strip().endswith(":"):
+        return False
+    # 短短语（4-15 字符）必须含空格/换行，且不得是单 token——单 token
+    # 短词（'Oh'/'No'/'ok'）歧义大（可能是枚举名/引擎键），宁漏勿坏，
+    # 留给 unverified 桶 + 审核兜底。
+    if not (s[0].isalpha() or s[0].isdigit() or s[0] == "("):
         return False
     if " " not in s and "\n" not in s:
         return False
@@ -118,12 +158,21 @@ def _is_exclamation_ui_word(s: str) -> bool:
     形态：长度 3..24、首字符字母且非全小写单词（TitleCase/全大写）、
     以 ! 或 ? 结尾、无空白/下划线/连字符。调试哨兵（INTERNAL!/CNOT!）
     已被 _DEBUG_SENTINEL/_INTERNAL_TYPE_NAME 提前剔除。
+
+    2026-08-24 come-back 实证：语气/情绪反应词常连写重复字母 + 多个
+    感叹号（'allllmooooost!!!' 'ALLLLLLMOOOOOOOOSTTT!!!!!!!'
+    'CELEBRATE!!!!'）——全是小写或大写、尾部感叹号连写、无空白。这些
+    是屏幕上显示的情绪反应（玩家可见），非代码标识符（标识符不含
+    !/?）。放宽：剥离尾部 !/? 连写后剩余体为纯字母即可（首字母不强制
+    大写——'allllmooooost!!!' 是故意小写拉长语气）。多感叹号不视为
+    非字母字符（此前 s[:-1].isalpha() 要求恰好一个 ! 导致连写误漏）。
     """
-    if not (3 <= len(s) <= 24):
+    body = s.rstrip("!?")
+    if not body or len(body) < 2 or len(body) > 22:
         return False
     if not (s.endswith("!") or s.endswith("?")):
         return False
-    if not s[:-1].isalpha() or not s[0].isupper():
+    if not body.isalpha():
         return False
     return True
 
@@ -1130,10 +1179,17 @@ def extract_dll_user_strings(path: str | Path, file_id: str | None = None,
             # （ProBuilder/Poly2Tri 实证：FAILED:/[FLIP]/CNOT 是开发诊断，
             # 翻译无意义且模型会改坏代码符号）。判 skipped 而非 continue：
             # 记录保留在 skipped 列表供审计（防过度拦截）。
+            # 2026-08-24 come-back 实证补全：'There is already a virtual
+            # axis named' / 'Invalid quality option' 是引擎诊断，但
+            # _is_mono_diagnostic_string 只拦以开发词开头的句子——动词
+            # 开头的错误句（'There is already...'）漏判 → 进池翻译无意义。
+            # 未证明（非 is_ui_text）的句子型串若同时命中引擎诊断词
+            # （axis/binding/quality option/not supported）也判诊断。
             mono_diagnostic = (
                 not is_ui_text
                 and (_is_mono_diagnostic_string(s)
-                     or token_offset in log_consumed))
+                     or token_offset in log_consumed
+                     or _ENGINE_DIAGNOSTIC_PATTERN.search(s)))
             # UnityScript 程序集：未被上方剔除的字符串全部按显示文本升级。
             # 含空格的是对话/UI/服装/结局文本；无空格语气词（'What?' 'Hahaha!'
             # 'Lily-chan!' 等对话反应词，lilys-day-off 实证 29 条）也是真实

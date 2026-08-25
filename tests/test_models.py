@@ -162,8 +162,9 @@ def test_api_configs_legacy_top_level_api_migrates_to_translate(tmp_path):
 
 
 def test_api_configs_rerank_embed_not_provided(tmp_path):
-    """重排/检索不提供在线 API（用户拍板恒本地）——api_configs 只有
-    翻译/审核两个 kind，旧 JSON 里的 embed/rerank 配置被忽略。"""
+    """重排恒本地（用户拍板）——api_configs 只有翻译/审核/检索三个
+    kind（2026-08-22 检索也提供在线 API），旧 JSON 里的 rerank 配置
+    被忽略；embed 旧配置恢复。"""
     (tmp_path / "settings.json").write_text(
         '{"api_configs": {"translate": {"base_url": "https://t/v1"}, '
         '"review": {"base_url": "https://r/v1"}, '
@@ -171,6 +172,6 @@ def test_api_configs_rerank_embed_not_provided(tmp_path):
         '"rerank": {"base_url": "https://rr/v1"}}}', encoding="utf-8")
     loaded = SettingsStore(tmp_path / "settings.json")
     loaded.load()
-    assert set(loaded.api_configs) == {"translate", "review"}
-    assert loaded.api_config("embed").base_url == ""
+    assert set(loaded.api_configs) == {"translate", "review", "embed"}
+    assert loaded.api_config("embed").base_url == "https://e/v1"
     assert loaded.api_config("rerank").base_url == ""

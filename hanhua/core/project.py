@@ -7,6 +7,7 @@ import csv
 import functools
 import io
 import json
+import re
 import shutil
 import struct
 import tempfile
@@ -555,6 +556,12 @@ def _reopen_written_outputs(store: ProjectStore, output_root: Path) -> int:
             # kv/<key>/N（N 为行号）。整行翻译可能改变行首结构（如去掉前导
             # tab 后重开解析会从 plain 变成 kv），严格 key 匹配会误判未写入；
             # 译文写入文件后，其所在行必然包含该译文文本。
+            # kv 值形态（kv/<key>/N）另做「值级验证」：整行若含 ASCII 引号 +
+            # 尾随逗号（Unity .subs JSON 语言包，如 'S.C. Franklin',），写回
+            # 会把译文重包成 JSON 字符串字面量（直引号+转义，见 txt_format.
+            # _rewrap_json）——译文与磁盘行的键语义不再逐字相等（磁盘行含
+            # ASCII 引号/尾随逗号）。此时比较「值」而非「整行」：去掉行内
+            # key 与引号逗号后的值 == 译文（含中文弯引号包裹等价）。
             lines = read_text(output).splitlines()
             mismatched = []
             for key_path, translation in expected.items():
@@ -563,8 +570,52 @@ def _reopen_written_outputs(store: ProjectStore, output_root: Path) -> int:
                 except (ValueError, IndexError):
                     mismatched.append(key_path)
                     continue
-                if line_no >= len(lines) or translation not in lines[line_no]:
+                if line_no >= len(lines):
                     mismatched.append(key_path)
+                    continue
+                line = lines[line_no]
+                if translation in line:
+                    continue
+                # markdown 列表行（plain）译文在写回时被 _replace_plain 剥除了
+                # 行首/行尾单字符 marker（*修复...* → 修复...，磁盘保留行首
+                # marker）——译文与磁盘行不再逐字相等（store 译文含包裹星号）。
+                # 用同款归一化后的候选再查一次，避免误判未写入。
+                norm = translation
+                for _ch in ("*", "-", "+"):
+                    if len(norm) >= 2 and norm.startswith(_ch) \
+                            and norm.endswith(_ch):
+                        norm = norm[1:-1]
+                        break
+                    if norm.startswith(_ch):
+                        norm = norm[1:].lstrip()
+                        break
+                if norm != translation and norm in line:
+                    continue
+                # 值级降级验证：kv 行的「值部分」若是 JSON 字符串值（含 ASCII
+                # 引号 + 尾随逗号，Unity .subs 语言包如 "S.C. Franklin",）——
+                # 写回会把译文重包成 JSON 字符串字面量（直引号+转义，见
+                # txt_format._rewrap_json）→ 译文与磁盘行不再逐字相等（磁盘
+                # 行含 ASCII 引号/尾随逗号）。此时比较「值」而非「整行」：
+                # 剥 key + 引号逗号，JSON 解码值与译文（含弯引号包裹等价）。
+                kv_m = re.match(
+                    r"^[^=:;\r\n]+?\s*(?P<d>[:=])\s*(?P<v>.*)$", line.strip())
+                if kv_m:
+                    val = kv_m.group("v").rstrip(",").strip()
+                    if len(val) >= 2 and val.startswith('"') and val.endswith('"'):
+                        try:
+                            val_u = json.loads(val)
+                        except (json.JSONDecodeError, ValueError):
+                            val_u = val[1:-1]
+                        # 译文弯引号包裹/全角逗号回显剥除（与 _rewrap_json 同源）：
+                        # “xxx” / “xxx”， → xxx
+                        cand = translation
+                        if cand.startswith("“") and cand.endswith("”"):
+                            cand = cand[1:-1]
+                        elif cand.startswith("“") and cand.endswith("，"):
+                            cand = cand[1:-2]
+                        if val_u == cand:
+                            continue
+                mismatched.append(key_path)
         else:
             parsed = parse_file(output, file_id=file_id)
             actual = {entry.key_path: entry.original for entry in parsed.entries}

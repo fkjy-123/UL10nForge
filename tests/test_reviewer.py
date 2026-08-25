@@ -13,7 +13,9 @@ from pathlib import Path
 from hanhua.core.models import TextEntry
 from hanhua.core.reviewer import (ReviewItem, ReviewResult, SemanticReviewer,
                                   _REVIEW_SYSTEM_PROMPT, _build_item_prompt,
-                                  _parse_result, extract_term_pairs)
+                                  _parse_result, extract_term_pairs,
+                                  _reason_claims_negation_dropped,
+                                  _translation_dropped_negation)
 
 
 class _FakeService:
@@ -158,10 +160,43 @@ def test_extract_term_pairs():
 def test_system_prompt_has_ten_dimensions():
     """审核系统 prompt 含十维（含幻觉/自然度/歧义/机翻痕迹）。"""
     for dim in ("语义准确", "游戏语境", "术语一致", "自然度", "风格",
-                "完整性", "幻觉", "结构完整", "歧义", "机翻痕迹"):
+                "完整性", "幻觉", "结构完整", "歧义", "机翻痕迹",
+                "原文低质量"):
         assert dim in _REVIEW_SYSTEM_PROMPT
     assert "overall_score" in _REVIEW_SYSTEM_PROMPT   # JSON 契约扩展
     assert "dimensions" in _REVIEW_SYSTEM_PROMPT
+
+
+def test_system_prompt_has_low_quality_worked_examples():
+    """维度 11 带低质量原文具体示例（come-back 实证：4B 只读抽象规则仍
+    把 not only 强调句当否定漏译）。"""
+    assert "i cant start playing my games if im not consumed the consume" in _REVIEW_SYSTEM_PROMPT
+    assert "not only does flex taps powerful adhesive hold the mountain up" in _REVIEW_SYSTEM_PROMPT
+    assert "宽普钦" in _REVIEW_SYSTEM_PROMPT
+    assert "敌人会掉落金币" in _REVIEW_SYSTEM_PROMPT   # 真否定漏译反例
+
+
+def test_negation_dropped_verifiable_claim():
+    """「否定漏译/语义相反」是可验证主张：not only 强调句的 not 不是
+    否定（译文「不仅」已传达）；原文真否定 + 译文无中文否定才成立。"""
+    # 4B 罐头理由：not only 强调句被当「否定句漏译否定词」
+    assert _reason_claims_negation_dropped(
+        "原文含否定词 not，译文完全缺失导致语义相反；应补回'不'字")
+    assert _reason_claims_negation_dropped(
+        "原文为否定句（not only...but also...），译文漏译否定词，语义相反")
+    # 非否定类理由不触发
+    assert not _reason_claims_negation_dropped(
+        "原文 consume 为动词原形，译文误作名词")
+    # not only 强调句：not 被剥离后无否定 → 非真漏译
+    assert not _translation_dropped_negation(
+        "not only does flex taps powerful adhesive hold the mountain up",
+        "不仅柔韧胶带凭借强力粘合固定了山脉")
+    # 译文已带「不」→ 非真漏译
+    assert not _translation_dropped_negation(
+        "you must not enter", "你绝不能进入")
+    # 原文真否定 + 译文无中文否定 → 真漏译（不可重审豁免）
+    assert _translation_dropped_negation(
+        "the enemy does not drop any gold", "敌人会掉落金币")
 
 
 def test_parse_result_ten_dimension_fields():
@@ -749,6 +784,67 @@ def test_review_entries_term_hint_only_matching_pairs(monkeypatch):
     # 未命中/其他游戏词对不注入
     assert "SCP-173" not in by_orig["Show FPS counter"].term_hint
     assert "GLISLYA" not in by_orig["Show FPS counter"].term_hint
+
+
+def test_review_entries_negation_claim_re_reviews(monkeypatch):
+    """可验证「否定漏译」罐头理由 → 逐条重审（come-back 实证：4B 把
+    not only 强调句当否定句漏译；译文已含「不仅」/「不」却报语义相反）。
+
+    重审返回 PASS → 译文放行（APPROVED）；真否定漏译（原文真否定、译文
+    无否定）不触发重审，保持 CRITICAL → 重译。
+    """
+    import hanhua.core.reviewer as rev
+    calls = {"n": 0}
+    first = {"level": "CRITICAL",
+             "reason": "原文含否定词 not，译文完全缺失导致语义相反"}
+
+    class _FakeReviewer:
+        usable = True
+
+        def __init__(self, app_dir=None, config=None, online_cfg=None):
+            pass
+
+        def review_batch(self, items, on_progress=None,
+                         cancellation_event=None):
+            # 先 CRITICAL（否定漏译罐头理由）→ 触发重审兜底
+            return {it.entry_id: ReviewResult(
+                it.entry_id, level=first["level"], reason=first["reason"])
+                for it in items}, 0
+
+        def review_one(self, item):
+            calls["n"] += 1
+            return ReviewResult(item.entry_id, level="PASS", reason="正确")
+
+        def retranslate_with_feedback(self, *a, **k):
+            return "x"
+
+    monkeypatch.setattr(rev, "SemanticReviewer", _FakeReviewer)
+
+    class _FakeStore:
+        def batch_update_translation_results(self, rows):
+            pass
+
+    # not only 强调句 + 译文「不仅」→ 非真漏译 → 触发重审 → PASS 放行
+    entries = [
+        TextEntry(id=1, file_id="f", key_path="a",
+                  original="not only does flex taps powerful adhesive hold "
+                           "the mountain up",
+                  translation="不仅柔韧胶带凭借强力粘合固定了山脉。",
+                  status="translated",
+                  meta={"kind": "textasset", "role": "display"}),
+        # 真否定漏译 → 不触发重审 → 保持 CRITICAL → 需重译
+        TextEntry(id=2, file_id="f", key_path="b",
+                  original="the enemy does not drop any gold",
+                  translation="敌人会掉落金币。", status="translated",
+                  meta={"kind": "textasset", "role": "display"}),
+    ]
+    summary = rev.review_entries(
+        entries, None, game_name="t",
+        translator=None, memory=None, store=_FakeStore(),
+        app_dir=Path("."), model_name="qwen", max_send_rate=1.0)
+    assert calls["n"] == 1                 # 仅 not only 触发重审
+    assert entries[0].meta["review_outcome"] == "APPROVED"
+    assert entries[1].meta["review_outcome"] in ("NEEDS_REVISION", "BLOCKED")
 
 
 def test_active_glossary_pairs_game_filter():

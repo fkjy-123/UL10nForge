@@ -20,6 +20,41 @@ FUNCTION_WORDS = frozenset({
     "no", "nor", "not", "of", "off", "on", "or", "out", "over", "than",
     "the", "then", "this", "to", "too", "under", "up", "very", "was",
     "were", "will", "with", "would", "yes",
+    # 2026-08-24 补充常用语法骨架词（键盘噪声误杀修复）：真实英文句的
+    # 代词/介词/连词/副词，键盘乱打一个都没有。'plus flex sands powerfull
+    # powder is so strong'（is/so）这类开发者自嘲句靠它们识别为真实句子。
+    "so", "that", "these", "those", "there", "here", "when", "where",
+    "which", "who", "whom", "whose", "why", "how", "what", "because",
+    "although", "though", "while", "until", "unless", "since", "once",
+    "after", "before", "about", "above", "across", "against", "along",
+    "among", "around", "behind", "below", "beneath", "beside", "between",
+    "beyond", "during", "inside", "near", "onto", "outside", "through",
+    "toward", "towards", "upon", "within", "without", "some", "any",
+    "many", "much", "each", "every", "few", "most", "other", "another",
+    "both", "either", "neither", "should", "must", "need", "him", "her",
+    "his", "my", "our", "their", "your", "me", "us", "them", "he", "she",
+    "they", "we", "you", "am", "itself", "himself", "herself", "myself",
+    "yourself", "themselves",
+})
+
+# 句子语法骨架词（2026-08-24 键盘噪声误杀修复专用，不并入 FUNCTION_WORDS
+# 以免影响术语/词对过滤）：真实英文句的代词/介词/连词/情态词是语法骨架，
+# 键盘乱打（asdasdasd / fdji ijsdijn）一个都没有。噪声判别时 ≥2 个本集词
+# → 真实句子（he was a good frog… 的 was/a/and/at/the；plus flex sands…
+# 的 is/so/with）。
+_SENTENCE_SKELETON = frozenset(FUNCTION_WORDS) | frozenset({
+    "that", "these", "those", "there", "here", "so", "such", "when",
+    "where", "which", "who", "whom", "whose", "why", "how", "what",
+    "because", "although", "though", "while", "until", "unless", "since",
+    "once", "after", "before", "about", "above", "across", "against",
+    "among", "around", "behind", "below", "beneath", "beside", "between",
+    "beyond", "during", "inside", "near", "onto", "outside", "through",
+    "toward", "towards", "upon", "within", "without", "some", "any",
+    "many", "much", "each", "every", "few", "most", "other", "another",
+    "both", "either", "neither", "should", "must", "need", "let", "get",
+    "got", "been", "being", "him", "her", "his", "my", "our", "their",
+    "your", "me", "us", "them", "he", "she", "they", "we", "you", "i",
+    "am", "my", "all",
 })
 
 BB_TAG_PATTERN = re.compile(
@@ -338,7 +373,12 @@ _GUID_LOG_TEMPLATE = re.compile(r"\bGUID:\s*[A-Za-z]+\s*=\s*$")
 # not found in the Scene GUID to Address Map. Address: '——crusty-proto
 # Eflatun.SceneReference.dll 实证：'Address: ' 是 code 续行拼接点；正常
 # 玩家文本以句号/叹号/问号结尾。'Press: ' 短 UI 提示 <20 字符不命中）
-_LOG_TEMPLATE_TAIL = re.compile(r"(?:[A-Za-z]+:|\w+\s*=)\s*$")
+# 2026-08-24 come-back 实证：'the mission is simple:' 是真实任务目标句，
+# 结尾的 simple 是全小写普通词——拼接点标签必须是代码形态（TitleCase
+# 'Address'、驼峰 'sourceId'、含数字）才拦截；全小写普通词冒号结尾是
+# 自然叙述（'the mission is simple:'），放行。
+_LOG_TEMPLATE_TAIL = re.compile(
+    r"(?:[A-Z][A-Za-z0-9]*:|\w*[A-Z][A-Za-z0-9]*:|\w*\d\w*:|\w+\s*=)\s*$")
 # 首尾空白片段串（' to JSON. '：字符串表拆分出的无完整语义片段，
 # crash-back-in-time 实证——YarnSpinner 错误模板 'Can't save variables
 # to JSON.' 的尾部碎片；译文更长时写回被容量截断 → object 闸门 WARN）。
@@ -577,6 +617,14 @@ _KEY_FIELD_NAMES = {
     "key_id", "keyname", "idname", "locale", "lang", "language", "culture",
     "region", "country", "tag", "type", "category", "class", "kind", "section",
     "group", "index", "order", "flag", "state", "mode", "status",
+    # 渲染/样式引用字段（containment subtitles.jsonc 实证 333 条）：
+    # "color": "classd" / "sound": "door_open" 是枚举/资源名，翻译（译成
+    # 中文）断字幕着色/音效查找。key 风格判定（_IDENTIFIER 无空格）会
+    # 把这些短枚举当「显示单词」放行进池，模型再译成中文 → 引用断链。
+    "color", "colour", "sound", "sfx", "music", "song", "material",
+    "sprite", "icon", "image", "prefab", "scene", "layer", "animation",
+    "anim", "style", "shader", "font", "texture", "camera", "light",
+    "audio", "clip", "model", "mesh", "effect", "particle", "controller",
     # Addressables catalog 结构字段（Unity 序列化名）：值分别是资源地址/程序集名/
     # 加载器类型，翻译必然破坏资源加载（catalog.json 真实失败样本 21 条）
     "m_address", "m_assetpath", "m_internalid", "m_providerid",
@@ -951,6 +999,16 @@ def is_hard_structural(text: str) -> bool:
         # show 是显示词）是设置项文本，不是键盘噪声（asdasdasd /
         # fdji ijsdijn 无白名单词）
         if any(w.casefold() in DISPLAY_WORDS for w in s.split()):
+            pass
+        # 2026-08-24（Ice Age Baby Adventure 实证）：噪声判别只看「长词
+        # + 重复 3-gram」，误杀真实英文句——'he was a good frog and was
+        # good at protecting the crünch'（was/a/and/at/the）与 'if you
+        # want you can have a ride in my spaceship'（if/can/have/a/in）
+        # 是开发者自嘲对话，却被当键盘乱打跳过（92 条跳过里 8 条）。真实
+        # 句子的功能词（was/a/and/the/if/can…）是语法骨架，键盘乱打
+        # （asdasdasd / fdji ijsdijn）一个功能词都没有。≥2 个功能词 →
+        # 真实句子，不是噪声（宁漏勿坏：漏判只多翻一条，误判会漏整条对话）。
+        elif sum(1 for w in s.split() if w.casefold() in FUNCTION_WORDS) >= 2:
             pass
         else:
             return True

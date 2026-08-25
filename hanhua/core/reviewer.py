@@ -26,7 +26,7 @@ from __future__ import annotations
 
 import json
 import re
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, replace
 from pathlib import Path
 from typing import Callable
 
@@ -45,7 +45,7 @@ from .prompts import build_game_context_block
 _REVIEW_SYSTEM_PROMPT = """你是游戏本地化质量审核员。审核必须严格，逐项核对十
 个审核维度，任一维度有问题就按严重程度定级，宁严勿松。
 
-审核维度（十项，#43 重构指令 §10）：
+审核维度（十一项，#43 重构指令 §10 + 2026-08-24 原文低质量豁免）：
 1. 语义准确：译文是否传达原文全部含义，不张冠李戴、不增删信息。
    核对：否定（not/no/never/without——「不」被吞是 CRITICAL）、
    人物关系（主宾颠倒 A 打 B 译成 B 打 A 是 CRITICAL）、条件与因果
@@ -81,6 +81,30 @@ _REVIEW_SYSTEM_PROMPT = """你是游戏本地化质量审核员。审核必须�
    正确义项（「Resume 简历」在游戏中多指「继续」）
 10. 机翻痕迹：是否存在英文语序直译腔、逐词对应、滥用「的/被/
     进行/一个」等翻译腔——游戏文本必须读起来像母语写作
+11. 原文低质量/梗/自嘲豁免：当原文本身是拼写错误、语法混乱、网络
+    梗、leetspeak（4=for、ur=your、wan=want）、故意不通的自嘲/吐槽
+    文本时，审核关注点是「译文是否传达了原文意思」，而不是「译文
+    是否修正了原文错误」。原文的拼写/语法错误不是译文的缺陷：
+    - 不得以「原文拼写错误、译文未修正」判错——原文错拼不是译文的错；
+    - 不得要求译文修正原文错误（修正了不加分也不扣分，保持大意即可）；
+    - 译文口语化/保留英文感叹词（Oops/Wow）是可接受风格；
+    - 译文传达原文大意 → PASS/MINOR，不应强制重译；
+    - 仅当译文本身颠倒/丢失了原文真实传达的意思（如漏译否定、语义
+      完全跑偏）才判 MAJOR/CRITICAL。判断原文是否低质量以「原文
+      本身」为准（含多个明显错拼/语法混乱/无完整语义），不得只看
+      译文是否通顺。
+
+    低质量原文示例（原文低质量时，译文传达大意即可，不得强制重译）：
+    - 原文：i cant start playing my games if im not consumed the consume
+      译文：如果我不消耗，我就无法开始玩游戏。→ PASS（原文是故意不通
+      的自嘲，译文传达大意即可，不得抠「consumed」的词性）
+    - 原文：not only does flex taps powerful adhesive hold the mountain up
+      译文：不仅柔韧胶带凭借强力粘合固定了山脉。→ PASS（not only...but
+      also 是肯定强调句，译文「不仅」已正确传达，不得当「否定漏译」）
+    - 原文：wide putin
+      译文：宽普钦 → PASS（原文是错拼梗，译文音译保留大意即可）
+    - 原文：the enemy does not drop any gold
+      译文：敌人会掉落金币。→ CRITICAL（原文真否定被漏译，语义相反）
 
 级别定义：
 - PASS：语义/结构/术语全部正确，可直接写库
@@ -146,6 +170,42 @@ def _reason_claims_missing_translation(reason: str) -> bool:
     """reason 是否声称译文缺失/未翻译（可验证主张）。"""
     r = reason or ""
     return any(p in r for p in _MISSING_TRANSLATION_CLAIMS)
+
+
+# 批审幻觉防护（2026-08-24 扩展）：「否定漏译/语义相反」类罐头理由——
+# come-back-and-make-a-sequel 实证 4B 把 not only...but also 强调句当
+# 「否定句漏译否定词」（译文用「不仅…」已正确传达）、把「如果我不消耗」
+# 当「否定逻辑错误」。「否定词被吞 → 语义相反」是可验证主张：原文剥离
+# 强调结构（not only/not just/not merely/not simply）后仍含否定词、译文
+# 却无对应中文否定 → 判定才成立；否则与事实矛盾 → 逐条重审兜底。
+_NEGATION_DROPPED_CLAIMS = ("否定词", "漏译否定", "否定句", "语义相反",
+                            "语义颠倒")
+# 原文否定词（含缩写 n't 与 don't/doesn't 等词尾 n't 形态）
+_NEGATION_SOURCE_RE = re.compile(
+    r"\b(?:not|no|never|without|cannot)\b|n't", re.I)
+# not only/just/merely/simply...but also 是肯定强调，not 不是「否定漏译」
+_NOT_EMPHASIS_RE = re.compile(r"\bnot\s+(?:only|just|merely|simply)\b", re.I)
+# 中文否定词（译文表达否定语义的常规字）
+_NEGATION_ZH_RE = re.compile(r"不|没|未|无|别|莫|勿|非|岂|难")
+
+
+def _reason_claims_negation_dropped(reason: str) -> bool:
+    """reason 是否声称「否定漏译/语义相反」（可验证主张）。"""
+    r = reason or ""
+    return any(p in r for p in _NEGATION_DROPPED_CLAIMS)
+
+
+def _translation_dropped_negation(original: str, translation: str) -> bool:
+    """译文是否真的漏译了原文否定（可验证）：原文（剥离 not only/not
+    just 强调后）含否定词、译文却无对应中文否定 → 真漏译；否则是 4B
+    幻觉（not only...but also 的 not 不是否定、译文用「不仅/绝不」等
+    已传达）。剥离强调结构：'not only does flex...hold the mountain up'
+    的 not 属于 not only 强调，不触发漏译主张。
+    """
+    source = _NOT_EMPHASIS_RE.sub(" ", str(original or ""))
+    if not _NEGATION_SOURCE_RE.search(source):
+        return False
+    return not _NEGATION_ZH_RE.search(str(translation or ""))
 
 
 def _repair_multiline_candidate(original: str, candidate: str) -> str:
@@ -837,6 +897,10 @@ def _failed_reason(entry: TextEntry) -> str:
 # 机械失败原因 → 重译修正指引（2026-08-15 minato 实证：4B 判 PASS 但
 # 机械门 failed 的条目强制重译时，反馈只有干巴巴的原因列表——模型
 # 不知道具体修什么，重译输出再被同一机械门拒 → BLOCKED 留人工）
+# 2026-08-22 补全：覆盖 quality.py 全部 failure reason——此前缺
+# key_name_mistranslated 等 10 项时落到通用「请按原文语义重译」，
+# 模型不知道具体修什么，重译再被同一门拒（「翻译没问题却被阻断」
+# 的直接根因之一：反馈盲修 → 多轮不收敛 → BLOCKED）
 _QUALITY_FIX_HINTS = (
     ("newline_mismatch", "保持与原文完全一致的换行行数与结构"),
     ("line_content_mismatch", "保持与原文一致的行内容分布（不合并不拆行）"),
@@ -845,6 +909,26 @@ _QUALITY_FIX_HINTS = (
     ("numeric_mismatch", "译文必须包含原文的全部数字且数值不变"),
     ("untranslated_text", "必须译成中文，不得保留大段原文英文"),
     ("target_script_mismatch", "只输出简体中文译文，不混入其他文字"),
+    ("explanatory_prefix",
+     "直接输出译文本身，不要任何「译文：」等前缀或解释说明"),
+    ("markdown_wrapper", "不要用 markdown 代码块/列表标记包裹译文"),
+    ("key_name_mistranslated",
+     "物理键名（Shift/Ctrl/RMB/Esc/Space 等）与按键别名必须原样保留英文，"
+     "不得译成中文"),
+    ("glossary_mismatch", "严格遵守术语表词对，按术语表译文用词"),
+    ("consistency_mismatch",
+     "同一原文在同一语境必须给同一译文（与批内其他条目一致）"),
+    ("builtin_ui_mismatch",
+     "引擎/系统内置 UI 文案按该引擎官方中文译法输出"),
+    ("input_token_mismatch",
+     "输入标记/协议 token（如 {input} 等模板占位）必须原样保留"),
+    ("action_word_residue",
+     "动作动词必须译成中文，不得残留原文英文动词"),
+    ("empty_translation", "必须输出非空译文"),
+    ("illegal_control", "不得输出控制字符（除原文已有的换行/制表符）"),
+    ("direction_mismatch",
+     "输入绑定语境的方向词（left/right/up/down 等）必须译出对应方向字"
+     "（左/右/上/下）"),
 )
 
 
@@ -1131,8 +1215,15 @@ def review_entries(entries, glossary, *, game_name: str = "",
     # 可验证主张，与事实矛盾（译文非空且 ≠ 原文）→ 逐条重审一次
     # （单条路径噪声少、无批内互相干扰）。重审结果不再防护（防循环）；
     # 每条目至多一次兜底（批量/单条路径统一在此处理）。
+    # 2026-08-24 扩展：同样可验证的「否定漏译/语义相反」罐头理由——
+    # come-back 实证 4B 把 not only 强调句当「否定句漏译否定词」、把
+    # 已带「不」的译文当「否定逻辑错误」；「原文剥离强调后仍含否定、
+    # 译文却无对应中文否定」才成立，否则与事实矛盾 → 逐条重审兜底。
+    failed_entry_ids_ = {
+        it.entry_id for it, e in zip(items, item_entries)
+        if e.status == "failed"}
     for eid, r in list(results.items()):
-        if r.is_error or not _reason_claims_missing_translation(r.reason):
+        if r.is_error:
             continue
         item = next((it for it in review_items
                      if it.entry_id == eid), None)
@@ -1140,10 +1231,48 @@ def review_entries(entries, glossary, *, game_name: str = "",
             continue
         if str(item.translation).strip() == str(item.original).strip():
             continue
-        if on_note:
-            on_note(f"语义审核：条目 {eid} 判定与事实矛盾（译文非空却报"
-                    f"缺失）→ 逐条重审")
-        results[eid] = reviewer.review_one(item)
+        if _reason_claims_missing_translation(r.reason):
+            if on_note:
+                on_note(f"语义审核：条目 {eid} 判定与事实矛盾（译文非空却报"
+                        f"缺失）→ 逐条重审")
+            results[eid] = reviewer.review_one(item)
+        elif (_reason_claims_negation_dropped(r.reason)
+              and not _translation_dropped_negation(
+                  item.original, item.translation)):
+            if on_note:
+                on_note(f"语义审核：条目 {eid} 判定与事实矛盾（译文已含否定"
+                        f"却报否定漏译）→ 逐条重审")
+            results[eid] = reviewer.review_one(item)
+        # 2026-08-26 专名/品牌保留回显类机械门兜底（'Out of the Loop
+        # studio' 案例）：条目带 proper_name_echo 豁免打标（原文与译文
+        # 字母序列相同、模型保留原文是合理行为）且 4B 判 PASS 时——按
+        # 语义审核这已经是可用译文，但机械门把「回显保留」视为未翻译
+        # （untranslated_text/target_script_mismatch，status=failed）→
+        # 若放行则坏候选进发布槽；若强推重译则无 translator 时直接
+        # BLOCKED 留人工（近于永久卡死）。带 proper_name_echo 标记的
+        # 回显是「审校确认的专名保留」→ 视同 APPROVED（机械门与语义
+        # 审核意见一致的可用译文，可直接发布；写回端 meta 打标可供
+        # 审计筛选）。仅适用于 proper_name_echo（纯专名/品牌保留），
+        # 普通回显（untranslated_text 无豁免标记）仍走强制重译闭环。
+        elif (item.entry_id in failed_entry_ids_
+              and r.level == "PASS"
+              and str((item_entries and _entry_for(
+                  items, item_entries, item.entry_id).meta or {}).get(
+                      "echo_exempt", "")).startswith("proper_name")):
+            if on_note:
+                on_note(f"语义审核：条目 {item.entry_id} 为专名保留回显"
+                        f"（4B PASS）→ 视同通过，可发布")
+            results[eid] = replace(r, level="PASS")
+            _bypass = _entry_for(items, item_entries, item.entry_id)
+            if _bypass is not None:
+                _bypass.status = STATUS_TRANSLATED
+                _bypass.meta = dict(_bypass.meta)
+                _bypass.meta["review_outcome"] = "APPROVED"
+                _bypass.meta["review_level"] = "PASS"
+                _bypass.meta["review_blocked"] = False
+                _bypass.meta["quality_passed"] = True
+                _bypass.meta["quality_reasons"] = []
+                _bypass.meta["echo_exempt"] = "proper_name_reviewed"
     # P0-4：机械失败条目（quality_failed 强制通道）——任何判定级别都不能
     # 让机械拒绝的候选直接发布；4B 与机械门意见相左（PASS/MINOR）时以
     # 机械证据为准，强制进入反馈重译（重译输出再过机械门才可 APPROVED）。

@@ -437,12 +437,12 @@ def test_settings_save_persists_config(qapp, tmp_path):
 
 
 def test_settings_online_mode_shows_translate_review_api_cards(qapp, tmp_path):
-    """在线 API 模式：只有翻译/审核两张卡（重排/检索恒本地无卡片）。"""
+    """在线 API 模式：翻译/审核/检索三张卡（重排恒本地无卡片）。"""
     from hanhua.ui.pages.settings_page import SettingsPage
     page = SettingsPage(_state(tmp_path), _RecordingWindow())
     # 切在线后断言在线卡（默认本地——F56）
     page.backend_mode.setCurrentIndex(page.backend_mode.findData("api"))
-    assert set(page.api_cards) == {"translate", "review"}
+    assert set(page.api_cards) == {"translate", "review", "embed"}
     assert page.api_cards["translate"]["test_btn"].text() == "测试连接"
     # 在线模式：在线卡片可见、本地四卡隐藏
     assert page.mode_api_widget.isHidden() is False

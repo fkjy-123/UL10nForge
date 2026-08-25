@@ -334,6 +334,54 @@ def _blank_line_compression(original: str, normalized: str) -> bool:
     return j == len(target) and skipped > 0
 
 
+def _interaction_prompt_merge_compression(original: str, normalized: str) -> bool:
+    """交互提示「对象名 + 按键动作行」双行原文的译文合行豁免。
+
+    Flabby Pizza 实证：'Dish\\nG - to throw'（对象名行 + 按键动作行）在
+    反馈重译时被模型合并成单行「盘子/容器 G 扔掉」——机械门 newline_
+    mismatch + line_content_mismatch 恒定拦截，正确译文被 BLOCKED 留人工
+    （对象名+按键提示共 4 条全部阻断）。按键提示的双行是 UI 提示的排版
+    （对象名 / 按键动作），合并成单行是排版损失、无运行时崩溃风险（非
+    占位符/数据换行）。
+
+    豁免条件从严（宁漏勿坏）：
+    - 原文必须是交互提示（is_interaction_prompt）且非空行恰好 2 行；
+    - 第 2 行（按键动作行）含按键字面量事件（G/E…）；第 1 行是对象名；
+    - 译文非空行恰好 1 行（确实合行）；
+    - 译文在该按键字面量**之前**还有非空内容（对象名已翻译，未丢）——
+      这排除「G 投掷」这类把对象名整行丢弃的坏译文（内容丢失仍判失败，
+      由 untranslated_text 承接）。
+    """
+    if not is_interaction_prompt(original):
+        return False
+    src_lines = [ln for ln in re.split(r"\\n|\r\n|\r|\n", original)
+                 if ln.strip()]
+    if len(src_lines) != 2:
+        return False
+    key_events = [ev.value for ev in interaction_input_events(original)
+                  if ev.kind == "literal_glyph"]
+    if not key_events:
+        return False
+    # 按键字面量必须在第 2 行（对象名行之后）才符合「对象名 + 按键动作」
+    # 形态；按键在第 1 行（如 'E: 打开' 前导提示）不是本豁免目标。
+    if not any(k in src_lines[1].casefold()
+               for k in (ke.casefold() for ke in key_events)):
+        return False
+    dst_lines = [ln for ln in re.split(r"\\n|\r\n|\r|\n", normalized)
+                 if ln.strip()]
+    if len(dst_lines) != 1:
+        return False
+    # 译文必须在按键字面量之前还有内容（对象名已翻译）；按键丢失由
+    # input_token_mismatch 承接，本豁免不覆盖。
+    for key in key_events:
+        pos = re.search(
+            rf"(?<![A-Za-z0-9_]){re.escape(key)}(?![A-Za-z0-9_])",
+            dst_lines[0], re.I)
+        if pos is not None and pos.start() > 0:
+            return True
+    return False
+
+
 def _normalize_translation(original: str, translation: str) -> str:
     """Trim model wrappers while restoring source boundary line breaks."""
     core = re.sub(r"[ \t]+(?=\r?$)", "", translation.strip(), flags=re.M)
@@ -885,6 +933,76 @@ _ASCII_ALNUM = frozenset(
 _OF_DENOM_RE = re.compile(
     r"\d+(?:\.\d+)?\s+of\s+(\d+(?:\.\d+)?)", re.I)
 
+# leetspeak/梗/自嘲原文判定（审核维度 11 同源）：原文含多个明显错拼、
+# 网络梗或故意不通的词时，数字一致性从「语义数据强制」降级为「软可省略」
+# ——梗文本里形近数字（4=for）与普通数量数字无法从表层可靠区分，宁可从宽
+# 放行（漏检只留原文，不误杀正确梗译文）。只认「明确错拼/梗词」命中的
+# 数量，不用「像不像英语单词」的启发式（宁漏勿坏：启发式会误伤正常文本）。
+_LOW_QUALITY_SOURCE_RE = re.compile(
+    r"\b(?:supa|loife|sequl|ware|gud|gr8|kewl|noob|rofl|lol|tho|plz|pls|"
+    r"wan|wanna|gonna|cuz|dunno|gimme|gotta|lemme|u|ur|4real|2b|2f|4ever"
+    r"|nuc|m8|bro)\b", re.I)
+# leetspeak 短语：数字紧贴英文词（4 real、2 fast）——网络梗对字母的
+# 形近替代（4=for、2=to）。与普通语义数字（Deal 4 damage）表层不可分，
+# 故只作为「低质量」信号之一计数（须另有其他梗/错拼词才判定低质量），
+# 不单独豁免。'N of M' 分母（3 of 5）是正常结构，不算 leetspeak 信号。
+_LEETSPEAK_PHRASE_RE = re.compile(
+    r"\b\d+\s+(?!(?:of|in|on|to)\b)[A-Za-z]{2,}\b", re.I)
+
+
+def _is_low_quality_source(original: str) -> bool:
+    """原文是否明显低质量（梗/自嘲/错拼泛滥）。
+
+    信号 = 独立梗/错拼词命中数 + leetspeak 短语（数字+词）命中数；
+    ≥2 个信号判定低质量（Ice Age Baby Adventure 实证：supa/loife/
+    sequl/ware/i wan/4 real 都是故意错拼的自嘲文本）。单信号（如普通
+    文本 'Deal 4 damage'）不判定，语义数字仍强制保留（宁漏勿坏：启发式
+    误判会杀掉正确译文）。
+    """
+    text = str(original or "")
+    if not text:
+        return False
+    signals = set(_LOW_QUALITY_SOURCE_RE.findall(text))
+    signals |= {m.group(0).casefold()
+                for m in _LEETSPEAK_PHRASE_RE.finditer(text)}
+    return len(signals) >= 2
+
+
+def _numeric_mismatch(original: str, normalized: str) -> bool:
+    """数字一致性检查：原文每个数字 token 必须按序在译文中可匹配
+    （数值相同、百分比标记相同）。'X of Y' 分母 soft 可省略（「第 3
+    波」省略总量是合理译法）；译文多出的数字不追究（"1-2"→「一到二」
+    两边都有；"Press 1 or 2" 的序号回显在两侧一致）。
+
+    低质量原文（梗/自嘲/错拼，如 '4 real now' 的 4=for）→ 数字软可
+    省略（Ice Age Baby Adventure 实证：梗文本形近数字被当语义数据会让
+    正确译文 numeric_mismatch 恒败 → 重译再被同一门拒 → BLOCKED）。
+    """
+    src_tokens = _number_tokens(original)
+    if not src_tokens:
+        return False
+    low_quality = _is_low_quality_source(original)
+    dst_tokens = _number_tokens(normalized)
+    pos = 0
+    for value, pct, soft in src_tokens:
+        start_pos = pos
+        found = False
+        while pos < len(dst_tokens):
+            d_value, d_pct, _ = dst_tokens[pos]
+            pos += 1
+            if d_value == value and d_pct == pct:
+                found = True
+                break
+        if not found:
+            if soft or low_quality:
+                # soft token（'3 of 5' 分母）或低质量原文的数字可省略——
+                # 搜索时吞掉的 dst token 可能正是后续硬 token 需要的，
+                # 必须回退 pos 防止把硬数字误当缺失（'4 real… 3 gems'
+                # 译文「…3 颗宝石」若前一个缺席 token 不回退会把 3 吞掉）
+                pos = start_pos
+            else:
+                return True
+    return False
 
 def _number_tokens(text: str) -> list[tuple[float, bool, bool]]:
     """数字 token 序列（值, 是否百分比, 分母 soft）——原文/译文同口径。
@@ -934,9 +1052,11 @@ def _numeric_mismatch(original: str, normalized: str) -> bool:
     src_tokens = _number_tokens(original)
     if not src_tokens:
         return False
+    low_quality = _is_low_quality_source(original)
     dst_tokens = _number_tokens(normalized)
     pos = 0
     for value, pct, soft in src_tokens:
+        start_pos = pos
         found = False
         while pos < len(dst_tokens):
             d_value, d_pct, _ = dst_tokens[pos]
@@ -944,8 +1064,16 @@ def _numeric_mismatch(original: str, normalized: str) -> bool:
             if d_value == value and d_pct == pct:
                 found = True
                 break
-        if not found and not soft:
-            return True
+        if not found:
+            if soft or low_quality:
+                # soft token（'3 of 5' 分母）或低质量原文（梗/自嘲/错拼，
+                # 如 '4 real now' 的 4=for）可省略——搜索时吞掉的 dst
+                # token 可能正是后续硬 token 需要的，必须回退 pos 防止
+                # 把硬数字误当缺失（'4 real… 3 gems' 译文「…3 颗宝石」
+                # 若前一个缺席 token 不回退会把 3 吞掉 → 误判）
+                pos = start_pos
+            else:
+                return True
     return False
 
 
@@ -1011,6 +1139,8 @@ def validate_translation_quality(
             reasons.append("rich_text_mismatch")
     if (_newline_events(entry.original) != _newline_events(normalized)
             and not _blank_line_compression(entry.original, normalized)
+            and not _interaction_prompt_merge_compression(
+                entry.original, normalized)
             # 歌词豁免：引擎单行存储超长歌词（无 \n），模型按句分行输出
             # 是歌词的自然渲染（deadbeat 歌词实证）——分行非结构破坏，
             # 判失败会丢弃完整中文译文。非歌词文本原文单行译文多行仍判。
@@ -1019,6 +1149,8 @@ def validate_translation_quality(
     if (_line_content_topology(entry.original)
             != _line_content_topology(normalized)
             and not _blank_line_compression(entry.original, normalized)
+            and not _interaction_prompt_merge_compression(
+                entry.original, normalized)
             and not _is_lyric_like(entry.original)):
         reasons.append("line_content_mismatch")
     input_tokens = tuple(
@@ -1114,14 +1246,34 @@ def validate_translation_quality(
     # 不强制；RMB/LMB/MMB 保留原文最安全——「右键」与「人民币」无法可靠
     # 区分，宁可判失败（失败只留原文，写错是误导）。纯回显（无中文）由
     # untranslated_text 拦截，本检查只管「有中文但键名被译掉」。
+    #
+    # 键名兼作普通英语名词（shift/alt/esc…）时，必须区分「键位绑定」与
+    # 「普通词义」——Flabby Pizza 实证：'night shift/day shift' 的 shift
+    # 是「班次」普通名词，译文「夜班/日班」完全正确却被误杀。判别：键名
+    # 作为交互提示的字面量输入事件出现（interaction glyph），或源文该词
+    # 首字母大写（专有键拼写 Shift/RMB/Esc）→ 判定为键位绑定才强制保留；
+    # 源文小写普通名词（night shift）→ 键名检查跳过，由 untranslated_text
+    # 与其它规则承接。
     if _CJK.search(normalized):
+        glyph_key_tokens = frozenset(
+            event.value.casefold()
+            for event in interaction_input_events(entry.original)
+            if event.kind == "literal_glyph")
         for key in _KEY_LABEL_CASEFOLD:
-            if (re.search(
+            key_match = re.search(
+                rf"(?<![A-Za-z0-9_]){re.escape(key)}(?![A-Za-z0-9_])",
+                entry.original, re.I)
+            if not key_match:
+                continue
+            binding_context = (
+                key in glyph_key_tokens
+                or key_match.group(0)[:1].isupper())
+            if not binding_context:
+                # 小写普通名词形态（night shift）→ 非键位绑定，键名检查跳过
+                continue
+            if (not re.search(
                     rf"(?<![A-Za-z0-9_]){re.escape(key)}(?![A-Za-z0-9_])",
-                    entry.original, re.I)
-                    and not re.search(
-                        rf"(?<![A-Za-z0-9_]){re.escape(key)}(?![A-Za-z0-9_])",
-                        _STRIP_RICH_TEXT.sub(" ", normalized), re.I)
+                    _STRIP_RICH_TEXT.sub(" ", normalized), re.I)
                     and not any(
                         alias in normalized.casefold()
                         for alias in _KEY_ZH_ALIASES.get(key, ()))):
@@ -1156,6 +1308,13 @@ def validate_translation_quality(
             and not short_abbr_echo
             and not is_log_template(entry.original)
             and not _is_format_template(entry.original)
+            # 低质量原文（梗/自嘲/错拼，supa/loife/sequl/ware…）回显豁免：
+            # 原文本就是故意错拼的「broken English」，模型保留原文是合理
+            # 行为（come-back 实证：'supa mario in real loife' 回显被
+            # untranslated_text 拒 → 强制重译再回显 → BLOCKED 留人工，
+            # 与审核维度 11 低质量豁免对齐——审核端已放行，质量门不应
+            # 再拦）。真可翻译句子（非低质量）回显仍判失败。
+            and not _is_low_quality_source(entry.original)
             and (has_independent_lower_word(entry.original)
                  or special_action
                  or any(

@@ -9,6 +9,7 @@ import httpx
 
 from hanhua.core.engine_strings import CORE_MENU_SOURCE_TERMS
 from hanhua.core.models import ApiConfig
+from hanhua.core.quality import _CJK
 
 class _RetryableStatusError(RuntimeError):
     """瞬时状态码（429/500/503/504）→ 按指数退避重试。"""
@@ -530,7 +531,21 @@ def strip_prompt_echo(text: str, system: str, source: str) -> str:
             t = "\n".join(kept).strip()
         n = _common_prefix_len(t, src_text)
         if n >= 3 and n >= len(src_text) * 0.6:
-            t = t[min(n, len(src_text)):].strip()
+            remainder = t[min(n, len(src_text)):].strip()
+            # 仅当剥后剩余为「纯英文/空」（整段原文回显）才剥离；剩余
+            # 含中文（如 'Out of the Loop工作室' —— 模型保留品牌名
+            # Out of the Loop + 直译 studio→工作室，是正确译文）→ 保留
+            # 整句。2026-08-26 实证：旧逻辑对 'Out of the Loop工作室'
+            # 剥前缀剥成 '工作室'，误报「未产出译文」；且绝不剥原句单词
+            # 前缀（'SCP-173已经…' 的 'SCP' 是编号标识，剥掉 → '-173已经…'
+            # 断义）。剥除要求「整段原文回显」（剩余不含中文），否则保留
+            # 完整输出——确保 'Doctor Strange is the main character' 的
+            # 前缀 'Doctor' 不回显（裸 translate_text 的 'Doctor Strange
+            # is the main character.' 整段无中文回显 → 剥成 '.' 无义）——
+            # 但仍以无中文为界，含中文输出（如译文 'Doctor Strange is 主角'
+            # 前缀含中文）完整保留。
+            if not _CJK.search(remainder):
+                t = remainder
         # 引号包裹回显：模型把原文用引号包着返回（"原文"/'原文'/
         # 「原文」）——剥引号后再处理
         if len(t) >= 2 and t[0] in "\"'「『" and t[-1] in "\"'」』":
@@ -552,6 +567,42 @@ def strip_prompt_echo(text: str, system: str, source: str) -> str:
         if _s_n and len(_t_n) >= 10 and _t_n in _s_n:
             return ""
     return t
+
+
+def translate_source_directive(
+        client: BaseClient, source_text: str, target_lang: str = "zh-CN",
+        glossary=()) -> tuple[str, Usage]:
+    """单条直译：Hy-MT2 官方 prompt 或中文显式指令，供人工审核 AI 翻译等
+    交互场景复用。中文显式指令（「请将以下文本翻译为简体中文，直接输出
+    译文」）对 1.8B 小模型是翻译意图最强信号（2026-08-26 实测：英文 prompt
+    下 'Out of the Loop studio' 稳定回显原文，中文指令下正确输出
+    'Out of the Loop 工作室'）；返回原文未翻译结果由调用方清洗。
+    """
+    if callable(getattr(client, "translate_text", None)):
+        return client.translate_text(source_text, target_lang, glossary)
+    language_name = client._TARGET_LANGUAGE_NAMES.get(
+        str(target_lang).strip().casefold(), str(target_lang).strip()) \
+        if hasattr(client, "_TARGET_LANGUAGE_NAMES") else str(target_lang).strip()
+    lines: list[str] = []
+    terms = [
+        (str(source), str(target))
+        for source, target in glossary
+        if str(source).strip() and str(target).strip()
+        and str(source).casefold() in source_text.casefold()
+    ]
+    if terms:
+        lines.append("参考以下译法：")
+        lines.extend(
+            f"{source} 翻译为 {target}"
+            for source, target in terms
+        )
+        lines.append("")
+    lines.extend([
+        f"请将以下文本翻译为{language_name}，直接输出译文，不要输出任何其他内容：",
+        "",
+        source_text,
+    ])
+    return client.chat("", [{"role": "user", "content": "\n".join(lines)}])
 
 
 def _is_prompt_line(line: str, sys_line: str) -> bool:
